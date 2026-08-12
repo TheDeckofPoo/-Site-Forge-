@@ -1,0 +1,28 @@
+﻿{
+  "git.enabled": true,
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.openRepositoryInParentFolders": "always",
+  "gitlens.graph.layout": "editor",
+  "git-graph.showStatusBarItem": true,
+  "git-graph.defaultColumnVisibility": {
+    "Date": true,
+    "Author": true,
+    "Commit": true
+  },
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/__pycache__": true,
+    "exports/autogen/**": true,
+    "exports/ignition-build/**": true,
+    "workspace/active/**": true,
+    "workspace/active_*/**": true,
+    "workspace/inbox/**": true
+  },
+  "search.exclude": {
+    "**/node_modules": true,
+    "exports/**": true,
+    "workspace/active*/**": true,
+    "workspace/inbox/**": true
+  }
+}

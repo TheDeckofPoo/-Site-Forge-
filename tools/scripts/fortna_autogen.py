@@ -1552,6 +1552,109 @@ def clone_template_for_conveyor(
 # L5X assembly
 # ---------------------------------------------------------------------------
 
+# Preferred short AOI titles (Studio Description field — one line only).
+_AOI_SHORT_DESC: dict[str, str] = {
+    "Fast_Conv": "Conv Fast Routine Logic AOI",
+    "Slow_Jam": "Conveyor Jam Logic AOI",
+    "Slow_Flt": "Conveyor Fault Logic AOI",
+    "PE_Logic": "PE Clear and Jam Logic AOI",
+    "Full_PE": "Full PE Logic AOI",
+    "Full_PE_Init": "Full PE Init AOI",
+    "Fast_Pulse": "Pulse Logic AOI",
+    "Fast_TimeStamp": "Date Time Stamp AOI",
+    "AB_VFD35": "PowerFlex 35 VFD Logic AOI",
+    "AB_VFD525": "PowerFlex 525 VFD Logic AOI",
+    "AB_VFD750": "PowerFlex 750 VFD Logic AOI",
+    "ES_PI10": "E-Stop PI 10 Logic AOI",
+    "ES_PI20": "E-Stop PI 20 Logic AOI",
+    "ES_SIL1_Cat1": "E-Stop SIL1 Cat1 Logic AOI",
+    "Enc_CounterCard": "Encoder Counter Card Logic AOI",
+    "Enc_RIOCard": "Encoder RIO Card Logic AOI",
+    "Enc_Virtual_DistBased": "Virtual Encoder Distance AOI",
+    "Gapper_Basic": "Gapper Basic Logic AOI",
+    "Merge_2to1": "2:1 Merge Logic AOI",
+    "Merge_2to1_RAT": "2:1 RAT Merge Logic AOI",
+    "AOI_CommDiag": "Comm Loss Diagnostic AOI",
+    "AOI_TIME_ADD": "DateTime Add Time AOI",
+    "AOI_TIME_DIFFERENCE": "DateTime Difference AOI",
+    "AOI_SNTP_QUERY": "SNTP Clock Sync AOI",
+}
+
+
+def _aoi_short_description(name: str, current: str = "") -> str:
+    """One-line AOI purpose for Studio. Prefer curated map, else clean/fallback."""
+    if name in _AOI_SHORT_DESC:
+        return _AOI_SHORT_DESC[name]
+    cur = (current or "").strip()
+    # Drop copyright / parameter-list essays
+    junk = (
+        "copyright" in cur.lower()
+        or "unauthorized" in cur.lower()
+        or "all rights reserved" in cur.lower()
+        or cur.count(",") >= 3
+        or len(cur) > 72
+        or "\n" in cur
+    )
+    if cur and not junk:
+        # Keep a short existing title (strip trailing punctuation noise)
+        first = re.split(r"[\r\n:]", cur, maxsplit=1)[0].strip()
+        if 3 <= len(first) <= 72 and "copyright" not in first.lower():
+            if not first.upper().endswith("AOI"):
+                return f"{first} AOI" if not first.endswith("AOI") else first
+            return first
+    # Name → readable title
+    pretty = name.replace("_", " ").strip()
+    if not pretty.upper().endswith("AOI"):
+        pretty = f"{pretty} AOI"
+    return pretty
+
+
+def _shorten_aoi_descriptions(aoi_xml: str) -> str:
+    """
+    Rewrite every AOI <Description> (and noisy <RevisionNote>) for Studio.
+
+    Sealed library AOIs ship long parameter lists in Description; Studio shows
+    that text on the AOI Properties dialog. We force a one-line purpose.
+    """
+    if not aoi_xml:
+        return aoi_xml
+
+    def _repl_desc(m: re.Match) -> str:
+        open_tag = m.group(1)
+        name = m.group(2)
+        old = m.group(3) or ""
+        short = _aoi_short_description(name, old)
+        return f"{open_tag}{short}{m.group(4)}"
+
+    # Sealed library AOIs: <EncodedData … Name="Fast_Conv" …><Description><![CDATA[…]]>
+    aoi_xml = re.sub(
+        r'(<EncodedData\b[^>]*\bName="([^"]+)"[^>]*>\s*'
+        r'<Description>\s*<!\[CDATA\[)(.*?)(\]\]>\s*</Description>)',
+        _repl_desc,
+        aoi_xml,
+        flags=re.S,
+    )
+    # Plain (unsealed) AOI definitions when present
+    aoi_xml = re.sub(
+        r'(<AddOnInstructionDefinition\b[^>]*\bName="([^"]+)"[^>]*>\s*'
+        r'<Description>\s*<!\[CDATA\[)(.*?)(\]\]>\s*</Description>)',
+        _repl_desc,
+        aoi_xml,
+        flags=re.S,
+    )
+
+    # Hard replace known long Fast_Conv library blurb if it survived any path
+    # (Studio Description dialog text from O'Reilly library)
+    aoi_xml = re.sub(
+        r"Conv Fast Routine Logic:\s*"
+        r"Conv_Ready_Restart[^\]]{0,400}?Energy Management Reset",
+        "Conv Fast Routine Logic AOI",
+        aoi_xml,
+        flags=re.I | re.S,
+    )
+    return aoi_xml
+
+
 def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     library_text = library_path.read_text(encoding="utf-8", errors="replace")
 
@@ -2356,27 +2459,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         aoi_xml, extra_aoi_chunks, "AddOnInstructionDefinitions", "AddOnInstructionDefinition"
     )
 
-    # Shorten sealed-AOI Description text shown beside the instruction in ladder.
-    # Library Fast_Conv ships a long "Conv Fast Routine Logic: Conv_Ready_Restart…"
-    # blurb that clutters the rung; replace with a one-line Excel-style title.
-    # Description sits inside <EncodedData> as plain XML (not the base64 blob).
-    _AOI_SHORT_DESC = {
-        "Fast_Conv": "Fast_Conv",
-        "Slow_Jam": "Conveyor Jam",
-        "Slow_Flt": "Conveyor Fault",
-        "PE_Logic": "PE Clear and Jam Logic",
-        "Full_PE": "Full Logic",
-        "Full_PE_Init": "Full PE Init",
-    }
-    for _aoi_name, _short in _AOI_SHORT_DESC.items():
-        aoi_xml = re.sub(
-            rf'(<EncodedData\b[^>]*\bName="{re.escape(_aoi_name)}"[^>]*>\s*'
-            rf'<Description>\s*<!\[CDATA\[)(.*?)(\]\]>\s*</Description>)',
-            rf"\g<1>{_short}\g<3>",
-            aoi_xml,
-            count=1,
-            flags=re.S,
-        )
+    # Shorten AOI Description text shown in Studio (General tab + ladder).
+    # Library ships long parameter lists / copyright / revision essays — keep a
+    # one-line purpose only. Descriptions live inside EncodedData (sealed AOIs)
+    # and also on plain <AddOnInstructionDefinition> blocks when present.
+    aoi_xml = _shorten_aoi_descriptions(aoi_xml)
 
     prog_names = []
     for p in programs_xml:
@@ -2524,7 +2611,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "encoded_aois_stripped": False,
         "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
         "note": (
-            "Excel-parity from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, "
+            "FortnaPlus Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, "
             "full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types "
             "(DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) "
             "via EIPCSV Word map + octal bits. "
@@ -2536,6 +2623,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         t = item["template"]
         report["template_usage"][t] = report["template_usage"].get(t, 0) + 1
 
+    # Final pass on full L5X (covers any AOI text that landed outside the first pass)
+    l5x = _shorten_aoi_descriptions(l5x)
     return l5x, report
 
 

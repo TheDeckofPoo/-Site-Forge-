@@ -942,8 +942,8 @@ def render_svg(
         "  .conv.fault { stroke: #ef4444; }",
         "  .conv.jam { stroke: #f59e0b; }",
         "  .pe { opacity: 0.98; }",
-        "  .pe-ring { fill: none; stroke-width: 2.4; }",
-        "  .pe-core { stroke: #0a0f14; stroke-width: 0.8; }",
+        "  .pe-ring { fill: none; stroke-width: 1.2; }",
+        "  .pe-core { stroke: #0a0f14; stroke-width: 0.5; }",
         "  .pe.clear .pe-core { fill: #34d399; }",
         "  .pe.clear .pe-ring { stroke: #6ee7b7; }",
         "  .pe.blocked .pe-core { fill: #ef4444; }",
@@ -1017,12 +1017,9 @@ def render_svg(
                 tag_path = f"[default]Site/{area}/Photoeyes/{safe}/Clear"
                 # PE_Clear true = clear (green); false/blocked = red in live logic
                 opc = f"ns=1;s=[{plc}]{safe}.I.PE_Clear"
-                # Large round PE for click + readability at fill scale
-                r_core = 8.0
-                r_ring = 13.5
-                # Short label: EZPE116_P → 116, PE508_J → 508
-                lab = re.sub(r"^(?:EZ)?PE", "", name, flags=re.I)
-                lab = re.sub(r"[^A-Za-z0-9].*$", "", lab)[:6] or name[:6]
+                # Tiny round PE (no on-map text — name/print live in <title>)
+                r_core = 2.4
+                r_ring = 3.8
                 pe_fill = color if color != "#94a3b8" else "#34d399"
                 page = e.get("drawing_page") or e.get("print_page")
                 page_txt = f" · print #{page}" if page else ""
@@ -1036,14 +1033,7 @@ def render_svg(
                     f'stroke="#6ee7b7"/>'
                     f'<circle class="pe-core" cx="{cx:.1f}" cy="{cy:.1f}" r="{r_core}" '
                     f'fill="{pe_fill}"/>'
-                    f'<text class="pe-label" x="{cx + r_ring + 3:.1f}" y="{cy + 4:.1f}" '
-                    f'font-size="11">{_xml(lab)}</text>'
-                    + (
-                        f'<text class="pe-label" x="{cx + r_ring + 3:.1f}" y="{cy + 15:.1f}" '
-                        f'font-size="9" fill="#fbbf24">p.{int(page)}</text>'
-                        if page else ""
-                    )
-                    + f'</g>'
+                    f'</g>'
                 )
             elif kind in ("vfd", "power_supply", "motor"):
                 eid = _svg_elem_id(kind[:3], name)
@@ -1107,7 +1097,10 @@ def build_hmi_symbols(equipment: list[dict], machine: str) -> dict:
         if not (e["x"] == 0 and e["y"] in (0, 60000))
         and (
             e.get("is_physical_conveyor")
-            or e.get("kind") in ("photoeye", "vfd", "motor", "conveyor")
+            or e.get("kind") in (
+                "photoeye", "vfd", "motor", "conveyor",
+                "beacon", "power_supply",
+            )
         )
     ]
     if not plot:
@@ -1200,6 +1193,36 @@ def build_hmi_symbols(equipment: list[dict], machine: str) -> dict:
                 },
                 "note": "When Clear tag is False, show blocked color (red)",
             })
+        elif kind == "beacon":
+            symbols.append({
+                "id": _svg_elem_id("bcn", name),
+                "name": name,
+                "kind": "beacon",
+                "symbol": "Beacon",
+                "x_pct": nx(e["x"]),
+                "y_pct": ny(e["y"]),
+                "drawing_page": page,
+                "print_page": page,
+                "tags": {
+                    "status": f"[default]Site/{area}/Other/{safe}",
+                },
+                "colors": {"idle": "#fbbf24", "active": "#f59e0b"},
+            })
+        elif kind == "power_supply":
+            symbols.append({
+                "id": _svg_elem_id("ps", name),
+                "name": name,
+                "kind": "power_supply",
+                "symbol": "PowerSupply",
+                "x_pct": nx(e["x"]),
+                "y_pct": ny(e["y"]),
+                "drawing_page": page,
+                "print_page": page,
+                "tags": {
+                    "status": f"[default]Site/{area}/Other/{safe}",
+                },
+                "colors": {"ok": "#f472b6", "fault": "#9f1239"},
+            })
     return {
         "machine": machine,
         "coordinate_system": "percent_0_100_top_left",
@@ -1209,6 +1232,8 @@ def build_hmi_symbols(equipment: list[dict], machine: str) -> dict:
         "symbol_count": len(symbols),
         "conveyor_count": sum(1 for s in symbols if s["kind"] == "conveyor"),
         "photoeye_count": sum(1 for s in symbols if s["kind"] == "photoeye"),
+        "beacon_count": sum(1 for s in symbols if s["kind"] == "beacon"),
+        "power_supply_count": sum(1 for s in symbols if s["kind"] == "power_supply"),
         "symbols": symbols,
         "perspective_note": (
             "Interactive HMI path: Perspective Coordinate Container + embedded symbol views. "

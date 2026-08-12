@@ -58,6 +58,10 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
         if (ioState.ocrResult) mergeOcrPrintParamsIntoDrives(ioState.ocrResult);
       }).catch(() => {});
     }
+    if (tab === 'autogen') {
+      // Site config table: auto-build from active RUN when engineer opens PLC Autogen
+      ensureAutogenWorkbookFromRun({ reason: 'opened PLC Autogen tab' }).catch(() => {});
+    }
   });
 });
 
@@ -576,6 +580,10 @@ async function importRunPackage(path, name) {
   await refreshIoBanks();
   // Keep PLC Autogen badge/status in sync with the newly loaded RUN
   try { await initAutogenDefaults(); } catch (_) { /* ignore */ }
+  // Auto-fill site config (Area / Safety / TYPE / Exit PE dropdowns) from this RUN
+  try {
+    await ensureAutogenWorkbookFromRun({ force: true, reason: 'RUN loaded' });
+  } catch (_) { /* workbook API may be unavailable in browser-only mode */ }
   return true;
 }
 
@@ -2923,6 +2931,28 @@ function setWorkbook(wb) {
   renderWorkbook();
 }
 
+/**
+ * Ensure site-config table (dropdowns) is filled from the active RUN.
+ * Called after tar.gz load and when opening the PLC Autogen tab.
+ */
+async function ensureAutogenWorkbookFromRun({ force = false, reason = '' } = {}) {
+  if (typeof fortnaAPI.autogenWorkbookBuild !== 'function') return false;
+  if (autogenState.busy) return false;
+  if (autogenState.workbook && !force) return true;
+  // Only build when a RUN is actually loaded
+  let runLoaded = false;
+  try {
+    if (typeof fortnaAPI.autogenDefaults === 'function') {
+      const d = await fortnaAPI.autogenDefaults();
+      runLoaded = !!(d?.success && d.runLoaded);
+    }
+  } catch (_) { /* ignore */ }
+  if (!runLoaded && !state.workspace) return false;
+  if (reason) autogenLog(`Site config: scanning RUN (${reason})…`, 'info');
+  await buildAutogenWorkbook();
+  return !!autogenState.workbook;
+}
+
 function renderWorkbook() {
   const wb = autogenState.workbook;
   const tbody = $('autogen-wb-tbody');
@@ -2932,7 +2962,9 @@ function renderWorkbook() {
   const areasEl = $('autogen-wb-areas');
   if (!wb) {
     if (tbody) {
-      tbody.innerHTML = '<tr><td colspan="8" class="py-6 px-3 text-slate-500 text-center">Build workbook from RUN to fill this table (like Excel Inputdata).</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="py-6 px-3 text-slate-500 text-center">'
+        + 'No site config yet.<br><span class="text-slate-400">Load a .tar.gz on I/O &amp; Prints</span> — '
+        + 'conveyors appear here with Area / Safety / TYPE / Exit PE dropdowns.</td></tr>';
     }
     if (countEl) countEl.textContent = '0 rows';
     if (typeBar) { typeBar.classList.add('hidden'); typeBar.innerHTML = ''; }
@@ -3182,13 +3214,19 @@ async function buildAutogenWorkbook() {
     return;
   }
   const r = res.result || {};
-  // Prefer full workbook shape
+  // Prefer full workbook shape (options = dropdown catalogs for Area/Safety/TYPE/Exit PE)
   const wb = {
     project_name: r.project_name,
     stats: r.stats,
     type_counts: r.type_counts,
     areas: r.areas,
     autogen_types: r.autogen_types,
+    options: r.options || {
+      types: r.autogen_types || [],
+      areas: (r.areas || []).map((a) => a.name || a).filter(Boolean),
+      safety_zones: [],
+      exit_pe: [],
+    },
     conveyors: r.conveyors || [],
     io_points: r.io_points || [],
     modules: r.modules || [],
@@ -3211,11 +3249,11 @@ async function buildAutogenWorkbook() {
   } else {
     setWorkbook(wb);
   }
-  setAutogenStatus('Workbook ready', 'ready');
+  setAutogenStatus('Site config ready', 'ready');
   const s = r.stats || {};
   autogenLog(
-    `Workbook ready — ${s.conveyor_count || 0} conveyors, ${s.io_mapped || 0}/${s.io_point_count || 0} IO mapped, `
-    + `${s.area_count || 0} areas. Edit TYPE/area then Generate L5X.`,
+    `Site config ready — ${s.conveyor_count || 0} conveyors, ${s.io_mapped || 0}/${s.io_point_count || 0} IO mapped, `
+    + `${s.area_count || 0} areas. Use dropdowns for Area/Safety/TYPE/Exit PE, set program pack, then Generate PLC Project.`,
     'ok',
   );
   if ($('autogen-detail') && r.automation) {
@@ -3346,9 +3384,11 @@ async function initAutogenDefaults() {
         autogenLog(
           `Active RUN detected${d.machine ? ` (${d.machine})` : ''}`
           + (d.deviceCount ? ` · ${d.deviceCount} devices` : '')
-          + ' — use Preview / Generate from RUN',
+          + ' — site config dropdowns load automatically',
           'info',
         );
+        // Fill site config if empty so engineer sees dropdowns immediately
+        ensureAutogenWorkbookFromRun({ reason: 'RUN already active' }).catch(() => {});
       } else {
         autogenLog('No RUN loaded — I/O & Prints → drop/load .tar.gz first', 'info');
       }
@@ -3425,25 +3465,25 @@ async function runAutogenGenerate(mode) {
   }
   const excel = autogenState.excel || $('autogen-excel-path')?.value;
   if (mode === 'excel' && !excel) {
-    autogenLog('For Excel path: Browse workbook first. Preferred: Generate from RUN after loading tar.gz.', 'warn');
+    autogenLog('For Excel path: Browse workbook first. Preferred: Generate PLC Project after loading tar.gz.', 'warn');
     return;
   }
   if (mode === 'run' && !autogenState.workbook) {
-    autogenLog('No workbook yet — building from RUN first…', 'info');
+    autogenLog('No site config yet — scanning RUN for conveyors / zones…', 'info');
     await buildAutogenWorkbook();
     if (!autogenState.workbook) {
-      autogenLog('Build workbook from RUN before Generate (load tar.gz on I/O & Prints first)', 'warn');
+      autogenLog('Load tar.gz on I/O & Prints first — site config table needs an active RUN', 'warn');
       return;
     }
   }
   autogenState.busy = true;
-  setAutogenStatus('Generating…', 'busy');
+  setAutogenStatus('Generating PLC project…', 'busy');
   if ($('btn-autogen-generate')) $('btn-autogen-generate').disabled = true;
   if ($('btn-autogen-from-run')) $('btn-autogen-from-run').disabled = true;
   if ($('btn-autogen-workbook-build')) $('btn-autogen-workbook-build').disabled = true;
   autogenLog(
     mode === 'run'
-      ? 'Python autogen: workbook + RUN → library templates → L5X…'
+      ? 'Generating PLC project: site config + program pack + RUN → Studio L5X…'
       : 'Legacy Excel path: generating L5X…',
     'info',
   );
@@ -3493,7 +3533,7 @@ async function runAutogenGenerate(mode) {
     autogenLog(msg, 'err');
     if ($('autogen-detail')) $('autogen-detail').textContent = msg;
     if (/no active run/i.test(msg)) {
-      autogenLog('Tip: I/O & Prints → Load RUN .tar.gz first, wait until machine status is ready, then Generate from RUN.', 'warn');
+      autogenLog('Tip: I/O & Prints → Load RUN .tar.gz first, wait until machine status is ready, then Generate PLC Project.', 'warn');
     }
     autogenLog('Tip: click Verify engine — if a recent L5X exists under exports/autogen, generation may have succeeded on disk.', 'warn');
     return;
@@ -3507,7 +3547,7 @@ async function runAutogenGenerate(mode) {
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
         <div class="text-emerald-400 font-semibold">
-          L5X generated via Python${mode === 'run' ? ' from RUN' : ' from Excel'}
+          PLC project generated${mode === 'run' ? ' (site config + RUN)' : ' (legacy Excel)'}
           ${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered from disk)</span>' : ''}
         </div>
         <div class="mono text-xs text-slate-400 break-all">${escapeHtml(r.l5x || '')}</div>

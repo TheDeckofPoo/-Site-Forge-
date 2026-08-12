@@ -278,11 +278,11 @@
         <div class="workflow-chart mt-3">
           <div class="workflow-box"><strong>① Load RUN</strong><span>I/O &amp; Prints<br>.tar.gz once</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box violet"><strong>② Workbook</strong><span>Build from RUN<br>(auto Inputdata)</span></div>
+          <div class="workflow-box violet"><strong>② Site config</strong><span>Dropdowns auto-fill<br>zones · TYPE · PE</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box violet"><strong>③ Edit</strong><span>Areas / TYPE<br>bulk tools</span></div>
+          <div class="workflow-box violet"><strong>③ Program pack</strong><span>Sys · IO_MAP<br>sorter / WCS</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box accent"><strong>④ Generate</strong><span>Python L5X<br>no Excel VBA</span></div>
+          <div class="workflow-box accent"><strong>④ Generate PLC</strong><span>Studio L5X<br>no Excel / VBS</span></div>
           <span class="workflow-arrow">→</span>
           <div class="workflow-box"><strong>⑤ Studio</strong><span>File → Open L5X<br>as NEW project</span></div>
         </div>
@@ -380,36 +380,37 @@
             </div>
           </div>
           <div class="flex flex-wrap gap-2 mt-3">
-            <button id="btn-autogen-workbook-build" type="button" class="btn-primary flex-1 py-2 rounded-xl text-sm" title="Auto-fill Inputdata-style workbook from tar.gz">
-              <i class="fa-solid fa-table mr-1"></i>Build workbook from RUN
+            <button id="btn-autogen-from-run" type="button" class="btn-primary flex-1 py-2.5 rounded-xl text-sm font-semibold" title="Build Studio L5X from site config + program pack + RUN">
+              <i class="fa-solid fa-file-code mr-1"></i>Generate PLC Project
             </button>
           </div>
           <div class="flex flex-wrap gap-2 mt-2">
-            <button id="btn-autogen-preview-run" type="button" class="btn-ghost flex-1 py-2 rounded-xl text-xs" title="Quick count preview (no table)">
-              <i class="fa-solid fa-eye mr-1"></i>Quick preview
+            <button id="btn-autogen-workbook-build" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Re-scan RUN and refresh the site config table (keeps your edits)">
+              <i class="fa-solid fa-rotate mr-1"></i>Refresh site config
             </button>
-            <button id="btn-autogen-from-run" type="button" class="btn-primary flex-1 py-2 rounded-xl text-sm" title="Build L5X from workbook + RUN">
-              <i class="fa-solid fa-file-code mr-1"></i>Generate L5X
-            </button>
-          </div>
-          <div class="flex flex-wrap gap-2 mt-2">
             <button id="btn-autogen-workbook-save" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Save table edits">
-              <i class="fa-solid fa-floppy-disk mr-1"></i>Save workbook
+              <i class="fa-solid fa-floppy-disk mr-1"></i>Save config
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button id="btn-autogen-preview-run" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Quick count preview">
+              <i class="fa-solid fa-eye mr-1"></i>Quick preview
             </button>
             <button id="btn-autogen-verify" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Check engine, RUN, library, last export">
               <i class="fa-solid fa-vial mr-1"></i>Verify engine
             </button>
           </div>
           <p class="text-[10px] text-cyan-600/80 mt-2 leading-relaxed">
-            <strong>Workbook</strong> = our Inputdata (no Excel). Auto from tar.gz → edit areas/types → Generate L5X.
+            <strong>Site config</strong> (right) = our Inputdata — areas, safety, TYPE, exit PE.
+            No Excel / VBS. After edits + program pack → <strong>Generate PLC Project</strong>.
           </p>
           <details class="mt-3 text-[10px] text-slate-600">
-            <summary class="cursor-pointer text-slate-500 hover:text-slate-400">Legacy Excel path (optional)</summary>
+            <summary class="cursor-pointer text-slate-500 hover:text-slate-400">Legacy Excel path (optional — not required)</summary>
             <div class="mt-2 space-y-2">
               <div class="flex gap-2">
                 <input id="autogen-excel-path" type="text" readonly
                   class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 mono text-[10px] text-slate-300"
-                  placeholder="Browse autogen workbook…">
+                  placeholder="Browse legacy Excel…">
                 <button id="btn-autogen-browse-excel" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs">Browse</button>
               </div>
               <div class="flex gap-2">
@@ -423,11 +424,12 @@
             </div>
           </details>
           <p class="text-[10px] text-emerald-600/80 mt-2 leading-relaxed">
-            <strong>Flow:</strong> I/O &amp; Prints → load .tar.gz → (optional OCR prints) →
-            <strong>Preview from RUN</strong> → <strong>Generate from RUN</strong> → open L5X.
+            <strong>Flow:</strong> I/O &amp; Prints → load .tar.gz (+ PDF) →
+            <strong>PLC Autogen</strong> (site config dropdowns auto-fill) → set program pack →
+            <strong>Generate PLC Project</strong> → open L5X in Studio.
           </p>
           <p class="text-[10px] text-slate-600 mt-1 leading-relaxed">
-            Maps P### conveyors + PE full/jam/exit from RUN. VFD vs MS templates when VFD tags/prints match conveyor numbers.
+            Standalone FortnaPlus engine — no site Excel, no VBS. Only tar.gz + library + your dropdown choices.
           </p>
         </div>
         <div class="card p-3 flex-1 min-h-0 overflow-y-auto">
@@ -439,13 +441,14 @@
         <div class="card p-3 shrink-0">
           <div class="flex items-center justify-between mb-2">
             <div class="font-semibold text-sm">
-              <i class="fa-solid fa-book mr-1 text-violet-400"></i>AutoGen workbook
-              <span class="text-[10px] font-normal text-slate-500 ml-1">(Inputdata replacement)</span>
+              <i class="fa-solid fa-sliders mr-1 text-violet-400"></i>Site config
+              <span class="text-[10px] font-normal text-slate-500 ml-1">(zones · TYPE · exit PE)</span>
             </div>
             <span id="autogen-status" class="status-pill status-idle">Idle</span>
           </div>
           <div id="autogen-summary" class="text-[11px] text-slate-400">
-            1) Load tar.gz · 2) <strong class="text-slate-300">Build workbook</strong> · 3) Edit area/type · 4) Generate L5X
+            Load tar.gz on <strong class="text-slate-300">I/O &amp; Prints</strong> — this table auto-fills with dropdowns for each conveyor zone.
+            Edit what the prints can’t tell you, pick program pack, then <strong class="text-slate-300">Generate PLC Project</strong>.
           </div>
           <div id="autogen-stats" class="grid grid-cols-4 gap-2 mt-2 hidden"></div>
           <div id="autogen-wb-type-bar" class="flex flex-wrap gap-1.5 mt-2 hidden"></div>
@@ -496,7 +499,10 @@
                 </tr>
               </thead>
               <tbody id="autogen-wb-tbody" class="text-slate-300 mono">
-                <tr><td colspan="8" class="py-6 px-3 text-slate-500 text-center">Build workbook from RUN to fill this table (like Excel Inputdata).</td></tr>
+                <tr><td colspan="8" class="py-6 px-3 text-slate-500 text-center">
+                  No site config yet.<br>
+                  <span class="text-slate-400">Load a .tar.gz on I/O &amp; Prints</span> — conveyors appear here with Area / Safety / TYPE / Exit PE dropdowns.
+                </td></tr>
               </tbody>
             </table>
           </div>

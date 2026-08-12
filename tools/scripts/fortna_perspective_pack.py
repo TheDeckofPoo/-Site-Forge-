@@ -268,23 +268,33 @@ def make_conveyor_component() -> dict:
     }
 
 
-def make_photoeye_component() -> dict:
+def _make_dot_component(
+    *,
+    name: str,
+    default_fill: str,
+    tag_expr_true: str,
+    tag_expr_false: str,
+    tag_expr_empty: str = "#64748b",
+    default_size: int = 6,
+    default_tag: str = "",
+    default_label: str = "",
+) -> dict:
     """
-    Reusable PE symbol: round core (green=Clear, red=blocked).
+    Small circular symbol (PE / power supply / beacon).
 
-    Designer-safe expressions only (no string '+'). Print page is baked into
-    params.label at pack time when available.
+    Root IS the disc (flex + borderRadius) — no nested children. That matches
+    ProjectTest-style views that Designer 8.3 imports cleanly, and stays round
+    at 6×6 embeds next to 16px-thick belts.
     """
     return {
         "custom": {
-            "fill": "#34d399",
-            "stateText": "CLR",
+            "fill": default_fill,
         },
         "params": {
-            "tagPath": "[default]Site/Zone1/Photoeyes/EZPE116_P/Clear",
-            "label": "PE",
-            "width": 22,
-            "height": 22,
+            "tagPath": default_tag,
+            "label": default_label or name,
+            "width": default_size,
+            "height": default_size,
         },
         "propConfig": {
             "params.tagPath": {"paramDirection": "input", "persistent": True},
@@ -296,20 +306,8 @@ def make_photoeye_component() -> dict:
                     "type": "expr",
                     "config": {
                         "expression": (
-                            'if(len({view.params.tagPath}) = 0, "#64748b", '
-                            'if(tag({view.params.tagPath}), "#34d399", "#ef4444"))'
-                        )
-                    },
-                },
-                "persistent": True,
-            },
-            "custom.stateText": {
-                "binding": {
-                    "type": "expr",
-                    "config": {
-                        "expression": (
-                            'if(len({view.params.tagPath}) = 0, "?", '
-                            'if(tag({view.params.tagPath}), "CLR", "BLK"))'
+                            f'if(len({{view.params.tagPath}}) = 0, "{tag_expr_empty}", '
+                            f'if(tag({{view.params.tagPath}}), "{tag_expr_true}", "{tag_expr_false}"))'
                         )
                     },
                 },
@@ -317,67 +315,76 @@ def make_photoeye_component() -> dict:
             },
         },
         "props": {
-            "defaultSize": {"width": 22, "height": 22},
+            "defaultSize": {"width": default_size, "height": default_size},
         },
         "root": {
-            "type": "ia.container.coord",
+            "type": "ia.container.flex",
             "meta": {"name": "root"},
             "props": {
-                "mode": "percent",
-                "style": {"backgroundColor": "rgba(0,0,0,0)"},
+                "direction": "column",
+                "justify": "center",
+                "alignItems": "center",
+                "style": {
+                    "backgroundColor": default_fill,
+                    "borderRadius": 999,
+                    "borderStyle": "solid",
+                    "borderWidth": 1,
+                    "borderColor": "#0f172a",
+                    "overflow": "hidden",
+                },
             },
-            "children": [
-                {
-                    "type": "ia.display.label",
-                    "meta": {"name": "Dot"},
-                    "position": {"x": 5, "y": 5, "width": 90, "height": 90},
-                    "props": {
-                        "text": "",
-                        "style": {
-                            "backgroundColor": "#34d399",
-                            "borderRadius": "50%",
-                            "borderStyle": "solid",
-                            "borderWidth": 2,
-                            "borderColor": "#6ee7b7",
-                        },
-                    },
-                    "propConfig": {
-                        "props.style.backgroundColor": {
-                            "binding": {
-                                "type": "property",
-                                "config": {"path": "view.custom.fill"},
-                            }
-                        }
-                    },
-                },
-                {
-                    "type": "ia.display.label",
-                    "meta": {"name": "Caption"},
-                    "position": {"x": 0, "y": 78, "width": 100, "height": 22},
-                    "props": {
-                        "text": "PE",
-                        "style": {
-                            "textAlign": "center",
-                            "color": "#e2e8f0",
-                            "fontSize": "7px",
-                            "fontWeight": "600",
-                            "fontFamily": "monospace",
-                        },
-                    },
-                    "propConfig": {
-                        "props.text": {
-                            "binding": {
-                                "type": "expr",
-                                "config": {
-                                    "expression": "{view.params.label}"
-                                },
-                            }
-                        }
-                    },
-                },
-            ],
+            "propConfig": {
+                "props.style.backgroundColor": {
+                    "binding": {
+                        "type": "property",
+                        "config": {"path": "view.custom.fill"},
+                    }
+                }
+            },
+            "children": [],
         },
     }
+
+
+def make_photoeye_component() -> dict:
+    """Small green/red PE disc (Clear true = green)."""
+    return _make_dot_component(
+        name="Photoeye",
+        default_fill="#34d399",
+        tag_expr_true="#34d399",
+        tag_expr_false="#ef4444",
+        default_size=6,
+        default_tag="[default]Site/Zone1/Photoeyes/EZPE116_P/Clear",
+        default_label="PE",
+    )
+
+
+def make_beacon_component() -> dict:
+    """Small amber beacon disc (same size as PE, different color)."""
+    return _make_dot_component(
+        name="Beacon",
+        default_fill="#fbbf24",
+        tag_expr_true="#fbbf24",
+        tag_expr_false="#78716c",
+        tag_expr_empty="#fbbf24",
+        default_size=6,
+        default_tag="",
+        default_label="WB",
+    )
+
+
+def make_power_supply_component() -> dict:
+    """Small pink/magenta power-supply disc (same size as PE)."""
+    return _make_dot_component(
+        name="PowerSupply",
+        default_fill="#f472b6",
+        tag_expr_true="#f472b6",
+        tag_expr_false="#9f1239",
+        tag_expr_empty="#f472b6",
+        default_size=6,
+        default_tag="",
+        default_label="PS",
+    )
 
 
 def _svg_data_url(svg_path: Path | None) -> str | None:
@@ -408,6 +415,9 @@ def make_plant_view(
     """
     n_c = sum(1 for i in instances if i.get("kind") == "conveyor")
     n_p = sum(1 for i in instances if i.get("kind") == "photoeye")
+    n_other = sum(
+        1 for i in instances if i.get("kind") in ("beacon", "power_supply")
+    )
     children: list[dict] = []
 
     # 0) Exact plant drawing under interactive symbols (dashboard parity)
@@ -430,15 +440,22 @@ def make_plant_view(
             }
         )
 
+    _KIND_PATH = {
+        "conveyor": "FortnaPlus/Components/Conveyor",
+        "photoeye": "FortnaPlus/Components/Photoeye",
+        "beacon": "FortnaPlus/Components/Beacon",
+        "power_supply": "FortnaPlus/Components/PowerSupply",
+    }
     for i, inst in enumerate(instances):
         kind = inst.get("kind") or "conveyor"
-        path = (
-            "FortnaPlus/Components/Conveyor"
-            if kind == "conveyor"
-            else "FortnaPlus/Components/Photoeye"
-        )
-        w = int(inst.get("width") or (90 if kind == "conveyor" else 12))
-        h = int(inst.get("height") or (10 if kind == "conveyor" else 12))
+        path = _KIND_PATH.get(kind, "FortnaPlus/Components/Photoeye")
+        # Dots (PE/PS/beacon) = 6×6 circles; belts keep length×thickness
+        if kind == "conveyor":
+            w = int(inst.get("width") or 90)
+            h = int(inst.get("height") or 10)
+        else:
+            w = int(inst.get("width") or 6)
+            h = int(inst.get("height") or 6)
         lab = re.sub(r"[^A-Za-z0-9_]", "_", str(inst.get("label") or i))[:32]
         rotate = float(
             inst.get("rotate") if inst.get("rotate") is not None else inst.get("angle") or 0
@@ -497,10 +514,10 @@ def make_plant_view(
             "position": {"x": 12, "y": 6, "width": min(1100, canvas_w - 24), "height": 26},
             "props": {
                 "text": (
-                    f"{title}  ·  {n_c} conv + {n_p} PE  ·  {when}  ·  "
-                    "SVG underlay + tagPath embeds"
-                    if svg_underlay
-                    else f"{title}  ·  {n_c} conv + {n_p} PE  ·  {when}"
+                    f"{title}  ·  {n_c} conv + {n_p} PE"
+                    + (f" + {n_other} PS/beacon" if n_other else "")
+                    + f"  ·  {when}"
+                    + ("  ·  SVG underlay + tagPath embeds" if svg_underlay else "")
                 ),
                 "style": {
                     "color": "#94a3b8",
@@ -1091,17 +1108,17 @@ def instances_from_symbols(
                 px, py = cx, cy
 
         sx, sy = plant_to_screen(px, py)
-        # Round PE hit-box (slightly larger than conveyor thickness)
-        w = h = 18
+        # Tiny round PE vs 16px belt thickness
+        w = h = 6
         ix, iy = int(round(sx - w / 2)), int(round(sy - h / 2))
         # De-overlap stacked PEs (same snap target)
-        key = (ix // 4, iy // 4)
+        key = (ix // 3, iy // 3)
         nudge = 0
         while key in pe_screen_used and nudge < 12:
             nudge += 1
-            ix += 10
-            iy += 8
-            key = (ix // 4, iy // 4)
+            ix += 5
+            iy += 4
+            key = (ix // 3, iy // 3)
         pe_screen_used.add(key)
 
         name = s.get("name") or f"PE{i}"
@@ -1124,6 +1141,51 @@ def instances_from_symbols(
             "plant": {"x": px, "y": py},
             "snapped": bool(snap_pe),
         })
+
+    # Power supplies + beacons — same 6×6 disc size, different colors
+    for kind in ("power_supply", "beacon"):
+        devices = [s for s in all_syms if s.get("kind") == kind]
+        # Cap extras so plant stays readable
+        devices = devices[: max(max_pe, 40)]
+        for i, s in enumerate(devices):
+            px, py = _pct_to_plant(
+                float(s.get("x_pct") or 0),
+                float(s.get("y_pct") or 0),
+                min_x, max_x, min_y, max_y,
+            )
+            if snap_pe and conv_geom:
+                best_d = 1e18
+                cx, cy = px, py
+                for _cs, g in conv_geom:
+                    d, qx, qy = _dist_point_to_seg(px, py, g[0], g[1], g[2], g[3])
+                    if d < best_d:
+                        best_d = d
+                        cx, cy = qx, qy
+                if best_d < max(fit_span_x, fit_span_y) * 0.2:
+                    # Offset slightly off the belt so PE/PS don't stack
+                    px, py = cx + (8 if kind == "beacon" else -8), cy + (8 if kind == "beacon" else -8)
+
+            sx, sy = plant_to_screen(px, py)
+            w = h = 6
+            ix, iy = int(round(sx - w / 2)), int(round(sy - h / 2))
+            name = s.get("name") or f"{kind}_{i}"
+            tags = s.get("tags") or {}
+            tag_path = tags.get("status") or tags.get("run") or tags.get("clear") or ""
+            page = s.get("drawing_page") or s.get("print_page")
+            out.append({
+                "kind": kind,
+                "label": name,
+                "tagPath": tag_path,
+                "x": ix,
+                "y": iy,
+                "width": w,
+                "height": h,
+                "rotate": 0,
+                "angle": 0,
+                "printPage": page,
+                "drawing_page": page,
+                "plant": {"x": px, "y": py},
+            })
     return out
 
 
@@ -1148,8 +1210,8 @@ def default_demo_instances() -> list[dict]:
             "tagPath": f"[default]Site/Zone1/Photoeyes/PE{i + 1}/Clear",
             "x": 40 + (i % 6) * 100,
             "y": 220 + (i // 6) * 48,
-            "width": 12,
-            "height": 12,
+            "width": 6,
+            "height": 6,
             "rotate": 0,
         })
     return out
@@ -1228,6 +1290,14 @@ def pack_perspective_project(
         views_root / "FortnaPlus" / "Components" / "Photoeye",
         make_photoeye_component(),
     )
+    _write_view(
+        views_root / "FortnaPlus" / "Components" / "Beacon",
+        make_beacon_component(),
+    )
+    _write_view(
+        views_root / "FortnaPlus" / "Components" / "PowerSupply",
+        make_power_supply_component(),
+    )
 
     # Default: NO SVG underlay. Huge base64 data: URLs + empty global-props caused
     # Designer to open Plant_Layout as a blank white "no-project" canvas.
@@ -1290,9 +1360,27 @@ def pack_perspective_project(
             "tagPath": "[default]Site/Zone5/Photoeyes/PE500_J/Clear",
             "x": 40,
             "y": 180,
-            "width": 36,
-            "height": 36,
+            "width": 6,
+            "height": 6,
             "printPage": 20,
+        },
+        {
+            "kind": "beacon",
+            "label": "WB500",
+            "tagPath": "",
+            "x": 60,
+            "y": 180,
+            "width": 6,
+            "height": 6,
+        },
+        {
+            "kind": "power_supply",
+            "label": "PS500",
+            "tagPath": "",
+            "x": 80,
+            "y": 180,
+            "width": 6,
+            "height": 6,
         },
     ]
     smoke = make_plant_view(
