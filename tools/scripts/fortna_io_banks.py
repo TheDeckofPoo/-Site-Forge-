@@ -439,17 +439,9 @@ def extract_drive_parameters(run_dir: Path) -> dict:
         key = d['drive'] or '(blank)'
         drive_ids[key] += 1
 
-    # Inherit print # onto VFD_AUX / VFD_EN from parent conveyor (ASC page is 0 on I/O bits)
-    conv_pages: dict[str, int] = {}
-    if conv.is_file():
-        try:
-            _, crow = read_asc(conv)
-            conv_pages = _conveyor_page_map(crow)
-        except Exception:
-            conv_pages = {}
-    inherit_drawing_pages_for_vfd_io(
-        drives, name_key='name', conveyor_pages=conv_pages
-    )
+    # VFD I/O bits have ASC drawing page 0. Do NOT copy parent conveyor pages
+    # (those are layout sheets, not VFD param sheets). Print # is set only after
+    # PDF OCR finds VFD444 / VFD500 etc. on a real electrical page.
 
     return {
         'drives': drives,
@@ -1316,8 +1308,23 @@ def attach_print_params_to_drives(
                 d['drawing_page'] = meta['drawing_page']
                 d['print_page'] = meta.get('print_page') or meta['drawing_page']
 
-    # Final page inherit after OCR may have set pages on some VFD siblings
-    inherit_drawing_pages_for_vfd_io(drives, name_key='name')
+    # After OCR: only drives that actually matched a PDF keep print_page.
+    # Clear any leftover ASC conveyor-page numbers on VFD rows that never OCR-matched
+    # (prevents "all VFDs on page 18" from parent P### layout sheets).
+    for d in drives:
+        name = (d.get('name') or '')
+        if not re.match(r'^VFD\d', name, re.I):
+            continue
+        has_ocr = bool(
+            d.get('vfd_from_print')
+            or d.get('print_param_count')
+            or d.get('print_param_list')
+            or d.get('print_sources')
+        )
+        if not has_ocr:
+            d['drawing_page'] = None
+            d['print_page'] = None
+            d['print_file'] = ''
 
     return drives
 

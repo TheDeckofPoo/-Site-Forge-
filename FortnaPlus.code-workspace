@@ -1,0 +1,24 @@
+﻿{
+  "folders": [
+    {
+      "name": "FortnaPlus",
+      "path": "."
+    }
+  ],
+  "settings": {
+    "git.autoRepositoryDetection": true,
+    "git.openRepositoryInParentFolders": "never",
+    "git.repositoryScanMaxDepth": 1,
+    "gitlens.currentLine.enabled": true,
+    "gitlens.codeLens.enabled": true,
+    "gitlens.views.repositories.files.layout": "tree",
+    "gitlens.views.commitDetails.files.layout": "tree"
+  },
+  "extensions": {
+    "recommendations": [
+      "eamodio.gitlens",
+      "mhutchie.git-graph",
+      "ms-python.python"
+    ]
+  }
+}

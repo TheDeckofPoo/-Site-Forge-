@@ -1115,8 +1115,19 @@ function classifyDevice(name, deviceClass, extra) {
   return { key: 'other', label: 'Other' };
 }
 
-/** Resolve electrical drawing page for a device name (ASC Print #). */
-function resolveDevicePrintPage(name, fallback) {
+/**
+ * Resolve Print # for the device list.
+ * VFDs: only pages discovered by PDF OCR (never conveyor layout pages from ASC).
+ * Other devices: ASC drawing page map is OK.
+ */
+function resolveDevicePrintPage(name, fallback, { fromOcr = false, isVfd = false } = {}) {
+  if (isVfd || /^VFD\d/i.test(String(name || ''))) {
+    // VFD print links only when OCR attached a real PDF page
+    if (fromOcr && fallback != null && fallback !== '' && Number(fallback) > 0) {
+      return Number(fallback);
+    }
+    return null;
+  }
   if (fallback != null && fallback !== '' && Number(fallback) > 0) {
     return Number(fallback);
   }
@@ -1124,26 +1135,8 @@ function resolveDevicePrintPage(name, fallback) {
   if (!name) return null;
   const raw = String(name).trim();
   const upper = raw.toUpperCase();
-  const candidates = [raw, upper, raw.toLowerCase()];
-  // VFD444_AUX / VFD500A_EN → also try base VFD444 / VFD500A and parent conveyor P444 / P500A
-  const base = upper.replace(/(_EN|_AUX|_FLT|_RUN|_OK|_CMD|_REF|_FB)$/i, '');
-  if (base && base !== upper) candidates.push(base);
-  const vfdNum = (base.match(/^VFD([0-9]{2,4}[A-Z]?)$/i) || [])[1];
-  if (vfdNum) {
-    candidates.push(`P${vfdNum}`, `P${vfdNum}`.toUpperCase());
-    const digits = (vfdNum.match(/^(\d+)/) || [])[1];
-    if (digits && digits !== vfdNum) candidates.push(`P${digits}`);
-  }
-  // PE444_P / EZPE442_F → try parent conveyor when page missing
-  const peNum = (upper.match(/^(?:EZ)?PE([0-9]{2,4}[A-Z]?)/i) || [])[1];
-  if (peNum) {
-    candidates.push(`P${peNum}`);
-    const digits = (peNum.match(/^(\d+)/) || [])[1];
-    if (digits) candidates.push(`P${digits}`);
-  }
-  for (const c of candidates) {
-    if (!c) continue;
-    const hit = map[c] ?? map[String(c).toUpperCase()] ?? map[String(c).toLowerCase()];
+  for (const c of [raw, upper, raw.toLowerCase()]) {
+    const hit = map[c];
     if (hit != null && Number(hit) > 0) return Number(hit);
   }
   return null;
@@ -1162,9 +1155,12 @@ function rebuildDeviceList() {
       const name = p.fortna_name || p.tag || '';
       if (!name) continue;
       const type = classifyDevice(name, p.device_class, { description: p.description });
+      const isVfd = type.key === 'vfd' || /^VFD\d/i.test(name);
+      // Bank I/O points alone never get VFD print # (need OCR merge via drives)
       const page = resolveDevicePrintPage(
         name,
         p.drawing_page || p.print_page || null,
+        { fromOcr: false, isVfd },
       );
       byName.set(name.toUpperCase(), {
         name,
@@ -1186,7 +1182,7 @@ function rebuildDeviceList() {
         print_file: '',
         print_page: page,
         machine_name: p.machine_name || '',
-        is_vfd: false,
+        is_vfd: isVfd,
         vfd_from_print: false,
       });
     }
@@ -1226,9 +1222,18 @@ function rebuildDeviceList() {
     if ((!cleanedPrint || !cleanedPrint.length) && shared?.list?.length) {
       cleanedPrint = shared.list;
     }
+    const isVfd = type.key === 'vfd' || (/^VFD/i.test(name) && !/^P\d/i.test(name));
+    const fromOcr = !!(
+      d.vfd_from_print
+      || cleanedPrint.length
+      || (d.print_sources && d.print_sources.length)
+      || shared?.list?.length
+    );
+    // VFD Print # = OCR PDF page only (never conveyor layout page from RUN)
     const page = resolveDevicePrintPage(
       name,
-      d.drawing_page || d.print_page || shared?.page || existing?.drawing_page || null,
+      fromOcr ? (d.print_page || d.drawing_page || shared?.page || null) : null,
+      { fromOcr, isVfd },
     );
     const merged = {
       ...(existing || {}),
@@ -1252,11 +1257,11 @@ function rebuildDeviceList() {
         : (shared?.sources || []),
       program_params: d.program_params || {},
       drawing_page: page,
-      print_file: d.print_file || shared?.file || existing?.print_file || '',
+      print_file: fromOcr ? (d.print_file || shared?.file || existing?.print_file || '') : '',
       print_page: page,
       // is_vfd only for real VFD### names — never P### conveyors
-      is_vfd: type.key === 'vfd' || (/^VFD/i.test(name) && !/^P\d/i.test(name)),
-      vfd_from_print: (!!d.vfd_from_print || !!(shared?.list?.length)) && type.key === 'vfd',
+      is_vfd: isVfd,
+      vfd_from_print: fromOcr && isVfd,
       source: existing ? 'both' : 'drive',
     };
     // Hard rules: P### = conveyor; VFD### = VFD; never promote EZPWS / P### to VFD
@@ -3535,8 +3540,8 @@ async function runAutogenGenerate(mode) {
   if ($('btn-autogen-workbook-build')) $('btn-autogen-workbook-build').disabled = true;
   autogenLog(
     mode === 'run'
-      ? 'Generating PLC project: site config + program pack + RUN → Studio L5X…'
-      : 'Legacy Excel path: generating L5X…',
+      ? 'Exporting L5X package (files only — Studio will not open)…'
+      : 'Legacy Excel path: exporting L5X files…',
     'info',
   );
   // Program pack: Sys (recommended) + optional gold Excel IO_MAP + site sorter/WCS
@@ -3599,8 +3604,9 @@ async function runAutogenGenerate(mode) {
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
         <div class="text-emerald-400 font-semibold">
-          PLC project generated${mode === 'run' ? ' (site config + RUN)' : ' (legacy Excel)'}
+          L5X package exported${mode === 'run' ? ' (site config + RUN)' : ' (legacy Excel)'}
           ${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered from disk)</span>' : ''}
+          <span class="block text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Show L5X / Out when you want the files</span>
         </div>
         <div class="mono text-xs text-slate-400 break-all">${escapeHtml(r.l5x || '')}</div>
         <div class="text-xs text-slate-500">${escapeHtml(rep.note || r.note || '')}</div>
@@ -3792,8 +3798,16 @@ $('btn-autogen-preview-run')?.addEventListener('click', async () => {
 $('btn-autogen-open-out')?.addEventListener('click', () => {
   if (autogenState.lastOut) fortnaAPI.openPath(autogenState.lastOut);
 });
-$('btn-autogen-open-l5x')?.addEventListener('click', () => {
-  if (autogenState.lastL5x) fortnaAPI.openPath(autogenState.lastL5x);
+$('btn-autogen-open-l5x')?.addEventListener('click', async () => {
+  // Reveal folder only — never shell-open the .L5X (that launches Studio 5000)
+  const l5x = autogenState.lastL5x;
+  if (!l5x) return;
+  const folder = l5x.replace(/[\\/][^\\/]+$/, '');
+  if (folder && typeof fortnaAPI.openPath === 'function') {
+    fortnaAPI.openPath(folder || autogenState.lastOut || l5x);
+    autogenLog(`L5X folder: ${folder || autogenState.lastOut}`, 'info');
+    autogenLog('Open the .L5X yourself in Studio when ready (File → Open as new project).', 'info');
+  }
 });
 
 // --- Ignition Build (layout + tag seed toward .gwbk) ---

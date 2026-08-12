@@ -238,16 +238,37 @@ def load_program_export(path: Path) -> dict | None:
         for tm in re.finditer(r"<Tag\b[^>]*>.*?</Tag>", prog_tags.group(1), re.S):
             tags.append(tm.group(0))
 
-    dt = re.search(r"<DataTypes>.*?</DataTypes>", text, re.S)
+    # Program exports use <DataTypes Use="Context"> / <AddOnInstructionDefinitions Use="Context">
+    # — must allow attributes or WCS/Sorter packs merge ZERO types/AOIs (Studio: Data type not found).
+    dt = re.search(r"<DataTypes\b[^>]*>.*?</DataTypes>", text, re.S)
     aoi = re.search(
-        r"<AddOnInstructionDefinitions>.*?</AddOnInstructionDefinitions>", text, re.S
+        r"<AddOnInstructionDefinitions\b[^>]*>.*?</AddOnInstructionDefinitions>",
+        text,
+        re.S,
     )
+    # Normalize wrappers to plain tags so controller merge accepts them
+    dt_xml = ""
+    if dt:
+        dt_xml = re.sub(
+            r"<DataTypes\b[^>]*>",
+            "<DataTypes>",
+            dt.group(0),
+            count=1,
+        )
+    aoi_xml = ""
+    if aoi:
+        aoi_xml = re.sub(
+            r"<AddOnInstructionDefinitions\b[^>]*>",
+            "<AddOnInstructionDefinitions>",
+            aoi.group(0),
+            count=1,
+        )
     return {
         "name": name,
         "program_xml": program_xml,
         "tags": tags,
-        "datatypes_xml": dt.group(0) if dt else "",
-        "aois_xml": aoi.group(0) if aoi else "",
+        "datatypes_xml": dt_xml,
+        "aois_xml": aoi_xml,
         "source": str(path),
         "tag_count": len(tags),
     }
@@ -1658,9 +1679,13 @@ def _shorten_aoi_descriptions(aoi_xml: str) -> str:
 def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     library_text = library_path.read_text(encoding="utf-8", errors="replace")
 
-    # Pull DataTypes + AOI definitions from library wholesale
-    datatypes = re.search(r"<DataTypes>.*?</DataTypes>", library_text, re.S)
-    aois = re.search(r"<AddOnInstructionDefinitions>.*?</AddOnInstructionDefinitions>", library_text, re.S)
+    # Pull DataTypes + AOI definitions from library wholesale (allow attributes)
+    datatypes = re.search(r"<DataTypes\b[^>]*>.*?</DataTypes>", library_text, re.S)
+    aois = re.search(
+        r"<AddOnInstructionDefinitions\b[^>]*>.*?</AddOnInstructionDefinitions>",
+        library_text,
+        re.S,
+    )
 
     stamp = datetime.now(timezone.utc).strftime("%a %b %d %H:%M:%S %Y")
     proj = _safe(inp.project_name) or "Autogen_Project"
@@ -2625,6 +2650,21 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     # Final pass on full L5X (covers any AOI text that landed outside the first pass)
     l5x = _shorten_aoi_descriptions(l5x)
+    # Nuclear replace: Studio still surfaces this library essay if any copy survives
+    l5x = re.sub(
+        r"Conv Fast Routine Logic:\s*"
+        r"Conv_Ready_Restart[^\]]{0,500}?Energy Management Reset",
+        "Conv Fast Routine Logic AOI",
+        l5x,
+        flags=re.I | re.S,
+    )
+    # XML comments sometimes carry the same blurb (unsealed AOI exports)
+    l5x = re.sub(
+        r"<!--\s*Conv Fast Routine Logic:[\s\S]*?Energy Management Reset\s*-->",
+        "<!-- Conv Fast Routine Logic AOI -->",
+        l5x,
+        flags=re.I,
+    )
     return l5x, report
 
 

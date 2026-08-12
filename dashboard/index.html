@@ -273,7 +273,7 @@
 
     <!-- PLC Autogen (Python — not Excel VBA) -->
     <section id="tab-autogen" class="h-full hidden p-5 gap-3 flex flex-col">
-      <details class="workflow-help shrink-0 px-4 py-3" open>
+      <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-violet-400">How to run PLC Autogen — workflow</summary>
         <div class="workflow-chart mt-3">
           <div class="workflow-box"><strong>① Load RUN</strong><span>I/O &amp; Prints<br>.tar.gz once</span></div>
@@ -380,8 +380,8 @@
             </div>
           </div>
           <div class="flex flex-wrap gap-2 mt-3">
-            <button id="btn-autogen-from-run" type="button" class="btn-primary flex-1 py-2.5 rounded-xl text-sm font-semibold" title="Build Studio L5X from site config + program pack + RUN">
-              <i class="fa-solid fa-file-code mr-1"></i>Generate PLC Project
+            <button id="btn-autogen-from-run" type="button" class="btn-primary flex-1 py-2.5 rounded-xl text-sm font-semibold" title="Write L5X + side files to exports/autogen only — does not launch Studio">
+              <i class="fa-solid fa-file-export mr-1"></i>Export L5X Package
             </button>
           </div>
           <div class="flex flex-wrap gap-2 mt-2">
@@ -402,7 +402,7 @@
           </div>
           <p class="text-[10px] text-cyan-600/80 mt-2 leading-relaxed">
             <strong>Site config</strong> (right) = our Inputdata — areas, safety, TYPE, exit PE.
-            No Excel / VBS. After edits + program pack → <strong>Generate PLC Project</strong>.
+            No Excel / VBS. After edits + program pack → <strong>Export L5X Package</strong> (files only — Studio stays closed).
           </p>
           <details class="mt-3 text-[10px] text-slate-600">
             <summary class="cursor-pointer text-slate-500 hover:text-slate-400">Legacy Excel path (optional — not required)</summary>
@@ -426,7 +426,7 @@
           <p class="text-[10px] text-emerald-600/80 mt-2 leading-relaxed">
             <strong>Flow:</strong> I/O &amp; Prints → load .tar.gz (+ PDF) →
             <strong>PLC Autogen</strong> (site config dropdowns auto-fill) → set program pack →
-            <strong>Generate PLC Project</strong> → open L5X in Studio.
+            <strong>Export L5X Package</strong> → files under exports/autogen (open in Studio yourself when ready).
           </p>
           <p class="text-[10px] text-slate-600 mt-1 leading-relaxed">
             Standalone FortnaPlus engine — no site Excel, no VBS. Only tar.gz + library + your dropdown choices.
@@ -448,7 +448,7 @@
           </div>
           <div id="autogen-summary" class="text-[11px] text-slate-400">
             Load tar.gz on <strong class="text-slate-300">I/O &amp; Prints</strong> — this table auto-fills with dropdowns for each conveyor zone.
-            Edit what the prints can’t tell you, pick program pack, then <strong class="text-slate-300">Generate PLC Project</strong>.
+            Edit what the prints can’t tell you, pick program pack, then <strong class="text-slate-300">Export L5X Package</strong>.
           </div>
           <div id="autogen-stats" class="grid grid-cols-4 gap-2 mt-2 hidden"></div>
           <div id="autogen-wb-type-bar" class="flex flex-wrap gap-1.5 mt-2 hidden"></div>
@@ -471,8 +471,8 @@
             <button id="btn-autogen-open-out" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] ml-auto" disabled>
               <i class="fa-solid fa-folder-open mr-1"></i>Out
             </button>
-            <button id="btn-autogen-open-l5x" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" disabled>
-              L5X
+            <button id="btn-autogen-open-l5x" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" disabled title="Reveal L5X in folder (does not launch Studio)">
+              <i class="fa-solid fa-folder-open mr-1"></i>Show L5X
             </button>
           </div>
         </div>
@@ -850,7 +850,7 @@
             </div>
           </div>
           <div class="text-[10px] text-slate-600 mt-2 shrink-0">
-            <strong class="text-slate-500">Print #</strong> = electrical drawing page (from RUN) — click to open the matching CP PDF.
+            <strong class="text-slate-500">Print #</strong> = PDF page from OCR (VFD sheets only). Not the conveyor drawing page from the RUN.
             VFD print params = PowerFlex table only (P031, P033, P036…), not every OCR hit.
           </div>
         </div>
@@ -935,7 +935,7 @@
 
     <!-- Ignition Build — layout + tag/device seed toward .gwbk -->
     <section id="tab-ignition" class="h-full hidden p-5 gap-3 flex flex-col">
-      <details class="workflow-help shrink-0 px-4 py-3" open>
+      <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-orange-400">How to use Ignition Build — workflow</summary>
         <div class="workflow-chart mt-3">
           <div class="workflow-box"><strong>① RUN</strong><span>Load tar.gz on<br>I/O &amp; Prints</span></div>

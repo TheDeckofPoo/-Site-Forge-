@@ -2,14 +2,12 @@
   "git.enabled": true,
   "git.autofetch": true,
   "git.confirmSync": false,
-  "git.openRepositoryInParentFolders": "always",
+  "git.openRepositoryInParentFolders": "never",
+  "git.autoRepositoryDetection": true,
+  "git.repositoryScanMaxDepth": 1,
   "gitlens.graph.layout": "editor",
+  "gitlens.views.repositories.files.layout": "tree",
   "git-graph.showStatusBarItem": true,
-  "git-graph.defaultColumnVisibility": {
-    "Date": true,
-    "Author": true,
-    "Commit": true
-  },
   "files.exclude": {
     "**/node_modules": true,
     "**/__pycache__": true,
