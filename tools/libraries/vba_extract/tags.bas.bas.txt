@@ -1,0 +1,399 @@
+Attribute VB_Name = "Tags"
+Option Explicit
+
+Function GetTagColumns() As Variant
+    On Error GoTo ErrorHandler
+    
+    ' Re-enable any column entries you need. The commented ones below are left as-is.
+    GetTagColumns = Array( _
+        Array(1, 1), Array(1, 5), Array(-1, 5), Array(1, 3), Array(1, 9), Array(1, 11), Array(1, 13), _
+        Array(1, 15), Array(1, 17), Array(1, 19), Array(1, 21), _
+        Array(1, 23), Array(1, 25), Array(1, 27), Array(1, 29), _
+        Array(1, 33), Array(1, 35), Array(1, 37))
+        'Array(1, 41), Array(1, 43), Array(1, 45), Array(1, 47), Array(1, 49), Array(1, 51), _
+        'Array(1, 53), Array(1, 55), Array(1, 57), Array(1, 59)
+
+    
+    Exit Function
+    
+ErrorHandler:
+    Call LogError("GetTagColumns", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+Sub TagRetrieval()
+    Dim uniqueTags As Object
+    
+    On Error GoTo ErrorHandler
+    Set uniqueTags = CreateObject("Scripting.Dictionary")
+    
+    dstFileContent = dstFileContent & vbCrLf & "<Tags>" & vbCrLf
+    RetrieveTagsFromColumns uniqueTags
+    
+    ProcessGenericTags uniqueTags
+    dstFileContent = RemoveTrailingLineBreak(dstFileContent) & vbCrLf & "</Tags>"
+    
+    Exit Sub
+
+ErrorHandler:
+    Call LogError("TagRetrieval", Err.Number, Err.Description)
+    Resume Next
+End Sub
+
+Sub RetrieveTagsFromColumns(ByRef uniqueTags As Object)
+    Dim x As Double
+    Dim tagColumns As Variant
+    Dim sourceSheet As Worksheet
+    On Error GoTo ErrorHandler
+    
+    tagColumns = GetTagColumns()
+    
+    ' Avoid divide-by-zero by checking if tagColumns is non-empty
+    If Not IsEmpty(tagColumns) Then
+        x = UBound(tagColumns, 1) - LBound(tagColumns, 1) + 1
+        x = 15 / x  ' Distributes progress 15 points across however many columns
+    Else
+        x = 0
+    End If
+    
+    ' Retrieve from the first dict
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    Dim tagDetail As Variant
+    For Each tagDetail In tagColumns
+        dstFileContent = dstFileContent & GetTag(sourceSheet, tagDetail(0), tagDetail(1), uniqueTags)
+        ProgressValue = ProgressValue + x
+        UpdateProgress ProgressValue
+    Next tagDetail
+    
+    ' Retrieve from IO Dict
+    Set sourceSheet = ThisWorkbook.Sheets("IO Dict")
+    dstFileContent = dstFileContent & GetTag(sourceSheet, -1, 2, uniqueTags)
+    dstFileContent = dstFileContent & GetTag(sourceSheet, 1, 2, uniqueTags)
+    
+    ' One more tag from Inputdata!B2
+    dstFileContent = dstFileContent & AddTagSpecial("Library", _
+                                DataCache.InputValue("B2"), uniqueTags)
+    
+    dstFileContent = RemoveTrailingLineBreak(dstFileContent)
+    Exit Sub
+
+ErrorHandler:
+    Call LogError("RetrieveTagsFromColumns", Err.Number, Err.Description)
+    Resume Next
+End Sub
+
+
+Sub ProcessGenericTags(ByRef uniqueTags As Object)
+    On Error GoTo ErrorHandler
+    
+    Dim AllTags As Object
+    Set AllTags = ExtractNamesDict("Tag Name=", ExtractContent("Tag", "Tags", SourceLibrary))
+    dstFileContent = dstFileContent & GetGenericTags(AllTags, uniqueTags)
+    
+    Exit Sub
+
+ErrorHandler:
+    Call LogError("ProcessGenericTags", Err.Number, Err.Description)
+    Resume Next
+End Sub
+Function GetGenericTags(ByRef AllTags As Object, ByRef uniqueTags As Object) As String
+    On Error GoTo ErrorHandler
+    
+    Dim x As Double
+    Dim ResultTag As String
+    Dim Tag As Variant
+    Dim key As Variant
+    
+    If AllTags.count > 0 Then
+        x = 5 / AllTags.count
+    Else
+        x = 0
+    End If
+    
+    ' Iterate through each key in the dictionary.
+    For Each key In AllTags.Keys
+        Tag = key
+        
+        ' Add any conditions you need to collect generically.
+        If InStr(Tag, "PLC") > 0 Or InStr(Tag, "Pulse") > 0 Or InStr(Tag, "TimeStamp") > 0 Or _
+           InStr(Tag, "Enc_Type") > 0 Or InStr(Tag, "GSV") > 0 Or InStr(Tag, "Type") > 0 Or _
+           InStr(Tag, "NO_") > 0 Or InStr(Tag, "Sys_") > 0 Or InStr(Tag, "Empty_") > 0 Or _
+           InStr(Tag, "Enc_") > 0 Or InStr(Tag, "Device") > 0 Or InStr(Tag, "GET_") > 0 Or _
+           InStr(Tag, "Init") > 0 Or InStr(Tag, "Enable_") > 0 Or InStr(Tag, "Firmware_Bytes") > 0 Or _
+           InStr(Tag, "MACID_Bytes") > 0 Or InStr(Tag, "Comm_Reset") > 0 Or Left(Tag, 3) = "HMI" Or _
+           Tag = "ReadIO" Or Tag = "NO" Then
+            
+            ResultTag = ResultTag & AddTagIfUnique(CStr(Tag), CStr(Tag), uniqueTags)
+            
+            ProgressValue = ProgressValue + x
+            UpdateProgress ProgressValue
+        End If
+        
+        ' If it matches "CommsDiag_", also process duplicate tags.
+        If InStr(Tag, "CommsDiag_") > 0 Then
+            ResultTag = ResultTag & AddTagIfUnique(CStr(Tag), CStr(Tag), uniqueTags)
+            DuplicateTags Tag, ResultTag, uniqueTags
+        End If
+    Next key
+    
+    GetGenericTags = ResultTag
+    Exit Function
+
+ErrorHandler:
+    Call LogError("GetGenericTags", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+Sub DuplicateTags(ByVal baseTag As String, ByRef ResultTag As String, ByRef uniqueTags As Object)
+    On Error GoTo ErrHandler
+    
+    Dim CopyNum As Long
+    Dim i As Long
+    Dim newNameBase As String
+    Dim pos As Long
+    
+    ' 1) Figure out how many duplicates
+    If ThisWorkbook.Sheets("Dict").Cells(12, 2).value > 10 Then
+        CopyNum = DivideAndRoundUp(ThisWorkbook.Sheets("Dict").Cells(12, 2).value, 10)
+    Else
+        CopyNum = 1
+    End If
+    
+    If CopyNum <= 1 Then
+        Exit Sub
+    End If
+    
+    ' 2) Remove trailing digits from baseTag, e.g. "CommsDiag_Group1" -> "CommsDiag_Group"
+    pos = Len(baseTag)
+    Do While pos > 0 And IsNumeric(Mid(baseTag, pos, 1))
+        pos = pos - 1
+    Loop
+    newNameBase = Left(baseTag, pos)
+    
+    ' 3) Pull the original content once, using the known (existing) baseTag
+    Dim baseContent As String
+    baseContent = ExtractContent("Tag Name=""" & baseTag, "Tag", SourceLibrary)
+    If baseContent = "" Then
+        ' Nothing to replicate if the base doesnï¿½t exist
+        Exit Sub
+    End If
+    
+    ' 4) Create each duplicate by replacing the old name with new
+    For i = 2 To CopyNum
+        Dim newName As String
+        newName = newNameBase & CStr(i)  ' e.g. "CommsDiag_Group2"
+        
+        If Not uniqueTags.Exists(newName) Then
+            ' Replace old name with new in the original baseContent
+            Dim newTagContent As String
+            newTagContent = Replace(baseContent, baseTag, newName)
+            
+            ' Append the duplicated tag to final output
+            ResultTag = ResultTag & newTagContent & vbCrLf
+            
+            ' Mark it so we donï¿½t insert again
+            uniqueTags.Add newName, ""
+        End If
+    Next i
+    
+    Exit Sub
+
+ErrHandler:
+    Call LogError("DuplicateTags", Err.Number, Err.Description)
+    Resume Next
+End Sub
+
+
+Function GetTag(sourceSheet As Worksheet, columnOffset As Variant, columnIndex As Variant, _
+                ByRef uniqueTags As Object) As String
+    On Error GoTo ErrorHandler
+    
+    Dim ResultTag As String
+    Dim lastRow As Long
+    Dim currentRow As Long
+    Dim searchKeyword As String
+    Dim replaceKeyword As String
+    
+    ' The last row with data is stored in G5
+    lastRow = sourceSheet.Range("G5").value
+    
+    For currentRow = 17 To lastRow
+        With sourceSheet
+            searchKeyword = .Cells(currentRow, columnIndex + columnOffset).value
+            replaceKeyword = .Cells(currentRow, columnIndex).value
+            
+            If columnOffset = -1 Then
+                If sourceSheet.Name = "Dict" Then
+                    searchKeyword = searchKeyword & "_Safe"
+                ElseIf sourceSheet.Name = "IO Dict" Then
+                    replaceKeyword = replaceKeyword & "_" & .Cells(currentRow, 4).value
+                End If
+            End If
+            
+            If (searchKeyword <> "") And (replaceKeyword <> "") And (replaceKeyword <> "0") Then
+                ResultTag = ResultTag & ProcessKeyword(searchKeyword, replaceKeyword, uniqueTags)
+            End If
+        End With
+    Next currentRow
+    
+    GetTag = ResultTag
+    
+CleanExit:
+    Exit Function
+    
+ErrorHandler:
+    Call LogError("GetTag", Err.Number, Err.Description)
+    Resume CleanExit
+End Function
+
+Function ProcessKeyword(searchKeyword As String, replaceKeyword As String, _
+                        ByRef uniqueTags As Object) As String
+    On Error GoTo ErrorHandler
+    
+    Dim result As String
+    Dim conditions As Variant
+    conditions = Array("CS2", "R", "PC2")
+    
+    ' If special keywords, use AddTagSpecial
+    If searchKeyword = "Main_Area" Or searchKeyword = "Main_Area_Safe" Or searchKeyword = "Safety_Area" Then
+        result = AddTagSpecial(searchKeyword, replaceKeyword, uniqueTags)
+    Else
+        ' Normal condition
+        result = AddTagIfUnique(searchKeyword, replaceKeyword, uniqueTags)
+        
+        ' Additional conditions
+        Dim condition As Variant
+        For Each condition In conditions
+            If InStr(replaceKeyword, condition) > 0 Then
+                ' If "CS2" not found in condition, add _AOI, else adjust final digit
+                If InStr(condition, "CS") = 0 Then
+                    result = result & AddTagIfUnique(searchKeyword & "_AOI", replaceKeyword & "_AOI", uniqueTags)
+                    replaceKeyword = Left(replaceKeyword, Len(replaceKeyword) - 1) & "L"
+                Else
+                    replaceKeyword = Left(replaceKeyword, Len(replaceKeyword) - 1) & "1"
+                End If
+                result = result & AddTagIfUnique(searchKeyword, replaceKeyword, uniqueTags)
+            End If
+        Next condition
+        
+        ' Another specific condition
+        If (InStr(searchKeyword, "NO") = 0) And (InStr(searchKeyword, "CS") = 0) And _
+           (InStr(searchKeyword, "MPS") = 0) And (InStr(searchKeyword, "MS") = 0) And _
+           (InStr(searchKeyword, "PS") = 0) And (InStr(searchKeyword, "APS") = 0) And _
+           (InStr(searchKeyword, "Area_Safe") = 0) And (InStr(searchKeyword, "IO_") = 0) And _
+           (InStr(searchKeyword, "Zone") = 0) Then
+           
+            result = result & AddTagIfUnique(searchKeyword & "_AOI", replaceKeyword & "_AOI", uniqueTags)
+        End If
+        
+        ' If VFD is present, add _CROUT version
+        If (InStr(searchKeyword, "NO") = 0) And (InStr(searchKeyword, "VFD") > 0) Then
+            Dim searchVFD As String, replaceVFD As String
+            searchVFD = searchKeyword & "_STO_CROUT"
+            replaceVFD = replaceKeyword & "_STO_CROUT"
+            result = result & AddTagIfUnique(searchVFD, replaceVFD, uniqueTags)
+            
+            searchVFD = searchKeyword & "_CommLoss_AOI"
+            replaceVFD = replaceKeyword & "_CommLoss_AOI"
+            result = result & AddTagIfUnique(searchVFD, replaceVFD, uniqueTags)
+        End If
+        
+        ' If MS is present, add more variations
+        If (InStr(searchKeyword, "NO") = 0) And (InStr(searchKeyword, "MS") > 0) Or (InStr(searchKeyword, "PS") > 0) Then
+            Dim baseSearch As String
+            Dim baseReplace As String
+            
+            baseSearch = searchKeyword & "_Run"
+            baseReplace = replaceKeyword & "_Run"
+            result = result & AddTagIfUnique(baseSearch, baseReplace, uniqueTags)
+            
+            baseSearch = baseSearch & "_Safe"
+            baseReplace = baseReplace & "_Safe"
+            result = result & AddTagIfUnique(baseSearch, baseReplace, uniqueTags)
+            
+            baseSearch = baseSearch & "_Out"
+            baseReplace = baseReplace & "_Out"
+            result = result & AddTagIfUnique(baseSearch, baseReplace, uniqueTags)
+        End If
+        
+        ' If "IO_" is found, add CommLoss_AOI
+        If InStr(1, searchKeyword, "IO_", vbTextCompare) <> 0 Or InStr(1, searchKeyword, "CP", vbTextCompare) Then
+            result = result & AddTagIfUnique(searchKeyword & "_CommLoss_AOI", _
+                                             replaceKeyword & "_CommLoss_AOI", _
+                                             uniqueTags)
+        End If
+    End If
+    
+    ProcessKeyword = result
+    Exit Function
+    
+ErrorHandler:
+    Call LogError("ProcessKeyword", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+Function AddTagSpecial(searchKeyword As String, replaceKeyword As String, _
+                       ByRef uniqueTags As Object) As String
+    On Error GoTo ErrorHandler
+    
+    Dim Foundtag As String
+    Dim TagString As String
+    
+    If Not uniqueTags.Exists(replaceKeyword) Then
+        Dim tags As Object
+        Set tags = ExtractTagsForType(searchKeyword)
+        
+        Dim TagValue As Variant
+        For Each TagValue In tags.Keys
+            Foundtag = ExtractContent("Name=""" & TagValue, "Tag", SourceLibrary)
+            If Foundtag <> "" Then
+                TagString = TagString & Replace(Foundtag, searchKeyword, replaceKeyword) & vbCrLf
+            End If
+        Next TagValue
+        
+        uniqueTags.Add replaceKeyword, ""
+    End If
+    
+    AddTagSpecial = TagString
+    Exit Function
+    
+ErrorHandler:
+    Call LogError("AddTagSpecial", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+Function AddTagIfUnique(searchKeyword As String, replaceKeyword As String, _
+                        ByRef uniqueTags As Object) As String
+    On Error GoTo ErrorHandler
+    
+    If Not uniqueTags.Exists(replaceKeyword) Then
+        Dim Foundtag As String
+        Foundtag = ExtractContent("Tag Name=""" & searchKeyword, "Tag", SourceLibrary)
+        
+        If Foundtag <> "" Then
+            AddTagIfUnique = Replace(Foundtag, searchKeyword, replaceKeyword) & vbCrLf
+            uniqueTags.Add replaceKeyword, ""
+        End If
+    End If
+    Exit Function
+    
+ErrorHandler:
+    Call LogError("AddTagIfUnique", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+Function ExtractTagsForType(tagType As String) As Object
+    On Error GoTo ErrorHandler
+    Set ExtractTagsForType = ExtractNamesDict("Tag Name=", ExtractContent("Tag", "Tags", SourceLibrary), tagType)
+    Exit Function
+    
+ErrorHandler:
+    Call LogError("ExtractTagsForType", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+Function DivideAndRoundUp(num As Double, divisor As Double) As Long
+    DivideAndRoundUp = Utilities.DivideAndRoundUp(num, divisor)
+End Function
+
+

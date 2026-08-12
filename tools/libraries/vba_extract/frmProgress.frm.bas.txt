@@ -1,0 +1,19 @@
+Attribute VB_Name = "frmProgress"
+Attribute VB_Base = "0{8D1B2319-ED95-463F-87C1-DCB9279E97EA}{B24B17FF-ECE7-4123-B1D1-337E8D865C5E}"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = False
+Attribute VB_TemplateDerived = False
+Attribute VB_Customizable = False
+Option Explicit
+
+Private Sub UserForm_Initialize()
+    ' Center the UserForm in the Excel application window
+    Me.StartUpPosition = 0 ' Manual positioning
+    Me.Left = Application.Left + (Application.Width - Me.Width) / 2
+    Me.Top = Application.Top + (Application.Height - Me.Height) / 2
+    Me.Height = 100.2
+    Me.Width = 318.6
+End Sub
+

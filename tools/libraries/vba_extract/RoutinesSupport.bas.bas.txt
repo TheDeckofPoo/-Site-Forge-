@@ -1,0 +1,1122 @@
+Attribute VB_Name = "RoutinesSupport"
+Option Explicit
+
+Function ReplaceEng(rungString As String, currentRow As Variant, tagType As String) As String
+    Dim sourceSheet As Worksheet, arrayString As Long, RungCopyString As String
+    Dim regex As Object
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    On Error GoTo ErrorHandler
+    If InStr(1, tagType, "VFD", vbTextCompare) > 0 Then
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 28), DataCache.DictValue(currentRow, 27), , , vbTextCompare)
+    End If
+    
+    If InStr(1, tagType, "IO", vbTextCompare) > 0 Then
+    rungString = Replace(rungString, DataCache.IoDictValue(currentRow, 1), DataCache.IoDictValue(currentRow, 2), , , vbTextCompare)
+    If InStr(1, rungString, ":" & DataCache.IoDictValue(currentRow, 5), vbTextCompare) <> 0 Then
+    rungString = Replace(rungString, "ModName", DataCache.IoDictValue(currentRow, 2) & "_" & DataCache.IoDictValue(currentRow, 4), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.IoDictValue(currentRow, 3), DataCache.IoDictValue(currentRow, 2), , , vbTextCompare)
+    ' Create the regex object
+    Set regex = CreateObject("VBScript.RegExp")
+    ' Define the pattern to match "Slot (any number)"
+    With regex
+        .Global = True
+        .ignoreCase = True
+        .pattern = "Slot \(\d+\)"
+    End With
+    Dim slotNum As Long
+    slotNum = CLng(val(DataCache.IoDictValue(currentRow, 4)))
+    rungString = regex.Replace(rungString, "Slot (" & slotNum & ")")
+    If DataCache.IoDictValue(currentRow, 5) = "O" And InStr(1, rungString, "IO_HUB", vbTextCompare) = 0 Then
+    If InStr(1, tagType, "KV-EP02", vbTextCompare) > 0 Then
+    rungString = RenumberArrayBracket(rungString, CLng(val(DataCache.IoDictValue(currentRow, 4))) - 1)
+    End If
+    ElseIf InStr(1, rungString, "IO_HUB", vbTextCompare) <> 0 And CLng(val(DataCache.IoDictValue(currentRow, 4))) <> 0 Then
+    If DataCache.IoDictValue(currentRow, 5) = "I" Then
+    arrayString = DataCache.IoDictVLookupBS2BU(CLng(val(DataCache.IoDictValue(currentRow, 4))), 2)
+    Else
+    arrayString = DataCache.IoDictVLookupBS2BU(CLng(val(DataCache.IoDictValue(currentRow, 4))), 3)
+    End If
+    rungString = RenumberArrayBracket(rungString, arrayString)
+    End If
+    rungString = RenumberArrayColon(rungString, CLng(val(DataCache.IoDictValue(currentRow, 4))))
+    rungString = RenumberArrayBracket(rungString, CLng(val(DataCache.IoDictValue(currentRow, 4))))
+    rungString = IOMap(rungString, currentRow)
+    End If
+    End If
+    
+    If InStr(1, tagType, "PE", vbTextCompare) > 0 Then
+    rungString = Replace(rungString, "PE_Conv", DataCache.DictValue(currentRow, 1), , , vbTextCompare)
+    rungString = Replace(rungString, "PE_Area", DataCache.DictValue(currentRow, 3), , , vbTextCompare)
+    If InStr(1, DataCache.DictValue(currentRow, 13), "_I", vbTextCompare) > 0 Then
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 14), DataCache.DictValue(currentRow, 13), , , vbTextCompare)
+    End If
+    If InStr(1, DataCache.DictValue(currentRow, 15), "_J", vbTextCompare) > 0 Then
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 16), DataCache.DictValue(currentRow, 15), , , vbTextCompare)
+    End If
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 10), DataCache.DictValue(currentRow, 9), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 12), DataCache.DictValue(currentRow, 11), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 20), DataCache.DictValue(currentRow, 19), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 18), DataCache.DictValue(currentRow, 17), , , vbTextCompare)
+    End If
+    
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 30), DataCache.DictValue(currentRow, 29), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 30) & "_Run", DataCache.DictValue(currentRow, 29) & "_Run", 1, , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 30) & "_Run_Safe", DataCache.DictValue(currentRow, 29) & "_Run_Safe", 1, , vbTextCompare)
+    
+    If InStr(1, tagType, "Conv", vbTextCompare) > 0 Then
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 2), DataCache.DictValue(currentRow, 1), , , vbTextCompare)
+    rungString = Replace(rungString, "Next_Conv", DataCache.DictValue(currentRow, 7), , , vbTextCompare)
+    rungString = Replace(rungString, "PEExit_P", DataCache.DictValue(currentRow, 9), , , vbTextCompare)
+    rungString = Replace(rungString, "PEAdd_PE", DataCache.DictValue(currentRow, 31), , , vbTextCompare)
+    rungString = Replace(rungString, "PConv_VFD", DataCache.DictValue(currentRow, 27), , , vbTextCompare)
+    rungString = Replace(rungString, "PConv_MS", DataCache.DictValue(currentRow, 29), , , vbTextCompare)
+    rungString = Replace(rungString, "Conv_Area", DataCache.DictValue(currentRow, 3), , , vbTextCompare)
+    rungString = Replace(rungString, "Conv_Safe", DataCache.DictValue(currentRow, 5), , , vbTextCompare)
+    End If
+    
+    If InStr(1, tagType, "ES", vbTextCompare) > 0 Then
+    If (Right(DataCache.DictValue(currentRow, 23), 1) = "L" Or Right(DataCache.DictValue(currentRow, 23), 1) = "R") And val(DataCache.InputValue("B3")) > 1 Then
+    Dim CellValPC As String
+    RungCopyString = rungString
+    CellValPC = CStr(DataCache.DictValue(currentRow, 23))
+    If Right(DataCache.DictValue(currentRow, 23), 1) = "R" Then
+    CellValPC = Left(CellValPC, Len(CellValPC) - 1) & "L"
+    Else
+    CellValPC = Left(CellValPC, Len(CellValPC) - 1) & "R"
+    End If
+    RungCopyString = Replace(RungCopyString, DataCache.DictValue(currentRow, 24), CellValPC, , , vbTextCompare)
+    rungString = RungCopyString & vbCrLf & rungString
+    ElseIf Right(DataCache.DictValue(currentRow, 21), 1) = "L" Or Right(DataCache.DictValue(currentRow, 21), 1) = "R" And val(DataCache.InputValue("B3")) > 1 Then
+    Dim CellValPB As String
+    CellValPB = CStr(DataCache.DictValue(currentRow, 21))
+    If Right(DataCache.DictValue(currentRow, 21), 1) = "R" Then
+    CellValPB = Left(CellValPB, Len(CellValPB) - 1) & "L"
+    Else
+    CellValPB = Left(CellValPB, Len(CellValPB) - 1) & "R"
+    End If
+    RungCopyString = Replace(RungCopyString, DataCache.DictValue(currentRow, 22), CellValPB, , , vbTextCompare)
+    rungString = RungCopyString & vbCrLf & rungString
+    End If
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 22), DataCache.DictValue(currentRow, 21), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 24), DataCache.DictValue(currentRow, 23), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 64), DataCache.DictValue(currentRow, 63), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 66), DataCache.DictValue(currentRow, 65), , , vbTextCompare)
+    rungString = Replace(rungString, "ES_Area_Safe", sourceSheet.Cells(currentRow, 5).value)
+    rungString = Replace(rungString, "ES_Area", sourceSheet.Cells(currentRow, 3).value)
+    End If
+    
+    rungString = Replace(rungString, "VFD_Area_Safe", DataCache.DictValue(currentRow, 5))
+    rungString = Replace(rungString, "VFD_Area", DataCache.DictValue(currentRow, 3), , , vbTextCompare)
+    rungString = Replace(rungString, "VFD_Conv", DataCache.DictValue(currentRow, 1), , , vbTextCompare)
+    rungString = Replace(rungString, "Library", ThisWorkbook.Sheets("Inputdata").Range("B2").value, , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 6), DataCache.DictValue(currentRow, 5))
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 4), DataCache.DictValue(currentRow, 3))
+        
+    rungString = Replace(rungString, Replace(DataCache.DictValue(currentRow, 2), "_Conv", ""), Replace(DataCache.DictValue(currentRow, 1), "_Conv", ""), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 26), DataCache.DictValue(currentRow, 25), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 28), DataCache.DictValue(currentRow, 27), , , vbTextCompare)
+    rungString = Replace(rungString, "MS_Area_Safe", DataCache.DictValue(currentRow, 5), , , vbTextCompare)
+    rungString = Replace(rungString, "PS_Area_Safe", DataCache.DictValue(currentRow, 5), , , vbTextCompare)
+    rungString = Replace(rungString, "PConv_MS", DataCache.DictValue(currentRow, 29), , , vbTextCompare)
+    rungString = Replace(rungString, "PConv_PS", DataCache.DictValue(currentRow, 33), , , vbTextCompare)
+    rungString = Replace(rungString, "PConv_AirPress", DataCache.DictValue(currentRow, 35), , , vbTextCompare)
+    rungString = Replace(rungString, "MS_Area", DataCache.DictValue(currentRow, 3), , , vbTextCompare)
+    rungString = Replace(rungString, "MS_Conv", DataCache.DictValue(currentRow, 1), , , vbTextCompare)
+    
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 30), DataCache.DictValue(currentRow, 29), , , vbTextCompare)
+    
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 40), DataCache.DictValue(currentRow, 39), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 42), DataCache.DictValue(currentRow, 41), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 44), DataCache.DictValue(currentRow, 43), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 46), DataCache.DictValue(currentRow, 45), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 48), DataCache.DictValue(currentRow, 47), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 50), DataCache.DictValue(currentRow, 49), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 52), DataCache.DictValue(currentRow, 51), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 54), DataCache.DictValue(currentRow, 53), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 56), DataCache.DictValue(currentRow, 55), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 58), DataCache.DictValue(currentRow, 57), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 60), DataCache.DictValue(currentRow, 59), , , vbTextCompare)
+    rungString = Replace(rungString, DataCache.DictValue(currentRow, 68), DataCache.DictValue(currentRow, 67), , , vbTextCompare)
+    
+    ReplaceEng = rungString
+Exit Function
+ErrorHandler:
+    'MsgBox "Tag: " & tagType & vbCrLf & "Row: " & currentRow & vbCrLf & "In: " & RungString
+    Call LogError("ReplaceEng", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function RenumberArrayBracket(xmlString As String, ArrayNumber As Long) As String
+    Dim regex As Object
+    Dim newXmlString As String
+    On Error GoTo ErrorHandler
+    
+    ' Create a regular expression object
+    Set regex = CreateObject("VBScript.RegExp")
+    regex.Global = True  ' Set this property to True to replace all matches
+ 
+        regex.pattern = "\[\d+\]"
+        newXmlString = regex.Replace(xmlString, "[" & ArrayNumber & "]")
+
+    RenumberArrayBracket = newXmlString
+Exit Function
+ErrorHandler:
+    Call LogError("RenumberArray", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function RenumberArrayColon(xmlString As String, ArrayNumber As Long) As String
+    Dim regex As Object
+    Dim newXmlString As String
+    On Error GoTo ErrorHandler
+    
+    ' Create a regular expression object
+    Set regex = CreateObject("VBScript.RegExp")
+    regex.Global = True  ' Set this property to True to replace all matches
+ 
+        regex.pattern = "\:\d+\:"
+        newXmlString = regex.Replace(xmlString, ":" & ArrayNumber & ":")
+
+    RenumberArrayColon = newXmlString
+Exit Function
+ErrorHandler:
+    Call LogError("RenumberArray", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function ConvJam(rungString As String, currentRow As Variant, areaName As String) As String
+    Dim sourceSheet As Worksheet
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    Dim PENumber As Long, lastRow As Long
+    On Error GoTo ErrorHandler
+    PENumber = 1
+      ' Starting from the bottom cell 1018
+    lastRow = ThisWorkbook.Sheets("Dict").Range("G5").value
+                
+            rungString = Replace(rungString, sourceSheet.Cells(currentRow, 2).value, sourceSheet.Cells(currentRow, 1).value)
+            rungString = Replace(rungString, "Conv_Area", sourceSheet.Cells(currentRow, 3).value)
+            If InStr(1, sourceSheet.Cells(currentRow, 9).value, "NO_", vbTextCompare) = 0 Then
+            rungString = Replace(rungString, "Input" & PENumber, sourceSheet.Cells(currentRow, 9).value)
+            PENumber = PENumber + 1
+            End If
+            If InStr(1, sourceSheet.Cells(currentRow, 11).value, "NO_", vbTextCompare) = 0 Then
+            rungString = Replace(rungString, "Input" & PENumber, sourceSheet.Cells(currentRow, 11).value)
+            PENumber = PENumber + 1
+            End If
+            If InStr(1, sourceSheet.Cells(currentRow, 13).value, "NO_", vbTextCompare) = 0 Then
+            rungString = Replace(rungString, "Input" & PENumber, sourceSheet.Cells(currentRow, 13).value)
+            PENumber = PENumber + 1
+            End If
+            If InStr(1, sourceSheet.Cells(currentRow, 15).value, "NO_", vbTextCompare) = 0 Then
+            rungString = Replace(rungString, "Input" & PENumber, sourceSheet.Cells(currentRow, 15).value)
+            PENumber = PENumber + 1
+            End If
+            If InStr(1, sourceSheet.Cells(currentRow, 17).value, "NO_", vbTextCompare) = 0 Then
+            rungString = Replace(rungString, "Input" & PENumber, sourceSheet.Cells(currentRow, 17).value)
+            PENumber = PENumber + 1
+            End If
+ 
+    For PENumber = 1 To 5
+    rungString = Replace(rungString, "Input" & PENumber, "NO_PE")
+    Next PENumber
+
+
+    ConvJam = rungString
+Exit Function
+ErrorHandler:
+    Call LogError("ConvJam", Err.Number, Err.Description)
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' SafeLogic
+' Processes safety logic for PLC programming based on tag types and area names.
+'
+' Parameters:
+'   rungString - The input string containing PLC rung logic
+'   CopyNum - Number of copies to process
+'   areaName - The area name to match in the dictionary
+'
+' Returns:
+'   Modified rung string with safety logic applied
+'------------------------------------------------------------------------------------
+Function SafeLogic(rungString As String, CopyNum As Long, areaName As String) As String
+    ' Dictionary sheet reference
+    Dim sourceSheet As Worksheet
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    
+    ' Variable declarations with clear naming
+    Dim lastRow As Long, i As Long, tagIndex As Long
+    Dim tagArray() As Variant, splitResult As Variant
+    Dim splitText As String
+    Dim ResultString As String, prefixString As String, tagType As String
+    Dim rowsWithData As Object, rowNum As Variant
+    
+    ' Error handling
+    On Error GoTo ErrorHandler
+    
+    ' Find the last row with data
+    lastRow = lastRow ' no-op to preserve variable; lookups use cached data
+    ' Determine the tag type and split text based on rungString content
+    ' This section identifies what type of safety logic to apply
+    If InStr(1, rungString, "ResetReady", vbTextCompare) > 0 Then
+    tagArray = Array(21, 23)
+    tagType = "O1"
+    splitText = "XIC(Instruction.ChannelA) XIC(Instruction.ChannelB) XIO(Instruction.O1)"
+    ElseIf InStr(1, rungString, ".FP", vbTextCompare) > 0 Then
+        ' Fault Present logic
+        tagArray = Array(21, 23, 27)
+        tagType = "FP"
+        splitText = "XIC(Instruction.FP)"
+    ElseIf InStr(1, rungString, "NoEStop", vbTextCompare) > 0 Then
+        ' Emergency Stop logic
+        tagArray = Array(21)
+        tagType = "O1"
+        splitText = "XIC(Instruction.O1)"
+    ElseIf InStr(1, rungString, "NoEPC", vbTextCompare) > 0 Then
+        ' Emergency Pull Cord logic
+        tagArray = Array(23)
+        tagType = "O1"
+        splitText = "XIC(Instruction.O1)"
+    Else
+        ' Default safety logic
+        tagArray = Array(21, 23)
+        tagType = "O1"
+        splitText = "XIO(Instruction.O1) OTE(Safety_Area_Zone_Slncd_Trpd.0) ,"
+    End If
+    
+    ' Split the string at the specified text
+    splitResult = SplitStringAtInstruction(rungString, splitText)
+    
+    ' Separate the prefix and remaining rungString
+    prefixString = splitResult(0)
+    rungString = splitResult(1)
+    
+    ' Remove the original instruction from the rungString
+    rungString = Replace(rungString, splitText, "")
+    
+    ' Get rows that match the area name
+    Set rowsWithData = FindRowsWithMatch(ThisWorkbook.Sheets("Dict"), 5, areaName)
+    
+    ' Process tags and build the resultString
+    tagIndex = 0
+    ResultString = ""
+    
+    For i = LBound(tagArray) To UBound(tagArray)
+        For Each rowNum In rowsWithData.Keys
+            ' Only process rows that match the area name exactly
+            If StrComp(areaName, DataCache.DictValue(rowNum, 5), vbTextCompare) = 0 Then
+                ' Skip entries with "NO_" prefix
+                If InStr(1, DataCache.DictValue(rowNum, tagArray(i)), "NO_", vbTextCompare) = 0 Then
+                    ' Apply different logic based on tag type
+                    Select Case tagType
+                        Case "FP"
+                            ' Fault Present logic
+                            If tagArray(i) = 27 Then
+                                ResultString = ResultString & "XIC(" & DataCache.DictValue(rowNum, tagArray(i)) & "_STO_CROUT" & "." & tagType & "),"
+                            Else
+                                ResultString = ResultString & "XIC(" & DataCache.DictValue(rowNum, tagArray(i)) & ".DCS" & "." & tagType & "),"
+                            End If
+                        Case "O1"
+                            ' Output logic
+                            If InStr(1, rungString, "ResetReady", vbTextCompare) <> 0 Then
+                                ResultString = ResultString & "XIC(" & DataCache.DictValue(rowNum, tagArray(i)) & ".DCS.ChannelA)" & " XIC(" & DataCache.DictValue(rowNum, tagArray(i)) & ".DCS.ChannelB)" & " XIC(" & DataCache.DictValue(rowNum, tagArray(i)) & ".DCS.O1),"
+                            ElseIf InStr(1, rungString, "NO", vbTextCompare) <> 0 Then
+                                ResultString = ResultString & "XIC(" & DataCache.DictValue(rowNum, tagArray(i)) & ".DCS" & "." & tagType & ")"
+                            Else
+                                ResultString = ResultString & "XIO(" & DataCache.DictValue(rowNum, tagArray(i)) & ".DCS" & "." & tagType & ")OTE(Safety_Area_Zone_Slncd_Trpd." & tagIndex & "),"
+                            End If
+                    End Select
+                    tagIndex = tagIndex + 1
+                End If
+            End If
+        Next rowNum
+    Next i
+    
+    ' Combine the parts based on tag type
+    If tagType = "FP" Then
+        ' For Fault Present, wrap the result in brackets
+        ResultString = prefixString & "[" & ResultString & "]" & rungString
+    Else
+        ' For other types, concatenate directly
+        ResultString = prefixString & ResultString & rungString
+        ' Clean up any empty safety zone references
+        ResultString = Replace(ResultString, ",OTE(Safety_Zone_Zone_Slncd_Trpd.0),", "", , , vbTextCompare)
+    End If
+    
+    ' Replace area references
+    ResultString = Replace(ResultString, DataCache.DictValue(17, 6), areaName)
+    
+    ' Return the final result
+    SafeLogic = ResultString
+    Exit Function
+
+ErrorHandler:
+    ' Log the error and continue
+    Call LogError("SafeLogic", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' SplitStringAtInstruction
+' Splits a string at the specified instruction text and returns an array of two parts.
+'
+' Parameters:
+'   xmlString - The input string to split
+'   splitText - The text to split at
+'
+' Returns:
+'   Array with two elements: [0] = text before split point, [1] = text from split point onward
+'------------------------------------------------------------------------------------
+Function SplitStringAtInstruction(xmlString As String, splitText As String) As Variant
+    Dim parts(1) As String
+    Dim splitIndex As Long
+    
+    On Error GoTo ErrorHandler
+    
+    ' Find the index of the split text
+    splitIndex = InStr(xmlString, splitText)
+    
+    ' Check if the split text is found
+    If splitIndex > 0 Then
+        ' Split the string at the split text
+        parts(0) = Left(xmlString, splitIndex - 1)
+        parts(1) = Mid(xmlString, splitIndex)
+    Else
+        ' If the split text is not found, assign the whole string to parts(0) and empty string to parts(1)
+        parts(0) = xmlString
+        parts(1) = ""
+    End If
+    
+    SplitStringAtInstruction = parts
+    Exit Function
+    
+ErrorHandler:
+    Call LogError("SplitStringAtInstruction", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+Function CtrlStation(rungString As String, areaName As String, CopyNum As Long) As String
+    Dim sourceSheet As Worksheet
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    Dim StationNumber As Long, lastRow As Long
+    Dim ProcessString As String
+    Dim ResultString As String
+    Dim RowsWData As Object, rowNum As Variant
+    On Error GoTo ErrorHandler
+      ' Starting from the bottom cell 1018
+    lastRow = lastRow
+    ProcessString = rungString
+    StationNumber = 1
+    Set RowsWData = FindRowsWithMatch(ThisWorkbook.Sheets("Dict"), 3, areaName)
+    
+    For Each rowNum In RowsWData.Keys
+    
+    If CopyNum > 1 And StationNumber = 5 Then
+    ResultString = ProcessString & vbCrLf
+    ProcessString = rungString
+    ProcessString = Replace(ProcessString, "Area_CS1", "Area_CS2")
+    StationNumber = 1
+    End If
+    
+            If StrComp(areaName, DataCache.DictValue(rowNum, 3), vbTextCompare) = 0 Then
+            If InStr(1, DataCache.DictValue(rowNum, 25), "NO", vbTextCompare) = 0 Then
+            If Right(DataCache.DictValue(rowNum, 25), 3) = "CS2" Then
+            Dim cellVal As String
+            cellVal = CStr(DataCache.DictValue(rowNum, 25))
+            cellVal = Left(cellVal, Len(cellVal) - 1) & "1"
+            rungString = Replace(rungString, "Input" & StationNumber, cellVal)
+            rungString = Replace(rungString, "InputIO" & StationNumber, DataCache.DictValue(rowNum, 61))
+            StationNumber = StationNumber + 1
+            'ElseIf Right(sourceSheet.Cells(currentRow, 25).value, 3) = "CS1" Then
+            'CellVal = CStr(ThisWorkbook.Sheets("Dict").Cells(currentRow, 25).value)
+            'CellVal = Left(CellVal, Len(CellVal) - 1) & "2"
+            'RungString = Replace(RungString, "Input" & StationNumber, CellVal)
+            'StationNumber = StationNumber + 1
+            End If
+            rungString = Replace(rungString, "Input" & StationNumber, DataCache.DictValue(rowNum, 25))
+            rungString = Replace(rungString, "InputIO" & StationNumber, DataCache.DictValue(rowNum, 61))
+            StationNumber = StationNumber + 1
+            End If
+            End If
+    rungString = Replace(rungString, DataCache.DictValue(rowNum, 6), DataCache.DictValue(rowNum, 5))
+    rungString = Replace(rungString, DataCache.DictValue(rowNum, 4), DataCache.DictValue(rowNum, 3))
+    Next rowNum
+    
+    If CopyNum = 1 Then
+    ResultString = ProcessString
+    Else
+    ResultString = ResultString & ProcessString
+    End If
+    
+    For StationNumber = 1 To 5
+    rungString = Replace(rungString, "Input" & StationNumber, "NO_CS")
+    rungString = Replace(rungString, "InputIO" & StationNumber & ".Flt.UpStrmCommLoss", "0")
+    Next StationNumber
+
+
+    
+    CtrlStation = rungString
+Exit Function
+ErrorHandler:
+    Call LogError("CtrlStation", Err.Number, Err.Description)
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' ConvPI
+' Processes conveyor-related Program Interface (PI) logic for PLC programming.
+' Replaces conveyor placeholders with actual conveyor names from the dictionary.
+'
+' Parameters:
+'   rungString - The input string containing PLC rung logic
+'   areaName - The area name to match in the dictionary
+'   CopyNum - Number of copies to process
+'
+' Returns:
+'   Modified rung string with conveyor PI logic applied
+'------------------------------------------------------------------------------------
+Function ConvPI(rungString As String, areaName As String, CopyNum As Long) As String
+    ' Dictionary sheet reference
+    Dim sourceSheet As Worksheet
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    
+    ' Variable declarations with clear naming
+    Dim convNumber As Long, lastRow As Long
+    Dim ProcessString As String
+    Dim ResultString As String
+    Dim rowsWithData As Object, rowNum As Variant
+    
+    ' Error handling
+    On Error GoTo ErrorHandler
+    
+    ' Initialize variables
+    lastRow = lastRow
+    ProcessString = rungString
+    convNumber = 20  ' Start with 20 conveyor inputs
+    
+    ' Get rows that match the area name in column 3
+    Set rowsWithData = FindRowsWithMatch(ThisWorkbook.Sheets("Dict"), 3, areaName)
+
+    ' Process each matching row
+    For Each rowNum In rowsWithData.Keys
+        ' If we've used all conveyor numbers and need more than one copy,
+        ' append the current process string and reset for the next copy
+        If CopyNum > 1 And convNumber = 0 Then
+            ResultString = ProcessString & vbCrLf
+            ProcessString = rungString
+            ProcessString = Replace(ProcessString, "_Conv_PI1", "_Conv_PI2")
+            convNumber = 20
+        End If
+        
+        ' Only process rows that match the area name exactly
+        If StrComp(areaName, DataCache.DictValue(rowNum, 3), vbTextCompare) = 0 Then
+            ' Replace conveyor placeholder with actual conveyor name
+            ProcessString = Replace(ProcessString, "Conv" & convNumber, DataCache.DictValue(rowNum, 1))
+            convNumber = convNumber - 1
+        End If
+        
+        ' Replace area references
+        ProcessString = Replace(ProcessString, DataCache.DictValue(rowNum, 6), DataCache.DictValue(rowNum, 5))
+        ProcessString = Replace(ProcessString, DataCache.DictValue(rowNum, 4), DataCache.DictValue(rowNum, 3))
+    Next rowNum
+    
+    ' Determine the final result string based on copy number
+    If CopyNum = 1 Then
+        ResultString = ProcessString
+    Else
+        ResultString = ResultString & ProcessString
+    End If
+    
+    ' Replace any remaining conveyor placeholders with NO_Conv
+    For convNumber = 20 To 1 Step -1
+        ResultString = Replace(ResultString, "Conv" & convNumber, "NO_Conv", , , vbTextCompare)
+    Next convNumber
+
+    ' Return the final result
+    ConvPI = ResultString
+    Exit Function
+
+ErrorHandler:
+    Call LogError("ConvPI", Err.Number, Err.Description)
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' SafePI
+' Processes safety-related Program Interface (PI) logic for PLC programming.
+' Handles emergency stop (ES) inputs and their left/right variants.
+'
+' Parameters:
+'   rungString - The input string containing PLC rung logic
+'   areaName - The area name to match in the dictionary
+'   CopyNum - Number of copies to process
+'
+' Returns:
+'   Modified rung string with safety PI logic applied
+'------------------------------------------------------------------------------------
+Function SafePI(rungString As String, areaName As String, CopyNum As Long) As String
+    ' Dictionary sheet reference
+    Dim sourceSheet As Worksheet
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    
+    ' Variable declarations with clear naming
+    Dim esNumber As Long, lastRow As Long
+    Dim ProcessString As String
+    Dim ResultString As String
+    Dim cellVal As String
+    Dim currentRow As Long
+    Dim lookupRange As Range
+    Dim foundCell As Range
+    
+    ' Error handling
+    On Error GoTo ErrorHandler
+    
+    ' Initialize variables
+    lastRow = sourceSheet.Range("G5").value
+    ProcessString = rungString
+    esNumber = 20  ' Start with 20 emergency stop inputs
+    
+    ' Process each row in the dictionary
+    For currentRow = 17 To lastRow
+        ' If we've used all ES numbers and need more than one copy,
+        ' append the current process string and reset for the next copy
+        If CopyNum > 1 And esNumber = 0 Then
+            ResultString = ProcessString & vbCrLf
+            ProcessString = rungString
+            ProcessString = Replace(ProcessString, "_ES_PI", "_ES_PI2")
+            esNumber = 20
+        End If
+        
+        ' Only process rows that match the area name
+        If StrComp(areaName, ThisWorkbook.Sheets("Dict").Cells(currentRow, 5).value, vbTextCompare) = 0 Then
+            ' Process column 21 (Emergency Stop Button)
+            If InStr(1, sourceSheet.Cells(currentRow, 21).value, "NO", vbTextCompare) = 0 Then
+                ' Handle left/right variants
+                If Right(sourceSheet.Cells(currentRow, 21).value, 1) = "L" Then
+                    ' Create right variant from left
+                    cellVal = CStr(ThisWorkbook.Sheets("Dict").Cells(currentRow, 21).value)
+                    cellVal = Left(cellVal, Len(cellVal) - 1) & "R"
+                    ProcessString = Replace(ProcessString, "Input" & esNumber, cellVal)
+                    esNumber = esNumber - 1
+                ElseIf Right(sourceSheet.Cells(currentRow, 21).value, 1) = "R" Then
+                    ' Create left variant from right
+                    cellVal = CStr(ThisWorkbook.Sheets("Dict").Cells(currentRow, 21).value)
+                    cellVal = Left(cellVal, Len(cellVal) - 1) & "L"
+                    ProcessString = Replace(ProcessString, "Input" & esNumber, cellVal)
+                    esNumber = esNumber - 1
+                End If
+                
+                ' Replace the input placeholder with the actual value
+                ProcessString = Replace(ProcessString, "Input" & esNumber, sourceSheet.Cells(currentRow, 21).value, , , vbTextCompare)
+                esNumber = esNumber - 1
+            End If
+            
+            ' Process column 23 (Emergency Pull Cord)
+            If InStr(1, sourceSheet.Cells(currentRow, 23).value, "NO", vbTextCompare) = 0 Then
+                ' Handle left/right variants
+                If Right(sourceSheet.Cells(currentRow, 23).value, 1) = "R" Then
+                    ' Create left variant from right
+                    cellVal = CStr(ThisWorkbook.Sheets("Dict").Cells(currentRow, 23).value)
+                    cellVal = Left(cellVal, Len(cellVal) - 1) & "L"
+                    ProcessString = Replace(ProcessString, "Input" & esNumber, cellVal)
+                    esNumber = esNumber - 1
+                ElseIf Right(sourceSheet.Cells(currentRow, 23).value, 1) = "L" Then
+                    ' Create right variant from left
+                    cellVal = CStr(ThisWorkbook.Sheets("Dict").Cells(currentRow, 23).value)
+                    cellVal = Left(cellVal, Len(cellVal) - 1) & "R"
+                    ProcessString = Replace(ProcessString, "Input" & esNumber, cellVal)
+                    esNumber = esNumber - 1
+                End If
+                
+                ' Replace the input placeholder with the actual value
+                ProcessString = Replace(ProcessString, "Input" & esNumber, sourceSheet.Cells(currentRow, 23).value, , , vbTextCompare)
+                esNumber = esNumber - 1
+            End If
+        End If
+    Next currentRow
+    
+    ' Determine the final result string based on copy number
+    If CopyNum = 1 Then
+        ResultString = ProcessString
+    Else
+        ResultString = ResultString & ProcessString
+    End If
+    
+    ' Replace any remaining input placeholders with NO_ESLS
+    For esNumber = 20 To 1 Step -1
+        ResultString = Replace(ResultString, "Input" & esNumber, "NO_ESLS")
+    Next esNumber
+
+    ' Replace area references
+    ResultString = Replace(ResultString, "Main_Area_Safe", areaName)
+    
+    ' Look up the corresponding area name in column D
+    Set lookupRange = ThisWorkbook.Sheets("Dict").Range("E17:E1007")
+    Set foundCell = lookupRange.Find(What:=areaName, LookIn:=xlValues, LookAt:=xlWhole, MatchCase:=False, SearchFormat:=False)
+    
+    ' Replace Main_Area with the found value or handle not found case
+    If Not foundCell Is Nothing Then
+        ResultString = Replace(ResultString, "Main_Area", foundCell.Offset(0, -2).value)
+    Else
+        ' Log error instead of showing message box and ending execution
+        Call LogError("SafePI", 0, "Area name '" & areaName & "' not found in dictionary")
+        ' Use a default value instead of ending execution
+        ResultString = Replace(ResultString, "Main_Area", "Unknown_Area")
+    End If
+    
+    ' Return the final result
+    SafePI = ResultString
+    Exit Function
+
+ErrorHandler:
+    Call LogError("SafePI", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function FindCellInRowWithMatch(rowNum As Long, targetString As String) As Long
+    Dim cell As Range
+    Dim lastColumn As Long
+    Dim ws As Worksheet
+    On Error GoTo ErrorHandler
+    ' If no worksheet is specified, use the active worksheet
+    Set ws = ThisWorkbook.Sheets("Dict")
+    lastColumn = 0
+    ' Get the last column with data in the specified row
+    lastColumn = ws.Cells(rowNum, ws.Columns.count).End(xlToLeft).Column
+    
+    ' Loop through each cell in the row
+    For Each cell In ws.Range(ws.Cells(rowNum, 1), ws.Cells(rowNum, lastColumn))
+        ' Check if the cell's value matches the target string
+        If cell.value = targetString Then
+            ' Return the address of the cell with the match
+            FindCellInRowWithMatch = cell.Column
+            Exit Function
+        End If
+    Next cell
+    
+    ' Return "Not Found" if no match is found
+    FindCellInRowWithMatch = 0
+Exit Function
+ErrorHandler:
+    Call LogError("FindCellInRowWithMatch", Err.Number, Err.Description)
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' retriveTypes
+' Determines which type of tag is present in a rung by searching the relevant sheets.
+'------------------------------------------------------------------------------------
+Sub retriveTypes(rungString As String, RoutineValue As String, ByRef tagType As String, ByRef colNum As Object)
+    Dim tagArray() As Variant
+    Dim sourceSheet As Worksheet
+
+    On Error GoTo ErrorHandler
+
+    If InStr(1, RoutineValue, "CP", vbTextCompare) > 0 Then
+        tagArray = Array(1)
+        Set sourceSheet = ThisWorkbook.Sheets("IO Dict")
+    Else
+        tagArray = Array(10, 12, 14, 2, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 4, 6)
+        Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    End If
+    
+    'If InStr(1, rungString, "MS_Run_Safe", vbTextCompare) > 0 Then
+    '   MsgBox "Input String" & rungString, vbExclamation, "MS Diag"
+    'End If
+
+    Dim Results As String
+    Dim RetString As String
+    Dim i As Integer
+
+    For i = LBound(tagArray) To UBound(tagArray)
+        If Results = "" Then
+            Results = FindTagTypeInText(rungString, sourceSheet, tagArray(i))
+            
+            If colNum Is Nothing Then
+                Set colNum = CreateObject("Scripting.Dictionary")
+            End If
+            
+            If colNum.count = 0 And Results <> "" Then
+                tagType = Results
+                colNum.Add tagArray(i), tagArray(i)
+            End If
+        Else
+            RetString = FindTagTypeInText(rungString, sourceSheet, tagArray(i))
+            If RetString = Results Then
+                If Not colNum.Exists(tagArray(i)) Then
+                    colNum.Add tagArray(i), tagArray(i)
+                End If
+            End If
+        End If
+    Next i
+    Exit Sub
+
+ErrorHandler:
+    Call LogError("retriveTypes", Err.Number, Err.Description)
+    Resume Next
+End Sub
+'------------------------------------------------------------------------------------
+' FindTagTypeInText
+' Checks if a tag is present in the text by scanning the column in the given sheet.
+'------------------------------------------------------------------------------------
+Function FindTagTypeInText( _
+    ByVal text As String, _
+    ByRef sourceSheet As Worksheet, _
+    ByVal columnIndex As Variant) As String
+    On Error GoTo ErrHandler
+    FindTagTypeInText = DataCache.FindTagTypeInTextCached(text, sourceSheet.Name, CLng(columnIndex))
+    Exit Function
+ErrHandler:
+    LogError "FindTagTypeInText", Err.Number, Err.Description
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' FindRowsWithMatch
+' Returns a dict of row numbers where the specified column matches searchString.
+'------------------------------------------------------------------------------------
+Function FindRowsWithMatch(ws As Worksheet, colNum As Variant, searchString As String) As Object
+    On Error GoTo ErrorHandler
+    Dim result As Object
+    If StrComp(ws.Name, "Dict", vbTextCompare) = 0 Then
+        Set result = DataCache.DictRowsByColValue(CLng(colNum), CStr(searchString))
+    ElseIf StrComp(ws.Name, "IO Dict", vbTextCompare) = 0 Then
+        Set result = DataCache.IoDictRowsByColValue(CLng(colNum), CStr(searchString))
+    Else
+        Set result = CreateObject("Scripting.Dictionary")
+    End If
+    Set FindRowsWithMatch = result
+    Exit Function
+ErrorHandler:
+    Call LogError("FindRowsWithMatch", Err.Number, Err.Description)
+    Set FindRowsWithMatch = CreateObject("Scripting.Dictionary")
+End Function
+'------------------------------------------------------------------------------------
+' FindRowsWithAreaMatch
+' Returns a dictionary containing the first row number where the specified column matches areaName.
+' The dictionary will have only one entry: the key and value are the row number.
+'------------------------------------------------------------------------------------
+Function FindRowsWithAreaMatch(ws As Worksheet, colNum As Variant, areaName As String) As Object
+    On Error GoTo ErrorHandler
+    If StrComp(ws.Name, "Dict", vbTextCompare) = 0 Then
+        Set FindRowsWithAreaMatch = DataCache.CacheFindRowsWithAreaMatch(CStr(areaName), CLng(colNum))
+    Else
+        Set FindRowsWithAreaMatch = CreateObject("Scripting.Dictionary")
+    End If
+    Exit Function
+ErrorHandler:
+    Call LogError("FindRowsWithAreaMatch", Err.Number, Err.Description)
+    Set FindRowsWithAreaMatch = CreateObject("Scripting.Dictionary")
+End Function
+
+Function IsEmptyArray(arr As Variant) As Boolean
+    On Error GoTo ErrorHandler
+    If IsArray(arr) Then
+        IsEmptyArray = (UBound(arr, 1) < LBound(arr, 1)) Or (UBound(arr, 2) < LBound(arr, 2))
+    Else
+        IsEmptyArray = True
+    End If
+Exit Function
+ErrorHandler:
+    Call LogError("IsEmptyArray", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function RemoveAfterUnderscore(InputString As String) As String
+    Dim underscorePos As Integer
+    On Error GoTo ErrorHandler
+    underscorePos = InStr(InputString, "_")
+
+    If underscorePos > 0 Then
+        RemoveAfterUnderscore = Left(InputString, underscorePos - 1)
+    Else
+        RemoveAfterUnderscore = InputString
+    End If
+Exit Function
+ErrorHandler:
+    Call LogError("RemoveAfterUnderscore", Err.Number, Err.Description)
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' DetermineRungString
+' Extracts rung or line content for "RLL" or "ST" routines.
+'------------------------------------------------------------------------------------
+Function DetermineRungString( _
+    ByVal RungValue As Variant, _
+    ByVal RoutineType As String, _
+    ByVal RoutineString As String) As String
+    
+    On Error GoTo ErrHandler
+    
+    Select Case RoutineType
+        Case "RLL"
+            DetermineRungString = ExtractContent("Number=""" & RungValue & """", "Rung", RoutineString)
+        Case "ST"
+            DetermineRungString = ExtractContent("Number=""" & RungValue & """", "Line", RoutineString)
+        Case Else
+            DetermineRungString = ""
+    End Select
+    Exit Function
+    
+ErrHandler:
+    LogError "DetermineRungString", Err.Number, Err.Description
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' DetermineRoutineType
+' If a Routine node has multiple "Type=", we take the first. Otherwise empty.
+'------------------------------------------------------------------------------------
+Function DetermineRoutineType(RoutineTypes As Collection) As String
+On Error GoTo ErrorHandler
+    If RoutineTypes.count > 0 Then
+        DetermineRoutineType = CStr(RoutineTypes.item(1))
+    Else
+        DetermineRoutineType = ""
+    End If
+Exit Function
+ErrorHandler:
+    Call LogError("DetermineRoutineType", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' IsRoutineEmpty
+' Checks if the XML node has child nodes. If none, it's "empty."
+'------------------------------------------------------------------------------------
+Function IsRoutineEmpty( _
+    ByVal RoutineName As String, _
+    ByVal content As String) As Boolean
+    
+    On Error GoTo ErrHandler
+    
+    IsRoutineEmpty = True
+    Dim xmlDoc As Object, node As Object
+    Set xmlDoc = CreateObject("MSXML2.DOMDocument")
+    xmlDoc.async = False
+    xmlDoc.LoadXML content
+    
+    Set node = xmlDoc.SelectSingleNode("//Routine[@Name='" & RoutineName & "']")
+    If Not node Is Nothing Then
+        If node.HasChildNodes Then IsRoutineEmpty = False
+    End If
+    
+    Exit Function
+ErrHandler:
+    LogError "IsRoutineEmpty", Err.Number, Err.Description
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' RenumberLines
+' Rewrites "Number=""X""" attributes from 0..N in ascending order.
+'------------------------------------------------------------------------------------
+Function RenumberLines(ByVal xmlString As String) As String
+    On Error GoTo ErrHandler
+    
+    Dim regex As Object
+    Set regex = CreateObject("VBScript.RegExp")
+    regex.pattern = "Number=""\d+"""
+    regex.Global = True
+    
+    Dim lines As Variant
+    lines = Split(xmlString, vbCrLf)
+    
+    Dim i As Long, newNumber As Long
+    newNumber = 0
+    
+    For i = LBound(lines) To UBound(lines)
+        If regex.Test(lines(i)) Then
+            lines(i) = regex.Replace(lines(i), "Number=""" & newNumber & """")
+            newNumber = newNumber + 1
+        End If
+    Next i
+    
+    RenumberLines = Join(lines, vbCrLf)
+    Exit Function
+    
+ErrHandler:
+    LogError "RenumberLines", Err.Number, Err.Description
+    Resume Next
+End Function
+
+Function WordExists(text As String, word As Variant) As Boolean
+    ' Create a regular expression object
+    Dim regex As Object
+    On Error GoTo ErrorHandler
+    Set regex = CreateObject("VBScript.RegExp")
+
+    ' Define the pattern to match the whole word
+    regex.pattern = word
+    regex.Global = True
+
+    WordExists = regex.Test(text)
+Exit Function
+ErrorHandler:
+    Call LogError("WordExists", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function IOMap(rungString As String, currentRow As Variant) As String
+    Dim ColumnMultiplier As Long
+    On Error GoTo ErrorHandler
+   
+    Dim PointNumber As Long
+    For PointNumber = 15 To 0 Step -1
+        
+    For ColumnMultiplier = 60 To 0 Step -4
+    Dim PointValue As String
+    PointValue = DataCache.IoDictValue(currentRow, 9 + ColumnMultiplier)
+    
+            If PointValue <> "" Then
+            If PointNumber = PointValue Then
+            
+            If DataCache.IoDictValue(currentRow, 6 + ColumnMultiplier) <> "" Then
+            If DataCache.IoDictValue(currentRow, 7 + ColumnMultiplier) = "" Then
+            rungString = Replace(rungString, "Point" & PointNumber, DataCache.IoDictValue(currentRow, 6 + ColumnMultiplier), , , vbTextCompare)
+            ElseIf DataCache.IoDictValue(currentRow, 7 + ColumnMultiplier) = "Run" Then
+            rungString = Replace(rungString, "Point" & PointNumber, Replace(DataCache.IoDictValue(currentRow, 6 + ColumnMultiplier), "_Conv", "_MS_") & DataCache.IoDictValue(currentRow, 7 + ColumnMultiplier) & "_Safe_Out", , , vbTextCompare)
+            Else
+            rungString = Replace(rungString, "Point" & PointNumber, DataCache.IoDictValue(currentRow, 6 + ColumnMultiplier) & "." & DataCache.IoDictValue(currentRow, 5) & "." & DataCache.IoDictValue(currentRow, 7 + ColumnMultiplier), , , vbTextCompare)
+            End If
+            End If
+            End If
+            End If
+            
+    Next ColumnMultiplier
+      rungString = Replace(rungString, "OTE(Point" & PointNumber & ")", "NOP()")
+      rungString = Replace(rungString, "XIC(Point" & PointNumber & ")", "XIC(NO_PointPlaceholder)")
+    Next PointNumber
+    
+    rungString = Replace(rungString, "_MSNO_MS", "MS")
+
+    IOMap = rungString
+Exit Function
+ErrorHandler:
+    Call LogError("IOMap", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function ModuleCommDiag(rungString As String, CopyNum As Long) As String
+    Dim ResultString As String
+    Dim ProcessString As String
+    Dim tempType As String
+    Dim dict As Object
+    Dim AddDict As Object
+    Dim key  As Variant
+    Dim i As Long
+    On Error GoTo ErrorHandler
+    ResultString = ""
+    
+    If InStr(1, rungString, "NOP", vbTextCompare) > 0 And CopyNum > 1 Then
+        ResultString = rungString & vbCrLf
+        If InStr(1, rungString, "Group", vbTextCompare) > 0 Then
+            For i = 2 To CopyNum
+                ProcessString = rungString
+                ProcessString = Replace(ProcessString, "Group1", "Group" & i)
+                ResultString = ResultString & ProcessString & vbCrLf
+            Next i
+        End If
+        
+    ElseIf InStr(1, rungString, "AOI", vbTextCompare) > 0 Then
+        Set dict = CreateObject("Scripting.Dictionary")
+        Set AddDict = CreateObject("Scripting.Dictionary")
+        tempType = templateCheckCaseSensitiveWholeWord(rungString)
+        'MsgBox "type: " & tempType & vbCrLf & "string: " & RungString
+        ' Pass Temptype to the dictionary builder
+        BuildModuleDictionaryUsingSearch dict, tempType
+        
+        For Each key In dict.Keys
+            ProcessString = rungString
+            If InStr(1, ProcessString, dict(key)(0), vbTextCompare) > 0 And _
+               InStr(1, ResultString, key, vbTextCompare) = 0 And _
+               Not AddDict.Exists(ProcessString) Then
+                   
+                ProcessString = Replace(ProcessString, dict(key)(0), key)
+                ProcessString = Replace(ProcessString, "Main_Area", dict(key)(2))
+                ProcessString = Replace(ProcessString, "UpStrmComm", dict(key)(1))
+                ResultString = ResultString & ProcessString & vbCrLf
+                AddDict.Add ProcessString, ""
+            End If
+        Next key
+    End If
+    
+    ModuleCommDiag = ResultString
+    Exit Function
+ErrorHandler:
+    Call LogError("ModuleCommDiag", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function templateCheckCaseSensitiveWholeWord(RungStringCopy As String) As String
+    Dim rng As Range
+    Dim cell As Range
+    Dim re As Object
+    
+    Set rng = ThisWorkbook.Names("IOConfigRSLT").RefersToRange
+    
+    ' Create the RegExp object via late binding
+    Set re = CreateObject("VBScript.RegExp")
+    re.ignoreCase = False     ' Case-sensitive
+    re.Global = False         ' Only need the first match
+    
+    For Each cell In rng
+        ' We define "word chars" as letters, digits, or underscore.
+        ' So we want to ensure a match is bounded by the start/end of string
+        ' or a non-word char ([^A-Za-z0-9_]) on both sides:
+        re.pattern = "(^|[^A-Za-z0-9_])" & cell.value & "([^A-Za-z0-9_]|$)"
+        
+        If re.Test(RungStringCopy) Then
+            templateCheckCaseSensitiveWholeWord = cell.value
+            Exit Function
+        End If
+    Next cell
+    
+    ' If none matched, return empty
+    templateCheckCaseSensitiveWholeWord = ""
+End Function
+
+Sub BuildModuleDictionaryUsingSearch(ByRef dict As Object, ByVal tempType As String)
+    Dim wsIO As Worksheet
+    Dim wsDict As Worksheet
+    Dim wsConfig As Worksheet
+    Dim lookupRange As Range
+    Dim ioLastRow As Long, dictLastRow As Long, i As Long, j As Long, k As Long
+    Dim moduleName As String
+    Dim moduleType As String
+    Dim moduleTemp As Variant
+    Dim parent As String
+    Dim moduleArea As Variant
+    Dim found As Boolean
+
+    ' Initialize the dictionary if needed
+    If dict Is Nothing Then
+        Set dict = CreateObject("Scripting.Dictionary")
+    End If
+
+    Set wsIO = ThisWorkbook.Sheets("IO")
+    Set wsDict = ThisWorkbook.Sheets("Dict")
+    Set wsConfig = ThisWorkbook.Sheets("Config")
+    Set lookupRange = wsConfig.Range("C34:D80")
+    
+    ioLastRow = wsIO.Cells(wsIO.Rows.count, "B").End(xlUp).Row
+    dictLastRow = wsDict.Range("G5").value
+
+    For i = 6 To ioLastRow
+        moduleName = Trim(wsIO.Cells(i, 2).value)
+        moduleType = wsIO.Cells(i, 3).value
+        parent = wsIO.Cells(i, 6).value
+        
+        moduleTemp = Application.VLookup(moduleType, lookupRange, 2, False)
+        
+        If parent = "" Then
+            parent = "NO_CommDev"
+        End If
+
+        moduleArea = "Area_Unkown"
+        found = False
+        For j = 17 To dictLastRow
+            For k = 41 To 60
+                If InStr(1, Trim(wsDict.Cells(j, k).value), moduleName, vbTextCompare) > 0 Then
+                    moduleArea = wsDict.Cells(j, 3).value
+                    found = True
+                    Exit For
+                End If
+            Next k
+            If found Then Exit For
+        Next j
+
+        ' Only add this module if its template matches the given tempType.
+        If moduleTemp = tempType Then
+            If Not dict.Exists(moduleName) And InStr(1, moduleName, "PLC", vbTextCompare) = 0 Then
+                dict.Add moduleName, Array(moduleTemp, parent, moduleArea)
+            End If
+        End If
+    Next i
+End Sub

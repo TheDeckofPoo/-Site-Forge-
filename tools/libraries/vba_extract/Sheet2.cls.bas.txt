@@ -1,0 +1,278 @@
+Attribute VB_Name = "Sheet2"
+Attribute VB_Base = "0{00020820-0000-0000-C000-000000000046}"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = True
+Attribute VB_TemplateDerived = False
+Attribute VB_Customizable = True
+Option Explicit
+
+' Performance optimization constants
+Private Const BATCH_SIZE As Long = 100
+Private Sub CommandButton1_Click()
+        
+Call Main
+
+End Sub
+
+Private Sub L5XLibraryCmb_Click()
+Dim FilePath As String
+    
+    ' Create a file dialog object
+    ' Prompt the user to select a file
+    FilePath = Application.GetOpenFilename("L5X Files (*.L5X), *.L5X", , "Select L5X File")
+    
+        If Not FilePath = "" Then
+            ' Update the text box with the selected folder path
+            Sheet2.LibraryPathTextBox.text = FilePath
+            ' Call the subroutine
+            AddCatalogNumbers
+            
+
+        
+        Else
+        ' No file was selected
+        MsgBox "No file selected."
+    End If
+    
+
+    
+End Sub
+
+Private Sub LibraryPathTextBox_Change()
+ ' Do something with the entered folder path
+    ' You can access the entered path using TextBox1.Text
+End Sub
+Sub AddCatalogNumbers()
+    Dim InputString As String
+    Dim catalogNumbers As Collection
+    Dim value As Variant
+    Dim catalogNumbersSheet As Worksheet
+    Dim lastColumn As Long
+    Dim targetRow As Long
+    Dim targetCell As Range
+    
+    'Turn screen updating off
+Application.ScreenUpdating = False
+    
+    If Sheet2.LibraryPathTextBox.text = "" Then GoTo SysMessage
+
+    CopyUTF8FileContents SourceLibrary
+    
+    ' Set the catalogNumbersSheet variable to the sheet where you want to add the catalog numbers
+    Set catalogNumbersSheet = ThisWorkbook.Sheets("IO")
+    
+   ' Determine the target row where the catalog numbers should be added
+    targetRow = 2 ' Change this to the desired row number
+    
+    ' Determine the last column of the target row
+    lastColumn = catalogNumbersSheet.Cells(targetRow, catalogNumbersSheet.Columns.count).End(xlToLeft).Column
+    
+    catalogNumbersSheet.Range("B2:" & Cells(2, lastColumn).address).ClearContents
+    
+        ' Determine the last column of the target row
+    lastColumn = catalogNumbersSheet.Cells(targetRow, catalogNumbersSheet.Columns.count).End(xlToLeft).Column
+    
+    Set catalogNumbers = ExtractNamesCol(""" CatalogNumber=", SourceLibrary)
+    
+   
+  ' Loop through each occurrence of the "CatalogNumber=" pattern in the input string
+    For Each value In catalogNumbers
+ 
+        ' Check if the catalog number already exists in the target row
+        If Not IsCatalogNumberExist(catalogNumbersSheet.Rows(targetRow), value, lastColumn) Then
+            ' Find the next blank cell in the target row
+            Set targetCell = catalogNumbersSheet.Cells(targetRow, lastColumn + 1)
+            
+            ' Add the catalog number to the next blank cell
+            targetCell.value = value
+            lastColumn = targetCell.Column
+        End If
+       
+    Next value
+    
+    SearchAndFillRed SourceLibrary
+    
+    Application.ScreenUpdating = True
+    
+    Exit Sub
+
+SysMessage:
+    MsgBox "Select Vaild Library File"
+End Sub
+Sub SearchAndFillRed(sourceString As String)
+    Dim tagArray() As Variant
+    Dim sourceSheet As Worksheet
+
+    tagArray = Array(4, 7, 10, 13, 16, 19)
+    Set sourceSheet = ThisWorkbook.Sheets("Config")
+
+    Dim i As Integer
+    Dim j As Integer
+    For i = LBound(tagArray) To UBound(tagArray)
+        For j = 7 To 80
+            If j <> 30 And j <> 31 And j <> 32 And j <> 33 Then ' Skip specified rows
+                Dim cellValue As String
+                cellValue = sourceSheet.Cells(j, tagArray(i)).value
+
+                If cellValue <> "" Then
+                    ' Check if the cell value is a substring of sourceString
+                    If InStr(1, sourceString, cellValue, vbTextCompare) > 0 Then
+                        ' Cell value found in sourceString, apply no fill
+                        sourceSheet.Cells(j, tagArray(i)).Interior.Color = xlNone
+                    Else
+                        ' Cell value not found in sourceString, fill the cell red
+                        sourceSheet.Cells(j, tagArray(i)).Interior.Color = RGB(255, 0, 0)
+                    End If
+                End If
+            End If
+        Next j
+    Next i
+End Sub
+
+Function IsCatalogNumberExist(ByVal targetRow As Range, ByVal catalogNumber As String, ByVal lastColumn As Long) As Boolean
+    Dim cell As Range
+    
+    ' Loop through each cell in the target row until the last column
+    For Each cell In targetRow.Cells
+        ' Check if the cell value is equal to the catalog number
+        If cell.value = catalogNumber Then
+            IsCatalogNumberExist = True
+            Exit Function
+        End If
+        
+        ' Exit the loop if the current cell is past the last column
+        If cell.Column > lastColumn Then Exit For
+    Next cell
+    
+    IsCatalogNumberExist = False
+End Function
+
+'------------------------------------------------------------------------------------
+' ProcessSpacesInRanges
+' Replaces spaces with underscores in specified ranges using optimized batch processing
+'------------------------------------------------------------------------------------
+Public Sub ProcessSpacesInRanges()
+    On Error GoTo ErrorHandler
+    
+    ' Array of ranges to process
+    Dim rangesToProcess As Variant
+    rangesToProcess = Array("C7:U7", "C10:U10", "C17:C1016", "D17:D1016")
+    
+    ' Special cells to process individually
+    Dim specialCells As Variant
+    specialCells = Array("C1017", "D1017")
+    
+    ' Use the PerformanceOptimizer to optimize application settings
+    OptimizePerformance "Processing spaces in ranges..."
+    
+    ' Process regular ranges in batches
+    Dim rng As Variant, cellRange As Range
+    For Each rng In rangesToProcess
+        ' Get the range
+        Set cellRange = Sheet2.Range(rng)
+        
+        ' Process the range in batches using the ProcessRangeInBatches function
+        ProcessRangeInBatches cellRange, BATCH_SIZE, "Sheet2.ProcessSpacesInRange"
+    Next rng
+    
+    ' Process special cells individually with direct approach
+    Dim cellAddress As Variant
+    Dim cell As Range
+    For Each cellAddress In specialCells
+        Set cell = Sheet2.Range(cellAddress)
+        ProcessSingleCell cell
+    Next cellAddress
+    
+    ' Restore performance settings
+    RestorePerformance
+    Exit Sub
+    
+ErrorHandler:
+    LogError "ProcessSpacesInRanges", Err.Number, Err.Description
+    RestorePerformance
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ProcessSingleCell
+' Safely processes a single cell to replace spaces with underscores
+'------------------------------------------------------------------------------------
+Private Sub ProcessSingleCell(cell As Range)
+    On Error GoTo ErrorHandler
+    
+    
+    ' Only process if it's a string and not empty
+    If TypeName(cell.value) = "String" Then
+        cell.value = Replace(cell.value, " ", "_")
+    End If
+    
+    Exit Sub
+    
+ErrorHandler:
+    LogError "ProcessSingleCell", Err.Number, Err.Description, "Cell: " & cell.address
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ProcessSpacesInRange
+' Helper function for ProcessSpacesInRanges that processes a single batch
+'------------------------------------------------------------------------------------
+Public Sub ProcessSpacesInRange(rng As Range)
+    On Error GoTo ErrorHandler
+    
+    ' Skip problematic cells that we'll handle separately
+    'If rng.Address = "$C$1017" Or rng.Address = "$D$1017" Then
+     '   Debug.Print "Skipping problematic cell: " & rng.Address
+    '    Exit Sub
+    'End If
+    
+    ' For single cells, use the direct approach
+    If rng.Cells.count = 1 Then
+        ProcessSingleCell rng
+        Exit Sub
+    End If
+    
+    ' For multi-cell ranges, use the array approach
+    Dim values As Variant
+    values = rng.value
+    
+    ' Process the array
+    Dim i As Long, j As Long
+    Dim isArray2D As Boolean
+    
+    ' Check if it's a 2D array
+    On Error Resume Next
+    isArray2D = (UBound(values, 2) > 0)
+    On Error GoTo ErrorHandler
+    
+    If isArray2D Then
+        ' Process 2D array
+        For i = LBound(values, 1) To UBound(values, 1)
+            For j = LBound(values, 2) To UBound(values, 2)
+                ' Only process if it's a string
+                If TypeName(values(i, j)) = "String" Then
+                    values(i, j) = Replace(values(i, j), " ", "_")
+                End If
+            Next j
+        Next i
+    Else
+        ' Process 1D array
+        For i = LBound(values) To UBound(values)
+            ' Only process if it's a string
+            If TypeName(values(i)) = "String" Then
+                values(i) = Replace(values(i), " ", "_")
+            End If
+        Next i
+    End If
+    
+    ' Write the values back to the range
+    rng.value = values
+    Exit Sub
+    
+ErrorHandler:
+    LogError "ProcessSpacesInRange", Err.Number, Err.Description, "Range: " & rng.address
+    Resume Next
+End Sub
+

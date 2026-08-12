@@ -1,0 +1,910 @@
+Attribute VB_Name = "Main_Module"
+Option Explicit
+
+' Global variables
+Public SourceLibrary As String
+Public dstFileContent As String
+Public Areas As Object
+Public SafeAreas As Object
+
+' Performance optimization constants
+Private Const BATCH_SIZE As Long = 100
+'------------------------------------------------------------------------------------
+' Main
+' Main entry point for the application
+'------------------------------------------------------------------------------------
+Sub Main()
+    Dim returnString As String
+    
+    On Error GoTo ErrorHandler
+    
+    ' Disable screen updating and set calculation to manual for performance
+    With Application
+        .ScreenUpdating = False
+        .Calculation = xlCalculationManual
+        .EnableEvents = False
+    End With
+    
+    ' Initialize progress form
+    frmProgress.Show vbModeless
+    ProgressValue = 0
+    UpdateProgress ProgressValue
+    
+    ' Initialize global variables
+    SourceLibrary = ""
+    dstFileContent = ""
+    
+    ' Perform data preprocessing
+    PreprocessData
+    
+    ' Initialize data cache after preprocessing (lazy-loaded otherwise)
+    On Error Resume Next
+    DataCache.Init
+    On Error GoTo ErrorHandler
+    
+    ' Validate library path
+    If Sheet2.LibraryPathTextBox.text = "" Then
+        MsgBox "Select Valid Library File", vbExclamation, "Missing Library"
+        GoTo CleanExit
+    End If
+    
+    ' Load library content
+    CopyUTF8FileContents SourceLibrary
+    
+    ' Extract unique areas
+    Set Areas = FindUniqueValuesDict(ThisWorkbook.Sheets("Inputdata").Range("C17:C2000"))
+    Set SafeAreas = FindUniqueValuesDict(ThisWorkbook.Sheets("Inputdata").Range("D17:D2000"))
+    
+    ' Update progress
+    ProgressValue = 5
+    UpdateProgress ProgressValue
+    
+    ' Extract data types
+    returnString = ExtractContent("DataType Name", "DataTypes", SourceLibrary)
+    ProgressValue = 10
+    UpdateProgress ProgressValue
+    dstFileContent = returnString
+    
+    ' Process modules
+    ModuleRetrieval
+    ProgressValue = 20
+    UpdateProgress ProgressValue
+    
+    ' Extract add-on instruction definitions
+    returnString = ExtractContent("EncodedData EncodedType", "AddOnInstructionDefinitions", SourceLibrary)
+    ProgressValue = 30
+    UpdateProgress ProgressValue
+    dstFileContent = dstFileContent & vbCrLf & returnString
+    
+    ' Process tags
+    TagRetrieval
+    ProgressValue = 50
+    UpdateProgress ProgressValue
+    
+    ' Process programs
+    ProgramRetrieval
+    ProgressValue = 80
+    UpdateProgress ProgressValue
+    
+    ' Process tasks
+    RetrieveTasks
+    ProgressValue = 100
+    UpdateProgress ProgressValue
+    
+    ' Process and save the final file
+    ProcessUTF8TextFileWithText
+    
+CleanExit:
+    ' Clean up and restore application settings
+    Unload frmProgress
+    With Application
+        .ScreenUpdating = True
+        .Calculation = xlCalculationAutomatic
+        .EnableEvents = True
+    End With
+    Exit Sub
+    
+ErrorHandler:
+    LogError "Main", Err.Number, Err.Description
+    MsgBox "An error occurred: " & Err.Description, vbExclamation, "Error"
+    Resume CleanExit
+End Sub
+
+'------------------------------------------------------------------------------------
+' PreprocessData
+' Performs initial data preprocessing
+'------------------------------------------------------------------------------------
+Private Sub PreprocessData()
+    On Error GoTo ErrorHandler
+    
+    Refresh_Click
+    
+    Exit Sub
+    
+ErrorHandler:
+    LogError "PreprocessData", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' CopyUTF8FileContents
+' Reads UTF-8 encoded file contents with improved error handling and memory management
+'------------------------------------------------------------------------------------
+Sub CopyUTF8FileContents(ByRef fileContent As String)
+    Dim sourcePath As String
+    Dim sourceFileStream As Object
+    Dim destinationFileStream As Object
+    Dim fileContentBytes() As Byte
+    Dim tempFilePath As String
+    Dim tempFileContents As String
+    Dim fileNum1 As Integer
+    Dim fileNum2 As Integer
+    
+    On Error GoTo ErrorHandler
+    
+    ' Set the source file path
+    sourcePath = Sheet2.LibraryPathTextBox.text
+    
+    If sourcePath = "False" Then
+        LogError "CopyUTF8FileContents", vbObjectError + 1, "Invalid source path"
+        Exit Sub
+    End If
+    
+    ' Initialize objects to Nothing for proper cleanup
+    Set sourceFileStream = Nothing
+    Set destinationFileStream = Nothing
+    
+    ' Create a temporary file path with unique timestamp and random number to avoid conflicts
+    tempFilePath = Environ("TEMP") & "\L5xGen_" & Format(Now, "yyyymmddhhmmss") & "_" & Int(Rnd() * 10000) & ".txt"
+    
+    ' Get free file numbers to avoid conflicts
+    fileNum1 = FreeFile
+    fileNum2 = FreeFile + 1
+    
+    ' Open the source text file and read its contents (UTF-8 encoding)
+    Set sourceFileStream = CreateObject("ADODB.Stream")
+    Set destinationFileStream = CreateObject("ADODB.Stream")
+    
+    ' Read the file as binary and store the contents in a byte array
+    Open sourcePath For Binary Access Read As #fileNum1
+    ReDim fileContentBytes(LOF(fileNum1) - 1)
+    Get #fileNum1, , fileContentBytes
+    Close #fileNum1
+    
+    ' Configure source stream
+    With sourceFileStream
+        .Type = 1 ' adTypeBinary
+        .Open
+        .Write fileContentBytes
+        .Position = 0 ' Reset the stream position to the beginning
+    End With
+    
+    ' Configure destination stream
+    With destinationFileStream
+        .Type = 2 ' adTypeText
+        .Charset = "utf-8"
+        .Open
+        .LoadFromFile sourcePath ' Load the source file into the destination stream
+        .SaveToFile tempFilePath, 2 ' adSaveCreateOverWrite
+    End With
+    
+    ' Read the text content from the temporary file
+    Open tempFilePath For Input As #fileNum2
+    tempFileContents = Input$(LOF(fileNum2), #fileNum2)
+    Close #fileNum2
+    
+    ' Assign the text content to the fileContent variable
+    fileContent = tempFileContents
+    
+    ' Clean up resources
+    On Error Resume Next
+    Kill tempFilePath
+    If Not sourceFileStream Is Nothing Then sourceFileStream.Close
+    If Not destinationFileStream Is Nothing Then destinationFileStream.Close
+    Set sourceFileStream = Nothing
+    Set destinationFileStream = Nothing
+    Exit Sub
+    
+ErrorHandler:
+    LogError "CopyUTF8FileContents", Err.Number, Err.Description, "Path: " & sourcePath
+    
+    ' Clean up resources
+    On Error Resume Next
+    If Not sourceFileStream Is Nothing Then sourceFileStream.Close
+    If Not destinationFileStream Is Nothing Then destinationFileStream.Close
+    Set sourceFileStream = Nothing
+    Set destinationFileStream = Nothing
+    
+    ' Close any open files
+    On Error Resume Next
+    Close #fileNum1
+    Close #fileNum2
+    
+    ' Try to delete the temporary file
+    If Len(tempFilePath) > 0 Then
+        On Error Resume Next
+        Kill tempFilePath
+    End If
+    
+    MsgBox "Error loading file: " & Err.Description, vbExclamation, "File Error"
+End Sub
+'------------------------------------------------------------------------------------
+' RetrieveTasks
+' Extracts and processes tasks from the source library
+'------------------------------------------------------------------------------------
+Sub RetrieveTasks()
+    Dim taskCollection As Collection
+    Dim task As Variant
+    Dim fileContent As String
+    Dim taskContent As String
+    Dim progressIncrement As Double
+    
+    On Error GoTo ErrorHandler
+    
+    ' Prepare the file content
+    dstFileContent = dstFileContent & vbCrLf & "<Tasks>"
+    
+    ' Extract tasks from the source library
+    fileContent = ExtractContent("Task", "Tasks", SourceLibrary)
+    Set taskCollection = ExtractNamesCol("Task Name=", fileContent)
+    
+    ' Calculate progress increment
+    If taskCollection.count > 0 Then
+        progressIncrement = 20 / taskCollection.count
+    Else
+        progressIncrement = 0
+    End If
+    
+    ' Process each task
+    For Each task In taskCollection
+        taskContent = ""
+        ExtractTask CStr(task), taskContent
+        
+        If Len(Trim(taskContent)) > 0 Then
+            dstFileContent = dstFileContent & vbCrLf & taskContent
+        End If
+        
+        ProgressValue = ProgressValue + progressIncrement
+        UpdateProgress ProgressValue
+    Next task
+   
+    dstFileContent = dstFileContent & vbCrLf & "</Tasks>"
+    
+    Exit Sub
+    
+ErrorHandler:
+    LogError "RetrieveTasks", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ExtractTask
+' Extracts and processes a specific task
+'------------------------------------------------------------------------------------
+Sub ExtractTask(TaskName As String, ByRef returnString As String)
+    Dim TaskString As String
+    Dim modifiedString As String
+    Dim modifiedStringTask As String
+    Dim isSafetyClass As Boolean
+    Dim isESMode As Boolean
+    
+    On Error GoTo ErrorHandler
+    
+    ' Extract the task content
+    TaskString = ExtractContent(TaskName, "Task", SourceLibrary)
+    If Len(Trim(TaskString)) = 0 Then
+        LogError "ExtractTask", vbObjectError + 1, "Task content not found", "Task: " & TaskName
+        Exit Sub
+    End If
+    
+    ' Check if this is a safety class task
+    isSafetyClass = (InStr(TaskString, "Class=" & """Safety""") <> 0)
+    isESMode = (InStr(1, DataCache.InputValue("B3"), "ES", vbTextCompare) <> 0)
+    
+    ' Skip safety tasks if not in ES mode
+    If isSafetyClass And Not isESMode Then
+        returnString = ""
+        Exit Sub
+    End If
+    
+    ' Process Main_Area
+    If InStr(TaskString, "Main_Area") > 0 Then
+        modifiedString = ExtractAnglesContent("Main_Area", TaskString)
+        If Len(Trim(modifiedString)) > 0 Then
+            returnString = BuildString(modifiedString, "Main_Area", Areas)
+            modifiedStringTask = Replace(TaskString, modifiedString & vbCrLf, "")
+            TaskString = InsertStringAfterTag(modifiedStringTask, returnString, "<ScheduledPrograms>")
+        End If
+    End If
+    
+    ' Process Safety_Zone
+    If InStr(TaskString, "Safety_Zone") > 0 Then
+        modifiedString = ExtractAnglesContent("Safety_Zone", TaskString)
+        If Len(Trim(modifiedString)) > 0 Then
+            returnString = BuildString(modifiedString, "Safety_Zone", SafeAreas)
+            modifiedStringTask = Replace(TaskString, modifiedString & vbCrLf, "")
+            TaskString = InsertStringAfterTag(modifiedStringTask, returnString, "<ScheduledPrograms>")
+        End If
+    End If
+
+    returnString = TaskString
+    Exit Sub
+    
+ErrorHandler:
+    LogError "ExtractTask", Err.Number, Err.Description, "Task: " & TaskName
+    Resume Next
+End Sub
+'------------------------------------------------------------------------------------
+' BuildCaller
+' Builds a string by replacing placeholders with unique values from a range
+'------------------------------------------------------------------------------------
+Function BuildCaller(InputString As String, rng As Range, ReplaceString As String) As String
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(InputString)) = 0 Then
+        LogError "BuildCaller", vbObjectError + 1, "Input string is empty"
+        Exit Function
+    End If
+    
+    If rng Is Nothing Then
+        LogError "BuildCaller", vbObjectError + 2, "Range is null"
+        Exit Function
+    End If
+    
+    If Len(Trim(ReplaceString)) = 0 Then
+        LogError "BuildCaller", vbObjectError + 3, "Replace string is empty"
+        Exit Function
+    End If
+    
+    ' Find unique values in the range
+    Dim uniqueValues As Object
+    Set uniqueValues = FindUniqueValuesDict(rng)
+    
+    ' Build the string with replacements
+    BuildCaller = BuildString(InputString, ReplaceString, uniqueValues)
+    Exit Function
+    
+ErrorHandler:
+    LogError "BuildCaller", Err.Number, Err.Description, _
+             "Input: " & Left(InputString, 50) & ", Replace: " & ReplaceString
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' BuildString
+' Builds a string by replacing a placeholder with values from a dictionary
+'------------------------------------------------------------------------------------
+Function BuildString(sourceString As String, ReplaceString As String, Optional uniqueValues As Object, Optional QueValues As Object) As String
+    Dim modifiedString As String
+    Dim uniqueValue As Variant
+    Dim uniqueValuesDict As Object
+    Dim TempString As String
+    
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(sourceString)) = 0 Then
+        LogError "BuildString", vbObjectError + 1, "Source string is empty"
+        Exit Function
+    End If
+    
+    If Len(Trim(ReplaceString)) = 0 Then
+        LogError "BuildString", vbObjectError + 2, "Replace string is empty"
+        Exit Function
+    End If
+    
+    ' Use the provided dictionary; if not provided, try QueValues, or create a new one
+    If Not uniqueValues Is Nothing Then
+        Set uniqueValuesDict = uniqueValues
+    ElseIf Not QueValues Is Nothing Then
+        Set uniqueValuesDict = QueValues
+    Else
+        Set uniqueValuesDict = CreateObject("Scripting.Dictionary")
+    End If
+    
+    ' Process each unique value
+    For Each uniqueValue In uniqueValuesDict.Keys
+        TempString = sourceString
+        
+        ' Replace all occurrences of ReplaceString with the current unique value
+        TempString = ReplaceInstancesOfTag(TempString, ReplaceString, CStr(uniqueValue))
+        
+        ' Append to the result
+        modifiedString = modifiedString & TempString & vbCrLf
+    Next uniqueValue
+    
+    ' Remove the trailing newline
+    modifiedString = RemoveTrailingLineBreak(modifiedString)
+    
+    BuildString = modifiedString
+    Exit Function
+
+ErrorHandler:
+    LogError "BuildString", Err.Number, Err.Description, _
+             "Source: " & Left(sourceString, 50) & ", Replace: " & ReplaceString
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' ExtractAnglesContent
+' Extracts content from XML-like tags containing a specific search string
+'------------------------------------------------------------------------------------
+Function ExtractAnglesContent(searchString As String, sourceString As String) As String
+    Dim regex As Object
+    Dim matches As Object
+    Dim match As Object
+    Dim extractedContent As String
+    
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(searchString)) = 0 Then
+        LogError "ExtractAnglesContent", vbObjectError + 1, "Search string is empty"
+        Exit Function
+    End If
+    
+    If Len(Trim(sourceString)) = 0 Then
+        LogError "ExtractAnglesContent", vbObjectError + 2, "Source string is empty"
+        Exit Function
+    End If
+    
+    ' Create a regular expression object
+    Set regex = GetRegEx()
+    If regex Is Nothing Then Exit Function
+    
+    regex.Global = True
+    regex.pattern = "<[^>]*" & searchString & "*[^>]*\/>"
+    
+    ' Find all matches of the <*> tags in the input string
+    Set matches = regex.Execute(sourceString)
+    
+    ' Iterate over the matches and extract the content of the tag containing the search string
+    For Each match In matches
+        If InStr(match.value, searchString) > 0 Then
+            extractedContent = match.value
+            Exit For
+        End If
+    Next match
+    
+    ' Check if a matching content was found
+    If extractedContent <> "" Then
+        ' Return the extracted content
+        ExtractAnglesContent = extractedContent
+    Else
+        ' No matching content was found - log error instead of ending execution
+        LogError "ExtractAnglesContent", vbObjectError + 3, "Content not found", _
+                 "Search: " & searchString
+    End If
+    
+    Exit Function
+    
+ErrorHandler:
+    LogError "ExtractAnglesContent", Err.Number, Err.Description, _
+             "Search: " & searchString
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' ProcessUTF8TextFileWithText
+' Processes the final content and saves it to a file
+'------------------------------------------------------------------------------------
+Sub ProcessUTF8TextFileWithText()
+    Dim returnString As String
+    Dim dstFilePath As String
+    Dim prefixText As String
+    Dim suffixText As String
+    Dim prefixTextSafe As String
+    Dim EnetPortText As String
+    Dim suggestedFileName As String
+    Dim cellValue As String
+    
+    On Error GoTo ErrorHandler
+
+    ' Get the suggested file name from the specific cell
+    suggestedFileName = DataCache.InputValue("B2")
+    
+    ' Prompt the user to select the destination file with the default file name prefilled
+    dstFilePath = Application.GetSaveAsFilename(InitialFileName:=CStr(suggestedFileName), _
+                                               FileFilter:="L5X Files (*.L5X), *.L5X")
+
+    If dstFilePath = "False" Then
+        MsgBox "No file selected.", vbInformation, "Operation Cancelled"
+        Exit Sub
+    End If
+    
+    ' Extract text from ranges
+    prefixText = ExtractTextFromRange("PrefixTextRange")
+    prefixTextSafe = ExtractTextFromRange("PrefixTextRangeSafe")
+    suffixText = ExtractTextFromRange("SuffixTextRange")
+    
+    ' Validate extracted text
+    If prefixText = "" Or prefixTextSafe = "" Or suffixText = "" Then
+        MsgBox "Error accessing text ranges.", vbExclamation, "Missing Text"
+        Exit Sub
+    End If
+    
+    ' Get cell value for conditional processing
+    cellValue = DataCache.InputValue("B3")
+   
+    ' Special handling for "L8" in cell value
+    If InStr(1, cellValue, "L8", vbTextCompare) > 0 Then
+       EnetPortText = ExtractTextFromRange("ProjectL8")
+    End If
+    
+    ' Process based on ES mode
+    If InStr(1, cellValue, "ES", vbTextCompare) > 0 Then
+        ' ES mode - process safety tag mapping
+        returnString = ExtractContent(", ", "SafetyTagMap", SourceLibrary)
+        If Len(Trim(returnString)) > 0 Then
+            returnString = SafetyTagMapping(returnString)
+            dstFileContent = prefixTextSafe & vbCrLf & returnString & vbCrLf & _
+                            "</SafetyInfo>" & vbCrLf & dstFileContent
+        Else
+            LogError "ProcessUTF8TextFileWithText", vbObjectError + 1, _
+                     "SafetyTagMap content not found in ES mode"
+            dstFileContent = prefixTextSafe & vbCrLf & dstFileContent
+        End If
+    Else
+        ' Standard mode
+        dstFileContent = prefixText & vbCrLf & dstFileContent
+    End If
+
+    ' Add EnetPortText if available
+    If EnetPortText <> "" Then
+        dstFileContent = dstFileContent & vbCrLf & EnetPortText
+    End If
+    
+    ' Add suffix text
+    dstFileContent = dstFileContent & vbCrLf & suffixText
+    
+    ' Final cleanup of content
+    dstFileContent = Replace(dstFileContent, "NO_MSNO_MS_", "NO_MS_", , , vbTextCompare)
+
+    ' Save the modified content to the destination file
+    SaveToFile dstFilePath, dstFileContent
+    
+    MsgBox "File processed successfully.", vbInformation, "Success"
+    Exit Sub
+
+ErrorHandler:
+    LogError "ProcessUTF8TextFileWithText", Err.Number, Err.Description, _
+             "Path: " & dstFilePath
+    MsgBox "Error processing file: " & Err.Description, vbExclamation, "Error"
+    Resume Next
+End Sub
+'------------------------------------------------------------------------------------
+' SafetyTagMapping
+' Processes safety tag mapping data
+'------------------------------------------------------------------------------------
+Function SafetyTagMapping(InputString As String) As String
+    Dim returnString As String
+    Dim ResultString As String
+    Dim pairs As Variant
+    Dim pair As Variant
+    Dim area As Variant
+    Dim processedMSTags As Object
+    
+    On Error GoTo ErrorHandler
+    
+    ' Track which MS tags we've already processed to avoid duplicates
+    Set processedMSTags = CreateObject("Scripting.Dictionary")
+    
+    ' Input validation
+    If Len(Trim(InputString)) = 0 Then
+        LogError "SafetyTagMapping", vbObjectError + 1, "Input string is empty"
+        SafetyTagMapping = "<SafetyTagMap></SafetyTagMap>"
+        Exit Function
+    End If
+    
+    ' Remove enclosing tags
+    InputString = Replace(InputString, "<SafetyTagMap>", "")
+    InputString = Replace(InputString, "</SafetyTagMap>", "")
+
+    ' Split the string into pairs
+    pairs = Split(InputString, ", ")
+    
+    ' Process each pair
+    For Each pair In pairs
+        ResultString = ""
+        
+        ' Check if the pair contains "Area" - these need to be processed for each area
+        If InStr(1, CStr(pair), "Area", vbTextCompare) > 0 Then
+            ' Loop through all SafeAreas and process each one
+            For Each area In SafeAreas.Keys
+                ProcessRungs CStr(pair) & ",", ResultString, "SafetyTagMap", CStr(area)
+            Next area
+            
+            ' Add result if we got something
+            If Len(Trim(ResultString)) > 0 Then
+                ResultString = Replace(ResultString, vbCrLf, "")
+                If Len(returnString) > 0 And Right(returnString, 1) <> "," Then
+                    returnString = returnString & ", "
+                End If
+                returnString = returnString & ResultString
+            End If
+            
+        ElseIf InStr(1, CStr(pair), "_MS_Run=", vbTextCompare) > 0 Then
+            ' Special handling for MS safety tags
+            ' Process template tags and track what we've added
+            ResultString = ProcessMSSafetyTag(CStr(pair), processedMSTags)
+            
+            ' Add result if we got something
+            If Len(Trim(ResultString)) > 0 Then
+                ResultString = Replace(ResultString, vbCrLf, "")
+                If Len(returnString) > 0 And Right(returnString, 1) <> "," Then
+                    returnString = returnString & ", "
+                End If
+                returnString = returnString & ResultString
+            End If
+            
+        ElseIf Len(Trim(CStr(pair))) > 0 Then
+            ' Process all other non-empty pairs normally
+            ProcessRungs CStr(pair) & ",", ResultString, "SafetyTagMap", ""
+            
+            ' Add result if we got something
+            If Len(Trim(ResultString)) > 0 Then
+                ResultString = Replace(ResultString, vbCrLf, "")
+                If Len(returnString) > 0 And Right(returnString, 1) <> "," Then
+                    returnString = returnString & ", "
+                End If
+                returnString = returnString & ResultString
+            End If
+        End If
+    Next pair
+    
+    ' Build MS safety tags from dictionary (only ones not already processed)
+    Dim msSafetyTags As String
+    msSafetyTags = BuildMSSafetyTagsFromDict(processedMSTags)
+    If Len(msSafetyTags) > 0 Then
+        If Len(returnString) > 0 And Right(returnString, 1) <> "," Then
+            returnString = returnString & ", "
+        End If
+        returnString = returnString & msSafetyTags
+    End If
+    
+    ' Clean up - remove trailing comma/space if present
+    returnString = Trim(returnString)
+    If Right(returnString, 1) = "," Then
+        returnString = Left(returnString, Len(returnString) - 1)
+    End If
+    
+    ' Return the final mapped content with proper spacing
+    SafetyTagMapping = "<SafetyTagMap>" & returnString & "</SafetyTagMap>"
+    Exit Function
+    
+ErrorHandler:
+    LogError "SafetyTagMapping", Err.Number, Err.Description
+    SafetyTagMapping = "<SafetyTagMap></SafetyTagMap>"
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' ProcessMSSafetyTag
+' Process a single MS safety tag pair - handles template replacement
+'------------------------------------------------------------------------------------
+Function ProcessMSSafetyTag(tagPair As String, processedTags As Object) As String
+    Dim msTagName As String
+    Dim equalPos As Long
+    Dim sourceSheet As Worksheet
+    Dim lastRow As Long
+    Dim currentRow As Long
+    Dim templateTag As String
+    Dim actualTag As String
+    Dim resultPairs As String
+    
+    On Error GoTo ErrorHandler
+    
+    ' Extract the MS tag name from the pair (everything before _Run=)
+    equalPos = InStr(1, tagPair, "_Run=")
+    If equalPos > 0 Then
+        msTagName = Left(tagPair, equalPos - 1)
+    Else
+        ProcessMSSafetyTag = ""
+        Exit Function
+    End If
+    
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    lastRow = sourceSheet.Range("G5").value
+    resultPairs = ""
+    
+    ' Look for this template tag in column AD (30) and get replacements from AC (29)
+    For currentRow = 17 To lastRow
+        templateTag = sourceSheet.Cells(currentRow, 30).value ' Column AD - template
+        actualTag = sourceSheet.Cells(currentRow, 29).value ' Column AC - actual
+        
+        ' If this row has the template MS tag we're looking for
+        If templateTag = msTagName And Len(actualTag) > 0 And actualTag <> "NO_MS" Then
+            ' Only add if we haven't processed this tag yet
+            If Not processedTags.Exists(actualTag) Then
+                ' Create the safety tag pair for the actual tag
+                If Len(resultPairs) > 0 Then
+                    resultPairs = resultPairs & ", "
+                End If
+                resultPairs = resultPairs & actualTag & "_Run=" & actualTag & "_Run_Safe"
+                processedTags.Add actualTag, True
+            End If
+        End If
+    Next currentRow
+    
+    ProcessMSSafetyTag = resultPairs
+    Exit Function
+    
+ErrorHandler:
+    LogError "ProcessMSSafetyTag", Err.Number, Err.Description
+    ProcessMSSafetyTag = ""
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' BuildMSSafetyTagsFromDict
+' Builds MS safety tag pairs from the dictionary (excluding already processed tags)
+'------------------------------------------------------------------------------------
+Function BuildMSSafetyTagsFromDict(processedTags As Object) As String
+    Dim sourceSheet As Worksheet
+    Dim lastRow As Long
+    Dim currentRow As Long
+    Dim msTag As String
+    Dim resultPairs As String
+    
+    On Error GoTo ErrorHandler
+    
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    lastRow = sourceSheet.Range("G5").value
+    resultPairs = ""
+    
+    ' Look for all MS tags in column AC (29) that aren't templates
+    For currentRow = 17 To lastRow
+        msTag = sourceSheet.Cells(currentRow, 29).value ' Column AC - actual MS tags
+        
+        ' Check if this is an actual MS tag (not NO_MS and contains _MS)
+        If Len(msTag) > 0 And msTag <> "NO_MS" And _
+           InStr(1, msTag, "_MS", vbTextCompare) > 0 Then
+            
+            ' Add if not already processed
+            If Not processedTags.Exists(msTag) Then
+                If Len(resultPairs) > 0 Then
+                    resultPairs = resultPairs & ", "
+                End If
+                resultPairs = resultPairs & msTag & "_Run=" & msTag & "_Run_Safe"
+                processedTags.Add msTag, True
+            End If
+        End If
+    Next currentRow
+    
+    BuildMSSafetyTagsFromDict = resultPairs
+    Exit Function
+    
+ErrorHandler:
+    LogError "BuildMSSafetyTagsFromDict", Err.Number, Err.Description
+    BuildMSSafetyTagsFromDict = ""
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' CreateMSTagAreaDictionary
+' Creates a dictionary of MS tags and their associated areas
+' Returns: Dictionary with MS tag as key and area as value
+'------------------------------------------------------------------------------------
+Function CreateMSTagAreaDictionary() As Object
+    Dim msAreaDict As Object
+    Dim sourceSheet As Worksheet
+    Dim lastRow As Long
+    Dim currentRow As Long
+    Dim msTag As String
+    Dim areaName As String
+    Dim debugMsg As String
+    
+    On Error GoTo ErrorHandler
+    
+    Set msAreaDict = CreateObject("Scripting.Dictionary")
+    Set sourceSheet = ThisWorkbook.Sheets("Dict")
+    
+    ' Get the last row from G5
+    lastRow = sourceSheet.Range("G5").value
+    
+    ' Loop through rows looking for MS tags and their areas
+    For currentRow = 17 To lastRow
+        msTag = sourceSheet.Cells(currentRow, 29).value ' Column AC - MS tags
+        areaName = sourceSheet.Cells(currentRow, 3).value ' Column C - Area names
+        
+        ' Check if this row has an MS tag (not NO_MS and contains _MS)
+        If Len(msTag) > 0 And msTag <> "NO_MS" And _
+           InStr(1, msTag, "_MS", vbTextCompare) > 0 And _
+           Len(areaName) > 0 Then
+            
+            ' Add to dictionary if not already present
+            If Not msAreaDict.Exists(msTag) Then
+                msAreaDict.Add msTag, areaName
+            End If
+        End If
+    Next currentRow
+
+    
+    If msAreaDict.count = 0 Then
+        debugMsg = debugMsg & "No MS tags with area assignments found!" & vbCrLf
+    End If
+      
+    Set CreateMSTagAreaDictionary = msAreaDict
+    Exit Function
+    
+ErrorHandler:
+    MsgBox "Error in CreateMSTagAreaDictionary: " & Err.Description, vbExclamation
+    Set CreateMSTagAreaDictionary = CreateObject("Scripting.Dictionary")
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' GetRangeTextLines
+' Retrieves lines of text from a range as an array
+'------------------------------------------------------------------------------------
+Function GetRangeTextLines(rng As Range) As Variant
+    Dim arrLines() As Variant
+    Dim cell As Range
+    Dim lineIndex As Long
+    
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If rng Is Nothing Then
+        LogError "GetRangeTextLines", vbObjectError + 1, "Range is null"
+        Exit Function
+    End If
+    
+    ' Dimension array to hold all cell values
+    ReDim arrLines(1 To rng.Cells.count)
+
+    ' Extract values from cells
+    lineIndex = 1
+    For Each cell In rng.Cells
+        arrLines(lineIndex) = cell.value
+        lineIndex = lineIndex + 1
+    Next cell
+
+    GetRangeTextLines = arrLines
+    Exit Function
+    
+ErrorHandler:
+    LogError "GetRangeTextLines", Err.Number, Err.Description, _
+             "Range: " & rng.address
+    Resume Next
+End Function
+'------------------------------------------------------------------------------------
+' ExtractTextFromRange
+' Extracts text from a named range
+'------------------------------------------------------------------------------------
+Function ExtractTextFromRange(namedRange As String) As String
+    Dim textRange As Range
+    Dim textLines As Variant
+    
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(namedRange)) = 0 Then
+        LogError "ExtractTextFromRange", vbObjectError + 1, "Named range is empty"
+        Exit Function
+    End If
+    
+    ' Get the range from the name
+    Set textRange = ThisWorkbook.Names(namedRange).RefersToRange
+    
+    If textRange Is Nothing Then
+        LogError "ExtractTextFromRange", vbObjectError + 2, "Named range not found", _
+                 "Range: " & namedRange
+        ExtractTextFromRange = ""
+    Else
+        ' Get the text lines and join them
+        textLines = GetRangeTextLines(textRange)
+        If IsArray(textLines) Then
+            ExtractTextFromRange = Join(textLines, vbNewLine)
+        Else
+            ExtractTextFromRange = ""
+        End If
+    End If
+    
+    Exit Function
+    
+ErrorHandler:
+    LogError "ExtractTextFromRange", Err.Number, Err.Description, _
+             "Range: " & namedRange
+    ExtractTextFromRange = ""
+    Resume Next
+End Function
+
+

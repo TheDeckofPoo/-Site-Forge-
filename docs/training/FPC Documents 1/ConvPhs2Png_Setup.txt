@@ -1,0 +1,117 @@
+Setting up the ConvPhs2Png Batch Job for Dashboard "Wallpaper" Images
+
+NOTE: Only BrownShoe Uses this method to transfer conveyor images.
+Newer jobs use SendConvImage instead, which sends the image via an ActiveMQ connection.
+
+ConvPhs2Png is part of the process used to transfer an image of the conveyor screen
+in FortnaPlus Control periodically to the Dashboard viewer.  Typically, it is
+updated once per minute -- if the conveyor image changes.  ConvPhs2Png takes an
+image captured in the QNX proprietary image format "PHS" and converts it to the
+compressed format "PNG", with an intermediate stop at format "BMP".  It also copies
+the image to the application server using secure copy, and then notifies the
+Application Server that the new image is available by delivering a message to
+ActiveMQ (to topic WCS.UI.VIEW.IMAGE).
+
+Here is the complete setup procedure:
+  Define the screen capture within FortnaPlus Control:
+    Set up line 1 in table ScreenCapture to write the image to a file in the RUN
+    directory called fpcscreen
+
+      Name = Screen Capture
+      Enable = Y
+      OverWrite = N
+      UpdateInterval = 60 (seconds)
+      StartPageX = 0
+      StartPageY = 0
+      EndPageX = 1200
+      EndPageY = 1200
+      FileName = fpcscreen
+
+  Edit the ConvPhs2Png script in the RUN directory.  Set REMOTEHOST to WCS_OUTBOUND,
+  which must be defined in /etc/hosts with the IP address of the Application Server
+  machine.
+
+  Set up the pgp keys for user fortna on the QNX system that will provide the
+  images.
+    1. Log in to QNX as user fortna.  (Or 'su - fortna' from root)
+    2. ssh to the application server machine to cause the local .ssh directory to be
+       created:  ssh fortna@WCS_OUTBOUND (password: fortna)
+    3. Log out (exit) again to return to QNX.
+    4. Change to the .ssh directory:  cd .ssh
+    5. Generate a pgp key pair:  ssh-keygen -t dsa -f `hostname`-dsa
+       NOTE: `hostname` will run the hostname command and substitute the answer
+       so if the hostname is CP1, the command will be ssh-keygen -t dsa -f CP1-dsa
+    6. When prompted for a passphrase, just hit Enter
+    7. Set the default private key to the value just generated:
+         ln -s `hostname`-dsa id_dsa
+    8. Copy the public key to the application server:
+         scp `hostname`-dsa.pub fortna@WCS_OUTBOUND:.ssh
+       NOTE: That is WCS_OUTBOUND colon period ssh
+    9. Append the file just copied to the authorized_keys2 file on the application
+       server:  echo "cat .ssh/`hostname`-dsa.pub >> .ssh/authorized_keys2" | ssh fortna@WCS_OUTBOUND
+   10. Set the permissions on the authorized_keys2 file on the application server:
+         ssh fortna@WCS_OUTBOUND chmod 644 .ssh/authorized_keys2
+   11. Verify that user fortna can now log in to the application server without a
+       password:  ssh fortna@WCS_OUTBOUND
+
+  In FortnaPlus Control, in the Batches menu, set up two batches:
+    File_Name = Print Main Screen
+    HowOften = 60
+    Increment = Sec
+    Type = Elapsed
+    Process = GUI
+    Machine = <this machine's name>
+    InternalProc = PrintMainScreen
+
+    and
+
+    File_Name = ConvPhs2Png
+    HowOften = 60
+    Increment = Sec
+    Type = Elapsed
+    Process = GUI
+    Machine = <this machine's name>
+    DoFile = Y
+
+  Follow the instructions in document "Dashboard-Portal Configuration.docx" to
+  set up a "Go View 0" batch and a map for "View 0" to adjust the image content.
+
+TROUBLESHOOTING:
+
+If FortnaPlus Control is started using the UPS_Batch script (as it should be),
+the console output will be written to /tmp/error.  Look there for error messages
+from FortnaPlus Control, and from ConvPhs2Png.
+
+If you see a message similar to the following, the pgp key signature has changed for
+the remote host:
+
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+@    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!     @
+@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!
+Someone could be eavesdropping on you right now (man-in-the-middle attack)!
+It is also possible that the RSA host key has just been changed.
+The fingerprint for the RSA key sent by the remote host is
+39:a9:c3:68:50:72:1e:3f:d7:2c:ea:a1:95:68:fc:98.
+Please contact your system administrator.
+Add correct host key in /home/fortna/.ssh/known_hosts to get rid of this message.
+Offending key in /home/fortna/.ssh/known_hosts:4
+RSA host key for 172.26.6.18 has changed and you have requested strict checking.
+Host key verification failed.
+
+To correct this, as user fortna on the QNX machine, edit the known_hosts file and
+remove the 'Offending key' entry.  Use ssh to connect to the host.  It will prompt
+you with a warning about connecting to an unknown host.  Answer 'yes'.  Exit from
+the connection and connect again with ssh.  If everything is working properly, you should connect without being prompted for anything, including a password.
+
+If you get a message in the console output like: "ldd:FATAL: Could not load library
+libpng12.so.0", add these lines near the top of ConvPhs2Png:
+  #bmp2png needs this
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+The application that receives the message that prompts the Dashboard to load the
+updated image expects a "text" message (not a "byte" message).  Make sure the
+stompput call in ConvPhs2Png has "text" as the 7th parameter.
+
+TRK Aug-2011
+TRK Mar-2016

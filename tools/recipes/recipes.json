@@ -1,0 +1,89 @@
+{
+  "recipes": [
+    {
+      "id": "clone-device",
+      "title": "Clone device from RUN",
+      "summary": "Copy any device already in the RUN package — conveyor, spiral, photoeye, motor, scanner, or other table row — with a new name and optional X/Y offset.",
+      "tasks": ["conveyor", "photoeye", "spiral", "motor", "device"],
+      "doc_refs": [
+        "FPC Documents 1/FPC-IOCard-Interfaces.docx",
+        "FPC Docs 3/FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx",
+        "FPC Documents 1/FPC-Motor-Startup-Chains.docx"
+      ],
+      "tables": ["FORTNA/*.asc", "PROJECT/*.asc"],
+      "steps": [
+        "Import RUN .tar.gz — dashboard scans all FORTNA and PROJECT tables for devices.",
+        "Filter by category (conveyor, spiral, photoeye, motor, …) or browse all devices in the RUN.",
+        "Pick a template device already configured on site (e.g. P106, LANE1 SPIRAL, PE106_A).",
+        "Enter the new device name and optional X/Y offset for layout placement.",
+        "Automation clones the template row and matching rows in related tables (spiral gap bits, full lines, etc.).",
+        "Review cloned rows in workspace/active, then repack to exports/.",
+        "Deploy to QNX and verify in View I/O / layout."
+      ],
+      "params": [
+        {"name": "category", "label": "Device category", "example": "conveyor"},
+        {"name": "template", "label": "Template device", "example": "P106"},
+        {"name": "newName", "label": "New device name", "example": "P106_NEW"},
+        {"name": "offsetX", "label": "X offset", "example": "600"},
+        {"name": "offsetY", "label": "Y offset", "example": "0"},
+        {"name": "cloneRelated", "label": "Clone related table rows", "example": "true"}
+      ]
+    },
+    {
+      "id": "add-photoeye",
+      "title": "Add photoeye to conveyor",
+      "summary": "Insert a PHOTOCELL row in Conveyor.asc near a belt section and assign I/O word/bit.",
+      "tasks": ["photoeye", "conveyor", "io"],
+      "doc_refs": [
+        "FPC-Docs 2/FPC-Photoeye-Status-Reporting.docx",
+        "FPC Documents 1/FPC-IOCard-Interfaces.docx",
+        "FPC Docs 3/FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx"
+      ],
+      "tables": ["FORTNA/Conveyor.asc", "FORTNA/Configio.asc"],
+      "steps": [
+        "Import RUN .tar.gz into Workspace (inbox → active extract).",
+        "Pick target conveyor (e.g. P106) from the conveyor list.",
+        "Automation clones nearest PHOTOCELL row and sets IO_Name, coordinates, and I/O address.",
+        "Review Conveyor.asc in workspace/active — verify X/Y placement on layout.",
+        "Update Configio.asc if your site requires explicit digital I/O mapping.",
+        "Repack modified RUN to exports/ and deploy to QNX /SortPlus/RUN.",
+        "Restart FortnaPlus and test photoeye in View I/O."
+      ],
+      "params": [
+        {"name": "conveyor", "label": "Conveyor name", "example": "P106"},
+        {"name": "peName", "label": "Photoeye IO_Name", "example": "PE106_A"},
+        {"name": "ioWord", "label": "I/O word (optional)", "example": "104"},
+        {"name": "ioBit", "label": "I/O bit (optional)", "example": "8"}
+      ]
+    },
+    {
+      "id": "add-printer",
+      "title": "Add Print & Apply printer",
+      "summary": "Configure Machine, PrinterBoss, PrintApplyLine, and LabelTemplates for a new Zebra printer.",
+      "tasks": ["printer"],
+      "doc_refs": [
+        "P&A Documents/FPC-PNA-ConfigurationChecklist.docx",
+        "P&A Documents/FPC-PNA-Print-Apply-Configuration.docx",
+        "P&A Documents/FPC-PNA-ZebraPrinterConfiguration.docx"
+      ],
+      "tables": [
+        "FORTNA/Machine.asc",
+        "PROJECT/PrinterBoss.asc",
+        "PROJECT/PrintApplyLine.asc",
+        "PROJECT/PrinterUpdPnts.asc",
+        "PROJECT/LabelTemplates.asc"
+      ],
+      "steps": [
+        "Add Machine table entry: CLOSE_CLIENT, AlphaNum, port 9100, SERV process.",
+        "Add /etc/hosts entry for printer IP.",
+        "Add PrinterBoss row linked to PrintApplyLine.",
+        "Bump NumPrinters on PrintApplyLine.",
+        "Define PrinterUpdPnts (Send Label, Tamp, Verify).",
+        "Add LabelTemplates row for label type.",
+        "Enable PA batches (Ctrl, Serv, Sort, GUI).",
+        "Disable Zebra TIMEOUT CHECKING in printer web UI."
+      ],
+      "params": []
+    }
+  ]
+}

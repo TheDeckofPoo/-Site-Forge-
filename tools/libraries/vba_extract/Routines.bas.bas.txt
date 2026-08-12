@@ -1,0 +1,904 @@
+Attribute VB_Name = "Routines"
+Option Explicit
+Private rungDict As Object
+
+'------------------------------------------------------------------------------------
+' GetRoutines
+' Processes all routines found in ProgramString.
+'------------------------------------------------------------------------------------
+Sub GetRoutines( _
+    ByVal ProgramString As String, _
+    ByVal ProgramName As String, _
+    ByRef RoutineResultString As String, _
+    Optional ByVal areaName As String)
+
+    On Error GoTo ErrHandler
+    
+    Dim Routines As Object
+    Dim RoutineValue As Variant
+    Dim SingleRoutineResult As String
+     
+    RoutineResultString = ""
+    Set rungDict = CreateObject("Scripting.Dictionary")
+    
+    ' Extract routine names from the program content
+    Set Routines = ExtractNamesDict("Routine Name=", ExtractContent("Routine", "Routines", ProgramString))
+    
+    ' Process each valid routine
+    For Each RoutineValue In Routines.Keys
+        Dim key As String
+        key = Trim(CStr(RoutineValue)) & "|" & areaName & "|" & ProgramName
+        
+        If InStr(1, CStr(RoutineValue), "Main_Routine", vbTextCompare) = 0 And _
+           Not IsRoutineEmpty(CStr(RoutineValue), ProgramString) Then
+            SingleRoutineResult = ""
+            ProcessRoutine CStr(RoutineValue), ProgramString, ProgramName, SingleRoutineResult, areaName
+        End If
+        
+        ' Append result if not empty
+        If Trim(SingleRoutineResult) <> "" Then
+            RoutineResultString = AppendUnique(RoutineResultString, SingleRoutineResult)
+        End If
+    Next RoutineValue
+    
+    ' Replace area tags if needed
+    If InStr(1, ProgramName, "Main_Area", vbTextCompare) > 0 Then
+        ReplaceAreaTags RoutineResultString, areaName, "Main_Area"
+    ElseIf InStr(1, ProgramName, "Safety_Zone", vbTextCompare) > 0 Then
+        ReplaceAreaTags RoutineResultString, areaName, "Safety_Zone", "Safety_Area"
+    End If
+
+    Exit Sub
+
+ErrHandler:
+    LogError "GetRoutines", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ReplaceAreaTags
+' Replaces area tags with the specified area name.
+'------------------------------------------------------------------------------------
+Sub ReplaceAreaTags(ByRef ResultString As String, ByVal areaName As String, ParamArray tags() As Variant)
+    On Error GoTo ErrHandler
+    
+    If Trim(areaName) = "" Then Exit Sub
+    
+    Dim i As Long
+    For i = LBound(tags) To UBound(tags)
+        ResultString = Replace(ResultString, tags(i), areaName, 1, -1, vbTextCompare)
+    Next i
+    
+    Exit Sub
+ErrHandler:
+    LogError "ReplaceAreaTags", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ProcessRoutine
+' Extracts routine content and delegates further processing based on routine type.
+'------------------------------------------------------------------------------------
+Sub ProcessRoutine( _
+    ByVal RoutineValue As String, _
+    ByVal ProgramString As String, _
+    ByVal ProgramName As String, _
+    ByRef ResultString As String, _
+    Optional ByVal areaName As String)
+
+    On Error GoTo ErrHandler
+    
+    Dim RoutineString As String
+    Dim RoutineTypes As Collection
+    Dim RoutineType As String
+    
+    ' Extract the routine block
+    RoutineString = ExtractContent("Routine Name=""" & RoutineValue & """", "Routine", ProgramString)
+    
+    ' Find the routine's "Type"
+    Set RoutineTypes = ExtractNamesCol("Routine Name=""" & RoutineValue & """ Type=", RoutineString)
+    RoutineType = DetermineRoutineType(RoutineTypes)
+    
+    If RoutineType <> "" Then
+        ' Narrow down the routine content
+        RoutineString = ExtractContent("Number", RoutineType & "Content", RoutineString)
+        
+        ' Process based on content type
+        If ContainsCData(RoutineString) Or RoutineType = "ST" Then
+            ProcessCDataContent RoutineString, RoutineType, ResultString, RoutineValue, areaName
+        Else
+            RungSetUp RoutineString, RoutineType, ResultString, RoutineValue, areaName
+        End If
+    End If
+    
+    Exit Sub
+ErrHandler:
+    LogError "ProcessRoutine", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ProcessCDataContent
+' Processes routine content that includes CDATA segments.
+'------------------------------------------------------------------------------------
+Private Sub ProcessCDataContent( _
+    ByRef RoutineString As String, _
+    ByVal RoutineType As String, _
+    ByRef ResultString As String, _
+    ByVal RoutineValue As String, _
+    ByVal areaName As String)
+
+    On Error GoTo ErrHandler
+    
+    Dim NewString As String
+    Dim RoutineStringResult As String
+    
+    ' Process each CDATA block
+    Do While ContainsCData(RoutineString)
+        NewString = ""
+        ExtractAndRemoveContent RoutineString, NewString, RoutineType
+        If Trim(NewString) <> "" Then
+            Dim TempRungResult As String
+            ProcessRungs NewString, TempRungResult, RoutineValue, areaName
+            If Trim(TempRungResult) <> "" Then
+                RoutineStringResult = AppendUnique(RoutineStringResult, TempRungResult)
+            End If
+        End If
+    Loop
+    
+    ' Finalize output
+    ResultString = RoutineFin(RoutineStringResult, RoutineType, RoutineValue, areaName)
+    
+    Exit Sub
+ErrHandler:
+    LogError "ProcessCDataContent", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' AppendUnique
+' Appends newText to currentText only if newText is not empty and not already present.
+'------------------------------------------------------------------------------------
+Private Function AppendUnique(ByVal currentText As String, ByVal newText As String) As String
+    On Error GoTo ErrHandler
+
+    ' Early exit if new text is empty
+    If Trim(newText) = "" Then
+        AppendUnique = currentText
+        Exit Function
+    End If
+
+    ' Normalize line endings and whitespace for comparison
+    Dim cleanedCurrent As String, cleanedNew As String
+    cleanedCurrent = Trim(Replace(Replace(currentText, vbCrLf, vbLf), vbTab, " "))
+    cleanedNew = Trim(Replace(Replace(newText, vbCrLf, vbLf), vbTab, " "))
+
+    ' Handle empty current text
+    If cleanedCurrent = "" Then
+        AppendUnique = newText
+        Exit Function
+    End If
+
+    ' Split into lines for more accurate comparison
+    Dim currentLines() As String, newLines() As String
+    currentLines = Split(cleanedCurrent, vbLf)
+    newLines = Split(cleanedNew, vbLf)
+
+    ' Check if new content is already present
+    Dim newContent As String
+    newContent = Join(newLines, vbLf)
+
+    If InStr(1, cleanedCurrent, newContent, vbTextCompare) = 0 Then
+        AppendUnique = currentText & vbCrLf & newText
+    Else
+        AppendUnique = currentText
+    End If
+
+    Exit Function
+
+ErrHandler:
+    LogError "AppendUnique", Err.Number, Err.Description
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' ContainsCData
+' Checks if the routine string contains a CDATA marker.
+'------------------------------------------------------------------------------------
+Private Function ContainsCData(ByVal RoutineString As String) As Boolean
+    ContainsCData = (InStr(1, RoutineString, "<![CDATA[//") > 0)
+End Function
+
+'------------------------------------------------------------------------------------
+' RoutineFin
+' Finalizes the routine string by renumbering lines and wrapping content in XML tags.
+'------------------------------------------------------------------------------------
+Function RoutineFin( _
+    ByVal NewtempString As String, _
+    ByVal RoutineType As String, _
+    ByVal RoutineValue As String, _
+    ByVal areaName As String) As String
+    
+    On Error GoTo ErrHandler
+    
+    If Trim(NewtempString) = "" Then
+        RoutineFin = ""
+        Exit Function
+    End If
+    
+    ' Renumber and format the routine string
+    Dim RoutineStringResult As String
+    RoutineStringResult = RenumberLines(NewtempString)
+    
+    ' Handle area name replacement
+    Dim RoutineName As String
+    RoutineName = IIf(Trim(areaName) <> "", Replace(RoutineValue, "Main_Area", areaName), RoutineValue)
+    
+    ' Create XML wrapper
+    RoutineStringResult = "<Routine Name=""" & RoutineName & """ Type=""" & RoutineType & """>" & vbCrLf & _
+                          "<" & RoutineType & "Content>" & RoutineStringResult & vbCrLf & _
+                          "</" & RoutineType & "Content>" & vbCrLf & "</Routine>"
+    
+    RoutineFin = RoutineStringResult
+    Exit Function
+    
+ErrHandler:
+    LogError "RoutineFin", Err.Number, Err.Description
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' ExtractAndRemoveContent
+' Extracts CDATA blocks and removes them from the original string.
+'------------------------------------------------------------------------------------
+Sub ExtractAndRemoveContent( _
+    ByRef content As String, _
+    ByRef extractedContent As String, _
+    ByVal RoutineType As String)
+
+    On Error GoTo ErrHandler
+    
+    Dim lines As Variant
+    lines = Split(content, vbCrLf)
+    
+    Dim TextLine As String, prevLine As String
+    Dim startExtract As Boolean
+    Dim currentBlock As String, newContent As String
+    Dim i As Long
+    
+    prevLine = ""
+    startExtract = False
+    currentBlock = ""
+    newContent = ""
+    
+    ' Process each line to extract CDATA blocks
+    For i = LBound(lines) To UBound(lines)
+        TextLine = lines(i)
+        
+        If InStr(1, TextLine, "<![CDATA[//") > 0 And currentBlock = "" Then
+            startExtract = True
+            currentBlock = prevLine
+        ElseIf InStr(1, TextLine, "<![CDATA[ ]]>") > 0 And startExtract Then
+            startExtract = False
+            currentBlock = currentBlock & vbCrLf & TextLine
+            
+            ' Apply routine type-specific formatting
+            currentBlock = FormatBlockByType(currentBlock, RoutineType)
+        End If
+        
+        If startExtract Then
+            currentBlock = IIf(currentBlock = "", TextLine, currentBlock & vbCrLf & TextLine)
+        Else
+            newContent = newContent & vbCrLf & TextLine
+        End If
+        
+        prevLine = TextLine
+    Next i
+    
+    If currentBlock = "" Then
+        Err.Raise Number:=9999, Description:="Matching CDATA markers not found!"
+    End If
+    
+    extractedContent = currentBlock
+    content = newContent
+
+    Exit Sub
+ErrHandler:
+    LogError "ExtractAndRemoveContent", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' FormatBlockByType
+' Formats a content block based on routine type
+'------------------------------------------------------------------------------------
+Private Function FormatBlockByType(ByVal block As String, ByVal RoutineType As String) As String
+    Select Case RoutineType
+        Case "ST"
+            FormatBlockByType = block & vbCrLf & "</Line>"
+        Case "RLL"
+            FormatBlockByType = "<Rung Number=""0"" Type=""N"">" & vbCrLf & _
+                               block & vbCrLf & "</Comment>" & vbCrLf & _
+                               "<Text>" & vbCrLf & "<![CDATA[NOP();]]>" & vbCrLf & _
+                               "</Text>" & vbCrLf & "</Rung>"
+        Case Else
+            FormatBlockByType = block
+    End Select
+End Function
+
+'------------------------------------------------------------------------------------
+' RungSetUp
+' Processes rungs in a routine string, ensuring each <Rung> block is intact.
+'------------------------------------------------------------------------------------
+Sub RungSetUp( _
+    ByVal RoutineString As String, _
+    ByVal RoutineType As String, _
+    ByRef ResultString As String, _
+    ByVal RoutineValue As String, _
+    ByVal areaName As String)
+
+    On Error GoTo ErrHandler
+    
+    Dim localRungDict As Object
+    Set localRungDict = CreateObject("Scripting.Dictionary")
+    
+    Dim rungBlocks As Object
+    Set rungBlocks = ParseFullRungs(RoutineString)
+    
+    ' Defensive check
+    If rungBlocks Is Nothing Or rungBlocks.count = 0 Then
+        ResultString = RoutineString
+        Exit Sub
+    End If
+    
+    Dim RungValue As Variant, rungString As String
+    Dim RoutineStringResult As String
+    Dim Temp As String: Temp = ""
+    
+    ' Process each rung block
+    For Each RungValue In rungBlocks.Items
+        rungString = CStr(RungValue)
+        RoutineStringResult = ""
+        
+        ' Determine processing approach based on content
+        If ShouldUseUniqueRungSetup(rungString, RoutineValue) Then
+            RoutineStringResult = UniqueRungSetUp(rungString, RoutineValue, areaName)
+        Else
+            ProcessRungs rungString, RoutineStringResult, RoutineValue, areaName
+        End If
+        
+        ' NOP fallback
+        If InStr(1, rungString, "NOP", vbTextCompare) > 0 And RoutineStringResult = "" Then
+            RoutineStringResult = rungString
+        End If
+        
+        ' Add to results if unique
+        If Trim(RoutineStringResult) <> "" And Not localRungDict.Exists(Trim(RoutineStringResult)) Then
+            localRungDict.Add Trim(RoutineStringResult), ""
+            Temp = AppendUnique(Temp, RoutineStringResult)
+        End If
+    Next RungValue
+    
+    ' Special handling for "Comm_Logic" routines
+    If InStr(1, RoutineValue, "Comm_Logic", vbTextCompare) > 0 Then
+        Temp = ReorderRows(Temp, RoutineValue, RoutineType)
+    End If
+    
+    ' Finalize result
+    ResultString = RoutineFin(Temp, RoutineType, RoutineValue, areaName)
+    
+    Exit Sub
+
+ErrHandler:
+    LogError "RungSetUp", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ShouldUseUniqueRungSetup
+' Determines if a rung should be processed with the specialized UniqueRungSetUp function
+'------------------------------------------------------------------------------------
+Private Function ShouldUseUniqueRungSetup(ByVal rungString As String, ByVal RoutineValue As String) As Boolean
+    ShouldUseUniqueRungSetup = (InStr(1, rungString, "(Instruction", vbTextCompare) > 0 Or _
+       InStr(1, RoutineValue, "Conv_PI", vbTextCompare) > 0 Or _
+       InStr(1, RoutineValue, "Control_Station", vbTextCompare) > 0 Or _
+       InStr(1, RoutineValue, "Comm_Logic", vbTextCompare) > 0 Or _
+       InStr(1, RoutineValue, "System_Logic", vbTextCompare) > 0)
+End Function
+
+'------------------------------------------------------------------------------------
+' ReorderRows
+' Reorders rung blocks for "Comm_Logic" routines, then calls SortRungs.
+'------------------------------------------------------------------------------------
+Function ReorderRows( _
+    ByVal RoutineString As String, _
+    ByRef RoutineValue As String, _
+    ByVal RoutineType As String) As String
+
+    On Error GoTo ErrHandler
+    
+    ' Renumber the lines first
+    Dim RoutineStringResult As String
+    RoutineStringResult = RenumberLines(RoutineString)
+    
+    ' Parse into rung blocks
+    Dim rungBlocks As Collection
+    Set rungBlocks = ParseRungs(RoutineStringResult)
+    
+    If rungBlocks Is Nothing Or rungBlocks.count = 0 Then
+        ReorderRows = RoutineStringResult
+        Exit Function
+    End If
+    
+    ' Sort the rungs
+    Dim sortedColl As Collection
+    Set sortedColl = SortRungs(rungBlocks)
+    
+    If sortedColl Is Nothing Or sortedColl.count = 0 Then
+        ReorderRows = RoutineStringResult
+        Exit Function
+    End If
+    
+    ' Combine sorted rungs
+    Dim rungItem As Variant, outputString As String
+    For Each rungItem In sortedColl
+        outputString = IIf(outputString = "", rungItem, outputString & vbCrLf & rungItem)
+    Next rungItem
+    
+    ReorderRows = outputString
+    Exit Function
+
+ErrHandler:
+    LogError "ReorderRows", Err.Number, Err.Description
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' ParseRungs
+' Convert Dictionary from ParseFullRungs to a Collection for SortRungs
+'------------------------------------------------------------------------------------
+Private Function ParseRungs(ByVal xmlText As String) As Collection
+    Dim rungDict As Object
+    Set rungDict = ParseFullRungs(xmlText)
+    
+    Dim result As New Collection
+    Dim key As Variant
+    
+    If rungDict Is Nothing Or rungDict.count = 0 Then
+        Set ParseRungs = Nothing
+        Exit Function
+    End If
+    
+    For Each key In rungDict.Items
+        result.Add key
+    Next key
+    
+    Set ParseRungs = result
+End Function
+
+'------------------------------------------------------------------------------------
+' SortRungs
+' Sorts rungs by distinguishing NOP rungs and AOI/normal rungs, then performs bubble-sort.
+'------------------------------------------------------------------------------------
+Function SortRungs(ByVal rungs As Collection) As Collection
+    On Error GoTo ErrHandler
+    
+    Dim nopList As New Collection
+    Dim aoiStorage As New Collection
+    
+    Dim rungText As Variant
+    Dim currentRungDebug As String
+    
+    ' First pass: separate rungs by type
+    For Each rungText In rungs
+        currentRungDebug = Left(rungText, 200)
+        
+        If InStr(1, rungText, "NOP();", vbTextCompare) > 0 Then
+            nopList.Add rungText
+        ElseIf InStr(1, rungText, "AOI_CommDiag(", vbTextCompare) > 0 Then
+            AddToAoiStorage aoiStorage, ExtractCPName(rungText), rungText
+        Else
+            AddToAoiStorage aoiStorage, "", rungText
+        End If
+    Next rungText
+    
+    ' If only NOP rungs exist, return them
+    If aoiStorage.count = 0 Then
+        Set SortRungs = nopList
+        Exit Function
+    End If
+    
+    ' Convert to array for sorting
+    Dim aoiList() As Variant
+    ReDim aoiList(1 To aoiStorage.count, 1 To 2)
+    
+    Dim i As Long
+    For i = 1 To aoiStorage.count
+        aoiList(i, 1) = aoiStorage(i)(1)
+        aoiList(i, 2) = aoiStorage(i)(2)
+    Next i
+    
+    ' Sort AOI rungs
+    SortAoiList aoiList, aoiStorage.count
+    
+    ' Number CommsDiag_GroupX references
+    NumberCommsDiagGroups aoiList, aoiStorage.count
+    
+    ' Combine results
+    Dim result As New Collection
+    CopyCollection nopList, result
+    
+    For i = 1 To aoiStorage.count
+        result.Add aoiList(i, 2)
+    Next i
+    
+    Set SortRungs = result
+    Exit Function
+
+ErrHandler:
+    LogError "SortRungs", Err.Number, Err.Description & " | Rung='" & currentRungDebug & "'"
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' AddToAoiStorage
+' Helper function to add items to AOI storage collection
+'------------------------------------------------------------------------------------
+Private Sub AddToAoiStorage(ByRef storage As Collection, ByVal cpName As String, ByVal rungText As String)
+    Dim item(1 To 2) As Variant
+    item(1) = cpName
+    item(2) = rungText
+    storage.Add item
+End Sub
+
+'------------------------------------------------------------------------------------
+' SortAoiList
+' Sorts the AOI list by CP name with numeric-aware sorting
+'------------------------------------------------------------------------------------
+Private Sub SortAoiList(ByRef aoiList() As Variant, ByVal count As Long)
+    If count <= 1 Then Exit Sub
+    
+    Dim i As Long, j As Long
+    Dim tempCP As String, tempRung As String
+    
+    For i = 1 To count - 1
+        For j = i + 1 To count
+            If CompareNumericStrings(aoiList(i, 1), aoiList(j, 1)) > 0 Then
+                ' Swap items
+                tempCP = aoiList(i, 1)
+                tempRung = aoiList(i, 2)
+                aoiList(i, 1) = aoiList(j, 1)
+                aoiList(i, 2) = aoiList(j, 2)
+                aoiList(j, 1) = tempCP
+                aoiList(j, 2) = tempRung
+            End If
+        Next j
+    Next i
+End Sub
+
+'------------------------------------------------------------------------------------
+' CompareNumericStrings
+' Compares two strings with numeric parts (e.g., CP7N30_1, CP7N30_10)
+' Returns: -1 if str1 < str2, 0 if equal, 1 if str1 > str2
+'------------------------------------------------------------------------------------
+Private Function CompareNumericStrings(ByVal str1 As String, ByVal str2 As String) As Integer
+    On Error GoTo ErrHandler
+    
+    ' If either string is empty, use standard comparison
+    If Len(str1) = 0 Or Len(str2) = 0 Then
+        CompareNumericStrings = StrComp(str1, str2, vbTextCompare)
+        Exit Function
+    End If
+    
+    ' Extract the base part and numeric part
+    Dim base1 As String, base2 As String
+    Dim num1 As Long, num2 As Long
+    
+    ' Find the last underscore to separate base from number
+    Dim underscorePos1 As Long, underscorePos2 As Long
+    underscorePos1 = InStrRev(str1, "_")
+    underscorePos2 = InStrRev(str2, "_")
+    
+    ' If no underscore found, use standard comparison
+    If underscorePos1 = 0 Or underscorePos2 = 0 Then
+        CompareNumericStrings = StrComp(str1, str2, vbTextCompare)
+        Exit Function
+    End If
+    
+    ' Extract base parts (everything before the last underscore)
+    base1 = Left(str1, underscorePos1 - 1)
+    base2 = Left(str2, underscorePos2 - 1)
+    
+    ' Compare base parts first
+    Dim baseCompare As Integer
+    baseCompare = StrComp(base1, base2, vbTextCompare)
+    
+    ' If base parts are different, return that comparison
+    If baseCompare <> 0 Then
+        CompareNumericStrings = baseCompare
+        Exit Function
+    End If
+    
+    ' Extract numeric parts (everything after the last underscore)
+    Dim numStr1 As String, numStr2 As String
+    numStr1 = Mid(str1, underscorePos1 + 1)
+    numStr2 = Mid(str2, underscorePos2 + 1)
+    
+    ' Convert to numbers for comparison
+    If IsNumeric(numStr1) And IsNumeric(numStr2) Then
+        num1 = CLng(numStr1)
+        num2 = CLng(numStr2)
+        
+        ' Compare numbers
+        If num1 < num2 Then
+            CompareNumericStrings = -1
+        ElseIf num1 > num2 Then
+            CompareNumericStrings = 1
+        Else
+            CompareNumericStrings = 0
+        End If
+    Else
+        ' If not numeric, fall back to string comparison
+        CompareNumericStrings = StrComp(numStr1, numStr2, vbTextCompare)
+    End If
+    
+    Exit Function
+    
+ErrHandler:
+    LogError "CompareNumericStrings", Err.Number, Err.Description
+    ' Fall back to standard string comparison on error
+    CompareNumericStrings = StrComp(str1, str2, vbTextCompare)
+End Function
+
+'------------------------------------------------------------------------------------
+' NumberCommsDiagGroups
+' Numbers CommsDiag_GroupX references in batches of 10
+'------------------------------------------------------------------------------------
+Private Sub NumberCommsDiagGroups(ByRef aoiList() As Variant, ByVal count As Long)
+    Dim commsIndex As Long: commsIndex = 0
+    Dim i As Long
+    
+    For i = 1 To count
+        If InStr(1, aoiList(i, 2), "CommsDiag_GroupX", vbTextCompare) > 0 Then
+            commsIndex = commsIndex + 1
+            Dim groupNum As Long
+            groupNum = ((commsIndex - 1) \ 10) + 1
+            aoiList(i, 2) = Replace(aoiList(i, 2), "CommsDiag_GroupX", _
+                                     "CommsDiag_Group" & CStr(groupNum), 1, -1, vbTextCompare)
+        End If
+    Next i
+End Sub
+
+'------------------------------------------------------------------------------------
+' CopyCollection
+' Copies items from source collection to destination collection
+'------------------------------------------------------------------------------------
+Private Sub CopyCollection(ByVal source As Collection, ByRef dest As Collection)
+    Dim item As Variant
+    For Each item In source
+        dest.Add item
+    Next item
+End Sub
+
+'------------------------------------------------------------------------------------
+' ExtractCPName
+' Extracts the CP name from an AOI_CommDiag call in a rung.
+'------------------------------------------------------------------------------------
+Private Function ExtractCPName(ByVal rungText As String) As String
+    Dim startPos As Long, endPos As Long
+    Dim innerArgs As String, parts() As String
+    
+    startPos = InStr(1, rungText, "AOI_CommDiag(", vbTextCompare)
+    If startPos = 0 Then Exit Function
+    
+    startPos = startPos + Len("AOI_CommDiag(")
+    endPos = InStr(startPos, rungText, ")", vbTextCompare)
+    If endPos = 0 Then Exit Function
+    
+    innerArgs = Mid(rungText, startPos, endPos - startPos)
+    parts = Split(innerArgs, ",")
+    
+    If UBound(parts) >= 2 Then
+        ExtractCPName = Trim(parts(2))
+    End If
+End Function
+
+'------------------------------------------------------------------------------------
+' ParseFullRungs
+' Extracts complete rung blocks from XML text.
+'------------------------------------------------------------------------------------
+Private Function ParseFullRungs(ByVal xmlText As String) As Object
+    Dim dict As Object
+    Set dict = CreateObject("Scripting.Dictionary")
+    
+    Dim startPos As Long, endPos As Long
+    Dim rungChunk As String
+    Dim index As Long
+    index = 0
+    
+    startPos = InStr(1, xmlText, "<Rung ", vbTextCompare)
+    Do While startPos > 0
+        endPos = InStr(startPos, xmlText, "</Rung>", vbTextCompare)
+        If endPos = 0 Then Exit Do
+        
+        endPos = endPos + Len("</Rung>")
+        rungChunk = Mid(xmlText, startPos, endPos - startPos)
+        dict.Add index, rungChunk
+        index = index + 1
+        
+        startPos = InStr(endPos + 1, xmlText, "<Rung ", vbTextCompare)
+    Loop
+    
+    Set ParseFullRungs = dict
+End Function
+
+'------------------------------------------------------------------------------------
+' UniqueRungSetUp
+' Applies specialized transformations based on routine naming.
+'------------------------------------------------------------------------------------
+Function UniqueRungSetUp( _
+    ByVal RoutineStringResult As String, _
+    ByRef RoutineValue As String, _
+    ByVal areaName As String) As String
+
+    On Error GoTo ErrHandler
+    
+    Dim ColumnNum As Long, CopyNum As Long
+    
+    ' Determine column based on routine name
+    ColumnNum = IIf(InStr(1, RoutineValue, "Safe", vbTextCompare) > 0, _
+                     FindCellInRowWithMatch(8, areaName), _
+                     FindCellInRowWithMatch(7, areaName))
+    
+    ' Process based on routine type
+    Select Case True
+        Case InStr(1, RoutineStringResult, "(Instruction", vbTextCompare) > 0 And _
+             (ThisWorkbook.Sheets("Dict").Cells(9, ColumnNum).value <> 0 Or _
+              ThisWorkbook.Sheets("Dict").Cells(11, ColumnNum).value <> 0)
+              
+            CopyNum = IIf(InStr(1, RoutineStringResult, "FP", vbTextCompare) > 0, _
+                          ThisWorkbook.Sheets("Dict").Cells(9, ColumnNum).value + _
+                          ThisWorkbook.Sheets("Dict").Cells(11, ColumnNum).value, _
+                          ThisWorkbook.Sheets("Dict").Cells(9, ColumnNum).value)
+                          
+            UniqueRungSetUp = SafeLogic(RoutineStringResult, CopyNum, areaName)
+            
+        Case InStr(1, RoutineValue, "Conv_PI", vbTextCompare) > 0 And _
+             ThisWorkbook.Sheets("Dict").Cells(11, ColumnNum).value <> 0
+             
+            CopyNum = IIf(ThisWorkbook.Sheets("Dict").Cells(11, ColumnNum).value > 20, _
+                          DivideAndRoundUp(ThisWorkbook.Sheets("Dict").Cells(11, ColumnNum).value, 20), _
+                          ThisWorkbook.Sheets("Dict").Cells(11, ColumnNum).value)
+                          
+            UniqueRungSetUp = ConvPI(RoutineStringResult, areaName, CopyNum)
+            
+        Case InStr(1, RoutineValue, "Control_Station", vbTextCompare) > 0 And _
+             ThisWorkbook.Sheets("Dict").Cells(10, ColumnNum).value <> "0"
+             
+            CopyNum = IIf(ThisWorkbook.Sheets("Dict").Cells(10, ColumnNum).value > 5, _
+                          DivideAndRoundUp(ThisWorkbook.Sheets("Dict").Cells(10, ColumnNum).value, 5), _
+                          ThisWorkbook.Sheets("Dict").Cells(10, ColumnNum).value)
+                          
+            UniqueRungSetUp = CtrlStation(RoutineStringResult, areaName, CopyNum)
+            
+        Case InStr(1, RoutineValue, "Comm", vbTextCompare) > 0
+            CopyNum = IIf(ThisWorkbook.Sheets("Dict").Cells(12, 2).value > 10, _
+                          DivideAndRoundUp(ThisWorkbook.Sheets("Dict").Cells(12, 2).value, 10), 1)
+                          
+            UniqueRungSetUp = ModuleCommDiag(RoutineStringResult, CopyNum)
+            
+        Case InStr(1, RoutineValue, "System_Logic", vbTextCompare) > 0
+            UniqueRungSetUp = Replace(RoutineStringResult, "Library", _
+                DataCache.InputValue("B2"), 1, -1, vbTextCompare)
+                
+        Case Else
+            UniqueRungSetUp = RoutineStringResult
+    End Select
+    
+    Exit Function
+ErrHandler:
+    LogError "UniqueRungSetUp", Err.Number, Err.Description
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' DivideAndRoundUp
+' Divides two numbers and rounds up to the nearest whole number.
+'------------------------------------------------------------------------------------
+Function DivideAndRoundUp(ByVal num As Double, ByVal divisor As Double) As Long
+    DivideAndRoundUp = Utilities.DivideAndRoundUp(num, divisor)
+End Function
+'------------------------------------------------------------------------------------
+' ProcessRungs
+' Common "rung replacements" used in both RungSetUp and ProcessCDataContent.
+'------------------------------------------------------------------------------------
+Sub ProcessRungs(InputString As String, ByRef RoutineStringResult As String, ByRef RoutineValue As String, areaName As String)
+    Dim rungString As String
+    Dim RungStringCopy As String
+    Dim tagType As String
+    Dim ColNumber As Object, colNum As Variant
+    Dim RowsWData As Object, rowNum As Variant
+    Dim processedRungs As Object
+    On Error GoTo ErrorHandler
+    
+    If rungDict Is Nothing Then Set rungDict = CreateObject("Scripting.Dictionary")
+    Set processedRungs = CreateObject("Scripting.Dictionary") ' Local tracking of processed rungs
+        
+    ' Create and populate the dictionary for column numbers.
+    Set ColNumber = CreateObject("Scripting.Dictionary")
+    retriveTypes InputString, RoutineValue, tagType, ColNumber
+    
+    If InStr(1, rungString, "MS_Run_Safe", vbTextCompare) > 0 Then
+       ColNumber.Add 30, 30
+       tagType = "P7000_MS"
+    End If
+    
+    
+    For Each colNum In ColNumber.Keys
+        If tagType <> "" Then
+
+        
+            If InStr(1, tagType, "IO", vbTextCompare) > 0 Then
+                Set RowsWData = FindRowsWithMatch(ThisWorkbook.Sheets("IO Dict"), colNum, tagType)
+            ElseIf InStr(1, tagType, "Main_Area", vbTextCompare) > 0 Then
+                Set RowsWData = FindRowsWithAreaMatch(ThisWorkbook.Sheets("Dict"), 3, areaName)
+            ElseIf InStr(1, tagType, "Safety_Area", vbTextCompare) > 0 Then
+                Set RowsWData = FindRowsWithAreaMatch(ThisWorkbook.Sheets("Dict"), 5, areaName)
+            Else
+                Set RowsWData = FindRowsWithMatch(ThisWorkbook.Sheets("Dict"), colNum, tagType)
+            End If
+                               
+            For Each rowNum In RowsWData.Keys
+                RungStringCopy = InputString
+                                
+                If areaName = "" Or _
+                   (areaName <> "" And _
+                    (ThisWorkbook.Sheets("Dict").Cells(rowNum, 3).value = areaName Or _
+                     ThisWorkbook.Sheets("Dict").Cells(rowNum, 5).value = areaName)) Or _
+                     RoutineValue = "SafetyTagMap" Then
+                    
+                    If InStr(1, RoutineValue, "Conv_Jam", vbTextCompare) > 0 Then
+                        RungStringCopy = ConvJam(RungStringCopy, rowNum, areaName)
+                    Else
+                        RungStringCopy = ReplaceEng(RungStringCopy, rowNum, tagType)
+                    End If
+            
+                    ' Only process if the rung was actually modified and is valid
+                    If InputString <> RungStringCopy And _
+                       InStr(1, RungStringCopy, tagType, vbTextCompare) = 0 And _
+                       RungStringCopy <> "" And _
+                       RungStringCopy <> vbCrLf Then
+
+                        ' Use a normalized version of the rung for comparison
+                        Dim normalizedRung As String
+                        normalizedRung = Trim(Replace(RungStringCopy, vbCrLf, vbLf))
+
+                        ' Check if this exact rung hasn't been processed before
+                        If Not processedRungs.Exists(normalizedRung) And _
+                           Not rungDict.Exists(normalizedRung) Then
+
+                            ' Add to both local and global tracking
+                            processedRungs.Add normalizedRung, ""
+                            rungDict.Add normalizedRung, ""
+
+                            ' Only append if it's not already in the result strings
+                            If InStr(1, RoutineStringResult, RungStringCopy, vbTextCompare) = 0 Then
+                                If Len(RoutineStringResult) > 0 Then
+                                    RoutineStringResult = RoutineStringResult & vbCrLf
+                                End If
+                                RoutineStringResult = RoutineStringResult & RungStringCopy
+                            ElseIf InStr(1, RoutineValue, "Area_PI", vbTextCompare) > 0 Then
+                                  LogError "ProcessRungs", CLng(rowNum), "This rung: " & RungStringCopy & " Exsists here: " & RoutineStringResult
+                            End If
+                        End If
+                    End If
+                End If
+            Next rowNum
+        End If
+    Next colNum
+
+Exit Sub
+ErrorHandler:
+    LogError "ProcessRungs", Err.Number, Err.Description
+    Resume Next
+End Sub

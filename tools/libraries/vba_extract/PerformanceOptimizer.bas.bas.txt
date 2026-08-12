@@ -1,0 +1,356 @@
+Attribute VB_Name = "PerformanceOptimizer"
+Option Explicit
+
+' Module-level variables to store original application settings
+Private mOrigScreenUpdating As Boolean
+Private mOrigCalculation As XlCalculation
+Private mOrigEnableEvents As Boolean
+Private mOrigStatusBar As Variant
+Private mIsOptimized As Boolean
+
+'------------------------------------------------------------------------------------
+' OptimizePerformance
+' Temporarily disables screen updating, events, and sets calculation to manual
+' to improve performance during intensive operations
+'------------------------------------------------------------------------------------
+Public Sub OptimizePerformance(Optional ByVal statusMessage As String = "")
+    On Error GoTo ErrorHandler
+    
+    ' Only optimize if not already optimized
+    If mIsOptimized Then Exit Sub
+    
+    ' Store current application settings
+    mOrigScreenUpdating = Application.ScreenUpdating
+    mOrigCalculation = Application.Calculation
+    mOrigEnableEvents = Application.EnableEvents
+    mOrigStatusBar = Application.StatusBar
+    
+    ' Optimize application settings
+    With Application
+        .ScreenUpdating = False
+        .Calculation = xlCalculationManual
+        .EnableEvents = False
+        
+        ' Set status bar message if provided
+        If Len(statusMessage) > 0 Then
+            .StatusBar = statusMessage
+        End If
+    End With
+    
+    mIsOptimized = True
+    Exit Sub
+    
+ErrorHandler:
+    LogError "OptimizePerformance", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' RestorePerformance
+' Restores original application settings after intensive operations
+'------------------------------------------------------------------------------------
+Public Sub RestorePerformance()
+    On Error GoTo ErrorHandler
+    
+    ' Only restore if currently optimized
+    If Not mIsOptimized Then Exit Sub
+    
+    ' Restore original application settings
+    With Application
+        .ScreenUpdating = mOrigScreenUpdating
+        .Calculation = mOrigCalculation
+        .EnableEvents = mOrigEnableEvents
+        
+        ' Restore status bar
+        If IsEmpty(mOrigStatusBar) Then
+            .StatusBar = False
+        Else
+            .StatusBar = mOrigStatusBar
+        End If
+    End With
+    
+    mIsOptimized = False
+    Exit Sub
+    
+ErrorHandler:
+    LogError "RestorePerformance", Err.Number, Err.Description
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ProcessRangeInBatches
+' Processes a range in batches to improve performance for large ranges
+'------------------------------------------------------------------------------------
+Public Sub ProcessRangeInBatches(ByVal rng As Range, ByVal batchSize As Long, _
+                                ByVal processingFunction As String, _
+                                Optional ByVal param1 As Variant, _
+                                Optional ByVal param2 As Variant)
+    Dim totalRows As Long
+    Dim totalCols As Long
+    Dim startRow As Long
+    Dim endRow As Long
+    Dim batchRange As Range
+    Dim i As Long
+    Dim progressPct As Double
+    
+    On Error GoTo ErrorHandler
+    
+    ' Validate inputs
+    If rng Is Nothing Then
+        LogError "ProcessRangeInBatches", vbObjectError + 1, "Range is null"
+        Exit Sub
+    End If
+    
+    If batchSize <= 0 Then
+        LogError "ProcessRangeInBatches", vbObjectError + 2, "Invalid batch size"
+        Exit Sub
+    End If
+    
+    If Len(Trim(processingFunction)) = 0 Then
+        LogError "ProcessRangeInBatches", vbObjectError + 3, "Processing function name is empty"
+        Exit Sub
+    End If
+    
+    ' Get range dimensions
+    totalRows = rng.Rows.count
+    totalCols = rng.Columns.count
+    
+    ' Optimize performance
+    OptimizePerformance "Processing data in batches..."
+    
+    ' Process range in batches
+    For i = 1 To totalRows Step batchSize
+        ' Calculate batch range
+        startRow = i
+        endRow = Application.WorksheetFunction.Min(i + batchSize - 1, totalRows)
+        
+        ' Get batch range
+        Set batchRange = rng.Worksheet.Range(rng.Cells(startRow, 1), rng.Cells(endRow, totalCols))
+        
+        ' Call processing function with parameters
+        On Error Resume Next
+        Select Case True
+            Case IsMissing(param1) And IsMissing(param2)
+                Application.Run processingFunction, batchRange
+            Case Not IsMissing(param1) And IsMissing(param2)
+                Application.Run processingFunction, batchRange, param1
+            Case Not IsMissing(param1) And Not IsMissing(param2)
+                Application.Run processingFunction, batchRange, param1, param2
+        End Select
+        
+        If Err.Number <> 0 Then
+            LogError "ProcessRangeInBatches", Err.Number, "Error calling " & processingFunction & ": " & Err.Description
+            Err.Clear
+        End If
+        On Error GoTo ErrorHandler
+        
+        ' Update progress
+        progressPct = (endRow / totalRows) * 100
+        Application.StatusBar = "Processing... " & Format(progressPct, "0") & "% complete"
+        
+        ' Allow UI to update occasionally
+        If i Mod (batchSize * 5) = 0 Then
+            DoEvents
+        End If
+    Next i
+    
+    ' Restore performance settings
+    RestorePerformance
+    Exit Sub
+    
+ErrorHandler:
+    LogError "ProcessRangeInBatches", Err.Number, Err.Description, _
+             "Range: " & rng.address & ", Function: " & processingFunction
+    RestorePerformance
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ProcessArrayInBatches
+' Processes an array in batches to improve performance for large arrays
+'------------------------------------------------------------------------------------
+Public Sub ProcessArrayInBatches(ByRef arr As Variant, ByVal batchSize As Long, _
+                                ByVal processingFunction As String, _
+                                Optional ByVal param1 As Variant, _
+                                Optional ByVal param2 As Variant)
+    Dim totalItems As Long
+    Dim startIndex As Long
+    Dim endIndex As Long
+    Dim batchArray As Variant
+    Dim i As Long, j As Long
+    Dim progressPct As Double
+    
+    On Error GoTo ErrorHandler
+    
+    ' Validate inputs
+    If Not IsArray(arr) Then
+        LogError "ProcessArrayInBatches", vbObjectError + 1, "Input is not an array"
+        Exit Sub
+    End If
+    
+    If batchSize <= 0 Then
+        LogError "ProcessArrayInBatches", vbObjectError + 2, "Invalid batch size"
+        Exit Sub
+    End If
+    
+    If Len(Trim(processingFunction)) = 0 Then
+        LogError "ProcessArrayInBatches", vbObjectError + 3, "Processing function name is empty"
+        Exit Sub
+    End If
+    
+    ' Get array dimensions
+    totalItems = UBound(arr) - LBound(arr) + 1
+    
+    ' Optimize performance
+    OptimizePerformance "Processing array in batches..."
+    
+    ' Process array in batches
+    For i = LBound(arr) To UBound(arr) Step batchSize
+        ' Calculate batch range
+        startIndex = i
+        endIndex = Application.WorksheetFunction.Min(i + batchSize - 1, UBound(arr))
+        
+        ' Create batch array
+        ReDim batchArray(0 To endIndex - startIndex)
+        For j = startIndex To endIndex
+            batchArray(j - startIndex) = arr(j)
+        Next j
+        
+        ' Call processing function with parameters
+        On Error Resume Next
+        Select Case True
+            Case IsMissing(param1) And IsMissing(param2)
+                Application.Run processingFunction, batchArray
+            Case Not IsMissing(param1) And IsMissing(param2)
+                Application.Run processingFunction, batchArray, param1
+            Case Not IsMissing(param1) And Not IsMissing(param2)
+                Application.Run processingFunction, batchArray, param1, param2
+        End Select
+        
+        If Err.Number <> 0 Then
+            LogError "ProcessArrayInBatches", Err.Number, "Error calling " & processingFunction & ": " & Err.Description
+            Err.Clear
+        End If
+        On Error GoTo ErrorHandler
+        
+        ' Update progress
+        progressPct = ((endIndex - LBound(arr) + 1) / totalItems) * 100
+        Application.StatusBar = "Processing... " & Format(progressPct, "0") & "% complete"
+        
+        ' Allow UI to update occasionally
+        If i Mod (batchSize * 5) = 0 Then
+            DoEvents
+        End If
+    Next i
+    
+    ' Restore performance settings
+    RestorePerformance
+    Exit Sub
+    
+ErrorHandler:
+    LogError "ProcessArrayInBatches", Err.Number, Err.Description, _
+             "Array size: " & totalItems & ", Function: " & processingFunction
+    RestorePerformance
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ProcessLargeString
+' Processes a large string in chunks to improve performance
+'------------------------------------------------------------------------------------
+Public Function ProcessLargeString(ByVal InputString As String, ByVal chunkSize As Long, _
+                                  ByVal processingFunction As String, _
+                                  Optional ByVal param1 As Variant) As String
+    Dim totalLength As Long
+    Dim startPos As Long
+    Dim endPos As Long
+    Dim chunk As String
+    Dim result As String
+    Dim progressPct As Double
+    
+    On Error GoTo ErrorHandler
+    
+    ' Validate inputs
+    If Len(InputString) = 0 Then
+        LogError "ProcessLargeString", vbObjectError + 1, "Input string is empty"
+        Exit Function
+    End If
+    
+    If chunkSize <= 0 Then
+        LogError "ProcessLargeString", vbObjectError + 2, "Invalid chunk size"
+        Exit Function
+    End If
+    
+    If Len(Trim(processingFunction)) = 0 Then
+        LogError "ProcessLargeString", vbObjectError + 3, "Processing function name is empty"
+        Exit Function
+    End If
+    
+    ' Get string length
+    totalLength = Len(InputString)
+    
+    ' Optimize performance
+    OptimizePerformance "Processing string in chunks..."
+    
+    ' Process string in chunks
+    For startPos = 1 To totalLength Step chunkSize
+        ' Calculate chunk range
+        endPos = Application.WorksheetFunction.Min(startPos + chunkSize - 1, totalLength)
+        
+        ' Get chunk
+        chunk = Mid(InputString, startPos, endPos - startPos + 1)
+        
+        ' Call processing function with parameters
+        On Error Resume Next
+        Dim chunkResult As String
+        If IsMissing(param1) Then
+            chunkResult = Application.Run(processingFunction, chunk)
+        Else
+            chunkResult = Application.Run(processingFunction, chunk, param1)
+        End If
+        
+        If Err.Number <> 0 Then
+            LogError "ProcessLargeString", Err.Number, "Error calling " & processingFunction & ": " & Err.Description
+            Err.Clear
+        End If
+        On Error GoTo ErrorHandler
+        
+        ' Append chunk result
+        result = result & chunkResult
+        
+        ' Update progress
+        progressPct = (endPos / totalLength) * 100
+        Application.StatusBar = "Processing... " & Format(progressPct, "0") & "% complete"
+        
+        ' Allow UI to update occasionally
+        If startPos Mod (chunkSize * 5) = 0 Then
+            DoEvents
+        End If
+    Next startPos
+    
+    ' Restore performance settings
+    RestorePerformance
+    
+    ProcessLargeString = result
+    Exit Function
+    
+ErrorHandler:
+    LogError "ProcessLargeString", Err.Number, Err.Description, _
+             "String length: " & totalLength & ", Function: " & processingFunction
+    RestorePerformance
+    ProcessLargeString = ""
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' Cleanup
+' Releases resources when the workbook closes
+'------------------------------------------------------------------------------------
+Public Sub Cleanup()
+    On Error Resume Next
+    
+    ' Restore performance settings if still optimized
+    If mIsOptimized Then
+        RestorePerformance
+    End If
+End Sub

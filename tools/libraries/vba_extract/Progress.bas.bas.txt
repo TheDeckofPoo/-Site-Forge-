@@ -1,0 +1,9 @@
+Attribute VB_Name = "Progress"
+Option Explicit
+Global ProgressValue As Double
+Sub UpdateProgress(pctCompl As Double)
+    frmProgress.lblStatus.Caption = "Generation Progress: " & Round(pctCompl) & "% Completed"
+    frmProgress.lblProgressBar.Width = pctCompl * 2.8
+    DoEvents
+End Sub
+

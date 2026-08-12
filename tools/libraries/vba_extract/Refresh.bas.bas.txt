@@ -1,0 +1,26 @@
+Attribute VB_Name = "Refresh"
+Sub Refresh_Click()
+' Disable screen updating and set calculation to manual
+With Application
+    .ScreenUpdating = False
+    .Calculation = xlCalculationManual
+End With
+Sheet6.ConvertTextToNumbers ThisWorkbook.Sheets("IO").Range("N6:N2000")
+Sheet6.AddCPToValuesStartingWithNumber ThisWorkbook.Sheets("IO").Range("B6:B2000")
+Sheet6.AddCPToValuesStartingWithNumber ThisWorkbook.Sheets("IO").Range("J6:J2000")
+Sheet6.AddCPToValuesStartingWithNumber ThisWorkbook.Sheets("IO").Range("F6:F2000")
+Sheet6.TransferData
+Sheet6.UniqueResults
+Sheet2.ProcessSpacesInRanges
+
+' Restore application settings
+  With Application
+      .ScreenUpdating = True
+      .Calculation = xlCalculationAutomatic
+  End With
+ 
+ ' Refresh the in-memory cache after data transforms
+ On Error Resume Next
+ DataCache.Refresh
+ On Error GoTo 0
+End Sub

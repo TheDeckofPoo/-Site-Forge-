@@ -1,0 +1,72 @@
+# --- Dependencies / runtime ---
+desktop/node_modules/
+**/node_modules/
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*.pyo
+.Python
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+
+# --- OS / editor ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*~
+.idea/
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+
+# --- Electron / local caches ---
+*.log
+npm-debug.log*
+.cache/
+dist/
+out/
+
+# --- Build outputs (regenerate from dashboard) ---
+exports/autogen/**
+!exports/autogen/.gitkeep
+exports/ignition-build/**
+!exports/ignition-build/.gitkeep
+exports/plc/**
+!exports/plc/.gitkeep
+exports/**/*.L5X
+exports/**/*.zip
+exports/**/*.svg
+exports/**/*.csv
+exports/**/LATEST.*
+
+# --- Workspace runtime data (site-specific, large) ---
+workspace/active/**
+workspace/active_*/
+workspace/active-meta.json
+workspace/inbox/**
+workspace/ocr-last-result.json
+workspace/prints/**
+!workspace/prints/.gitkeep
+workspace/drawings/inbox/**
+!workspace/drawings/.gitkeep
+workspace/reference/**
+!workspace/reference/.gitkeep
+
+# Keep folder placeholders
+!workspace/**/.gitkeep
+
+# --- Local notes / temp ---
+**/_tmp_*
+**/*_tmp_*
+tools/scripts/__pycache__/
+tools/scripts/_tmp_*.py
+
+# --- Backup noise ---
+*.bak
+*.bak_*
+*.BAK*
+backup-logs/

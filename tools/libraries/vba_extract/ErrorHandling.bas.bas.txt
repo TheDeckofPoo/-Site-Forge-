@@ -1,0 +1,323 @@
+Attribute VB_Name = "ErrorHandling"
+Option Explicit
+
+' Constants for error logging
+Private Const DEFAULT_LOG_DIR As String = "C:\Temp"
+Private Const LOG_FILE_PREFIX As String = "L5xGen_ErrorLog_"
+Private Const MAX_LOG_SIZE_MB As Long = 10
+Private Const MAX_LOG_AGE_DAYS As Long = 30
+Private Const MAX_LOG_FILES As Long = 20
+
+' Global variable to store the path of the error log
+Public ErrorLogPath As String
+
+' Cache for FSO object to improve performance
+Private mFSO As Object
+Private mIsCleaningUp As Boolean
+
+'------------------------------------------------------------------------------------
+' GetFSO
+' Returns a cached FileSystemObject to avoid repeatedly creating new instances
+'------------------------------------------------------------------------------------
+Private Function GetFSO() As Object
+    On Error Resume Next
+    
+    If mFSO Is Nothing Then
+        Set mFSO = CreateObject("Scripting.FileSystemObject")
+    End If
+    
+    Set GetFSO = mFSO
+    
+    If Err.Number <> 0 Then
+        Debug.Print "Error creating FSO: " & Err.Number & " - " & Err.Description
+        Set GetFSO = Nothing
+    End If
+End Function
+
+'------------------------------------------------------------------------------------
+' LogError
+' Logs error information to a file with enhanced error handling and cleanup
+' @param procName Name of the procedure where error occurred
+' @param errNum Error number
+' @param errDesc Error description
+' @param additionalInfo Optional additional context information
+'------------------------------------------------------------------------------------
+Public Sub LogError(procName As String, errNum As Long, errDesc As String, Optional additionalInfo As String = "")
+    On Error GoTo ErrHandler
+    
+    Dim fso As Object
+    Dim ts As Object
+    Dim logMessage As String
+    Dim logDir As String
+    Dim logFileName As String
+    Dim callStack As String
+    
+    ' Initialize objects to Nothing for proper cleanup
+    Set fso = Nothing
+    Set ts = Nothing
+
+    ' Get log directory with fallback
+    If ErrorLogPath = "" Then
+        ' Try workbook path first
+        On Error Resume Next
+        logDir = ThisWorkbook.Path
+        If Err.Number <> 0 Or Len(logDir) = 0 Then
+            ' Fallback to default directory
+            logDir = DEFAULT_LOG_DIR
+
+            ' Create default directory if it doesn't exist
+            Set fso = GetFSO()
+            If Not fso Is Nothing Then
+                If Not fso.FolderExists(logDir) Then
+                    On Error Resume Next
+                    fso.CreateFolder logDir
+                    If Err.Number <> 0 Then
+                        ' If we can't create the directory, use current directory
+                        logDir = CurDir()
+                    End If
+                End If
+            End If
+        End If
+        On Error GoTo ErrHandler
+
+        ' Build full log file path
+        logFileName = LOG_FILE_PREFIX & Format(Now, "YYYYMMDD") & ".txt"
+        ErrorLogPath = logDir & "\" & logFileName
+    End If
+    
+    ' Get call stack if available
+    callStack = GetCallStack()
+    
+    ' Create detailed log message
+    logMessage = String(80, "-") & vbCrLf & _
+                "Timestamp: " & Format(Now, "yyyy-mm-dd hh:mm:ss") & vbCrLf & _
+                "Procedure: " & procName & vbCrLf & _
+                "Error Number: " & errNum & vbCrLf & _
+                "Description: " & errDesc & vbCrLf
+                
+    If Len(additionalInfo) > 0 Then
+        logMessage = logMessage & "Additional Info: " & additionalInfo & vbCrLf
+    End If
+    
+    If Len(callStack) > 0 Then
+        logMessage = logMessage & "Call Stack: " & vbCrLf & callStack & vbCrLf
+    End If
+    
+    logMessage = logMessage & _
+                "Workbook: " & ThisWorkbook.Name & vbCrLf & _
+                "Excel Version: " & Application.version & vbCrLf & _
+                "Windows Version: " & GetWindowsVersion() & vbCrLf & _
+                String(80, "-") & vbCrLf
+    
+    ' Create or open log file with error handling
+    On Error Resume Next
+    Set fso = GetFSO()
+    If Not fso Is Nothing Then
+        ' Check if log file is too large and rotate if needed
+        If fso.FileExists(ErrorLogPath) Then
+            Dim logFile As Object
+            Set logFile = fso.GetFile(ErrorLogPath)
+            
+            ' If log file is larger than MAX_LOG_SIZE_MB, create a new one
+            If logFile.Size > (MAX_LOG_SIZE_MB * 1024 * 1024) Then
+                ' Create a new log file with timestamp
+                logFileName = LOG_FILE_PREFIX & Format(Now, "YYYYMMDD_HHMMSS") & ".txt"
+                ErrorLogPath = logDir & "\" & logFileName
+            End If
+        End If
+        
+        ' Clean up old log files
+        CleanupOldLogFiles logDir
+        
+        Set ts = fso.OpenTextFile(ErrorLogPath, 8, True) ' 8 = ForAppending, Create if doesn't exist
+        If Err.Number = 0 Then
+            ts.Write logMessage
+            ts.Close
+        End If
+    End If
+
+Cleanup:
+    ' Clean up resources
+    If Not ts Is Nothing Then
+        On Error Resume Next
+        ts.Close
+        Set ts = Nothing
+    End If
+    Exit Sub
+    
+ErrHandler:
+    ' If logging itself fails, try to write to debug window
+    Debug.Print "Error in LogError: " & Err.Number & " - " & Err.Description
+    Resume Cleanup
+End Sub
+
+'------------------------------------------------------------------------------------
+' GetCallStack
+' Attempts to build a call stack for better error context
+'------------------------------------------------------------------------------------
+Private Function GetCallStack() As String
+    On Error Resume Next
+    
+    Dim callStack As String
+    Dim i As Integer
+    Dim procName As String
+    Dim moduleName As String
+    
+    ' This is a simplified approach - in a real implementation, you might use
+    ' the Call Stack API or other methods to get a more accurate call stack
+    For i = 1 To 10  ' Try to go back 10 levels
+        procName = ""
+        moduleName = ""
+        
+        ' This will fail when we run out of stack frames
+        If Err.Number <> 0 Then Exit For
+        
+        If Len(procName) > 0 Then
+            If Len(moduleName) > 0 Then
+                callStack = callStack & "  " & i & ": " & moduleName & "." & procName & vbCrLf
+            Else
+                callStack = callStack & "  " & i & ": " & procName & vbCrLf
+            End If
+        End If
+    Next i
+    
+    GetCallStack = callStack
+End Function
+
+'------------------------------------------------------------------------------------
+' GetWindowsVersion
+' Returns the Windows version information for better error context
+'------------------------------------------------------------------------------------
+Private Function GetWindowsVersion() As String
+    On Error Resume Next
+    
+    Dim objWMIService As Object
+    Dim colItems As Object
+    Dim objItem As Object
+    Dim version As String
+    
+    ' Try to get Windows version using WMI
+    Set objWMIService = GetObject("winmgmts:\\.\root\cimv2")
+    If Err.Number = 0 Then
+        Set colItems = objWMIService.ExecQuery("Select * from Win32_OperatingSystem")
+        
+        For Each objItem In colItems
+            version = objItem.Caption & " " & objItem.version
+            Exit For
+        Next
+    End If
+    
+    ' If WMI failed, try environment variables
+    If Len(version) = 0 Then
+        version = Environ("OS")
+    End If
+    
+    ' If all else fails, return a default message
+    If Len(version) = 0 Then
+        version = "Unknown Windows Version"
+    End If
+    
+    GetWindowsVersion = version
+End Function
+
+'------------------------------------------------------------------------------------
+' CleanupOldLogFiles
+' Removes log files older than MAX_LOG_AGE_DAYS and limits total number of log files
+'------------------------------------------------------------------------------------
+Private Sub CleanupOldLogFiles(logDir As String)
+    On Error Resume Next
+    
+    Dim fso As Object
+    Dim folder As Object
+    Dim file As Object
+    Dim cutoffDate As Date
+    Dim logFiles As Collection
+    Dim fileObj As Object
+    
+    Set fso = GetFSO()
+    If fso Is Nothing Then Exit Sub
+    
+    If Not fso.FolderExists(logDir) Then Exit Sub
+    
+    Set folder = fso.GetFolder(logDir)
+    cutoffDate = DateAdd("d", -MAX_LOG_AGE_DAYS, Now)
+    
+    ' Create a collection to store log files for sorting
+    Set logFiles = New Collection
+    
+    ' First pass: delete files older than MAX_LOG_AGE_DAYS
+    For Each file In folder.Files
+        ' Only process our log files
+        If InStr(1, file.Name, LOG_FILE_PREFIX, vbTextCompare) > 0 Then
+            If file.DateCreated < cutoffDate Then
+                On Error Resume Next
+                file.Delete
+                If Err.Number <> 0 Then
+                    ' Just continue if we can't delete a file
+                    Err.Clear
+                End If
+            Else
+                ' Add to collection for potential further cleanup
+                On Error Resume Next
+                logFiles.Add file, CStr(file.DateCreated)
+                If Err.Number <> 0 Then
+                    ' If duplicate key, add with a slight time difference
+                    logFiles.Add file, CStr(file.DateCreated) & "_" & file.Name
+                    Err.Clear
+                End If
+            End If
+        End If
+    Next file
+    
+    ' Second pass: if we still have too many log files, delete the oldest ones
+    If logFiles.count > MAX_LOG_FILES Then
+        ' Sort files by date (oldest first) - we'll use a simple bubble sort
+        Dim i As Long, j As Long
+        Dim tempFile As Object
+        Dim fileArray() As Object
+        
+        ' Convert collection to array for sorting
+        ReDim fileArray(1 To logFiles.count)
+        For i = 1 To logFiles.count
+            Set fileArray(i) = logFiles(i)
+        Next i
+        
+        ' Sort files by date (oldest first)
+        For i = 1 To UBound(fileArray) - 1
+            For j = i + 1 To UBound(fileArray)
+                If fileArray(i).DateCreated > fileArray(j).DateCreated Then
+                    Set tempFile = fileArray(i)
+                    Set fileArray(i) = fileArray(j)
+                    Set fileArray(j) = tempFile
+                End If
+            Next j
+        Next i
+        
+        ' Delete oldest files to get down to MAX_LOG_FILES
+        For i = 1 To UBound(fileArray) - MAX_LOG_FILES
+            On Error Resume Next
+            fileArray(i).Delete
+            If Err.Number <> 0 Then
+                ' Just continue if we can't delete a file
+                Err.Clear
+            End If
+        Next i
+    End If
+End Sub
+
+'------------------------------------------------------------------------------------
+' Cleanup
+' Releases resources when the workbook closes
+'------------------------------------------------------------------------------------
+Public Sub Cleanup()
+    On Error Resume Next
+    
+    ' Set cleanup flag to prevent reentrance
+    If mIsCleaningUp Then Exit Sub
+    mIsCleaningUp = True
+    
+    ' Release FSO object
+    Set mFSO = Nothing
+    
+    mIsCleaningUp = False
+End Sub

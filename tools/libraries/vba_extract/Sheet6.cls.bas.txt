@@ -1,0 +1,185 @@
+Attribute VB_Name = "Sheet6"
+Attribute VB_Base = "0{00020820-0000-0000-C000-000000000046}"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = True
+Attribute VB_TemplateDerived = False
+Attribute VB_Customizable = True
+Option Explicit
+Public Sub TransferData()
+    Dim srcSheet As Worksheet
+    Dim destSheet As Worksheet
+    Dim srcLastRow As Long, destLastRow As Long, i As Long, j As Long
+    Dim deviceName As String, slotNumber As String, pointType As String
+    Dim found As Boolean
+    On Error GoTo ErrorHandler
+    ' Set the worksheets
+    Set srcSheet = ThisWorkbook.Sheets("IO") ' Set to your source sheet name
+    Set destSheet = ThisWorkbook.Sheets("IO Dict") ' Set to your destination sheet name
+
+    ' Find the last row of data in the source sheet
+    srcLastRow = srcSheet.Cells(srcSheet.Rows.count, "I").End(xlUp).Row
+    
+    destSheet.Range("B17:B1017").ClearContents
+    destSheet.Range("D17:D1017").ClearContents
+    destSheet.Range("E17:E1017").ClearContents
+    
+    srcSheet.Range("L6:L" & srcLastRow).ClearContents
+
+    ' Loop through each row in the source sheet
+    For i = 6 To srcLastRow
+        deviceName = srcSheet.Cells(i, 10).value ' Get the device name
+        slotNumber = srcSheet.Cells(i, 14).value ' Get the slot number
+        pointType = srcSheet.Cells(i, 13).value ' Get the point type
+        
+        ' Find the last row of data in the destination sheet
+        destLastRow = destSheet.Cells(destSheet.Rows.count, "B").End(xlUp).Row
+
+        found = False
+
+        ' Check if the device name already exists in the destination sheet
+        For j = 6 To destLastRow
+            If destSheet.Cells(j, 2).value = deviceName And destSheet.Cells(j, 4).value = slotNumber And destSheet.Cells(j, 5).value = pointType Then
+                found = True
+                Exit For
+            End If
+        Next j
+
+        ' If the device name does not exist in the destination sheet, add it
+        If Not found Then
+            destSheet.Cells(destLastRow + 1, 2).value = deviceName
+            destSheet.Cells(destLastRow + 1, 4).value = slotNumber
+            destSheet.Cells(destLastRow + 1, 5).value = pointType
+        End If
+    Next i
+Exit Sub
+ErrorHandler:
+    Call LogError("TransferData", Err.Number, Err.Description)
+    Resume Next
+End Sub
+Sub AddCPToValuesStartingWithNumber(targetRange As Range)
+    Dim rng As Range
+    Dim cell As Range
+
+    ' Loop through each cell in the target range
+    For Each cell In targetRange
+        ' Check if the first character of the cell's value is a number
+        If IsNumeric(Left(cell.value, 1)) Then
+            ' Add "CP" to the start of the cell's value
+            cell.value = "CP" & cell.value
+        End If
+    Next cell
+End Sub
+Sub UniqueResults()
+    Dim srcSheet As Worksheet, destSheet As Worksheet
+    Dim srcLastRow As Long, destLastRow As Long
+    
+    ' Set the worksheets
+    Set srcSheet = ThisWorkbook.Sheets("IO") ' Adjust to your source sheet name
+    Set destSheet = ThisWorkbook.Sheets("IO Dict") ' Adjust to your destination sheet name
+    
+    destSheet.Range("F17:BQ1017").ClearContents ' Clear previous contents
+    destLastRow = destSheet.Cells(destSheet.Rows.count, "B").End(xlUp).Row
+    srcLastRow = srcSheet.Cells(srcSheet.Rows.count, "H").End(xlUp).Row
+
+    Dim result As Collection
+    Set result = New Collection
+
+    Dim i As Long, j As Long, k As Long
+    Dim criteria1 As Boolean, criteria2 As Boolean, criteria3 As Boolean
+    Dim combinedValue As String
+
+    For j = 6 To destLastRow
+        Set result = New Collection ' Reset the collection for each row in destSheet
+
+        For i = 6 To srcLastRow
+            criteria1 = (srcSheet.Cells(i, "J").value = destSheet.Cells(j, "B").value)
+            criteria2 = (srcSheet.Cells(i, "N").value = destSheet.Cells(j, "D").value)
+            criteria3 = (srcSheet.Cells(i, "M").value = destSheet.Cells(j, "E").value)
+
+            If criteria1 And criteria2 And criteria3 Then
+                If CStr(srcSheet.Cells(i, "I").value) = "ES_OK" Then
+                combinedValue = CStr(srcSheet.Cells(i, "H").value) & ".Ch_A" & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                CStr(srcSheet.Cells(i, "K").value)
+                ElseIf CStr(srcSheet.Cells(i, "I").value) = "MS_OK" Then
+                combinedValue = CStr(srcSheet.Cells(i, "H").value) & "|" & _
+                                ".OK_Signal" & "|" & _
+                                "" & "|" & _
+                                CStr(srcSheet.Cells(i, "K").value)
+                ElseIf CStr(srcSheet.Cells(i, "I").value) = "O1" Or InStr(1, CStr(srcSheet.Cells(i, "H").value), "CROUT", vbTextCompare) > 0 Then
+                combinedValue = CStr(srcSheet.Cells(i, "H").value) & ".O1" & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                CStr(srcSheet.Cells(i, "K").value)
+                ElseIf CStr(srcSheet.Cells(i, "I").value) = "Run" Then
+                combinedValue = Replace(CStr(srcSheet.Cells(i, "H").value), "_Conv", "_MS_Run_Safe_Out") & "" & "|" & _
+                                "" & "|" & _
+                                "" & "|" & _
+                                CStr(srcSheet.Cells(i, "K").value)
+                Else
+                ' Combine values from H, I, L, K
+                combinedValue = CStr(srcSheet.Cells(i, "H").value) & "|" & _
+                                CStr(srcSheet.Cells(i, "I").value) & "|" & _
+                                "" & "|" & _
+                                CStr(srcSheet.Cells(i, "K").value)
+                                'CStr(srcSheet.Cells(i, "L").value) & "|" &
+                 End If
+                
+                ' Add the combined string to the collection if unique
+                TryAddToCollection result, combinedValue
+            End If
+        Next i
+
+   ' Output the results
+    If result.count > 0 Then
+        Dim output() As Variant
+        Dim splitResults() As String
+        ' Assuming each set of results is 4 values and there can be up to 16 sets
+        ReDim output(1 To 4 * 16)
+        Dim cellOffset As Integer
+
+        For i = 1 To result.count
+            ' Split the combined string into an array
+            splitResults = Split(result(i), "|")
+            cellOffset = (i - 1) * 4 ' Calculate the offset for each set of 4 values
+
+            ' Assign each part of the current set to the output array
+            For k = 0 To UBound(splitResults)
+                output(cellOffset + k + 1) = splitResults(k)
+            Next k
+        Next i
+
+        ' Write the output array to the row, starting from column F
+        destSheet.Cells(j, 6).Resize(1, UBound(output)).value = output
+    Else
+        ' Clear the cells if no results
+        destSheet.Cells(j, 6).Resize(1, 4 * 16).value = ""
+    End If
+    Next j
+End Sub
+
+Private Sub TryAddToCollection(ByRef Col As Collection, combinedValue As String)
+    ' Check for uniqueness
+    On Error Resume Next
+    Col.Add combinedValue, combinedValue
+    On Error GoTo 0
+End Sub
+
+Sub ConvertTextToNumbers(targetRange As Range)
+    Dim rng As Range
+    Dim cell As Range
+
+    ' Loop through each cell in the target range
+    For Each cell In targetRange
+        ' Check if the cell contains numeric text
+        If IsNumeric(cell.value) Then
+            ' Convert text-based number to actual number
+            cell.value = val(cell.value)
+        End If
+    Next cell
+
+End Sub
+

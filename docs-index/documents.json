@@ -1,0 +1,1495 @@
+{
+  "generated": "2026-08-11T17:37:35",
+  "docs_root": "C:\\dev\\worktree\\FortnaPlus\\docs\\training",
+  "count": 100,
+  "documents": [
+    {
+      "id": "fpc-scanner-control-configuration",
+      "title": "FPC-Scanner-Control-Configuration",
+      "file": "FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlScanner Control Configuration Document Title Document Revision: 1.5 Date: 16-Mar-2022 Revision Date Author Revision Summary 1.1 10-Oct-2013 B C Conklin Added Transfer description and updates 1.2 09-Sep-2020 T R Kremser Updates and general refresh 1.3 29-Oct-2020 T R Kremser Update the CONCAT feature. 1.4 16-Nov-2020 T R Kremser Additional improvements to CONCAT feature. 1.5 16-Mar-2022 T R Kremser Add note regarding SrtTrack and SrtDevice table sizes. Contents 1.General Description4 2.Receiving Scans4 2.1.Machine Table5 2.1.1.Serial Connections6 2.1.2.TCP Connections7 2.2.Msg",
+      "size": 227015
+    },
+    {
+      "id": "fpc-scanner-stats-history-module",
+      "title": "FPC-Scanner-Stats-History-Module",
+      "file": "FPC Docs 3/FPC-Scanner-Stats-History-Module.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlScanner Statisticsand theHistory Module Document Revision: 2.0 Date: 19-Aug-2022 Revision Date Author Revision Summary 1.0 29-May-2018 B C Conklin New document 2.0 19-Aug-2022 T R Kremser Complete re-write and consolidation of related documents Table of Contents Glossary of Terms5 1.History Gathering and Scanner Statistics6 2.Understanding the System Configuration6 2.1.Single Scanner (or Scale)7 2.2.Tandem Scanners, Separate Interfaces7 2.3.Multiple Scanners, Shared Interface7 2.4.Print Apply Verification Scanners7 3.Gathering the Data7 4.History Configuration Wizard8 4.1.Run",
+      "size": 432425
+    },
+    {
+      "id": "fpc-security-upgrade-procedure",
+      "title": "FPC-Security-Upgrade-Procedure",
+      "file": "FPC Docs 3/FPC-Security-Upgrade-Procedure.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor"
+      ],
+      "summary": "FortnaPlus ControlSecurity Upgrade Procedure Document Revision: 1.1 Date: 01-Dec-2022 Revision Date Author Revision Summary 1.0 26-Mar-2013 T R Kremser Document created 1.1 01-Dec-2022 T R Kremser Update and refresh Table of Contents Glossary of Terms4 1.Introduction5 2.Background5 3.Changes7 4.Upgrade Procedure9 5.Conversion Tools10 6.Mnu File Information11 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organizati",
+      "size": 188672
+    },
+    {
+      "id": "fpc-servogapoptimizer",
+      "title": "FPC-ServoGapOptimizer",
+      "file": "FPC Docs 3/FPC-ServoGapOptimizer.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "transfer",
+        "sorter"
+      ],
+      "summary": "FortnaPlus ControlServo Gap Optimizer Document Revision: 1.1 Date: 18-Jan-2023 Revision Date Author Revision Summary 1.0 15-Aug-2014 B C Conklin New document 1.1 18-Jan-2023 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.The Servo Gap Optimizer Module5 2.Determining Container and Belt Length5 2.1.Example Configuration7 2.2.Example Gap Optimizer Requirements and Control Logic7 2.3.Gap Calculations9 3.Design Concerns9 4.Servo Gap Optimizer Configuration10 5.Servo Gap Optimizer Tables10 5.1.Configuring the Shifter Portion10 5.2.Locating the Induct Photoeyes11 5.3.Co",
+      "size": 214142
+    },
+    {
+      "id": "fpc-settingsecurityaccessroles",
+      "title": "FPC-SettingSecurityAccessRoles",
+      "file": "FPC Docs 3/FPC-SettingSecurityAccessRoles.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "io"
+      ],
+      "summary": "FortnaPlus ControlSetting Security Access Roles Document Revision: 1.5 Date: 30-Aug-2022 Revision Date Author Revision Summary 1.0 17-Jun-2013 B C Conklin Document created from update procedure created by Thurman 1.1 16-Oct-2013 T R Kremser Revisions to reflect changes in Feature #8179 1.2 05-Dec-2013 T R Kremser Add Flags section 1.3 03-Nov-2014 T R Kremser Add Procedure Security 1.4 23-Mar-2016 T R Kremser Add Auto-Logout for Privileged Users section 1.5 30-Aug-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Introduction5 2.Role-Based Security5 2.1.The Role",
+      "size": 255670
+    },
+    {
+      "id": "fpc-shifter-and-sorter-configuration",
+      "title": "FPC-Shifter-And-Sorter-Configuration",
+      "file": "FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "assignmentsample FortnaPlus ControlShifter and Sorter Configuration Document Revision: 1.6 Date: 21-Sep-2022 Revision Date Author Revision Summary 1.0 18-Apr-2013 B C Conklin New document 1.1 14-Jul-2014 B C Conklin Details on DontSetExpect and ArmFriend configurations 1.2 27-May-2015 B C Conklin Add columns for recirculation rate management to table Sorters 1.3 09-Dec-2015 B C Conklin Add trigger features in table Sorters 1.4 02-Mar-2021 T R Kremser Updates and general refresh 1.5 01-Dec-2021 T R Kremser Clarify examples for ArmFriend, UseArmed, DontSetExpect. 1.6 21-Sep-2022 T R Kremser Add",
+      "size": 1371081
+    },
+    {
+      "id": "fpc-sorter-control-module",
+      "title": "FPC-Sorter-Control-Module",
+      "file": "FPC Docs 3/FPC-Sorter-Control-Module.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlSorter Control Module Document Revision: 1.8 Date: 25-Nov-2020 Revision Date Author Revision Summary 1.2 04/18/2013 B C Conklin Added SrtSimConfig SimCrrCsu notes 1.3 04/22/2013 P Rotter Added description of external simulation scan list feature 1.4 06/17/2013 T R Kremser Add information about SrtFPLite protocol 1.5 12/03/2013 B C Conklin Updated the options for Dynamic Re-assignment and Sorter Stops when lanes are full. 1.6 02/26/2014 B C Conklin Updated SrtScanBoss to add a feature to modify the CRR Message based on a Tote PE. Added Update Point to collect the carton length",
+      "size": 288751
+    },
+    {
+      "id": "fpc-sorter-test-setup",
+      "title": "FPC-Sorter-Test-Setup",
+      "file": "FPC Docs 3/FPC-Sorter-Test-Setup.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "Fortna Internal West Reading, PA Sorter Test Setup Document Version: 1.4 Date: 25-Nov-2020 Revision History Revision Date Author Revision Summary 1.0 05/10/2013 Niles Martin Initial Release 1.1 12/04/2013 Barry Conklin Updated Column Descriptions 1.2 12/09/2013 Barry Conklin Changed logic to handle auto-generated scans and scans from a table to use the same logic. 1.3 19-Jul-2018 Thurman Kremser General update for clarification. 1.4 25-Nov-2020 T R Kremser General update Table of Contents 1Introduction1 1.1Document Objective1 1.2References1 1.3Document Conventions1 1.3.1Standard Definitions1 1",
+      "size": 163268
+    },
+    {
+      "id": "fpc-sorterconfigurationchecklist",
+      "title": "FPC-SorterConfigurationChecklist",
+      "file": "FPC Docs 3/FPC-SorterConfigurationChecklist.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlSorter Configuration Checklist Document Revision: 1.1 Date: 20-Jan-2021 Revision Date Author Revision Summary 1.0 03-Apr-2013 B C Conklin New document 1.1 20-Jan-2021 T R Kremser Updates and general refresh Table of Contents 1.Sorter Configuration Checklist4 2.Process Flow \u2013 Scan Event5 3.Process Flow \u2013 Message Receive Event6 4.Batches Table7 5.SrtAppControl Table7 6.ScnScanZone Table7 7.ScnScanDevice Table8 8.SrtScanBoss Table8 9.Machine Table \u2013 Scanner Connections8 10.MsgMap Table \u2013 Scanner Connections10 11.Machine Table \u2013 CommCore Connections10 12.MsgMap Table \u2013 CommCore C",
+      "size": 137068
+    },
+    {
+      "id": "fpc-specialflags",
+      "title": "FPC-SpecialFlags",
+      "file": "FPC Docs 3/FPC-SpecialFlags.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "general"
+      ],
+      "summary": "FortnaPlus ControlSpecialFlags Table Document Revision: 1.0 Date: 03-Oct-2022 Revision Date Author Revision Summary 1.0 03-Oct-2022 T R Kremser New document Table of Contents Glossary of Terms4 1.SpecialFlags Table5 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document. Fortna Material Handling reserves t",
+      "size": 70628
+    },
+    {
+      "id": "fpc-startech-serial-port-configuration",
+      "title": "FPC-StarTech-Serial-Port-Configuration",
+      "file": "FPC Docs 3/FPC-StarTech-Serial-Port-Configuration.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlStarTech Serial Port Configuration Document Revision: 1.1 Date: 10-Jan-2023 Revision Date Author Revision Summary 1.0 03-Nov-2022 T R Kremser New document 1.1 10-Jan-2023 T R Kremser Clarification on finding FTDI devices Table of Contents Glossary of Terms4 1.Purpose5 2.Determine Device Serial Number5 3.Add Custom USB Configuration QNX7 3.1.The USB \u201cchar\u201d file7 3.2.The USB \u201cenum-usb.conf\u201d file8 4.Using the New Configuration9 5.Pinouts and Additional Testing10 6.Mapping Devices That Are Already Mounted11 7.Checking Your Work12 8.Preserve Custom Configuration12 Confidential/Pro",
+      "size": 89966
+    },
+    {
+      "id": "fpc-startstopzones",
+      "title": "FPC-StartStopZones",
+      "file": "FPC Docs 3/FPC-StartStopZones.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlStart Stop Zones Start Stop Zones Document Revision: 1.2 Date: 14-Jan-2021 Revision Date Author Revision Summary 1.0 16-Mar-2016 B C Conklin New document 1.1 09-Jul-2020 T R Kremser Updates and general refresh 1.2 14-Jan-2021 T R Kremser Add Start/Stop examples Table of Contents 1.Start/Stop Zones4 2.Configuring Start/Stop Zones5 3.Disabling Start/Stop Zones6 4.Start/Stop Zone Security7 5.The StartStopZones Table7 6.The Jamzones Table7 7.The Jamcheck Table (Jam Detection)9 8.Combined Jam Zones11 9.Zone States13 10.The Start/Stop Window14 10.1.Example Start/Stop Status Screens",
+      "size": 326207
+    },
+    {
+      "id": "fpc-the-viewio-screen-and-fortnadt-table",
+      "title": "FPC-The-ViewIO-Screen-and-FORTNADT-Table",
+      "file": "FPC Docs 3/FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "machine",
+        "io"
+      ],
+      "summary": "FortnaPlus ControlUsing the View I/O Screen Document Revision: 1.1 Date: 05-Jan-2021 Revision Date Author Revision Summary 1.0 27-Jul-2018 B C Conklin New document 1.1 05-Jan-2021 T R Kremser Updates and general refresh Table of Contents 1.Purpose4 2.Navigation4 3.Screen Features Details5 4.IO Saved States8 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in par",
+      "size": 135943
+    },
+    {
+      "id": "fpc-timers",
+      "title": "FPC-Timers",
+      "file": "FPC Docs 3/FPC-Timers.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlTimersand theTimer Creation Wizard Document Revision: 1.1 Date: 27-Jan-2023 Revision Date Author Revision Summary 1.0 Unknown B C Conklin New document 1.1 30-Jan-2023 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Table \u2018timemenu\u20195 2.The Create Timer Wizard6 3.Fun Timer Facts7 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated,",
+      "size": 130344
+    },
+    {
+      "id": "fpc-transfer-configuration-example",
+      "title": "FPC-Transfer-Configuration-Example",
+      "file": "FPC Docs 3/FPC-Transfer-Configuration-Example.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlTransfer ConfigurationExample and Checklist Document Revision: 1.2 Date: 30-Nov-2022 Revision Date Author Revision Summary 1.1 02-Jan-2015 B C Conklin Added transfer example and updates 1.2 30-Nov-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms5 1.Example Parts and Names6 2.The Configuration7 2.1.The Batches Table7 2.2.The ScnScanZone Table8 2.3.The ScnScanDevice Table8 2.4.The XfRouteBoss Table8 2.5.The XfrBoss Table9 2.6.The XfrTree Table11 2.7.The XfRouteTable Table11 2.8.The XfrConfig Table12 2.9.The XfrCheckSet Table12 2.10.The XfrGoSet Ta",
+      "size": 171319
+    },
+    {
+      "id": "fpc-transfer-scan-simulation",
+      "title": "FPC-Transfer-Scan-Simulation",
+      "file": "FPC Docs 3/FPC-Transfer-Scan-Simulation.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlTransfer Scan Simulation Document Revision: 1.1 Date: 21-Oct-2022 Revision Date Author Revision Summary 1.0 25-Apr-2013 P D Rotter New document 1.1 21-Oct-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Document Objective5 2.Basic Transfer Operation5 2.1.Transfer Induction5 2.2.Routing Request / Assignment5 3.Transfer Configuration5 4.Transfer Scan Simulation Configuration6 4.1.Table Batches6 4.2.Table XfSimConfig6 5.Simulation Scan Options8 5.1.Auto-Generated Scans8 5.2.Static Scan List9 5.2.1.Static Scan List Specifications9 6.Transfer Sim",
+      "size": 161091
+    },
+    {
+      "id": "fpc-transfer-test-examples",
+      "title": "FPC-Transfer-Test-Examples",
+      "file": "FPC Docs 3/FPC-Transfer-Test-Examples.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlTransfer Test Examples Document Revision: 1.1 Date: 20-Oct-2022 Revision Date Author Revision Summary 1.0 23-Feb-2009 B C Conklin New document 1.1 20-Oct-2022 T R Kremser Complete revamp. Table of Contents Glossary of Terms5 1.New Transfer Test Plan6 1.1.Inputs6 1.2.Outputs6 1.3.Timers6 2.Testing a Transfer \u2013 Initial Configuration7 3.Test \u2013 XfrBoss Options \u2013 Logging Transfer Events9 4.Test \u2013 XfrBoss Options \u2013 Product Input and Release Output10 5.Test \u2013 XfrBoss Options \u2013 MaxWaitTM11 6.Test \u2013 XfrBoss Options \u2013 Reset12 7.Example Table Contents13 7.1.Batches Configuration13 7.2.X",
+      "size": 91216
+    },
+    {
+      "id": "fpc-translationmanagement",
+      "title": "FPC-TranslationManagement",
+      "file": "FPC Docs 3/FPC-TranslationManagement.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "conveyor",
+        "machine",
+        "scanner"
+      ],
+      "summary": "WCS Machine ControlTranslation Management Translation_Management Document Revision: 2.1 Date: 18-Jan-2021 Revision History Revision Date Author Revision Summary 1.0 29-Jul-2013 T R Kremser Document created 2.0 09-Oct-2013 T R Kremser Add Info for Display program, new options for the xfp script. 2.1 18-Jan-2021 T R Kremser Update and refresh Table of Contents 1Introduction4 2Procedure5 3Required Tools6 4Using the xfp Script7 5The Display (Scanner Statistics) Program8 6Translation Extraction Details9 Introduction The WCS Machine Control interface supports multiple languages. This is accomp",
+      "size": 67772
+    },
+    {
+      "id": "fpc-trigger-configuration",
+      "title": "FPC-Trigger-Configuration",
+      "file": "FPC Docs 3/FPC-Trigger-Configuration.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlTrigger Configuration Document Revision: 2.0 Date: 05-Oct-2022 Revision Date Author Revision Summary 1.0 02-Sep-2015 B C Conklin New document 1.1 06-Sep-2018 B C Conklin 2.0 05-Oct-2022 T R Kremser Complete rewrite. Add SpecialFlags table information. Table of Contents Glossary of Terms4 1.Triggers in FPC5 2.Table Trigrset5 2.1.Triggertype Options8 2.2.Triggerlocname Options9 2.3.Resptype Options9 2.4.Resplocname Options12 3.Table Combos13 4.Table SpecialFlags14 5.Refresh Triggers14 6.SetAutoSelectHtr14 7.UnSetAutoSelectHtr14 8.Trigger Example15 Confidential/Proprietary Stat",
+      "size": 106180
+    },
+    {
+      "id": "high-speed-pusher-configuration",
+      "title": "High Speed Pusher Configuration",
+      "file": "FPC Docs 3/High Speed Pusher Configuration.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 130560
+    },
+    {
+      "id": "log-search-module",
+      "title": "Log Search Module",
+      "file": "FPC Docs 3/Log Search Module.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 224768
+    },
+    {
+      "id": "pc-to-pc-communications",
+      "title": "PC to PC Communications",
+      "file": "FPC Docs 3/PC to PC Communications.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "machine"
+      ],
+      "summary": "",
+      "size": 136704
+    },
+    {
+      "id": "pick-to-light-configuration",
+      "title": "Pick to Light Configuration",
+      "file": "FPC Docs 3/Pick to Light Configuration.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 155136
+    },
+    {
+      "id": "power-roll-accumulation-rel8-6m",
+      "title": "Power_Roll_Accumulation_-_Rel8.6M",
+      "file": "FPC Docs 3/Power_Roll_Accumulation_-_Rel8.6M.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 206848
+    },
+    {
+      "id": "preventive-maintenance-summary-module",
+      "title": "Preventive Maintenance Summary Module",
+      "file": "FPC Docs 3/Preventive Maintenance Summary Module.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 165376
+    },
+    {
+      "id": "rel-10-modules-module-list",
+      "title": "Rel 10 Modules (Module List)",
+      "file": "FPC Docs 3/Rel 10 Modules (Module List).docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "Automation Controller Version 10.0 Modules This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document. Fortna Material Handling reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order. Roll Based Menu System The Automation Controller men",
+      "size": 116277
+    },
+    {
+      "id": "scan-testplan-v1-0",
+      "title": "Scan_TestPlan V1.0",
+      "file": "FPC Docs 3/Scan_TestPlan V1.0.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "scanner"
+      ],
+      "summary": "",
+      "size": 247296
+    },
+    {
+      "id": "sendconvimage",
+      "title": "SendConvImage",
+      "file": "FPC Docs 3/SendConvImage.txt",
+      "category": "FPC Docs 3",
+      "extension": ".txt",
+      "tasks": [
+        "conveyor"
+      ],
+      "summary": "",
+      "size": 2405
+    },
+    {
+      "id": "setting-up-scanner-statistics-in-fpc-display",
+      "title": "Setting_up_Scanner_Statistics_in_FPC_-_Display",
+      "file": "FPC Docs 3/Setting_up_Scanner_Statistics_in_FPC_-_Display.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "printer",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus Scanner Statistics Configuration The purpose of this document is to describe how to set up the Scanner Statistics program for use within an Automation Controller. There are two unique methods for configuring scanner statistics depending on the version of Automation Controller software you are running, shown in the table below. Automation Controller Version Section Version 10.6 and earlier Follow the instructions in Section 2 Version 10.7 and later Follow the instructions in Section 3 Scanner Statistics Config. (versions 10.6 and earlier) The Scanner Statistics program, \u201cDisplay\u201d, is",
+      "size": 128798
+    },
+    {
+      "id": "sorter-design-example-20150908",
+      "title": "Sorter Design Example 20150908",
+      "file": "FPC Docs 3/Sorter Design Example 20150908.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "scanner"
+      ],
+      "summary": "Sorter-Scanner Design Example \u2013 Scanner to Divert Point Bar CodeScanner Induct PhotoeyeScanner Photoeye Tail Out PointNose of the Longest Box from Scanner Tail OutLocation of first divertBar CodeScanner Induct PhotoeyeScanner Photoeye Tail Out PointNose of the Longest Box from Scanner Tail OutLocation of first divert Bar Code Scanner Induct Photoeye Scanner Photoeye Tail Out Point Nose of the Longest Box from Scanner Tail Out Location of first divert Bar Code Scanner Induct Photoeye Scanner Photoeye Tail Out Point Nose of the Longest Box from Scanner Tail Out Location of first divert Exa",
+      "size": 147693
+    },
+    {
+      "id": "sorter-scan-simulation-v1-2",
+      "title": "Sorter Scan Simulation V1.2",
+      "file": "FPC Docs 3/Sorter Scan Simulation V1.2.docx",
+      "category": "FPC Docs 3",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus Sorter Simulation Guide Document Version: 1.1 Date: 4/22/2013 Revision History Revision Date Author Revision Summary 0.1 19Apr2013 Paul D Rotter Initial Release 1.1 12/04/2013 Barry Conklin Updated Column Descriptions 1.2 12/06/2013 Barry Conklin Changed logic to handle auto-generated scans and scans from a table to use the same logic. Table of Contents 1Introduction4 1.1Document Objective4 1.2References4 1.3Document Conventions4 1.3.1Definitions, Acronyms, and Abbreviations4 2Basic Sorter Operation5 2.1Sorter Configuration5 2.2Sorter Simulation Configuration5 2.2.1Bat",
+      "size": 242133
+    },
+    {
+      "id": "unit-sorter-control-software-v1-rev24-ddd",
+      "title": "Unit Sorter Control Software V1 rev24 DDD",
+      "file": "FPC Docs 3/Unit Sorter Control Software V1 rev24 DDD.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "sorter"
+      ],
+      "summary": "",
+      "size": 1156096
+    },
+    {
+      "id": "unit-sorter-control-software-v1-rev25-ddd",
+      "title": "Unit Sorter Control Software V1 rev25 DDD",
+      "file": "FPC Docs 3/Unit Sorter Control Software V1 rev25 DDD.doc",
+      "category": "FPC Docs 3",
+      "extension": ".doc",
+      "tasks": [
+        "sorter"
+      ],
+      "summary": "",
+      "size": 1165312
+    },
+    {
+      "id": "fpc-docs-3",
+      "title": "FPC Docs 3",
+      "file": "FPC Docs 3.zip",
+      "category": "Training",
+      "extension": ".zip",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 5116413
+    },
+    {
+      "id": "analogcardmodule",
+      "title": "AnalogCardModule",
+      "file": "FPC Documents 1/AnalogCardModule.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "Revision History Revision Date Author Revision Summary 1.1 1/14/2015 Barry Conklin Added Changes for Rev 10 1.2 10-Jun-2020 T R Kremser General update and refresh Analog Card Module The Omega Analog Card module is used to configure and send data to an Omega PCI-DDA08/12 I/O Card. The card has 8 analog output channels and can be configured for 8 voltage ranges. The card gets its input data from the SpdControl table. The SpdControl table provides a link to other modules (for example: ServoGapper, ZipperMerge, PrintApply). The AnalogOutput table and the SpdControl tables work together through the",
+      "size": 94347
+    },
+    {
+      "id": "automationcontrollerhousekeeping",
+      "title": "AutomationControllerHousekeeping",
+      "file": "FPC Documents 1/AutomationControllerHousekeeping.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "conveyor",
+        "machine"
+      ],
+      "summary": "Housekeeping Preventive maintenance plays an important role in minimizing downtime. The \u201cHouse Keeping\u201d or HouseKeep table is used to do periodic cleanup of database tables. It is used to purge data no longer needed from the database. These routines are typically established by Fortna personnel. The HouseKeep table is used to configure the actions to be taken and to set the schedule. Since time is often a consideration in deciding what to purge, database tables usually include a timestamp field. Actions are entered in a format based on Structured Query Language (SQL). Cleanup Routines The",
+      "size": 24807
+    },
+    {
+      "id": "beaconconfiguration",
+      "title": "BeaconConfiguration",
+      "file": "FPC Documents 1/BeaconConfiguration.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "transfer",
+        "machine",
+        "io"
+      ],
+      "summary": "Beacon Configuration Contents 1.0Beacon Configuration1 2.0Revision History1 3.0Beacon Table3 4.0Beacon Trigger Table4 5.0Beacon Pattern Table5 6.0Beacon Message Counter6 7.0Beacon Messaging8 7.1Setting up Beacon Communications8 8.0Beacon Simulation Table10 8.1Setting up a Simulation10 8.2Running the Simulation12 8.3Notes13 9.0End13 Revision History Revision Date Author Revision Summary 1.3 12/04/2013 Barry Conklin Added setting up communications section 1.4 11/25/2014 Barry Conklin Added Msg Counter to the logic 1.5 15-Jun-2020 T R Kremser General update and refresh The tables on the Beacon Ut",
+      "size": 105299
+    },
+    {
+      "id": "carouseldetaildesign-v1-0-bcc",
+      "title": "CarouselDetailDesign V1.0 (BCC)",
+      "file": "FPC Documents 1/CarouselDetailDesign V1.0 (BCC).doc",
+      "category": "FPC Documents 1",
+      "extension": ".doc",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 418304
+    },
+    {
+      "id": "chainstretchmodule",
+      "title": "ChainStretchModule",
+      "file": "FPC Documents 1/ChainStretchModule.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "conveyor",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlChain Stretch Module Chain Stretch Document Revision: 1.1 Date: 17 June 2020 Revision Date Author Revision Summary 1.0 13-Nov-2013 B Conklin New document 1.1 17-Jun-2020 T R Kremser Updates and general refresh Table of Contents 1.0Chain Stretch Module4 2.0Chain Stretch Processing Logic6 3.0Chain Stretch Control Logic Description7 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and",
+      "size": 137538
+    },
+    {
+      "id": "combinedjamzones",
+      "title": "CombinedJamZones",
+      "file": "FPC Documents 1/CombinedJamZones.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "conveyor",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlCombined Jam Zones Combined Jam Zones Document Revision: 1.1 Date: 17 June 2020 Revision Date Author Revision Summary 1.0 02-Nov-2008 B Conklin New document 1.1 17-Jun-2020 T R Kremser Updates and general refresh Table of Contents 1.0Combined Jam Zone Module Overview4 2.0Combined Jam Zone Menus4 3.0The CombinedJamZones Table5 4.0The CombinedEnableBits Table6 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the origina",
+      "size": 165258
+    },
+    {
+      "id": "convphs2png-setup",
+      "title": "ConvPhs2Png_Setup",
+      "file": "FPC Documents 1/ConvPhs2Png_Setup.txt",
+      "category": "FPC Documents 1",
+      "extension": ".txt",
+      "tasks": [
+        "conveyor"
+      ],
+      "summary": "",
+      "size": 5491
+    },
+    {
+      "id": "counterconfiguration",
+      "title": "CounterConfiguration",
+      "file": "FPC Documents 1/CounterConfiguration.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "io"
+      ],
+      "summary": "FortnaPlus ControlCounter Configuration Counter Configuration Document Revision: 1.1 Date: 18 June 2020 Revision Date Author Revision Summary 1.0 02-Dec-2014 B Conklin New document 1.1 18-Jun-2020 T R Kremser Updates and general refresh Table of Contents 1.0Counter Configuration4 2.0The CounterInfo Table5 3.0The CounterTrigger Table6 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be",
+      "size": 109723
+    },
+    {
+      "id": "ethernetip-hms-support-20140626",
+      "title": "EthernetIP_HMS_Support_20140626",
+      "file": "FPC Documents 1/EthernetIP_HMS_Support_20140626.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "Fortna Inc. West Reading, PA Ethernet/IP Card Training - Internal Design Document Document Version: 0.3 Date: 8/24/2015 This page intentionally left blank. Table of Contents 1Introduction1 1.1Document Objective1 1.2References1 1.3Document Conventions1 1.3.1Standard Definitions1 1.3.2Acronyms and Abbreviations1 1.3.3Requirements Numbering1 2Project Overview2 2.1System Layout2 2.2High Level Summary2 3User Interface3 3.1IOCard Menu3 3.1.1BasePort4 3.2IO Card Init4 3.3HMS Card web interface4 3.3.1Main4 3.3.2Scanlist Config5 3.3.3Ethernet statistics5 3.3.4CIP Statistics5 3.4Allen-Brad",
+      "size": 1060810
+    },
+    {
+      "id": "fpc-advanced-search-feature",
+      "title": "FPC-Advanced-Search-Feature",
+      "file": "FPC Documents 1/FPC-Advanced-Search-Feature.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlAdvanced Search Feature Document Revision: 1.1 Date: 26-Jul-2022 Revision Date Author Revision Summary 1.0 03-Nov-2014 B C Conklin New document 1.1 26-Jul-2022 T R Kremser Update and general refresh Table of Contents 1.Section4 2.Section4 3.Section4 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate",
+      "size": 449259
+    },
+    {
+      "id": "fpc-conveyorpartsmanagement",
+      "title": "FPC-ConveyorPartsManagement",
+      "file": "FPC Documents 1/FPC-ConveyorPartsManagement.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlConveyor Part Management Conveyor Part Management Document Revision: 1.1 Date: 02 July 2020 Revision Date Author Revision Summary 1.0 07-Jun-2016 B C Conklin New document 1.1 02-Jul-2020 T R Kremser Updates and general refresh Table of Contents 1.FortnaPlus Control Parts Database4 2.Start with a View11 3.Selecting Parts11 4.Adding Parts11 4.1.Add Part \u2013 Details12 4.2.Add Part \u2013 Positioning Parts13 4.3.Add Part \u2013 Force Part Refresh14 4.4.Add Part \u2013 Making Curves14 4.5.Add Part \u2013 Making Spurs15 5.Part Types16 6.Gen_Flag and Gen_Security23 7.Button Example24 Confidential/Pro",
+      "size": 328384
+    },
+    {
+      "id": "fpc-ctrl-f4-table-distribution",
+      "title": "FPC-Ctrl-F4-Table-Distribution",
+      "file": "FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlTable Distribution(Ctrl-F4) Document Revision: 1.2 Date: 03-Feb-2021 Revision Date Author Revision Summary 1.0 02-Jun-2013 B C Conklin New document 1.1 30-Jul-2013 B C Conklin 1.2 03-Feb-2021 T R Kremser Updates and general refresh Table of Contents 1.Purpose5 2.Use Philosophy5 3.Connectivity Preparation6 4.Single Record Distribution7 5.Synchronizing Entire Tables7 6.SPStatusScrn Window8 7.DistributedMenus Table10 8.DuplicateRows Table10 9.Flag Settings11 10.Notes on Testing This Feature11 10.1.Table TestColTypes11 10.2.Single Record Send \u2013 Update Empty12 10.3.Single Record S",
+      "size": 125653
+    },
+    {
+      "id": "fpc-data-export-module",
+      "title": "FPC-Data-Export-Module",
+      "file": "FPC Documents 1/FPC-Data-Export-Module.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlData Export Module Data Export Module Document Revision: 1.1 Date: 10 Aug 2020 Revision Date Author Revision Summary 1.0 Unknown New document 1.1 10-Aug-2020 T R Kremser Updates and general refresh Table of Contents 1.Data Export Module for FortnaPlus Control4 1.1.PrintMenu Fields4 1.2.Testing Your Configuration5 2.HistData Example5 3.Error_Log Example6 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipie",
+      "size": 104514
+    },
+    {
+      "id": "fpc-disable-bits",
+      "title": "FPC-Disable-Bits",
+      "file": "FPC Documents 1/FPC-Disable-Bits.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "io",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlDisable Bits Document Title Document Revision: 1.2 Date: 16 July 2020 Revision Date Author Revision Summary 1.0 Unknown T R Kremser New document 1.1 14-Jul-2020 T R Kremser Updates and general refresh 1.2 16-Jul-2020 T R Kremser Add ForceOn / Unforce information Table of Contents Disable Bits Explained4 Assigned Disable Bits4 Configurable Disable Bits5 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipien",
+      "size": 102349
+    },
+    {
+      "id": "fpc-endofwavemodule",
+      "title": "FPC-EndOfWaveModule",
+      "file": "FPC Documents 1/FPC-EndOfWaveModule.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor"
+      ],
+      "summary": "FortnaPlus ControlEnd of Wave Module Document Revision: 1.5 Date: 22-Jan-2021 Revision Date Author Revision Summary 1.0 14-Oct-2011 T R Kremser Document created 1.1 20-Oct-2011 T R Kremser Add SawLane_EndOfWave_Error feature 1.2 21-Jan-2013 T R Kremser Add \u201cRelease All\u201d feature 1.3 06-Oct-2014 T R Kremser Add security on Enable, Disable, Set EndOfWave buttons. This was added with revision 22280, in association with Feature #12569 1.4 27-Jan-2015 B C Conklin Added pushbuttons, lights and Aatomatic release features 1.5 22-Jan-2021 T R Kremser Refresh and general update Table of Contents 1.Introd",
+      "size": 135551
+    },
+    {
+      "id": "fpc-energymanagement",
+      "title": "FPC-EnergyManagement",
+      "file": "FPC Documents 1/FPC-EnergyManagement.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlEnergy Management Document Revision: 1.1 Date: 15-Jan-2021 Revision Date Author Revision Summary 1.0 10-Jun-2001 B C Conklin New document 2.0 27-Mar-2015 B C Conklin Added ZoneRUN column 2.1 15-Jan-2021 T R Kremser Updates and general refresh Table of Contents 1.The Energy Management Module4 2.Batches Configuration4 3.Table EnergyZone5 4.Table EnergyTrigger6 5.Energy Menu Commands6 6.Example 1 \u2013 Conveyor Segment7 7.Example 2 \u2013 Sorter Spur7 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to",
+      "size": 112234
+    },
+    {
+      "id": "fpc-errors-configuration",
+      "title": "FPC-Errors-Configuration",
+      "file": "FPC Documents 1/FPC-Errors-Configuration.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlErrors Configuration Document Revision: 1.2 Date: 25-Aug-2022 Revision Date Author Revision Summary 1.0 06-Jul-2012 B C Conklin New document 1.1 22-Jul-2015 B C Conklin 1.2 25-Aug-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Errors Configuration in FortnaPlus5 2.Errors Table5 3.RESYNC EJF8 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may",
+      "size": 79460
+    },
+    {
+      "id": "fpc-ev10-connections",
+      "title": "FPC-EV10-Connections",
+      "file": "FPC Documents 1/FPC-EV10-Connections.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlEV10 Connections Document Revision: 1.2 Date: 01-Mar-2023 Revision Date Author Revision Summary 1.0 16-Sep-2016 T R Kremser New document 1.1 14-Jul-2020 T R Kremser Update and general refresh 1.2 01-Mar-2023 T R Kremser Consolidate information on the screen capture feature Table of Contents Glossary of Terms4 1.Purpose5 2.EV10 Interface Overview5 3.WCS Connection Details6 4.REST Interface Connection Details6 5.Hosts File Details7 6.Machine Table Details7 7.WCSEvents Table8 8.MsgWCS Table9 9.Errsever Table9 10.WCSLINKPARTS Flag10 11.Dashboard Configuration Details10 11.1.Scree",
+      "size": 100787
+    },
+    {
+      "id": "fpc-fastio-configuration",
+      "title": "FPC-FastIO-Configuration",
+      "file": "FPC Documents 1/FPC-FastIO-Configuration.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "conveyor",
+        "machine",
+        "io"
+      ],
+      "summary": "FortnaPlus ControlFastIO Configuration Document Revision: 1.1 Date: 17-Nov-2020 Revision Date Author Revision Summary 1.0 10-Apr-2017 B C Conklin New document 1.1 17-Nov-2020 T R Kremser Updates and general refresh Table of Contents Section 14 Section 24 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this documen",
+      "size": 100608
+    },
+    {
+      "id": "fpc-fulls-jams-fulljams",
+      "title": "FPC-Fulls-Jams-Fulljams",
+      "file": "FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlFulls, Jams and Full-jams Document Revision: 2.0 Date: 27-Jan-2023 Revision Date Author Revision Summary 1.0 Unknown B C Conklin New document 1.1 17-Mar-2015 B C Conklin Add Fullline_DontFireResponse column 2.0 27-Jan-2023 T R Kremser Combine the Fulls, Jams and Fulljam documents. Table of Contents Glossary of Terms4 1.Overview5 2.Terminology5 3.Full Detection6 3.1.An Alternate Use for the Full Logic8 4.Jam Detection9 4.1.Automatically Clearing a Jam Error10 4.2.Clearing a Jam Error with a Pushbutton11 4.3.Requiring a Privileged User to Clear a Jam Error11 5.Full-Jams11 Confi",
+      "size": 92249
+    },
+    {
+      "id": "fpc-gapping-modules",
+      "title": "FPC-Gapping-Modules",
+      "file": "FPC Documents 1/FPC-Gapping-Modules.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlGapping Modules Document Revision: 1.2 Date: 15-Jul-2022 Revision Date Author Revision Summary 1.1 14-Jan-2015 B C Conklin Changes for FPC Version 10 1.2 15-Jul-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms5 1.Gapping Modules6 1.1.Gap Terminology6 1.2.New Gapper6 1.3.Tick Gapper6 1.4.Servo Gapper6 1.5.Capacity Gapper7 2.New Gapper Details8 2.1.Table NewGapper9 2.2.Setting the Photoeye Location11 2.3.New Gapper State Transition Logic12 3.Tick Gapper Details14 3.1.GoTo Type Tick Gapper14 3.2.Table ZprTickGapper15 3.3.Table ZprGapperZone15 4.Ser",
+      "size": 267773
+    },
+    {
+      "id": "fpc-highspeedsawtoothmerge",
+      "title": "FPC-HighSpeedSawtoothMerge",
+      "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlHigh-Speed Sawtooth Merge Module Document Revision: 1.2 Date: 25-Aug-2022 Revision Date Author Revision Summary 1.0 24-Mar-2014 B C Conklin New document 1.1 01-Jul-2022 T R Kremser Update and general refresh 1.2 25-Aug-2022 T R Kremser Incorporate the information from the High Speed Sawtooth Merge Test Plan document. Table of Contents Glossary of Terms4 1.High-Speed Sawtooth Merge Concept5 2.High-Speed Sawtooth Merge Features7 2.1.Reservation Re-use7 2.2.Opportunistic Feeding8 3.High-Speed Sawtooth Merge Design Concerns9 4.Merge Shifter Lane Layout9 5.Configuring the Shifter1",
+      "size": 218255
+    },
+    {
+      "id": "fpc-horncontrolmodule",
+      "title": "FPC-HornControlModule",
+      "file": "FPC Documents 1/FPC-HornControlModule.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "conveyor"
+      ],
+      "summary": "FortnaPlus ControlHorn Control Module Document Revision: 1.1 Date: 20-Jan-2021 Revision Date Author Revision Summary 1.0 06-Aug-2013 B C Conklin New document 1.1 20-Jan-2021 T R Kremser Updates and general refresh Table of Contents 1.Horn Control Module4 2.The Horns Table5 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to ev",
+      "size": 100896
+    },
+    {
+      "id": "fpc-inchstoremodule",
+      "title": "FPC-InchStoreModule",
+      "file": "FPC Documents 1/FPC-InchStoreModule.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlInch and Store Module Document Revision: 1.5 Date: 27-Jan-2023 Revision Date Author Revision Summary 1.0 16-Dec-2013 B C Conklin New document 1.3 02-Jan-2014 B C Conklin Add two new columns for motor control 1.4 24-Jan-2014 B C Conklin Add LastStoreDumpDly timer 1.5 15-Feb-2006 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Overview5 2.Software5 3.Required Batches Entry5 4.Inch and Store Module5 5.The InchStore Table7 6.Inch and Store Example10 7.Example Configuration11 Confidential/Proprietary Statement This document contains trade secrets and",
+      "size": 132439
+    },
+    {
+      "id": "fpc-initerrors-autogeneration-for-jam-full-estop-fulljam",
+      "title": "FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam",
+      "file": "FPC Documents 1/FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor"
+      ],
+      "summary": "FortnaPlus ControlUsing INITERRORS for Jam, Full, EStop and FullJam Configuration Document Revision: 1.1 Date: 21-Jan-2021 Revision Date Author Revision Summary 1.0 05-Nov-2015 B C Conklin New document 1.1 21-Jan-2021 T R Kremser Updates and general refresh Table of Contents 1.Autogeneration4 2.INITERRORS Flag4 3.Affected Parts5 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicat",
+      "size": 100192
+    },
+    {
+      "id": "fpc-installsystemfiles",
+      "title": "FPC-InstallSystemFiles",
+      "file": "FPC Documents 1/FPC-InstallSystemFiles.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlHow to Use the InstallSystemFiles Script Document Revision: 1.2 Date: 27-Jan-2021 Revision Date Author Revision Summary 1.0 13-Jul-2012 T R Kremser New document 1.1 31-Jan-2014 T R Kremser Update 1.2 27-Jan-2021 T R Kremser Update and general refresh Table of Contents How to Use the InstallSystemFiles Script4 1.User Prompts5 2.Options6 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, a",
+      "size": 100801
+    },
+    {
+      "id": "fpc-iocard-interfaces",
+      "title": "FPC-IOCard-Interfaces",
+      "file": "FPC Documents 1/FPC-IOCard-Interfaces.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "cisco FortnaPlus ControlIOCard Interfaces Document Title Document Revision: 1.15 Date: 03-October-2022 Revision Date Author Revision Summary 1.0 Unknown B C Conklin New document 1.1 08-Aug-2014 N Martin Added RTA EtherNet/IP module 1.2 21-Aug-2014 B C Conklin Added a table of contents 1.6 10-Nov-2014 N Martin Updated supported devices and parameter list 1.7 19-Feb-2015 B C Conklin Updated the KTX node and address table 1.8 12-Jun-2015 B C Conklin Added EIP configuration tool 1.10 11-May-2018 T R Kremser Additional clarification on 1794 (Flex) IO parameters 1.11 10-Aug-2020 T R Kremser Updates",
+      "size": 1892973
+    },
+    {
+      "id": "fpc-machine-msgmap-configuraton",
+      "title": "FPC-Machine-MsgMap-Configuraton",
+      "file": "FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlCommunications Configuration \u2013 Machine and MsgMap Document Revision: 1.1 Date: 22-Feb-2023 Revision Date Author Revision Summary 1.0 unknown B C Conklin New document 1.1 22-Feb-2003 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.FPC Communications Configuration5 2.Machine Table5 3.Connection Types9 4.Protocols10 5.Message Map11 6.Network Connectivity13 6.1.Troubleshooting13 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplica",
+      "size": 91774
+    },
+    {
+      "id": "fpc-menupad",
+      "title": "FPC-MenuPad",
+      "file": "FPC Documents 1/FPC-MenuPad.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "conveyor"
+      ],
+      "summary": "FortnaPlus ControlMenuPad Document Revision: 1.1 Date: 18-Jan-2021 Revision Date Author Revision Summary 1.0 13-Jul-2012 T R Kremser New document 1.1 18-Jan-2021 T R Kremser Updates and general refresh Table of Contents 1.MenuPad Table4 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document. Fortna Materia",
+      "size": 97790
+    },
+    {
+      "id": "fpc-merge-modules",
+      "title": "FPC-Merge-Modules",
+      "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlMerge Modules Document Revision: 1.5 Date: 10-May-2022 Revision Date Author Revision Summary 1.1 17-May-2013 B C Conklin Updates with table of contents 1.3 02-Jan-2014 B C Conklin Updated simulation 1.4 27-Jan-2015 B C Conklin Added End-of-Wave buttons and lights 1.5 16-Jun-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms5 1.Merge Control6 2.Simple Merge6 2.1.SimpleMerge Table6 3.Multiple Input Lane Merge (New Merge)8 3.1.MergeBoss Table8 3.2.MergeInputs Table9 3.3.MergeRoute Table12 3.4.MergeNotBusy Table13 3.5.MergeRunOutputs Table14 3.6.Merge",
+      "size": 784752
+    },
+    {
+      "id": "fpc-missing-pin-detection",
+      "title": "FPC-Missing-Pin-Detection",
+      "file": "FPC Documents 1/FPC-Missing-Pin-Detection.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "conveyor",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlMissing Pin Detection Configuration Document Revision: 1.1 Date: 04-Dec-2020 Revision Date Author Revision Summary 1.0 10-Dec-2015 B C Conklin New document 1.1 04-Dec-2020 T R Kremser Updates and general refresh Table of Contents Section 14 Section 24 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evalua",
+      "size": 120265
+    },
+    {
+      "id": "fpc-motor-speed-control",
+      "title": "FPC-Motor-Speed-Control",
+      "file": "FPC Documents 1/FPC-Motor-Speed-Control.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "printer",
+        "conveyor",
+        "io"
+      ],
+      "summary": "FortnaPlus ControlMotor Speed Control Document Revision: 1.2 Date: 24-Aug-2022 Revision Date Author Revision Summary 1.1 02-Jan-2015 B C Conklin Added revision history 1.2 24-Aug-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Motor Speed Control5 2.Details5 3.SpdControl Table5 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or i",
+      "size": 75792
+    },
+    {
+      "id": "fpc-motor-startup-chains",
+      "title": "FPC-Motor-Startup-Chains",
+      "file": "FPC Documents 1/FPC-Motor-Startup-Chains.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter"
+      ],
+      "summary": "FortnaPlus ControlMotor Startup Chains Document Revision: 1.4 Date: 20-Jan-2023 Revision Date Author Revision Summary 1.0 18-Apr-2013 B C Conklin New document 1.1 06-Apr-2015 B C Conklin Added required descriptions 1.2 13-Nov-2017 T R Kremser Added AutoSelectHtr feature 1.3 20-Jan-2023 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Motor Chains5 2.The Mtrchain Table6 3.Creating a Motor Chain8 4.Motor Chain Colors9 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.",
+      "size": 82707
+    },
+    {
+      "id": "fpc-mysql-database-information",
+      "title": "FPC-MySQL-Database-Information",
+      "file": "FPC Documents 1/FPC-MySQL-Database-Information.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "machine",
+        "scanner"
+      ],
+      "summary": "Table of Contents 1.0MySQL Database1 2.0MySQL Client2 3.0FortnaPlus password Table3 4.0Recovering from Crashed Tables3 5.0Some useful MySQL queries5 6.0Clean up MySQL Log Files7 7.0Starting and Stopping MySQL8 8.0Configuring MySQL for Remote Access8 9.0The my.cnf Configuration File10 10.0The odbc.ini Configuration File12 11.0MySQL Database Engine Management13 12.0Ideas for Correcting Performance Issues14 MySQL Database Useful Information for MySQL and FortnaPlus The MySQL database resides in /usr/local/var. The Fortna database resides in /usr/local/var/fortna. MySQL is started upon boot (if s",
+      "size": 108064
+    },
+    {
+      "id": "fpc-new-transfers",
+      "title": "FPC-New-Transfers",
+      "file": "FPC Documents 1/FPC-New-Transfers.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlNew Transfers Document Revision: 2.3 Date: 29-Sep-2022 Revision Date Author Revision Summary 1.6 18-Apr-2013 B C Conkin Added XfSimConfig SimCrrCsu notes. 1.7 17-Jun-2013 T R Kremser Added information on the SrtFPLite protocol. 1.8 24-Sep-2013 B C Conkin Added description updates for XfRouteBoss. 1.9 10-Oct-2013 B C Conkin Changes to transfer scan processing. 2.0 22-Aug-2018 T R Kremser Add the ToteSensor feature in XfRouteBoss. 2.1 06-Dec-2018 T R Kremser Add info on Pack and Ship scan types. Edits for clarity. 2.2 26-Sep-2022 T R Kremser Complete rewrite. 2.3 29-Sep-2022 T",
+      "size": 349643
+    },
+    {
+      "id": "fpc-old-transfers",
+      "title": "FPC-Old-Transfers",
+      "file": "FPC Documents 1/FPC-Old-Transfers.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlOld-Style Transfers Document Revision: 1.1 Date: 11-Nov-2022 Revision Date Author Revision Summary 1.0 12-Sep-2015 B C Conklin Add Transfer Example and updates 1.1 11-Nov-2022 T R Kremser Complete rewrite Table of Contents Glossary of Terms5 1Old-Style Transfers6 2Old Transfers Configuration6 2.1Batches Configuration6 2.2Transfer Configuration Steps6 2.2.1Define a scanner:6 2.2.2Define a message interface:7 2.2.3Configure the transfer:7 2.3Transfer Configuration Example7 2.4Starting a Transfer10 3Old Transfers Control Logic10 3.1Transfer Routes10 3.1.1Example 110 3.1.2Example",
+      "size": 214050
+    },
+    {
+      "id": "fpc-onscreenbuttons",
+      "title": "FPC-OnScreenButtons",
+      "file": "FPC Documents 1/FPC-OnScreenButtons.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "machine",
+        "io"
+      ],
+      "summary": "FortnaPlus ControlOn-Screen Buttons Document Revision: 1.2 Date: 21-Sep-2022 Revision Date Author Revision Summary 0.1 23-Sep-2013 B C Conklin New document 0.2 29-Sep-2013 B C Conklin Updates 1.1 22-Jun-2022 T R Kremser Update and General Refresh 1.2 21-Sep-2022 T R Kremser Add note about the size of the Layerson table. Table of Contents 1.Section4 2.Section4 3.Section4 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipien",
+      "size": 588223
+    },
+    {
+      "id": "fpcmsg-dsm-destinationstatusmessage",
+      "title": "FPCMSG-DSM-DestinationStatusMessage",
+      "file": "FPC Documents 1/FPCMSG-DSM-DestinationStatusMessage.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "machine",
+        "io"
+      ],
+      "summary": "FortnaPlus ControlDSM - Destination Status Message Destination Status Message Document Revision: 1.3 Date: 06-Jan-2021 Revision Date Author Revision Summary 1.1 04-Dec-2013 B C Conklin Added setting up communications section 1.2 24-Jun-2020 T R Kremser Updates and general refresh 1.3 06-Jan-2021 T R Kremser Add example configuration and test plan Table of Contents 1.1.Document Objective4 1.2.References4 1.3.Document Conventions4 1.3.1.Standard Definitions4 1.3.2.Acronyms and Abbreviations4 2.Overview4 3.Example One6 Initial Setup6 Create and Configure Full Detection Records6 Create and Configu",
+      "size": 870972
+    },
+    {
+      "id": "fpcmsg-dsr-destinationstatusrequest",
+      "title": "FPCMSG-DSR-DestinationStatusRequest",
+      "file": "FPC Documents 1/FPCMSG-DSR-DestinationStatusRequest.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlDestination Status Request Document Revision: 1.1 Date: 06-Jan-2021 Revision Date Author Revision Summary 1.0 05-Jul-2012 B C Conklin New document 1.1 06-Jan-2021 T R Kremser Updates and general refresh Table of Contents 1.Glossary of Terms4 2.Destination Status Request Message4 3.Table DSRConfig4 4.Assigning DSR Configurations6 4.1.DSR Messages for Sorters6 4.2.DSR Messages for Transfers6 4.3.DSR Messages for Print and Apply6 5.DSR Message Structure6 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and pr",
+      "size": 105401
+    },
+    {
+      "id": "fpcmsg-rhs-requesthoststatus",
+      "title": "FPCMSG-RHS-RequestHostStatus",
+      "file": "FPC Documents 1/FPCMSG-RHS-RequestHostStatus.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlRequest Host Status Document Revision: 1.1 Date: 14-Jan-2021 Revision Date Author Revision Summary 1.0 14-Jun-2011 P Rotter New document 1.1 15-Nov-2012 P Rotter On-screen button information added 1.2 24-Apr-2013 B C Conklin Added ErrorsRecord column information 1.3 25-Apr-2013 B C Conklin Added columns to latch the error and clear it 1.4 14-Jan-2021 T R Kremser Updates and general refresh. Combine all RHS-related documents. Table of Contents 1.Glossary of Terms4 2.The SrtHrtBeat Table4 3.Request Host Status Message6 4.RHS Communication Flow6 5.RHS Message Format7 6.Configur",
+      "size": 369468
+    },
+    {
+      "id": "c-installsystemfiles",
+      "title": "~$C-InstallSystemFiles",
+      "file": "FPC Documents 1/~$C-InstallSystemFiles.docx",
+      "category": "FPC Documents 1",
+      "extension": ".docx",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 162
+    },
+    {
+      "id": "fpc-documents-1",
+      "title": "FPC Documents 1",
+      "file": "FPC Documents 1.zip",
+      "category": "Training",
+      "extension": ".zip",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 8117348
+    },
+    {
+      "id": "fpc-opennms-configuration",
+      "title": "FPC-OpenNMS-Configuration",
+      "file": "FPC-Docs 2/FPC-OpenNMS-Configuration.docx",
+      "category": "FPC Docs 2",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlOpenNMS Configuration Document Revision: 1.1 Date: 24-Oct-2022 Revision Date Author Revision Summary 1.0 09-Sep-2013 B C Conklin New document 1.1 24-Oct-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.NMS Configuration in FPC5 2.Communication Interface5 3.WCSEvents Configuration5 4.NMS Interface Debugging6 5.Configuring Procagent for NMS7 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside",
+      "size": 82150
+    },
+    {
+      "id": "fpc-packlift-module",
+      "title": "FPC-PackLift-Module",
+      "file": "FPC-Docs 2/FPC-PackLift-Module.docx",
+      "category": "FPC Docs 2",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlPackLift Module Document Revision: 1.1 Date: 20-Jul-2022 Revision Date Author Revision Summary 1.0 23-Apr-2013 B C Conklin Update the format 1.1 20-Jul-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.The Pack Lift Module5 2.Table PackLiftConfig5 3.Table PackLiftControl7 4.Table PackLiftStates9 5.Pack Lift Logic11 6.Source Code Files12 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the",
+      "size": 218358
+    },
+    {
+      "id": "fpc-photoeye-status-reporting",
+      "title": "FPC-Photoeye-Status-Reporting",
+      "file": "FPC-Docs 2/FPC-Photoeye-Status-Reporting.docx",
+      "category": "FPC Docs 2",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor"
+      ],
+      "summary": "FortnaPlus ControlPhotoeye Status Reporting Document Revision: 1.1 Date: 10-Jan-2023 Revision Date Author Revision Summary 1.0 Unknown B C Conklin New document 1.1 10-Jan-2023 T R Kremser Update and General Refresh Table of Contents Glossary of Terms4 1.Photoeye Status Reporting5 2.Table PeList5 3.Table PeDisplay6 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or",
+      "size": 73221
+    },
+    {
+      "id": "fpc-powerfailupsconfiguration",
+      "title": "FPC-PowerFailUPSConfiguration",
+      "file": "FPC-Docs 2/FPC-PowerFailUPSConfiguration.docx",
+      "category": "FPC Docs 2",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlPower Fail UPS Configuration Document Revision: 1.1 Date: 12-Aug-2021 Revision Date Author Revision Summary 1.0 22-Aug-2019 T R Kremser New document 1.1 12-Aug-2021 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.UPS Hardware Configuration5 1.1.APC SMT750RM2U \u2013 Simple Signaling Protocol5 1.2.APC SUA500PDR \u2013 Smart Signaling Protocol5 1.3.CX2100-0904 and CX2100-0914 \u2013 Power Supply with CX2900 Battery5 1.4.Incompatible UPS Devices6 2.Automation Controller Configuration7 2.1.Table Batches7 2.2.The UPSMenu Screen8 2.3.Automatic Shutdown10 2.4.APC Bad",
+      "size": 1075756
+    },
+    {
+      "id": "fpc-ratepoints",
+      "title": "FPC-RatePoints",
+      "file": "FPC-Docs 2/FPC-RatePoints.docx",
+      "category": "FPC Docs 2",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlRate Points Document Revision: 1.1 Date: 26-Oct-2022 Revision Date Author Revision Summary 1.0 24-Jul-2013 B C Conklin New document 1.1 26-Oct-2022 T R Kremser Update and general refresh Table of Contents 1.Section4 2.Section4 3.Section4 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this docume",
+      "size": 75256
+    },
+    {
+      "id": "fpc-remoteauthorization",
+      "title": "FPC-RemoteAuthorization",
+      "file": "FPC-Docs 2/FPC-RemoteAuthorization.docx",
+      "category": "FPC Docs 2",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlRemote Authorization Document Revision: 1.1 Date: 03-Oct-2022 Revision Date Author Revision Summary 0.6 20-Dec-2012 T R Kremser New document 1.0 27-Apr-2022 T R Kremser Update and general refresh 1.1 03-Oct-2022 T R Kremser Update rc.local information for stunnel Table of Contents Glossary of Terms4 1.Introduction5 2.Project Overview5 3.User Interface6 3.1.Machine Table6 3.2.MsgMap Table9 3.3.RemoteAuthCfg Table11 4.Debugging13 4.1.Debugging ActiveMQ13 5.Secure Configuration16 5.1.Building the Stunnel Package16 5.2.Configure Stunnel18 5.3.Apache ActiveMQ Configuration20 6.Aut",
+      "size": 690839
+    },
+    {
+      "id": "fpc-rest-api",
+      "title": "FPC-REST-API",
+      "file": "FPC-Docs 2/FPC-REST-API.docx",
+      "category": "FPC Docs 2",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "transfer",
+        "sorter",
+        "machine"
+      ],
+      "summary": "WCS Machine Control REST API The WCS Machine Control REST API allows interaction with a running Machine Control instance via a URL interface. Complete rows from any of the defined data tables may be retrieved using the /fp mode, and specialty interactions may be done using the /ss mode for Start/Stop information and control or the /pna mode for Print and Apply information and control. IO Transition information may be retrieved using the /transio mode, if enabled. The feature requires only two lines of configuration within WCS Machine Control -- a typical server-type connection. Define two n",
+      "size": 92181
+    },
+    {
+      "id": "fpc-docs-2",
+      "title": "FPC-Docs 2",
+      "file": "FPC-Docs 2.zip",
+      "category": "Training",
+      "extension": ".zip",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 2021004
+    },
+    {
+      "id": "block-diagram",
+      "title": "Block Diagram",
+      "file": "P&A Documents/Block Diagram.doc",
+      "category": "Print & Apply",
+      "extension": ".doc",
+      "tasks": [
+        "general"
+      ],
+      "summary": "",
+      "size": 284160
+    },
+    {
+      "id": "fpc-pna-configurationchecklist",
+      "title": "FPC-PNA-ConfigurationChecklist",
+      "file": "P&A Documents/FPC-PNA-ConfigurationChecklist.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlPrint Apply Configuration Checklist Document Revision: 1.7 Date: 16-Mar-2022 Revision Date Author Revision Summary 1.0 Initial version 1.1 15-Jul-2013 B C Conklin Added notes on setting up the \u201cWait Update\u201d and the \u201cSORT\u201d owner for the \u201cPrinter Tamp\u201d and \u201cPrinter Error\u201d. 1.2 08-Apr-2014 B C Conklin Added Examples 1.3 02-Aug-2017 T R Kremser Updates 1.4 12-Jan-2018 T R Kremser Clarify HeightInDT description. 1.5 26-Jul-2021 T R Kremser Update and general refresh 1.6 10-Jan-2022 T R Kremser Add PStConvertTable UseVerScan feature 1.7 16-Mar-2022 T R Kremser Add note regarding Sr",
+      "size": 365765
+    },
+    {
+      "id": "fpc-pna-operators-screen",
+      "title": "FPC-PNA-Operators-Screen",
+      "file": "P&A Documents/FPC-PNA-Operators-Screen.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlPrint and ApplyOperator\u2019s Screen Document Revision: 1.1 Date: 02-Feb-2023 Revision Date Author Revision Summary 1.0 01-Mar-2013 Unknown New document 1.1 02-Feb-2023 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Print and Apply Module5 2.Operator\u2019s Screen5 3.PNA Printer Options Window8 4.Recovering From PNA Error Conditions10 4.1.Single Printer Error10 4.2.Halted Conveyor Error11 5.Printer Maintenance12 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortn",
+      "size": 136152
+    },
+    {
+      "id": "fpc-pna-print-apply-configuration",
+      "title": "FPC-PNA-Print-Apply-Configuration",
+      "file": "P&A Documents/FPC-PNA-Print-Apply-Configuration.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlPrint Apply Configuration Document Revision: 1.7 Date: 19-Oct-2022 Revision Date Author Revision Summary 1.0 New document 1.1 10-May-2012 T Sollenberger Add PNA changes for Adcock project 1.2 6-Nov-2012 B C Conklin Add dimensions to the LVM 1.3 25-Jan-2013 B C Conklin Update to the latest version 1.4 12-Jan-2018 T R Kremser Clarify the value expected for HeightInDT 1.5 16-Aug-2021 T R Kremser General Update and Refresh 1.6 10-Jan-2022 T R Kremser Add the PStConvertTable_UseVerScan feature 1.7 19-Oct-2022 T R Kremser Correct errors and omissions. Add information about PandA C",
+      "size": 1204586
+    },
+    {
+      "id": "fpc-pna-printapplyfallback",
+      "title": "FPC-PNA-PrintApplyFallback",
+      "file": "P&A Documents/FPC-PNA-PrintApplyFallback.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlPrint Apply Fallback Document Revision: 1.1 Date: 23-Jul-2021 Revision Date Author Revision Summary 1.0 01-Sep-2015 B C Conklin New document 1.1 23-Jul-2021 T R Kremser Update and general refresh Table of Contents 1.Introduction4 1.1.Definitions4 2.High-Level Summary5 2.1.Example Conveyor System Layout5 3.Process Flow6 3.1.Sorter Release6 3.2.Print Apply Line6 3.2.1.Gapper7 3.2.2.Printer7 4.Feature Configuration7 4.1.Table Batches7 4.2.Table PrintApplyFallback7 5.Example Configuration10 Confidential/Proprietary Statement This document contains trade secrets and information th",
+      "size": 111727
+    },
+    {
+      "id": "fpc-pna-printapplysimulation",
+      "title": "FPC-PNA-PrintApplySimulation",
+      "file": "P&A Documents/FPC-PNA-PrintApplySimulation.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlPrint and Apply Simulation Document Revision: 1.1 Date: 07-June-2023 Revision Date Author Revision Summary 1.0 B C Conklin New document 2.0 01-Apr-2014 B C Conklin Updates 1.1 07-Jun-2023 T R Kremser Update and general refresh Table of Contents Glossary of Terms5 1.Introduction6 2.The Print and Apply Process6 2.1.Skew Section7 2.2.Brake / Meter Belt7 2.3.Induct Photoeye7 2.4.LPN / SKU Scan Tunnel7 2.5.Container Dimensioning8 2.6.Label Request Message8 2.7.Label Printer Assignment8 2.8.Verification Scan Tunnel9 2.9.Label Verification Message9 3.PNA Simulation Menus and Tables9",
+      "size": 332422
+    },
+    {
+      "id": "fpc-pna-testplan-sorter",
+      "title": "FPC-PNA-TestPlan-Sorter",
+      "file": "P&A Documents/FPC-PNA-TestPlan-Sorter.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlPrint Apply Test Plan for Sorters Document Revision: 1.3 Date: 16-Mar-2022 Revision Date Author Revision Summary 1.0 01-May-2006 B C Conklin New document 1.1 03-Jul-2012 B C Conklin updates 1.2 07-Jan-2022 T R Kremser Update and general refresh 1.3 16-Mar-2022 T R Kremser Add note regarding SrtTrack and SrtDevice table sizes. Table of Contents Glossary of Terms6 1.Print Apply Test Plan7 2.Simulation Configuration8 2.1Machine Table8 2.2MsgMap Table10 2.3TestConfig Table11 2.4TestCnfgPrt Table11 3.One Printer, Static Assign Configuration12 3.1.Machine Table12 3.2.MsgMap Table13",
+      "size": 166021
+    },
+    {
+      "id": "fpc-pna-transfer-printandapply",
+      "title": "FPC-PNA-Transfer-PrintAndApply",
+      "file": "P&A Documents/FPC-PNA-Transfer-PrintAndApply.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "FortnaPlus ControlTransfer Print and Apply Document Revision: 1.2 Date: 10-Aug-2022 Revision Date Author Revision Summary 1.0 12-Apr-2012 B C Conklin Original Release 1.1 21-Apr-2012 B C Conklin Additional general edits 1.2 10-Aug-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms6 1.Document Objective7 2.Transfer Print and Apply Events and Messaging7 3.Transfer Print and Apply Tables9 3.1.Table XfrCfgPnAInput9 3.2.Table XfrCfgPnAOutput10 3.3.Transfer PnA Table and Column Details11 3.3.1.XfrBoss_XfrZoneID11 3.3.2.XfrTrack_XfrZoneID11 3.3.3.ScnScanZone_XfrZoneID11 3",
+      "size": 327749
+    },
+    {
+      "id": "fpc-pna-zebraprintengineautomaticdisconnect",
+      "title": "FPC-PNA-ZebraPrintEngineAutomaticDisconnect",
+      "file": "P&A Documents/FPC-PNA-ZebraPrintEngineAutomaticDisconnect.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "printer"
+      ],
+      "summary": "Zebra Print Engine Automatic Disconnection The Zebra Print Engine has a feature to automatically disconnect a TCP/IP connection after 5 minutes. To disable this feature use a web browser to connect to the printer\u2019s ip address. Click View and Modify Printer Settings. If you get a login screen, Zebra\u2019s default password is 1234. Click Network Configuration. Click TCP/IP Settings. Set Timeout Checking to NO. Click Submit Changes. Click \u201cSave Current Configuration\u201d from the \u201cView and Modify Printer Settings\u201d page to make the change permanent!",
+      "size": 272636
+    },
+    {
+      "id": "fpc-pna-zebraprinterconfiguration",
+      "title": "FPC-PNA-ZebraPrinterConfiguration",
+      "file": "P&A Documents/FPC-PNA-ZebraPrinterConfiguration.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "machine"
+      ],
+      "summary": "FortnaPlus ControlZebra Printer Configuration Document Revision: 1.2 Date: 23-Jul-2021 Revision Date Author Revision Summary 1.0 26-Mar-2013 P Rotter New document 1.1 18-Jun-2020 T R Kremser Updates and general refresh 1.2 23-Jul-2021 T R Kremser Format refresh Table of Contents 1.Configuring a Zebra 110PAX4 Printer for Diagnostic Reporting4 2.Configuring FortnaPlus as the Diagnostic Server4 3.Configuring the Printer as a Diagnostic Client4 4.Using the Diagnostic Messages5 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential an",
+      "size": 71405
+    },
+    {
+      "id": "frd-printapplyfallback20110518",
+      "title": "FRD_PrintApplyFallback20110518",
+      "file": "P&A Documents/FRD_PrintApplyFallback20110518.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "Fortna Inc. Buttonwood West Reading, PA Software DDD Print and Apply Fallback Document Version: 0.6 Date: 5/18/2011 This page intentionally left blank. Table of Contents 1Introduction1 1.1Document Objective1 1.2References1 1.2.1Participants included:1 1.2.2Documents1 1.2.3Code1 1.3Document Conventions1 1.3.1FortnaPlus Code Definitions1 1.3.2Non-code definitions2 1.3.3Acronyms and Abbreviations3 1.3.4Requirements Numbering3 2High Level Summary4 2.1Conveyor System Layout4 2.2High Level Summary4 3Process Flow5 3.1Sorter Release5 3.2Print and Apply Line5 3.2.1Gapper.5 3.2.2Scanner5",
+      "size": 1126812
+    },
+    {
+      "id": "inkjet-idd20121217",
+      "title": "InkJet_IDD20121217",
+      "file": "P&A Documents/InkJet_IDD20121217.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "transfer",
+        "sorter",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "Fortna West Reading, PA Ink Jet - Internal Design Document Document Version: 0.4 Date: 12/17/2012 This page intentionally left blank. Table of Contents 1Introduction1 1.1Document Objective1 1.2References1 1.3Document Conventions1 1.3.1Standard Definitions1 1.3.2Acronyms and Abbreviations1 1.3.3Requirements Numbering1 2Project Overview2 2.1Conveyor System Layout2 2.1.1Typical PnA Conveyor Layout2 2.1.2Recommended Ink Jet Conveyor Layout2 2.2High Level Summary3 3Detailed Design4 3.1Scanner to Second PE Distance4 3.2Update Point to Printer Distance4 3.3Gapping4 3.4Pitch4 4Ink Jet",
+      "size": 504830
+    },
+    {
+      "id": "print-apply-mckesson-issues-20140605",
+      "title": "Print Apply McKesson Issues 20140605",
+      "file": "P&A Documents/Print Apply McKesson Issues 20140605.docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "scanner"
+      ],
+      "summary": "Print Apply \u2013 McKesson There have been issues with the McKesson System, associated with restarting the lines after printer or system issues. Summary: When a single printer is \u201cDisabled\u201d the software does not change the status of the cartons to the proper state. When the line stops, the \u201cClear All\u201d only clears the status, up to the \u201cClear End Point\u201d. This can result in additional line stops. The \u201cClear All\u201d clears all cartons between the \u201cInduct Photoeye\u201d and the \u201cClear End Point\u201d. The procedure indicates that labeled cartons can be left on the conveyor, however any carton between the \u201cInduct",
+      "size": 25234
+    },
+    {
+      "id": "printapplydesign-conv-design-layout",
+      "title": "PrintApplyDesign (Conv Design Layout)",
+      "file": "P&A Documents/PrintApplyDesign (Conv Design Layout).docx",
+      "category": "Print & Apply",
+      "extension": ".docx",
+      "tasks": [
+        "photoeye",
+        "printer",
+        "conveyor",
+        "machine",
+        "io",
+        "scanner"
+      ],
+      "summary": "Print and Apply Design This document contains trade secrets and information which is considered confidential and proprietary to Fortna Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document. Fortna Inc. reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order. Bar CodeScanner VerificationScannerPrint and ApplyLabelerPrint and Apply BeltSkew",
+      "size": 329662
+    },
+    {
+      "id": "scanner-box-dimensions-configuration",
+      "title": "Scanner Box Dimensions Configuration",
+      "file": "P&A Documents/Scanner Box Dimensions Configuration.doc",
+      "category": "Print & Apply",
+      "extension": ".doc",
+      "tasks": [
+        "scanner"
+      ],
+      "summary": "",
+      "size": 228864
+    },
+    {
+      "id": "p-a-documents",
+      "title": "P&A Documents",
+      "file": "P&A Documents.zip",
+      "category": "Print & Apply",
+      "extension": ".zip",
+      "tasks": [
+        "printer"
+      ],
+      "summary": "",
+      "size": 20922683
+    }
+  ]
+}

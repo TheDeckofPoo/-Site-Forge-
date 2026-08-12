@@ -1,0 +1,538 @@
+Attribute VB_Name = "Utilities"
+Option Explicit
+
+' Cache for RegEx object to improve performance
+Private moRegEx As Object
+Private mIsCleaningUp As Boolean
+
+'------------------------------------------------------------------------------------
+' GetRegEx
+' Returns a cached RegExp object to avoid repeatedly creating new instances
+'------------------------------------------------------------------------------------
+Public Function GetRegEx() As Object
+    On Error GoTo ErrHandler
+
+    If moRegEx Is Nothing Then
+        Set moRegEx = CreateObject("VBScript.RegExp")
+        If moRegEx Is Nothing Then
+            LogError "GetRegEx", CLng(vbObjectError + 1), "Failed to create RegExp object"
+            Exit Function
+        End If
+    End If
+    Set GetRegEx = moRegEx
+    Exit Function
+
+ErrHandler:
+    LogError "GetRegEx", Err.Number, Err.Description
+    Set GetRegEx = Nothing
+End Function
+
+'------------------------------------------------------------------------------------
+' CreateRegex
+' Creates a configured RegExp object (helper to reduce boilerplate)
+'------------------------------------------------------------------------------------
+Public Function CreateRegex(ByVal pattern As String, Optional ByVal isGlobal As Boolean = True, Optional ByVal ignoreCase As Boolean = True) As Object
+    On Error GoTo ErrHandler
+    Dim re As Object
+    Set re = CreateObject("VBScript.RegExp")
+    re.pattern = pattern
+    re.Global = isGlobal
+    re.ignoreCase = ignoreCase
+    Set CreateRegex = re
+    Exit Function
+ErrHandler:
+    LogError "CreateRegex", Err.Number, Err.Description, "Pattern: " & Left(pattern, 100)
+    Set CreateRegex = Nothing
+End Function
+
+'------------------------------------------------------------------------------------
+' FindUniqueValuesDict
+' Returns a dictionary of unique values from a range
+'------------------------------------------------------------------------------------
+Public Function FindUniqueValuesDict(rng As Range) As Object
+    Dim cell As Range
+    Dim uniqueValues As Object
+    On Error GoTo ErrorHandler
+    
+    ' Create a new Scripting.Dictionary object.
+    Set uniqueValues = CreateObject("Scripting.Dictionary")
+    
+    ' Loop through each cell in the range.
+    For Each cell In rng
+        If cell.value <> "" Then
+            ' Only add the cell value if it doesn't already exist in the dictionary.
+            If Not uniqueValues.Exists(CStr(cell.value)) Then
+                uniqueValues.Add CStr(cell.value), cell.value
+            End If
+        End If
+    Next cell
+    
+    ' Return the dictionary.
+    Set FindUniqueValuesDict = uniqueValues
+    Exit Function
+
+ErrorHandler:
+    LogError "FindUniqueValuesDict", Err.Number, Err.Description, "Range: " & rng.address
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' GetRegExMatches
+' Executes a regular expression search and returns the matches
+'------------------------------------------------------------------------------------
+Public Function GetRegExMatches(searchString As String, sourceString As String) As Object
+    Dim regex As Object
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(searchString)) = 0 Then
+        LogError "GetRegExMatches", vbObjectError + 1, "Search string is empty"
+        Exit Function
+    End If
+    
+    If Len(Trim(sourceString)) = 0 Then
+        LogError "GetRegExMatches", vbObjectError + 2, "Source string is empty"
+        Exit Function
+    End If
+    
+    ' Create a regular expression object
+    Set regex = GetRegEx()
+    If regex Is Nothing Then Exit Function
+    
+    regex.Global = True
+    regex.pattern = searchString & """([^""]*)"""
+    
+    ' Find all matches of the pattern in the input string and return
+    Set GetRegExMatches = regex.Execute(sourceString)
+    Exit Function
+    
+ErrorHandler:
+    LogError "GetRegExMatches", Err.Number, Err.Description, _
+             "Search: " & Left(searchString, 50) & ", Source: " & Left(sourceString, 50)
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' ExtractContent
+' Extracts content between specified tags in XML-like content
+'------------------------------------------------------------------------------------
+Public Function ExtractContent(searchString As String, typeString As String, sourceString As String) As String
+    Dim regex As Object
+    Dim matches As Object
+    Dim match As Object
+    Dim extractedContent As String
+    
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(searchString)) = 0 Then
+        LogError "ExtractContent", vbObjectError + 1, "Search string is empty"
+        Exit Function
+    End If
+    
+    If Len(Trim(typeString)) = 0 Then
+        LogError "ExtractContent", vbObjectError + 2, "Type string is empty"
+        Exit Function
+    End If
+    
+    If Len(Trim(sourceString)) = 0 Then
+        LogError "ExtractContent", vbObjectError + 3, "Source string is empty"
+        Exit Function
+    End If
+    
+    ' Create a regular expression object
+    Set regex = GetRegEx()
+    If regex Is Nothing Then Exit Function
+    
+    regex.Global = True
+    regex.pattern = "<" & typeString & "\b[^>]*>([\s\S]*?)<\/" & typeString & ">"
+    
+    ' Find all matches of the <*> tags in the input string
+    Set matches = regex.Execute(sourceString)
+    
+    ' Iterate over the matches and extract the content of the task containing the search string
+    For Each match In matches
+        If InStr(1, match.value, searchString) > 0 Then
+            extractedContent = match.value
+            Exit For
+        End If
+    Next match
+    
+    ' Return the extracted content
+    ExtractContent = extractedContent
+    Exit Function
+    
+ErrorHandler:
+    LogError "ExtractContent", Err.Number, Err.Description, _
+             "Search: " & Left(searchString, 50) & ", Type: " & typeString
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' ExtractNamesFromMatches
+' Extracts names from regex matches into a collection
+'------------------------------------------------------------------------------------
+Public Sub ExtractNamesFromMatches(matches As Object, ByRef itemNames As Collection, Optional ByRef TagString As String)
+    Dim match As Object
+    Dim extractedName As String
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If matches Is Nothing Then
+        LogError "ExtractNamesFromMatches", vbObjectError + 1, "Matches object is null"
+        Exit Sub
+    End If
+    
+    If itemNames Is Nothing Then
+        LogError "ExtractNamesFromMatches", vbObjectError + 2, "ItemNames collection is null"
+        Exit Sub
+    End If
+    
+    ' Iterate over the matches and extract the name of each item
+    For Each match In matches
+        ' The first submatch should be the item name
+        If match.SubMatches.count >= 1 Then
+            extractedName = match.SubMatches(0)
+            ' Check if the name contains the substring
+            If IsMissing(TagString) Then
+                itemNames.Add extractedName
+            ElseIf InStr(1, extractedName, TagString, vbTextCompare) > 0 Then
+                itemNames.Add extractedName
+            End If
+        End If
+    Next match
+    
+    Exit Sub
+    
+ErrorHandler:
+    LogError "ExtractNamesFromMatches", Err.Number, Err.Description, _
+             "TagString: " & IIf(IsMissing(TagString), "Missing", TagString)
+    Resume Next
+End Sub
+
+'------------------------------------------------------------------------------------
+' ExtractNamesCol
+' Extracts names from a source string into a collection
+'------------------------------------------------------------------------------------
+Public Function ExtractNamesCol(searchString As String, sourceString As String, Optional ByRef TagString As String) As Collection
+    On Error GoTo ErrorHandler
+
+    ' Input validation
+    If Len(Trim(searchString)) = 0 Then
+        LogError "ExtractNamesCol", vbObjectError + 1, "Search string is empty"
+        Exit Function
+    End If
+
+    If Len(Trim(sourceString)) = 0 Then
+        LogError "ExtractNamesCol", vbObjectError + 2, "Source string is empty"
+        Exit Function
+    End If
+
+    Dim itemNames As New Collection
+    Dim matches As Object
+
+    ' Get matches with error handling
+    Set matches = GetRegExMatches(searchString, sourceString)
+    If matches Is Nothing Then
+        LogError "ExtractNamesCol", vbObjectError + 3, "Failed to get regex matches"
+        Exit Function
+    End If
+    
+    ' Extract names from matches with error handling
+    On Error Resume Next
+    ExtractNamesFromMatches matches, itemNames, TagString
+    If Err.Number <> 0 Then
+        LogError "ExtractNamesCol", Err.Number, "Failed to extract names from matches"
+        Set itemNames = Nothing
+        Exit Function
+    End If
+    On Error GoTo ErrorHandler
+
+    Set ExtractNamesCol = itemNames
+    Exit Function
+
+ErrorHandler:
+    LogError "ExtractNamesCol", Err.Number, Err.Description, _
+             "Search: " & Left(searchString, 50) & ", Source: " & Left(sourceString, 50)
+    If Not itemNames Is Nothing Then Set itemNames = Nothing
+End Function
+
+'------------------------------------------------------------------------------------
+' ExtractNamesDict
+' Extracts names from a source string into a dictionary
+'------------------------------------------------------------------------------------
+Public Function ExtractNamesDict(searchString As String, sourceString As String, Optional ByRef TagString As String) As Object
+    Dim itemNames As New Collection
+    Dim matches As Object
+    Dim dict As Object
+    On Error GoTo ErrorHandler
+      
+    ' Input validation
+    If Len(Trim(searchString)) = 0 Then
+        LogError "ExtractNamesDict", vbObjectError + 1, "Search string is empty"
+        Exit Function
+    End If
+    
+    If Len(Trim(sourceString)) = 0 Then
+        LogError "ExtractNamesDict", vbObjectError + 2, "Source string is empty"
+        Exit Function
+    End If
+    
+    ' Get matches based on the search string pattern
+    Set matches = GetRegExMatches(searchString, sourceString)
+    
+    ' Create a dictionary to store results
+    Set dict = CreateObject("Scripting.Dictionary")
+
+    ' Check if matches were found before proceeding
+    If matches Is Nothing Then
+        Set ExtractNamesDict = dict
+        Exit Function
+    End If
+
+    ' Extract names from matches (this populates the itemNames collection)
+    ExtractNamesFromMatches matches, itemNames, TagString
+    
+    ' Add the names from the collection to the dictionary
+    Dim i As Long
+    For i = 1 To itemNames.count
+      If Not dict.Exists(itemNames(i)) Then
+        dict.Add itemNames(i), itemNames(i)
+      End If
+    Next i
+    
+    Set ExtractNamesDict = dict
+    Exit Function
+    
+ErrorHandler:
+    LogError "ExtractNamesDict", Err.Number, Err.Description, _
+             "Search: " & Left(searchString, 50) & ", Source: " & Left(sourceString, 50)
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' InsertStringAfterTag
+' Inserts a string after a specified tag in the destination string
+'------------------------------------------------------------------------------------
+Public Function InsertStringAfterTag(destinationString As String, insertString As String, Tag As String) As String
+   Dim ResultString As String
+   On Error GoTo ErrorHandler
+   
+   ' Input validation
+   If Len(Trim(destinationString)) = 0 Then
+       LogError "InsertStringAfterTag", vbObjectError + 1, "Destination string is empty"
+       Exit Function
+   End If
+   
+   If Len(Trim(Tag)) = 0 Then
+       LogError "InsertStringAfterTag", vbObjectError + 2, "Tag is empty"
+       Exit Function
+   End If
+   
+    ' Find the position of the last occurrence of the tag in the destination string
+    Dim tagPosition As Long
+    tagPosition = InStrRev(destinationString, Tag)
+
+    ' Check if the tag was found
+    If tagPosition > 0 Then
+        ' Insert the string after the tag
+        ResultString = Left(destinationString, tagPosition + Len(Tag) - 1) & vbCrLf & insertString & Mid(destinationString, tagPosition + Len(Tag))
+        InsertStringAfterTag = ResultString
+    Else
+        ' Tag not found
+        LogError "InsertStringAfterTag", vbObjectError + 3, "Tag not found in destination string", _
+                 "Tag: " & Tag & ", Destination: " & Left(destinationString, 100)
+        InsertStringAfterTag = ""
+    End If
+    
+    Exit Function
+    
+ErrorHandler:
+    LogError "InsertStringAfterTag", Err.Number, Err.Description, _
+             "Tag: " & Tag & ", Insert: " & Left(insertString, 50)
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' ReplaceInstancesOfTag
+' Replaces all instances of a tag with a specified value
+'------------------------------------------------------------------------------------
+Public Function ReplaceInstancesOfTag(content As String, Tag As String, replaceValue As String) As String
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(content)) = 0 Then
+        LogError "ReplaceInstancesOfTag", vbObjectError + 1, "Content string is empty"
+        Exit Function
+    End If
+    
+    If Len(Trim(Tag)) = 0 Then
+        LogError "ReplaceInstancesOfTag", vbObjectError + 2, "Tag is empty"
+        Exit Function
+    End If
+    
+    Dim result As String
+    result = content
+    
+    Do While InStr(result, Tag) > 0
+        result = Replace(result, Tag, replaceValue, , , vbTextCompare)
+    Loop
+    
+    ReplaceInstancesOfTag = result
+    Exit Function
+    
+ErrorHandler:
+    LogError "ReplaceInstancesOfTag", Err.Number, Err.Description, _
+             "Tag: " & Tag & ", Replace: " & replaceValue
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' RemoveTrailingLineBreak
+' Removes trailing line breaks from a string
+'------------------------------------------------------------------------------------
+Public Function RemoveTrailingLineBreak(content As String) As String
+    On Error GoTo ErrorHandler
+    
+    If Right(content, Len(vbCrLf)) = vbCrLf Then
+        RemoveTrailingLineBreak = Left(content, Len(content) - Len(vbCrLf))
+    Else
+        RemoveTrailingLineBreak = content
+    End If
+    Exit Function
+
+ErrorHandler:
+    LogError "RemoveTrailingLineBreak", Err.Number, Err.Description
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' DivideAndRoundUp
+' Divides two numbers and rounds up to the nearest whole number
+'------------------------------------------------------------------------------------
+Public Function DivideAndRoundUp(ByVal num As Double, ByVal divisor As Double) As Long
+    On Error GoTo ErrHandler
+    
+    If divisor = 0 Then
+        LogError "DivideAndRoundUp", vbObjectError + 1, "Division by zero"
+        DivideAndRoundUp = 0
+        Exit Function
+    End If
+    
+    DivideAndRoundUp = Application.WorksheetFunction.Ceiling(num / divisor, 1)
+    Exit Function
+    
+ErrHandler:
+    LogError "DivideAndRoundUp", Err.Number, Err.Description, _
+             "Num: " & num & ", Divisor: " & divisor
+    Resume Next
+End Function
+
+'------------------------------------------------------------------------------------
+' IsValidIPAddress
+' Validates an IP address format and range
+'------------------------------------------------------------------------------------
+Public Function IsValidIPAddress(ByVal ipAddress As String) As Boolean
+    On Error GoTo ErrHandler
+    
+    Const MAX_IP_OCTET As Long = 255
+    Const MIN_IP_OCTET As Long = 0
+
+    Dim octets() As String
+    Dim octet As Variant
+
+    ' Basic format check
+    If Len(ipAddress) = 0 Or Len(ipAddress) > 15 Then Exit Function
+
+    ' Split into octets
+    octets = Split(ipAddress, ".")
+    If UBound(octets) <> 3 Then Exit Function
+
+    ' Validate each octet
+    For Each octet In octets
+        If Not IsNumeric(octet) Then Exit Function
+        Dim value As Long
+        value = CLng(octet)
+        If value < MIN_IP_OCTET Or value > MAX_IP_OCTET Then Exit Function
+    Next octet
+
+    IsValidIPAddress = True
+    Exit Function
+
+ErrHandler:
+    LogError "IsValidIPAddress", Err.Number, Err.Description, "IP: " & ipAddress
+    IsValidIPAddress = False
+End Function
+
+'------------------------------------------------------------------------------------
+' IsValidSlotNumber
+' Validates a slot number
+'------------------------------------------------------------------------------------
+Public Function IsValidSlotNumber(ByVal slotNum As String) As Boolean
+    On Error GoTo ErrHandler
+    
+    Const MAX_SLOT_NUMBER As Long = 99
+    Const MIN_SLOT_NUMBER As Long = 0
+
+    If Not IsNumeric(slotNum) Then Exit Function
+
+    Dim slotValue As Long
+    slotValue = CLng(slotNum)
+    IsValidSlotNumber = (slotValue >= MIN_SLOT_NUMBER And slotValue <= MAX_SLOT_NUMBER)
+    Exit Function
+
+ErrHandler:
+    LogError "IsValidSlotNumber", Err.Number, Err.Description, "Slot: " & slotNum
+    IsValidSlotNumber = False
+End Function
+
+'------------------------------------------------------------------------------------
+' SaveToFile
+' Saves content to a file with error handling
+'------------------------------------------------------------------------------------
+Public Sub SaveToFile(FilePath As String, fileContent As String)
+    On Error GoTo ErrorHandler
+    
+    If InStr(1, FilePath, "L5X", vbTextCompare) = 0 Then
+        FilePath = FilePath & ".L5X"
+    End If
+    
+    Dim stm As Object
+    Set stm = CreateObject("ADODB.Stream")
+    With stm
+        .Type = 2 ' adTypeText
+        .Charset = "utf-8"
+        .Open
+        .WriteText fileContent
+        .Position = 0
+        .SaveToFile FilePath, 2 ' adSaveCreateOverWrite
+        .Close
+    End With
+    Set stm = Nothing
+    Exit Sub
+    
+ErrorHandler:
+    LogError "SaveToFile", Err.Number, Err.Description, "Path: " & FilePath
+    On Error Resume Next
+    If Not stm Is Nothing Then stm.Close
+    Set stm = Nothing
+End Sub
+
+'------------------------------------------------------------------------------------
+' Cleanup
+' Releases resources when the workbook closes
+'------------------------------------------------------------------------------------
+Public Sub Cleanup()
+    On Error Resume Next
+    
+    ' Set cleanup flag to prevent reentrance
+    If mIsCleaningUp Then Exit Sub
+    mIsCleaningUp = True
+    
+    ' Release RegEx object
+    If Not moRegEx Is Nothing Then
+        Set moRegEx = Nothing
+    End If
+    
+    mIsCleaningUp = False
+End Sub

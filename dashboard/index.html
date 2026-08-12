@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FortnaPlus Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    :root {
+      --accent: #06b6d4;
+      --accent-dim: #0891b2;
+      --surface: #0f1720;
+      --panel: #131c27;
+      --border: #1e2d3d;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #0a0f14;
+      color: #e2e8f0;
+      overflow: hidden;
+    }
+
+    .mono { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+    .hidden { display: none !important; }
+
+    .titlebar {
+      -webkit-app-region: drag;
+      background: linear-gradient(180deg, #111a24 0%, #0d141c 100%);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .titlebar button { -webkit-app-region: no-drag; }
+
+    .tab-btn {
+      border-bottom: 2px solid transparent;
+      color: #64748b;
+      transition: all 0.15s ease;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      font-weight: 600;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+
+    .dropzone {
+      border: 2px dashed #2a3f55;
+      background: #0c1219;
+      transition: all 0.2s ease;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--accent);
+      background: #0f1a24;
+      transform: scale(1.005);
+    }
+
+    .doc-hit {
+      border: 1px solid var(--border);
+      background: #101820;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .doc-hit:hover {
+      border-color: var(--accent-dim);
+      background: #121f2b;
+    }
+
+    /* Workflow help (Project Intake style) */
+    .workflow-help {
+      background: #0c1219;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+    }
+    .workflow-help > summary {
+      list-style: none;
+      cursor: pointer;
+      user-select: none;
+    }
+    .workflow-help > summary::-webkit-details-marker { display: none; }
+    .workflow-help > summary::before {
+      content: '▸';
+      display: inline-block;
+      margin-right: 0.4rem;
+      color: #22d3ee;
+      transition: transform 0.15s ease;
+    }
+    .workflow-help[open] > summary::before { transform: rotate(90deg); }
+    .workflow-chart {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 4px;
+      padding: 10px;
+      background: #0a0f14;
+      border: 1px solid #1e2d3d;
+      border-radius: 12px;
+      font-size: 11px;
+    }
+    .workflow-box {
+      background: #131c27;
+      border: 1px solid #2a3f55;
+      border-radius: 10px;
+      padding: 7px 9px;
+      min-width: 96px;
+      text-align: center;
+      line-height: 1.25;
+    }
+    .workflow-box strong { color: #22d3ee; display: block; font-size: 10px; margin-bottom: 2px; }
+    .workflow-box span { color: #94a3b8; font-size: 10px; }
+    .workflow-box.accent strong { color: #34d399; }
+    .workflow-box.warn strong { color: #fbbf24; }
+    .workflow-box.violet strong { color: #a78bfa; }
+    .workflow-arrow { color: #475569; font-weight: 700; padding: 0 2px; }
+
+    .recipe-card {
+      border: 1px solid var(--border);
+      background: #101820;
+      transition: all 0.15s ease;
+      cursor: pointer;
+    }
+
+    .recipe-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px rgba(6, 182, 212, 0.25);
+    }
+
+    .step-line::before {
+      content: '';
+      position: absolute;
+      left: 11px;
+      top: 28px;
+      bottom: -8px;
+      width: 2px;
+      background: #1e2d3d;
+    }
+
+    .step-line:last-child::before { display: none; }
+
+    .badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: #1a2836;
+      color: #7dd3fc;
+      border: 1px solid #234055;
+    }
+
+    .status-pill {
+      font-size: 0.7rem;
+      padding: 3px 10px;
+      border-radius: 999px;
+    }
+
+    .status-idle { background: #1e293b; color: #94a3b8; }
+    .status-ready { background: #064e3b; color: #6ee7b7; }
+    .status-busy { background: #713f12; color: #fcd34d; }
+    .status-error { background: #7f1d1d; color: #fca5a5; }
+
+    .btn-primary {
+      background: linear-gradient(180deg, #22d3ee 0%, #0891b2 100%);
+      color: #042f3a;
+      font-weight: 600;
+    }
+
+    .btn-primary:hover { filter: brightness(1.08); }
+    .btn-primary:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
+
+    .btn-ghost {
+      background: #1a2836;
+      border: 1px solid #2a3f55;
+      color: #cbd5e1;
+    }
+
+    .btn-ghost:hover { border-color: var(--accent-dim); color: #e2e8f0; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: #2a3f55; border-radius: 8px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+  </style>
+</head>
+<body class="h-screen flex flex-col">
+  <header class="titlebar flex items-center justify-between px-4 py-2 shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-8 h-8 rounded-lg flex items-center justify-center shadow-lg shadow-cyan-900/40"
+           style="background: linear-gradient(135deg, #22d3ee, #0e7490);"
+           title="FortnaPlus">
+        <!-- FA Pro icon was blank in Free CDN; use brand letters -->
+        <span class="text-slate-950 text-xs font-extrabold tracking-tight select-none" style="font-family: Inter, system-ui, sans-serif;">FP</span>
+      </div>
+      <div>
+        <div class="text-sm font-semibold tracking-wide">FortnaPlus Control</div>
+        <div class="text-[10px] text-slate-500 mono">docs · recipes · RUN · PLC export</div>
+      </div>
+    </div>
+    <div class="flex items-center gap-2">
+      <span id="index-status" class="status-pill status-idle">0 docs indexed</span>
+      <span id="workspace-status" class="status-pill status-idle">No RUN loaded</span>
+      <button onclick="fortnaAPI.minimize()" class="w-8 h-8 rounded hover:bg-slate-800 text-slate-400" title="Minimize"><i class="fa-solid fa-minus text-xs"></i></button>
+      <button onclick="fortnaAPI.maximize()" class="w-8 h-8 rounded hover:bg-slate-800 text-slate-400" title="Maximize"><i class="fa-regular fa-square text-xs"></i></button>
+      <button onclick="fortnaAPI.close()" class="w-8 h-8 rounded hover:bg-red-900/50 text-slate-400 hover:text-red-300" title="Close"><i class="fa-solid fa-xmark text-xs"></i></button>
+    </div>
+  </header>
+
+  <nav class="flex items-center gap-1 px-4 border-b border-slate-800 shrink-0 bg-[#0c1219]">
+    <!-- Primary work tabs (recontrol focus) -->
+    <button class="tab-btn active py-3 px-3 text-sm" data-tab="io"><i class="fa-solid fa-server mr-2"></i>I/O &amp; Prints</button>
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="plc"><i class="fa-solid fa-microchip mr-2"></i>PLC Export</button>
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="autogen"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>PLC Autogen</button>
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="ignition"><i class="fa-solid fa-fire mr-2"></i>Ignition Build</button>
+    <!-- Secondary tools — far right while recontrol is primary -->
+    <div class="flex-1"></div>
+    <div class="flex items-center gap-1 border-l border-slate-800 pl-3 ml-2">
+      <span class="text-[9px] uppercase tracking-widest text-slate-600 mr-1 hidden sm:inline">Tools</span>
+      <button class="tab-btn py-3 px-2.5 text-xs text-slate-500" data-tab="search" title="Doc Search"><i class="fa-solid fa-magnifying-glass mr-1"></i><span class="hidden md:inline">Docs</span></button>
+      <button class="tab-btn py-3 px-2.5 text-xs text-slate-500" data-tab="workspace" title="Workspace"><i class="fa-solid fa-box-archive mr-1"></i><span class="hidden md:inline">Workspace</span></button>
+      <button class="tab-btn py-3 px-2.5 text-xs text-slate-500" data-tab="recipes" title="Recipes"><i class="fa-solid fa-wand-magic-sparkles mr-1"></i><span class="hidden md:inline">Recipes</span></button>
+    </div>
+  </nav>
+
+  <main class="flex-1 overflow-hidden">
+    <!-- Doc Search (secondary — far-right nav) -->
+    <section id="tab-search" class="h-full hidden flex flex-col p-5 gap-3">
+      <details class="workflow-help shrink-0 px-4 py-3">
+        <summary class="text-sm font-semibold text-cyan-400">How to use Docs Search — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① Type</strong><span>Keyword: photoeye,<br>printer, conveyor…</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>② Filter</strong><span>Click a quick badge<br>or refine the query</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box accent"><strong>③ Open hit</strong><span>Read training doc<br>for config how-to</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>④ Reindex</strong><span>Only if you added<br>new docs on disk</span></div>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
+          Searches Fortna training docs indexed under the app. Does not change RUN / Autogen data.
+        </p>
+      </details>
+      <div class="flex gap-3">
+        <div class="flex-1 relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-slate-500"></i>
+          <input id="search-input" type="search" placeholder="Search training docs — photoeye, printer, conveyor, transfer..."
+            class="w-full pl-11 pr-4 py-3 rounded-xl bg-[#101820] border border-slate-700 focus:border-cyan-500 focus:outline-none text-sm">
+        </div>
+        <button id="btn-reindex" class="btn-ghost px-4 py-2 rounded-xl text-sm shrink-0">
+          <i class="fa-solid fa-rotate mr-2"></i>Reindex
+        </button>
+      </div>
+      <div class="flex gap-2 flex-wrap" id="quick-filters">
+        <button class="badge cursor-pointer hover:border-cyan-600" data-q="photoeye">photoeye</button>
+        <button class="badge cursor-pointer hover:border-cyan-600" data-q="printer">printer</button>
+        <button class="badge cursor-pointer hover:border-cyan-600" data-q="conveyor">conveyor</button>
+        <button class="badge cursor-pointer hover:border-cyan-600" data-q="transfer">transfer</button>
+        <button class="badge cursor-pointer hover:border-cyan-600" data-q="sorter">sorter</button>
+        <button class="badge cursor-pointer hover:border-cyan-600" data-q="configio">configio</button>
+      </div>
+      <div id="search-results" class="flex-1 overflow-y-auto space-y-2 pr-1">
+        <div class="text-slate-500 text-sm py-8 text-center">Type a keyword to search <span id="doc-count-label">0</span> training documents.</div>
+      </div>
+    </section>
+
+    <!-- Workspace -->
+
+    <!-- PLC Autogen (Python — not Excel VBA) -->
+    <section id="tab-autogen" class="h-full hidden p-5 gap-3 flex flex-col">
+      <details class="workflow-help shrink-0 px-4 py-3" open>
+        <summary class="text-sm font-semibold text-violet-400">How to run PLC Autogen — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① Load RUN</strong><span>I/O &amp; Prints<br>.tar.gz once</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box violet"><strong>② Workbook</strong><span>Build from RUN<br>(auto Inputdata)</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box violet"><strong>③ Edit</strong><span>Areas / TYPE<br>bulk tools</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box accent"><strong>④ Generate</strong><span>Python L5X<br>no Excel VBA</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>⑤ Studio</strong><span>File → Open L5X<br>as NEW project</span></div>
+        </div>
+        <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
+          <p><strong class="text-emerald-500/90">Workbook</strong> replaces the green Excel Inputdata sheet — filled from tar.gz, editable here.</p>
+          <p><strong class="text-violet-300">IO map</strong> auto from banks + EIP (IO tab). TYPE auto: ACCUM→Accumulation, VFD tags→Transport with VFD.</p>
+          <p><strong class="text-amber-400/90">Studio:</strong> <em>File → Open</em> L5X as new project (do not Import into existing .acd).</p>
+          <p><strong class="text-slate-400">Next site:</strong> no Excel workbook required — only tar.gz (+ optional PDF/DWG later).</p>
+        </div>
+      </details>
+      <div class="flex-1 min-h-0 flex gap-4">
+      <div class="w-[42%] flex flex-col gap-3 min-h-0">
+        <div class="card p-4 shrink-0 border border-violet-900/40">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-xs uppercase tracking-wider text-violet-400 font-semibold">
+              <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> PLC Autogen
+              <span class="ml-2 text-[9px] text-emerald-500/90 normal-case tracking-normal font-medium">Python engine (not Excel)</span>
+            </div>
+            <span id="autogen-run-badge" class="status-pill status-idle text-[9px]">No RUN</span>
+          </div>
+          <p class="text-[11px] text-slate-500 leading-relaxed mb-3">
+            <strong class="text-slate-300">Our own Python autogen</strong> (<span class="mono text-slate-400">fortna_autogen.py</span>).
+            Reads conveyors + I/O from the active <strong class="text-slate-400">.tar.gz RUN</strong>,
+            clones templates from the O'Reilly <strong class="text-slate-400">.L5X library</strong>,
+            and writes a Studio 5000 project. Excel is optional legacy only.
+          </p>
+          <div class="space-y-2 text-xs">
+            <div>
+              <div class="text-[10px] text-slate-500 mb-1">Library L5X</div>
+              <div class="flex gap-2">
+                <input id="autogen-library-path" type="text" readonly
+                  class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 mono text-[10px] text-slate-300"
+                  placeholder="Library set automatically on load" value="">
+                <button id="btn-autogen-browse-lib" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs">Browse</button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 rounded-xl border border-slate-800/80 bg-gradient-to-b from-[#0e1520] to-[#0a1018] overflow-hidden">
+            <div class="px-3 py-2 border-b border-slate-800/80 flex items-center justify-between">
+              <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Program pack</div>
+              <span class="text-[9px] text-slate-600 mono">gold L5X merge</span>
+            </div>
+            <div class="p-3 space-y-3">
+              <!-- Core (recommended on) -->
+              <div>
+                <div class="text-[9px] uppercase tracking-wider text-emerald-600/80 mb-1.5">Core · recommended</div>
+                <div class="grid grid-cols-1 gap-1.5">
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer hover:border-emerald-700/40 transition-colors">
+                    <input id="autogen-opt-sys" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">Sys</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">System timers, null objects, Type codes — always for a runnable project</span>
+                    </span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-amber-900/40 bg-amber-950/15 cursor-pointer hover:border-amber-700/40 transition-colors">
+                    <input id="autogen-opt-iomap" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900 text-amber-500">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">Gold Excel IO_MAP <span class="text-amber-400/90 font-normal">(optional — off by default)</span></span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">Default is RUN/tar.gz banks → CPxRIOn modules. Check only to force Excel CP_I/CP_O (ignores tar.gz device list)</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <!-- Site optional -->
+              <div>
+                <div class="text-[9px] uppercase tracking-wider text-violet-500/80 mb-1.5">Site optional · sorter / WCS</div>
+                <div class="grid grid-cols-1 gap-1.5">
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
+                    <input id="autogen-opt-shippingsorter" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">ShippingSorter L3</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">Shipping sorter area L3 logic (Greensboro)</span>
+                    </span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
+                    <input id="autogen-opt-sorter-track" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">Sorter Track</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">Induct / token tracking AOIs &amp; routines</span>
+                    </span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
+                    <input id="autogen-opt-wcs" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">WCS TCP/IP</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">WCS socket interface (Helix / host messages)</span>
+                    </span>
+                  </label>
+                </div>
+              </div>
+              <p class="text-[9px] text-slate-600 leading-relaxed">
+                Always built from RUN: zone Fast/Slow, PE logic, Flex I/O tree, tags.
+                Optional packs merge gold exports from <span class="mono text-slate-500">tools/libraries/programs/</span>.
+              </p>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <button id="btn-autogen-workbook-build" type="button" class="btn-primary flex-1 py-2 rounded-xl text-sm" title="Auto-fill Inputdata-style workbook from tar.gz">
+              <i class="fa-solid fa-table mr-1"></i>Build workbook from RUN
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button id="btn-autogen-preview-run" type="button" class="btn-ghost flex-1 py-2 rounded-xl text-xs" title="Quick count preview (no table)">
+              <i class="fa-solid fa-eye mr-1"></i>Quick preview
+            </button>
+            <button id="btn-autogen-from-run" type="button" class="btn-primary flex-1 py-2 rounded-xl text-sm" title="Build L5X from workbook + RUN">
+              <i class="fa-solid fa-file-code mr-1"></i>Generate L5X
+            </button>
+          </div>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <button id="btn-autogen-workbook-save" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Save table edits">
+              <i class="fa-solid fa-floppy-disk mr-1"></i>Save workbook
+            </button>
+            <button id="btn-autogen-verify" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Check engine, RUN, library, last export">
+              <i class="fa-solid fa-vial mr-1"></i>Verify engine
+            </button>
+          </div>
+          <p class="text-[10px] text-cyan-600/80 mt-2 leading-relaxed">
+            <strong>Workbook</strong> = our Inputdata (no Excel). Auto from tar.gz → edit areas/types → Generate L5X.
+          </p>
+          <details class="mt-3 text-[10px] text-slate-600">
+            <summary class="cursor-pointer text-slate-500 hover:text-slate-400">Legacy Excel path (optional)</summary>
+            <div class="mt-2 space-y-2">
+              <div class="flex gap-2">
+                <input id="autogen-excel-path" type="text" readonly
+                  class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 mono text-[10px] text-slate-300"
+                  placeholder="Browse autogen workbook…">
+                <button id="btn-autogen-browse-excel" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs">Browse</button>
+              </div>
+              <div class="flex gap-2">
+                <button id="btn-autogen-inspect" type="button" class="btn-ghost flex-1 py-1.5 rounded-lg text-xs">
+                  <i class="fa-solid fa-stethoscope mr-1"></i>Inspect Excel
+                </button>
+                <button id="btn-autogen-generate" type="button" class="btn-ghost flex-1 py-1.5 rounded-lg text-xs">
+                  <i class="fa-solid fa-file-excel mr-1"></i>Generate from Excel
+                </button>
+              </div>
+            </div>
+          </details>
+          <p class="text-[10px] text-emerald-600/80 mt-2 leading-relaxed">
+            <strong>Flow:</strong> I/O &amp; Prints → load .tar.gz → (optional OCR prints) →
+            <strong>Preview from RUN</strong> → <strong>Generate from RUN</strong> → open L5X.
+          </p>
+          <p class="text-[10px] text-slate-600 mt-1 leading-relaxed">
+            Maps P### conveyors + PE full/jam/exit from RUN. VFD vs MS templates when VFD tags/prints match conveyor numbers.
+          </p>
+        </div>
+        <div class="card p-3 flex-1 min-h-0 overflow-y-auto">
+          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Activity</div>
+          <div id="autogen-log" class="mono text-[11px] text-slate-400 space-y-1">Ready.</div>
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col gap-3 min-h-0">
+        <div class="card p-3 shrink-0">
+          <div class="flex items-center justify-between mb-2">
+            <div class="font-semibold text-sm">
+              <i class="fa-solid fa-book mr-1 text-violet-400"></i>AutoGen workbook
+              <span class="text-[10px] font-normal text-slate-500 ml-1">(Inputdata replacement)</span>
+            </div>
+            <span id="autogen-status" class="status-pill status-idle">Idle</span>
+          </div>
+          <div id="autogen-summary" class="text-[11px] text-slate-400">
+            1) Load tar.gz · 2) <strong class="text-slate-300">Build workbook</strong> · 3) Edit area/type · 4) Generate L5X
+          </div>
+          <div id="autogen-stats" class="grid grid-cols-4 gap-2 mt-2 hidden"></div>
+          <div id="autogen-wb-type-bar" class="flex flex-wrap gap-1.5 mt-2 hidden"></div>
+          <div class="flex flex-wrap gap-2 mt-2 items-center">
+            <select id="autogen-wb-bulk-type" class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-slate-300 max-w-[11rem]">
+              <option value="">Bulk TYPE…</option>
+              <option>Transport with MS</option>
+              <option>Accumulation with MS</option>
+              <option>Transport with VFD</option>
+              <option>Accumulation with VFD</option>
+              <option>Transport with MDR</option>
+              <option>Accumulation with MDR</option>
+              <option>Gravity</option>
+            </select>
+            <button id="btn-autogen-wb-apply-type" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Apply TYPE</button>
+            <select id="autogen-wb-bulk-area" class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-slate-300 max-w-[10rem]">
+              <option value="">Bulk area…</option>
+            </select>
+            <button id="btn-autogen-wb-apply-area" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Apply area</button>
+            <button id="btn-autogen-open-out" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] ml-auto" disabled>
+              <i class="fa-solid fa-folder-open mr-1"></i>Out
+            </button>
+            <button id="btn-autogen-open-l5x" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" disabled>
+              L5X
+            </button>
+          </div>
+        </div>
+        <div class="card p-0 flex-1 min-h-0 flex flex-col overflow-hidden">
+          <div class="flex gap-1 px-2 pt-2 border-b border-slate-800/80 shrink-0">
+            <button type="button" data-wb-tab="conveyors" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg bg-violet-950/50 text-violet-300 border border-b-0 border-violet-800/40">Conveyors</button>
+            <button type="button" data-wb-tab="io" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg text-slate-500 hover:text-slate-300">IO map</button>
+            <button type="button" data-wb-tab="areas" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg text-slate-500 hover:text-slate-300">Areas</button>
+            <button type="button" data-wb-tab="report" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg text-slate-500 hover:text-slate-300">Report</button>
+            <span id="autogen-wb-count" class="ml-auto text-[10px] mono text-slate-600 self-center pr-2">0 rows</span>
+          </div>
+          <div id="autogen-wb-panel-conveyors" class="flex-1 min-h-0 overflow-auto">
+            <table class="w-full text-left text-[10px]">
+              <thead class="sticky top-0 bg-[#0c1219] text-slate-500 uppercase tracking-wider z-10">
+                <tr>
+                  <th class="py-1.5 px-1 w-6"><input type="checkbox" id="autogen-wb-select-all" title="Select all"></th>
+                  <th class="py-1.5 px-1">On</th>
+                  <th class="py-1.5 px-1">Conveyor</th>
+                  <th class="py-1.5 px-1">Area</th>
+                  <th class="py-1.5 px-1">Safety</th>
+                  <th class="py-1.5 px-1">TYPE</th>
+                  <th class="py-1.5 px-1">Tmpl</th>
+                  <th class="py-1.5 px-1">Exit PE</th>
+                </tr>
+              </thead>
+              <tbody id="autogen-wb-tbody" class="text-slate-300 mono">
+                <tr><td colspan="8" class="py-6 px-3 text-slate-500 text-center">Build workbook from RUN to fill this table (like Excel Inputdata).</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="autogen-wb-panel-io" class="flex-1 min-h-0 overflow-auto hidden">
+            <table class="w-full text-left text-[10px]">
+              <thead class="sticky top-0 bg-[#0c1219] text-slate-500 uppercase tracking-wider z-10">
+                <tr>
+                  <th class="py-1.5 px-2">Device</th>
+                  <th class="py-1.5 px-2">Type</th>
+                  <th class="py-1.5 px-2">Dir</th>
+                  <th class="py-1.5 px-2">Bank.Bit</th>
+                  <th class="py-1.5 px-2">Module ref</th>
+                  <th class="py-1.5 px-2">OK</th>
+                </tr>
+              </thead>
+              <tbody id="autogen-wb-io-tbody" class="text-slate-300 mono">
+                <tr><td colspan="6" class="py-4 px-2 text-slate-500">IO map fills with workbook build.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div id="autogen-wb-panel-areas" class="flex-1 min-h-0 overflow-auto hidden p-3">
+            <div id="autogen-wb-areas" class="text-[11px] text-slate-400 space-y-1">—</div>
+          </div>
+          <div id="autogen-wb-panel-report" class="flex-1 min-h-0 overflow-auto hidden p-3">
+            <pre id="autogen-detail" class="mono text-[10px] text-slate-500 whitespace-pre-wrap">—</pre>
+          </div>
+        </div>
+      </div>
+      </div><!-- end autogen content row -->
+    </section>
+
+    <section id="tab-workspace" class="h-full hidden p-5 gap-3 flex flex-col">
+      <details class="workflow-help shrink-0 px-4 py-3">
+        <summary class="text-sm font-semibold text-cyan-400">How to use Workspace — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① Drop tar.gz</strong><span>Or Browse archive<br>from QNX RUN</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>② Active</strong><span>Status shows<br>machine loaded</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>③ Clone / recipe</strong><span>Pick device + recipe<br>Run automation</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box warn"><strong>Note</strong><span>Primary recontrol is<br>I/O &amp; Prints tab</span></div>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
+          Workspace is optional for device clone recipes. For Autogen / prints / banks, load the RUN on
+          <strong class="text-slate-400">I/O &amp; Prints</strong> instead.
+        </p>
+      </details>
+      <div class="flex-1 min-h-0 flex gap-4">
+      <div class="w-[42%] flex flex-col gap-4">
+        <div id="dropzone" class="dropzone rounded-2xl p-8 text-center flex-1 flex flex-col items-center justify-center">
+          <i class="fa-solid fa-cloud-arrow-up text-4xl text-cyan-600/70 mb-4"></i>
+          <div class="text-lg font-semibold mb-1">Drop RUN package here</div>
+          <div class="text-sm text-slate-500 mb-4">.tar.gz from QNX /SortPlus/RUN</div>
+          <button id="btn-browse-archive" class="btn-ghost px-4 py-2 rounded-lg text-sm">
+            <i class="fa-solid fa-folder-open mr-2"></i>Browse archive
+          </button>
+          <div id="drop-filename" class="mono text-xs text-cyan-400 mt-4 hidden"></div>
+        </div>
+        <div class="card p-4">
+          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Active workspace</div>
+          <div id="workspace-info" class="text-sm text-slate-400">No package imported yet.</div>
+          <div class="flex flex-wrap gap-2 mt-3">
+            <button id="btn-open-active" class="btn-ghost px-3 py-1.5 rounded-lg text-xs" disabled>Open folder</button>
+            <button id="btn-open-exports" class="btn-ghost px-3 py-1.5 rounded-lg text-xs" disabled>Exports</button>
+            <button id="btn-clear-workspace" class="btn-ghost px-3 py-1.5 rounded-lg text-xs text-red-300 border-red-900/40" type="button">
+              Clear workspace
+            </button>
+          </div>
+          <p class="text-[10px] text-slate-600 mt-2">Clear removes active RUN + status pill (does not delete originals on D:\).</p>
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col gap-4">
+        <div class="card p-4 flex-1 overflow-y-auto">
+          <div class="flex items-center justify-between mb-3">
+            <div class="font-semibold">Add / clone device</div>
+            <select id="recipe-select" class="bg-[#101820] border border-slate-700 rounded-lg px-3 py-1.5 text-sm max-w-[220px]">
+              <option value="clone-device">Clone device from RUN</option>
+              <option value="add-photoeye">Quick: add photoeye</option>
+              <option value="add-printer">Print &amp; Apply (manual)</option>
+            </select>
+          </div>
+          <div id="device-browser" class="space-y-3 mb-3">
+            <div class="flex gap-2">
+              <select id="device-category" class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-3 py-2 text-sm">
+                <option value="">All categories</option>
+                <option value="conveyor">Conveyors</option>
+                <option value="spiral">Spirals</option>
+                <option value="photoeye">Photoeyes</option>
+                <option value="motor">Motors</option>
+                <option value="beacon">Beacons</option>
+                <option value="scanner">Scanners</option>
+                <option value="sorter">Sorters</option>
+                <option value="device">Other devices</option>
+              </select>
+              <input id="device-filter" type="search" placeholder="Filter by name…"
+                class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-3 py-2 text-sm">
+            </div>
+            <select id="device-template" size="6"
+              class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-2 text-sm mono min-h-[140px]">
+              <option value="">Import a RUN package to list devices</option>
+            </select>
+            <div id="device-detail" class="text-xs text-slate-500 mono"></div>
+          </div>
+          <div id="recipe-params" class="grid grid-cols-2 gap-3"></div>
+          <label id="clone-related-wrap" class="flex items-center gap-2 text-xs text-slate-400 mt-3">
+            <input id="param-cloneRelated" type="checkbox" checked class="rounded border-slate-600">
+            Clone matching rows in related tables (spiral gaps, full lines, etc.)
+          </label>
+          <button id="btn-apply" class="btn-primary w-full mt-4 py-2.5 rounded-xl text-sm" disabled>
+            <i class="fa-solid fa-play mr-2"></i>Run automation
+          </button>
+        </div>
+        <div class="card p-4 h-48 overflow-y-auto shrink-0">
+          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Activity log</div>
+          <div id="activity-log" class="mono text-xs text-slate-400 space-y-1"></div>
+        </div>
+      </div>
+      </div><!-- end workspace content row -->
+    </section>
+
+    <!-- I/O banks + drive params + electrical prints (primary tab) -->
+    <section id="tab-io" class="h-full p-5 gap-3 flex flex-col">
+      <details class="workflow-help shrink-0 px-4 py-3">
+        <summary class="text-sm font-semibold text-cyan-400">How to use I/O &amp; Prints — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① Load RUN</strong><span>Drop .tar.gz here<br>(sets active machine)</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box accent"><strong>② Master</strong><span>Green card — only<br>master rack PDF(s)</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>③ Remotes</strong><span>Blue card — CP1–CP9<br>one remote per PDF</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box warn"><strong>④ OCR</strong><span>Merge remotes → master<br>fill PRINT column</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box violet"><strong>⑤ Next</strong><span>PLC Autogen or<br>PLC Export</span></div>
+        </div>
+        <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
+          <p><strong class="text-slate-300">This tab owns the active RUN</strong> used by Autogen and Export — you do not reload on those tabs.</p>
+          <p>Devices / banks come from tar.gz. VFD parameters in the PRINT column come from OCR’d electrical PDFs (merge, not replace).</p>
+          <p><strong class="text-amber-400/90">Clear RUN</strong> empties Autogen’s source — only clear when starting a new site.</p>
+        </div>
+      </details>
+      <div class="flex-1 min-h-0 flex gap-4">
+      <div class="w-[38%] flex flex-col gap-3 min-h-0">
+        <!-- RUN / tar.gz import (no need for Workspace tab) -->
+        <div id="io-run-dropzone" class="dropzone rounded-2xl p-4 text-center flex flex-col items-center justify-center min-h-[100px] shrink-0 border-dashed border-2 border-cyan-900/50">
+          <div class="text-sm font-semibold mb-0.5"><i class="fa-solid fa-file-zipper text-cyan-500 mr-1"></i>Load RUN package (.tar.gz)</div>
+          <div class="text-[10px] text-slate-500 mb-2">IPC controller archive — same as Workspace import</div>
+          <div class="flex flex-wrap gap-2 justify-center">
+            <button id="btn-io-browse-run" class="btn-ghost px-3 py-1.5 rounded-lg text-xs" type="button">
+              <i class="fa-solid fa-folder-open mr-1"></i>Browse tar.gz
+            </button>
+            <button id="btn-io-clear-run" class="btn-ghost px-3 py-1.5 rounded-lg text-xs text-red-300/90" type="button">
+              Clear RUN
+            </button>
+            <button id="btn-io-clear-prints" class="btn-ghost px-3 py-1.5 rounded-lg text-xs text-amber-300/90" type="button" title="Clear panel PDFs and merge/crosswalk results">
+              Clear prints
+            </button>
+          </div>
+          <div id="io-run-status" class="mono text-[10px] text-slate-500 mt-2">No RUN loaded</div>
+        </div>
+
+        <!-- Master controller - ONLY master PDFs (green). Remotes go in blue card below. -->
+        <div id="master-dropzone" class="card p-3 shrink-0 border-2 border-emerald-800/60 dropzone min-h-[150px] bg-emerald-950/10">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-xs uppercase tracking-wider text-emerald-400 font-semibold">
+              <i class="fa-solid fa-crown mr-1"></i> 1 · Master controller
+            </div>
+            <span class="text-[9px] text-emerald-600/80">local rack prints only</span>
+          </div>
+          <p class="text-[10px] text-slate-600 mb-2 leading-relaxed">
+            Drop <strong class="text-emerald-400/90">only the master's</strong> local rack PDF(s) on this green card.
+            Remotes never go here — use the blue card below.
+          </p>
+          <div class="flex gap-2 mb-2">
+            <input id="master-name-input" type="text" placeholder="Master name (e.g. CP5 / Main)"
+              class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs">
+            <button id="btn-set-master" type="button" class="btn-primary px-3 py-1.5 rounded-lg text-xs">
+              Set master
+            </button>
+            <button id="btn-browse-master-prints" type="button" class="btn-ghost px-2 py-1.5 rounded-lg text-xs border border-emerald-800/50 text-emerald-300" title="Browse master PDFs">
+              <i class="fa-solid fa-folder-open"></i>
+            </button>
+          </div>
+          <div id="master-panel-card" class="rounded-lg border border-dashed border-emerald-700/50 bg-emerald-950/20 px-2 py-2 text-xs min-h-[52px]">
+            <div class="text-slate-600 italic">Drop master PDF(s) here — separate from remotes.</div>
+          </div>
+          <div id="master-file-list" class="mono text-[10px] text-emerald-400/90 mt-1.5 max-h-16 overflow-y-auto space-y-0.5"></div>
+        </div>
+
+        <!-- Remote I/O — multi-drop = one remote per PDF (CP1.pdf -> CP1). Never mixes into master. -->
+        <div id="remote-dropzone" class="card p-3 shrink-0 border-2 border-sky-800/50 dropzone min-h-[160px] bg-sky-950/10">
+          <div class="flex items-center justify-between mb-2">
+            <div class="text-xs uppercase tracking-wider text-sky-400 font-semibold">
+              <i class="fa-solid fa-network-wired mr-1"></i> 2 · Remote I/O panels
+            </div>
+            <span id="remote-panel-count" class="text-[10px] mono text-sky-400">0 remotes</span>
+          </div>
+          <p class="text-[10px] text-slate-600 mb-2 leading-relaxed">
+            Drop the <strong class="text-sky-300">other panel PDFs here</strong> (CP1-CP4, CP6-CP9…).
+            Multi-select = <strong class="text-slate-400">one remote per file</strong> (named from the filename).
+            Stays separate from master.
+          </p>
+          <div class="flex gap-2 mb-2">
+            <input id="remote-name-input" type="text" placeholder="Or name one remote then Browse"
+              class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs">
+            <button id="btn-add-remote" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs border-sky-800/50 text-sky-300">
+              <i class="fa-solid fa-plus"></i> Add
+            </button>
+            <button id="btn-browse-remote-prints" type="button" class="btn-ghost px-2 py-1.5 rounded-lg text-xs border border-sky-800/50 text-sky-300" title="Browse remote PDFs (multi = one panel per file)">
+              <i class="fa-solid fa-folder-open"></i>
+            </button>
+          </div>
+          <div id="remote-panels-list" class="space-y-1.5 max-h-40 overflow-y-auto text-xs min-h-[48px]">
+            <div class="text-slate-600 italic">Drop CP1.pdf, CP2.pdf, … here — each becomes its own remote.</div>
+          </div>
+        </div>
+
+        <div id="prints-dropzone" class="hidden" aria-hidden="true">
+          <div id="prints-active-label" class="hidden"></div>
+          <div id="prints-file-list" class="hidden"></div>
+          <button id="btn-browse-prints" type="button" class="hidden"></button>
+        </div>
+
+        <div class="card p-3 shrink-0">
+          <div class="flex flex-wrap gap-2">
+            <button id="btn-run-ocr" class="btn-primary flex-1 py-2 rounded-xl text-sm" type="button" disabled>
+              <i class="fa-solid fa-code-merge mr-2"></i>OCR · merge remotes → master · vs tar.gz
+            </button>
+            <button id="btn-refresh-banks" class="btn-ghost py-2 px-3 rounded-xl text-sm" type="button" title="Refresh banks from RUN">
+              <i class="fa-solid fa-rotate"></i>
+            </button>
+          </div>
+          <p class="text-[10px] text-slate-600 mt-2 leading-relaxed">
+            Load <strong class="text-slate-400">.tar.gz</strong> at the top of this tab (Workspace not required).
+            Merges remote I/O names + racks onto master, then compares to program I/O. Remotes fill conveyor + VFD params.
+          </p>
+          <!-- Live OCR progress -->
+          <div id="ocr-progress-wrap" class="mt-3 hidden">
+            <div class="flex items-center justify-between mb-1">
+              <div class="text-[10px] uppercase tracking-wider text-amber-400/90">Reading pages</div>
+              <div id="ocr-progress-pct" class="mono text-[11px] text-cyan-300">0%</div>
+            </div>
+            <div class="h-2 rounded-full bg-slate-800 overflow-hidden border border-slate-700">
+              <div id="ocr-progress-bar" class="h-full bg-gradient-to-r from-cyan-600 to-emerald-400 transition-all duration-300" style="width:0%"></div>
+            </div>
+            <div id="ocr-progress-detail" class="mono text-[10px] text-slate-500 mt-1.5 leading-relaxed">Starting...</div>
+          </div>
+        </div>
+
+        <div class="card p-3 shrink-0">
+          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Merge &amp; crosswalk</div>
+          <div id="io-crosswalk-summary" class="text-sm text-slate-400">No OCR run yet.</div>
+          <div class="flex gap-1 mt-2 flex-wrap" id="io-crosswalk-tabs">
+            <button type="button" data-cw-tab="matched" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-800 text-cyan-300">vs tar.gz</button>
+            <button type="button" data-cw-tab="remote_merge" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-900 text-slate-500">Remote → master</button>
+            <button type="button" data-cw-tab="print_only" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-900 text-slate-500">Print only</button>
+            <button type="button" data-cw-tab="program_only" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-900 text-slate-500">tar.gz only</button>
+            <button type="button" data-cw-tab="panels" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-900 text-slate-500">By panel</button>
+          </div>
+        </div>
+        <div class="card p-3 flex-1 min-h-0 overflow-y-auto">
+          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2" id="io-match-heading">Results</div>
+          <div id="io-match-list" class="mono text-[11px] text-slate-400 space-y-1">No compare yet. Drop prints, click OCR — then open tabs: vs tar.gz · Print only · tar.gz only.</div>
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col gap-3 min-h-0">
+        <div class="card p-4 flex-1 min-h-0 overflow-hidden flex flex-col">
+          <div class="flex items-center justify-between mb-2 shrink-0">
+            <div class="font-semibold">I/O banks (from program)</div>
+            <span id="io-banks-status" class="status-pill status-idle">No RUN</span>
+          </div>
+          <div id="io-banks-stats" class="grid grid-cols-4 gap-2 mb-3 shrink-0 hidden"></div>
+          <div id="io-banks-list" class="flex-1 overflow-y-auto space-y-2 text-sm text-slate-400">
+            Load a RUN package to list Fortna banks (Bank&lt;word&gt;.bit from Conveyor.asc / Configio).
+          </div>
+        </div>
+        <div class="card p-4 flex-1 min-h-0 overflow-hidden flex flex-col">
+          <div class="flex items-center justify-between mb-2 shrink-0">
+            <div class="font-semibold"><i class="fa-solid fa-gears text-cyan-500 mr-2"></i>Devices (by type)</div>
+            <span id="io-drives-status" class="status-pill status-idle">—</span>
+          </div>
+          <div id="io-drives-stats" class="grid grid-cols-4 gap-2 mb-2 shrink-0 hidden"></div>
+          <div class="flex flex-wrap gap-2 mb-2 shrink-0 items-center">
+            <label class="text-[10px] text-slate-500 shrink-0">Device type</label>
+            <select id="device-type-filter"
+              class="flex-1 min-w-[160px] bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200">
+              <option value="all">All devices</option>
+            </select>
+            <label class="flex items-center gap-1.5 text-[10px] text-slate-500 whitespace-nowrap" title="Only devices that got parameters from print OCR">
+              <input id="drive-print-only" type="checkbox" class="rounded border-slate-600">
+              Print-matched only
+            </label>
+            <span id="device-type-count" class="text-[10px] mono text-slate-600">0</span>
+            <button id="btn-print-repo" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] border border-amber-800/40 text-amber-300/90" title="Browse loaded CP print PDFs">
+              <i class="fa-solid fa-book-open mr-1"></i>Print repository
+            </button>
+          </div>
+          <div id="print-repo-panel" class="hidden mb-2 shrink-0 border border-amber-900/40 rounded-xl p-2 bg-[#0c1219] max-h-36 overflow-y-auto">
+            <div class="text-[10px] uppercase tracking-wider text-amber-400/80 mb-1">Print repository (loaded CP PDFs)</div>
+            <div id="print-repo-list" class="mono text-[10px] text-slate-400 space-y-0.5">Load master/remote PDFs to build the repository.</div>
+          </div>
+          <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-5 gap-3 overflow-hidden">
+            <!-- Drive list -->
+            <div class="lg:col-span-2 overflow-auto min-h-0 border border-slate-800 rounded-xl">
+              <table class="w-full text-[11px] mono text-left">
+                <thead class="sticky top-0 bg-[#131c27] text-slate-500 uppercase tracking-wider text-[9px]">
+                  <tr>
+                    <th class="py-1.5 px-2 font-medium">Type</th>
+                    <th class="py-1.5 px-2 font-medium">Name</th>
+                    <th class="py-1.5 px-2 font-medium">Addr / Drv</th>
+                    <th class="py-1.5 px-2 font-medium" title="Electrical drawing page — click to open print">Print #</th>
+                  </tr>
+                </thead>
+                <tbody id="io-drives-tbody" class="text-slate-300">
+                  <tr><td colspan="4" class="py-4 px-2 text-slate-500">Import a RUN, then refresh. Use device type dropdown (PE, VFD, Motor…).</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <!-- Dynamic detail: program vs print -->
+            <div class="lg:col-span-3 overflow-y-auto min-h-0 border border-slate-800 rounded-xl p-3 bg-[#0c1219]">
+              <div id="drive-detail-empty" class="text-sm text-slate-500 py-6 text-center">
+                Select a drive to see <strong class="text-slate-400">program fields</strong> and
+                <strong class="text-slate-400">VFD parameters from prints</strong> (OCR).
+              </div>
+              <div id="drive-detail" class="hidden space-y-3">
+                <div>
+                  <div class="text-sm font-semibold text-cyan-300 mono" id="drive-detail-name">—</div>
+                  <div class="text-[10px] text-slate-500 mono" id="drive-detail-meta"></div>
+                  <button id="btn-open-device-print" type="button" class="hidden mt-1.5 text-[10px] px-2 py-1 rounded-lg border border-amber-800/50 text-amber-300 hover:bg-amber-950/40">
+                    <i class="fa-solid fa-file-pdf mr-1"></i>Open print <span id="btn-open-device-print-label"></span>
+                  </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <div class="text-[10px] uppercase tracking-wider text-emerald-500/90 mb-1.5">Program (key ASC fields)</div>
+                    <div id="drive-program-params" class="space-y-0.5 mono text-[11px]"></div>
+                  </div>
+                  <div>
+                    <div class="text-[10px] uppercase tracking-wider text-amber-400/90 mb-1.5">Print / VFD (PowerFlex params only)</div>
+                    <div id="drive-print-params" class="space-y-0.5 mono text-[11px]"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="text-[10px] text-slate-600 mt-2 shrink-0">
+            <strong class="text-slate-500">Print #</strong> = electrical drawing page (from RUN) — click to open the matching CP PDF.
+            VFD print params = PowerFlex table only (P031, P033, P036…), not every OCR hit.
+          </div>
+        </div>
+      </div>
+      </div><!-- end I/O content row -->
+    </section>
+
+    <!-- PLC Export — uses active RUN from I/O & Prints (no second tar.gz load) -->
+    <section id="tab-plc" class="h-full hidden p-5 gap-3 flex flex-col">
+      <details class="workflow-help shrink-0 px-4 py-3">
+        <summary class="text-sm font-semibold text-emerald-400">How to run PLC Export — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① Active RUN</strong><span>Load on I/O &amp; Prints<br>(single source)</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>② Prints</strong><span>Master + remotes<br>assigned (optional OCR)</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box accent"><strong>③ Ready</strong><span>Checklist turns green<br>when inputs ready</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box accent"><strong>④ Generate</strong><span>Studio 5000 L5X<br>+ Factory I/O scene</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>⑤ Open</strong><span>exports/plc/…<br>review artifacts</span></div>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
+          Export always uses the <strong class="text-slate-400">active RUN</strong> from I/O &amp; Prints — no need to drop archives again here.
+          For conveyor AOI templates from the library, use <strong class="text-violet-400">PLC Autogen</strong> instead.
+        </p>
+      </details>
+      <div class="flex-1 min-h-0 flex gap-4">
+      <div class="w-[44%] flex flex-col gap-4">
+        <div class="card p-4 border border-emerald-900/40 flex-1 min-h-0 overflow-y-auto">
+          <div class="text-xs uppercase tracking-wider text-emerald-500/90 mb-2 font-semibold">Recontrol ready</div>
+          <div id="plc-ready-checklist" class="text-[11px] text-slate-500 space-y-1 mb-3 mono">
+            <div>… checking …</div>
+          </div>
+          <button id="btn-plc-generate" type="button"
+            class="w-full py-3 rounded-xl text-sm font-semibold border-2 border-slate-700 bg-slate-900 text-slate-500 cursor-not-allowed" disabled>
+            <i class="fa-solid fa-industry mr-2"></i>Generate Studio 5000 + Factory I/O
+          </button>
+          <p class="text-[10px] text-slate-600 mt-2 leading-relaxed">
+            Turns green when a <strong class="text-slate-400">.tar.gz RUN</strong> is loaded on I/O &amp; Prints and
+            <strong class="text-slate-400">panel prints</strong> are assigned.
+          </p>
+        </div>
+        <div class="card p-4">
+          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Export options</div>
+          <label class="flex items-center gap-2 text-xs text-slate-400 mb-3">
+            <input id="plc-include-spares" type="checkbox" class="rounded border-slate-600">
+            Include spare / INVALID rows
+          </label>
+          <label class="flex items-center gap-2 text-xs text-slate-400 mb-3">
+            <input id="plc-prism-seed" type="checkbox" class="rounded border-slate-600" checked>
+            PRISM seed — reference corpus L5X after export (PoC)
+          </label>
+          <p class="text-[10px] text-slate-500 mb-3 leading-relaxed">
+            Factory I/O scenes include a <strong class="text-slate-400">complete</strong> object count
+            (every exported I/O point). Points with layout coords keep plant positions; others are grid-placed.
+          </p>
+          <button id="btn-plc-use-active" class="btn-primary w-full py-2.5 rounded-xl text-sm" disabled>
+            <i class="fa-solid fa-bolt mr-2"></i>Export from active RUN
+          </button>
+        </div>
+      </div>
+      <div class="flex-1 flex flex-col gap-4">
+        <div class="card p-4 flex-1 overflow-y-auto">
+          <div class="flex items-center justify-between mb-3">
+            <div class="font-semibold">Export results</div>
+            <span id="plc-export-status" class="status-pill status-idle">Ready</span>
+          </div>
+          <div id="plc-export-summary" class="text-sm text-slate-400 mb-4">
+            Load a RUN on <strong class="text-slate-300">I/O &amp; Prints</strong>, then generate Studio 5000 and Factory I/O artifacts here.
+          </div>
+          <div id="plc-export-stats" class="grid grid-cols-2 gap-2 mb-4 hidden"></div>
+          <div id="plc-export-files" class="space-y-2"></div>
+        </div>
+        <div class="card p-4 h-40 overflow-y-auto shrink-0">
+          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">PLC export log</div>
+          <div id="plc-activity-log" class="mono text-xs text-slate-400 space-y-1"></div>
+        </div>
+      </div>
+      </div><!-- end PLC content row -->
+    </section>
+
+    <!-- Ignition Build — layout + tag/device seed toward .gwbk -->
+    <section id="tab-ignition" class="h-full hidden p-5 gap-3 flex flex-col">
+      <details class="workflow-help shrink-0 px-4 py-3" open>
+        <summary class="text-sm font-semibold text-orange-400">How to use Ignition Build — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① RUN</strong><span>Load tar.gz on<br>I/O &amp; Prints</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box accent"><strong>② Layout</strong><span>Conveyor.asc X/Y<br>→ site schematic</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>③ Tags</strong><span>Device + PLC tag<br>seed JSON</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box warn"><strong>④ PDFs</strong><span>OCR labels/zones<br>(overlay later)</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>⑤ gwbk</strong><span>Phase 2–3 pack<br>Perspective + gateway</span></div>
+        </div>
+        <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
+          <p><strong class="text-orange-300/90">Geometry gold:</strong> plant coordinates live in the RUN (<span class="mono">Conveyor.asc</span>), not only on PDFs. Your CP5 sheet and building overlay are great for labels/zones; the generated map uses tar.gz X/Y first.</p>
+          <p><strong class="text-slate-400">.gwbk:</strong> a gateway backup is a versioned ZIP. We start with layout + tags + devices (scriptable). Full Perspective project + pack-to-gwbk comes next — Ignition scripting can also import tag JSON once the gateway exists.</p>
+        </div>
+      </details>
+      <div class="flex-1 min-h-0 flex gap-4">
+        <div class="w-[34%] flex flex-col gap-3 min-h-0">
+          <div class="card p-4 shrink-0 border border-orange-900/40">
+            <div class="text-xs uppercase tracking-wider text-orange-400 font-semibold mb-2">
+              <i class="fa-solid fa-fire mr-1"></i> Ignition Build
+            </div>
+            <p class="text-[11px] text-slate-500 leading-relaxed mb-3">
+              <strong class="text-orange-300">After tar.gz (+ PDFs) on I/O &amp; Prints</strong> — click once to build layout, tags, and deploy a designer-safe project into the gateway.
+            </p>
+            <button id="btn-ignition-build" type="button" class="btn-primary w-full py-2.5 rounded-xl text-sm"
+              title="Build from active RUN and auto-deploy to Ignition data/projects">
+              <i class="fa-solid fa-map-location-dot mr-2"></i>Build + deploy to gateway
+            </button>
+            <button id="btn-ignition-perspective" type="button" class="btn-ghost w-full py-2 rounded-xl text-sm mt-2 border border-orange-900/40"
+              title="Rebuild Perspective project only (uses latest hmi_symbols)">
+              <i class="fa-solid fa-puzzle-piece mr-2"></i>Export Perspective project only
+            </button>
+            <p class="text-[10px] text-slate-600 mt-1.5 leading-relaxed">
+              Auto-deploys <span class="mono text-slate-500">FortnaPlus_ORNCCP5</span> using a
+              <strong class="text-slate-500">ProjectTest-based designer shell</strong> (fixes white “no-project”).
+              Then: Gateway <strong class="text-slate-500">Scan Filesystem</strong> → open
+              <span class="mono">Smoke_Test</span> first → import
+              <span class="mono">tags_import.json</span> if tags empty.
+            </p>
+            <div class="flex gap-2 mt-2">
+              <button id="btn-ignition-open-out" type="button" class="btn-ghost flex-1 py-2 rounded-xl text-xs" disabled>
+                <i class="fa-solid fa-folder-open mr-1"></i>Open export
+              </button>
+              <button id="btn-ignition-open-project" type="button" class="btn-ghost flex-1 py-2 rounded-xl text-xs" disabled
+                title="Open FortnaPlus_POC folder to copy into Ignition">
+                <i class="fa-solid fa-box-archive mr-1"></i>Open project folder
+              </button>
+            </div>
+            <div id="ignition-status" class="status-pill status-idle mt-3 text-[10px]">Idle</div>
+          </div>
+          <div class="card p-3 flex-1 min-h-0 overflow-y-auto">
+            <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Stats</div>
+            <div id="ignition-stats" class="grid grid-cols-2 gap-2 text-center"></div>
+            <div id="ignition-kind-list" class="mt-3 mono text-[10px] text-slate-500 space-y-0.5"></div>
+            <div class="text-xs uppercase tracking-wider text-slate-500 mt-4 mb-2">Activity</div>
+            <div id="ignition-log" class="mono text-[11px] text-slate-400 space-y-1">Ready.</div>
+          </div>
+        </div>
+        <div class="flex-1 flex flex-col gap-3 min-h-0">
+          <div class="card p-3 flex-1 min-h-0 overflow-hidden flex flex-col">
+            <div class="flex items-center justify-between mb-2 shrink-0">
+              <div class="font-semibold text-sm">Site layout (generated)</div>
+              <span class="text-[10px] text-slate-500">SVG from Conveyor.asc coordinates</span>
+            </div>
+            <div id="ignition-svg-host" class="flex-1 min-h-0 overflow-auto rounded-xl border border-slate-800 bg-[#0a0f14] p-2">
+              <div class="text-slate-600 text-sm py-16 text-center">
+                Load RUN → click <strong class="text-slate-400">Build layout from RUN</strong>
+              </div>
+            </div>
+          </div>
+          <div class="card p-3 h-36 overflow-y-auto shrink-0">
+            <div class="text-xs uppercase tracking-wider text-slate-500 mb-1">Export paths / gwbk status</div>
+            <pre id="ignition-detail" class="mono text-[10px] text-slate-500 whitespace-pre-wrap">—</pre>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Recipes -->
+    <section id="tab-recipes" class="h-full hidden p-5 gap-3 flex flex-col">
+      <details class="workflow-help shrink-0 px-4 py-3">
+        <summary class="text-sm font-semibold text-cyan-400">How to use Recipes — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① Pick recipe</strong><span>Left list — clone PE,<br>printer, conveyor…</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>② Read steps</strong><span>Right panel how-to<br>+ linked docs</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>③ Apply</strong><span>Usually from Workspace<br>with active RUN</span></div>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
+          Recipes are small automations (add/clone devices). Full site recontrol is
+          <strong class="text-slate-400">I/O &amp; Prints → Autogen / Export</strong>.
+        </p>
+      </details>
+      <div class="flex-1 min-h-0 flex gap-4">
+      <div class="w-[38%] overflow-y-auto space-y-3 pr-1" id="recipe-list"></div>
+      <div class="flex-1 card p-5 overflow-y-auto" id="recipe-detail">
+        <div class="text-slate-500 text-sm">Select a recipe to see the how-to steps and linked documentation.</div>
+      </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="fortna-plus.js"></script>
+</body>
+</html>

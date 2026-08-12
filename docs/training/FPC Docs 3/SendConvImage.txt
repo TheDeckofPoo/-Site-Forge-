@@ -1,0 +1,64 @@
+Setting up the SendConvImage Batch Job for Dashboard "Wallpaper" Images
+
+SendConvImage is part of the process used to transfer an image of the conveyor
+screen in FortnaPlus Control periodically to the Dashboard viewer.  Typically, it is
+updated once per minute -- if the conveyor image changes.  SendConvImage takes an
+image captured in the QNX proprietary image format "PHS" and converts it to the
+compressed format "PNG", possibly with an intermediate stop at format "BMP".  It
+also sends the image to the application server in a message to ActiveMQ (on topic WCS.IMAGE.CONVEYOR).
+
+Here is the complete setup procedure:
+  Define the screen capture within FortnaPlus Control:
+    Set up line 1 in table ScreenCapture to write the image to a file in the RUN
+    directory called fpcscreen:
+
+      Name = Screen Capture
+      Enable = Y
+      OverWrite = N
+      UpdateInterval = 60 (seconds)
+      StartPageX = 0
+      StartPageY = 0
+      EndPageX = 1200
+      EndPageY = 1200
+      FileName = fpcscreen
+
+  Edit the SendConvImage script in the RUN directory.  REMOTEHOST is the address of
+  the Application Server machine.  The default is WCS_OUTBOUND, a name that must
+  be defined in /etc/hosts for the delivery of the other dashboard-related messages
+  from within FortnaPlus Control.
+
+  In FortnaPlus Control, in the Batches menu, set up two batches:
+    File_Name = Print Main Screen
+    HowOften = 60
+    Increment = Sec
+    Type = Elapsed
+    Process = GUI
+    Machine = <this machine's name>
+    InternalProc = PrintMainScreen
+
+    and
+
+    File_Name = SendConvImage
+    HowOften = 60
+    Increment = Sec
+    Type = Elapsed
+    Process = GUI
+    Machine = <this machine's name>
+    DoFile = Y
+
+  Follow the instructions in document "Dashboard-Portal Configuration.docx" to
+  set up a "Go View 0" batch and a map for "View 0" to adjust the image content.
+
+TROUBLESHOOTING:
+
+If FortnaPlus Control is started using the UPS_Batch script (as it should be),
+the console output will be written to /tmp/error.  Look there for error messages
+from FortnaPlus Control, and from SendConvImage.
+
+If you get a message in the console output like: "ldd:FATAL: Could not load library
+libpng12.so.0", add these lines near the top of ConvPhs2Png:
+  #bmp2png needs this
+  export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+TRK Aug-2011
+TRK Mar-2016

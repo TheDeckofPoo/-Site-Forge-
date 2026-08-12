@@ -1,0 +1,352 @@
+Attribute VB_Name = "DataCache"
+Option Explicit
+
+Private mDictArr As Variant
+Private mDictLastRow As Long
+Private mDictLastCol As Long
+Private mDictIndex As Object ' colKey (string) -> (value -> Collection of rowNums)
+
+Private mIoDictArr As Variant
+Private mIoDictLastRow As Long
+Private mIoDictLastCol As Long
+Private mIoDictIndex As Object ' colKey (string) -> (value -> Collection of rowNums)
+Private mIoDictBS2BUArr As Variant ' Range BS2:BU10 for VLookup-style usage
+
+Private mIoArr As Variant
+Private mIoLastRow As Long
+Private mIoLastCol As Long
+
+Private mIOConfigMap As Object ' value -> result mapping from IOConfigLU/IOConfigRSLT
+
+Private mInputLoaded As Boolean
+Private mInputB2 As String
+Private mInputB3 As String
+
+' Public lifecycle
+Public Sub Init()
+    ResetCache
+    ' Lazy load on first access
+End Sub
+
+Public Sub Refresh()
+    ResetCache
+End Sub
+
+Private Sub ResetCache()
+    mDictArr = Empty
+    mDictLastRow = 0
+    mDictLastCol = 0
+    Set mDictIndex = Nothing
+    
+    mIoDictArr = Empty
+    mIoDictLastRow = 0
+    mIoDictLastCol = 0
+    Set mIoDictIndex = Nothing
+    mIoDictBS2BUArr = Empty
+    
+    mIoArr = Empty
+    mIoLastRow = 0
+    mIoLastCol = 0
+    
+    Set mIOConfigMap = Nothing
+    mInputLoaded = False
+    mInputB2 = ""
+    mInputB3 = ""
+End Sub
+
+' Ensure loaders
+Private Sub EnsureLoadedDict()
+    If Not IsEmpty(mDictArr) Then Exit Sub
+    On Error Resume Next
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("Dict")
+    If ws Is Nothing Then Exit Sub
+    
+    mDictLastRow = CLng(val(ws.Range("G5").value))
+    If mDictLastRow < 17 Then mDictLastRow = 17
+    mDictLastCol = ws.Cells(17, ws.Columns.count).End(xlToLeft).Column
+    If mDictLastCol < 1 Then mDictLastCol = 1
+    
+    mDictArr = ws.Range(ws.Cells(1, 1), ws.Cells(mDictLastRow, mDictLastCol)).value
+    Set mDictIndex = CreateObject("Scripting.Dictionary")
+End Sub
+
+Private Sub EnsureLoadedIoDict()
+    If Not IsEmpty(mIoDictArr) Then Exit Sub
+    On Error Resume Next
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("IO Dict")
+    If ws Is Nothing Then Exit Sub
+    
+    mIoDictLastRow = ws.Cells(ws.Rows.count, "B").End(xlUp).Row
+    If mIoDictLastRow < 17 Then mIoDictLastRow = 17
+    mIoDictLastCol = ws.Cells(17, ws.Columns.count).End(xlToLeft).Column
+    If mIoDictLastCol < 1 Then mIoDictLastCol = 1
+    
+    mIoDictArr = ws.Range(ws.Cells(1, 1), ws.Cells(mIoDictLastRow, mIoDictLastCol)).value
+    
+    ' Load BS2:BU10 mapping table used via VLookup in existing code
+    mIoDictBS2BUArr = ws.Range("BS2:BU10").value
+    
+    Set mIoDictIndex = CreateObject("Scripting.Dictionary")
+End Sub
+
+Private Sub EnsureLoadedIo()
+    If Not IsEmpty(mIoArr) Then Exit Sub
+    On Error Resume Next
+    Dim ws As Worksheet
+    Set ws = ThisWorkbook.Sheets("IO")
+    If ws Is Nothing Then Exit Sub
+    mIoLastRow = ws.Cells(ws.Rows.count, "B").End(xlUp).Row
+    If mIoLastRow < 6 Then mIoLastRow = 6
+    mIoLastCol = ws.Cells(6, ws.Columns.count).End(xlToLeft).Column
+    If mIoLastCol < 1 Then mIoLastCol = 1
+    mIoArr = ws.Range(ws.Cells(1, 1), ws.Cells(mIoLastRow, mIoLastCol)).value
+End Sub
+
+Private Sub EnsureLoadedIOConfig()
+    If Not mIOConfigMap Is Nothing Then Exit Sub
+    On Error Resume Next
+    Dim rngLU As Range, rngRSLT As Range
+    Set rngLU = ThisWorkbook.Names("IOConfigLU").RefersToRange
+    Set rngRSLT = ThisWorkbook.Names("IOConfigRSLT").RefersToRange
+    Set mIOConfigMap = CreateObject("Scripting.Dictionary")
+    If Not rngLU Is Nothing And Not rngRSLT Is Nothing Then
+        Dim i As Long, cnt As Long
+        cnt = Application.WorksheetFunction.Min(rngLU.Cells.count, rngRSLT.Cells.count)
+        For i = 1 To cnt
+            Dim k As String, v As String
+            k = CStr(rngLU.Cells(i, 1).value)
+            v = CStr(rngRSLT.Cells(i, 1).value)
+            If Len(k) > 0 And Not mIOConfigMap.Exists(k) Then mIOConfigMap.Add k, v
+        Next i
+    End If
+End Sub
+
+' Accessors
+Public Function DictValue(ByVal rowNum As Long, ByVal colNum As Long) As String
+    EnsureLoadedDict
+    On Error Resume Next
+    If rowNum < 1 Or colNum < 1 Then Exit Function
+    If IsEmpty(mDictArr) Then Exit Function
+    If rowNum > UBound(mDictArr, 1) Or colNum > UBound(mDictArr, 2) Then Exit Function
+    Dim v As Variant: v = mDictArr(rowNum, colNum)
+    If IsError(v) Or IsEmpty(v) Then Exit Function
+    DictValue = CStr(v)
+End Function
+
+Public Function IoDictValue(ByVal rowNum As Long, ByVal colNum As Long) As String
+    EnsureLoadedIoDict
+    On Error Resume Next
+    If rowNum < 1 Or colNum < 1 Then Exit Function
+    If IsEmpty(mIoDictArr) Then Exit Function
+    If rowNum > UBound(mIoDictArr, 1) Or colNum > UBound(mIoDictArr, 2) Then Exit Function
+    Dim v As Variant: v = mIoDictArr(rowNum, colNum)
+    If IsError(v) Or IsEmpty(v) Then Exit Function
+    IoDictValue = CStr(v)
+End Function
+
+Public Function IoValue(ByVal rowNum As Long, ByVal colNum As Long) As String
+    EnsureLoadedIo
+    On Error Resume Next
+    If rowNum < 1 Or colNum < 1 Then Exit Function
+    If IsEmpty(mIoArr) Then Exit Function
+    If rowNum > UBound(mIoArr, 1) Or colNum > UBound(mIoArr, 2) Then Exit Function
+    Dim v As Variant: v = mIoArr(rowNum, colNum)
+    If IsError(v) Or IsEmpty(v) Then Exit Function
+    IoValue = CStr(v)
+End Function
+
+' Index builders
+Private Function GetOrBuildDictIndex(ByVal colNum As Long) As Object
+    EnsureLoadedDict
+    Dim key As String: key = CStr(colNum)
+    If mDictIndex Is Nothing Then Set mDictIndex = CreateObject("Scripting.Dictionary")
+    If Not mDictIndex.Exists(key) Then
+        Dim map As Object: Set map = CreateObject("Scripting.Dictionary")
+        Dim r As Long
+        For r = 17 To mDictLastRow
+            If colNum <= UBound(mDictArr, 2) Then
+                Dim val As Variant: val = mDictArr(r, colNum)
+                Dim s As String: If IsError(val) Or IsEmpty(val) Then s = "" Else s = CStr(val)
+                If Not map.Exists(s) Then map.Add s, New Collection
+                map(s).Add r
+            End If
+        Next r
+        mDictIndex.Add key, map
+    End If
+    Set GetOrBuildDictIndex = mDictIndex(key)
+End Function
+
+Private Function GetOrBuildIoDictIndex(ByVal colNum As Long) As Object
+    EnsureLoadedIoDict
+    Dim key As String: key = CStr(colNum)
+    If mIoDictIndex Is Nothing Then Set mIoDictIndex = CreateObject("Scripting.Dictionary")
+    If Not mIoDictIndex.Exists(key) Then
+        Dim map As Object: Set map = CreateObject("Scripting.Dictionary")
+        Dim r As Long
+        For r = 17 To mIoDictLastRow
+            If colNum <= UBound(mIoDictArr, 2) Then
+                Dim val As Variant: val = mIoDictArr(r, colNum)
+                Dim s As String: If IsError(val) Or IsEmpty(val) Then s = "" Else s = CStr(val)
+                If Not map.Exists(s) Then map.Add s, New Collection
+                map(s).Add r
+            End If
+        Next r
+        mIoDictIndex.Add key, map
+    End If
+    Set GetOrBuildIoDictIndex = mIoDictIndex(key)
+End Function
+
+' Public indexed queries
+Public Function DictRowsByColValue(ByVal colNum As Long, ByVal key As String) As Object
+    Dim result As Object: Set result = CreateObject("Scripting.Dictionary")
+    On Error Resume Next
+    Dim idx As Object: Set idx = GetOrBuildDictIndex(colNum)
+    If Not idx Is Nothing Then
+        If idx.Exists(key) Then
+            Dim rowsColl As Collection: Set rowsColl = idx(key)
+            Dim i As Long
+            For i = 1 To rowsColl.count
+                If Not result.Exists(rowsColl(i)) Then result.Add rowsColl(i), rowsColl(i)
+            Next i
+        End If
+    End If
+    Set DictRowsByColValue = result
+End Function
+
+Public Function IOConfigLookup(ByVal key As String) As String
+    EnsureLoadedIOConfig
+    On Error Resume Next
+    If mIOConfigMap Is Nothing Then Exit Function
+    If mIOConfigMap.Exists(key) Then IOConfigLookup = CStr(mIOConfigMap(key))
+End Function
+
+Public Function InputValue(ByVal address As String) As String
+    On Error Resume Next
+    If Not mInputLoaded Then
+        Dim ws As Worksheet
+        Set ws = ThisWorkbook.Sheets("Inputdata")
+        If Not ws Is Nothing Then
+            mInputB2 = CStr(ws.Range("B2").value)
+            mInputB3 = CStr(ws.Range("B3").value)
+        End If
+        mInputLoaded = True
+    End If
+    Select Case UCase$(address)
+        Case "B2": InputValue = mInputB2
+        Case "B3": InputValue = mInputB3
+        Case Else
+            ' Fallback read-through for other cells if requested
+            Dim ws2 As Worksheet
+            Set ws2 = ThisWorkbook.Sheets("Inputdata")
+            If Not ws2 Is Nothing Then InputValue = CStr(ws2.Range(address).value)
+    End Select
+End Function
+
+Public Function IoDictRowsByColValue(ByVal colNum As Long, ByVal key As String) As Object
+    Dim result As Object: Set result = CreateObject("Scripting.Dictionary")
+    On Error Resume Next
+    Dim idx As Object: Set idx = GetOrBuildIoDictIndex(colNum)
+    If Not idx Is Nothing Then
+        If idx.Exists(key) Then
+            Dim rowsColl As Collection: Set rowsColl = idx(key)
+            Dim i As Long
+            For i = 1 To rowsColl.count
+                If Not result.Exists(rowsColl(i)) Then result.Add rowsColl(i), rowsColl(i)
+            Next i
+        End If
+    End If
+    Set IoDictRowsByColValue = result
+End Function
+
+Public Function CacheFindRowsWithAreaMatch(ByVal areaName As String, ByVal colNum As Long) As Object
+    ' Mirrors existing behavior for Dict: collect rows where col 3 or 5 matches areaName,
+    ' but keep only first row per unique counterpart column value.
+    Dim result As Object: Set result = CreateObject("Scripting.Dictionary")
+    If colNum <> 3 And colNum <> 5 Then
+        Set CacheFindRowsWithAreaMatch = result
+        Exit Function
+    End If
+    Dim otherCol As Long: otherCol = IIf(colNum = 5, 3, 5)
+    Dim idx As Object: Set idx = GetOrBuildDictIndex(colNum)
+    Dim uniqueValues As Object: Set uniqueValues = CreateObject("Scripting.Dictionary")
+    If Not idx Is Nothing And idx.Exists(areaName) Then
+        Dim rowsColl As Collection: Set rowsColl = idx(areaName)
+        Dim i As Long
+        For i = 1 To rowsColl.count
+            Dim r As Long: r = rowsColl(i)
+            Dim compareValue As String: compareValue = DictValue(r, otherCol)
+            If Not uniqueValues.Exists(compareValue) Then
+                uniqueValues.Add compareValue, True
+                If Not result.Exists(r) Then result.Add r, r
+            End If
+        Next i
+    End If
+    Set CacheFindRowsWithAreaMatch = result
+End Function
+
+Public Function FindTagTypeInTextCached(ByVal text As String, ByVal sheetName As String, ByVal columnIndex As Long) As String
+    On Error Resume Next
+    Dim r As Long, lastRow As Long
+    Dim v As Variant
+    If StrComp(sheetName, "Dict", vbTextCompare) = 0 Then
+        EnsureLoadedDict
+        lastRow = mDictLastRow
+        For r = 17 To lastRow
+            If columnIndex <= UBound(mDictArr, 2) Then
+                v = mDictArr(r, columnIndex)
+                If Not IsEmpty(v) Then
+                    If InStr(1, text, CStr(v), vbTextCompare) > 0 Then
+                        FindTagTypeInTextCached = CStr(v)
+                        Exit Function
+                    End If
+                End If
+            End If
+        Next r
+    ElseIf StrComp(sheetName, "IO Dict", vbTextCompare) = 0 Then
+        EnsureLoadedIoDict
+        lastRow = mIoDictLastRow
+        For r = 17 To lastRow
+            If columnIndex <= UBound(mIoDictArr, 2) Then
+                v = mIoDictArr(r, columnIndex)
+                If Not IsEmpty(v) Then
+                    If InStr(1, text, CStr(v), vbTextCompare) > 0 Then
+                        FindTagTypeInTextCached = CStr(v)
+                        Exit Function
+                    End If
+                End If
+            End If
+        Next r
+    End If
+    FindTagTypeInTextCached = ""
+End Function
+
+Public Function IoDictVLookupBS2BU(ByVal lookupValue As Variant, ByVal resultColIndex As Long) As Variant
+    ' Emulates VLookup on IO Dict BS2:BU10 used in existing code
+    EnsureLoadedIoDict
+    On Error Resume Next
+    If IsEmpty(mIoDictBS2BUArr) Then Exit Function
+    Dim r As Long
+    For r = 1 To UBound(mIoDictBS2BUArr, 1)
+        If mIoDictBS2BUArr(r, 1) = lookupValue Then
+            If resultColIndex >= 1 And resultColIndex <= UBound(mIoDictBS2BUArr, 2) Then
+                IoDictVLookupBS2BU = mIoDictBS2BUArr(r, resultColIndex)
+                Exit Function
+            End If
+        End If
+    Next r
+    IoDictVLookupBS2BU = Empty
+End Function
+
+Public Function dictLastRow() As Long
+    EnsureLoadedDict
+    dictLastRow = mDictLastRow
+End Function
+
+Public Function IoDictLastRow() As Long
+    EnsureLoadedIoDict
+    IoDictLastRow = mIoDictLastRow
+End Function
+
+

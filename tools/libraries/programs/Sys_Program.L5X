@@ -1,0 +1,2126 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.05" TargetName="Sys" TargetType="Program" ContainsContext="true" ExportDate="Mon Aug 10 13:50:04 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Context" Name="ORLY_Greensboro_NC_PLC5">
+<DataTypes Use="Context">
+<DataType Name="AirPressure_Switch_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZAirPressur0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Pressure_Fault" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZAirPressur0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="AirPressure_Switch_I" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZAirPressur0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Pressure_OK" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZAirPressur0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="AirPressure_Switch_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="I" DataType="AirPressure_Switch_I" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="AirPressure_Switch_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Silenced" DataType="AirPressure_Switch_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Flt_Time" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="AirPressure_Switch_I"/>
+<Dependency Type="DataType" Name="AirPressure_Switch_Fault"/>
+<Dependency Type="DataType" Name="AirPressure_Switch_Fault"/>
+</Dependencies>
+</DataType>
+<DataType Name="Barcode_String" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="82" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Control_Station_I" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZControl_St0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Reset_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Start_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Stop_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="Restart_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="JamRestart_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="MTRFltRst_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="AirFltRst_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="6" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Control_Station_O" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZControl_St0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Start_PB_LT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Start PB_Light]]>
+</Description>
+</Member>
+<Member Name="Stop_PB_LT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Stop PB_Light]]>
+</Description>
+</Member>
+<Member Name="Reset_PB_LT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Reset PB_Light]]>
+</Description>
+</Member>
+<Member Name="Estop_Active_LT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Any Estop Active Pilot Light]]>
+</Description>
+</Member>
+<Member Name="Fault_PB_LT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Fault Reset PB_Light]]>
+</Description>
+</Member>
+<Member Name="Restart_PB_LT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Jam_Restart_LT]]>
+</Description>
+</Member>
+<Member Name="PressureLow_LT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PressureLow_Light]]>
+</Description>
+</Member>
+<Member Name="Horn" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St0" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Horn_Stacklight]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZControl_St9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Red" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St9" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Red_Stacklight]]>
+</Description>
+</Member>
+<Member Name="Amber" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St9" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Amber_Stacklight]]>
+</Description>
+</Member>
+<Member Name="Blue" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St9" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Blue_Stacklight]]>
+</Description>
+</Member>
+<Member Name="Green" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZControl_St9" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Green_Stacklight]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZConv_Fault0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv in Fault Condition]]>
+</Description>
+</Member>
+<Member Name="Jam" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv in Jam Condition]]>
+</Description>
+</Member>
+<Member Name="Mtr_Start_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Start Fault]]>
+</Description>
+</Member>
+<Member Name="Mtr_Stop_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Stop Fault]]>
+</Description>
+</Member>
+<Member Name="EStopped" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Estopped Fault]]>
+</Description>
+</Member>
+<Member Name="VFD_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor VFD Fault]]>
+</Description>
+</Member>
+<Member Name="Mtr_Overload_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Overload Fault]]>
+</Description>
+</Member>
+<Member Name="Mtr_Contactor_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Contactor Fault]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="EngMgmtTime" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Energy Management Timer value]]>
+</Description>
+</Member>
+<Member Name="Color" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Color]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZConv_HMI2" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Jog" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Jog]]>
+</Description>
+</Member>
+<Member Name="Manual" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Manual]]>
+</Description>
+</Member>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Reset]]>
+</Description>
+</Member>
+<Member Name="Manual_ONS" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Manual ONS Bit]]>
+</Description>
+</Member>
+<Member Name="Reverse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Reverse]]>
+</Description>
+</Member>
+<Member Name="Release" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Release]]>
+</Description>
+</Member>
+<Member Name="DisableEngMgmt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Disable Energy Management]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_HMI_Color" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Estop" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Fault" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="VFD_Fault" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Jam" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Full" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Running" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="EngMgmt" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="AntiGridlock" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Manual_Mode" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Inactive" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Disabled" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Cascade_Stop" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Indexing" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Loaded" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Conv_O" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZConv_O0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_O0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Output - Conv is Running]]>
+</Description>
+</Member>
+<Member Name="Release" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_O0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Output - Conv is Releasing]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_PI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZConv_PI0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Enable_hold" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Hold Enable - This bit will stop the Conv from running
+(When this bit gets low, conv wait for Restart Time to Run again)]]>
+</Description>
+</Member>
+<Member Name="Jam" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Jam Bit]]>
+</Description>
+</Member>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Reset Bit]]>
+</Description>
+</Member>
+<Member Name="Run_Hold" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Run Hold - This bit will stop the Conv from Running. 
+(When this bit gets low, conv don't need to wait for Restart Time to Run again)]]>
+</Description>
+</Member>
+<Member Name="Stop_Next" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Stop Next - This bit helps to Run Conveyor till Exit PE detects the packages. Generally it is used for Cascade Stop]]>
+</Description>
+</Member>
+<Member Name="Full" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv in Full Condition]]>
+</Description>
+</Member>
+<Member Name="EngMgmt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv in Engery Managment State]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Run_Stats" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Run Stats]]>
+</Description>
+</Member>
+<Member Name="Flt" DataType="Conv_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Faults Bits]]>
+</Description>
+</Member>
+<Member Name="Silenced" DataType="Conv_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Fault Silenced Bits]]>
+</Description>
+</Member>
+<Member Name="HMI" DataType="Conv_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv HMI Bits]]>
+</Description>
+</Member>
+<Member Name="PI" DataType="Conv_PI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Program Inputs Bits]]>
+</Description>
+</Member>
+<Member Name="O" DataType="Conv_O" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Output Bits]]>
+</Description>
+</Member>
+<Member Name="Mtr_Start_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Motor Start Fault Time]]>
+</Description>
+</Member>
+<Member Name="Mtr_Stop_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Motor Stop Fault Time]]>
+</Description>
+</Member>
+<Member Name="Ready_To_Receive_Time" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Ready To Receive Time]]>
+</Description>
+</Member>
+<Member Name="Reset_Time" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Fault/Jam Reset Time]]>
+</Description>
+</Member>
+<Member Name="Restart_Time" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Restart Time]]>
+</Description>
+</Member>
+<Member Name="Spd" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Speed]]>
+</Description>
+</Member>
+<Member Name="Type" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Type
+0 = Transport Conv with VFD
+1 = Accum. Conv with VFD
+2 = Transport Conv with MS
+3 = Accum. Conv with MS]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZConv_UDT13" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="EngMgmt_Rst" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE on Conv Reset Energy Management Timer]]>
+</Description>
+</Member>
+<Member Name="LastConv" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Very Downstream Conv where System should Start Cascade Start]]>
+</Description>
+</Member>
+<Member Name="Ready" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Ready to Run]]>
+</Description>
+</Member>
+<Member Name="Ready_To_Receive" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Ready To Receive from Upstream]]>
+</Description>
+</Member>
+<Member Name="Release" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv (Accum.) Release]]>
+</Description>
+</Member>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Fault/Jam Reset]]>
+</Description>
+</Member>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Run Signal]]>
+</Description>
+</Member>
+<Member Name="Running" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv is Running]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZConv_UDT22" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Reverse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Reverse Run Signal]]>
+</Description>
+</Member>
+<Member Name="RestartTmr_DN" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Restart Timer Done Bit]]>
+</Description>
+</Member>
+<Member Name="RestartTmr_TT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Restart Timer operation is in process Bit]]>
+</Description>
+</Member>
+<Member Name="FltSilenced" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Flt is Silenced]]>
+</Description>
+</Member>
+<Member Name="JamSilenced" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Jam is Silenced]]>
+</Description>
+</Member>
+<Member Name="Indexing" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Loaded" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Anti_Gridlock" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZConv_UDT31" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Disabled" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT31" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="VFD_Running" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT31" BitNumber="1" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="Conv_Fault"/>
+<Dependency Type="DataType" Name="Conv_Fault"/>
+<Dependency Type="DataType" Name="Conv_HMI"/>
+<Dependency Type="DataType" Name="Conv_PI"/>
+<Dependency Type="DataType" Name="Conv_O"/>
+</Dependencies>
+</DataType>
+<DataType Name="CS_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="I" DataType="Control_Station_I" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="O" DataType="Control_Station_O" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZCS_UDT2" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Rst_ONS" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT2" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Rst_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT2" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Rst_AntiTieDown" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT2" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="Start_ONS" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT2" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Start_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT2" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="Start_AntiTieDown" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT2" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Stop_ONS" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT2" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Stop_PB" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT2" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZCS_UDT11" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Stop_AntiTieDown" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZCS_UDT11" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Control_Station_I"/>
+<Dependency Type="DataType" Name="Control_Station_O"/>
+</Dependencies>
+</DataType>
+<DataType Name="Enc_Flt" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZEnc_Flt0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Enc" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault]]>
+</Description>
+</Member>
+<Member Name="PPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PPI Fault]]>
+</Description>
+</Member>
+<Member Name="UpStrmCommLoss" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IO Module Fault]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Enc_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="PPI_Ratio" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pulse Per Inch Ratio]]>
+</Description>
+</Member>
+<Member Name="Allowable_DiffSpd" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset:10;  Allowable Difference Between Actual Speed and Encoder Speed measured to generate PPI (High or Low) Fault]]>
+</Description>
+</Member>
+<Member Name="Allowable_PPIDiff" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Allowable PPI Difference in one "1" minute before calling PPI Fault]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZEnc_HMI3" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Disable_PPIFlt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_HMI3" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[To Disable the PPI Fault Logic]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Enc_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Flt" DataType="Enc_Flt" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Bits]]>
+</Description>
+</Member>
+<Member Name="Silenced" DataType="Enc_Flt" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Silenced Bits]]>
+</Description>
+</Member>
+<Member Name="HMI" DataType="Enc_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Sts_Enc_Flt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Stats]]>
+</Description>
+</Member>
+<Member Name="Sts_PPI_Flt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder PPI Fault Stats]]>
+</Description>
+</Member>
+<Member Name="Sts_HighPPI_AlmTot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Stats: High PPI Alarm Total]]>
+</Description>
+</Member>
+<Member Name="Sts_LowPPI_AlmTot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Stats: Low PPI Alarm Total]]>
+</Description>
+</Member>
+<Member Name="FPM" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conveyor FPM Speed]]>
+</Description>
+</Member>
+<Member Name="Enc_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset : 500; Encoder Fault Timer  (Generally should be 500)]]>
+</Description>
+</Member>
+<Member Name="PPI_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset : 15000; Encoder PPI Fault Timer (Use 15000 - For Pulses per Inch; 7500 - For Pulses for half of Inch)]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZEnc_UDT10" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Pulse Per Inch OR Pulse per half inch]]>
+</Description>
+</Member>
+<Member Name="Alm_LowPPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Alarm: Low PPI Fault]]>
+</Description>
+</Member>
+<Member Name="Alm_HighPPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Alarm: High PPI Fault]]>
+</Description>
+</Member>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Enc_Flt"/>
+<Dependency Type="DataType" Name="Enc_Flt"/>
+<Dependency Type="DataType" Name="Enc_HMI"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+</Dependencies>
+</DataType>
+<DataType Name="ES_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Status" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZES_HMI1" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="ES_Tripped" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZES_HMI1" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="ES_ResetReady" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZES_HMI1" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="ResetTieDown" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZES_HMI1" BitNumber="2" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ES_I" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZESPB_I0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="ES_OK" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZESPB_I0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ES_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="I" DataType="ES_I" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ES_Stats" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="HMI" DataType="ES_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZES_UDT3" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="ES_Tripped" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZES_UDT3" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Silenced_ES" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZES_UDT3" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Silenced_ES_Tripped" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZES_UDT3" BitNumber="2" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="ES_I"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="ES_HMI"/>
+</Dependencies>
+</DataType>
+<DataType Name="Location_String" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="16" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="PE_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZExit_PE_Fa0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PE_Jam" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZExit_PE_Fa0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="PE_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="DebounceONTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE Debounce ON Time]]>
+</Description>
+</Member>
+<Member Name="DebounceOFFTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE Debounce OFF Time]]>
+</Description>
+</Member>
+<Member Name="JamTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE Jam Time]]>
+</Description>
+</Member>
+<Member Name="FullOnTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Timer for Full Condition to go ON]]>
+</Description>
+</Member>
+<Member Name="FullOffTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Timer for Full Condition to go OFF]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZPE_HMI5" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="DisableJam" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPE_HMI5" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[To Disable PE Jam]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="PE_I" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZPE_I0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PE_Clear" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPE_I0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Raw Input Signal]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="PE_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Flt" DataType="PE_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE Jam Fault]]>
+</Description>
+</Member>
+<Member Name="Sts" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE Jam Fault/Full Status]]>
+</Description>
+</Member>
+<Member Name="I" DataType="PE_I" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Raw Input Signal]]>
+</Description>
+</Member>
+<Member Name="HMI" DataType="PE_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZPE_UDT4" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PE_Clear" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPE_UDT4" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE Clear]]>
+</Description>
+</Member>
+<Member Name="Full" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPE_UDT4" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conveyor/System is in Full Condition]]>
+</Description>
+</Member>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="PE_Fault"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="PE_I"/>
+<Dependency Type="DataType" Name="PE_HMI"/>
+</Dependencies>
+</DataType>
+<DataType Name="PLC_INIT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="EngMgmtTime" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="AutoSilenceTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DebounceOffTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DebounceOnTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="JamTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="JamAutoClearTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="JamReset_PulseTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="FullOffTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="FullOnTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="RTRTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Early_SrchLim" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Late_SrchLim" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Track_DebounceOffTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Track_DebounceOnTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Track_Length_Extra" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MtrStarter_Start_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MtrStarter_Stop_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MtrFlt_Reset_PulseTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="VFD_Start_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="VFD_Stop_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Encoder_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Encoder_PPI_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Reset_PulseTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="RestartTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MtrOverload_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MtrContactor_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="PS_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="AirPressure_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="PLC_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Helix_DTS" DataType="DINT" Dimension="7" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Date & Time Stamp in HELIX Format]]>
+</Description>
+</Member>
+<Member Name="DINT_DS" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Date Stamp in DINT Format]]>
+</Description>
+</Member>
+<Member Name="DINT_TS" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Time Stamp in DINT Format]]>
+</Description>
+</Member>
+<Member Name="String_DTS" DataType="Timestamp_Long_String" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Date & Time Stamp in STRING Format]]>
+</Description>
+</Member>
+<Member Name="String_DS" DataType="Timestamp_String" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Date Stamp in STRING Format]]>
+</Description>
+</Member>
+<Member Name="String_TS" DataType="Timestamp_String" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Time Stamp in STRING Format]]>
+</Description>
+</Member>
+<Member Name="Combine_String" DataType="Timestamp_Char_String" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Can use upto 4 Char in between Date & Time Stamp (STRING Format)]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZPLC_UDT7" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="OneSec_Pulse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPLC_UDT7" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pulse in One Sec for 500ms]]>
+</Description>
+</Member>
+<Member Name="TwoSec_Pulse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPLC_UDT7" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pulse in Two Sec for 500ms]]>
+</Description>
+</Member>
+<Member Name="Fast_Pulse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPLC_UDT7" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pulse in]]>
+</Description>
+</Member>
+<Member Name="Custom_Pulse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPLC_UDT7" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Custom Pulse]]>
+</Description>
+</Member>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Timestamp_Long_String"/>
+<Dependency Type="DataType" Name="Timestamp_String"/>
+<Dependency Type="DataType" Name="Timestamp_String"/>
+<Dependency Type="DataType" Name="Timestamp_Char_String"/>
+</Dependencies>
+</DataType>
+<DataType Name="Stats_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="CurrentTime" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Current Time (Second) of current event]]>
+</Description>
+</Member>
+<Member Name="Tot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total No. of Occurrence]]>
+</Description>
+</Member>
+<Member Name="TotTimeHr" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Hour) of event]]>
+</Description>
+</Member>
+<Member Name="TotTimeSec" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Second) of event]]>
+</Description>
+</Member>
+<Member Name="TotTimeMin" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Min) of event]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="String_15" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="15" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="String_20" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="20" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="System_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZSystem_HMI0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_HMI0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Silence" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_HMI0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Start" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_HMI0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="Stop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_HMI0" BitNumber="3" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="System_PI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZSystem_PI0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="EngMgmt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_PI0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_PI0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Jam" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_PI0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="Restart_TT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_PI0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_PI0" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="Rst" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_PI0" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Sil" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_PI0" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Strt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_PI0" BitNumber="7" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="System_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="HMI" DataType="System_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="PI" DataType="System_PI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="StartTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="RstTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="StopTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="SilTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZSystem_UDT6" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_UDT6" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Silence" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_UDT6" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Start" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSystem_UDT6" BitNumber="2" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="System_HMI"/>
+<Dependency Type="DataType" Name="System_PI"/>
+</Dependencies>
+</DataType>
+<DataType Name="Timestamp_Char_String" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="4" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Timestamp_Long_String" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="24" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Timestamp_String" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="12" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZVFD_Fault0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="CommLoss" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_Fault0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="VFDFlt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_Fault0" BitNumber="1" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="FPM_at60hz" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Speed (FPM) at 60Hz]]>
+</Description>
+</Member>
+<Member Name="JogFreq" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[To run VFD at Jog Freq]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZVFD_HMI2" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Enable_60Hz" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_HMI2" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[To run VFD at 60Hz]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="VFD_O" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZVFD_O0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_O0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_PF525_VFDIn" Family="NoFamily" Class="User">
+<Members>
+<Member Name="DriveStatus" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="OutputFreq" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="OutputCurrent" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="FaultCode" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZVFD_PF525_4" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Accelerating" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="ActualDir" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="AtReference" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="CommandDir" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="CommFreqCnt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="CommLogicCnt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Decelerating" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZVFD_PF525_13" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="DigIn1Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="DigIn2Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="DigIn3Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="DigIn4Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Faulted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="ParmsLocked" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Ready" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="6" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_PF525_VFDOut" Family="NoFamily" Class="User">
+<Members>
+<Member Name="FreqCommand" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="LogicCommand" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="JogFrequency" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZVFD_PF525_3" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="AccelRate1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="AccelRate2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="ClearFaults" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="DecelRate1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="DecelRate2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="ForceKeypadCtrl" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Forward" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="FreqSel01" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZVFD_PF525_12" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="FreqSel02" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="FreqSel03" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Jog" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="MOPDecrement" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="MOPIncrement" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="Reverse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Start" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Stop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="7" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="VFDIn" DataType="VFD_PF525_VFDIn" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Inputs]]>
+</Description>
+</Member>
+<Member Name="VFDOut" DataType="VFD_PF525_VFDOut" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Outputs]]>
+</Description>
+</Member>
+<Member Name="Flt" DataType="VFD_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Faults]]>
+</Description>
+</Member>
+<Member Name="Silenced" DataType="VFD_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Faults Silenced]]>
+</Description>
+</Member>
+<Member Name="O" DataType="VFD_O" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="HMI" DataType="VFD_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Sts_VFDFlt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Fault Stats]]>
+</Description>
+</Member>
+<Member Name="Sts_CommFlt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Comm Fault Stats]]>
+</Description>
+</Member>
+<Member Name="IP_Address" DataType="String_15" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MACId" DataType="String_20" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="FPM_Feedback" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Firmware" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Comm_Code" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[0000 - Standby
+4096 - Faulted
+8192 - Validating
+12288 - Connecting
+16384 - Running
+20480- Shutting Down
+24576 - Inhibited
+28672 - Waiting
+36864 - FMW Updating
+40960 - Configuring]]>
+</Description>
+</Member>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="VFD_PF525_VFDIn"/>
+<Dependency Type="DataType" Name="VFD_PF525_VFDOut"/>
+<Dependency Type="DataType" Name="VFD_Fault"/>
+<Dependency Type="DataType" Name="VFD_Fault"/>
+<Dependency Type="DataType" Name="VFD_O"/>
+<Dependency Type="DataType" Name="VFD_HMI"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="String_15"/>
+<Dependency Type="DataType" Name="String_20"/>
+</Dependencies>
+</DataType>
+</DataTypes>
+<Tags Use="Context">
+<Tag Name="Empty_Barcode" TagType="Base" DataType="Barcode_String" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
+		]]]>
+</Data>
+<Data Format="String" Length="0">
+<![CDATA['']]>
+</Data>
+</Tag>
+<Tag Name="Empty_Dest" TagType="Base" DataType="Location_String" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00']]]>
+</Data>
+<Data Format="String" Length="0">
+<![CDATA['']]>
+</Data>
+</Tag>
+<Tag Name="Enc_Allowable_DiffSpd" TagType="Base" DataType="INT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[5]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="INT" Radix="Decimal" Value="5"/>
+</Data>
+</Tag>
+<Tag Name="Enc_Allowable_PPIDiff" TagType="Base" DataType="INT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[5]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="INT" Radix="Decimal" Value="5"/>
+</Data>
+</Tag>
+<Tag Name="Enc_Type0" TagType="Base" DataType="SINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="Enc_Type1" TagType="Base" DataType="SINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[1]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="1"/>
+</Data>
+</Tag>
+<Tag Name="HMIColor" TagType="Base" DataType="Conv_HMI_Color" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[2,4,4,6,8,10,12,14,16,18,20,22,24,25]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="Conv_HMI_Color">
+<DataValueMember Name="Estop" DataType="INT" Radix="Decimal" Value="2"/>
+<DataValueMember Name="Fault" DataType="INT" Radix="Decimal" Value="4"/>
+<DataValueMember Name="VFD_Fault" DataType="INT" Radix="Decimal" Value="4"/>
+<DataValueMember Name="Jam" DataType="INT" Radix="Decimal" Value="6"/>
+<DataValueMember Name="Full" DataType="INT" Radix="Decimal" Value="8"/>
+<DataValueMember Name="Running" DataType="INT" Radix="Decimal" Value="10"/>
+<DataValueMember Name="EngMgmt" DataType="INT" Radix="Decimal" Value="12"/>
+<DataValueMember Name="AntiGridlock" DataType="INT" Radix="Decimal" Value="14"/>
+<DataValueMember Name="Manual_Mode" DataType="INT" Radix="Decimal" Value="16"/>
+<DataValueMember Name="Inactive" DataType="INT" Radix="Decimal" Value="18"/>
+<DataValueMember Name="Disabled" DataType="INT" Radix="Decimal" Value="20"/>
+<DataValueMember Name="Cascade_Stop" DataType="INT" Radix="Decimal" Value="22"/>
+<DataValueMember Name="Indexing" DataType="INT" Radix="Decimal" Value="24"/>
+<DataValueMember Name="Loaded" DataType="INT" Radix="Decimal" Value="25"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="Init" TagType="Base" DataType="PLC_INIT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[600000,5000,30,30,6000,5000,1000,4000,4000,2000,-10,10,100,100,50,4000,2000,1000,4000,2000,500,1500,1000
+		,5000,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="PLC_INIT">
+<DataValueMember Name="EngMgmtTime" DataType="DINT" Radix="Decimal" Value="600000"/>
+<DataValueMember Name="AutoSilenceTime" DataType="INT" Radix="Decimal" Value="5000"/>
+<DataValueMember Name="DebounceOffTime" DataType="INT" Radix="Decimal" Value="30"/>
+<DataValueMember Name="DebounceOnTime" DataType="INT" Radix="Decimal" Value="30"/>
+<DataValueMember Name="JamTime" DataType="INT" Radix="Decimal" Value="6000"/>
+<DataValueMember Name="JamAutoClearTime" DataType="INT" Radix="Decimal" Value="5000"/>
+<DataValueMember Name="JamReset_PulseTime" DataType="INT" Radix="Decimal" Value="1000"/>
+<DataValueMember Name="FullOffTime" DataType="INT" Radix="Decimal" Value="4000"/>
+<DataValueMember Name="FullOnTime" DataType="INT" Radix="Decimal" Value="4000"/>
+<DataValueMember Name="RTRTime" DataType="INT" Radix="Decimal" Value="2000"/>
+<DataValueMember Name="Early_SrchLim" DataType="INT" Radix="Decimal" Value="-10"/>
+<DataValueMember Name="Late_SrchLim" DataType="INT" Radix="Decimal" Value="10"/>
+<DataValueMember Name="Track_DebounceOffTime" DataType="INT" Radix="Decimal" Value="100"/>
+<DataValueMember Name="Track_DebounceOnTime" DataType="INT" Radix="Decimal" Value="100"/>
+<DataValueMember Name="Track_Length_Extra" DataType="INT" Radix="Decimal" Value="50"/>
+<DataValueMember Name="MtrStarter_Start_FltTime" DataType="INT" Radix="Decimal" Value="4000"/>
+<DataValueMember Name="MtrStarter_Stop_FltTime" DataType="INT" Radix="Decimal" Value="2000"/>
+<DataValueMember Name="MtrFlt_Reset_PulseTime" DataType="INT" Radix="Decimal" Value="1000"/>
+<DataValueMember Name="VFD_Start_FltTime" DataType="INT" Radix="Decimal" Value="4000"/>
+<DataValueMember Name="VFD_Stop_FltTime" DataType="INT" Radix="Decimal" Value="2000"/>
+<DataValueMember Name="Encoder_FltTime" DataType="INT" Radix="Decimal" Value="500"/>
+<DataValueMember Name="Encoder_PPI_FltTime" DataType="INT" Radix="Decimal" Value="1500"/>
+<DataValueMember Name="Reset_PulseTime" DataType="INT" Radix="Decimal" Value="1000"/>
+<DataValueMember Name="RestartTime" DataType="INT" Radix="Decimal" Value="5000"/>
+<DataValueMember Name="MtrOverload_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="MtrContactor_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PS_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="AirPressure_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="NO_AirPress" TagType="Base" DataType="AirPressure_Switch_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[1],[0],[0],0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="AirPressure_Switch_UDT">
+<StructureMember Name="I" DataType="AirPressure_Switch_I">
+<DataValueMember Name="Pressure_OK" DataType="BOOL" Value="1"/>
+</StructureMember>
+<StructureMember Name="Flt" DataType="AirPressure_Switch_Fault">
+<DataValueMember Name="Pressure_Fault" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="AirPressure_Switch_Fault">
+<DataValueMember Name="Pressure_Fault" DataType="BOOL" Value="0"/>
+</StructureMember>
+<DataValueMember Name="Flt_Time" DataType="INT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="NO_Conv" TagType="Base" DataType="Conv_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0,0,0,0,0],[0],[0],[0,0,0],[0],[0],0,0,0,0,0,0,0,8,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="Conv_UDT">
+<StructureMember Name="Run_Stats" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<StructureMember Name="Flt" DataType="Conv_Fault">
+<DataValueMember Name="Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Jam" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Mtr_Start_Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Mtr_Stop_Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="EStopped" DataType="BOOL" Value="0"/>
+<DataValueMember Name="VFD_Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Mtr_Overload_Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Mtr_Contactor_Flt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="Conv_Fault">
+<DataValueMember Name="Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Jam" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Mtr_Start_Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Mtr_Stop_Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="EStopped" DataType="BOOL" Value="0"/>
+<DataValueMember Name="VFD_Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Mtr_Overload_Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Mtr_Contactor_Flt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="Conv_HMI">
+<DataValueMember Name="EngMgmtTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Color" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Jog" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Manual" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Manual_ONS" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reverse" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Release" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DisableEngMgmt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="PI" DataType="Conv_PI">
+<DataValueMember Name="Enable_hold" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Jam" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Run_Hold" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stop_Next" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Full" DataType="BOOL" Value="0"/>
+<DataValueMember Name="EngMgmt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="O" DataType="Conv_O">
+<DataValueMember Name="Run" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Release" DataType="BOOL" Value="0"/>
+</StructureMember>
+<DataValueMember Name="Mtr_Start_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Mtr_Stop_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Ready_To_Receive_Time" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Reset_Time" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Restart_Time" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Spd" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Type" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="EngMgmt_Rst" DataType="BOOL" Value="0"/>
+<DataValueMember Name="LastConv" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Ready" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Ready_To_Receive" DataType="BOOL" Value="1"/>
+<DataValueMember Name="Release" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Run" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Running" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reverse" DataType="BOOL" Value="0"/>
+<DataValueMember Name="RestartTmr_DN" DataType="BOOL" Value="0"/>
+<DataValueMember Name="RestartTmr_TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="FltSilenced" DataType="BOOL" Value="0"/>
+<DataValueMember Name="JamSilenced" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Indexing" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Loaded" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Anti_Gridlock" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Disabled" DataType="BOOL" Value="0"/>
+<DataValueMember Name="VFD_Running" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="NO_CS" TagType="Base" DataType="CS_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[4],[0,0],0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="CS_UDT">
+<StructureMember Name="I" DataType="Control_Station_I">
+<DataValueMember Name="Reset_PB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Start_PB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stop_PB" DataType="BOOL" Value="1"/>
+<DataValueMember Name="Restart_PB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="JamRestart_PB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="MTRFltRst_PB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AirFltRst_PB" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="O" DataType="Control_Station_O">
+<DataValueMember Name="Start_PB_LT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stop_PB_LT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reset_PB_LT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Estop_Active_LT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Fault_PB_LT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Restart_PB_LT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PressureLow_LT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Horn" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Red" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Amber" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Blue" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Green" DataType="BOOL" Value="0"/>
+</StructureMember>
+<DataValueMember Name="Rst_ONS" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Rst_PB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Rst_AntiTieDown" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Start_ONS" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Start_PB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Start_AntiTieDown" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stop_ONS" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stop_PB" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stop_AntiTieDown" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="NO_Enc" TagType="Base" DataType="Enc_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0],[0],[0.00000000e+000,0,0,0],[0,0,0,0,0],[0,0,0,0,0],0,0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="Enc_UDT">
+<StructureMember Name="Flt" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="Enc_HMI">
+<DataValueMember Name="PPI_Ratio" DataType="REAL" Radix="Float" Value="0.0"/>
+<DataValueMember Name="Allowable_DiffSpd" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Allowable_PPIDiff" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Disable_PPIFlt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_Enc_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_PPI_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<DataValueMember Name="Sts_HighPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Sts_LowPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="FPM" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Enc_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PPI_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_LowPPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_HighPPI" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="NO_ESPC" TagType="Base" DataType="ES_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[1],[0,0,0,0,0],[0,0],0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="ES_UDT">
+<StructureMember Name="I" DataType="ES_I">
+<DataValueMember Name="ES_OK" DataType="BOOL" Value="1"/>
+</StructureMember>
+<StructureMember Name="ES_Stats" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="ES_HMI">
+<DataValueMember Name="Status" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="ES_Tripped" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ES_ResetReady" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ResetTieDown" DataType="BOOL" Value="0"/>
+</StructureMember>
+<DataValueMember Name="ES_Tripped" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Silenced_ES" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Silenced_ES_Tripped" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="NO_PE" TagType="Base" DataType="PE_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0],[0,0,0,0,0],[1],[0,0,0,0,0,0],1]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="PE_UDT">
+<StructureMember Name="Flt" DataType="PE_Fault">
+<DataValueMember Name="PE_Jam" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<StructureMember Name="I" DataType="PE_I">
+<DataValueMember Name="PE_Clear" DataType="BOOL" Value="1"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="PE_HMI">
+<DataValueMember Name="DebounceONTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="DebounceOFFTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="JamTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="FullOnTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="FullOffTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="DisableJam" DataType="BOOL" Value="0"/>
+</StructureMember>
+<DataValueMember Name="PE_Clear" DataType="BOOL" Value="1"/>
+<DataValueMember Name="Full" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="NO_VFD" TagType="Base" DataType="VFD_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0,0,0,0,0,0],[0,0,0,0,0],[0],[0],[0],[0.00000000e+000,0,0],[0,0,0,0,0],[0,0,0,0,0],[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'
+		],[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'],0.00000000e+000,0.00000000e+000
+		,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="VFD_UDT">
+<StructureMember Name="VFDIn" DataType="VFD_PF525_VFDIn">
+<DataValueMember Name="DriveStatus" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="OutputFreq" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="OutputCurrent" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="FaultCode" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Accelerating" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Active" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ActualDir" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AtReference" DataType="BOOL" Value="0"/>
+<DataValueMember Name="CommandDir" DataType="BOOL" Value="0"/>
+<DataValueMember Name="CommFreqCnt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="CommLogicCnt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Decelerating" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DigIn1Active" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DigIn2Active" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DigIn3Active" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DigIn4Active" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Faulted" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ParmsLocked" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Ready" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="VFDOut" DataType="VFD_PF525_VFDOut">
+<DataValueMember Name="FreqCommand" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="LogicCommand" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="JogFrequency" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="AccelRate1" DataType="BOOL" Value="0"/>
+<DataValueMember Name="AccelRate2" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ClearFaults" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DecelRate1" DataType="BOOL" Value="0"/>
+<DataValueMember Name="DecelRate2" DataType="BOOL" Value="0"/>
+<DataValueMember Name="ForceKeypadCtrl" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Forward" DataType="BOOL" Value="0"/>
+<DataValueMember Name="FreqSel01" DataType="BOOL" Value="0"/>
+<DataValueMember Name="FreqSel02" DataType="BOOL" Value="0"/>
+<DataValueMember Name="FreqSel03" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Jog" DataType="BOOL" Value="0"/>
+<DataValueMember Name="MOPDecrement" DataType="BOOL" Value="0"/>
+<DataValueMember Name="MOPIncrement" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Reverse" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Start" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stop" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Flt" DataType="VFD_Fault">
+<DataValueMember Name="CommLoss" DataType="BOOL" Value="0"/>
+<DataValueMember Name="VFDFlt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="VFD_Fault">
+<DataValueMember Name="CommLoss" DataType="BOOL" Value="0"/>
+<DataValueMember Name="VFDFlt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="O" DataType="VFD_O">
+<DataValueMember Name="Run" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="VFD_HMI">
+<DataValueMember Name="FPM_at60hz" DataType="REAL" Radix="Float" Value="0.0"/>
+<DataValueMember Name="JogFreq" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Enable_60Hz" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_VFDFlt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_CommFlt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<StructureMember Name="IP_Address" DataType="String_15">
+<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="DATA" DataType="String_15" Radix="ASCII">
+<![CDATA[]]>
+</DataValueMember>
+</StructureMember>
+<StructureMember Name="MACId" DataType="String_20">
+<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="DATA" DataType="String_20" Radix="ASCII">
+<![CDATA[]]>
+</DataValueMember>
+</StructureMember>
+<DataValueMember Name="FPM_Feedback" DataType="REAL" Radix="Float" Value="0.0"/>
+<DataValueMember Name="Firmware" DataType="REAL" Radix="Float" Value="0.0"/>
+<DataValueMember Name="Comm_Code" DataType="DINT" Radix="Decimal" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="ORLY_Greensboro_NC_PLC5_System" TagType="Base" DataType="System_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0],[0],1000,1000,1000,1000,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="System_UDT">
+<StructureMember Name="HMI" DataType="System_HMI">
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Silence" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Start" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Stop" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="PI" DataType="System_PI">
+<DataValueMember Name="EngMgmt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Flt" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Jam" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Restart_TT" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Run" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Rst" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Sil" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Strt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<DataValueMember Name="StartTime" DataType="INT" Radix="Decimal" Value="1000"/>
+<DataValueMember Name="RstTime" DataType="INT" Radix="Decimal" Value="1000"/>
+<DataValueMember Name="StopTime" DataType="INT" Radix="Decimal" Value="1000"/>
+<DataValueMember Name="SilTime" DataType="INT" Radix="Decimal" Value="1000"/>
+<DataValueMember Name="Reset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Silence" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Start" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="PLC" TagType="Base" DataType="PLC_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[2023,7,12,21,36,17,542440],20230712,213617542,[23,'2023-07-12T21:36:17.542$00'],[10,'2023-07-12$00$00'
+		],[12,'21:36:17.542'],[1,'T$00$00$00'],4]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="PLC_UDT">
+<ArrayMember Name="Helix_DTS" DataType="DINT" Dimensions="7" Radix="Decimal">
+<Element Index="[0]" Value="2023"/>
+<Element Index="[1]" Value="7"/>
+<Element Index="[2]" Value="12"/>
+<Element Index="[3]" Value="21"/>
+<Element Index="[4]" Value="36"/>
+<Element Index="[5]" Value="17"/>
+<Element Index="[6]" Value="542440"/>
+</ArrayMember>
+<DataValueMember Name="DINT_DS" DataType="DINT" Radix="Decimal" Value="20230712"/>
+<DataValueMember Name="DINT_TS" DataType="DINT" Radix="Decimal" Value="213617542"/>
+<StructureMember Name="String_DTS" DataType="Timestamp_Long_String">
+<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="23"/>
+<DataValueMember Name="DATA" DataType="Timestamp_Long_String" Radix="ASCII">
+<![CDATA['2023-07-12T21:36:17.542']]>
+</DataValueMember>
+</StructureMember>
+<StructureMember Name="String_DS" DataType="Timestamp_String">
+<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="10"/>
+<DataValueMember Name="DATA" DataType="Timestamp_String" Radix="ASCII">
+<![CDATA['2023-07-12']]>
+</DataValueMember>
+</StructureMember>
+<StructureMember Name="String_TS" DataType="Timestamp_String">
+<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="12"/>
+<DataValueMember Name="DATA" DataType="Timestamp_String" Radix="ASCII">
+<![CDATA['21:36:17.542']]>
+</DataValueMember>
+</StructureMember>
+<StructureMember Name="Combine_String" DataType="Timestamp_Char_String">
+<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="1"/>
+<DataValueMember Name="DATA" DataType="Timestamp_Char_String" Radix="ASCII">
+<![CDATA['T']]>
+</DataValueMember>
+</StructureMember>
+<DataValueMember Name="OneSec_Pulse" DataType="BOOL" Value="0"/>
+<DataValueMember Name="TwoSec_Pulse" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Fast_Pulse" DataType="BOOL" Value="1"/>
+<DataValueMember Name="Custom_Pulse" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="Type0" TagType="Base" DataType="SINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+<Tag Name="Type1" TagType="Base" DataType="SINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[1]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="1"/>
+</Data>
+</Tag>
+<Tag Name="Type2" TagType="Base" DataType="SINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[2]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="2"/>
+</Data>
+</Tag>
+<Tag Name="Type3" TagType="Base" DataType="SINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[3]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="3"/>
+</Data>
+</Tag>
+<Tag Name="Type4" TagType="Base" DataType="SINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[4]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="4"/>
+</Data>
+</Tag>
+<Tag Name="Type5" TagType="Base" DataType="SINT" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[5]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="5"/>
+</Data>
+</Tag>
+</Tags>
+<Programs Use="Context">
+<Program Use="Target" Name="Sys" TestEdits="false" MainRoutineName="Main_Routine" Disabled="false" UseAsFolder="false">
+<Tags/>
+<Routines>
+<Routine Name="Constant_Values" Type="ST">
+<STContent>
+<Line Number="0">
+<![CDATA[/*]]>
+</Line>
+<Line Number="1">
+<![CDATA[	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -]]>
+</Line>
+<Line Number="2">
+<![CDATA[								DO NOT CHANGE ANYTHING IN BELOW]]>
+</Line>
+<Line Number="3">
+<![CDATA[	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -]]>
+</Line>
+<Line Number="4">
+<![CDATA[*/]]>
+</Line>
+<Line Number="5">
+<![CDATA[]]>
+</Line>
+<Line Number="6">
+<![CDATA[//**Time Stamp** ]]>
+</Line>
+<Line Number="7">
+<![CDATA[//PLC Combine String (Can have upto 4 Char)]]>
+</Line>
+<Line Number="8">
+<![CDATA[PLC.Combine_String.LEN := 1;]]>
+</Line>
+<Line Number="9">
+<![CDATA[PLC.Combine_String.DATA[0] := 84;]]>
+</Line>
+<Line Number="10">
+<![CDATA[]]>
+</Line>
+<Line Number="11">
+<![CDATA[//Encoder Constant Values]]>
+</Line>
+<Line Number="12">
+<![CDATA[Enc_Allowable_DiffSpd := 5;]]>
+</Line>
+<Line Number="13">
+<![CDATA[Enc_Allowable_PPIDiff := 5;]]>
+</Line>
+<Line Number="14">
+<![CDATA[Enc_Type0 := 0;]]>
+</Line>
+<Line Number="15">
+<![CDATA[Enc_Type1 := 1;]]>
+</Line>
+<Line Number="16">
+<![CDATA[]]>
+</Line>
+<Line Number="17">
+<![CDATA[]]>
+</Line>
+<Line Number="18">
+<![CDATA[//Conv Fault]]>
+</Line>
+<Line Number="19">
+<![CDATA[Type0 := 0;]]>
+</Line>
+<Line Number="20">
+<![CDATA[Type1 := 1;]]>
+</Line>
+<Line Number="21">
+<![CDATA[Type2 := 2;]]>
+</Line>
+<Line Number="22">
+<![CDATA[Type3 := 3;]]>
+</Line>
+<Line Number="23">
+<![CDATA[Type4 := 4;]]>
+</Line>
+<Line Number="24">
+<![CDATA[Type5 := 5;]]>
+</Line>
+<Line Number="25">
+<![CDATA[]]>
+</Line>
+<Line Number="26">
+<![CDATA[]]>
+</Line>
+<Line Number="27">
+<![CDATA[]]>
+</Line>
+<Line Number="28">
+<![CDATA[]]>
+</Line>
+<Line Number="29">
+<![CDATA[//NO PE]]>
+</Line>
+<Line Number="30">
+<![CDATA[NO_PE.I.PE_Clear := 1;]]>
+</Line>
+<Line Number="31">
+<![CDATA[NO_PE.PE_Clear := 1;]]>
+</Line>
+<Line Number="32">
+<![CDATA[NO_PE.Full := 0;]]>
+</Line>
+<Line Number="33">
+<![CDATA[NO_PE.Flt.PE_Jam := 0;]]>
+</Line>
+<Line Number="34">
+<![CDATA[]]>
+</Line>
+<Line Number="35">
+<![CDATA[//NO MS]]>
+</Line>
+<Line Number="36">
+<![CDATA[]]>
+</Line>
+<Line Number="37">
+<![CDATA[//NO VFD]]>
+</Line>
+<Line Number="38">
+<![CDATA[NO_VFD.Flt.CommLoss := 0;]]>
+</Line>
+<Line Number="39">
+<![CDATA[NO_VFD.Flt.VFDFlt := 0;]]>
+</Line>
+<Line Number="40">
+<![CDATA[NO_VFD.Comm_Code := 0;]]>
+</Line>
+<Line Number="41">
+<![CDATA[NO_VFD.O.Run := 0;]]>
+</Line>
+<Line Number="42">
+<![CDATA[]]>
+</Line>
+<Line Number="43">
+<![CDATA[//NO Encoder]]>
+</Line>
+<Line Number="44">
+<![CDATA[NO_Enc.Alm_HighPPI := 0;]]>
+</Line>
+<Line Number="45">
+<![CDATA[NO_Enc.Alm_LowPPI := 0;]]>
+</Line>
+<Line Number="46">
+<![CDATA[NO_Enc.Flt.Enc := 0;]]>
+</Line>
+<Line Number="47">
+<![CDATA[NO_Enc.Flt.PPI := 0;]]>
+</Line>
+<Line Number="48">
+<![CDATA[]]>
+</Line>
+<Line Number="49">
+<![CDATA[//NO Air Prssure]]>
+</Line>
+<Line Number="50">
+<![CDATA[NO_AirPress.I.Pressure_OK := 1;]]>
+</Line>
+<Line Number="51">
+<![CDATA[]]>
+</Line>
+<Line Number="52">
+<![CDATA[//No Additional Fault]]>
+</Line>
+<Line Number="53">
+<![CDATA[]]>
+</Line>
+<Line Number="54">
+<![CDATA[//NO CS]]>
+</Line>
+<Line Number="55">
+<![CDATA[NO_CS.I.Start_PB := 0;]]>
+</Line>
+<Line Number="56">
+<![CDATA[NO_CS.I.Stop_PB := 1;]]>
+</Line>
+<Line Number="57">
+<![CDATA[NO_CS.I.Reset_PB := 0;]]>
+</Line>
+<Line Number="58">
+<![CDATA[]]>
+</Line>
+<Line Number="59">
+<![CDATA[//No Conv]]>
+</Line>
+<Line Number="60">
+<![CDATA[NO_Conv.Flt.Mtr_Stop_Flt := 0;]]>
+</Line>
+<Line Number="61">
+<![CDATA[NO_Conv.Flt.Flt := 0;]]>
+</Line>
+<Line Number="62">
+<![CDATA[NO_Conv.Flt.Jam:= 0;]]>
+</Line>
+<Line Number="63">
+<![CDATA[NO_Conv.Silenced.Jam := 0; ]]>
+</Line>
+<Line Number="64">
+<![CDATA[NO_Conv.Silenced.Flt := 0;]]>
+</Line>
+<Line Number="65">
+<![CDATA[NO_Conv.RestartTmr_TT := 0;]]>
+</Line>
+<Line Number="66">
+<![CDATA[NO_Conv.EngMgmt_Rst := 0;]]>
+</Line>
+<Line Number="67">
+<![CDATA[NO_Conv.Flt.EStopped := 0;]]>
+</Line>
+<Line Number="68">
+<![CDATA[NO_Conv.PI.EngMgmt := 0;]]>
+</Line>
+<Line Number="69">
+<![CDATA[NO_Conv.Ready_To_Receive := 1;]]>
+</Line>
+<Line Number="70">
+<![CDATA[]]>
+</Line>
+<Line Number="71">
+<![CDATA[//Empty Barcode]]>
+</Line>
+<Line Number="72">
+<![CDATA[Empty_Barcode.LEN := 0;]]>
+</Line>
+<Line Number="73">
+<![CDATA[]]>
+</Line>
+<Line Number="74">
+<![CDATA[//Empty Destination]]>
+</Line>
+<Line Number="75">
+<![CDATA[Empty_Dest.LEN := 0;]]>
+</Line>
+<Line Number="76">
+<![CDATA[]]>
+</Line>
+<Line Number="77">
+<![CDATA[//No ESPC]]>
+</Line>
+<Line Number="78">
+<![CDATA[NO_ESPC.I.ES_OK :=1;]]>
+</Line>
+<Line Number="79">
+<![CDATA[]]>
+</Line>
+<Line Number="80">
+<![CDATA[]]>
+</Line>
+</STContent>
+</Routine>
+<Routine Name="HMI" Type="ST">
+<STContent>
+<Line Number="0">
+<![CDATA[/* HMI Color mapping ]]>
+</Line>
+<Line Number="1">
+<![CDATA[]]>
+</Line>
+<Line Number="2">
+<![CDATA[		E-Stop Device Tripped:	 1 (Solid Red)]]>
+</Line>
+<Line Number="3">
+<![CDATA[		E-Stop Ready to Reset:	 2 (Flashing Red)]]>
+</Line>
+<Line Number="4">
+<![CDATA[		Faulted:				 4 (Red)]]>
+</Line>
+<Line Number="5">
+<![CDATA[		Jam:					 6 (Orange)]]>
+</Line>
+<Line Number="6">
+<![CDATA[		Full:					 8 (Yellow)]]>
+</Line>
+<Line Number="7">
+<![CDATA[		Running:				10 (Green)]]>
+</Line>
+<Line Number="8">
+<![CDATA[		Energy Managment:		12 (Sky Blue)]]>
+</Line>
+<Line Number="9">
+<![CDATA[		Anit Gridlock:			14 (Light Pink)]]>
+</Line>
+<Line Number="10">
+<![CDATA[		Manual Mode:			16 (Brown)]]>
+</Line>
+<Line Number="11">
+<![CDATA[		Off or Inactive:		18 (Grey)]]>
+</Line>
+<Line Number="12">
+<![CDATA[		Disabled:				20 (Purple)]]>
+</Line>
+<Line Number="13">
+<![CDATA[		Cascade Stop:           22 (Light Green)]]>
+</Line>
+<Line Number="14">
+<![CDATA[		Indexing:               24 (Magenta)]]>
+</Line>
+<Line Number="15">
+<![CDATA[		]]>
+</Line>
+<Line Number="16">
+<![CDATA[*/]]>
+</Line>
+<Line Number="17">
+<![CDATA[]]>
+</Line>
+<Line Number="18">
+<![CDATA[//Constant Values ]]>
+</Line>
+<Line Number="19">
+<![CDATA[//*****PLEASE DO NOT CHANGE*****]]>
+</Line>
+<Line Number="20">
+<![CDATA[HMIColor.Estop := 2;]]>
+</Line>
+<Line Number="21">
+<![CDATA[HMIColor.Fault := 4;]]>
+</Line>
+<Line Number="22">
+<![CDATA[HMIColor.VFD_Fault := 4;]]>
+</Line>
+<Line Number="23">
+<![CDATA[HMIColor.Jam := 6;]]>
+</Line>
+<Line Number="24">
+<![CDATA[HMIColor.Full := 8;]]>
+</Line>
+<Line Number="25">
+<![CDATA[HMIColor.Running := 10;]]>
+</Line>
+<Line Number="26">
+<![CDATA[HMIColor.EngMgmt := 12;]]>
+</Line>
+<Line Number="27">
+<![CDATA[HMIColor.AntiGridlock := 14;]]>
+</Line>
+<Line Number="28">
+<![CDATA[HMIColor.Manual_Mode := 16;]]>
+</Line>
+<Line Number="29">
+<![CDATA[HMIColor.Inactive := 18;]]>
+</Line>
+<Line Number="30">
+<![CDATA[HMIColor.Disabled := 20;]]>
+</Line>
+<Line Number="31">
+<![CDATA[HMIColor.Cascade_Stop := 22;]]>
+</Line>
+<Line Number="32">
+<![CDATA[HMIColor.Indexing := 24;]]>
+</Line>
+<Line Number="33">
+<![CDATA[HMIColor.Loaded := 25;]]>
+</Line>
+<Line Number="34">
+<![CDATA[]]>
+</Line>
+</STContent>
+</Routine>
+<Routine Name="Main_Routine" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[JSR(PLC_Init,0);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[JSR(Constant_Values,0);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[JSR(Sys,0);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[JSR(HMI,0);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="PLC_Init" Type="ST">
+<STContent>
+<Line Number="0">
+<![CDATA[//Init Values]]>
+</Line>
+<Line Number="1">
+<![CDATA[Init.AutoSilenceTime := 5000;]]>
+</Line>
+<Line Number="2">
+<![CDATA[Init.DebounceOffTime := 30;]]>
+</Line>
+<Line Number="3">
+<![CDATA[Init.DebounceOnTime := 30;]]>
+</Line>
+<Line Number="4">
+<![CDATA[Init.JamTime := 3000;]]>
+</Line>
+<Line Number="5">
+<![CDATA[Init.JamAutoClearTime := 5000;]]>
+</Line>
+<Line Number="6">
+<![CDATA[Init.JamReset_PulseTime := 1000;]]>
+</Line>
+<Line Number="7">
+<![CDATA[Init.EngMgmtTime:= 600000;]]>
+</Line>
+<Line Number="8">
+<![CDATA[Init.FullOffTime := 4000;]]>
+</Line>
+<Line Number="9">
+<![CDATA[Init.FullOnTime := 4000;]]>
+</Line>
+<Line Number="10">
+<![CDATA[Init.RTRTime := 2000;]]>
+</Line>
+<Line Number="11">
+<![CDATA[Init.Early_SrchLim := -10;]]>
+</Line>
+<Line Number="12">
+<![CDATA[Init.Late_SrchLim := 10;]]>
+</Line>
+<Line Number="13">
+<![CDATA[Init.Track_DebounceOffTime := 100;]]>
+</Line>
+<Line Number="14">
+<![CDATA[Init.Track_DebounceOnTime := 100;]]>
+</Line>
+<Line Number="15">
+<![CDATA[Init.Track_Length_Extra := 50;]]>
+</Line>
+<Line Number="16">
+<![CDATA[Init.MtrStarter_Start_FltTime := 5000;//4000;]]>
+</Line>
+<Line Number="17">
+<![CDATA[Init.MtrStarter_Stop_FltTime := 5000; //2000;]]>
+</Line>
+<Line Number="18">
+<![CDATA[Init.MtrFlt_Reset_PulseTime := 1000;]]>
+</Line>
+<Line Number="19">
+<![CDATA[Init.VFD_Start_FltTime := 5000; //4000;]]>
+</Line>
+<Line Number="20">
+<![CDATA[Init.VFD_Stop_FltTime := 5000;//2000;]]>
+</Line>
+<Line Number="21">
+<![CDATA[Init.Encoder_FltTime := 500;]]>
+</Line>
+<Line Number="22">
+<![CDATA[Init.Encoder_PPI_FltTime := 1500;]]>
+</Line>
+<Line Number="23">
+<![CDATA[Init.Reset_PulseTime := 1000;]]>
+</Line>
+<Line Number="24">
+<![CDATA[Init.RestartTime := 5000;]]>
+</Line>
+</STContent>
+</Routine>
+<Routine Name="Sys" Type="ST">
+<STContent>
+<Line Number="0">
+<![CDATA[// System]]>
+</Line>
+<Line Number="1">
+<![CDATA[ORLY_Greensboro_NC_PLC5_System.StartTime :=1000;]]>
+</Line>
+<Line Number="2">
+<![CDATA[ORLY_Greensboro_NC_PLC5_System.RstTime :=1000;]]>
+</Line>
+<Line Number="3">
+<![CDATA[ORLY_Greensboro_NC_PLC5_System.StopTime :=1000;]]>
+</Line>
+<Line Number="4">
+<![CDATA[ORLY_Greensboro_NC_PLC5_System.SilTime :=1000;]]>
+</Line>
+</STContent>
+</Routine>
+</Routines>
+</Program>
+</Programs>
+</Controller>
+</RSLogix5000Content>

@@ -1,0 +1,202 @@
+Attribute VB_Name = "Programs"
+Option Explicit
+' Main subroutine for retrieving programs
+Sub ProgramRetrieval()
+On Error GoTo ErrorHandler
+    Dim ResultString As String
+    Dim Programs As Object
+    Set Programs = ExtractNamesDict("ScheduledProgram Name=", ExtractContent("Tasks", "Tasks", SourceLibrary))
+    Dim x As Double
+    x = 30 / Programs.count
+    dstFileContent = dstFileContent & vbCrLf & "<Programs>"
+    Dim ProgramValue As Variant
+    For Each ProgramValue In Programs.Keys
+    ResultString = ""
+        ResultString = ExtractProgram("Name=""" & ProgramValue & """", ProgramValue)
+        If InStr(1, ResultString, "Class=" & """Safety""", vbTextCompare) <> 0 And InStr(1, ThisWorkbook.Sheets("Inputdata").Range("B3").value, "ES", vbTextCompare) = 0 Then
+        ResultString = ""
+        Else
+        
+        If Not ResultString = "" And InStr(1, ResultString, "[JSR(", vbTextCompare) = 0 Then
+        ResultString = InsertStringAfterTag(ResultString, AddJSRs(ResultString), "Name=""" & "Main_Routine" & """ Type=""" & "RLL" & """>" & vbCrLf & "<RLLContent>")
+        End If
+        dstFileContent = dstFileContent & vbCrLf & ResultString
+        ProgressValue = ProgressValue + x
+        UpdateProgress ProgressValue
+        End If
+    Next ProgramValue
+   dstFileContent = dstFileContent & vbCrLf & "</Programs>"
+   Exit Sub
+ErrorHandler:
+    Call LogError("ProgramRetrieval", Err.Number, Err.Description)
+    Resume Next
+End Sub
+
+' Function to extract a program and modify its content
+Function ExtractProgram(ProgramName As String, ProgramValue As Variant) As String
+    Dim ProgramContent As String
+    On Error GoTo ErrorHandler
+    ProgramContent = ExtractContent(ProgramName, "Program", SourceLibrary)
+    
+    If InStr(1, ProgramName, "Sys_Event", vbTextCompare) = 0 And InStr(1, ProgramName, "PLC", vbTextCompare) = 0 Then
+        ExtractProgram = HandleCustomProgram(ProgramName, ProgramContent)
+    Else
+         ExtractProgram = Replace(ProgramContent, "Library", DataCache.InputValue("B2"), , , vbTextCompare)
+    End If
+Exit Function
+ErrorHandler:
+    Call LogError("ExtractProgram", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+' Function to handle custom programs
+Function HandleCustomProgram(ProgramName As String, ProgramContent As String) As String
+    Dim ResultString As String
+    On Error GoTo ErrorHandler
+    If Not InStr(1, ProgramName, "Main_Area") > 0 And Not InStr(1, ProgramName, "Safety_Zone") > 0 Then
+        GetRoutines ProgramContent, ProgramName, ResultString
+    End If
+    
+    Dim ModifiedProgramContent As String
+    ModifiedProgramContent = RemoveContentBetweenTags("<Routines>", "Rung", "</Routines>", ProgramContent)
+    ModifiedProgramContent = RemoveContentBetweenTags("<Tags>", "Name", "</Tags>", ModifiedProgramContent)
+    
+    Dim ModifiedRoutineContent As String
+    ModifiedRoutineContent = ExtractModifyRoutineContent(ProgramContent, ResultString)
+     
+    ModifiedProgramContent = InsertStringAfterTag(ModifiedProgramContent, ModifiedRoutineContent, "<Routines>")
+    
+    If InStr(1, ProgramName, "Main_Area") > 0 Then
+        ModifiedProgramContent = HandleMainArea(ProgramName, ModifiedProgramContent, ProgramContent)
+    ElseIf InStr(1, ProgramName, "Safety_Zone") > 0 Then
+        ModifiedProgramContent = HandleSafetyZone(ProgramName, ModifiedProgramContent, ProgramContent)
+        'MsgBox "Program Content: " & ProgramName & vbCrLf & ModifiedProgramContent
+    End If
+      
+    HandleCustomProgram = ModifiedProgramContent
+Exit Function
+ErrorHandler:
+    Call LogError("HandleCustomProgram", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function RemoveContentBetweenTags(startTag As String, StringToRemove As String, endTag As String, InputString As String) As String
+    Dim startIndex As Long
+    Dim endIndex As Long
+    Dim modifiedString As String
+    On Error GoTo ErrorHandler
+    modifiedString = InputString
+    startIndex = InStr(1, modifiedString, startTag)
+    
+     Do While startIndex > 0
+        endIndex = InStr(startIndex + 1, modifiedString, endTag)
+        If endIndex > 0 Then
+            Dim contentToRemove As String
+            contentToRemove = Mid(modifiedString, startIndex + Len(startTag), endIndex - (startIndex + Len(startTag)))
+            If InStr(1, contentToRemove, StringToRemove) > 0 Then
+                modifiedString = Replace(modifiedString, contentToRemove, "" & vbCrLf)
+            End If
+        End If
+        startIndex = InStr(startIndex + 1, modifiedString, startTag)
+    Loop
+    
+    RemoveContentBetweenTags = modifiedString
+Exit Function
+ErrorHandler:
+    Call LogError("RemoveContentBetweenTags", Err.Number, Err.Description)
+    Resume Next
+End Function
+' Function to handle routine content
+Function ExtractModifyRoutineContent(ProgramContent As String, ResultString As String) As String
+    Dim RoutineContent As String
+    On Error GoTo ErrorHandler
+    RoutineContent = ExtractContent("Name=""Main_Routine""", "Routine", ProgramContent)
+    ExtractModifyRoutineContent = RemoveContentBetweenTags("<RLLContent>", "Rung", "</RLLContent>", RoutineContent) & vbCrLf & ResultString
+Exit Function
+ErrorHandler:
+    Call LogError("ExtractModifyRoutineContent", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+' Function to handle "Main_Area" in the program
+Function HandleMainArea(ProgramName As String, ModifiedProgramContent As String, ProgramContent As String) As String
+    Dim ResultString As String
+    Dim TempString As String
+    Dim ModifiedResult As String
+    Dim key As Variant
+    On Error GoTo ErrorHandler
+        
+    For Each key In Areas.Keys
+        TempString = ModifiedProgramContent
+        TempString = ReplaceInstancesOfTag(TempString, "Main_Area", CStr(key)) & vbCrLf
+        GetRoutines ProgramContent, ProgramName, ResultString, CStr(key)
+        
+        ModifiedResult = ModifiedResult & InsertStringAfterTag(TempString, ResultString, "</Routine>")
+        ModifiedResult = InsertStringAfterTag(ModifiedResult, AddJSRs(ModifiedResult), "Name=""" & "Main_Routine" & """ Type=""" & "RLL" & """>" & vbCrLf & "<RLLContent>")
+    Next key
+    
+    If Right(ModifiedResult, Len(vbCrLf)) = vbCrLf Then
+        ModifiedResult = Left(ModifiedResult, Len(ModifiedResult) - Len(vbCrLf))
+    End If
+    
+    HandleMainArea = ModifiedResult
+Exit Function
+ErrorHandler:
+    Call LogError("HandleMainArea", Err.Number, Err.Description)
+    Resume Next
+End Function
+Function HandleSafetyZone(ProgramName As String, ModifiedProgramContent As String, ProgramContent As String) As String
+    Dim ResultString As String
+    Dim TempString As String
+    Dim ModifiedResult As String
+    Dim key As Variant
+    On Error GoTo ErrorHandler
+       
+    For Each key In SafeAreas.Keys
+        TempString = ModifiedProgramContent
+        TempString = ReplaceInstancesOfTag(TempString, "Safety_Zone", CStr(key)) & vbCrLf
+        TempString = ReplaceInstancesOfTag(TempString, "Safety_Area", CStr(key))
+        GetRoutines ProgramContent, ProgramName, ResultString, CStr(key)
+
+        ' Insert the routines after the </Routine> tag
+        TempString = InsertStringAfterTag(TempString, ResultString, "</Routine>")
+        
+        ' Add JSRs for this specific zone's content only
+        TempString = InsertStringAfterTag(TempString, AddJSRs(TempString), "Name=""Main_Routine"" Type=""RLL"">" & vbCrLf & "<RLLContent>")
+        
+        ' Append this zone's processed content to the final result
+        ModifiedResult = ModifiedResult & TempString & vbCrLf
+    Next key
+    
+    If Right(ModifiedResult, Len(vbCrLf)) = vbCrLf Then
+        ModifiedResult = Left(ModifiedResult, Len(ModifiedResult) - Len(vbCrLf))
+    End If
+    
+    HandleSafetyZone = ModifiedResult
+Exit Function
+ErrorHandler:
+    Call LogError("HandleSafetyZone", Err.Number, Err.Description)
+    Resume Next
+End Function
+
+Function AddJSRs(ProgramString As String) As String
+Dim Routines As Object
+Dim RoutineValue As Variant
+Dim rungString As String
+Dim RungNum As Long
+On Error GoTo ErrorHandler
+Set Routines = ExtractNamesDict("Routine Name=", ExtractContent("Routine", "Routines", ProgramString))
+RungNum = 0
+
+    For Each RoutineValue In Routines.Keys
+    If InStr(1, RoutineValue, "Main_Routine", vbTextCompare) = 0 Then
+    rungString = rungString & "<Rung Number=""" & RungNum & """ Type=""" & "N" & """>" & vbCrLf & "<Text>" & vbCrLf & "<![CDATA[JSR(" & RoutineValue & ",0);]]>" & vbCrLf & "</Text>" & vbCrLf & "</Rung>" & vbCrLf
+    RungNum = RungNum + 1
+    End If
+    Next RoutineValue
+    
+   AddJSRs = RemoveTrailingLineBreak(rungString)
+Exit Function
+ErrorHandler:
+    Call LogError("AddJSRs", Err.Number, Err.Description)
+    Resume Next
+End Function

@@ -1,0 +1,498 @@
+Attribute VB_Name = "ModuleIOTree"
+Option Explicit
+
+' Constants for validation and configuration
+Private Const MAX_IP_OCTET As Long = 255
+Private Const MIN_IP_OCTET As Long = 0
+Private Const MAX_SLOT_NUMBER As Long = 99
+Private Const MIN_SLOT_NUMBER As Long = 0
+Private Const COLUMN_MODULE_NAME As Long = 2
+Private Const COLUMN_SLOT As Long = 4
+Private Const COLUMN_PARENT As Long = 6
+Private Const COLUMN_IP As Long = 5
+
+' Module-level objects
+Private moRegEx As Object
+Private mIsCleaningUp As Boolean
+
+' Initialize or return the cached RegEx object with error handling
+Private Function GetRegEx() As Object
+    On Error GoTo ErrHandler
+
+    If moRegEx Is Nothing Then
+        Set moRegEx = CreateObject("VBScript.RegExp")
+        If moRegEx Is Nothing Then
+            LogError "GetRegEx", CLng(vbObjectError + 1), "Failed to create RegExp object"
+            Exit Function
+        End If
+    End If
+    Set GetRegEx = moRegEx
+    Exit Function
+
+ErrHandler:
+    LogError "GetRegEx", Err.Number, Err.Description
+    Set GetRegEx = Nothing
+End Function
+
+' Validate IP address format and range
+Private Function IsValidIPAddress(ByVal ipAddress As String) As Boolean
+    On Error GoTo ErrHandler
+
+    Dim octets() As String
+    Dim octet As Variant
+
+    ' Basic format check
+    If Len(ipAddress) = 0 Or Len(ipAddress) > 15 Then Exit Function
+
+    ' Split into octets
+    octets = Split(ipAddress, ".")
+    If UBound(octets) <> 3 Then Exit Function
+
+    ' Validate each octet
+    For Each octet In octets
+        If Not IsNumeric(octet) Then Exit Function
+        Dim value As Long
+        value = CLng(octet)
+        If value < MIN_IP_OCTET Or value > MAX_IP_OCTET Then Exit Function
+    Next octet
+
+    IsValidIPAddress = True
+    Exit Function
+
+ErrHandler:
+    LogError "IsValidIPAddress", Err.Number, Err.Description
+    IsValidIPAddress = False
+End Function
+
+' Validate slot number
+Private Function IsValidSlotNumber(ByVal slotNum As String) As Boolean
+    On Error GoTo ErrHandler
+
+    If Not IsNumeric(slotNum) Then Exit Function
+
+    Dim slotValue As Long
+    slotValue = CLng(slotNum)
+    IsValidSlotNumber = (slotValue >= MIN_SLOT_NUMBER And slotValue <= MAX_SLOT_NUMBER)
+    Exit Function
+
+ErrHandler:
+    LogError "IsValidSlotNumber", Err.Number, Err.Description
+    IsValidSlotNumber = False
+End Function
+
+Sub ModuleRetrieval()
+    Dim valuesToCheck As Range, lookupRange As Range, resultRange As Range
+    Dim valueCell As Range, resultValue As String, moduleString As String
+    ' dstFileContent is assumed to be a global variable already declared elsewhere
+    On Error GoTo ErrorHandler
+
+    ' Begin the Modules section in the output
+    dstFileContent = dstFileContent & vbCrLf & "<Modules>"
+
+    ' Set the ranges from named ranges in the workbook
+    With ThisWorkbook
+        Set valuesToCheck = .Names("ModuleSU").RefersToRange
+        Set lookupRange = .Names("IOConfigLU").RefersToRange
+        Set resultRange = .Names("IOConfigRSLT").RefersToRange
+    End With
+
+    ' Loop through each cell in the valuesToCheck range
+    For Each valueCell In valuesToCheck
+        If Len(Trim(valueCell.value)) > 0 Then
+            resultValue = RetrieveValueFromTable(valueCell, lookupRange, resultRange)
+            ProcessModule valueCell, moduleString, resultValue
+            ' Clear string variables to free memory
+            resultValue = vbNullString
+            moduleString = vbNullString
+        End If
+    Next valueCell
+
+    dstFileContent = dstFileContent & vbCrLf & "</Modules>"
+
+CleanExit:
+    ' Clean up object references
+    Set valuesToCheck = Nothing
+    Set lookupRange = Nothing
+    Set resultRange = Nothing
+    Set valueCell = Nothing
+    Exit Sub
+ErrorHandler:
+    LogError "ModuleRetrieval", Err.Number, Err.Description
+    Resume CleanExit
+End Sub
+
+Sub ProcessModule(valueCell As Range, ByRef moduleString As String, resultValue As String)
+    On Error GoTo ErrorHandler
+
+    ' Input validation
+    If valueCell Is Nothing Then
+        LogError "ProcessModule", vbObjectError + 1, "Value cell is null"
+        Exit Sub
+    End If
+
+    If Len(Trim(resultValue)) = 0 Then
+        LogError "ProcessModule", vbObjectError + 2, "Result value is empty"
+        Exit Sub
+    End If
+
+    ' Extract module content based on resultValue
+    moduleString = ExtractContent("Name=""" & resultValue, "Module", SourceLibrary)
+    If Len(moduleString) = 0 Then
+        LogError "ProcessModule", vbObjectError + 3, "Failed to extract module content for: " & resultValue
+        Exit Sub
+    End If
+    
+    ' Process VFD module with E2P
+    If InStr(1, resultValue, "VFD", vbTextCompare) > 0 And _
+       InStr(1, valueCell.value, "E2P", vbTextCompare) > 0 Then
+        Dim parentContent As String
+        parentContent = ExtractContent("ParentModule=""" & resultValue & """", "Module", SourceLibrary)
+        If Len(parentContent) > 0 Then
+            moduleString = moduleString & vbCrLf & parentContent
+        Else
+            LogError "ProcessModule", vbObjectError + 4, "Failed to extract parent module content for VFD: " & resultValue
+        End If
+    End If
+
+    ' Process module components
+    If Len(moduleString) > 0 Then
+        ProcessResult valueCell, moduleString, COLUMN_MODULE_NAME, resultValue
+        ProcessIPAddress valueCell, moduleString
+        ProcessSlot moduleString, valueCell
+        ProcessParentModule moduleString, valueCell
+        dstFileContent = dstFileContent & vbCrLf & moduleString
+    End If
+
+CleanExit:
+    Exit Sub
+ErrorHandler:
+    LogError "ProcessModule", Err.Number, Err.Description & " | Module: " & resultValue
+    Resume CleanExit
+End Sub
+
+Sub ProcessIPAddress(valueCell As Range, ByRef moduleString As String)
+    On Error GoTo ErrorHandler
+
+    ' Input validation
+    If valueCell Is Nothing Then
+        LogError "ProcessIPAddress", vbObjectError + 1, "Value cell is null"
+        Exit Sub
+    End If
+
+    If Len(Trim(moduleString)) = 0 Then
+        LogError "ProcessIPAddress", vbObjectError + 2, "Module string is empty"
+        Exit Sub
+    End If
+
+    ' Find and validate IP address
+    Dim ipAddress As String
+    ipAddress = FindIPAddressInString(moduleString)
+
+    If Len(ipAddress) > 0 Then
+        If IsValidIPAddress(ipAddress) Then
+            ProcessResult valueCell, moduleString, COLUMN_IP, ipAddress
+        Else
+            LogError "ProcessIPAddress", vbObjectError + 3, "Invalid IP address found: " & ipAddress
+        End If
+    End If
+
+CleanExit:
+    Exit Sub
+ErrorHandler:
+    LogError "ProcessIPAddress", Err.Number, Err.Description & " | Cell: " & valueCell.address
+    Resume CleanExit
+End Sub
+
+Sub ProcessSlot(ByRef moduleString As String, valueCell As Range)
+    On Error GoTo ErrorHandler
+
+    ' Input validation
+    If valueCell Is Nothing Then
+        LogError "ProcessSlot", vbObjectError + 1, "Value cell is null"
+        Exit Sub
+    End If
+
+    If Len(Trim(moduleString)) = 0 Then
+        LogError "ProcessSlot", vbObjectError + 2, "Module string is empty"
+        Exit Sub
+    End If
+
+    ' Get IO sheet and slot value
+    Dim slotValue As String
+    slotValue = Trim(DataCache.IoValue(valueCell.Row, COLUMN_SLOT))
+
+    If Len(slotValue) > 0 Then
+        If IsValidSlotNumber(slotValue) Then
+            moduleString = ReplaceSlot(moduleString, slotValue)
+        Else
+            LogError "ProcessSlot", vbObjectError + 3, "Invalid slot number: " & slotValue
+        End If
+    End If
+
+CleanExit:
+    Exit Sub
+ErrorHandler:
+    LogError "ProcessSlot", Err.Number, Err.Description & " | Cell: " & valueCell.address
+    Resume CleanExit
+End Sub
+
+Sub ProcessParentModule(ByRef moduleString As String, valueCell As Range)
+    On Error GoTo ErrorHandler
+
+    ' Input validation
+    If valueCell Is Nothing Then
+        LogError "ProcessParentModule", vbObjectError + 1, "Value cell is null"
+        Exit Sub
+    End If
+
+    If Len(Trim(moduleString)) = 0 Then
+        LogError "ProcessParentModule", vbObjectError + 2, "Module string is empty"
+        Exit Sub
+    End If
+
+    Dim parentCollection As Collection
+    Dim sourceParentString As String
+    Dim parentString As String
+    Dim ioSheet As Worksheet
+
+    ' Get IO sheet with error handling
+    ' Extract parent module information
+    Set parentCollection = ExtractNamesCol("ParentModule=", moduleString)
+    If parentCollection Is Nothing Then
+        LogError "ProcessParentModule", vbObjectError + 3, "Failed to extract parent collection"
+        GoTo CleanExit
+    End If
+
+    sourceParentString = DetermineRoutineType(parentCollection)
+    parentString = Trim(DataCache.IoValue(valueCell.Row, COLUMN_PARENT))
+    
+    ' Process parent module
+    If Len(sourceParentString) > 0 Then
+        If Len(parentString) > 0 Then
+            ProcessResult valueCell, moduleString, COLUMN_PARENT, sourceParentString
+        Else
+            moduleString = Replace(moduleString, sourceParentString, "Local", , , vbTextCompare)
+        End If
+    End If
+
+CleanExit:
+    Set parentCollection = Nothing
+    Exit Sub
+ErrorHandler:
+    LogError "ProcessParentModule", Err.Number, Err.Description & " | Cell: " & valueCell.address
+    Resume CleanExit
+End Sub
+
+
+Function RetrieveValueFromTable(valueCell As Range, lookupRange As Range, resultRange As Range) As String
+    On Error GoTo ErrorHandler
+
+    ' Input validation
+    If valueCell Is Nothing Then
+        LogError "RetrieveValueFromTable", vbObjectError + 1, "Value cell is null"
+        Exit Function
+    End If
+
+    If lookupRange Is Nothing Then
+        LogError "RetrieveValueFromTable", vbObjectError + 2, "Lookup range is null"
+        Exit Function
+    End If
+
+    If resultRange Is Nothing Then
+        LogError "RetrieveValueFromTable", vbObjectError + 3, "Result range is null"
+        Exit Function
+    End If
+
+    Dim cellValue As String
+    cellValue = Trim(valueCell.value)
+
+    If Len(cellValue) > 0 Then
+        ' Perform lookup with error handling
+        On Error Resume Next
+        Dim lookupIndex As Variant
+        lookupIndex = Application.match(cellValue, lookupRange, 0)
+
+        If Err.Number <> 0 Then
+            LogError "RetrieveValueFromTable", Err.Number, "Match operation failed"
+            Exit Function
+        End If
+        On Error GoTo ErrorHandler
+
+        If Not IsError(lookupIndex) Then
+            ' Validate index before accessing result range
+            If lookupIndex > 0 And lookupIndex <= resultRange.Rows.count Then
+                RetrieveValueFromTable = Trim(resultRange.Cells(lookupIndex).value)
+            Else
+                LogError "RetrieveValueFromTable", vbObjectError + 4, "Invalid lookup index: " & lookupIndex
+            End If
+        Else
+            LogError "RetrieveValueFromTable", vbObjectError + 5, "Value not found: " & cellValue
+        End If
+    End If
+
+    Exit Function
+
+ErrorHandler:
+    LogError "RetrieveValueFromTable", Err.Number, Err.Description & " | Cell: " & valueCell.address
+End Function
+
+Sub ProcessResult(valueCell As Range, ByRef moduleString As String, columnNumber As Long, resultValue As String)
+    On Error GoTo ErrorHandler
+
+    ' Input validation
+    If valueCell Is Nothing Then
+        LogError "ProcessResult", vbObjectError + 1, "Value cell is null"
+        Exit Sub
+    End If
+
+    If Len(Trim(moduleString)) = 0 Then
+        LogError "ProcessResult", vbObjectError + 2, "Module string is empty"
+        Exit Sub
+    End If
+
+    If Len(Trim(resultValue)) = 0 Then
+        LogError "ProcessResult", vbObjectError + 3, "Result value is empty"
+        Exit Sub
+    End If
+
+    Dim replaceValue As Variant
+
+    ' Get replacement value
+    replaceValue = Trim(DataCache.IoValue(valueCell.Row, columnNumber))
+
+    ' Perform replacement if value is valid
+    If Not IsError(replaceValue) And Len(replaceValue) > 0 Then
+        moduleString = Replace(moduleString, resultValue, replaceValue, , , vbTextCompare)
+    Else
+        LogError "ProcessResult", vbObjectError + 4, "Invalid replacement value at column " & columnNumber
+    End If
+
+CleanExit:
+    Exit Sub
+ErrorHandler:
+    LogError "ProcessResult", Err.Number, Err.Description & " | Cell: " & valueCell.address & ", Column: " & columnNumber
+    Resume CleanExit
+End Sub
+
+Function FindIPAddressInString(ByVal InputString As String) As String
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(InputString)) = 0 Then
+        LogError "FindIPAddressInString", vbObjectError + 1, "Input string is empty"
+        Exit Function
+    End If
+
+    Dim regex As Object
+    Dim matches As Object
+
+    ' Get regex object with error handling
+    Set regex = GetRegEx()
+    If regex Is Nothing Then
+        LogError "FindIPAddressInString", vbObjectError + 2, "Failed to get RegEx object"
+        Exit Function
+    End If
+
+    ' Configure and execute regex
+    On Error Resume Next
+    With regex
+        .Global = False
+        .ignoreCase = True
+        .pattern = "\b(?:\d{1,3}\.){3}\d{1,3}\b"  ' Regular expression for IP address
+        Set matches = .Execute(InputString)
+
+        If Err.Number <> 0 Then
+            LogError "FindIPAddressInString", Err.Number, "Regex execution failed"
+            Exit Function
+        End If
+    End With
+    On Error GoTo ErrorHandler
+    
+    ' Extract and validate IP address
+    If matches.count > 0 Then
+        Dim foundIP As String
+        foundIP = matches.item(0).value
+
+        ' Validate the found IP address
+        If IsValidIPAddress(foundIP) Then
+            FindIPAddressInString = foundIP
+        Else
+            LogError "FindIPAddressInString", vbObjectError + 3, "Found IP address is invalid: " & foundIP
+        End If
+    End If
+
+    Exit Function
+ErrorHandler:
+    LogError "FindIPAddressInString", Err.Number, Err.Description
+    FindIPAddressInString = ""
+End Function
+
+Function ReplaceSlot(sourceString As String, slotNum As String) As String
+    On Error GoTo ErrorHandler
+    
+    ' Input validation
+    If Len(Trim(sourceString)) = 0 Then
+        LogError "ReplaceSlot", vbObjectError + 1, "Source string is empty"
+        Exit Function
+    End If
+
+    If Not IsValidSlotNumber(slotNum) Then
+        LogError "ReplaceSlot", vbObjectError + 2, "Invalid slot number: " & slotNum
+        ReplaceSlot = sourceString
+        Exit Function
+    End If
+
+    Dim regex As Object
+
+    ' Get regex object with error handling
+    Set regex = GetRegEx()
+    If regex Is Nothing Then
+        LogError "ReplaceSlot", vbObjectError + 3, "Failed to get RegEx object"
+        ReplaceSlot = sourceString
+        Exit Function
+    End If
+
+    ' Configure and execute regex
+    On Error Resume Next
+    With regex
+        .Global = True
+        .ignoreCase = False
+        .pattern = "Id=""1"" Address=""\d{1,2}"""
+
+        ' Perform replacement
+        ReplaceSlot = .Replace(sourceString, "Id=""1"" Address=""" & slotNum & """")
+
+        If Err.Number <> 0 Then
+            LogError "ReplaceSlot", Err.Number, "Regex replacement failed"
+            ReplaceSlot = sourceString
+            Exit Function
+        End If
+    End With
+    On Error GoTo ErrorHandler
+    
+    Exit Function
+ErrorHandler:
+    LogError "ReplaceSlot", Err.Number, Err.Description
+    ReplaceSlot = sourceString
+End Function
+
+' Clean up module-level objects when workbook closes
+Sub Cleanup()
+    On Error GoTo ErrorHandler
+
+    ' Set cleanup flag to prevent reentrance
+    If mIsCleaningUp Then Exit Sub
+    mIsCleaningUp = True
+
+    ' Clean up regex object
+    If Not moRegEx Is Nothing Then
+        Set moRegEx = Nothing
+    End If
+
+    mIsCleaningUp = False
+    Exit Sub
+
+ErrorHandler:
+    LogError "Cleanup", Err.Number, Err.Description
+    mIsCleaningUp = False
+End Sub

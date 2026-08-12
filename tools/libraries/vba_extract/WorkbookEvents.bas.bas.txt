@@ -1,0 +1,112 @@
+Attribute VB_Name = "WorkbookEvents"
+Option Explicit
+
+'------------------------------------------------------------------------------------
+' WorkbookOpen
+' Initializes resources when the workbook is opened
+'------------------------------------------------------------------------------------
+Public Sub WorkbookOpen()
+    On Error GoTo ErrorHandler
+    
+    ' Initialize error logging
+    ErrorLogPath = ""
+    
+    ' Warm caches early for faster first run
+    On Error Resume Next
+    DataCache.Init
+    On Error GoTo ErrorHandler
+    
+    ' Log workbook open event
+    LogError "WorkbookOpen", 0, "Workbook opened successfully", _
+             "User: " & Environ("USERNAME") & ", Computer: " & Environ("COMPUTERNAME")
+    
+    Exit Sub
+    
+ErrorHandler:
+    ' If logging fails, at least try to write to debug
+    Debug.Print "Error in WorkbookOpen: " & Err.Number & " - " & Err.Description
+End Sub
+
+'------------------------------------------------------------------------------------
+' WorkbookBeforeClose
+' Cleans up resources before the workbook is closed
+'------------------------------------------------------------------------------------
+Public Sub WorkbookBeforeClose(Cancel As Boolean)
+    On Error Resume Next
+    
+    ' Clean up resources
+    Utilities.Cleanup
+    ErrorHandling.Cleanup
+    
+    ' Close any open forms
+    Dim frm As Object
+    For Each frm In VBA.UserForms
+        Unload frm
+    Next frm
+    
+    ' Log workbook close event
+    LogError "WorkbookBeforeClose", 0, "Workbook closed successfully", _
+             "User: " & Environ("USERNAME") & ", Computer: " & Environ("COMPUTERNAME")
+End Sub
+
+'------------------------------------------------------------------------------------
+' InstallEventHandlers
+' Installs event handlers for the workbook
+'------------------------------------------------------------------------------------
+Public Sub InstallEventHandlers()
+    On Error GoTo ErrorHandler
+
+    ' Private Sub Workbook_Open()
+    '     WorkbookEvents.WorkbookOpen
+    ' End Sub
+    '
+    ' Private Sub Workbook_BeforeClose(Cancel As Boolean)
+    '     WorkbookEvents.WorkbookBeforeClose Cancel
+    ' End Sub
+    
+    Exit Sub
+    
+ErrorHandler:
+    LogError "InstallEventHandlers", Err.Number, Err.Description
+End Sub
+
+'------------------------------------------------------------------------------------
+' CleanupAllResources
+' Performs a complete cleanup of all resources
+'------------------------------------------------------------------------------------
+Public Sub CleanupAllResources()
+    On Error Resume Next
+    
+    ' Clean up module resources
+    Utilities.Cleanup
+    ErrorHandling.Cleanup
+    
+    ' Close any open forms
+    Dim frm As Object
+    For Each frm In VBA.UserForms
+        Unload frm
+    Next frm
+    
+    ' Reset global variables
+    SourceLibrary = ""
+    dstFileContent = ""
+    Set Areas = Nothing
+    Set SafeAreas = Nothing
+    
+    ' Close any open files
+    Dim i As Integer
+    For i = 1 To 255
+        Close #i
+    Next i
+    
+    ' Log cleanup event
+    LogError "CleanupAllResources", 0, "Resources cleaned up successfully"
+    
+    ' Reset application settings
+    With Application
+        .ScreenUpdating = True
+        .Calculation = xlCalculationAutomatic
+        .EnableEvents = True
+        .StatusBar = False
+    End With
+End Sub
