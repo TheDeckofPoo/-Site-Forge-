@@ -1335,6 +1335,25 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
     )
     write_interactive_readme(out / "INTERACTIVE_LAYOUT.md", machine=machine)
 
+    # Browser click-to-test screen — rebuilt every export from THIS layout
+    # (layout-agnostic: works for any site as long as RUN geometry exists)
+    try:
+        write_poc_preview_html(
+            out / "interactive_test.html",
+            svg=svg,
+            symbols=hmi_symbols,
+            machine=machine,
+        )
+        # Keep legacy name too
+        write_poc_preview_html(
+            out / "poc_preview.html",
+            svg=svg,
+            symbols=hmi_symbols,
+            machine=machine,
+        )
+    except Exception as exc:
+        (out / "interactive_test_error.txt").write_text(str(exc), encoding="utf-8")
+
     # --- Importable Ignition project folder (copy → data/projects → Scan Filesystem) ---
     perspective_project = ""
     perspective_zip = ""
@@ -1498,6 +1517,8 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
             "eip_modules": str(out / "eip_modules.json"),
             "designer_readme": str(out / "DESIGNER_IMPORT.md"),
             "interactive_readme": str(out / "INTERACTIVE_LAYOUT.md"),
+            "interactive_test_html": str(out / "interactive_test.html"),
+            "poc_preview_html": str(out / "poc_preview.html"),
             "perspective_project": perspective_project,
             "perspective_zip": perspective_zip,
             "tags_import": tags_import_path,
@@ -1611,7 +1632,7 @@ def write_poc_preview_html(
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>Ignition POC — { _xml(machine) } interactive layout</title>
+  <title>FortnaPlus interactive test — { _xml(machine) }</title>
   <style>
     * {{ box-sizing: border-box; }}
     body {{
@@ -1662,11 +1683,11 @@ def write_poc_preview_html(
 </head>
 <body>
   <aside id="panel">
-    <h1>Interactive POC</h1>
+    <h1>Interactive test</h1>
     <p>
       <strong>{ _xml(machine) }</strong> — {len(convs)} conveyors + {len(pes)} photoeyes.<br/>
-      Click a belt or PE on the map, or use the toggles.
-      This simulates tags <em>before</em> binding live PLC data in Ignition.
+      Auto-built from this site&rsquo;s RUN layout (changes every rebuild).<br/>
+      Click a belt or PE on the map, or use the toggles — no PLC / no Designer required.
     </p>
     <div class="btn-row">
       <button class="primary" type="button" id="btn-all-run">All belts RUN</button>

@@ -991,11 +991,13 @@ async function runPlcExportQueue() {
 
   if (results.length === 1 && results[0].ok) {
     renderPlcResult(results[0].result);
-    if (results[0].result?.files?.l5x) fortnaAPI.openPath(results[0].result.files.l5x);
+    // Folder only — never open .L5X (that launches Studio 5000)
+    const outDir = results[0].result?.out_dir || 'exports/plc';
+    if (typeof fortnaAPI.openPath === 'function') fortnaAPI.openPath(outDir);
+    plcLog('Package written — Studio not launched. Open the .L5X yourself when ready.', 'info');
   } else {
     renderPlcBatchSummary(results);
-    // Open exports/plc root after batch
-    fortnaAPI.openPath('exports/plc');
+    if (typeof fortnaAPI.openPath === 'function') fortnaAPI.openPath('exports/plc');
   }
   plcLog(`Batch done: ${okCount} succeeded, ${failCount} failed.`, okCount ? 'ok' : 'err');
 }
@@ -1035,7 +1037,11 @@ async function runPlcExportActive() {
     plcLog(`PRISM PoC: ${res.result.prism_seed.seeded_routines.length} seeded routines`, 'ok');
   }
   renderPlcResult(res.result);
-  if (res.result?.files?.l5x) fortnaAPI.openPath(res.result.files.l5x);
+  // Folder only — never open .L5X (Studio auto-launch)
+  if (res.result?.out_dir && typeof fortnaAPI.openPath === 'function') {
+    fortnaAPI.openPath(res.result.out_dir);
+  }
+  plcLog('Package written — Studio not launched. Open the .L5X yourself when ready.', 'info');
 }
 
 // PLC Export uses active RUN from I/O & Prints — no drop zone / multi-queue on this tab.
@@ -1341,11 +1347,11 @@ function updateRecontrolReady() {
     btn.disabled = !ready || plcState.busy;
     if (ready && !plcState.busy) {
       btn.className = 'w-full py-3 rounded-xl text-sm font-semibold border-2 border-emerald-500 bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg shadow-emerald-900/40 cursor-pointer transition';
-      btn.innerHTML = '<i class="fa-solid fa-industry mr-2"></i>Generate Studio 5000 + Factory I/O';
-      btn.title = 'Export complete L5X + Factory I/O from active RUN';
+      btn.innerHTML = '<i class="fa-solid fa-file-export mr-2"></i>Export PLC Package';
+      btn.title = 'Write L5X + Factory I/O under exports/plc — does not launch Studio';
     } else {
       btn.className = 'w-full py-3 rounded-xl text-sm font-semibold border-2 border-slate-700 bg-slate-900 text-slate-500 cursor-not-allowed';
-      btn.innerHTML = '<i class="fa-solid fa-industry mr-2"></i>Generate Studio 5000 + Factory I/O';
+      btn.innerHTML = '<i class="fa-solid fa-file-export mr-2"></i>Export PLC Package';
       btn.title = 'Load tar.gz + assign prints first';
     }
   }
@@ -2986,6 +2992,87 @@ function setWorkbook(wb) {
   autogenState.workbook = wb || null;
   autogenState.selected = new Set();
   renderWorkbook();
+  renderCatalogChips();
+}
+
+/** Ensure workbook.options catalogs exist for dropdown customization. */
+function ensureWorkbookOptions() {
+  const wb = autogenState.workbook;
+  if (!wb) return null;
+  if (!wb.options || typeof wb.options !== 'object') wb.options = {};
+  if (!Array.isArray(wb.options.areas)) wb.options.areas = [];
+  if (!Array.isArray(wb.options.safety_zones)) wb.options.safety_zones = [];
+  if (!Array.isArray(wb.options.exit_pe)) wb.options.exit_pe = [];
+  if (!Array.isArray(wb.options.types)) {
+    wb.options.types = Array.isArray(wb.autogen_types) ? [...wb.autogen_types] : [];
+  }
+  return wb.options;
+}
+
+function addCatalogValue(kind, raw) {
+  const val = String(raw || '').trim();
+  if (!val) {
+    autogenLog('Enter a value to add', 'warn');
+    return;
+  }
+  if (!autogenState.workbook) {
+    autogenLog('Build site config from RUN first', 'warn');
+    return;
+  }
+  const opts = ensureWorkbookOptions();
+  const keyMap = {
+    area: 'areas',
+    safety: 'safety_zones',
+    exitpe: 'exit_pe',
+    type: 'types',
+  };
+  const key = keyMap[kind];
+  if (!key) return;
+  const list = opts[key];
+  if (list.some((x) => String(x).toLowerCase() === val.toLowerCase())) {
+    autogenLog(`Already in list: ${val}`, 'info');
+    return;
+  }
+  list.push(val);
+  if (kind === 'type' && Array.isArray(autogenState.workbook.autogen_types)
+    && !autogenState.workbook.autogen_types.includes(val)) {
+    autogenState.workbook.autogen_types.push(val);
+  }
+  // Also refresh bulk TYPE select if needed
+  if (kind === 'type') {
+    const sel = $('autogen-wb-bulk-type');
+    if (sel && ![...sel.options].some((o) => o.value === val)) {
+      const opt = document.createElement('option');
+      opt.value = val;
+      opt.textContent = val;
+      sel.appendChild(opt);
+    }
+  }
+  renderWorkbook();
+  renderCatalogChips();
+  autogenLog(`Added ${kind}: ${val}`, 'ok');
+  // Persist quietly
+  if (typeof fortnaAPI.autogenWorkbookSave === 'function') {
+    fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook }).catch(() => {});
+  }
+}
+
+function renderCatalogChips() {
+  const el = $('autogen-catalog-chips');
+  if (!el) return;
+  const opts = autogenState.workbook?.options;
+  if (!opts) {
+    el.innerHTML = '<span class="text-slate-600">Load site config to customize catalogs.</span>';
+    return;
+  }
+  const chip = (label, n) =>
+    `<span class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-400">${label} <strong class="text-violet-300">${n}</strong></span>`;
+  el.innerHTML = [
+    chip('areas', (opts.areas || []).length),
+    chip('safety', (opts.safety_zones || []).length),
+    chip('exit PE', (opts.exit_pe || []).length),
+    chip('types', (opts.types || []).length),
+  ].join(' ');
 }
 
 /**
@@ -3693,6 +3780,37 @@ $('btn-autogen-workbook-build')?.addEventListener('click', () => buildAutogenWor
 $('btn-autogen-workbook-save')?.addEventListener('click', () => saveAutogenWorkbook());
 $('btn-autogen-wb-apply-type')?.addEventListener('click', () => bulkApplyType());
 $('btn-autogen-wb-apply-area')?.addEventListener('click', () => bulkApplyArea());
+$('btn-autogen-cat-area')?.addEventListener('click', () => {
+  addCatalogValue('area', $('autogen-cat-area')?.value);
+  if ($('autogen-cat-area')) $('autogen-cat-area').value = '';
+});
+$('btn-autogen-cat-safety')?.addEventListener('click', () => {
+  addCatalogValue('safety', $('autogen-cat-safety')?.value);
+  if ($('autogen-cat-safety')) $('autogen-cat-safety').value = '';
+});
+$('btn-autogen-cat-exitpe')?.addEventListener('click', () => {
+  addCatalogValue('exitpe', $('autogen-cat-exitpe')?.value);
+  if ($('autogen-cat-exitpe')) $('autogen-cat-exitpe').value = '';
+});
+$('btn-autogen-cat-type')?.addEventListener('click', () => {
+  addCatalogValue('type', $('autogen-cat-type')?.value);
+  if ($('autogen-cat-type')) $('autogen-cat-type').value = '';
+});
+// Enter key in catalog fields
+['autogen-cat-area', 'autogen-cat-safety', 'autogen-cat-exitpe', 'autogen-cat-type'].forEach((id) => {
+  $(id)?.addEventListener('keydown', (ev) => {
+    if (ev.key !== 'Enter') return;
+    ev.preventDefault();
+    const map = {
+      'autogen-cat-area': 'area',
+      'autogen-cat-safety': 'safety',
+      'autogen-cat-exitpe': 'exitpe',
+      'autogen-cat-type': 'type',
+    };
+    addCatalogValue(map[id], $(id)?.value);
+    if ($(id)) $(id).value = '';
+  });
+});
 $('autogen-wb-select-all')?.addEventListener('change', (ev) => {
   const on = !!ev.target.checked;
   autogenState.selected = new Set();
@@ -3811,7 +3929,13 @@ $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
 });
 
 // --- Ignition Build (layout + tag seed toward .gwbk) ---
-const ignitionState = { lastOut: '', lastResult: null, busy: false };
+const ignitionState = {
+  lastOut: '',
+  lastResult: null,
+  busy: false,
+  projectDir: '',
+  testHtml: '',
+};
 
 function ignitionLog(msg, level = 'info') {
   const el = $('ignition-log');
@@ -3917,8 +4041,17 @@ async function runIgnitionBuild(opts = {}) {
   renderIgnitionResult(r);
   const proj = r.perspective_project || r.files?.perspective_project || '';
   ignitionState.projectDir = proj || ignitionState.projectDir;
+  ignitionState.testHtml = r.files?.interactive_test_html
+    || r.files?.poc_preview_html
+    || (r.out_dir ? `${r.out_dir}\\interactive_test.html` : '');
   if ($('btn-ignition-open-project')) {
     $('btn-ignition-open-project').disabled = !ignitionState.projectDir;
+  }
+  if ($('btn-ignition-open-test')) {
+    $('btn-ignition-open-test').disabled = !ignitionState.testHtml;
+  }
+  if (ignitionState.testHtml) {
+    ignitionLog(`Interactive test: ${ignitionState.testHtml.split(/[/\\]/).pop()} — click Open interactive test`, 'info');
   }
   const dep = r.gateway_deploy;
   const stamp = r.folder_stamp || dep?.folder_stamp || '';
@@ -3963,6 +4096,17 @@ $('btn-ignition-build')?.addEventListener('click', () => runIgnitionBuild({}));
 $('btn-ignition-refresh')?.addEventListener('click', () => runIgnitionBuild({}));
 $('btn-ignition-open-out')?.addEventListener('click', () => {
   if (ignitionState.lastOut) fortnaAPI.openPath(ignitionState.lastOut);
+});
+$('btn-ignition-open-test')?.addEventListener('click', () => {
+  const p = ignitionState.testHtml
+    || (ignitionState.lastOut ? `${ignitionState.lastOut}\\interactive_test.html` : '');
+  if (!p) {
+    ignitionLog('No interactive_test.html yet — run Build first', 'warn');
+    return;
+  }
+  // Open HTML in default browser (not Studio)
+  if (typeof fortnaAPI.openPath === 'function') fortnaAPI.openPath(p);
+  ignitionLog('Opened interactive test in browser — click belts / PEs to toggle', 'ok');
 });
 $('btn-ignition-perspective')?.addEventListener('click', async () => {
   if (typeof fortnaAPI.ignitionPackPerspective !== 'function') {

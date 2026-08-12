@@ -475,6 +475,47 @@
               <i class="fa-solid fa-folder-open mr-1"></i>Show L5X
             </button>
           </div>
+          <!-- Collapsible: extend dropdown catalogs (areas / safety / exit PE / types) -->
+          <details id="autogen-catalog-panel" class="mt-3 rounded-xl border border-slate-800/80 bg-[#0c1219]/
+            <summary class="cursor-pointer px-3 py-2 text-[11px] text-violet-300/90 font-medium select-none hover:bg-[#101820] rounded-xl">
+              <i class="fa-solid fa-plus-circle mr-1 text-violet-500"></i>
+              Customize dropdowns
+              <span class="text-[10px] font-normal text-slate-500 ml-1">add Area · Safety · Exit PE · TYPE</span>
+            </summary>
+            <div class="px-3 pb-3 pt-1 space-y-2 border-t border-slate-800/60">
+              <p class="text-[10px] text-slate-500 leading-relaxed">
+                New values appear in the conveyor table dropdowns. Names should match Studio-style tags
+                (e.g. <span class="mono text-slate-400">Zone9_Area</span>, <span class="mono text-slate-400">Trash_ESZone1</span>).
+              </p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div class="flex gap-1.5 items-center">
+                  <label class="text-[10px] text-slate-500 w-14 shrink-0">Area</label>
+                  <input id="autogen-cat-area" type="text" placeholder="Zone9_Area"
+                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-slate-200">
+                  <button type="button" id="btn-autogen-cat-area" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
+                </div>
+                <div class="flex gap-1.5 items-center">
+                  <label class="text-[10px] text-slate-500 w-14 shrink-0">Safety</label>
+                  <input id="autogen-cat-safety" type="text" placeholder="Zone9_ESZone1"
+                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-slate-200">
+                  <button type="button" id="btn-autogen-cat-safety" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
+                </div>
+                <div class="flex gap-1.5 items-center">
+                  <label class="text-[10px] text-slate-500 w-14 shrink-0">Exit PE</label>
+                  <input id="autogen-cat-exitpe" type="text" placeholder="PE999_P"
+                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-sky-300">
+                  <button type="button" id="btn-autogen-cat-exitpe" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
+                </div>
+                <div class="flex gap-1.5 items-center">
+                  <label class="text-[10px] text-slate-500 w-14 shrink-0">TYPE</label>
+                  <input id="autogen-cat-type" type="text" placeholder="Transport with MS"
+                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-slate-200">
+                  <button type="button" id="btn-autogen-cat-type" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
+                </div>
+              </div>
+              <div id="autogen-catalog-chips" class="flex flex-wrap gap-1 pt-1 text-[9px] text-slate-500"></div>
+            </div>
+          </details>
         </div>
         <div class="card p-0 flex-1 min-h-0 flex flex-col overflow-hidden">
           <div class="flex gap-1 px-2 pt-2 border-b border-slate-800/80 shrink-0">
@@ -869,9 +910,9 @@
           <span class="workflow-arrow">→</span>
           <div class="workflow-box accent"><strong>③ Ready</strong><span>Checklist turns green<br>when inputs ready</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box accent"><strong>④ Generate</strong><span>Studio 5000 L5X<br>+ Factory I/O scene</span></div>
+          <div class="workflow-box accent"><strong>④ Export package</strong><span>L5X + Factory I/O<br>files only</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box"><strong>⑤ Open</strong><span>exports/plc/…<br>review artifacts</span></div>
+          <div class="workflow-box"><strong>⑤ Folder</strong><span>exports/plc/…<br>(Studio not launched)</span></div>
         </div>
         <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
           Export always uses the <strong class="text-slate-400">active RUN</strong> from I/O &amp; Prints — no need to drop archives again here.
@@ -886,12 +927,13 @@
             <div>… checking …</div>
           </div>
           <button id="btn-plc-generate" type="button"
-            class="w-full py-3 rounded-xl text-sm font-semibold border-2 border-slate-700 bg-slate-900 text-slate-500 cursor-not-allowed" disabled>
-            <i class="fa-solid fa-industry mr-2"></i>Generate Studio 5000 + Factory I/O
+            class="w-full py-3 rounded-xl text-sm font-semibold border-2 border-slate-700 bg-slate-900 text-slate-500 cursor-not-allowed" disabled
+            title="Write L5X + Factory I/O files under exports/plc — does not launch Studio">
+            <i class="fa-solid fa-file-export mr-2"></i>Export PLC Package
           </button>
           <p class="text-[10px] text-slate-600 mt-2 leading-relaxed">
-            Turns green when a <strong class="text-slate-400">.tar.gz RUN</strong> is loaded on I/O &amp; Prints and
-            <strong class="text-slate-400">panel prints</strong> are assigned.
+            Writes files only (no Studio). Green when a <strong class="text-slate-400">.tar.gz RUN</strong> is loaded
+            and <strong class="text-slate-400">panel prints</strong> are assigned.
           </p>
         </div>
         <div class="card p-4">
@@ -908,8 +950,9 @@
             Factory I/O scenes include a <strong class="text-slate-400">complete</strong> object count
             (every exported I/O point). Points with layout coords keep plant positions; others are grid-placed.
           </p>
-          <button id="btn-plc-use-active" class="btn-primary w-full py-2.5 rounded-xl text-sm" disabled>
-            <i class="fa-solid fa-bolt mr-2"></i>Export from active RUN
+          <button id="btn-plc-use-active" class="btn-primary w-full py-2.5 rounded-xl text-sm" disabled
+            title="Write package under exports/plc — does not launch Studio">
+            <i class="fa-solid fa-file-export mr-2"></i>Export PLC Package (active RUN)
           </button>
         </div>
       </div>
@@ -920,7 +963,8 @@
             <span id="plc-export-status" class="status-pill status-idle">Ready</span>
           </div>
           <div id="plc-export-summary" class="text-sm text-slate-400 mb-4">
-            Load a RUN on <strong class="text-slate-300">I/O &amp; Prints</strong>, then generate Studio 5000 and Factory I/O artifacts here.
+            Load a RUN on <strong class="text-slate-300">I/O &amp; Prints</strong>, then
+            <strong class="text-slate-300">Export PLC Package</strong> — files under <span class="mono text-slate-500">exports/plc</span> only (Studio stays closed).
           </div>
           <div id="plc-export-stats" class="grid grid-cols-2 gap-2 mb-4 hidden"></div>
           <div id="plc-export-files" class="space-y-2"></div>
@@ -982,10 +1026,18 @@
                 <i class="fa-solid fa-folder-open mr-1"></i>Open export
               </button>
               <button id="btn-ignition-open-project" type="button" class="btn-ghost flex-1 py-2 rounded-xl text-xs" disabled
-                title="Open FortnaPlus_POC folder to copy into Ignition">
+                title="Open FortnaPlus project folder">
                 <i class="fa-solid fa-box-archive mr-1"></i>Open project folder
               </button>
             </div>
+            <button id="btn-ignition-open-test" type="button" class="btn-ghost w-full py-2 rounded-xl text-xs mt-2 border border-cyan-900/40 text-cyan-300/90" disabled
+              title="Open browser click-to-test map for this build (layout-agnostic)">
+              <i class="fa-solid fa-hand-pointer mr-1"></i>Open interactive test
+            </button>
+            <p class="text-[10px] text-slate-600 mt-1.5 leading-relaxed">
+              <strong class="text-cyan-500/80">Interactive test</strong> is rebuilt every export from this site&rsquo;s layout —
+              click belts / PEs in the browser (no PLC). Works for any RUN geometry.
+            </p>
             <div id="ignition-status" class="status-pill status-idle mt-3 text-[10px]">Idle</div>
           </div>
           <div class="card p-3 flex-1 min-h-0 overflow-y-auto">
