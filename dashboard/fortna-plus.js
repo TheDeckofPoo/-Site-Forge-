@@ -1122,8 +1122,30 @@ function resolveDevicePrintPage(name, fallback) {
   }
   const map = ioState.banks?.print_pages || ioState.printPages || {};
   if (!name) return null;
-  const hit = map[name] ?? map[String(name).toUpperCase()] ?? map[String(name).toLowerCase()];
-  if (hit != null && Number(hit) > 0) return Number(hit);
+  const raw = String(name).trim();
+  const upper = raw.toUpperCase();
+  const candidates = [raw, upper, raw.toLowerCase()];
+  // VFD444_AUX / VFD500A_EN → also try base VFD444 / VFD500A and parent conveyor P444 / P500A
+  const base = upper.replace(/(_EN|_AUX|_FLT|_RUN|_OK|_CMD|_REF|_FB)$/i, '');
+  if (base && base !== upper) candidates.push(base);
+  const vfdNum = (base.match(/^VFD([0-9]{2,4}[A-Z]?)$/i) || [])[1];
+  if (vfdNum) {
+    candidates.push(`P${vfdNum}`, `P${vfdNum}`.toUpperCase());
+    const digits = (vfdNum.match(/^(\d+)/) || [])[1];
+    if (digits && digits !== vfdNum) candidates.push(`P${digits}`);
+  }
+  // PE444_P / EZPE442_F → try parent conveyor when page missing
+  const peNum = (upper.match(/^(?:EZ)?PE([0-9]{2,4}[A-Z]?)/i) || [])[1];
+  if (peNum) {
+    candidates.push(`P${peNum}`);
+    const digits = (peNum.match(/^(\d+)/) || [])[1];
+    if (digits) candidates.push(`P${digits}`);
+  }
+  for (const c of candidates) {
+    if (!c) continue;
+    const hit = map[c] ?? map[String(c).toUpperCase()] ?? map[String(c).toLowerCase()];
+    if (hit != null && Number(hit) > 0) return Number(hit);
+  }
   return null;
 }
 
@@ -1169,18 +1191,44 @@ function rebuildDeviceList() {
       });
     }
   }
+  // Index OCR print params by VFD base (VFD444) so AUX/EN siblings can share
+  const printByVfdBase = new Map();
+  for (const d of ioState.drives || []) {
+    const nm = d.name || '';
+    if (!/^VFD\d/i.test(nm)) continue;
+    const base = nm.toUpperCase().replace(/(_EN|_AUX|_FLT|_RUN|_OK|_CMD|_REF|_FB)$/i, '');
+    const list = filterVfdPrintParamsClient(
+      d.print_param_list || Object.values(d.print_params || {}),
+    );
+    if (list.length && !printByVfdBase.has(base)) {
+      printByVfdBase.set(base, {
+        list,
+        params: d.print_params || {},
+        sources: d.print_sources || [],
+        file: d.print_file || '',
+        page: d.drawing_page || d.print_page || null,
+      });
+    }
+  }
+
   for (const d of ioState.drives || []) {
     const name = d.name || '';
     if (!name) continue;
     const key = name.toUpperCase();
     const type = classifyDevice(name, d.equipment_kind || d.device_type || d.device_class, d);
     const existing = byName.get(key);
-    const cleanedPrint = filterVfdPrintParamsClient(
+    let cleanedPrint = filterVfdPrintParamsClient(
       d.print_param_list || Object.values(d.print_params || {}),
     );
+    // Inherit OCR table from VFD444 onto VFD444_AUX / _EN when only one side has params
+    const vfdBase = key.replace(/(_EN|_AUX|_FLT|_RUN|_OK|_CMD|_REF|_FB)$/i, '');
+    const shared = printByVfdBase.get(vfdBase);
+    if ((!cleanedPrint || !cleanedPrint.length) && shared?.list?.length) {
+      cleanedPrint = shared.list;
+    }
     const page = resolveDevicePrintPage(
       name,
-      d.drawing_page || d.print_page || existing?.drawing_page || null,
+      d.drawing_page || d.print_page || shared?.page || existing?.drawing_page || null,
     );
     const merged = {
       ...(existing || {}),
@@ -1196,15 +1244,19 @@ function rebuildDeviceList() {
       machine_name: d.machine_name || existing?.machine_name || '',
       print_param_count: cleanedPrint.length || d.print_param_count || 0,
       print_param_list: cleanedPrint.length ? cleanedPrint : (d.print_param_list || []),
-      print_params: d.print_params || {},
-      print_sources: d.print_sources || [],
+      print_params: (d.print_params && Object.keys(d.print_params).length)
+        ? d.print_params
+        : (shared?.params || {}),
+      print_sources: (d.print_sources && d.print_sources.length)
+        ? d.print_sources
+        : (shared?.sources || []),
       program_params: d.program_params || {},
       drawing_page: page,
-      print_file: d.print_file || existing?.print_file || '',
+      print_file: d.print_file || shared?.file || existing?.print_file || '',
       print_page: page,
       // is_vfd only for real VFD### names — never P### conveyors
       is_vfd: type.key === 'vfd' || (/^VFD/i.test(name) && !/^P\d/i.test(name)),
-      vfd_from_print: !!d.vfd_from_print && type.key === 'vfd',
+      vfd_from_print: (!!d.vfd_from_print || !!(shared?.list?.length)) && type.key === 'vfd',
       source: existing ? 'both' : 'drive',
     };
     // Hard rules: P### = conveyor; VFD### = VFD; never promote EZPWS / P### to VFD

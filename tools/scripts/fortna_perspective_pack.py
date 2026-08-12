@@ -158,9 +158,9 @@ def _write_view(folder: Path, view: dict) -> None:
 def make_conveyor_component() -> dict:
     """Reusable embedded view: params.tagPath = BOOL Run tag.
 
-    Matches ProjectTest style (known-good in Designer 8.3). Print page is
-    baked into params.label at pack time (e.g. \"P508 p.18\") — do NOT use
-    string '+' in expressions (Designer returns null and shows no-project).
+    Matches ProjectTest style (known-good in Designer 8.3). Label is the
+    device name only (e.g. \"P508\") — no print-page suffix on the HMI face.
+    Do NOT use string '+' in expressions (Designer returns null / no-project).
     """
     return {
         "custom": {
@@ -472,19 +472,12 @@ def make_plant_view(
         if abs(rotate) > 0.05:
             pos["rotate"] = round(rotate, 2)
 
-        # Bake print page into label (Designer-safe — no expression string '+')
-        base_label = str(inst.get("label") or "")
-        page = inst.get("printPage") or inst.get("drawing_page")
-        if page not in (None, "", 0, "0"):
-            try:
-                page_s = str(int(page))
-            except (TypeError, ValueError):
-                page_s = str(page)
-            display_label = f"{base_label} p.{page_s}"
-            tip = f"{base_label} · print #{page_s}"
-        else:
-            display_label = base_label
-            tip = base_label
+        # HMI face label = device name only (no "p.18" print-page clutter).
+        # Print page stays on instance meta for crosswalk/OCR — not the visual.
+        base_label = str(inst.get("label") or "").strip()
+        # Strip any legacy "P508 p.18" / "P508 · print #18" that older packs baked in
+        base_label = re.sub(r"\s+p\.\d+\s*$", "", base_label, flags=re.I)
+        base_label = re.sub(r"\s*·\s*print\s*#\d+\s*$", "", base_label, flags=re.I)
 
         children.append(
             {
@@ -493,10 +486,9 @@ def make_plant_view(
                 "position": pos,
                 "props": {
                     "path": path,
-                    # label already includes print page when known (e.g. "P508 p.18")
                     "params": {
                         "tagPath": inst.get("tagPath") or "",
-                        "label": display_label or tip,
+                        "label": base_label,  # name only — never "p.18"
                         "width": w,
                         "height": h,
                     },

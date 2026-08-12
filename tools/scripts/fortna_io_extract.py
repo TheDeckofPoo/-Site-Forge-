@@ -429,6 +429,23 @@ def extract_io_points(run_dir: Path, *, include_spares: bool = False) -> list[di
             'source_table': 'FORTNA/Conveyor.asc',
         })
 
+    # VFD_AUX / VFD_EN rows usually have Electrical Drawing Page = 0 in ASC.
+    # Inherit sheet # from parent conveyor P### (e.g. VFD444_AUX → P444 page 18).
+    try:
+        from fortna_io_banks import (  # local — same package tools/scripts
+            _conveyor_page_map,
+            inherit_drawing_pages_for_vfd_io,
+        )
+        conv_pages = _conveyor_page_map(rows)
+        inherit_drawing_pages_for_vfd_io(
+            points,
+            name_key='fortna_name',
+            page_keys=('drawing_page', 'print_page'),
+            conveyor_pages=conv_pages,
+        )
+    except Exception:
+        pass
+
     points.sort(key=lambda p: (p['area'], p['io_type'], p['tag']))
     return points
 

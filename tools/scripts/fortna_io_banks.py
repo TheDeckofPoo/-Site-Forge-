@@ -184,6 +184,117 @@ def _base_equip_name(name: str) -> str:
     return n
 
 
+def _vfd_number_token(name: str) -> str:
+    """VFD444_AUX / VFD500A_EN → '444' / '500A' (digits + optional letter suffix)."""
+    n = _base_equip_name(name).upper()
+    m = re.match(r'^VFD([0-9]{2,4}[A-Z]?)$', n)
+    return m.group(1) if m else ''
+
+
+def _conveyor_page_map(rows: list[dict]) -> dict[str, int]:
+    """P444 / P500A → Electrical Drawing Page No. from Conveyor.asc."""
+    out: dict[str, int] = {}
+    for row in rows:
+        name = (row.get('IO_Name') or '').strip().upper()
+        if not re.match(r'^P\d', name):
+            continue
+        page = parse_drawing_page(row)
+        if page:
+            out[name] = page
+            # Also index bare number token P444 → 444 key for VFD444 lookup
+            m = re.match(r'^P([0-9]{2,4}[A-Z]?)$', name)
+            if m:
+                out[f'#{m.group(1)}'] = page
+    return out
+
+
+def inherit_drawing_pages_for_vfd_io(
+    items: list[dict],
+    *,
+    name_key: str = 'name',
+    page_keys: tuple[str, ...] = ('drawing_page', 'print_page'),
+    conveyor_pages: dict[str, int] | None = None,
+) -> int:
+    """
+    VFD###_AUX / _EN / _FLT almost always have Electrical Drawing Page = 0 in ASC.
+    The parent conveyor P### (and the VFD name on the print) carries the real sheet.
+
+    Inherit:
+      VFD444_AUX → page from P444 (or any VFD444* that already has a page)
+      VFD500A_EN → page from P500A / P500
+
+    Returns how many items received a page.
+    """
+    # Index pages already known on items
+    by_base: dict[str, int] = {}
+    by_num: dict[str, int] = {}
+    for it in items:
+        name = (it.get(name_key) or it.get('fortna_name') or it.get('io_name') or '').strip()
+        if not name:
+            continue
+        page = None
+        for k in page_keys:
+            v = it.get(k)
+            if v not in (None, '', 0, '0'):
+                try:
+                    page = int(v)
+                    break
+                except (TypeError, ValueError):
+                    pass
+        if not page:
+            continue
+        base = _base_equip_name(name).upper()
+        if base.startswith('VFD'):
+            by_base[base] = page
+        num = _vfd_number_token(name)
+        if num:
+            by_num[num] = page
+        if re.match(r'^P\d', name.upper()):
+            by_num[re.sub(r'^P', '', name.upper())] = page
+
+    if conveyor_pages:
+        for k, v in conveyor_pages.items():
+            if k.startswith('#'):
+                by_num[k[1:]] = v
+            elif k.startswith('P'):
+                by_num[k[1:]] = v
+
+    filled = 0
+    for it in items:
+        name = (it.get(name_key) or it.get('fortna_name') or it.get('io_name') or '').strip()
+        if not name or not re.match(r'^VFD\d', name, re.I):
+            continue
+        cur = it.get(page_keys[0]) if page_keys else None
+        if cur not in (None, '', 0, '0'):
+            continue
+        base = _base_equip_name(name).upper()
+        num = _vfd_number_token(name)
+        page = by_base.get(base)
+        if not page and num:
+            # Prefer exact P500A then P500
+            page = by_num.get(num)
+            if not page:
+                # strip trailing letter: 500A → try 500
+                m = re.match(r'^(\d+)', num)
+                if m:
+                    page = by_num.get(m.group(1))
+        if not page and conveyor_pages:
+            page = conveyor_pages.get(f'P{num}') or (
+                conveyor_pages.get(f'P{re.match(r"^(\d+)", num).group(1)}')
+                if num and re.match(r'^(\d+)', num) else None
+            )
+            if not page and num:
+                page = conveyor_pages.get(f'#{num}') or conveyor_pages.get(
+                    f'#{re.match(r"^(\d+)", num).group(1)}' if re.match(r'^(\d+)', num) else ''
+                )
+        if not page:
+            continue
+        for k in page_keys:
+            it[k] = page
+        filled += 1
+    return filled
+
+
 def extract_drive_parameters(run_dir: Path) -> dict:
     """Drive rows from Conveyor.asc with full dynamic parameter maps + motor chains.
 
@@ -327,6 +438,18 @@ def extract_drive_parameters(run_dir: Path) -> dict:
     for d in drives:
         key = d['drive'] or '(blank)'
         drive_ids[key] += 1
+
+    # Inherit print # onto VFD_AUX / VFD_EN from parent conveyor (ASC page is 0 on I/O bits)
+    conv_pages: dict[str, int] = {}
+    if conv.is_file():
+        try:
+            _, crow = read_asc(conv)
+            conv_pages = _conveyor_page_map(crow)
+        except Exception:
+            conv_pages = {}
+    inherit_drawing_pages_for_vfd_io(
+        drives, name_key='name', conveyor_pages=conv_pages
+    )
 
     return {
         'drives': drives,
@@ -1153,6 +1276,48 @@ def attach_print_params_to_drives(
         elif is_vfd_name(name):
             d['is_vfd'] = True
             d['equipment_kind'] = 'vfd'
+
+    # Share OCR params + print page across VFD444_EN / VFD444_AUX / VFD444_FLT siblings
+    by_base_params: dict[str, list[dict]] = {}
+    by_base_meta: dict[str, dict] = {}
+    for d in drives:
+        name = (d.get('name') or '')
+        base = _normalize_vfd_id(_base_equip_name(name))
+        if not base:
+            continue
+        if d.get('print_param_list') or d.get('print_params'):
+            by_base_params[base] = list(d.get('print_param_list') or []) or list(
+                (d.get('print_params') or {}).values()
+            )
+            by_base_meta[base] = {
+                'print_page': d.get('print_page') or d.get('drawing_page'),
+                'drawing_page': d.get('drawing_page') or d.get('print_page'),
+                'print_file': d.get('print_file') or '',
+                'print_sources': list(d.get('print_sources') or []),
+                'print_params': dict(d.get('print_params') or {}),
+                'print_param_count': d.get('print_param_count') or 0,
+                'vfd_from_print': True,
+            }
+    for d in drives:
+        name = (d.get('name') or '')
+        base = _normalize_vfd_id(_base_equip_name(name))
+        if not base or base not in by_base_params:
+            continue
+        if not (d.get('print_param_list') or d.get('print_params')):
+            meta = by_base_meta[base]
+            plist = by_base_params[base]
+            d['print_param_list'] = list(plist)
+            d['print_params'] = dict(meta.get('print_params') or {})
+            d['print_param_count'] = meta.get('print_param_count') or len(plist)
+            d['print_sources'] = list(meta.get('print_sources') or [])
+            d['print_file'] = meta.get('print_file') or d.get('print_file') or ''
+            d['vfd_from_print'] = True
+            if not d.get('drawing_page') and meta.get('drawing_page'):
+                d['drawing_page'] = meta['drawing_page']
+                d['print_page'] = meta.get('print_page') or meta['drawing_page']
+
+    # Final page inherit after OCR may have set pages on some VFD siblings
+    inherit_drawing_pages_for_vfd_io(drives, name_key='name')
 
     return drives
 
