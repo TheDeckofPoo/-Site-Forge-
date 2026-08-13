@@ -358,8 +358,12 @@ def extract_drive_parameters(run_dir: Path) -> dict:
 
             dyn = _row_dynamic_params(row)
             is_vfd = kind == 'vfd'
-            # Drawing page from ASC (links device → print sheet in repository)
+            # Drawing page from ASC — for VFDs leave blank until PDF OCR.
+            # ASC "Electrical Drawing Page" is often a conveyor layout page, not the
+            # VFD wiring sheet (user saw pages populate before OCR finished).
             drawing_page = parse_drawing_page(row)
+            if is_vfd or re.match(r'^VFD\d', name, re.I):
+                drawing_page = None
             drives.append({
                 'name': name,
                 'base_name': _base_equip_name(name),
@@ -392,7 +396,7 @@ def extract_drive_parameters(run_dir: Path) -> dict:
                 'roller_centers': (row.get('Roller_Centers') or '').strip(),
                 'nose_over': (row.get('NoseOver') or '').strip(),
                 'machine_name': (row.get('Machine_Name') or '').strip(),
-                # Print repository link (ASC drawing page; OCR may refine file/page)
+                # Print repository link (OCR fills VFD pages; ASC page for other devices)
                 'drawing_page': drawing_page,
                 'print_file': '',
                 'print_page': drawing_page,
@@ -478,23 +482,46 @@ _VFD_PARAM_PATTERNS = [
         re.I), 'named'),
 ]
 
-# PowerFlex table rows (PF4 + PF70) after OCR / Y-sorted rebuild:
-#   "31 Motor NP Volts 460 VAC"  or  "41 Motor NP Volts 460 VAC"
+# PowerFlex table rows (PF4 / PF70 / PF525) after OCR / Y-sorted rebuild:
+#   "31 Motor NP Volts 460 VAC"
+#   "P031 MOTOR NP VOLTS 460 VAC"   ← Fortna title-block style (Image red-box)
+#   "T062 DIGIN TERMBLK 2 (48) 2-WIRE FWD"
+#   "A544 REVERSE DISABLE (1) REV DISABLED"
+_PF_PARAM_NAMES = (
+    r'Motor\s+NP\s+Volts?|Motor\s+OL\s+Current|Motor\s+NP\s+(?:Hertz|FLA|RPM|Power)|'
+    r'Mtr\s+NP\s+Pwr\s+Units|Motor\s+NP\s+Pwr\s+Units|'
+    r'Speed\s+Reference\s*\d*|Speed\s+Ref\s+A\s+Sel|Start\s+Source\s*\d*|'
+    r'Maximum\s+(?:Freq(?:uency)?|Speed)|Compensation|Stop\s+Mode|'
+    r'Accel(?:eration)?\s*Time\s*\d*|Decel(?:eration)?\s*Time\s*\d*|'
+    r'Relay\s+Out\s*\d*\s*Sel|Preset\s+(?:Freq(?:uency)?|Speed)\s*\.?\s*\d*|'
+    r'Digital\s+(?:In|Out)\d*\s+Sel|Dig\s+Out\d*\s+Level|'
+    r'Digin\s+Termblk\s*\d*|Dig\s*In\s*Termblk\s*\d*|'
+    r'DB\s+Resistor\s+(?:Type|Sel)|DC\s+Brake\s+(?:Time|Level)|'
+    r'Reverse\s+Disable|Bus\s+Reg\s+Mode\s*A?|Param\s+Access\s+Lvl|Language'
+)
 _PF_LINE = re.compile(
     r'\b(\d{1,3})\s+'
-    r'(Motor\s+NP\s+Volts?|Motor\s+OL\s+Current|Motor\s+NP\s+(?:Hertz|FLA|RPM|Power)|'
-    r'Mtr\s+NP\s+Pwr\s+Units|Motor\s+NP\s+Pwr\s+Units|'
-    r'Speed\s+Reference|Speed\s+Ref\s+A\s+Sel|Start\s+Source|'
-    r'Maximum\s+(?:Freq(?:uency)?|Speed)|Compensation|'
-    r'Accel(?:eration)?\s*Time\s*\d*|Decel(?:eration)?\s*Time\s*\d*|'
-    r'Relay\s+Out\s+Sel|Preset\s+(?:Freq(?:uency)?|Speed)\s*\d*|'
-    r'Digital\s+(?:In|Out)\d*\s+Sel|Dig\s+Out\d*\s+Level|'
-    r'DB\s+Resistor\s+Type|DC\s+Brake\s+(?:Time|Level)|'
-    r'Bus\s+Reg\s+Mode\s*A?|Param\s+Access\s+Lvl|Language)\s+'
+    rf'({_PF_PARAM_NAMES})\s+'
     r'([-+]?\d+(?:\.\d+)?\s*(?:VAC|V|A|Amps?|Hz|HZ|Sec(?:s)?|s|RPM|HP|%)?|'
     r'Preset\s*(?:Freq(?:uency)?|Spd)\s*\d*|2[\-\s]?wire|At\s*Freq|Coast|Ramp|'
     r'Both\s*DB[^|\n]{0,16}|Internal|Not\s*Used|English|Advance|Horsepower|Run|'
     r'[A-Za-z][A-Za-z0-9\-/ ]{0,28})',
+    re.I,
+)
+# Fortna electrical sheet: "P031 MOTOR NP VOLTS 460 VAC" / "A544 REVERSE DISABLE …"
+_PF_CODED_LINE = re.compile(
+    r'\b([PTA])0*(\d{1,3})\s+'
+    rf'({_PF_PARAM_NAMES})\s+'
+    r'(?:\(\s*\d+\s*\)\s*)?'
+    r'([-+]?\d+(?:\.\d+)?\s*(?:VAC|V|A|Amps?|Hz|HZ|Sec(?:s)?|s|RPM|HP|%)?|'
+    r'2[\-\s]?WIRE[^\n]{0,20}|AT\s*FREQUENCY|RAMP[^\n]{0,12}|'
+    r'REV\s*DISABLED?|DIGIN[^\n]{0,16}|'
+    r'[A-Za-z(][A-Za-z0-9\-/()% .]{1,36})',
+    re.I,
+)
+# Catalog line under VFD title: (25B-D4P0N104/25-JBAA)
+_VFD_CATALOG_RE = re.compile(
+    r'\(\s*(25[A-Z]?-[A-Z0-9]+(?:/[A-Z0-9\-]+)?)\s*\)',
     re.I,
 )
 
@@ -536,27 +563,30 @@ _PF_NAME_TO_PAR = {
 # Covers PF4 (~8 params) and PF70 (longer programmed list like VFD444).
 # Not every integer 1–399 — only known Fortna sheet ranges.
 _PF_CANONICAL_PARS = {
-    # PowerFlex 4 common
-    31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 53, 55, 70, 80, 82,
+    # PowerFlex 4 / 40 / 525 common (P031 family on Fortna sheets)
+    31, 32, 33, 34, 35, 36, 37, 38, 39, 40, 41, 42, 44, 45, 46, 47, 53, 55, 62, 70, 76, 80, 82,
     # PowerFlex 70 motor / limits (VFD444 sheet)
-    43, 44, 45, 46, 56, 90, 91, 92, 101, 102, 103, 104, 105, 106, 107,
+    43, 56, 90, 91, 92, 101, 102, 103, 104, 105, 106, 107,
     140, 141, 142, 143, 158, 159, 160, 161, 163, 196, 201,
     361, 362, 363, 364, 365, 380, 381, 382, 383, 384, 385,
+    # PF525 A-params seen on Fortna VFD sheets (A410 preset, A434 brake, A544 reverse)
+    410, 434, 435, 437, 544,
 }
 
 # Hard cap so a bad OCR page never dumps 100+ junk rows again
 _PF_MAX_PARAMS_PER_DRIVE = 32
 
 _PF_CANONICAL_NAME_RE = re.compile(
-    r'^(?:P0*\d+\s+)?'
+    r'^(?:[PTA]0*\d+\s+)?'
     r'(?:Motor\s+NP\s+(?:Volts?|Hertz|FLA|RPM|Power)|'
     r'Mtr\s+NP\s+Pwr\s+Units|Motor\s+NP\s+Pwr\s+Units|'
-    r'Motor\s+OL\s+Current|'
-    r'Start\s+Source|Speed\s+Reference|Speed\s+Ref\s+A\s+Sel|'
+    r'Motor\s+OL\s+Current|Stop\s+Mode|'
+    r'Start\s+Source\s*\d*|Speed\s+Reference\s*\d*|Speed\s+Ref\s+A\s+Sel|'
     r'Accel(?:eration)?\s*Time\s*\d*|Decel(?:eration)?\s*Time\s*\d*|'
-    r'Relay\s+Out\s+Sel|Preset\s+(?:Freq(?:uency)?|Speed)\s*\d*|'
+    r'Relay\s+Out\s*\d*\s*Sel|Preset\s+(?:Freq(?:uency)?|Speed)\s*\.?\s*\d*|'
     r'Maximum\s+(?:Freq(?:uency)?|Speed)|Compensation|'
-    r'DC\s+Brake\s+(?:Time|Level)|DB\s+Resistor\s+Type|'
+    r'DC\s+Brake\s+(?:Time|Level)|DB\s+Resistor\s+(?:Type|Sel)|Reverse\s+Disable|'
+    r'Digin\s+Termblk\s*\d*|Dig\s*In\s*Termblk\s*\d*|'
     r'Bus\s+Reg\s+Mode\s*A?|Param\s+Access\s+Lvl|Language|'
     r'Digital\s+(?:In|Out)\d*\s+Sel|Dig\s+Out\d*\s+Level)$',
     re.I,
@@ -564,15 +594,15 @@ _PF_CANONICAL_NAME_RE = re.compile(
 
 
 def _par_number_from_param(param: str) -> int | None:
-    """Extract PowerFlex Par # from 'P031 Motor NP Volts' or '31'."""
+    """Extract PowerFlex Par # from 'P031 Motor NP Volts', 'A544 …', or '31'."""
     s = (param or '').strip()
-    m = re.match(r'^P\s*0*(\d{1,3})\b', s, re.I)
+    m = re.match(r'^[PTA]\s*0*(\d{1,3})\b', s, re.I)
     if m:
         return int(m.group(1))
     m = re.match(r'^0*(\d{1,3})\s+', s)
     if m:
         return int(m.group(1))
-    key = re.sub(r'^P0*\d+\s+', '', s, flags=re.I).strip().lower()
+    key = re.sub(r'^[PTA]0*\d+\s+', '', s, flags=re.I).strip().lower()
     key = re.sub(r'\s+', ' ', key)
     if key in _PF_NAME_TO_PAR:
         return _PF_NAME_TO_PAR[key]
@@ -863,11 +893,17 @@ def extract_vfd_params_from_page_spatial(
 
     all_params: list[dict] = []
     seen: set[str] = set()
+    try:
+        page_w = float(page.rect.width) or page_w
+    except Exception:
+        pass
     for vid, left, right in bounds:
         col_text = _rebuild_text_from_words(page, x_min=left, x_max=right)
-        # Ensure the segment is labeled with this VFD even if title OCR missed in crop
-        if vid not in col_text.upper():
+        # Graphics tables: CAD words empty → OCR this column later if needed
+        # (caller may also run full table OCR; stamp device_id here when we have text)
+        if vid not in (col_text or '').upper():
             col_text = f'{vid}\n{col_text}'
+        before = len(all_params)
         all_params.extend(
             _extract_params_in_segment(
                 col_text,
@@ -877,6 +913,35 @@ def extract_vfd_params_from_page_spatial(
                 seen=seen,
             )
         )
+        # If column CAD text had no params, try Tesseract on that X band
+        col_real = sum(
+            1 for p in all_params[before:]
+            if (p.get('param') or '') != 'Device_ID' and is_canonical_vfd_param(str(p.get('param') or ''))
+        )
+        if col_real < 3:
+            try:
+                import pytesseract
+                from PIL import Image as _Image
+                x0f = max(0.0, left / page_w - 0.02)
+                x1f = min(1.0, right / page_w + 0.02)
+                ocr_col = _ocr_page_region_text(
+                    page, pytesseract, _Image,
+                    y0_frac=0.12, y1_frac=0.92, x0_frac=x0f, x1_frac=x1f,
+                )
+                if ocr_col.strip():
+                    if vid not in ocr_col.upper():
+                        ocr_col = f'{vid}\n{ocr_col}'
+                    all_params.extend(
+                        _extract_params_in_segment(
+                            ocr_col,
+                            device_id=vid,
+                            source_file=source_file,
+                            page=page_num,
+                            seen=seen,
+                        )
+                    )
+            except Exception:
+                pass
         # Device_ID inventory
         sk = f'ID|{vid}'
         if sk not in seen:
@@ -919,41 +984,59 @@ def _page_has_powerflex_table(text: str) -> bool:
 
 
 def _ocr_regions_for_vfd_ids(page, pytesseract, Image, mat_scale: float = 2.0) -> list[str]:
-    """OCR title-block strips for VFD tags drawn as graphics.
+    """OCR the same visual landmarks a human uses on Fortna VFD sheets:
 
-    Prefers bottom title-block 'VFD WIRING – (VFD312, VFD412)' over free-form
-    right/left strip noise (which invented VFD141711 etc.).
+    Red-box landmarks (any one is enough to identify the drive):
+      1) Title above the PowerFlex box:  VFD501B-2  +  (25B-D4P0N104/25-JBAA)
+      2) Terminal block under POWERFLEX 525 / 70 header
+      3) Param table: PAR # | PARAMETER NAME | PROGRAMMED VALUE  (P031…)
+      4) Bottom drawing title: VFD WIRING – (VFD312, VFD412)
+
+    Avoid full-height side strips (they invent junk like VFD141711 from page #s).
     """
     ids: list[str] = []
     seen: set[str] = set()
+
+    def _harvest(text: str) -> None:
+        if not text:
+            return
+        for vid in _vfd_ids_from_wiring_title(text):
+            if vid not in seen:
+                seen.add(vid)
+                ids.append(vid)
+        for m in _VFD_ID_RE.finditer(text):
+            vid = _normalize_vfd_id('VFD' + m.group(1))
+            if vid and vid not in seen:
+                seen.add(vid)
+                ids.append(vid)
+        # Catalog under title is a strong page marker (stored later via Device_ID)
+        # — also try to recover VFD from nearby text when catalog is present
+        if _VFD_CATALOG_RE.search(text) and not ids:
+            for m in re.finditer(r'VFD\s*([0-9]{2,4}[A-Z]{0,2}(?:-\d+)?)', text, re.I):
+                vid = _normalize_vfd_id('VFD' + m.group(1))
+                if vid and vid not in seen:
+                    seen.add(vid)
+                    ids.append(vid)
+
     try:
         mat = __import__('fitz').Matrix(mat_scale, mat_scale)
         pix = page.get_pixmap(matrix=mat, alpha=False)
         img = Image.frombytes('RGB', [pix.width, pix.height], pix.samples)
         w, h = img.size
-        # Bottom title block first (drawing title + VFD WIRING line)
-        # Top drive labels second (VFD312 above PowerFlex box)
-        # Avoid full-height right/left strips — they OCR page# noise as VFD IDs
+        # Landmark crops matching the red boxes on typical Fortna sheets
         regions = [
-            img.crop((0, int(h * 0.82), w, h)),                    # bottom title block
-            img.crop((0, 0, w, max(40, int(h * 0.22)))),           # top titles
-            img.crop((int(w * 0.05), int(h * 0.08), int(w * 0.95), int(h * 0.40))),  # drive boxes
+            img.crop((0, int(h * 0.82), w, h)),                          # 4) bottom VFD WIRING title
+            img.crop((int(w * 0.08), int(h * 0.06), int(w * 0.92), int(h * 0.28))),  # 1) VFD title + catalog
+            img.crop((int(w * 0.08), int(h * 0.18), int(w * 0.92), int(h * 0.58))),  # 2) POWERFLEX terminal box
+            img.crop((int(w * 0.08), int(h * 0.52), int(w * 0.92), int(h * 0.88))),  # 3) PAR # table
+            img.crop((0, 0, w, max(40, int(h * 0.18)))),                 # top strip fallback
         ]
         for region in regions:
             try:
                 text = pytesseract.image_to_string(region) or ''
             except Exception:
                 continue
-            # Prefer authoritative wiring title
-            for vid in _vfd_ids_from_wiring_title(text):
-                if vid not in seen:
-                    seen.add(vid)
-                    ids.append(vid)
-            for m in _VFD_ID_RE.finditer(text):
-                vid = _normalize_vfd_id('VFD' + m.group(1))
-                if vid and vid not in seen:
-                    seen.add(vid)
-                    ids.append(vid)
+            _harvest(text)
     except Exception:
         pass
     return ids
@@ -1039,7 +1122,22 @@ def _extract_params_in_segment(
             row['page'] = page
         found.append(row)
 
-    # Prefer structured PowerFlex table rows (Par | Name | Value)
+    # Prefer Fortna coded table rows first: P031 / T062 / A544 …
+    for m in _PF_CODED_LINE.finditer(text):
+        prefix = (m.group(1) or 'P').upper()
+        par_num = int(m.group(2))
+        pname = re.sub(r'\s+', ' ', m.group(3).strip())
+        pval = re.sub(r'\s+', ' ', m.group(4).strip())
+        unit = ''
+        um = re.search(r'\b(VAC|V|A|Amps?|Hz|HZ|Sec(?:s)?|s|RPM|HP|%)\s*$', pval, re.I)
+        if um:
+            unit = um.group(1)
+            core = pval[: um.start()].strip()
+            if core:
+                pval = core
+        _add(f'{prefix}{par_num:03d} {pname}', pval, unit, m.group(0))
+
+    # Bare "31 Motor NP Volts 460 VAC" (CAD rebuild / PF4 style)
     for m in _PF_LINE.finditer(text):
         par_num = m.group(1)
         pname = re.sub(r'\s+', ' ', m.group(2).strip())
@@ -1165,8 +1263,11 @@ def attach_print_params_to_drives(
     by_device_sources: dict[str, set[str]] = defaultdict(set)
 
     # device_id → votes for (page, source_file)
+    # Weight: wiring_title >> title_ocr >> param row. Avoid one noisy page (e.g. 27)
+    # winning every drive via equal Device_ID stamps.
     page_hits: dict[str, dict[int, int]] = defaultdict(lambda: defaultdict(int))
     file_hits: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+    page_hit_detail: dict[str, list[dict]] = defaultdict(list)  # for ocr log
 
     for ocr in ocr_results:
         if ocr.get('error'):
@@ -1188,24 +1289,39 @@ def attach_print_params_to_drives(
                         pg = int(p['page']) if p.get('page') is not None else None
                     except (TypeError, ValueError):
                         pg = None
+                    id_src = str(p.get('id_source') or 'title_ocr')
+                    # wiring_title = authoritative; plain title_ocr = weaker
+                    w = 10 if id_src == 'wiring_title' else 2
                     if pg:
-                        page_hits[vid][pg] += 3  # title-block Device_ID is strong
+                        page_hits[vid][pg] += w
+                        page_hit_detail[vid].append({
+                            'page': pg, 'weight': w, 'why': id_src,
+                            'file': Path(src).name if src else '',
+                        })
                     if src:
-                        file_hits[vid][src] += 3
+                        file_hits[vid][src] += w
             did = _normalize_vfd_id(str(p.get('device_id') or ''))
             if did:
                 ids.add(did)
                 try:
-                    pg = int(p['page']) if p.get('page') is not None else None
+                    pg = int(p.get('page')) if p.get('page') is not None else None
                 except (TypeError, ValueError):
                     pg = None
-                if pg:
-                    page_hits[did][pg] += 1
-                if src:
-                    file_hits[did][src] += 1
                 if p.get('param') != 'Device_ID':
+                    # Real PowerFlex param row on a page — medium confidence
+                    if pg:
+                        page_hits[did][pg] += 1
+                        page_hit_detail[did].append({
+                            'page': pg, 'weight': 1, 'why': 'param_row',
+                            'param': p.get('param'),
+                            'file': Path(src).name if src else '',
+                        })
+                    if src:
+                        file_hits[did][src] += 1
                     by_device[did].append(p)
                     by_device_sources[did].add(Path(src).name)
+        # Do NOT harvest free-floating VFD tokens from full_text into page_hits
+        # (that was collapsing many drives onto one page with OCR noise).
         for m in re.finditer(r'\bVFD[A-Z0-9]{2,8}\b', (text or '').upper()):
             vid = _normalize_vfd_id(m.group(0))
             if vid:
@@ -1331,6 +1447,7 @@ def attach_print_params_to_drives(
             d['print_page'] = int(best_page)
             # OCR page wins over ASC conveyor-page inherit for VFD rows
             d['drawing_page'] = int(best_page)
+            d['_page_votes'] = dict(page_hits.get(base) or page_hits.get(_normalize_vfd_id(name)) or {})
         elif not d.get('drawing_page') and d.get('print_page'):
             d['drawing_page'] = d['print_page']
         # Only promote to VFD when the *name* is a VFD tag — never P### conveyors
@@ -1387,6 +1504,7 @@ def attach_print_params_to_drives(
     # After OCR: only drives that actually matched a PDF keep print_page.
     # Clear any leftover ASC conveyor-page numbers on VFD rows that never OCR-matched
     # (prevents "all VFDs on page 18" from parent P### layout sheets).
+    log_rows: list[dict] = []
     for d in drives:
         name = (d.get('name') or '')
         if not re.match(r'^VFD\d', name, re.I):
@@ -1401,6 +1519,65 @@ def attach_print_params_to_drives(
             d['drawing_page'] = None
             d['print_page'] = None
             d['print_file'] = ''
+        base = _normalize_vfd_id(_base_equip_name(name))
+        log_rows.append({
+            'name': name,
+            'base': base,
+            'print_page': d.get('print_page'),
+            'print_file': Path(str(d.get('print_file') or '')).name,
+            'param_count': d.get('print_param_count') or 0,
+            'vfd_from_print': bool(d.get('vfd_from_print')),
+            'page_votes': d.get('_page_votes') or dict(page_hits.get(base) or {}),
+            'page_hit_detail': list(page_hit_detail.get(base) or [])[:20],
+        })
+        d.pop('_page_votes', None)
+
+    # Write debug log next to exports so we can see why everything landed on page 27
+    try:
+        log_dir = REPO_ROOT / 'exports' / 'ocr-logs'
+        log_dir.mkdir(parents=True, exist_ok=True)
+        from datetime import datetime as _dt
+        stamp = _dt.now().strftime('%Y%m%d-%H%M%S')
+        log_path = log_dir / f'vfd_page_assign_{stamp}.json'
+        # Summary: which page numbers won how often
+        from collections import Counter as _Counter
+        winners = _Counter(
+            str(r.get('print_page')) for r in log_rows if r.get('print_page')
+        )
+        log_path.write_text(
+            json.dumps({
+                'generated': stamp,
+                'drive_count': len(log_rows),
+                'page_winner_histogram': dict(winners.most_common()),
+                'note': (
+                    'If one page dominates (e.g. all 27), check page_hit_detail weights. '
+                    'wiring_title=10, title_ocr=2, param_row=1. ASC drawing pages are cleared '
+                    'for VFDs without OCR.'
+                ),
+                'drives': log_rows,
+            }, indent=2),
+            encoding='utf-8',
+        )
+        # Also a short human-readable summary
+        (log_dir / f'vfd_page_assign_{stamp}.txt').write_text(
+            '\n'.join([
+                f'VFD print-page assignment log {stamp}',
+                f'Drives: {len(log_rows)}',
+                f'Page histogram: {dict(winners.most_common())}',
+                '',
+                'name | page | votes | file',
+                *([
+                    f"{r['name']}: page={r.get('print_page')} votes={r.get('page_votes')} "
+                    f"file={r.get('print_file')} params={r.get('param_count')}"
+                    for r in log_rows
+                ]),
+                '',
+                f'Full JSON: {log_path}',
+            ]),
+            encoding='utf-8',
+        )
+    except Exception:
+        pass
 
     return drives
 
@@ -1438,6 +1615,52 @@ def summarize_points_by_bank(points: list[dict]) -> list[dict]:
                 'machine_name': p.get('machine_name') or '',
             })
     return sorted(by_bank.values(), key=lambda x: (len(x['bank']), x['bank']))
+
+
+def _count_real_vfd_params(params: list[dict]) -> int:
+    """Count PowerFlex table rows (exclude Device_ID markers)."""
+    n = 0
+    for p in params or []:
+        if not isinstance(p, dict):
+            continue
+        if (p.get('param') or '') == 'Device_ID':
+            continue
+        if is_canonical_vfd_param(str(p.get('param') or '')):
+            n += 1
+    return n
+
+
+def _ocr_page_region_text(
+    page,
+    pytesseract,
+    Image,
+    *,
+    y0_frac: float = 0.0,
+    y1_frac: float = 1.0,
+    x0_frac: float = 0.0,
+    x1_frac: float = 1.0,
+    mat_scale: float = 2.0,
+) -> str:
+    """Tesseract a fractional crop of a PDF page (graphics param tables)."""
+    try:
+        mat = __import__('fitz').Matrix(mat_scale, mat_scale)
+        pix = page.get_pixmap(matrix=mat, alpha=False)
+        img = Image.frombytes('RGB', [pix.width, pix.height], pix.samples)
+        w, h = img.size
+        x0 = max(0, int(w * x0_frac))
+        x1 = min(w, int(w * x1_frac))
+        y0 = max(0, int(h * y0_frac))
+        y1 = min(h, int(h * y1_frac))
+        if x1 <= x0 or y1 <= y0:
+            return ''
+        crop = img.crop((x0, y0, x1, y1))
+        if crop.width > 2200:
+            ratio = 2200 / crop.width
+            resample = getattr(getattr(Image, 'Resampling', Image), 'BILINEAR', Image.BILINEAR)
+            crop = crop.resize((int(crop.width * ratio), int(crop.height * ratio)), resample)
+        return _tesseract_page(crop, pytesseract)
+    except Exception:
+        return ''
 
 
 def _tesseract_page(img, pytesseract) -> str:
@@ -1562,6 +1785,13 @@ def ocr_pdf_tokens(
                 if vid not in page_vfd_ids:
                     page_vfd_ids.append(vid)
 
+            # Always try title-region OCR when native might be CAD-only (IDs are graphics)
+            if not page_vfd_ids:
+                page_vfd_ids = _ocr_regions_for_vfd_ids(page, pytesseract, Image)
+                if page_vfd_ids:
+                    pages_title_ocr += 1
+                    page_mode = (page_mode + '+vfd') if page_mode else 'vfd'
+
             pages_text.append(native)
             # PDF page index is 1-based (i+1). Viewer #page=N matches this.
             # Multi-VFD sheets (typically 2 drives) share this same page number.
@@ -1583,7 +1813,85 @@ def ocr_pdf_tokens(
                     device_ids=page_vfd_ids,
                     page=pdf_page_1based,
                 )
-            # Stamp every param + a Device_ID row so attach step gets page + file
+
+            # Graphics param tables: CAD word rebuild is empty → OCR the PAR # region.
+            # Typical Fortna sheet: title top, terminal mid, table lower half.
+            if _count_real_vfd_params(page_params) < 3 and (
+                page_vfd_ids
+                or _page_has_powerflex_table(native)
+                or 'POWERFLEX' in (native or '').upper()
+                or 'VFD' in (native or '').upper()
+            ):
+                ocr_params: list[dict] = []
+                ids_unique = list(dict.fromkeys(page_vfd_ids or []))
+                if len(ids_unique) >= 2:
+                    # Side-by-side VFDs: OCR left/right and bind each half to one ID
+                    halves = [
+                        (ids_unique[0], 0.02, 0.50),
+                        (ids_unique[1], 0.50, 0.98),
+                    ]
+                    for extra in ids_unique[2:]:
+                        halves.append((extra, 0.05, 0.95))
+                    for vid, x0, x1 in halves:
+                        col = _ocr_page_region_text(
+                            page, pytesseract, Image,
+                            y0_frac=0.12, y1_frac=0.92, x0_frac=x0, x1_frac=x1,
+                        )
+                        if not col.strip():
+                            continue
+                        part = extract_vfd_params_from_text(
+                            f'{vid}\n{col}',
+                            str(pdf_path),
+                            device_ids=[vid],
+                            page=pdf_page_1based,
+                        )
+                        for p in part:
+                            if (p.get('param') or '') != 'Device_ID' and not p.get('device_id'):
+                                p['device_id'] = vid
+                        ocr_params.extend(part)
+                else:
+                    # Single VFD (or unknown): OCR full lower param table
+                    ocr_text = _ocr_page_region_text(
+                        page, pytesseract, Image,
+                        y0_frac=0.40, y1_frac=0.92, x0_frac=0.05, x1_frac=0.95,
+                    )
+                    if ocr_text.strip():
+                        only = ids_unique[0] if ids_unique else None
+                        part = extract_vfd_params_from_text(
+                            (f'{only}\n' if only else '') + ocr_text,
+                            str(pdf_path),
+                            device_ids=ids_unique or None,
+                            page=pdf_page_1based,
+                        )
+                        if only:
+                            for p in part:
+                                if (p.get('param') or '') != 'Device_ID' and not p.get('device_id'):
+                                    p['device_id'] = only
+                        ocr_params.extend(part)
+
+                if _count_real_vfd_params(ocr_params) > _count_real_vfd_params(page_params):
+                    ids_only = [
+                        p for p in page_params if (p.get('param') or '') == 'Device_ID'
+                    ]
+                    table_rows = [
+                        p for p in ocr_params if (p.get('param') or '') != 'Device_ID'
+                    ]
+                    page_params = ids_only + table_rows
+                    page_mode = (page_mode or 'text') + '+tableocr'
+                    pages_ocr += 1
+
+            # When exactly one VFD on page, stamp any untagged param rows to it
+            if n_ids == 1 and page_vfd_ids:
+                only = page_vfd_ids[0]
+                for p in page_params:
+                    if (p.get('param') or '') == 'Device_ID':
+                        continue
+                    if not p.get('device_id'):
+                        p['device_id'] = only
+
+            # Stamp Device_ID only for IDs found on THIS page (title/wiring).
+            # Mark source so attach can weight title hits higher than free-text noise.
+            wiring_ids = set(_vfd_ids_from_wiring_title(native or ''))
             for vid in page_vfd_ids or []:
                 page_params.append({
                     'param': 'Device_ID',
@@ -1591,6 +1899,7 @@ def ocr_pdf_tokens(
                     'device_id': vid,
                     'page': pdf_page_1based,
                     'source': str(pdf_path),
+                    'id_source': 'wiring_title' if vid in wiring_ids else 'title_ocr',
                 })
             all_vfd_params.extend(page_params)
             _page_progress(pdf_page_1based, n, page_mode)
@@ -2090,7 +2399,14 @@ def cmd_banks(run_dir: Path, *, sample_points: int = 8) -> dict:
             'print_page': page,
             'print_file': d.get('print_file') or '',
             'is_vfd': is_vfd,
-            'vfd_from_print': bool(d.get('print_param_count')) and is_vfd,
+            # Title-only OCR still counts (print_page set, params may be 0)
+            'vfd_from_print': bool(
+                is_vfd and (
+                    d.get('print_param_count')
+                    or d.get('print_page')
+                    or d.get('vfd_from_print')
+                )
+            ),
             'has_real_drive_id': is_real_drive_id(d.get('drive') or ''),
         })
 
@@ -2437,7 +2753,13 @@ def cmd_ocr_print_sets(sets: list[dict], run_dir: Path | None) -> dict:
         if is_vfd_name(name) or d.get('equipment_kind') == 'vfd':
             d['is_vfd'] = True
             d['equipment_kind'] = 'vfd'
-            d['vfd_from_print'] = bool(d.get('print_param_count'))
+            # Keep title-only page hits (params may be 0) — do not clear vfd_from_print
+            d['vfd_from_print'] = bool(
+                d.get('print_param_count')
+                or d.get('print_page')
+                or d.get('drawing_page')
+                or d.get('vfd_from_print')
+            )
         else:
             d['is_vfd'] = False
             d['vfd_from_print'] = False

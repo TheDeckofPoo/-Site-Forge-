@@ -191,9 +191,11 @@ class AutogenInput:
     pe_devices: list = field(default_factory=list)
     # Optional gold programs to merge (keys from OPTIONAL_PROGRAMS)
     include_programs: list = field(default_factory=list)
-    # Sys gold is OK (timers/nulls). Gold IO_MAP is Excel CP_I/CP_O — OFF by default.
-    # Default IO_MAP is built from RUN/tar.gz Conveyor.asc banks + EIP word_map.
+    # Sys gold is OK (timers/nulls).
+    # include_io_map: emit RUN/tar.gz IO_MAP program (any site). OFF = no IO_MAP in L5X.
+    # include_io_map_gold: optional Greensboro Excel merge (CLI only; blocked if site is CP1–CP4).
     include_sys: bool = True
+    include_io_map: bool = True
     include_io_map_gold: bool = False
 
 
@@ -1913,11 +1915,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # Prefer Fortna UDT stubs for device classes that IO_MAP addresses with .I./.O.
         # (BOOL stubs cause Studio 'Invalid member specifier' on ES500.I.ES_OK etc.)
         udt_block = None
-        if (
+        # ES_UDT for e-stops AND for MCR/ESR aux contacts that IO_MAP addresses as .I.ES_OK.
+        # Names may be T_1MCR1_AUX (digit-leading Fortna tags get T_ prefix).
+        needs_es_udt = (
             dtype_u in ("estop", "e-stop", "e_stop", "es")
             or re.match(r"^ES\d", tname, re.I)
             or re.match(r"^ESLS", tname, re.I)
-        ):
+            or re.match(r"^T_\d*ES\d", tname, re.I)  # T_1ES, T_4ES…
+            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", tname, re.I)  # T_1MCR1_AUX, T_4ESR3_AUX
+            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", raw, re.I)
+        )
+        if needs_es_udt:
             src = (
                 extract_tag_block(library_text, "NO_ES")
                 or extract_tag_block(library_text, "CP5_ES")
@@ -1998,12 +2006,16 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     if "PE_Logic" in r["text"] or "Full_PE" in r["text"]:
                         pe_wired_count += 1
 
-        # Excel-style: Main calls Fast + Jam + PE + Flt every scan
-        main_rungs = [
+        # Slow = Jam + PE + Flt only. Fast = Fast_Conv only.
+        # Putting Fast_Conv in BOTH Slow and Fast caused Studio:
+        #   "Duplicate AOI Backing Tag Reference …_Conv_AOI.Fast"
+        main_slow = [
+            _rung_xml(0, "JSR(Conv_Jam,0);", "Conv_Jam"),
+            _rung_xml(1, "JSR(Conv_PE,0);", "Conv_PE"),
+            _rung_xml(2, "JSR(Conv_Flt,0);", "Conv_Flt"),
+        ]
+        main_fast = [
             _rung_xml(0, "JSR(Conv_Fast,0);", "Conv_Fast"),
-            _rung_xml(1, "JSR(Conv_Jam,0);", "Conv_Jam"),
-            _rung_xml(2, "JSR(Conv_PE,0);", "Conv_PE"),
-            _rung_xml(3, "JSR(Conv_Flt,0);", "Conv_Flt"),
         ]
 
         prog_slow = f"{area}_Slow" if area.endswith("_Area") else f"{area}_Area_Slow"
@@ -2016,16 +2028,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f'Disabled="false" UseAsFolder="false">'
             f"<Tags/>"
             f"<Routines>"
-            f'{routine("Main_Routine", main_rungs)}'
-            f'{routine("Conv_Fast", rungs_fast)}'
+            f'{routine("Main_Routine", main_slow)}'
             f'{routine("Conv_Jam", rungs_jam)}'
             f'{routine("Conv_PE", rungs_pe)}'
             f'{routine("Conv_Flt", rungs_flt)}'
             f"</Routines></Program>"
         )
-        main_fast = [
-            _rung_xml(0, "JSR(Conv_Fast,0);", "Conv_Fast"),
-        ]
         programs_xml.append(
             f'<Program Name="{prog_fast}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'
@@ -2059,7 +2067,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         return None
 
     def _device_member(device_type: str, tname: str, direction: str) -> str:
-        """Logix tag member for OTE/XIC on the field-device side."""
+        """Logix tag member for OTE/XIC on the field-device side.
+
+        Only use .I.ES_OK / .I.PE_Clear when the tag is (or will be) a UDT with
+        those members. Plain BOOL tags must be referenced bare — Studio error:
+        'Invalid member specifier' if you write BOOL.I.ES_OK.
+        """
         dt = (device_type or "").lower()
         if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", tname, re.I):
             return f"{tname}.I.PE_Clear"
@@ -2067,7 +2080,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             dt in ("estop", "e-stop", "e_stop", "es")
             or re.match(r"^ES\d", tname, re.I)
             or re.match(r"^ESLS", tname, re.I)
-            or re.search(r"MCR\d|ESR\d", tname, re.I)
+            or re.match(r"^T_\d*ES\d", tname, re.I)
+            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", tname, re.I)
         ):
             return f"{tname}.I.ES_OK"
         # BOOL / simple devices (PB, motor aux, digital, beacon force bit, …)
@@ -2153,10 +2167,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 )
             io_map_unmapped += 1
 
-    # --- Gold program exports: Sys (default); gold IO_MAP only if user opts in ---
-    # HARD GUARD: Greensboro gold Excel IO_MAP is CP5/CP6/CP7 only.
-    # If this site's word_map uses CP1–CP4 (ORDENCP4 etc.), never merge gold IO_MAP
-    # even if the UI checkbox was left on — it produces 800+ undefined RIO tags.
+    # --- Gold program exports: Sys (default). Gold Excel IO_MAP is CLI-only. ---
+    # UI "IO_MAP" checkbox → include_io_map (RUN banks). Gold Excel is separate.
+    want_io_map = bool(getattr(inp, "include_io_map", True))
     want_gold_io = bool(getattr(inp, "include_io_map_gold", False))
     site_rios = {
         str((info or {}).get("rio_name") or "").strip().upper()
@@ -2171,9 +2184,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             want_gold_io = False
             gold_io_blocked = True
             _emit_progress(
-                "Gold Excel IO_MAP blocked — this site uses CP1–CP4 RIO (RUN map applied)",
+                "Gold Excel IO_MAP blocked — this site uses CP1–CP4 (use RUN IO_MAP)",
                 35,
             )
+    # Gold Excel replaces RUN map when allowed; otherwise RUN map if include_io_map
+    if want_gold_io:
+        want_io_map = True  # gold is an IO_MAP
 
     gold_programs = resolve_program_exports(
         list(getattr(inp, "include_programs", None) or []),
@@ -2241,7 +2257,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         programs_xml.append(gp["program_xml"])
         gold_program_names.append(gname)
 
-    if not gold_io_map_used:
+    if not gold_io_map_used and want_io_map:
         # RUN/tar.gz map: CP_I (inputs) + CP_O (outputs) from Conveyor.asc + EIP word_map
         main_io_rungs = [
             _rung_xml(0, "JSR(CP_I,0);", "Inputs: CPxRIOn:I.Data → device tags (from RUN)"),
@@ -2257,6 +2273,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f'{routine("CP_O", cp_o_rungs)}'
             f"</Routines></Program>"
         )
+    elif not want_io_map and not gold_io_map_used:
+        _emit_progress("IO_MAP omitted (checkbox off)", 40)
 
     # Modules section — lightweight aliases from IO sheet (full module XML from lib is complex)
     def _extract_module_xml(lib: str, mod_name: str) -> str | None:
@@ -2642,21 +2660,25 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_source": (
             "gold_program_excel"
             if gold_io_map_used
-            else "run_tar_gz_banks_eip"
+            else ("run_tar_gz_banks_eip" if want_io_map else "omitted")
         ),
         "io_map_note": (
-            "Gold Excel IO_MAP (CP_I/CP_O from library) — Greensboro CP5/CP6/CP7 map; "
-            "does NOT use this site's tar.gz banks. Leave OFF for non-Greensboro panels."
+            "Gold Excel IO_MAP (library) — Greensboro CP5/CP6/CP7 only"
             if gold_io_map_used
             else (
-                "Built from RUN Conveyor.asc banks + EIP word_map → CPxRIOn modules"
-                + (
-                    " (gold Excel IO_MAP was requested but blocked — site is CP1–CP4)"
-                    if gold_io_blocked
-                    else ""
+                "Omitted — IO_MAP checkbox was off"
+                if not want_io_map
+                else (
+                    "Built from RUN Conveyor.asc banks + EIP word_map → CPxRIOn modules"
+                    + (
+                        " (gold Excel blocked — site is CP1–CP4)"
+                        if gold_io_blocked
+                        else ""
+                    )
                 )
             )
         ),
+        "include_io_map": want_io_map or gold_io_map_used,
         "gold_io_map_blocked": gold_io_blocked,
         "eip_modules_filtered_to_word_map": sorted(used_rios) if used_rios else [],
         "gold_programs": gold_program_names,
@@ -3069,14 +3091,24 @@ def main() -> int:
         help="Do not merge gold Sys_Program.L5X",
     )
     p_run.add_argument(
+        "--with-io-map",
+        action="store_true",
+        help="Include RUN/tar.gz IO_MAP program (default when --no-io-map not set)",
+    )
+    p_run.add_argument(
+        "--no-io-map",
+        action="store_true",
+        help="Omit IO_MAP program from the L5X entirely",
+    )
+    p_run.add_argument(
         "--no-io-map-gold",
         action="store_true",
-        help="(default) Use RUN/tar.gz IO_MAP — do not merge gold Excel IO_MAP_Program.L5X",
+        help="Do not merge gold Excel IO_MAP_Program.L5X (default)",
     )
     p_run.add_argument(
         "--io-map-gold",
         action="store_true",
-        help="OPTIONAL: merge gold Excel IO_MAP_Program.L5X (replaces RUN bank mapping)",
+        help="OPTIONAL CLI: merge gold Excel IO_MAP_Program.L5X (Greensboro CP5–CP7)",
     )
     p_run.add_argument(
         "--workbook",
@@ -3128,8 +3160,12 @@ def main() -> int:
                 x.strip() for x in str(raw_inc).replace(";", ",").split(",") if x.strip()
             ]
             inp.include_sys = not bool(getattr(args, "no_sys", False))
-            # Default: RUN/tar.gz IO_MAP. Gold Excel only with --io-map-gold.
-            # --no-io-map-gold is accepted as explicit off (legacy flag).
+            # IO_MAP on/off (RUN banks). Default ON unless --no-io-map.
+            if bool(getattr(args, "no_io_map", False)):
+                inp.include_io_map = False
+            else:
+                inp.include_io_map = True
+            # Gold Excel only with --io-map-gold (CLI advanced)
             if bool(getattr(args, "io_map_gold", False)):
                 inp.include_io_map_gold = True
             else:

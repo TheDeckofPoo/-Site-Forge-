@@ -855,11 +855,15 @@ function createWindow() {
           args.push('--include-programs', includePrograms.join(','));
         }
         if (data?.noSys) args.push('--no-sys');
-        // Default engine = RUN/tar.gz IO_MAP. Gold Excel only when user opts in.
+        // IO_MAP: include RUN bank map when checked; omit program when unchecked.
+        // Gold Excel remains CLI-only (--io-map-gold).
+        if (data?.noIoMap || data?.includeIoMap === false) {
+          args.push('--no-io-map');
+        } else {
+          args.push('--with-io-map');
+        }
         if (data?.ioMapGold || data?.includeIoMapGold) {
           args.push('--io-map-gold');
-        } else {
-          args.push('--no-io-map-gold');
         }
         // Dashboard workbook (Inputdata replacement) — save payload if provided
         let workbookPath = data?.workbookPath || AUTOGEN_WORKBOOK_PATH;

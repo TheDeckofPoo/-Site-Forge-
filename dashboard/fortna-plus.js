@@ -1210,7 +1210,8 @@ function rebuildDeviceList() {
       });
     }
   }
-  // Index OCR print params by VFD base (VFD444) so AUX/EN siblings can share
+  // Index OCR print params + page by VFD base so AUX/EN siblings can share
+  // Prefer rows that already have a Python-assigned print_page.
   const printByVfdBase = new Map();
   for (const d of ioState.drives || []) {
     const nm = d.name || '';
@@ -1219,13 +1220,18 @@ function rebuildDeviceList() {
     const list = filterVfdPrintParamsClient(
       d.print_param_list || Object.values(d.print_params || {}),
     );
-    if (list.length && !printByVfdBase.has(base)) {
+    const page = d.print_page || d.drawing_page || null;
+    if (!list.length && page == null && !d.vfd_from_print) continue;
+    const prev = printByVfdBase.get(base);
+    const score = (page != null ? 100 : 0) + list.length;
+    const prevScore = prev ? ((prev.page != null ? 100 : 0) + (prev.list?.length || 0)) : -1;
+    if (!prev || score >= prevScore) {
       printByVfdBase.set(base, {
         list,
         params: d.print_params || {},
         sources: d.print_sources || [],
         file: d.print_file || '',
-        page: d.drawing_page || d.print_page || null,
+        page: page != null ? Number(page) : null,
       });
     }
   }
@@ -1246,16 +1252,20 @@ function rebuildDeviceList() {
       cleanedPrint = shared.list;
     }
     const isVfd = type.key === 'vfd' || (/^VFD/i.test(name) && !/^P\d/i.test(name));
+    // Prefer this row's Python page; only fall back to sibling base page
+    const ownPage = d.print_page || d.drawing_page || null;
     const fromOcr = !!(
       d.vfd_from_print
       || cleanedPrint.length
+      || ownPage != null
       || (d.print_sources && d.print_sources.length)
+      || shared?.page != null
       || shared?.list?.length
     );
     // VFD Print # = OCR PDF page only (never conveyor layout page from RUN)
     const page = resolveDevicePrintPage(
       name,
-      fromOcr ? (d.print_page || d.drawing_page || shared?.page || null) : null,
+      fromOcr ? (ownPage != null ? ownPage : (shared?.page || null)) : null,
       { fromOcr, isVfd },
     );
     const merged = {
@@ -1872,6 +1882,11 @@ function updateOcrProgressUI(p) {
 /**
  * Merge OCR print VFD parameters into existing tar.gz drive list.
  * Keeps all RUN devices; only adds/updates print_params on matches.
+ *
+ * CRITICAL: Python attach_print_params_to_drives already assigned print_page.
+ * The UI must NOT re-vote pages from raw print_vfd_params — that used to assign
+ * every orphan param (no device_id) to ALL VFDs on the PDF, collapsing PRINT #
+ * to one page (e.g. all 27). Trust ocrResult.drives first.
  */
 function mergeOcrPrintParamsIntoDrives(ocrResult) {
   if (!ocrResult) return;
@@ -1897,149 +1912,151 @@ function mergeOcrPrintParamsIntoDrives(ocrResult) {
     .replace(/(_EN|_AUX|_FLT|_RUN|_OK|_CMD|_REF|_FB)$/i, '')
     .toUpperCase();
 
-  // Index OCR drive print params by base name
-  const byBase = new Map();
-  for (const d of ocrDrives) {
-    const b = baseName(d.base_name || d.name);
-    if (!b) continue;
-    const prev = byBase.get(b) || { print_param_list: [], print_sources: [], print_params: {} };
-    const list = [...(prev.print_param_list || []), ...(d.print_param_list || [])];
-    const sources = [...new Set([...(prev.print_sources || []), ...(d.print_sources || [])])];
-    byBase.set(b, {
-      print_param_list: list,
-      print_sources: sources,
-      print_params: { ...(prev.print_params || {}), ...(d.print_params || {}) },
-      print_param_count: list.length || Object.keys(d.print_params || {}).length,
-      vfd_from_print: !!(d.vfd_from_print || d.print_param_count),
-    });
-  }
-  // Free-floating print VFD params: prefer per-param device_id (title-block OCR),
-  // else Device_ID entries on the same source file (PowerFlex tables on drawings).
   const cleanVfdId = (v) => {
     let id = String(v || '').replace(/[_\s\-]/g, '').toUpperCase();
     id = id.replace(/(_EN|_AUX|_FLT|_RUN|_OK|_CMD|_REF|_FB)$/i, '');
     if (!id) return '';
     if (!id.startsWith('VFD')) id = `VFD${id}`;
-    // Plausible Fortna drives only: VFD312, VFD500A, VFD501B1 — reject OCR junk VFD141711
     return /^VFD\d{2,4}(?:[A-Z]{1,2}\d?)?$/i.test(id) ? id : '';
   };
 
-  const idsByFile = new Map(); // file -> Set of VFD ids
-  for (const p of printVfd) {
-    if ((p.param || '') === 'Device_ID' && p.value) {
-      const id = cleanVfdId(p.value);
-      if (!id) continue;
-      const f = p.source || p.file || '_';
-      if (!idsByFile.has(f)) idsByFile.set(f, new Set());
-      idsByFile.get(f).add(id);
-      if (!byBase.has(id)) {
-        byBase.set(id, { print_param_list: [], print_sources: [], print_params: {}, print_param_count: 0 });
-      }
-    }
-    // device_id stamped on param rows during OCR
-    if (p.device_id) {
-      const id = cleanVfdId(p.device_id);
-      if (id && !byBase.has(id)) {
-        byBase.set(id, { print_param_list: [], print_sources: [], print_params: {}, print_param_count: 0 });
-      }
-    }
-  }
-  for (const p of printVfd) {
-    if ((p.param || '') === 'Device_ID') continue;
-    const f = p.source || p.file || '_';
-    const fromParam = p.device_id ? cleanVfdId(p.device_id) : '';
-    const ids = fromParam
-      ? [fromParam]
-      : (idsByFile.get(f) && idsByFile.get(f).size
-        ? [...idsByFile.get(f)]
-        : []);
-    for (const id of ids) {
-      if (!id || !/^VFD/i.test(id)) continue;
-      const prev = byBase.get(id) || { print_param_list: [], print_sources: [], print_params: {} };
-      prev.print_param_list = [...(prev.print_param_list || []), p];
-      prev.print_params[p.param || 'param'] = p;
-      prev.print_param_count = prev.print_param_list.length;
-      prev.vfd_from_print = true;
-      if (f && f !== '_') prev.print_sources = [...new Set([...(prev.print_sources || []), f])];
-      byBase.set(id, prev);
+  // --- Prefer Python-assigned page/params per drive (authoritative) ---
+  const byExactName = new Map(); // full name VFD312_EN → drive row from OCR
+  const byBase = new Map(); // VFD312 → best page/params from OCR drives
+  for (const d of ocrDrives) {
+    const nm = (d.name || '').toUpperCase();
+    if (!nm) continue;
+    byExactName.set(nm, d);
+    const b = cleanVfdId(baseName(d.base_name || d.name)) || baseName(d.base_name || d.name);
+    if (!b || !/^VFD/i.test(b)) continue;
+    const prev = byBase.get(b) || {};
+    // Prefer row that has a print_page; then more params
+    const prevScore = (prev.print_page ? 100 : 0) + (prev.print_param_count || 0);
+    const score = (d.print_page ? 100 : 0) + (d.print_param_count || 0);
+    if (!byBase.has(b) || score >= prevScore) {
+      byBase.set(b, {
+        print_param_list: d.print_param_list || Object.values(d.print_params || {}),
+        print_params: d.print_params || {},
+        print_param_count: d.print_param_count || 0,
+        print_sources: d.print_sources || [],
+        print_file: d.print_file || '',
+        print_page: d.print_page || d.drawing_page || null,
+        drawing_page: d.drawing_page || d.print_page || null,
+        vfd_from_print: !!(d.vfd_from_print || d.print_param_count || d.print_page),
+      });
     }
   }
 
+  // Device-scoped raw params only (must have device_id). Never broadcast file-wide.
+  for (const p of printVfd) {
+    if ((p.param || '') === 'Device_ID') continue;
+    const id = cleanVfdId(p.device_id || '');
+    if (!id) continue; // orphan param — ignore (was the page-27 collapse)
+    const prev = byBase.get(id) || {
+      print_param_list: [], print_params: {}, print_param_count: 0,
+      print_sources: [], print_page: null, vfd_from_print: false,
+    };
+    // Only add params if this base didn't already get a Python page assignment
+    // with a full table — still OK to fill params when page is set but params empty
+    const list = [...(prev.print_param_list || []), p];
+    prev.print_param_list = list;
+    prev.print_params = { ...(prev.print_params || {}), [p.param || 'param']: p };
+    prev.print_param_count = list.length;
+    prev.vfd_from_print = true;
+    if (p.source) {
+      prev.print_sources = [...new Set([...(prev.print_sources || []), p.source])];
+    }
+    // Only set page from param if Python never assigned one
+    if (prev.print_page == null && p.page != null && Number(p.page) > 0) {
+      prev.print_page = Number(p.page);
+      prev.drawing_page = Number(p.page);
+    }
+    byBase.set(id, prev);
+  }
+
   let merged = 0;
-  const matchedIds = new Set();
+  let pagesFromPython = 0;
   for (const d of ioState.drives || []) {
+    const nm = (d.name || '').toUpperCase();
     const b = baseName(d.base_name || d.name);
     const bNorm = cleanVfdId(b) || b;
-    const hit = byBase.get(b) || byBase.get(bNorm) || byBase.get(cleanVfdId(d.name));
-    if (!hit || !(hit.print_param_count || hit.print_param_list?.length)) continue;
-    const cleaned = filterVfdPrintParamsClient(hit.print_param_list || Object.values(hit.print_params || {}));
-    if (!cleaned.length) continue;
-    d.print_params = Object.fromEntries(cleaned.map((p) => [p.param, p]));
-    d.print_param_list = cleaned;
-    d.print_param_count = cleaned.length;
-    d.print_sources = hit.print_sources || d.print_sources || [];
-    d.vfd_from_print = true;
-    // Capture print file/page — majority vote when multiple OCR hits disagree
-    const pageVotes = new Map();
-    const fileVotes = new Map();
-    for (const p of cleaned) {
-      if (p.page != null && Number(p.page) > 0) {
-        const pg = Number(p.page);
-        pageVotes.set(pg, (pageVotes.get(pg) || 0) + 1);
-      }
-      if (p.source) fileVotes.set(p.source, (fileVotes.get(p.source) || 0) + 1);
+    // Exact name first (VFD312_EN), then base (VFD312)
+    const exact = byExactName.get(nm);
+    const hit = exact
+      ? {
+          print_param_list: exact.print_param_list || Object.values(exact.print_params || {}),
+          print_params: exact.print_params || {},
+          print_param_count: exact.print_param_count || 0,
+          print_sources: exact.print_sources || [],
+          print_file: exact.print_file || '',
+          print_page: exact.print_page || exact.drawing_page || null,
+          drawing_page: exact.drawing_page || exact.print_page || null,
+          vfd_from_print: !!(exact.vfd_from_print || exact.print_page || exact.print_param_count),
+        }
+      : (byBase.get(b) || byBase.get(bNorm) || byBase.get(cleanVfdId(d.name)));
+
+    if (!hit) continue;
+    const hasPage = hit.print_page != null && Number(hit.print_page) > 0;
+    const cleaned = filterVfdPrintParamsClient(
+      hit.print_param_list || Object.values(hit.print_params || {}),
+    );
+    if (!hasPage && !cleaned.length && !hit.vfd_from_print) continue;
+
+    if (cleaned.length) {
+      d.print_params = Object.fromEntries(cleaned.map((p) => [p.param, p]));
+      d.print_param_list = cleaned;
+      d.print_param_count = cleaned.length;
+    } else if (hit.print_param_count) {
+      d.print_param_count = hit.print_param_count;
+      d.print_param_list = hit.print_param_list || [];
+      d.print_params = hit.print_params || {};
     }
-    if (pageVotes.size) {
-      let bestPg = null;
-      let bestN = -1;
-      for (const [pg, n] of pageVotes) {
-        if (n > bestN || (n === bestN && (bestPg == null || pg > bestPg))) {
-          bestPg = pg;
-          bestN = n;
+    d.print_sources = hit.print_sources || d.print_sources || [];
+    if (hit.print_file) d.print_file = hit.print_file;
+    // TRUST Python / exact-drive page — do not re-vote from cleaned params
+    if (hasPage) {
+      d.print_page = Number(hit.print_page);
+      d.drawing_page = Number(hit.print_page);
+      pagesFromPython += 1;
+    } else if (cleaned.length) {
+      // Fallback only: params scoped to this device_id
+      const pageVotes = new Map();
+      for (const p of cleaned) {
+        if (p.page != null && Number(p.page) > 0) {
+          const pg = Number(p.page);
+          pageVotes.set(pg, (pageVotes.get(pg) || 0) + 1);
         }
       }
-      d.print_page = bestPg;
-      d.drawing_page = bestPg;
-    }
-    if (fileVotes.size) {
-      let bestF = '';
-      let bestN = -1;
-      for (const [f, n] of fileVotes) {
-        if (n > bestN) { bestF = f; bestN = n; }
+      if (pageVotes.size) {
+        let bestPg = null;
+        let bestN = -1;
+        for (const [pg, n] of pageVotes) {
+          if (n > bestN) { bestPg = pg; bestN = n; }
+        }
+        d.print_page = bestPg;
+        d.drawing_page = bestPg;
       }
-      d.print_file = bestF;
     }
     if (!d.drawing_page && d.print_page) d.drawing_page = d.print_page;
-    // Only reclassify as VFD when the device name is a VFD tag (not P### conveyor)
+    d.vfd_from_print = !!(hasPage || cleaned.length || hit.vfd_from_print);
     if ((/^VFD\d/i.test(b) || /^VFD\d/i.test(bNorm)) && !/^P\d/i.test(b)) {
       d.is_vfd = true;
       d.equipment_kind = 'vfd';
     }
-    matchedIds.add(bNorm || b);
     merged += 1;
-  }
-
-  // Print-only VFD IDs (OCR found on drawings, no tar.gz I/O) — do NOT add as active
-  // devices. User rule: no I/O hooked up → assume inactive. Keep stats only.
-  let skippedPrintOnly = 0;
-  for (const [id, hit] of byBase.entries()) {
-    if (!/^VFD/i.test(id)) continue;
-    if (!(hit.print_param_count || hit.print_param_list?.length)) continue;
-    if (matchedIds.has(id)) continue;
-    const already = (ioState.drives || []).some((d) => {
-      const b = cleanVfdId(baseName(d.base_name || d.name)) || baseName(d.base_name || d.name);
-      return b === id;
-    });
-    if (already) continue;
-    skippedPrintOnly += 1;
   }
 
   ioState.printVfdParams = printVfd;
   rebuildDeviceList();
-  const withPrint = (ioState.drives || []).filter((d) => (d.print_param_count || 0) > 0).length;
+  const withPrint = (ioState.drives || []).filter(
+    (d) => (d.print_param_count || 0) > 0 || (d.print_page && d.vfd_from_print),
+  ).length;
+  const withPage = (ioState.drives || []).filter(
+    (d) => /^VFD/i.test(d.name || '') && d.print_page,
+  ).length;
   if ($('io-drives-status')) {
     $('io-drives-status').textContent =
-      `${ioState.drives.length} rows · ${withPrint} w/ print params`;
+      `${ioState.drives.length} rows · ${withPage} VFD print # · ${withPrint} w/ print data`;
     $('io-drives-status').className = 'status-pill status-ready';
   }
   if ($('io-drives-stats')) {
@@ -2050,7 +2067,7 @@ function mergeOcrPrintParamsIntoDrives(ocrResult) {
     $('io-drives-stats').innerHTML = [
       ['All rows', ioState.drives.length],
       ['VFDs (tar.gz)', vfdN],
-      ['With print params', withPrint],
+      ['With print #', withPage],
       ['Print VFD hits', printVfd.length || 0],
     ].map(([k, v]) => `
       <div class="bg-[#101820] border border-slate-800 rounded-lg px-2 py-2 text-center">
@@ -2058,20 +2075,17 @@ function mergeOcrPrintParamsIntoDrives(ocrResult) {
         <div class="text-sm font-semibold text-cyan-300 mono">${v}</div>
       </div>`).join('');
   }
-  if (merged > 0 || skippedPrintOnly > 0) {
+  if (merged > 0) {
     ioLog(
-      `Merged print params into ${merged} tar.gz device(s)`
-      + (skippedPrintOnly
-        ? ` · skipped ${skippedPrintOnly} print-only VFD id(s) with no I/O in tar.gz`
-        : '')
-      + ` — ${withPrint} device(s) now have PRINT parameters.`,
+      `Merged OCR into ${merged} drive(s) · ${pagesFromPython} print page(s) from Python log `
+      + `(not re-voted in UI) · ${withPage} VFD(s) show PRINT #.`,
       'ok',
     );
   } else {
     ioLog(
       `OCR finished but PRINT column is still empty (0 VFD matches). `
       + `Extracted ${printVfd.length} raw print param(s). `
-      + `Re-run OCR after relaunch (reads all ~80 pages + PowerFlex tables + title-block VFD tags).`,
+      + `Check exports/ocr-logs/vfd_page_assign_*.txt`,
       'warn',
     );
   }
@@ -3656,7 +3670,7 @@ async function runAutogenGenerate(mode) {
       : 'Legacy Excel path: exporting L5X files…',
     'info',
   );
-  // Program pack: Sys (recommended) + optional gold Excel IO_MAP + site sorter/WCS
+  // Program pack: Sys + optional IO_MAP (RUN banks) + site sorter/WCS
   const includePrograms = [];
   // ShippingSorter (Shoe Sorter) still maps to existing gold program; PopUp Divert is UI placeholder
   if ($('autogen-opt-shippingsorter')?.checked) includePrograms.push('ShippingSorter_Area_L3');
@@ -3667,11 +3681,11 @@ async function runAutogenGenerate(mode) {
   if ($('autogen-opt-wcs')?.checked) includePrograms.push('WCS_Interface_TCP_IP');
   if ($('autogen-opt-sorter-track')?.checked) includePrograms.push('Sorter_Track');
   const noSys = !($('autogen-opt-sys')?.checked ?? true);
-  // Gold Excel IO_MAP is OFF by default — RUN/tar.gz banks drive the map
-  const ioMapGold = !!($('autogen-opt-iomap')?.checked);
+  // IO_MAP checkbox: checked = include RUN bank map; unchecked = omit IO_MAP from L5X
+  const includeIoMap = !!($('autogen-opt-iomap')?.checked ?? true);
   const packBits = [];
   if (!noSys) packBits.push('Sys');
-  packBits.push(ioMapGold ? 'IO_MAP(gold Excel)' : 'IO_MAP(RUN tar.gz banks→RIO)');
+  packBits.push(includeIoMap ? 'IO_MAP(RUN banks→RIO)' : 'IO_MAP(off)');
   if (includePrograms.length) packBits.push(...includePrograms);
   autogenLog(`Program pack: ${packBits.join(' + ')}`, 'info');
 
@@ -3690,8 +3704,8 @@ async function runAutogenGenerate(mode) {
       library: library || undefined,
       includePrograms,
       noSys,
-      noIoMapGold: !ioMapGold,
-      ioMapGold,
+      includeIoMap,
+      noIoMap: !includeIoMap,
       workbook: mode === 'run' ? (autogenState.workbook || undefined) : undefined,
     });
   } catch (e) {
