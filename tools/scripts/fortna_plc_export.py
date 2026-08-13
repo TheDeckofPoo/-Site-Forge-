@@ -987,7 +987,15 @@ def export_run(
     scaffold['motor_chains'] = motor_chains
     system = scaffold['system']
     stamp = datetime.now().strftime('%Y%m%d-%H%M%S')
-    out = out_dir or (REPO_ROOT / 'exports' / 'plc' / f'{stamp}-{system}')
+    # Prefer tar.gz basename for folder/file stems (raw-test rule)
+    try:
+        from fortna_source_id import export_label_from_meta
+        export_label = export_label_from_meta()
+    except Exception:
+        export_label = ''
+    folder = export_label if export_label else f'{stamp}-{system}'
+    file_stem = export_label if export_label else system
+    out = out_dir or (REPO_ROOT / 'exports' / 'plc' / folder)
     out.mkdir(parents=True, exist_ok=True)
 
     manifest_path = out / 'fortna_io_manifest.json'
@@ -997,38 +1005,47 @@ def export_run(
     write_tags_csv(scaffold['tags'], out / 'fortna_tags.csv')
     write_tag_map_csv(scaffold['tags'], out / 'fortna_tag_map.csv')
     write_factory_io_bindings(scaffold['tags'], out / 'factory_io_bindings.csv')
-    controller_tags_csv = out / f'{controller_context}_Controller_Tags.csv'
+    controller_tags_csv = out / f'{file_stem}_Controller_Tags.csv'
     tag_csv_count = write_studio_tags_csv(
-        scaffold['tags'], controller_tags_csv, controller_context=controller_context,
+        scaffold['tags'], controller_tags_csv, controller_context=file_stem,
     )
     write_l5x_tags(
-        scaffold, out / f'{system}_Tags.L5X', controller_context=controller_context,
+        scaffold, out / f'{file_stem}_Tags.L5X', controller_context=file_stem,
     )
     write_l5x_program(
-        scaffold, out / f'{system}_Program.L5X', controller_context=controller_context,
+        scaffold, out / f'{file_stem}_Program.L5X', controller_context=file_stem,
     )
-    write_l5x(scaffold, out / f'{system}.L5X')
+    write_l5x(scaffold, out / f'{file_stem}.L5X')
     studio_bundle = write_studio_import_bundle(
         scaffold,
         out,
-        controller_context=controller_context,
+        controller_context=file_stem,
         target_program=target_program,
     )
     fio_objects = write_factory_io_scene(
-        scaffold, out / f'{system}.FACTORYIO', max_objects=max_fio_objects,
+        scaffold, out / f'{file_stem}.FACTORYIO', max_objects=max_fio_objects,
     )
     write_fio_driver_bindings(out / 'fio_driver_bindings.csv', fio_objects, scaffold['tags'])
     write_report(
-        scaffold, out / 'export_report.txt', controller_context=controller_context,
+        scaffold, out / 'export_report.txt', controller_context=file_stem,
     )
 
-    validation_errors = _validate_export_dir(out, system)
+    validation_errors = _validate_export_dir(out, file_stem)
     if validation_errors:
         raise ValueError('Export validation failed: ' + '; '.join(validation_errors))
+
+    prism_info: dict = {}
+    try:
+        from fortna_prism_ingest import after_export
+        prism_info = after_export(export_dir=out, kind='plc', site=file_stem)
+    except Exception as exc:
+        prism_info = {'ok': False, 'error': str(exc)}
 
     result = {
         'ok': True,
         'system': system,
+        'export_name': file_stem,
+        'source_label': file_stem,
         'out_dir': str(out),
         'tag_count': len(scaffold['tags']),
         'tag_csv_count': tag_csv_count,
@@ -1036,16 +1053,17 @@ def export_run(
         'program_count': len(scaffold['programs']),
         'stats': scaffold['stats'],
         'validated': True,
-        'controller_context': controller_context,
+        'controller_context': file_stem,
         'target_program': target_program,
         'studio_import': studio_bundle,
+        'prism': prism_info,
         'files': {
-            'l5x': str(out / f'{system}.L5X'),
+            'l5x': str(out / f'{file_stem}.L5X'),
             'controller_tags_csv': str(controller_tags_csv),
-            'l5x_tags': str(out / f'{system}_Tags.L5X'),
-            'l5x_program': str(out / f'{system}_Program.L5X'),
+            'l5x_tags': str(out / f'{file_stem}_Tags.L5X'),
+            'l5x_program': str(out / f'{file_stem}_Program.L5X'),
             'studio_import_dir': studio_bundle['studio_import_dir'],
-            'factoryio': str(out / f'{system}.FACTORYIO'),
+            'factoryio': str(out / f'{file_stem}.FACTORYIO'),
             'manifest': str(manifest_path),
             'tags_csv': str(out / 'fortna_tags.csv'),
             'tag_map_csv': str(out / 'fortna_tag_map.csv'),

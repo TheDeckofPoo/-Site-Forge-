@@ -2684,18 +2684,31 @@ def generate(
 ) -> dict:
     if not library.is_file():
         raise FileNotFoundError(f"Library L5X not found: {library}")
+    # Prefer tar.gz basename for all file/folder names (raw-test rule).
+    # Keep hyphens from the archive name; only strip illegal path characters.
+    try:
+        from fortna_source_id import export_label_from_meta, safe_fs_name
+        export_label = export_label_from_meta()
+        file_stem = safe_fs_name(export_label) if export_label else safe_fs_name(inp.project_name)
+    except Exception:
+        export_label = ""
+        file_stem = _safe(inp.project_name) or "Autogen_Project"
+    if not file_stem:
+        file_stem = _safe(inp.project_name) or "Autogen_Project"
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    out = out_dir or (REPO_ROOT / "exports" / "autogen" / f"{stamp}-{_safe(inp.project_name)}")
+    # Folder = tar.gz stem (stable for the site); stamp only if label missing
+    folder = file_stem if export_label else f"{stamp}-{file_stem}"
+    out = out_dir or (REPO_ROOT / "exports" / "autogen" / folder)
     out.mkdir(parents=True, exist_ok=True)
 
     _emit_progress(f"Building L5X for {len(inp.conveyors)} conveyors…", 20, conveyor_count=len(inp.conveyors))
     l5x, report = build_l5x(inp, library)
-    l5x_path = out / f"{_safe(inp.project_name)}.L5X"
+    l5x_path = out / f"{file_stem}.L5X"
     _emit_progress("Writing L5X file…", 70)
     l5x_path.write_text(l5x, encoding="utf-8")
 
     # Studio 5000 Tools → Import tag CSV (controller scope) — separate from L5X
-    studio_csv_path = out / f"{_safe(inp.project_name)}_Controller_Tags.csv"
+    studio_csv_path = out / f"{file_stem}_Controller_Tags.csv"
     csv_count = 0
     try:
         from fortna_plc_export import write_studio_tags_csv
@@ -2717,7 +2730,7 @@ def generate(
         csv_count = write_studio_tags_csv(
             io_rows,
             studio_csv_path,
-            controller_context=_safe(inp.project_name),
+            controller_context=file_stem,
             software_version=f"Studio 5000 v{inp.major_rev}.{inp.minor_rev}",
         )
         report["studio_tags_csv"] = str(studio_csv_path)
@@ -2934,15 +2947,26 @@ def generate(
     except Exception:
         pass
 
+    # Push export into PRISM (same site as tar.gz; skips re-index noise via upsert)
+    prism_info: dict = {}
+    try:
+        from fortna_prism_ingest import after_export
+        prism_info = after_export(export_dir=out, kind="autogen", site=file_stem)
+    except Exception as exc:
+        prism_info = {"ok": False, "error": str(exc)}
+
     result = {
         "ok": True,
         "engine": "python",
+        "export_name": file_stem,
+        "source_label": file_stem,
         "out_dir": str(out),
         "l5x": str(l5x_path),
         "studio_tags_csv": str(studio_csv_path) if csv_count else "",
         "report": report,
         "report_txt": str(out / "autogen_report.txt"),
         "l5x_bytes": l5x_path.stat().st_size if l5x_path.is_file() else 0,
+        "prism": prism_info,
     }
     # Persist full result for Electron recovery if stdout/IPC fails
     try:

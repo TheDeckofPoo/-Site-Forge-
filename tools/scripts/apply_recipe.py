@@ -409,8 +409,23 @@ def import_package(archive: Path) -> dict:
         if m:
             machine = m.group(1).strip()
     devices = list_devices(run_dir, machine=machine)
+
+    # Export names follow the .tar.gz basename (raw-test / first-site rule)
+    try:
+        from fortna_source_id import archive_export_name, run_content_fingerprint
+        export_name = archive_export_name(dest)
+        fingerprint = run_content_fingerprint(run_dir)
+    except Exception:
+        export_name = Path(dest.name).stem.replace('.tar', '')
+        fingerprint = ''
+
     meta = {
         'archive': str(dest),
+        'archive_name': dest.name,
+        'archive_stem': export_name,
+        'export_name': export_name,
+        'source_label': export_name,
+        'run_fingerprint': fingerprint,
         'run_dir': str(run_dir),
         'machine': machine,
         'conveyors': list_conveyors(run_dir, machine)[:200],
@@ -420,6 +435,26 @@ def import_package(archive: Path) -> dict:
         'imported': datetime.now().isoformat(timespec='seconds'),
     }
     (ROOT / 'workspace' / 'active-meta.json').write_text(json.dumps(meta, indent=2), encoding='utf-8')
+
+    # Auto-stage into PRISM vector DB (dedupe by fingerprint — same site skipped)
+    try:
+        from fortna_prism_ingest import after_import
+        prism = after_import(archive=dest, run_dir=run_dir, force=False)
+        meta['prism'] = {
+            'ok': prism.get('ok'),
+            'skipped': prism.get('skipped'),
+            'site': prism.get('site'),
+            'message': prism.get('message'),
+            'fingerprint': prism.get('fingerprint'),
+        }
+        (ROOT / 'workspace' / 'active-meta.json').write_text(json.dumps(meta, indent=2), encoding='utf-8')
+    except Exception as exc:
+        meta['prism'] = {'ok': False, 'error': str(exc)}
+        try:
+            (ROOT / 'workspace' / 'active-meta.json').write_text(json.dumps(meta, indent=2), encoding='utf-8')
+        except OSError:
+            pass
+
     return meta
 
 

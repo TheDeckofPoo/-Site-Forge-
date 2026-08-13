@@ -564,9 +564,26 @@ async function importRunPackage(path, name) {
   }
   const devCount = res.meta.device_count || res.meta.devices?.length || 0;
   const machine = res.meta.machine || 'RUN';
+  const exportName = res.meta.export_name || res.meta.archive_stem || res.meta.source_label || '';
   log(`Loaded ${machine} — ${devCount} devices`, 'ok');
+  if (exportName) {
+    log(`Export label (from tar.gz): ${exportName}`, 'ok');
+  }
+  // PRISM auto-ingest status (deduped by RUN fingerprint)
+  const prism = res.meta.prism || {};
+  if (prism.skipped) {
+    log(`PRISM: ${prism.message || 'same site already indexed — skipped'}`, 'info');
+  } else if (prism.ok) {
+    log(`PRISM: ${prism.message || `indexed site ${prism.site || exportName}`}`, 'ok');
+  } else if (prism.error || prism.message) {
+    log(`PRISM: ${prism.error || prism.message}`, 'warn');
+  }
   setStatus('workspace-status', `${machine} loaded`, 'ready');
-  setIoRunStatus(`${machine} loaded · ${devCount} devices`, 'ready');
+  setIoRunStatus(
+    `${machine} loaded · ${devCount} devices`
+    + (exportName ? ` · out=${exportName}` : ''),
+    'ready',
+  );
   updateWorkspacePanel();
   $('btn-apply').disabled = false;
   $('btn-open-active').disabled = false;

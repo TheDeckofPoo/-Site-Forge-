@@ -1281,16 +1281,20 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
     )
     hmi_symbols = build_hmi_symbols(equipment, machine)
 
-    # Local wall-clock stamp so each export folder is unique and sortable
+    # Local wall-clock stamp (used in reports); folder prefers tar.gz basename
     now_local = datetime.now().astimezone()
     stamp = now_local.strftime("%Y%m%d-%H%M%S")
     stamp_human = now_local.strftime("%Y-%m-%d %H:%M:%S %Z").strip() or now_local.strftime(
         "%Y-%m-%d %H:%M:%S"
     )
     machine_safe = _safe_tag(machine) or "Machine"
-    out = out_dir or (
-        REPO_ROOT / "exports" / "ignition-build" / f"{stamp}-{machine_safe}"
-    )
+    try:
+        from fortna_source_id import export_label_from_meta
+        export_label = export_label_from_meta()
+    except Exception:
+        export_label = ""
+    folder_name = export_label if export_label else f"{stamp}-{machine_safe}"
+    out = out_dir or (REPO_ROOT / "exports" / "ignition-build" / folder_name)
     out.mkdir(parents=True, exist_ok=True)
 
     drawings_dir = REPO_ROOT / "workspace" / "drawings"
@@ -1366,8 +1370,9 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
         # Cap for Designer comfort; layout still uses full symbols file for pick
         n_conv = min(max(n_conv, 10), 200)
         n_pe = min(max(n_pe, 10), 150)
-        # Unique project folder per build (timestamp) — easy to track in exports/
-        proj_name = f"FortnaPlus_{machine_safe}_{stamp}"
+        # Project name follows tar.gz stem when available (raw-test rule)
+        proj_base = export_label or f"{machine_safe}_{stamp}"
+        proj_name = f"FortnaPlus_{_safe_tag(proj_base)}"[:80]
         pack = pack_perspective_project(
             out,
             project_name=proj_name,
@@ -1478,16 +1483,33 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
     except Exception:
         pass
 
+    # Stage ignition export into PRISM (site = tar.gz stem)
+    prism_info: dict = {}
+    try:
+        from fortna_prism_ingest import after_export
+        prism_info = after_export(
+            export_dir=out,
+            kind="ignition",
+            site=folder_name,
+        )
+    except Exception as exc:
+        prism_info = {"ok": False, "error": str(exc)}
+
     manifest = {
         "ok": True,
         "out_dir": str(out),
+        "export_name": folder_name,
+        "source_label": folder_name,
         "folder_stamp": stamp,
         "generated_local": stamp_human,
         "machine": machine,
         "project": project,
         "project_name": (
-            Path(perspective_project).name if perspective_project else f"FortnaPlus_{machine_safe}_{stamp}"
+            Path(perspective_project).name
+            if perspective_project
+            else f"FortnaPlus_{_safe_tag(folder_name)}"[:80]
         ),
+        "prism": prism_info,
         "equipment_count": len(equipment),
         "physical_conveyor_count": len(physical),
         "plotted_count": len(plot),
