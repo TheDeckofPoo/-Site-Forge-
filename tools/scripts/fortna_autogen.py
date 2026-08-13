@@ -296,12 +296,23 @@ def resolve_program_exports(
         aliases = {
             "shippingsorter": "ShippingSorter_Area_L3",
             "shipping_sorter": "ShippingSorter_Area_L3",
+            "shippingsorter_shoe": "ShippingSorter_Area_L3",
+            "shippingsorter_shoesorter": "ShippingSorter_Area_L3",
+            # PopUp Divert — no gold L5X yet; skip silently (UI option only)
+            "shippingsorter_popup_divert": "",
+            "shippingsorter_popupdivert": "",
             "wcs": "WCS_Interface_TCP_IP",
             "wcs_interface": "WCS_Interface_TCP_IP",
             "sorter_track": "Sorter_Track",
             "sortertrack": "Sorter_Track",
         }
-        k2 = aliases.get(k.lower(), k)
+        k2 = aliases.get(k.lower().replace(" ", "_").replace("-", "_"), k)
+        if k2 == "" or k in (
+            "ShippingSorter_PopUp_Divert",
+            "ShippingSorter_PopUpDivert",
+        ):
+            # Placeholder pack — no program file to merge yet
+            continue
         fname = OPTIONAL_PROGRAMS.get(k2) or OPTIONAL_PROGRAMS.get(k)
         if not fname:
             # allow exact filename
@@ -1632,10 +1643,11 @@ def _aoi_short_description(name: str, current: str = "") -> str:
 
 def _shorten_aoi_descriptions(aoi_xml: str) -> str:
     """
-    Rewrite every AOI <Description> (and noisy <RevisionNote>) for Studio.
+    Rewrite unsealed AOI <Description> text for Studio.
 
-    Sealed library AOIs ship long parameter lists in Description; Studio shows
-    that text on the AOI Properties dialog. We force a one-line purpose.
+    CRITICAL: never touch <EncodedData>…</EncodedData> sealed bodies.
+    Mutating sealed AOI XML (even Description CDATA) invalidates SignatureID
+    and produces Studio: "Invalid signature ID. Reseal instruction to resolve."
     """
     if not aoi_xml:
         return aoi_xml
@@ -1647,31 +1659,13 @@ def _shorten_aoi_descriptions(aoi_xml: str) -> str:
         short = _aoi_short_description(name, old)
         return f"{open_tag}{short}{m.group(4)}"
 
-    # Sealed library AOIs: <EncodedData … Name="Fast_Conv" …><Description><![CDATA[…]]>
-    aoi_xml = re.sub(
-        r'(<EncodedData\b[^>]*\bName="([^"]+)"[^>]*>\s*'
-        r'<Description>\s*<!\[CDATA\[)(.*?)(\]\]>\s*</Description>)',
-        _repl_desc,
-        aoi_xml,
-        flags=re.S,
-    )
-    # Plain (unsealed) AOI definitions when present
+    # Plain (unsealed) AOI definitions only — sealed EncodedData left byte-for-byte
     aoi_xml = re.sub(
         r'(<AddOnInstructionDefinition\b[^>]*\bName="([^"]+)"[^>]*>\s*'
         r'<Description>\s*<!\[CDATA\[)(.*?)(\]\]>\s*</Description>)',
         _repl_desc,
         aoi_xml,
         flags=re.S,
-    )
-
-    # Hard replace known long Fast_Conv library blurb if it survived any path
-    # (Studio Description dialog text from O'Reilly library)
-    aoi_xml = re.sub(
-        r"Conv Fast Routine Logic:\s*"
-        r"Conv_Ready_Restart[^\]]{0,400}?Energy Management Reset",
-        "Conv Fast Routine Logic AOI",
-        aoi_xml,
-        flags=re.I | re.S,
     )
     return aoi_xml
 
@@ -2160,10 +2154,31 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             io_map_unmapped += 1
 
     # --- Gold program exports: Sys (default); gold IO_MAP only if user opts in ---
+    # HARD GUARD: Greensboro gold Excel IO_MAP is CP5/CP6/CP7 only.
+    # If this site's word_map uses CP1–CP4 (ORDENCP4 etc.), never merge gold IO_MAP
+    # even if the UI checkbox was left on — it produces 800+ undefined RIO tags.
+    want_gold_io = bool(getattr(inp, "include_io_map_gold", False))
+    site_rios = {
+        str((info or {}).get("rio_name") or "").strip().upper()
+        for info in (getattr(inp, "io_word_map", None) or {}).values()
+        if isinstance(info, dict) and (info or {}).get("rio_name")
+    }
+    gold_io_blocked = False
+    if want_gold_io and site_rios:
+        site_is_cp5_family = any(r.startswith(("CP5", "CP6", "CP7")) for r in site_rios)
+        site_is_cp1_4 = any(r.startswith(("CP1", "CP2", "CP3", "CP4")) for r in site_rios)
+        if site_is_cp1_4 and not site_is_cp5_family:
+            want_gold_io = False
+            gold_io_blocked = True
+            _emit_progress(
+                "Gold Excel IO_MAP blocked — this site uses CP1–CP4 RIO (RUN map applied)",
+                35,
+            )
+
     gold_programs = resolve_program_exports(
         list(getattr(inp, "include_programs", None) or []),
         include_sys=bool(getattr(inp, "include_sys", True)),
-        include_io_map_gold=bool(getattr(inp, "include_io_map_gold", False)),
+        include_io_map_gold=want_gold_io,
     )
     gold_program_names: list[str] = []
     gold_io_map_used = False
@@ -2288,6 +2303,18 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     }
     enet_parent = "CPXXENET1"  # library EN2T under Local
     topology = list(getattr(inp, "eip_topology", None) or [])
+    # Only emit RIO modules used by this site's word_map (Conveyor.asc banks).
+    # Multi-panel RUN packages often list CP5/CP6 adapters that reuse CP1–CP4
+    # IPs — Studio then shows Invalid data type on module :I/:O tags.
+    used_rios = {
+        str((info or {}).get("rio_name") or "").strip()
+        for info in (getattr(inp, "io_word_map", None) or {}).values()
+        if isinstance(info, dict) and (info or {}).get("rio_name")
+    }
+    if used_rios:
+        filtered = [ad for ad in topology if (ad.get("rio_name") or "") in used_rios]
+        if filtered:
+            topology = filtered
 
     # --- Local controller module (fixed Ports like gold EDITED L5X) ---
     # Library Local is often L81E at chassis slot 4 — wrong for L83E open/import.
@@ -2484,10 +2511,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         aoi_xml, extra_aoi_chunks, "AddOnInstructionDefinitions", "AddOnInstructionDefinition"
     )
 
-    # Shorten AOI Description text shown in Studio (General tab + ladder).
-    # Library ships long parameter lists / copyright / revision essays — keep a
-    # one-line purpose only. Descriptions live inside EncodedData (sealed AOIs)
-    # and also on plain <AddOnInstructionDefinition> blocks when present.
+    # Shorten only unsealed AOI Description text. Never rewrite EncodedData.
     aoi_xml = _shorten_aoi_descriptions(aoi_xml)
 
     prog_names = []
@@ -2621,10 +2645,20 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             else "run_tar_gz_banks_eip"
         ),
         "io_map_note": (
-            "Gold Excel IO_MAP (CP_I/CP_O from library) — does NOT use tar.gz device list"
+            "Gold Excel IO_MAP (CP_I/CP_O from library) — Greensboro CP5/CP6/CP7 map; "
+            "does NOT use this site's tar.gz banks. Leave OFF for non-Greensboro panels."
             if gold_io_map_used
-            else "Built from RUN Conveyor.asc IO_Name/Word/Bit + EIPCSV word_map → CPxRIOn modules"
+            else (
+                "Built from RUN Conveyor.asc banks + EIP word_map → CPxRIOn modules"
+                + (
+                    " (gold Excel IO_MAP was requested but blocked — site is CP1–CP4)"
+                    if gold_io_blocked
+                    else ""
+                )
+            )
         ),
+        "gold_io_map_blocked": gold_io_blocked,
+        "eip_modules_filtered_to_word_map": sorted(used_rios) if used_rios else [],
         "gold_programs": gold_program_names,
         "optional_programs_available": list(OPTIONAL_PROGRAMS.keys()),
         "task_schedule": {
@@ -2648,23 +2682,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         t = item["template"]
         report["template_usage"][t] = report["template_usage"].get(t, 0) + 1
 
-    # Final pass on full L5X (covers any AOI text that landed outside the first pass)
+    # Final pass: unsealed AOI descriptions only (never EncodedData / sealed bodies)
     l5x = _shorten_aoi_descriptions(l5x)
-    # Nuclear replace: Studio still surfaces this library essay if any copy survives
-    l5x = re.sub(
-        r"Conv Fast Routine Logic:\s*"
-        r"Conv_Ready_Restart[^\]]{0,500}?Energy Management Reset",
-        "Conv Fast Routine Logic AOI",
-        l5x,
-        flags=re.I | re.S,
-    )
-    # XML comments sometimes carry the same blurb (unsealed AOI exports)
-    l5x = re.sub(
-        r"<!--\s*Conv Fast Routine Logic:[\s\S]*?Energy Management Reset\s*-->",
-        "<!-- Conv Fast Routine Logic AOI -->",
-        l5x,
-        flags=re.I,
-    )
     return l5x, report
 
 
@@ -2684,22 +2703,41 @@ def generate(
 ) -> dict:
     if not library.is_file():
         raise FileNotFoundError(f"Library L5X not found: {library}")
-    # Prefer tar.gz basename for all file/folder names (raw-test rule).
-    # Keep hyphens from the archive name; only strip illegal path characters.
+    # Folder: timestamp + archive label (track history).
+    # L5X file + Controller name: site + panel ONLY (no date) — Studio rejects long dated names.
     try:
-        from fortna_source_id import export_label_from_meta, safe_fs_name
+        from fortna_source_id import (
+            export_label_from_meta,
+            safe_fs_name,
+            studio_project_stem,
+        )
         export_label = export_label_from_meta()
-        file_stem = safe_fs_name(export_label) if export_label else safe_fs_name(inp.project_name)
+        folder_stem = safe_fs_name(export_label) if export_label else safe_fs_name(inp.project_name)
+        # OReillyDC27_ORDENCP4 — never 20260803_0815_…
+        file_stem = studio_project_stem(inp.project_name, getattr(inp, "machine", "") or "")
+        if not file_stem or file_stem == "Autogen_Project":
+            file_stem = studio_project_stem(inp.project_name, "")
     except Exception:
         export_label = ""
+        folder_stem = _safe(inp.project_name) or "Autogen_Project"
         file_stem = _safe(inp.project_name) or "Autogen_Project"
+        # strip date if present
+        file_stem = re.sub(r"^\d{8}_?\d{0,6}_?", "", file_stem).strip("_") or "Autogen_Project"
     if not file_stem:
         file_stem = _safe(inp.project_name) or "Autogen_Project"
+    if not folder_stem:
+        folder_stem = file_stem
     stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    # Folder = tar.gz stem (stable for the site); stamp only if label missing
-    folder = file_stem if export_label else f"{stamp}-{file_stem}"
+    # Always unique folder per run (stamp + site) so exports don't overwrite.
+    folder = f"{stamp}-{folder_stem}"
     out = out_dir or (REPO_ROOT / "exports" / "autogen" / folder)
     out.mkdir(parents=True, exist_ok=True)
+
+    # Force short controller name inside L5X (matches file stem)
+    try:
+        inp.project_name = file_stem
+    except Exception:
+        pass
 
     _emit_progress(f"Building L5X for {len(inp.conveyors)} conveyors…", 20, conveyor_count=len(inp.conveyors))
     l5x, report = build_l5x(inp, library)

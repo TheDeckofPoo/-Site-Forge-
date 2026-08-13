@@ -341,14 +341,21 @@ def build_workbook_from_run(
             "word_map_count": len(word_map),
         },
         "human_notes": (
-            "Conveyors come from tar.gz. Choose Area / Safety / TYPE / Exit PE from dropdowns. "
-            "TYPE → template (Transport MS→P3000, Accum MS→P4000, VFD→P1000). "
-            "IO map is automatic from RUN banks + EIP."
+            "All conveyor rows come from the RUN tar.gz (FORTNA/Conveyor.asc). "
+            "TYPE is inferred from ASC Type (STRAIGHT/CURVE/ACCUM/…) + whether a VFD drive is linked. "
+            "AREA is inferred from the first digit of P### (P106→Zone1, P602→Zone6) — editable. "
+            "Exit PE is the product/discharge PE tag linked to that conveyor in the ASC (or PE list). "
+            "Dropdowns let you override; Generate uses your choices."
         ),
         "automation": {
-            "filled_from": "Conveyor.asc + EIPCSV/EIPModules + extract_io_points",
-            "type_rules": "ASC ACCUM/ZEROPRESSURE → Accumulation; else Transport; VFD if drive/VFD tags match",
-            "area_rules": "P### first digit → ZoneN_Area (editable)",
+            "filled_from": "Conveyor.asc + EIPCSV/EIPModules + extract_io_points (all inside tar.gz)",
+            "type_rules": (
+                "ASC Type ACCUM/ZEROPRESSURE → Accumulation with MS/VFD; "
+                "STRAIGHT/CURVE/MERGE/… → Transport with MS/VFD; "
+                "VFD vs MS chosen when Drive/VFD tags exist for that conveyor"
+            ),
+            "area_rules": "P### first digit → ZoneN_Area (O'Reilly convention; editable in dropdown)",
+            "exit_pe_rules": "Product/exit PE tags from Conveyor.asc PE columns for that conveyor",
             "io_rules": "Bank.Word.Bit + EIP word_map → CPxRIOn:I/O.Data[slot].bit",
             "needs_human": [
                 "Area rename / merge (Redroom vs Zone5 style)",

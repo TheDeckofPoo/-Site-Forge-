@@ -1920,7 +1920,8 @@ function mergeOcrPrintParamsIntoDrives(ocrResult) {
     id = id.replace(/(_EN|_AUX|_FLT|_RUN|_OK|_CMD|_REF|_FB)$/i, '');
     if (!id) return '';
     if (!id.startsWith('VFD')) id = `VFD${id}`;
-    return /^VFD[A-Z0-9]{1,8}$/i.test(id) ? id : '';
+    // Plausible Fortna drives only: VFD312, VFD500A, VFD501B1 — reject OCR junk VFD141711
+    return /^VFD\d{2,4}(?:[A-Z]{1,2}\d?)?$/i.test(id) ? id : '';
   };
 
   const idsByFile = new Map(); // file -> Set of VFD ids
@@ -1978,10 +1979,35 @@ function mergeOcrPrintParamsIntoDrives(ocrResult) {
     d.print_param_count = cleaned.length;
     d.print_sources = hit.print_sources || d.print_sources || [];
     d.vfd_from_print = true;
-    // Capture print file/page for repository click-through
+    // Capture print file/page — majority vote when multiple OCR hits disagree
+    const pageVotes = new Map();
+    const fileVotes = new Map();
     for (const p of cleaned) {
-      if (p.page != null && d.print_page == null) d.print_page = p.page;
-      if (p.source && !d.print_file) d.print_file = p.source;
+      if (p.page != null && Number(p.page) > 0) {
+        const pg = Number(p.page);
+        pageVotes.set(pg, (pageVotes.get(pg) || 0) + 1);
+      }
+      if (p.source) fileVotes.set(p.source, (fileVotes.get(p.source) || 0) + 1);
+    }
+    if (pageVotes.size) {
+      let bestPg = null;
+      let bestN = -1;
+      for (const [pg, n] of pageVotes) {
+        if (n > bestN || (n === bestN && (bestPg == null || pg > bestPg))) {
+          bestPg = pg;
+          bestN = n;
+        }
+      }
+      d.print_page = bestPg;
+      d.drawing_page = bestPg;
+    }
+    if (fileVotes.size) {
+      let bestF = '';
+      let bestN = -1;
+      for (const [f, n] of fileVotes) {
+        if (n > bestN) { bestF = f; bestN = n; }
+      }
+      d.print_file = bestF;
     }
     if (!d.drawing_page && d.print_page) d.drawing_page = d.print_page;
     // Only reclassify as VFD when the device name is a VFD tag (not P### conveyor)
@@ -1993,9 +2019,9 @@ function mergeOcrPrintParamsIntoDrives(ocrResult) {
     merged += 1;
   }
 
-  // Print-only VFDs (on drawings, not in tar.gz under same tag) — still show in Devices
-  // so PRINT column is never blank when OCR found real PowerFlex tables.
-  let addedPrintOnly = 0;
+  // Print-only VFD IDs (OCR found on drawings, no tar.gz I/O) — do NOT add as active
+  // devices. User rule: no I/O hooked up → assume inactive. Keep stats only.
+  let skippedPrintOnly = 0;
   for (const [id, hit] of byBase.entries()) {
     if (!/^VFD/i.test(id)) continue;
     if (!(hit.print_param_count || hit.print_param_list?.length)) continue;
@@ -2005,27 +2031,7 @@ function mergeOcrPrintParamsIntoDrives(ocrResult) {
       return b === id;
     });
     if (already) continue;
-    const cleaned = filterVfdPrintParamsClient(hit.print_param_list || Object.values(hit.print_params || {}));
-    if (!cleaned.length) continue;
-    ioState.drives.push({
-      name: id,
-      base_name: id,
-      device_type: 'VFD',
-      equipment_kind: 'vfd',
-      is_vfd: true,
-      vfd_from_print: true,
-      from_print_only: true,
-      description: 'From electrical prints (not in tar.gz under this tag)',
-      program_params: {},
-      print_params: Object.fromEntries(cleaned.map((p) => [p.param, p])),
-      print_param_list: cleaned,
-      print_param_count: cleaned.length,
-      print_sources: hit.print_sources || [],
-      print_file: cleaned[0]?.source || (hit.print_sources || [])[0] || '',
-      print_page: cleaned.find((p) => p.page != null)?.page || null,
-      drawing_page: cleaned.find((p) => p.page != null)?.page || null,
-    });
-    addedPrintOnly += 1;
+    skippedPrintOnly += 1;
   }
 
   ioState.printVfdParams = printVfd;
@@ -2052,10 +2058,12 @@ function mergeOcrPrintParamsIntoDrives(ocrResult) {
         <div class="text-sm font-semibold text-cyan-300 mono">${v}</div>
       </div>`).join('');
   }
-  if (merged > 0 || addedPrintOnly > 0) {
+  if (merged > 0 || skippedPrintOnly > 0) {
     ioLog(
       `Merged print params into ${merged} tar.gz device(s)`
-      + (addedPrintOnly ? ` + ${addedPrintOnly} print-only VFD(s)` : '')
+      + (skippedPrintOnly
+        ? ` · skipped ${skippedPrintOnly} print-only VFD id(s) with no I/O in tar.gz`
+        : '')
       + ` — ${withPrint} device(s) now have PRINT parameters.`,
       'ok',
     );
@@ -3650,7 +3658,12 @@ async function runAutogenGenerate(mode) {
   );
   // Program pack: Sys (recommended) + optional gold Excel IO_MAP + site sorter/WCS
   const includePrograms = [];
+  // ShippingSorter (Shoe Sorter) still maps to existing gold program; PopUp Divert is UI placeholder
   if ($('autogen-opt-shippingsorter')?.checked) includePrograms.push('ShippingSorter_Area_L3');
+  if ($('autogen-opt-shippingsorter-popup')?.checked) {
+    includePrograms.push('ShippingSorter_PopUp_Divert');
+    autogenLog('ShippingSorter (PopUp Divert) selected — pack mapping TBD (no L5X merge yet).', 'warn');
+  }
   if ($('autogen-opt-wcs')?.checked) includePrograms.push('WCS_Interface_TCP_IP');
   if ($('autogen-opt-sorter-track')?.checked) includePrograms.push('Sorter_Track');
   const noSys = !($('autogen-opt-sys')?.checked ?? true);

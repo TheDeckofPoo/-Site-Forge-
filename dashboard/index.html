@@ -340,8 +340,8 @@
                   <label class="flex items-start gap-2.5 p-2 rounded-lg border border-amber-900/40 bg-amber-950/15 cursor-pointer hover:border-amber-700/40 transition-colors">
                     <input id="autogen-opt-iomap" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900 text-amber-500">
                     <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">Gold Excel IO_MAP <span class="text-amber-400/90 font-normal">(optional — off by default)</span></span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">Default is RUN/tar.gz banks → CPxRIOn modules. Check only to force Excel CP_I/CP_O (ignores tar.gz device list)</span>
+                      <span class="block text-[11px] text-slate-200 font-medium">Gold Excel IO_MAP <span class="text-rose-400/90 font-normal">(Greensboro only — leave OFF)</span></span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">Default: RUN/tar.gz → this site’s CP1–CP4 RIO. Gold is CP5/CP6/CP7 Greensboro map. On ORDENCP4 etc. gold is auto-blocked even if checked.</span>
                     </span>
                   </label>
                 </div>
@@ -353,8 +353,15 @@
                   <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
                     <input id="autogen-opt-shippingsorter" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
                     <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">ShippingSorter L3</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">Shipping sorter area L3 logic (Greensboro)</span>
+                      <span class="block text-[11px] text-slate-200 font-medium">ShippingSorter (Shoe Sorter)</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">Shoe sorter area logic pack (rename site-specific later)</span>
+                    </span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
+                    <input id="autogen-opt-shippingsorter-popup" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">ShippingSorter (PopUp Divert)</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">Pop-up divert sorter pack — code mapping later</span>
                     </span>
                   </label>
                   <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">

@@ -365,8 +365,25 @@ def load_eip_modules(run_dir: Path) -> dict:
 
 
 def _area_for_name(name: str) -> str:
-    """P309 → Zone3 (matches PLC autogen area bucketing)."""
-    m = re.match(r"^P(\d)", (name or "").upper())
+    """
+    Map equipment name → ZoneN for tag folders.
+
+    O'Reilly convention: first digit of the equipment number is the zone.
+      P309 / PE309 / EZPE309_F / WB309 → Zone3
+    """
+    u = (name or "").upper().strip()
+    m = re.match(r"^P(\d)", u)
+    if m:
+        return f"Zone{m.group(1)}"
+    # Photoeyes / beacons / ES: EZPE602A_F, PE106_JF, WB500, ES610C
+    m = re.match(r"^(?:EZ)?PE(\d)", u)
+    if m:
+        return f"Zone{m.group(1)[0]}"
+    m = re.match(r"^(?:WB|WH|PS|ES|VFD)(\d)", u)
+    if m:
+        return f"Zone{m.group(1)[0]}"
+    # Leading-digit Fortna names: 1ES, 7ES
+    m = re.match(r"^(\d)", u)
     if m:
         return f"Zone{m.group(1)}"
     return "Site"
@@ -428,6 +445,46 @@ def build_tag_seed(equipment: list[dict], machine: str) -> dict:
         "provider": "default",
         "note": "Kind-folder seed. See tags_plc_aligned.json for Logix-parity paths.",
     }
+
+
+def to_memory_tags_import(node: dict | list) -> dict | list:
+    """
+    Convert a PLC-aligned / OPC tag tree into Designer Memory-tag import format.
+
+    - Keeps folder structure (Site / ZoneN / Conveyors / …)
+    - Atomic tags → valueSource=memory (works without a PLC device)
+    - Drops opcServer / opcItemPath so import never fails on missing device
+    """
+    if isinstance(node, list):
+        return [to_memory_tags_import(x) for x in node]
+    if not isinstance(node, dict):
+        return node
+    out: dict = {}
+    for k, v in node.items():
+        if k in ("opcServer", "opcItemPath", "provider", "note", "layout"):
+            continue
+        if k == "tags" and isinstance(v, list):
+            out[k] = [to_memory_tags_import(c) for c in v]
+        elif k == "children" and isinstance(v, list):
+            out["tags"] = [to_memory_tags_import(c) for c in v]
+        else:
+            out[k] = v
+    # Atomic tags: force memory source + default value
+    if (out.get("tagType") or "").lower() in ("atomictag", "atomic"):
+        out["valueSource"] = "memory"
+        dtype = (out.get("dataType") or "Boolean").lower()
+        if "value" not in out:
+            if dtype in ("boolean", "bool"):
+                # Clear PE defaults True (green); Run defaults False
+                name = (out.get("name") or "").lower()
+                out["value"] = True if name in ("clear", "pe_clear") else False
+            elif dtype in ("string",):
+                out["value"] = out.get("value") or ""
+            else:
+                out["value"] = 0
+        out.pop("opcServer", None)
+        out.pop("opcItemPath", None)
+    return out
 
 
 def build_plc_aligned_tags(equipment: list[dict], machine: str, eip: dict | None = None) -> dict:
@@ -873,40 +930,81 @@ def render_svg(
             "</text></svg>"
         )
 
-    # Bounds from PHYSICAL CONVEYORS only (not scattered motors/beacons).
-    # Device scatter was shrinking the plant into a corner of a huge empty frame.
-    xs: list[float] = []
-    ys: list[float] = []
+    # Bounds from densest conveyor cluster (largest collective of conveyance).
+    # Ignore floating outliers (parked PE/motors, distant dump coords) so the
+    # main plant fills the center of the frame — target ~80%+ useful layout.
+    def _endpoint_pts(items: list[dict]) -> list[tuple[float, float]]:
+        out: list[tuple[float, float]] = []
+        for e in items:
+            x0, y0 = float(e["x"]), float(e["y"])
+            out.append((x0, y0))
+            ang = math.radians(e.get("angle") or 0)
+            L = float(e.get("length") or 0)
+            if L > 0:
+                out.append((x0 + L * math.cos(ang), y0 + L * math.sin(ang)))
+        return out
+
     bound_src = convs if convs else pts
-    for e in bound_src:
-        xs.append(float(e["x"]))
-        ys.append(float(e["y"]))
-        ang = math.radians(e.get("angle") or 0)
-        L = float(e.get("length") or 0)
-        if L > 0:
-            xs.append(e["x"] + L * math.cos(ang))
-            ys.append(e["y"] + L * math.sin(ang))
+    raw_pts = _endpoint_pts(bound_src)
 
-    def _percentile_bounds(vals: list[float], lo: float = 1.0, hi: float = 99.0) -> tuple[float, float]:
-        if len(vals) < 4:
-            return min(vals), max(vals)
-        s = sorted(vals)
-        i_lo = max(0, int(len(s) * lo / 100.0))
-        i_hi = min(len(s) - 1, int(len(s) * hi / 100.0))
-        return s[i_lo], s[i_hi]
+    def _densest_cluster_bounds(
+        pts_xy: list[tuple[float, float]],
+    ) -> tuple[float, float, float, float]:
+        if not pts_xy:
+            return 0.0, 1000.0, 0.0, 1000.0
+        if len(pts_xy) < 6:
+            xs0 = [p[0] for p in pts_xy]
+            ys0 = [p[1] for p in pts_xy]
+            return min(xs0), max(xs0), min(ys0), max(ys0)
+        xs0 = [p[0] for p in pts_xy]
+        ys0 = [p[1] for p in pts_xy]
+        span0 = max(max(xs0) - min(xs0), max(ys0) - min(ys0), 1.0)
+        # Grid cell ~6% of plant span — groups nearby belts, isolates floaters
+        cell = max(span0 * 0.06, 800.0)
+        grid: dict[tuple[int, int], list[tuple[float, float]]] = {}
+        for x, y in pts_xy:
+            key = (int(math.floor(x / cell)), int(math.floor(y / cell)))
+            grid.setdefault(key, []).append((x, y))
+        # Seed = densest cell
+        seed = max(grid.items(), key=lambda kv: len(kv[1]))[0]
+        # Flood-fill neighboring cells with any points (8-connected)
+        cluster_keys: set[tuple[int, int]] = set()
+        stack = [seed]
+        while stack:
+            cx, cy = stack.pop()
+            if (cx, cy) in cluster_keys:
+                continue
+            if (cx, cy) not in grid:
+                continue
+            cluster_keys.add((cx, cy))
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    if dx == 0 and dy == 0:
+                        continue
+                    stack.append((cx + dx, cy + dy))
+        cluster_pts = [p for k in cluster_keys for p in grid[k]]
+        # Keep cluster if it holds a solid majority; else fall back to percentiles
+        if len(cluster_pts) < max(4, int(len(pts_xy) * 0.45)):
+            s_x = sorted(xs0)
+            s_y = sorted(ys0)
+            lo = max(0, int(len(s_x) * 0.05))
+            hi = min(len(s_x) - 1, int(len(s_x) * 0.95))
+            return s_x[lo], s_x[hi], s_y[lo], s_y[hi]
+        cxs = [p[0] for p in cluster_pts]
+        cys = [p[1] for p in cluster_pts]
+        return min(cxs), max(cxs), min(cys), max(cys)
 
-    min_x, max_x = _percentile_bounds(xs)
-    min_y, max_y = _percentile_bounds(ys)
+    min_x, max_x, min_y, max_y = _densest_cluster_bounds(raw_pts)
     # Slight expand so clipped endpoints still show
-    margin_u = max(max_x - min_x, max_y - min_y, 1000.0) * 0.01
+    margin_u = max(max_x - min_x, max_y - min_y, 1000.0) * 0.04
     min_x -= margin_u
     max_x += margin_u
     min_y -= margin_u
     max_y += margin_u
     content_w = max(max_x - min_x, 800.0)
     content_h = max(max_y - min_y, 800.0)
-    # Tight pad so plant fills the frame (was looking tiny in dashboard preview)
-    pad = max(content_w, content_h) * 0.015
+    # Tight pad so densest plant fills the frame (centered)
+    pad = max(content_w, content_h) * 0.02
     span_x = content_w + pad * 2
     span_y = content_h + pad * 2
 
@@ -916,14 +1014,15 @@ def render_svg(
     def ty(y: float) -> float:
         return max_y - y + pad  # flip Y
 
-    # Fill a large canvas; scale uses the tighter of W/H so plant is as large as possible
-    target_w, target_h = 3600.0, 2200.0
-    scale = min(target_w / span_x, target_h / span_y) * 1.28
+    # Fill a large canvas; scale uses the tighter of W/H so plant is as large as possible.
+    # Extra fill factor keeps small sites (1/3 plant) from looking like a corner stamp.
+    target_w, target_h = 4200.0, 2600.0
+    scale = min(target_w / span_x, target_h / span_y) * 1.35
     vb_w = span_x * scale
     vb_h = span_y * scale
     # Compact chrome: title band + legend band so plant stays centered in remaining space
-    chrome_top = 36.0
-    chrome_bot = 28.0
+    chrome_top = 32.0
+    chrome_bot = 24.0
     ox, oy = 0.0, chrome_top
     vb_h_total = vb_h + chrome_top + chrome_bot
     plc = _safe_tag(machine) or "PLC"
@@ -1106,20 +1205,52 @@ def build_hmi_symbols(equipment: list[dict], machine: str) -> dict:
     if not plot:
         return {"symbols": [], "bounds": {}, "note": "No plottable equipment"}
 
-    # Bounds from conveyors preferentially
+    # Bounds from densest conveyor cluster (same logic as SVG — ignore floaters)
     convs = [e for e in plot if e.get("is_physical_conveyor") or e.get("kind") == "conveyor"]
     base = convs or plot
-    xs, ys = [], []
+    pts_xy: list[tuple[float, float]] = []
     for e in base:
-        xs.append(e["x"])
-        ys.append(e["y"])
+        pts_xy.append((float(e["x"]), float(e["y"])))
         if e.get("is_physical_conveyor") or e.get("kind") == "conveyor":
             ang = math.radians(e.get("angle") or 0)
-            L = e.get("length") or 0
-            xs.append(e["x"] + L * math.cos(ang))
-            ys.append(e["y"] + L * math.sin(ang))
-    min_x, max_x = min(xs), max(xs)
-    min_y, max_y = min(ys), max(ys)
+            L = float(e.get("length") or 0)
+            if L > 0:
+                pts_xy.append((e["x"] + L * math.cos(ang), e["y"] + L * math.sin(ang)))
+    if pts_xy:
+        # Reuse densest-cell idea (inline compact form)
+        xs_all = [p[0] for p in pts_xy]
+        ys_all = [p[1] for p in pts_xy]
+        span0 = max(max(xs_all) - min(xs_all), max(ys_all) - min(ys_all), 1.0)
+        cell = max(span0 * 0.06, 800.0)
+        grid: dict[tuple[int, int], list[tuple[float, float]]] = {}
+        for x, y in pts_xy:
+            key = (int(math.floor(x / cell)), int(math.floor(y / cell)))
+            grid.setdefault(key, []).append((x, y))
+        seed = max(grid.items(), key=lambda kv: len(kv[1]))[0]
+        cluster_keys: set[tuple[int, int]] = set()
+        stack = [seed]
+        while stack:
+            cx, cy = stack.pop()
+            if (cx, cy) in cluster_keys or (cx, cy) not in grid:
+                continue
+            cluster_keys.add((cx, cy))
+            for dx in (-1, 0, 1):
+                for dy in (-1, 0, 1):
+                    if dx or dy:
+                        stack.append((cx + dx, cy + dy))
+        cluster_pts = [p for k in cluster_keys for p in grid[k]]
+        if len(cluster_pts) >= max(4, int(len(pts_xy) * 0.45)):
+            xs_all = [p[0] for p in cluster_pts]
+            ys_all = [p[1] for p in cluster_pts]
+        min_x, max_x = min(xs_all), max(xs_all)
+        min_y, max_y = min(ys_all), max(ys_all)
+        pad_u = max(max_x - min_x, max_y - min_y, 1000.0) * 0.04
+        min_x -= pad_u
+        max_x += pad_u
+        min_y -= pad_u
+        max_y += pad_u
+    else:
+        min_x = max_x = min_y = max_y = 0.0
     span_x = max(max_x - min_x, 1.0)
     span_y = max(max_y - min_y, 1.0)
 
@@ -1289,11 +1420,15 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
     )
     machine_safe = _safe_tag(machine) or "Machine"
     try:
-        from fortna_source_id import export_label_from_meta
+        from fortna_source_id import export_label_from_meta, studio_safe_name
         export_label = export_label_from_meta()
     except Exception:
         export_label = ""
-    folder_name = export_label if export_label else f"{stamp}-{machine_safe}"
+        studio_safe_name = lambda s, **kw: re.sub(r"[^A-Za-z0-9_]", "_", s or "Site")  # noqa: E731
+    # Always unique folder per run so exports don't overwrite (track history).
+    # stamp first, then site label — e.g. 20260813-143022-20260803_0815_…_ORDENCP4_RUN
+    label = studio_safe_name(export_label or machine_safe)
+    folder_name = f"{stamp}-{label}"
     out = out_dir or (REPO_ROOT / "exports" / "ignition-build" / folder_name)
     out.mkdir(parents=True, exist_ok=True)
 
@@ -1379,8 +1514,9 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
             symbols=hmi_symbols,
             max_conv=n_conv,
             max_pe=n_pe,
-            canvas_w=1600,
-            canvas_h=1000,
+            # Larger canvas so small sites (e.g. CP4 ≈ 1/3 plant) still fill the view
+            canvas_w=1920,
+            canvas_h=1200,
             symbols_source=str(out / "hmi_symbols.json"),
             svg_path=out / "layout_conveyors_only.svg",
             cluster=False,  # use full scoped symbol set from this build
@@ -1391,15 +1527,51 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
         )
         perspective_project = pack.get("project_dir") or ""
         perspective_zip = pack.get("zip") or ""
-        tags_import_path = pack.get("tags_import") or str(out / "tags_import.json")
-        # Also write Memory tags from PLC-aligned tree (full controller tag set)
-        try:
-            # Designer import wants a single root object (Folder)
-            (out / "tags_import_plc.json").write_text(
-                json.dumps(tags_plc, indent=2), encoding="utf-8"
-            )
-        except Exception:
-            pass
+        # PRIMARY tags file = full PLC-aligned tree as Memory tags (all Zone1–N).
+        # Designer does NOT auto-load tags from the project folder — you must Import Tags.
+        tags_memory = to_memory_tags_import(tags_plc)
+        tags_import_path = str(out / "tags_import.json")
+        (out / "tags_import.json").write_text(
+            json.dumps(tags_memory, indent=2), encoding="utf-8"
+        )
+        # Also inside project folder so it travels with the copy
+        if perspective_project:
+            try:
+                Path(perspective_project).joinpath("tags_import.json").write_text(
+                    json.dumps(tags_memory, indent=2), encoding="utf-8"
+                )
+            except Exception:
+                pass
+        # Optional: keep PLC-aligned (OPC paths) for later gateway device binding
+        (out / "tags_plc_aligned.json").write_text(
+            json.dumps(tags_plc, indent=2), encoding="utf-8"
+        )
+        # README so the 4-file confusion goes away
+        (out / "TAGS_README.txt").write_text(
+            "\n".join([
+                "FortnaPlus tag files — which one to use",
+                "=" * 44,
+                "",
+                "IMPORT THIS ONE into Designer Tag Browser:",
+                "  tags_import.json",
+                "  → Memory tags, full plant, Site/Zone1…ZoneN/Conveyors + Photoeyes",
+                "  → Tag Browser → right-click 'default' provider → Import Tags",
+                "  → Choose tags_import.json → Import",
+                "",
+                "Ignition does NOT auto-import tags when you copy the project folder.",
+                "Views open without tags until you run Import Tags once.",
+                "",
+                "Other files (do not import unless you know you need them):",
+                "  tags_plc_aligned.json  — same tree with OPC item paths (for live PLC later)",
+                "  tags_seed.json         — legacy kind folders (photoeye/, conveyor/) — old format",
+                "  tags_import_plc.json   — deprecated alias; use tags_import.json",
+                "",
+                "You should see Zone1 through Zone9 (or however many this site has),",
+                "not only Zone4–8. If you only see middle zones, you imported an old build.",
+                "",
+            ]),
+            encoding="utf-8",
+        )
         # Short copy instructions at build root
         (out / "COPY_TO_IGNITION.txt").write_text(
             "\n".join([
@@ -1411,21 +1583,20 @@ def build_package(run_dir: Path, out_dir: Path | None = None, *, layout_mode: st
                 f"Export folder: {out}",
                 f"Project folder: {proj_name}",
                 "",
-                "1) Copy this project folder into Ignition data\\projects\\:",
+                "STEP A — Project views",
+                "1) Copy project folder into Ignition data\\projects\\:",
                 f"   {perspective_project}",
+                r"   → C:\Program Files\Inductive Automation\Ignition\data\projects\\",
+                "2) Gateway → Projects → Scan Filesystem",
+                "3) Designer → open the project → Views → FortnaPlus/POC/Plant_Layout",
                 "",
-                "   Destination:",
-                r"   C:\Program Files\Inductive Automation\Ignition\data\projects\\",
-                f"   Result: ...\\data\\projects\\{proj_name}\\project.json",
+                "STEP B — Tags (REQUIRED — not automatic)",
+                "1) Designer Tag Browser → select provider 'default'",
+                "2) Right-click → Import Tags",
+                f"3) Select: {out / 'tags_import.json'}",
+                "4) Confirm you see Site/Zone1 … ZoneN (all zones), not only Zone4–8",
                 "",
-                "2) Gateway → Platform → System → Projects → Scan Filesystem",
-                "",
-                "3) Import tags (Memory or PLC-aligned):",
-                f"   {tags_import_path}",
-                f"   or {out / 'tags_import_plc.json'}  (full PLC-aligned tree)",
-                "   Tag Browser → right-click default → Import Tags",
-                "",
-                "4) Designer → open project → Views → FortnaPlus/POC/Plant_Layout",
+                "See TAGS_README.txt for what each tags_*.json file is.",
                 "",
                 f"Zip (optional): {perspective_zip}",
                 f"SVG underlay: {out / 'layout_conveyors_only.svg'}",
@@ -1657,13 +1828,15 @@ def write_poc_preview_html(
   <title>FortnaPlus interactive test — { _xml(machine) }</title>
   <style>
     * {{ box-sizing: border-box; }}
+    html, body {{ height: 100%; }}
     body {{
       margin: 0; font-family: Segoe UI, system-ui, sans-serif;
       background: #0a0f14; color: #e2e8f0; display: flex; height: 100vh;
+      overflow: hidden;
     }}
     #panel {{
-      width: 320px; flex-shrink: 0; border-right: 1px solid #1e293b;
-      padding: 16px; overflow-y: auto; background: #0f172a;
+      width: 300px; flex-shrink: 0; border-right: 1px solid #1e293b;
+      padding: 14px; overflow-y: auto; background: #0f172a;
     }}
     #panel h1 {{ font-size: 15px; margin: 0 0 8px; color: #fb923c; }}
     #panel p {{ font-size: 12px; color: #94a3b8; line-height: 1.45; margin: 0 0 12px; }}
@@ -1689,10 +1862,21 @@ def write_poc_preview_html(
     .item.on-block {{ border-color: #ef4444; }}
     .item button {{ padding: 3px 8px; font-size: 10px; }}
     #stage {{
-      flex: 1; overflow: auto; padding: 12px;
+      flex: 1 1 auto; min-width: 0; min-height: 0;
+      overflow: hidden; padding: 16px 20px;
       display: flex; align-items: center; justify-content: center;
+      background: radial-gradient(ellipse at center, #0f172a 0%, #0a0f14 70%);
     }}
-    #stage svg {{ max-width: 100%; height: auto; background: #0a0f14; border-radius: 12px; }}
+    #stage svg {{
+      width: min(100%, 1600px);
+      height: min(100%, 92vh);
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+      background: #0a0f14;
+      border-radius: 12px;
+      box-shadow: 0 0 0 1px #1e293b, 0 12px 40px rgba(0,0,0,.45);
+    }}
     #stage .conv {{ cursor: pointer; transition: stroke .15s; }}
     #stage .pe {{ cursor: pointer; }}
     #stage .pe .pe-core {{ transition: fill .15s; }}

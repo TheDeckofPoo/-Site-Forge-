@@ -585,7 +585,18 @@ def _safe_tag_name(name: str) -> str:
 
 
 def _area_for_name(name: str) -> str:
-    m = re.match(r"^P(\d)", (name or "").upper())
+    """P309 / PE309 / EZPE602_F / WB500 → ZoneN (first digit of equipment #)."""
+    u = (name or "").upper().strip()
+    m = re.match(r"^P(\d)", u)
+    if m:
+        return f"Zone{m.group(1)}"
+    m = re.match(r"^(?:EZ)?PE(\d)", u)
+    if m:
+        return f"Zone{m.group(1)[0]}"
+    m = re.match(r"^(?:WB|WH|PS|ES|VFD)(\d)", u)
+    if m:
+        return f"Zone{m.group(1)[0]}"
+    m = re.match(r"^(\d)", u)
     if m:
         return f"Zone{m.group(1)}"
     return "Site"
@@ -1016,10 +1027,11 @@ def instances_from_symbols(
     fit_span_x = max(fit_max_x - fit_min_x, 1.0)
     fit_span_y = max(fit_max_y - fit_min_y, 1.0)
 
-    top_band, bot_band = 44, 40
+    top_band, bot_band = 36, 32
     usable_w = max(200, canvas_w - margin * 2)
     usable_h = max(200, canvas_h - top_band - bot_band - margin)
-    scale = min(usable_w / fit_span_x, usable_h / fit_span_y)
+    # Fill ~96% of usable canvas so small sites aren't a tiny blob in the middle
+    scale = min(usable_w / fit_span_x, usable_h / fit_span_y) * 0.96
     draw_w = fit_span_x * scale
     draw_h = fit_span_y * scale
     ox = margin + (usable_w - draw_w) / 2
@@ -1034,25 +1046,23 @@ def instances_from_symbols(
     for i, (s, (x0, y0, x1, y1, L, plant_ang)) in enumerate(conv_geom):
         sx0, sy0 = plant_to_screen(x0, y0)
         sx1, sy1 = plant_to_screen(x1, y1)
-        length_px = max(28.0, math.hypot(sx1 - sx0, sy1 - sy0))
+        length_px = max(36.0, math.hypot(sx1 - sx0, sy1 - sy0))
         screen_ang = math.degrees(math.atan2(sy1 - sy0, sx1 - sx0))
-        belt_h = 16  # thick enough to read labels
-        # Axis-aligned for H/V — more reliable than Perspective rotate on embeds
+        belt_h = 18  # thick enough to read labels on dense plants
+        # Prefer true angle for all belts (cleaner plant geometry).
+        # Snap only near-H / near-V to axis-aligned for Designer stability.
         a = abs(screen_ang) % 180.0
-        if a < 35 or a > 145:
-            # horizontal belt
+        if a < 12 or a > 168:
             w, h = int(round(length_px)), belt_h
             x = int(round(min(sx0, sx1)))
             y = int(round((sy0 + sy1) / 2 - h / 2))
             rotate = 0.0
-        elif 55 < a < 125:
-            # vertical belt
+        elif 78 < a < 102:
             w, h = belt_h, int(round(length_px))
             x = int(round((sx0 + sx1) / 2 - w / 2))
             y = int(round(min(sy0, sy1)))
             rotate = 0.0
         else:
-            # diagonal — use rotate on long thin rect
             w, h = int(round(length_px)), belt_h
             pr = math.radians(screen_ang + 90.0)
             x = int(round(sx0 - (belt_h / 2.0) * math.cos(pr)))
@@ -1116,7 +1126,10 @@ def instances_from_symbols(
         name = s.get("name") or f"PE{i}"
         tag_path = (s.get("tags") or {}).get("clear") or ""
         if not tag_path:
-            tag_path = f"[default]Site/Site/Photoeyes/{_safe_tag_name(str(name))}/Clear"
+            pe_area = _area_for_name(str(name))
+            tag_path = (
+                f"[default]Site/{pe_area}/Photoeyes/{_safe_tag_name(str(name))}/Clear"
+            )
         page = s.get("drawing_page") or s.get("print_page")
         out.append({
             "kind": "photoeye",

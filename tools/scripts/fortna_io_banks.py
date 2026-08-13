@@ -678,12 +678,21 @@ def filter_canonical_vfd_params(params: list[dict]) -> list[dict]:
         out = out[:_PF_MAX_PARAMS_PER_DRIVE]
     return out
 
-_VFD_ID_RE = re.compile(r'\bVFD[\s\-_]*([A-Z0-9]*\d[A-Z0-9]{0,6})\b', re.I)
+_VFD_ID_RE = re.compile(r'\bVFD[\s\-_]*([A-Z0-9]*\d[A-Z0-9\-]{0,6})\b', re.I)
+# Title block: "VFD WIRING – (VFD312, VFD412)" — authoritative IDs for that sheet
+_VFD_WIRING_TITLE_RE = re.compile(
+    r'VFD\s*WIRING\s*[-–—:]*\s*\(([^)]{3,80})\)',
+    re.I,
+)
+# Plausible drive tags only: VFD312, VFD500A, VFD501B1, VFD501B-1 → VFD501B1
+# Reject OCR junk like VFD141711 / VFD12311 (5–6 digit noise).
+# Number body is 2–4 digits; optional letter suffix + optional trailing digit.
+_VFD_PLAUSIBLE_RE = re.compile(r'^VFD\d{2,4}(?:[A-Z]{1,2}\d?)?$', re.I)
 
 
 def _normalize_vfd_id(raw: str) -> str:
-    """VFD 500A / vfd-500a / VFD500A_EN → VFD500A. Returns '' if not a VFD tag."""
-    s = re.sub(r'[\s\-_]+', '', (raw or '').upper())
+    """VFD 500A / vfd-500a / VFD500A_EN / VFD501B-1 → VFD500A / VFD501B1. '' if junk."""
+    s = re.sub(r'[\s\-]+', '', (raw or '').upper())
     s = re.sub(r'(_EN|_AUX|_FLT|_RUN|_OK|_CMD|_REF|_FB)$', '', s)
     if not s:
         return ''
@@ -696,9 +705,32 @@ def _normalize_vfd_id(raw: str) -> str:
             return ''
     if not re.search(r'\d', s):
         return ''
-    if not re.fullmatch(r'VFD[A-Z0-9]{1,8}', s):
+    if not re.fullmatch(r'VFD[A-Z0-9]{1,10}', s):
+        return ''
+    # Reject OCR noise (VFD141711, VFD12311) — real Fortna drives are 2–4 digit + optional letter
+    if not _VFD_PLAUSIBLE_RE.fullmatch(s):
         return ''
     return s
+
+
+def _vfd_ids_from_wiring_title(text: str) -> list[str]:
+    """Parse VFD IDs from 'VFD WIRING – (VFD312, VFD412)' title-block lines."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for m in _VFD_WIRING_TITLE_RE.finditer(text or ''):
+        chunk = m.group(1) or ''
+        for part in re.split(r'[,;/]|and', chunk, flags=re.I):
+            vid = _normalize_vfd_id(part.strip())
+            if vid and vid not in seen:
+                seen.add(vid)
+                out.append(vid)
+        # Also catch bare VFD### tokens inside the parens
+        for m2 in _VFD_ID_RE.finditer(chunk):
+            vid = _normalize_vfd_id('VFD' + m2.group(1))
+            if vid and vid not in seen:
+                seen.add(vid)
+                out.append(vid)
+    return out
 
 
 def _rebuild_text_from_words(page, y_tol: float = 4.0, x_min: float | None = None, x_max: float | None = None) -> str:
@@ -887,33 +919,41 @@ def _page_has_powerflex_table(text: str) -> bool:
 
 
 def _ocr_regions_for_vfd_ids(page, pytesseract, Image, mat_scale: float = 2.0) -> list[str]:
-    """OCR title-block strips (top/bottom/sides) for VFD tags drawn as graphics."""
+    """OCR title-block strips for VFD tags drawn as graphics.
+
+    Prefers bottom title-block 'VFD WIRING – (VFD312, VFD412)' over free-form
+    right/left strip noise (which invented VFD141711 etc.).
+    """
     ids: list[str] = []
     seen: set[str] = set()
     try:
-        import fitz  # noqa: F401 — page is a fitz page
         mat = __import__('fitz').Matrix(mat_scale, mat_scale)
         pix = page.get_pixmap(matrix=mat, alpha=False)
         img = Image.frombytes('RGB', [pix.width, pix.height], pix.samples)
         w, h = img.size
+        # Bottom title block first (drawing title + VFD WIRING line)
+        # Top drive labels second (VFD312 above PowerFlex box)
+        # Avoid full-height right/left strips — they OCR page# noise as VFD IDs
         regions = [
-            img.crop((0, 0, w, max(40, int(h * 0.18)))),           # top title
-            img.crop((0, int(h * 0.78), w, h)),                    # bottom title
-            img.crop((int(w * 0.72), 0, w, h)),                    # right strip
-            img.crop((0, 0, max(40, int(w * 0.22)), h)),           # left strip
+            img.crop((0, int(h * 0.82), w, h)),                    # bottom title block
+            img.crop((0, 0, w, max(40, int(h * 0.22)))),           # top titles
+            img.crop((int(w * 0.05), int(h * 0.08), int(w * 0.95), int(h * 0.40))),  # drive boxes
         ]
         for region in regions:
             try:
                 text = pytesseract.image_to_string(region) or ''
             except Exception:
                 continue
+            # Prefer authoritative wiring title
+            for vid in _vfd_ids_from_wiring_title(text):
+                if vid not in seen:
+                    seen.add(vid)
+                    ids.append(vid)
             for m in _VFD_ID_RE.finditer(text):
                 vid = _normalize_vfd_id('VFD' + m.group(1))
-                if vid and vid not in seen and len(vid) <= 12:
-                    # filter OCR junk like VFDITG if too weird — allow alnum only
-                    if re.fullmatch(r'VFD[A-Z0-9]{1,8}', vid):
-                        seen.add(vid)
-                        ids.append(vid)
+                if vid and vid not in seen:
+                    seen.add(vid)
+                    ids.append(vid)
     except Exception:
         pass
     return ids
@@ -1124,6 +1164,10 @@ def attach_print_params_to_drives(
     by_device: dict[str, list[dict]] = defaultdict(list)
     by_device_sources: dict[str, set[str]] = defaultdict(set)
 
+    # device_id → votes for (page, source_file)
+    page_hits: dict[str, dict[int, int]] = defaultdict(lambda: defaultdict(int))
+    file_hits: dict[str, dict[str, int]] = defaultdict(lambda: defaultdict(int))
+
     for ocr in ocr_results:
         if ocr.get('error'):
             continue
@@ -1137,15 +1181,35 @@ def attach_print_params_to_drives(
         ids: set[str] = set()
         for p in params:
             if p.get('param') == 'Device_ID' and p.get('value'):
-                ids.add(_normalize_vfd_id(str(p['value'])))
+                vid = _normalize_vfd_id(str(p['value']))
+                if vid:
+                    ids.add(vid)
+                    try:
+                        pg = int(p['page']) if p.get('page') is not None else None
+                    except (TypeError, ValueError):
+                        pg = None
+                    if pg:
+                        page_hits[vid][pg] += 3  # title-block Device_ID is strong
+                    if src:
+                        file_hits[vid][src] += 3
             did = _normalize_vfd_id(str(p.get('device_id') or ''))
             if did:
                 ids.add(did)
+                try:
+                    pg = int(p['page']) if p.get('page') is not None else None
+                except (TypeError, ValueError):
+                    pg = None
+                if pg:
+                    page_hits[did][pg] += 1
+                if src:
+                    file_hits[did][src] += 1
                 if p.get('param') != 'Device_ID':
                     by_device[did].append(p)
                     by_device_sources[did].add(Path(src).name)
         for m in re.finditer(r'\bVFD[A-Z0-9]{2,8}\b', (text or '').upper()):
-            ids.add(_normalize_vfd_id(m.group(0)))
+            vid = _normalize_vfd_id(m.group(0))
+            if vid:
+                ids.add(vid)
         ids = {i for i in ids if i}
         file_params.append((src, (text or '').upper(), params, ids))
 
@@ -1211,51 +1275,63 @@ def attach_print_params_to_drives(
                         continue
                     matched_params.append(p)
 
-        if not matched_params:
+        # Resolve best page even when PowerFlex table OCR failed (title-only hit)
+        def _best_page_for(keys: list[str]) -> tuple[int | None, str]:
+            votes: dict[int, int] = {}
+            fvotes: dict[str, int] = {}
+            for k in keys:
+                if not k:
+                    continue
+                for pg, n in page_hits.get(k, {}).items():
+                    votes[pg] = votes.get(pg, 0) + n
+                for f, n in file_hits.get(k, {}).items():
+                    fvotes[f] = fvotes.get(f, 0) + n
+            for p in matched_params:
+                try:
+                    pg = int(p.get('page')) if p.get('page') is not None else None
+                except (TypeError, ValueError):
+                    pg = None
+                if pg and pg > 0:
+                    votes[pg] = votes.get(pg, 0) + 1
+                src = str(p.get('source') or '')
+                if src:
+                    fvotes[src] = fvotes.get(src, 0) + 1
+            bp = max(votes.items(), key=lambda kv: (kv[1], kv[0]))[0] if votes else None
+            bf = max(fvotes.items(), key=lambda kv: kv[1])[0] if fvotes else ''
+            return bp, bf
+
+        cand_keys = [base, base_plain, _normalize_vfd_id(name), name]
+        best_page, best_file = _best_page_for([k for k in cand_keys if k])
+
+        if not matched_params and best_page is None:
             # leave existing print_params if any; do not wipe tar.gz row
             continue
 
         # Keep only real PowerFlex program-table params (≈8 on a typical VFD sheet)
-        cleaned = filter_canonical_vfd_params(matched_params)
-        if not cleaned:
-            # Fall back: still try filter on raw (may be empty if OCR was all noise)
-            continue
+        cleaned = filter_canonical_vfd_params(matched_params) if matched_params else []
+        if cleaned:
+            by_key: dict[str, dict] = {}
+            for p in cleaned:
+                key = p.get('param') or 'param'
+                by_key[key] = p
+            d['print_params'] = dict(by_key)
+            d['print_param_count'] = len(by_key)
+            d['print_sources'] = sorted(set(sources))
+            d['print_param_list'] = list(by_key.values())
+            d['vfd_from_print'] = True
+        elif best_page is not None:
+            # Title-block page only (no param table) — still link PRINT #
+            d['vfd_from_print'] = True
+            if sources:
+                d['print_sources'] = sorted(set(sources))
 
-        by_key: dict[str, dict] = {}
-        for p in cleaned:
-            key = p.get('param') or 'param'
-            by_key[key] = p
-        d['print_params'] = dict(by_key)
-        d['print_param_count'] = len(by_key)
-        d['print_sources'] = sorted(set(sources))
-        d['print_param_list'] = list(by_key.values())  # already sorted by par_num
-        d['vfd_from_print'] = True
-        # Best print location for repository click-through
-        best_page = None
-        best_file = ''
-        for p in cleaned:
-            if p.get('page') and not best_page:
-                best_page = p.get('page')
-            if p.get('source') and not best_file:
-                best_file = str(p.get('source') or '')
-        # Prefer full path from matched_params source field when available
-        for p in matched_params:
-            src = str(p.get('source') or '')
-            if src and (src.endswith('.pdf') or '/' in src or '\\' in src):
-                # keep basename match later in UI against panel paths
-                if not best_file or len(src) > len(best_file):
-                    best_file = src
-            if p.get('page') is not None and best_page is None:
-                best_page = p.get('page')
         if best_file:
             d['print_file'] = best_file
         if best_page is not None:
-            try:
-                d['print_page'] = int(best_page)
-            except (TypeError, ValueError):
-                pass
-        # If ASC had no drawing page, use OCR page as the PRINT column value
-        if not d.get('drawing_page') and d.get('print_page'):
+            d['print_page'] = int(best_page)
+            # OCR page wins over ASC conveyor-page inherit for VFD rows
+            d['drawing_page'] = int(best_page)
+        elif not d.get('drawing_page') and d.get('print_page'):
             d['drawing_page'] = d['print_page']
         # Only promote to VFD when the *name* is a VFD tag — never P### conveyors
         # (print params may still attach to a conveyor that has an associated drive).
@@ -1481,16 +1557,22 @@ def ocr_pdf_tokens(
                     if vid and vid not in page_vfd_ids:
                         page_vfd_ids.append(vid)
 
+            # Also harvest VFD WIRING title IDs from native/rebuilt text
+            for vid in _vfd_ids_from_wiring_title(native or ''):
+                if vid not in page_vfd_ids:
+                    page_vfd_ids.append(vid)
+
             pages_text.append(native)
-            # Per-page param extract — spatial column split when 2+ VFDs side-by-side
-            # (VFD410 left PF70 + VFD412 right PF4 must not share one table).
+            # PDF page index is 1-based (i+1). Viewer #page=N matches this.
+            # Multi-VFD sheets (typically 2 drives) share this same page number.
+            pdf_page_1based = i + 1
             n_ids = len(set(page_vfd_ids or []))
             title_xs = _vfd_title_x_positions(page)
             if n_ids >= 2 or len(title_xs) >= 2:
                 page_params = extract_vfd_params_from_page_spatial(
                     page,
                     str(pdf_path),
-                    page_num=i + 1,
+                    page_num=pdf_page_1based,
                     extra_ids=page_vfd_ids,
                 )
                 page_mode = (page_mode + '+cols') if page_mode else 'cols'
@@ -1499,10 +1581,19 @@ def ocr_pdf_tokens(
                     native,
                     str(pdf_path),
                     device_ids=page_vfd_ids,
-                    page=i + 1,
+                    page=pdf_page_1based,
                 )
+            # Stamp every param + a Device_ID row so attach step gets page + file
+            for vid in page_vfd_ids or []:
+                page_params.append({
+                    'param': 'Device_ID',
+                    'value': vid,
+                    'device_id': vid,
+                    'page': pdf_page_1based,
+                    'source': str(pdf_path),
+                })
             all_vfd_params.extend(page_params)
-            _page_progress(i + 1, n, page_mode)
+            _page_progress(pdf_page_1based, n, page_mode)
         doc.close()
     elif suffix in ('.png', '.jpg', '.jpeg', '.tif', '.tiff', '.bmp', '.webp'):
         img = Image.open(pdf_path)

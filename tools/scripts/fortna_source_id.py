@@ -44,6 +44,71 @@ def safe_fs_name(name: str, max_len: int = 120) -> str:
     return s[:max_len]
 
 
+def studio_safe_name(name: str, max_len: int = 80) -> str:
+    """
+    Studio 5000 / Logix-friendly file and controller context stem.
+
+    Hyphens in L5X basenames (e.g. 20260803-0815-Site-RUN.L5X) cause import
+    failures in some Studio versions. Prefer underscores only.
+    """
+    s = safe_fs_name(name, max_len=max_len)
+    s = s.replace("-", "_")
+    s = re.sub(r"_+", "_", s).strip("._")
+    return (s or "Autogen_Project")[:max_len]
+
+
+def studio_project_stem(
+    project_name: str = "",
+    machine: str = "",
+    *,
+    max_len: int = 40,
+) -> str:
+    """
+    Short Studio L5X / Controller name: site + panel only.
+
+    Examples:
+      OReillyDC27_ORDENCP4  (preferred)
+      ORDENCP4
+    Never includes tar.gz date stamps (20260803_0815_…) — Studio rejects those.
+    """
+    candidates = [
+        (project_name or "").strip(),
+        (machine or "").strip(),
+    ]
+    # Also try meta machine/project if caller passes nothing useful
+    if not any(candidates):
+        meta = load_active_meta()
+        candidates = [
+            str(meta.get("project") or meta.get("project_name") or "").strip(),
+            str(meta.get("machine") or "").strip(),
+        ]
+    raw = next((c for c in candidates if c), "Autogen_Project")
+    s = studio_safe_name(raw, max_len=120)
+    # Strip leading date/time stamps: 20260803_0815_… or 20260803-0815-…
+    s = re.sub(r"^\d{8}[_-]?\d{0,6}[_-]?", "", s)
+    # Drop trailing _RUN / RUN package noise
+    s = re.sub(r"(_RUN|RUN)$", "", s, flags=re.I)
+    s = re.sub(r"_+", "_", s).strip("._")
+    # Prefer last two underscore tokens if still long (Site_Panel)
+    parts = [p for p in s.split("_") if p]
+    # Drop pure-numeric leftover segments from date
+    parts = [p for p in parts if not re.fullmatch(r"\d{4,}", p)]
+    if len(parts) >= 2:
+        # Keep site + panel when pattern looks like OReillyDC27 + ORDENCP4
+        s = "_".join(parts[-2:]) if len(parts) > 2 and parts[-1].upper().startswith(("ORDEN", "ORNC", "CP")) else "_".join(parts)
+        # If we still have date-like middle, prefer machine alone
+        if re.match(r"^\d", s):
+            s = parts[-1]
+    elif parts:
+        s = parts[0]
+    if not s:
+        s = studio_safe_name(machine or "Autogen_Project", max_len=max_len)
+    # Studio controller names: letter/underscore start, max ~40 practical
+    if s[0].isdigit():
+        s = f"P_{s}"
+    return s[:max_len]
+
+
 def load_active_meta() -> dict:
     if not ACTIVE_META.is_file():
         return {}

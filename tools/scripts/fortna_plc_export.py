@@ -987,14 +987,21 @@ def export_run(
     scaffold['motor_chains'] = motor_chains
     system = scaffold['system']
     stamp = datetime.now().strftime('%Y%m%d-%H%M%S')
-    # Prefer tar.gz basename for folder/file stems (raw-test rule)
+    # Prefer tar.gz basename for folders; L5X stems use underscores (Studio-safe)
     try:
-        from fortna_source_id import export_label_from_meta
+        from fortna_source_id import export_label_from_meta, studio_safe_name as _studio_safe
         export_label = export_label_from_meta()
     except Exception:
         export_label = ''
-    folder = export_label if export_label else f'{stamp}-{system}'
-    file_stem = export_label if export_label else system
+
+        def _studio_safe(s: str, max_len: int = 80) -> str:
+            t = re.sub(r'[^A-Za-z0-9_]', '_', (s or 'PLC').replace('-', '_'))
+            return re.sub(r'_+', '_', t).strip('_')[:max_len] or 'PLC'
+
+    # Always unique folder per run so packages don't overwrite each other
+    label = _studio_safe(export_label or system)
+    folder = f'{stamp}-{label}'
+    file_stem = label
     out = out_dir or (REPO_ROOT / 'exports' / 'plc' / folder)
     out.mkdir(parents=True, exist_ok=True)
 
