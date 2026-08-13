@@ -31,13 +31,12 @@ from fortna_source_id import (  # noqa: E402
     safe_fs_name,
 )
 
-# Live PRISM / Rockwell vector DB (same machine layout as START_HERE.txt)
-DEFAULT_PRISM_ROOT = Path(r"C:\dev\worktree\Rockwell_GitHub")
+# Standalone PRISM project (split from Rockwell_GitHub)
+DEFAULT_PRISM_ROOT = Path(r"C:\dev\worktree\PRISM")
 INGEST_MARKER = ".fortna_ingest.json"
 
 
 def _prism_root() -> Path:
-    env = Path(__file__).resolve().parents
     # Prefer env override
     import os
 
@@ -46,10 +45,14 @@ def _prism_root() -> Path:
         return Path(raw)
     if DEFAULT_PRISM_ROOT.is_dir():
         return DEFAULT_PRISM_ROOT
-    # Sibling of FortnaPlus
-    sib = REPO_ROOT.parent / "Rockwell_GitHub"
+    # Sibling of FortnaPlus (new layout)
+    sib = REPO_ROOT.parent / "PRISM"
     if sib.is_dir():
         return sib
+    # Legacy: PRISM lived inside Rockwell_GitHub
+    legacy = REPO_ROOT.parent / "Rockwell_GitHub"
+    if (legacy / "rockwell-vector-db").is_dir() or (legacy / "knowledge-corpus").is_dir():
+        return legacy
     return DEFAULT_PRISM_ROOT
 
 
