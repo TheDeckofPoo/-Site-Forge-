@@ -1,0 +1,40 @@
+VFD print-page + param attach log 20260814-133126
+Drives: 32 · with PowerFlex params: 2
+Page histogram: {'1': 8, '33': 6, '37': 4, '36': 2, '28': 2, '38': 2}
+
+name | page | params | why_no_params | file
+VFD444_AUX: page=1 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD444_EN: page=1 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD500_AUX: page=1 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD500_EN: page=1 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD500A_AUX: page=36 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD500A_EN: page=36 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD502_AUX: page=1 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD502_EN: page=1 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD504_AUX: page=37 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD504_EN: page=37 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD506_AUX: page=37 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD506_EN: page=37 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD508_AUX: page=28 params=8 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P036 Start Source', 'P038 Speed Reference', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P055 Relay Out Sel', 'P070 Preset Freq 0'] file=CP6__CP6.pdf
+VFD508_EN: page=28 params=8 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P036 Start Source', 'P038 Speed Reference', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P055 Relay Out Sel', 'P070 Preset Freq 0'] file=CP6__CP6.pdf
+VFD544_AUX: page=1 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD544_EN: page=1 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD700A: page=38 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD700A_AUX: page=38 params=0 why=base_not_in_param_buckets keys=[] file=Master__CP5.pdf
+VFD509_AUX: page=33 params=0 why=base_not_in_param_buckets keys=[] file=CP6__CP6.pdf
+VFD510_AUX: page=33 params=0 why=base_not_in_param_buckets keys=[] file=CP6__CP6.pdf
+VFD550_AUX: page=33 params=0 why=base_not_in_param_buckets keys=[] file=CP6__CP6.pdf
+VFD600M: page=None params=0 why=no_print_page keys=[] file=
+VFD600N_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD509: page=33 params=0 why=base_not_in_param_buckets keys=[] file=CP6__CP6.pdf
+VFD510: page=33 params=0 why=base_not_in_param_buckets keys=[] file=CP6__CP6.pdf
+VFD550: page=33 params=0 why=base_not_in_param_buckets keys=[] file=CP6__CP6.pdf
+VFD600N: page=None params=0 why=no_print_page keys=[] file=
+VFD600M_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD600O: page=None params=0 why=no_print_page keys=[] file=
+VFD600O_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD600P: page=None params=0 why=no_print_page keys=[] file=
+VFD600P_AUX: page=None params=0 why=no_print_page keys=[] file=
+
+Full JSON: C:\dev\worktree\FortnaPlus\exports\ocr-logs\vfd_page_assign_20260814-133126.json
+Also see: vfd_param_extract_20260814-133126.json (per-page table OCR)

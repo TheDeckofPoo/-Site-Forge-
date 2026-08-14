@@ -1926,8 +1926,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # Prefer Fortna UDT stubs for device classes that IO_MAP addresses with .I./.O.
         # (BOOL stubs cause Studio 'Invalid member specifier' on ES500.I.ES_OK etc.)
         udt_block = None
-        # VFD500_AUX / VFD500_EN → do NOT create BOOL; use P500_VFD Motor_Starter_UDT
-        vfd_m = re.match(r"^VFD(\d+[A-Z]?)(?:_.*)?$", tname, re.I)
+        # ALL project VFD discrete points (VFD500_AUX, VFD500_EN, VFD816A_AUX, …)
+        # → one Motor_Starter_UDT P###_VFD per drive number (gold style). No BOOL stubs.
+        vfd_m = (
+            re.match(r"^VFD(\d+[A-Z]?)(?:_.*)?$", tname, re.I)
+            or re.match(r"^VFD(\d+[A-Z]?)(?:_.*)?$", raw, re.I)
+            or re.match(r"^T_VFD(\d+[A-Z]?)(?:_.*)?$", tname, re.I)
+        )
+        if not vfd_m and dtype_u in ("vfd", "drive", "powerflex") and re.search(
+            r"VFD(\d+[A-Z]?)", raw, re.I
+        ):
+            vfd_m = re.search(r"VFD(\d+[A-Z]?)", raw, re.I)
         if vfd_m:
             ms_name = f"P{vfd_m.group(1)}_VFD"
             if ms_name not in seen_tag_names:
@@ -2106,13 +2115,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         return None
 
     def _vfd_ms_member(tname: str, direction: str) -> str | None:
-        """Map VFD500_AUX / VFD500_EN → P500_VFD Motor_Starter_UDT members.
+        """Map every VFD###_* point → P###_VFD Motor_Starter_UDT members.
 
-        Gold finished: AUX → P###_VFD.I.Auxiliary_Forward; enable out often
-        P###_Conv.O.Run → module. We put EN into P###_VFD.O.Run so one UDT
-        owns the discrete VFD I/O (no duplicate BOOL VFD500_AUX tags).
+        Applies to ALL VFDs on the project (VFD118, VFD500, VFD816A, …), not one example.
+        Gold: AUX → .I.Auxiliary_Forward; EN out → .O.Run (no bare BOOL VFD tags).
         """
-        m = re.match(r"^VFD(\d+[A-Z]?)(?:_(.+))?$", tname, re.I)
+        m = (
+            re.match(r"^VFD(\d+[A-Z]?)(?:_(.+))?$", tname, re.I)
+            or re.match(r"^T_VFD(\d+[A-Z]?)(?:_(.+))?$", tname, re.I)
+        )
         if not m:
             return None
         num = m.group(1)
@@ -2330,22 +2341,36 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         programs_xml.append(gp["program_xml"])
         gold_program_names.append(gname)
 
-    # --- Live Sorter_Track from Sorter build UI (not Greensboro gold pack) ---
+    # --- Live Sorter_Track: ONLY when Program pack includes Sorter_Track (checkbox) ---
+    # Double safety: sorter_build UI alone does not emit the program.
     sorter_cfg = dict(getattr(inp, "sorter_build", None) or {})
     sorter_report: dict = {}
     want_sorter = any(
         (x or "").strip().lower().replace(" ", "_") in (
-            "sorter_track", "sortertrack", "sorter"
+            "sorter_track", "sortertrack",
         )
         for x in (getattr(inp, "include_programs", None) or [])
     )
     try:
         from fortna_sorter_build import (
-            build_live_sorter_track,
+            build_sorter_track,
             sorter_build_is_configured,
         )
-        if sorter_build_is_configured(sorter_cfg) or want_sorter:
-            live = build_live_sorter_track(
+        # Automate: workbook sorter_build with real data ⇒ include pack even if
+        # UI forgot the checkbox (good not perfect).
+        if not want_sorter and sorter_build_is_configured(sorter_cfg):
+            want_sorter = True
+            inc = list(getattr(inp, "include_programs", None) or [])
+            if "Sorter_Track" not in inc:
+                inc.append("Sorter_Track")
+                inp.include_programs = inc
+            _emit_progress(
+                "Sorter build data present → auto-including Sorter_Track pack",
+                41,
+            )
+        if want_sorter:
+            # Sorter_Track_Program.L5X (gold pack) configured from Sorter build UI
+            live = build_sorter_track(
                 sorter_cfg if sorter_build_is_configured(sorter_cfg) else {
                     "divert_count": 0,
                     "tracking": [],
@@ -2355,20 +2380,35 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 word_map=dict(getattr(inp, "io_word_map", None) or {}),
             )
             sorter_report = live.get("report") or {}
+            sorter_report["pack_checkbox"] = True
             for block in live.get("tags") or []:
                 _upsert_tag_block(block, prefer=True)
             if live.get("aoi_xml"):
                 extra_aoi_chunks.append(live["aoi_xml"])
+            if live.get("datatypes_xml"):
+                extra_dt_chunks.append(live["datatypes_xml"])
             programs_xml.append(live["program_xml"])
             gold_program_names.append("Sorter_Track")
+            mode = sorter_report.get("mode") or "configured_pack"
             _emit_progress(
-                f"Live Sorter_Track: {sorter_report.get('divert_count', 0)} diverts, "
-                f"{sorter_report.get('encoder_count', 0)} encoders",
+                f"Sorter_Track ({mode}): "
+                f"diverts kept={sorter_report.get('wave_rungs_kept', sorter_report.get('divert_count'))}/"
+                f"{sorter_report.get('wave_rungs_in_pack', '?')}, "
+                f"encoders={sorter_report.get('encoder_count', 0)}",
+                42,
+            )
+        elif sorter_build_is_configured(sorter_cfg):
+            sorter_report = {
+                "mode": "skipped",
+                "reason": "Sorter build has data but Program pack Sorter Track is off",
+            }
+            _emit_progress(
+                "Sorter build saved but pack OFF — not emitting Sorter_Track",
                 42,
             )
     except Exception as ex:
         sorter_report = {"mode": "error", "error": str(ex)}
-        _emit_progress(f"Sorter_Track live build failed: {ex}", 42)
+        _emit_progress(f"Sorter_Track build failed: {ex}", 42)
 
     if not gold_io_map_used and want_io_map:
         # RUN/tar.gz map: CP_I (inputs) + CP_O (outputs) from Conveyor.asc + EIP word_map

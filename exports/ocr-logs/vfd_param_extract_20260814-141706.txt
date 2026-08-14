@@ -1,0 +1,51 @@
+VFD PowerFlex param extract log 20260814-141706
+Pages logged: 113 · pages with params: 6
+
+file | page | mode | ids | cad | ocr_kept | final | why
+Master__CP5.pdf: p1 mode=ocr+vfd+cols ids=['VFD444', 'VFD500', 'VFD502', 'VFD544'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+Master__CP5.pdf: p5 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+Master__CP5.pdf: p10 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+Master__CP5.pdf: p11 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+Master__CP5.pdf: p28 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+Master__CP5.pdf: p33 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+Master__CP5.pdf: p35 mode=text+vfd+cols ids=['VFD444', 'VFD500'] cad=22 ocr=3 final=22 per_id={} why=ok
+Master__CP5.pdf: p36 mode=text+vfd+cols ids=['VFD500A', 'VFD502'] cad=12 ocr=1 final=12 per_id={} why=ok
+Master__CP5.pdf: p37 mode=text+vfd+cols ids=['VFD504', 'VFD506'] cad=12 ocr=0 final=12 per_id={} why=ok
+Master__CP5.pdf: p38 mode=text+vfd+cols ids=['VFD544', 'VFD700A'] cad=22 ocr=2 final=22 per_id={} why=ok
+Master__CP5.pdf: p39 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+Master__CP5.pdf: p43 mode=ocr+vfd+cols ids=['VFD444', 'VFD444R', 'VFD444S', 'VFD444T', 'VFD444U', 'VFD444V', 'VFD444WW', 'VFD500', 'VFD500R', 'VFD500S', 'VFD500U', 'VFD500AV', 'VFD502', 'VFD502R', 'VFD502S', 'VFD502T', 'VFD502U', 'VFD502V', 'VFD504', 'VFD504R', 'VFD504S', 'VFD504T', 'VFD504U', 'VFD504V', 'VFD506', 'VFD506R', 'VFD506S', 'VFD506T', 'VFD506U', 'VFD506V', 'VFD544', 'VFD544R', 'VFD544S', 'VFD544T', 'VFD544U', 'VFD544V', 'VFD444W'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+Master__CP5.pdf: p45 mode=ocr+cols ids=['VFD700AV', 'VFD700AW', 'VFD700A'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+Master__CP5.pdf: p47 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+Master__CP5.pdf: p51 mode=ocr+vfd ids=['VFD10'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+Master__CP5.pdf: p52 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP6__CP6.pdf: p1 mode=ocr+vfd ids=['VFD508'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+CP6__CP6.pdf: p9 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP6__CP6.pdf: p19 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP6__CP6.pdf: p28 mode=text+vfd ids=['VFD508'] cad=8 ocr=0 final=8 per_id={'VFD508': 8} why=ok
+CP6__CP6.pdf: p29 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP6__CP6.pdf: p31 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP6__CP6.pdf: p33 mode=ocr+vfd+cols ids=['VFD508', 'VFD508S', 'VFD508W', 'VFD509', 'VFD509S', 'VFD509T', 'VFD509U', 'VFD509V', 'VFD509W', 'VFD510', 'VFD510S', 'VFD510T', 'VFD510U', 'VFD510V', 'VFD510W', 'VFD550', 'VFD550R', 'VFD550S', 'VFD550T', 'VFD550U', 'VFD508R', 'VFD508T', 'VFD508U', 'VFD508V'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+CP6__CP6.pdf: p35 mode=ocr+vfd ids=['VFD10'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+CP8__CP8.pdf: p1 mode=ocr+vfd+cols ids=['VFD219', 'VFD219A'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+CP8__CP8.pdf: p3 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP8__CP8.pdf: p17 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP8__CP8.pdf: p19 mode=text+vfd+cols ids=['VFD219', 'VFD219A'] cad=22 ocr=2 final=22 per_id={} why=ok
+CP8__CP8.pdf: p20 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP8__CP8.pdf: p24 mode=ocr+vfd+cols ids=['VFD219R', 'VFD219S', 'VFD219T', 'VFD219U', 'VFD219V', 'VFD219W', 'VFD219AR', 'VFD219AT', 'VFD219AV'] cad=0 ocr=0 final=0 per_id={} why=table_ocr_empty_or_filtered
+CP8__CP8.pdf: p25 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+
+--- OCR text samples (first pages with sample) ---
+p1 Master__CP5.pdf: [1406 | cP5 | CP5 [CONTROLS WIRING — ESTOP CIRCUIT/INTERLOCKS |  | CONTROLS WIRING = SRACKO-O & SRACKO-1 |  | CONTROLS WIRING - SRACKO-2 & SRACKO-3 |  | CONTROLS WIRING = SRACKO-4 & SRACKO-5 |  | CONTROLS WIRING = SRACKO-6 & SRACKO-7 |  | CONTROLS WIRING - SRACKI-0 & SRACKT-1 |  | CONTROLS WIRING = 
+p5 Master__CP5.pdf: ! © a m1 om | | | | | AC5/110116 | | . RS422/RS485 COM ! | | 2 XD+ CAB1 /DRAIN | | 3 RXD+ | | | $ GND | \/ | | 6 VCC | | 3 RMO- | 9 | PLUG SCANNER INTO C-BOX. | | | | | | | a | =AC5+ACS. | *#FORTNA WILL TERMINATE ALL COMMUNICATION WIRING. |  | PLEASE PULL ONE BELDON #8102 FOR EACH SCANNER, |  | PULL
+p10 Master__CP5.pdf: [30 [8 [iagacye TON WD. TERMINALS 35 ANP/POLE RATING, WIRE RANGE 22-10 STANDARD IEC RATED TERWNAL BLOCK 49 PCS/FOoT ALLEN BRADLEY | | [32 [0 fiaa2-sose ON WTO. TERNINALS 20 AN/POLE RATING, WIRE RANGE 30-12 W/ COWVONING BAR STANDARD IEC RATED TERMINAL BLOCK 59 PCS/FOOT | ALLEN BRADLEY | | [3s [1 [rag
+p11 Master__CP5.pdf: | | 1 {csizo______[20A Toole SCH W/ GND _120-277V AC COMMERCIAL SPECICATION GRADE BROWN | ELL | [20 | Yrtsasi snc sk isa LU SOE wD ONLY, eROWN | [Far |sidou Lou Fu, ones usa ae Age | [es [3 feswns 5.25 72 ww one 325 17 WE Rew CovER ut | [es [a [eseanie fro wren Wi 3252410 72H ECE OF WREUATWE ar | [e
+p28 Master__CP5.pdf: ose ae | oes a | izes i205 | 14127 1 85001 ' wai286 1 i | lx] fl wow 1 ssra/r0} 513/08 i rer wr 1 | sasss 0 Oe [io] we sam | ps pera see uc | esr one [E9108 — — ToT Sige Saye | “ 1 1 oe u--------— — rere | vates0 1 eerie \ i209 | a pin sia | wiese ! \ i251 | Pr nr nnn nnn nena nnn nnn nanan 4 | 1412
+p33 Master__CP5.pdf: ues elaine te a ' wees ' a, so Dr bn Meth Reaeetel | wares ' saves ' | aver ' ! 11786 } ! | 141728 ome oso oot 8 [70] 1 i 141787 1 waq03+ — — — — — — -- —-- 4-- -- - = - 229 we syn Us Ys KID | pins \ vee 1 | 1730 } ! 1789 } ! | 141731 oe oxen ons [7] 1 i 141790 f waar — — —— - —-- --- q-- - --- - 22
+p35 Master__CP5.pdf: 141910 @ 5 | SPEED SEL 2 ANALOG OUT V- |23 Y) | | | 141911 [2 «| SPEED SEL 3 DIG OUT 2 NO + 4 | 141912 24V COMMON DIG OUT 2 CMN ks @- 4 | 141913 -—- FT DIG IN COMMON DIG OUT 2 NC | 141914 +24V0C | 141916 14) ANALOG IN 1 V- | [@ 14 mc | [_Par_| Parameter Name | Programmed Value | | 141917 ANALOG 1 V+
+p36 Master__CP5.pdf: 142010 @ 5 | DG IN 1 POWER WIRING | 130010 | 142011 [|@e|oow2 | [Par | Parameter Name | Programmed Value | | 142012 #24 OC | 142013 [38 [Speed Reference | Preset Freq | | 142014 ows | 142015 @ 14] anavoc cMN | 142017 RS485 SLD | REMOVE FACTORY JUMPER |  | 142018 BETWEEN TERMINAL #1 & #11 | 142019 | 
+p37 Master__CP5.pdf: 142110 @ 5 | DG IN 1 POWER WIRING | 130010 | 142i [|@e|oow2 | [Par | Parameter Name | Programmed Value | | 142112 #24v 0c | 142113 | “and ows | 142115 @ 14] anavoc cMN | 142117 RS485 SLD | REMOVE FACTORY JUMPER |  | 142118 BETWEEN TERMINAL #1 & #11 | 142119 | 142120 | 142121 | 142122 | 142123 | 1421
+p38 Master__CP5.pdf: 142210 @ 5 | SPEED SEL 2 ANALOG OUT V- |23 @) | | 142211 [2 «| SPEED SEL 3 DIG OUT 2 NO + 4 | 142212 24V COMMON DIG OUT 2 CMN ks @+ a | 142213 eel DIG IN COMMON IG OUT 2 NC | 142215 +10V POT REF POWER WIRING | 130030 | 142216 ANALOG IN 1 V- | [_Par_| Parameter Name | Programmed Value | | 142017 ANAL
+p39 Master__CP5.pdf: provided with an insulated bushing. e Field devices will be mounted to the conveyor frames with a minimum | ¢ Conduit will be installed in a good workmanship like manner. of two %” bolts. Tek screws will not be permitted. The practice of using | @ Caddy-clamps will not be used to support the conduit
+p43 Master__CP5.pdf: POWERFLEX 40 VARIABLE SPEED DRIVE 24VDC CONTROLS: REMOVE FACTORY Jl | Ra | SPOS2A, | POWERFLEX 70 VARIABLE SPEED DRIVE 24VDC CONTROLS | a a (aS (22 | (526700 | VFD544 0:524/06 5NEG24_1 5POS24_1 [525/10 [525/07 | SEND/RECEIVE 24VDC RIGHT SIGHT STYLE PHOTOEYE | RECEIVE BROWN BLUE WHITE | PESO6_| 5POS2
+
+Full JSON: C:\dev\worktree\FortnaPlus\exports\ocr-logs\vfd_param_extract_20260814-141706.json

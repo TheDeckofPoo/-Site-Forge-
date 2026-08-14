@@ -1151,6 +1151,29 @@ def _extract_params_in_segment(
                 pval = core
         _add(f'P{int(par_num):03d} {pname}', pval, unit, m.group(0))
 
+    # Pipe / table OCR: "41 | Motor NP Volts | 460 VAC" (PF70 sheets, Tesseract)
+    if len(found) < 4:
+        for m in re.finditer(
+            r'\b(\d{1,3})\s*[|]\s*'
+            rf'({_PF_PARAM_NAMES})\s*[|]\s*'
+            r'([^\n|]{1,40})',
+            text,
+            re.I,
+        ):
+            par_num = int(m.group(1))
+            pname = re.sub(r'\s+', ' ', m.group(2).strip())
+            pval = re.sub(r'\s+', ' ', m.group(3).strip())
+            unit = ''
+            um = re.search(
+                r'\b(VAC|V|A|Amps?|Hz|HZ|Sec(?:s)?|s|RPM|HP|%)\s*$', pval, re.I
+            )
+            if um:
+                unit = um.group(1)
+                core = pval[: um.start()].strip()
+                if core:
+                    pval = core
+            _add(f'P{par_num:03d} {pname}', pval, unit, m.group(0))
+
     # Named / P-code patterns only if table rows were sparse (legacy prints)
     if len(found) < 3:
         for rx, kind in _VFD_PARAM_PATTERNS:
@@ -1329,21 +1352,28 @@ def attach_print_params_to_drives(
         ids = {i for i in ids if i}
         file_params.append((src, (text or '').upper(), params, ids))
 
-        # ONLY attach params that already carry device_id (set by per-VFD segment split).
-        # Never copy the whole sheet's table onto every VFD on that page
-        # (that was merging VFD410 PF70 into VFD412 PF4).
+        # Attach params with device_id. Orphans: stamp to primary VFD ids on sheet
+        # (1 id → that drive; 2–4 primary ids → clone table to each — good-not-perfect).
+        primary_ids = _primary_vfd_ids(ids)
         for p in params:
             if p.get('param') == 'Device_ID':
                 continue
             did = _normalize_vfd_id(str(p.get('device_id') or ''))
-            if not did:
-                # Orphan params (no VFD section) — only usable if sheet has exactly one VFD
-                if len(ids) == 1:
-                    did = next(iter(ids))
-                else:
-                    continue
-            by_device[did].append(p)
-            by_device_sources[did].add(Path(src).name)
+            if did:
+                by_device[did].append(p)
+                by_device_sources[did].add(Path(src).name)
+                continue
+            # Orphan PowerFlex rows
+            if not is_canonical_vfd_param(str(p.get('param') or '')):
+                continue
+            targets = primary_ids or (list(ids) if len(ids) == 1 else [])
+            if not targets:
+                continue
+            for tid in targets:
+                row = dict(p)
+                row['device_id'] = tid
+                by_device[tid].append(row)
+                by_device_sources[tid].add(Path(src).name)
 
     for d in drives:
         name = (d.get('name') or '').upper()
@@ -1649,6 +1679,85 @@ def _count_real_vfd_params(params: list[dict]) -> int:
         if is_canonical_vfd_param(str(p.get('param') or '')):
             n += 1
     return n
+
+
+def _primary_vfd_ids(ids: list[str] | set[str] | None) -> list[str]:
+    """Keep real drive IDs (VFD500, VFD700A). Drop OCR noise (VFD500R, VFD444S, …)."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in ids or []:
+        vid = _normalize_vfd_id(str(raw))
+        if not vid or vid in seen:
+            continue
+        # Plausible Fortna: VFD + 2–4 digits + optional letter (A–P common)
+        if not re.fullmatch(r'VFD\d{2,4}[A-P]?', vid, re.I):
+            continue
+        # Reject trailing R/S/T/U/V/W noise from OCR of wire labels
+        if re.search(r'[RSTUVW]$', vid, re.I) and not re.search(r'\d[A-P]$', vid, re.I):
+            # VFD500R — drop; VFD700A — keep
+            if re.search(r'[RSTUVW]$', vid):
+                continue
+        seen.add(vid)
+        out.append(vid)
+    return out
+
+
+def _stamp_orphan_params_to_vfds(
+    page_params: list[dict],
+    page_vfd_ids: list[str],
+) -> list[dict]:
+    """
+    When a sheet has PowerFlex table rows but no device_id (common multi-VFD CAD
+    extract), stamp / clone params onto each *primary* VFD on that page.
+
+    Good-not-perfect: dual sheets may share one table → both drives get the same
+    params (better than 0% in the UI). Column OCR still preferred when it works.
+    """
+    primary = _primary_vfd_ids(page_vfd_ids)
+    if not primary:
+        primary = [
+            _normalize_vfd_id(x) for x in (page_vfd_ids or [])
+            if _normalize_vfd_id(x)
+        ]
+        primary = list(dict.fromkeys(primary))[:4]
+    if not primary:
+        return page_params
+
+    id_rows = [p for p in page_params if (p.get('param') or '') == 'Device_ID']
+    data_rows = [p for p in page_params if (p.get('param') or '') != 'Device_ID']
+    stamped = [
+        p for p in data_rows
+        if _normalize_vfd_id(str(p.get('device_id') or ''))
+        and is_canonical_vfd_param(str(p.get('param') or ''))
+    ]
+    orphans = [
+        p for p in data_rows
+        if not _normalize_vfd_id(str(p.get('device_id') or ''))
+        and is_canonical_vfd_param(str(p.get('param') or ''))
+    ]
+    other = [
+        p for p in data_rows
+        if p not in stamped and p not in orphans
+    ]
+
+    if not orphans:
+        return page_params
+
+    # Single primary: just stamp in place
+    if len(primary) == 1:
+        only = primary[0]
+        for p in orphans:
+            p['device_id'] = only
+        return page_params
+
+    # Multi primary: clone each orphan row to every primary VFD on the page
+    cloned: list[dict] = []
+    for vid in primary:
+        for p in orphans:
+            row = dict(p)
+            row['device_id'] = vid
+            cloned.append(row)
+    return id_rows + stamped + cloned + other
 
 
 def _ocr_page_region_text(
@@ -1983,18 +2092,19 @@ def ocr_pdf_tokens(
                     page_mode = (page_mode or 'text') + '+tableocr'
                     pages_ocr += 1
 
-            # When exactly one VFD on page, stamp any untagged param rows to it
-            if n_ids == 1 and page_vfd_ids:
-                only = page_vfd_ids[0]
-                for p in page_params:
-                    if (p.get('param') or '') == 'Device_ID':
-                        continue
-                    if not p.get('device_id'):
-                        p['device_id'] = only
+            # Stamp untagged table rows onto VFD(s) on this page.
+            # Single VFD: stamp in place. Multi VFD with CAD orphans: clone to each
+            # primary id (VFD500/VFD502) so UI gets params (was 0% after multi-id guard).
+            if page_vfd_ids:
+                page_params = _stamp_orphan_params_to_vfds(page_params, page_vfd_ids)
 
             # Stamp Device_ID only for IDs found on THIS page (title/wiring).
+            # Prefer primary IDs for attach (drop VFD500R noise).
             wiring_ids = set(_vfd_ids_from_wiring_title(native or ''))
-            for vid in page_vfd_ids or []:
+            ids_for_device = _primary_vfd_ids(page_vfd_ids) or list(
+                dict.fromkeys(page_vfd_ids or [])
+            )
+            for vid in ids_for_device:
                 page_params.append({
                     'param': 'Device_ID',
                     'value': vid,
@@ -2018,7 +2128,7 @@ def ocr_pdf_tokens(
                 'page': pdf_page_1based,
                 'mode': page_mode,
                 'native_chars': len(native or ''),
-                'vfd_ids': list(page_vfd_ids or []),
+                'vfd_ids': list(ids_for_device or page_vfd_ids or []),
                 'title_x_ids': [v for v, _ in title_xs],
                 'cad_params': cad_param_n,
                 'table_ocr_tried': table_ocr_tried,

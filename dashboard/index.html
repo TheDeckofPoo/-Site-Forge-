@@ -371,7 +371,10 @@
                     <input id="autogen-opt-sorter-track" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
                     <span class="min-w-0">
                       <span class="block text-[11px] text-slate-200 font-medium">Sorter Track</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">Induct / token tracking AOIs &amp; routines</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">
+                        Puts <span class="mono text-slate-400">Sorter_Track</span> on P02 (Sorter_Track_Program.L5X).
+                        Not ShippingSorter L3. Auto-on when sorter config is saved.
+                      </span>
                     </span>
                   </label>
                   <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
@@ -599,9 +602,10 @@
             Encoder <strong class="text-slate-400">Yes</strong> = real <span class="mono text-cyan-600/90">Enc_UDT</span> + AOI;
             pick <span class="mono text-amber-200/90">ENC###</span> from RUN (prefix ENC = encoder).
             <strong class="text-slate-400">No</strong> = <span class="mono text-slate-500">NO_Enc</span>.
-            <strong class="text-emerald-500/90">Live:</strong> Generate PLC uses this config for
-            <span class="mono">Sorter_Track</span> (diverts × N, encoders, WaveFunction AOI) — not the Greensboro gold pack.
-            Check <strong class="text-slate-400">Sorter Track</strong> under Program pack <em>or</em> fill this panel.
+            <strong class="text-emerald-500/90">How to get Sorter_Track in Studio:</strong>
+            fill this panel → <strong>Save sorter config</strong> (auto-checks Program pack · Sorter Track)
+            → Generate PLC. That loads <span class="mono">Sorter_Track_Program.L5X</span> under
+            <span class="mono">P02_Track</span> (not ShippingSorter L3 — that is a different pack).
           </p>
 
           <!-- Induct -->

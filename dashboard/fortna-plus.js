@@ -3490,6 +3490,21 @@ function wireSorterBuildUi() {
   $('btn-sorter-save')?.addEventListener('click', async () => {
     persistSorterToWorkbook();
     const st = $('sorter-save-status');
+    // Auto-enable Program pack · Sorter Track when config has real content
+    const s = autogenState.sorter || {};
+    const hasData = !!(
+      s.induct_conveyor
+      || (s.tracking_count || 0) > 0
+      || (s.divert_count || 0) > 0
+      || (s.tracking || []).some((t) => t && t.conveyor)
+    );
+    if (hasData) {
+      const pack = $('autogen-opt-sorter-track');
+      if (pack && !pack.checked) {
+        pack.checked = true;
+        autogenLog('Saved sorter config → checked Program pack · Sorter Track for next generate.', 'ok');
+      }
+    }
     try {
       if (typeof fortnaAPI?.autogenWorkbookSave === 'function') {
         await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
@@ -3498,7 +3513,10 @@ function wireSorterBuildUi() {
       try {
         localStorage.setItem('fortna_sorter_build', JSON.stringify(autogenState.sorter));
       } catch (_) { /* ignore */ }
-      if (st) { st.textContent = 'Saved'; st.className = 'text-[10px] text-emerald-500 mono'; }
+      if (st) {
+        st.textContent = hasData ? 'Saved · Sorter Track pack ON' : 'Saved';
+        st.className = 'text-[10px] text-emerald-500 mono';
+      }
       autogenLog('Sorter build config saved (workbook + localStorage).', 'ok');
     } catch (e) {
       if (st) { st.textContent = 'Save failed'; st.className = 'text-[10px] text-red-400 mono'; }
@@ -4195,22 +4213,26 @@ async function runAutogenGenerate(mode) {
     autogenLog('ShippingSorter (PopUp Divert) selected — pack mapping TBD (no L5X merge yet).', 'warn');
   }
   if ($('autogen-opt-wcs')?.checked) includePrograms.push('WCS_Interface_TCP_IP');
-  if ($('autogen-opt-sorter-track')?.checked) includePrograms.push('Sorter_Track');
-  // Sorter build UI: if user configured tracking conveyors / induct, pull in Sorter_Track
-  // pack (gold P02_Track) and persist config with the workbook for L5X export notes.
   const sorterCfg = autogenState.sorter || defaultSorterConfig();
   const sorterConfigured = !!(
     sorterCfg.induct_conveyor
     || (sorterCfg.tracking_count || 0) > 0
+    || (sorterCfg.divert_count || 0) > 0
     || (sorterCfg.tracking || []).some((t) => t && (t.conveyor || t.has_encoder === 'yes'))
   );
-  if (sorterConfigured && !includePrograms.includes('Sorter_Track')) {
-    includePrograms.push('Sorter_Track');
+  // Sorter Track pack: checkbox OR auto-on when Sorter build has real data
+  // (good automation — user still sees the box flip on so it's visible)
+  let sorterTrackChecked = !!$('autogen-opt-sorter-track')?.checked;
+  if (sorterConfigured && !sorterTrackChecked) {
+    const el = $('autogen-opt-sorter-track');
+    if (el) el.checked = true;
+    sorterTrackChecked = true;
     autogenLog(
-      'Sorter build has induct/tracking → auto-including Sorter_Track on P02_Track (gold finished pattern).',
+      'Sorter build has data → auto-checked Program pack · Sorter Track (emits Sorter_Track_Program).',
       'ok',
     );
   }
+  if (sorterTrackChecked) includePrograms.push('Sorter_Track');
   if (sorterConfigured) {
     persistSorterToWorkbook();
     const encYes = (sorterCfg.tracking || []).filter((t) => t && t.has_encoder === 'yes').length
@@ -4219,6 +4241,12 @@ async function runAutogenGenerate(mode) {
       `Sorter build: induct=${sorterCfg.induct_conveyor || '—'} · `
       + `track=${sorterCfg.tracking_count || 0} · diverts=${sorterCfg.divert_count || 0} · encYes=${encYes}`,
       'info',
+    );
+  }
+  if (sorterTrackChecked && !sorterConfigured) {
+    autogenLog(
+      'Sorter Track pack ON — Sorter build panel empty (full gold pack, no site renames).',
+      'warn',
     );
   }
   const noSys = !($('autogen-opt-sys')?.checked ?? true);
@@ -4248,7 +4276,7 @@ async function runAutogenGenerate(mode) {
       includeIoMap,
       noIoMap: !includeIoMap,
       workbook: mode === 'run' ? (autogenState.workbook || undefined) : undefined,
-      sorterBuild: sorterConfigured ? sorterCfg : undefined,
+      sorterBuild: sorterTrackChecked ? sorterCfg : undefined,
     });
   } catch (e) {
     res = { success: false, message: e?.message || String(e) };
