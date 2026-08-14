@@ -1,0 +1,38 @@
+VFD print-page + param attach log 20260814-105846
+Drives: 30 · with PowerFlex params: 2
+Page histogram: {'27': 8, '25': 4, '26': 4, '28': 4, '29': 2, '34': 2}
+
+name | page | params | why_no_params | file
+VFD118_EN: page=25 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD212_EN: page=25 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD312_EN: page=26 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD412_EN: page=26 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD500_EN: page=27 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD532_EN: page=27 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD816_EN: page=28 params=15 why=ok keys=['P031 MOTOR NP VOLTS', 'P033 MOTOR OL CURRENT', 'P041 ACCEL TIME 1', 'P042 DECEL TIME 1', 'P044 MAXIMUM FREQ', 'P045 STOP MODE', 'P046 START SOURCE 1', 'P047 SPEED REFERENCE 1', 'P062 T062 DIGIN TERMBLK 2', 'P076 T076 RELAY OUT1 SEL', 'P410 A410 PRESET FREQ 0', 'P434 A434 DC BRAKE TIME', 'P435 A435 DC BRAKE LEVEL', 'P437 A437 DB RESISTOR SEL', 'P544 A544 REVERSE DISABLE'] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD118_AUX: page=25 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD212_AUX: page=25 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD312_AUX: page=26 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD412_AUX: page=26 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD500_AUX: page=27 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD532_AUX: page=27 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD816_AUX: page=28 params=15 why=ok keys=['P031 MOTOR NP VOLTS', 'P033 MOTOR OL CURRENT', 'P041 ACCEL TIME 1', 'P042 DECEL TIME 1', 'P044 MAXIMUM FREQ', 'P045 STOP MODE', 'P046 START SOURCE 1', 'P047 SPEED REFERENCE 1', 'P062 T062 DIGIN TERMBLK 2', 'P076 T076 RELAY OUT1 SEL', 'P410 A410 PRESET FREQ 0', 'P434 A434 DC BRAKE TIME', 'P435 A435 DC BRAKE LEVEL', 'P437 A437 DB RESISTOR SEL', 'P544 A544 REVERSE DISABLE'] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD504_AUX: page=27 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf
+VFD506_AUX: page=27 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf
+VFD504_EN: page=27 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf
+VFD506_EN: page=27 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf
+VFD507A_AUX: page=28 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf
+VFD507B_AUX: page=29 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf
+VFD507A_EN: page=28 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf
+VFD507B_EN: page=29 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf
+VFD501B-1_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD501B-2_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD501C_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD1100_AUX: page=34 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD501B-1_EN: page=None params=0 why=no_print_page keys=[] file=
+VFD501B-2_EN: page=None params=0 why=no_print_page keys=[] file=
+VFD1100_EN: page=34 params=0 why=base_not_in_param_buckets keys=[] file=LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf
+VFD501C_EN: page=None params=0 why=no_print_page keys=[] file=
+
+Full JSON: C:\dev\worktree\FortnaPlus\exports\ocr-logs\vfd_page_assign_20260814-105846.json
+Also see: vfd_param_extract_20260814-105846.json (per-page table OCR)

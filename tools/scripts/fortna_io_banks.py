@@ -1520,62 +1520,83 @@ def attach_print_params_to_drives(
             d['print_page'] = None
             d['print_file'] = ''
         base = _normalize_vfd_id(_base_equip_name(name))
+        in_by_device = base in by_device if base else False
+        raw_in_bucket = len(by_device.get(base) or []) if base else 0
         log_rows.append({
             'name': name,
             'base': base,
             'print_page': d.get('print_page'),
             'print_file': Path(str(d.get('print_file') or '')).name,
             'param_count': d.get('print_param_count') or 0,
+            'param_keys': list((d.get('print_params') or {}).keys())[:20],
             'vfd_from_print': bool(d.get('vfd_from_print')),
             'page_votes': d.get('_page_votes') or dict(page_hits.get(base) or {}),
             'page_hit_detail': list(page_hit_detail.get(base) or [])[:20],
+            'by_device_has_base': in_by_device,
+            'by_device_raw_rows': raw_in_bucket,
+            'why_no_params': (
+                '' if (d.get('print_param_count') or 0) > 0
+                else (
+                    'no_print_page' if not d.get('print_page')
+                    else (
+                        'base_not_in_param_buckets'
+                        if not in_by_device
+                        else 'params_filtered_or_empty_after_canonical'
+                    )
+                )
+            ),
         })
         d.pop('_page_votes', None)
 
-    # Write debug log next to exports so we can see why everything landed on page 27
+    # Write page + param debug logs (exports/ocr-logs/)
     try:
         log_dir = REPO_ROOT / 'exports' / 'ocr-logs'
         log_dir.mkdir(parents=True, exist_ok=True)
         from datetime import datetime as _dt
         stamp = _dt.now().strftime('%Y%m%d-%H%M%S')
         log_path = log_dir / f'vfd_page_assign_{stamp}.json'
-        # Summary: which page numbers won how often
         from collections import Counter as _Counter
         winners = _Counter(
             str(r.get('print_page')) for r in log_rows if r.get('print_page')
         )
+        with_params = sum(1 for r in log_rows if (r.get('param_count') or 0) > 0)
         log_path.write_text(
             json.dumps({
                 'generated': stamp,
                 'drive_count': len(log_rows),
+                'drives_with_params': with_params,
                 'page_winner_histogram': dict(winners.most_common()),
                 'note': (
-                    'If one page dominates (e.g. all 27), check page_hit_detail weights. '
-                    'wiring_title=10, title_ocr=2, param_row=1. ASC drawing pages are cleared '
-                    'for VFDs without OCR.'
+                    'Page log: if one page dominates, check page_hit_detail. '
+                    'Param log: see vfd_param_extract_*.json for per-PDF-page OCR. '
+                    'VFD816 often works because single-drive sheets have CAD text; '
+                    'dual sheets need table OCR (+tableocr in mode).'
                 ),
                 'drives': log_rows,
             }, indent=2),
             encoding='utf-8',
         )
-        # Also a short human-readable summary
         (log_dir / f'vfd_page_assign_{stamp}.txt').write_text(
             '\n'.join([
-                f'VFD print-page assignment log {stamp}',
-                f'Drives: {len(log_rows)}',
+                f'VFD print-page + param attach log {stamp}',
+                f'Drives: {len(log_rows)} · with PowerFlex params: {with_params}',
                 f'Page histogram: {dict(winners.most_common())}',
                 '',
-                'name | page | votes | file',
+                'name | page | params | why_no_params | file',
                 *([
-                    f"{r['name']}: page={r.get('print_page')} votes={r.get('page_votes')} "
-                    f"file={r.get('print_file')} params={r.get('param_count')}"
+                    f"{r['name']}: page={r.get('print_page')} params={r.get('param_count')} "
+                    f"why={r.get('why_no_params') or 'ok'} "
+                    f"keys={r.get('param_keys')} file={r.get('print_file')}"
                     for r in log_rows
                 ]),
                 '',
                 f'Full JSON: {log_path}',
+                f'Also see: vfd_param_extract_{stamp}.json (per-page table OCR)',
             ]),
             encoding='utf-8',
         )
+        # Store stamp so caller can write param extract log with same stamp
+        attach_print_params_to_drives._last_log_stamp = stamp  # type: ignore[attr-defined]
     except Exception:
         pass
 
@@ -1712,6 +1733,8 @@ def ocr_pdf_tokens(
     pages_ocr = 0
     pages_title_ocr = 0
     all_vfd_params: list[dict] = []
+    # Per-page param extraction diagnostics (why VFD816 works but others don't)
+    page_param_log: list[dict] = []
     suffix = pdf_path.suffix.lower()
     ctx = progress_ctx or {}
     file_label = pdf_path.name
@@ -1798,6 +1821,12 @@ def ocr_pdf_tokens(
             pdf_page_1based = i + 1
             n_ids = len(set(page_vfd_ids or []))
             title_xs = _vfd_title_x_positions(page)
+            cad_param_n = 0
+            table_ocr_tried = False
+            table_ocr_raw = 0
+            table_ocr_kept = 0
+            table_ocr_sample = ''
+
             if n_ids >= 2 or len(title_xs) >= 2:
                 page_params = extract_vfd_params_from_page_spatial(
                     page,
@@ -1813,32 +1842,96 @@ def ocr_pdf_tokens(
                     device_ids=page_vfd_ids,
                     page=pdf_page_1based,
                 )
+            cad_param_n = _count_real_vfd_params(page_params)
+            # How many real params already stamped with a device_id?
+            # Multi-VFD sheets often extract a shared CAD table (cad_param_n high) but
+            # leave device_id empty → attach only works for single-VFD pages (e.g. VFD816).
+            stamped_n = 0
+            for p in page_params:
+                if (p.get('param') or '') == 'Device_ID':
+                    continue
+                if not is_canonical_vfd_param(str(p.get('param') or '')):
+                    continue
+                if _normalize_vfd_id(str(p.get('device_id') or '')):
+                    stamped_n += 1
+            n_ids = len(set(page_vfd_ids or []))
+            need_column_ocr = (
+                cad_param_n < 5
+                or (n_ids >= 2 and stamped_n < 3)
+            )
 
-            # Graphics param tables: CAD word rebuild is empty → OCR the PAR # region.
-            # Typical Fortna sheet: title top, terminal mid, table lower half.
-            if _count_real_vfd_params(page_params) < 3 and (
+            # Graphics param tables: CAD word rebuild empty OR multi-VFD unstamped.
+            # Why VFD816 often works alone: single-drive sheet + orphan→single-id attach.
+            # Dual sheets need column OCR even when CAD already found unstamped rows.
+            if need_column_ocr and (
                 page_vfd_ids
                 or _page_has_powerflex_table(native)
                 or 'POWERFLEX' in (native or '').upper()
                 or 'VFD' in (native or '').upper()
+                or 'PAR' in (native or '').upper()
             ):
+                table_ocr_tried = True
                 ocr_params: list[dict] = []
                 ids_unique = list(dict.fromkeys(page_vfd_ids or []))
-                if len(ids_unique) >= 2:
-                    # Side-by-side VFDs: OCR left/right and bind each half to one ID
+                # Prefer physical X order from title words when available
+                placed = sorted(
+                    [(v, x) for v, x in title_xs if x >= 0],
+                    key=lambda t: t[1],
+                )
+                if len(placed) >= 2:
+                    try:
+                        pw = float(page.rect.width) or 1.0
+                    except Exception:
+                        pw = 1.0
+                    xs = [x for _, x in placed]
+                    for i, (vid, x) in enumerate(placed):
+                        left = 0.0 if i == 0 else (xs[i - 1] + x) / 2.0
+                        right = pw if i == len(placed) - 1 else (x + xs[i + 1]) / 2.0
+                        x0f = max(0.0, left / pw - 0.02)
+                        x1f = min(1.0, right / pw + 0.02)
+                        col = _ocr_page_region_text(
+                            page, pytesseract, Image,
+                            y0_frac=0.35, y1_frac=0.95, x0_frac=x0f, x1_frac=x1f,
+                        )
+                        if not col.strip():
+                            # Full height column fallback
+                            col = _ocr_page_region_text(
+                                page, pytesseract, Image,
+                                y0_frac=0.10, y1_frac=0.95, x0_frac=x0f, x1_frac=x1f,
+                            )
+                        if not col.strip():
+                            continue
+                        if not table_ocr_sample:
+                            table_ocr_sample = col[:400].replace('\n', ' | ')
+                        part = extract_vfd_params_from_text(
+                            f'{vid}\n{col}',
+                            str(pdf_path),
+                            device_ids=[vid],
+                            page=pdf_page_1based,
+                        )
+                        for p in part:
+                            if (p.get('param') or '') != 'Device_ID' and not p.get('device_id'):
+                                p['device_id'] = vid
+                        ocr_params.extend(part)
+                elif len(ids_unique) >= 2:
                     halves = [
                         (ids_unique[0], 0.02, 0.50),
                         (ids_unique[1], 0.50, 0.98),
                     ]
-                    for extra in ids_unique[2:]:
-                        halves.append((extra, 0.05, 0.95))
                     for vid, x0, x1 in halves:
                         col = _ocr_page_region_text(
                             page, pytesseract, Image,
-                            y0_frac=0.12, y1_frac=0.92, x0_frac=x0, x1_frac=x1,
+                            y0_frac=0.35, y1_frac=0.95, x0_frac=x0, x1_frac=x1,
                         )
                         if not col.strip():
+                            col = _ocr_page_region_text(
+                                page, pytesseract, Image,
+                                y0_frac=0.10, y1_frac=0.95, x0_frac=x0, x1_frac=x1,
+                            )
+                        if not col.strip():
                             continue
+                        if not table_ocr_sample:
+                            table_ocr_sample = col[:400].replace('\n', ' | ')
                         part = extract_vfd_params_from_text(
                             f'{vid}\n{col}',
                             str(pdf_path),
@@ -1850,12 +1943,16 @@ def ocr_pdf_tokens(
                                 p['device_id'] = vid
                         ocr_params.extend(part)
                 else:
-                    # Single VFD (or unknown): OCR full lower param table
-                    ocr_text = _ocr_page_region_text(
-                        page, pytesseract, Image,
-                        y0_frac=0.40, y1_frac=0.92, x0_frac=0.05, x1_frac=0.95,
-                    )
-                    if ocr_text.strip():
+                    # Single VFD: OCR full lower param table (and mid band if thin)
+                    for y0, y1 in ((0.40, 0.95), (0.25, 0.95), (0.10, 0.98)):
+                        ocr_text = _ocr_page_region_text(
+                            page, pytesseract, Image,
+                            y0_frac=y0, y1_frac=y1, x0_frac=0.04, x1_frac=0.96,
+                        )
+                        if not ocr_text.strip():
+                            continue
+                        if not table_ocr_sample:
+                            table_ocr_sample = ocr_text[:400].replace('\n', ' | ')
                         only = ids_unique[0] if ids_unique else None
                         part = extract_vfd_params_from_text(
                             (f'{only}\n' if only else '') + ocr_text,
@@ -1868,8 +1965,14 @@ def ocr_pdf_tokens(
                                 if (p.get('param') or '') != 'Device_ID' and not p.get('device_id'):
                                     p['device_id'] = only
                         ocr_params.extend(part)
+                        if _count_real_vfd_params(ocr_params) >= 4:
+                            break
 
-                if _count_real_vfd_params(ocr_params) > _count_real_vfd_params(page_params):
+                table_ocr_raw = len([
+                    p for p in ocr_params if (p.get('param') or '') != 'Device_ID'
+                ])
+                table_ocr_kept = _count_real_vfd_params(ocr_params)
+                if table_ocr_kept > cad_param_n:
                     ids_only = [
                         p for p in page_params if (p.get('param') or '') == 'Device_ID'
                     ]
@@ -1890,7 +1993,6 @@ def ocr_pdf_tokens(
                         p['device_id'] = only
 
             # Stamp Device_ID only for IDs found on THIS page (title/wiring).
-            # Mark source so attach can weight title hits higher than free-text noise.
             wiring_ids = set(_vfd_ids_from_wiring_title(native or ''))
             for vid in page_vfd_ids or []:
                 page_params.append({
@@ -1902,6 +2004,41 @@ def ocr_pdf_tokens(
                     'id_source': 'wiring_title' if vid in wiring_ids else 'title_ocr',
                 })
             all_vfd_params.extend(page_params)
+
+            # Per-device param counts on this page (for debug log)
+            by_id_n: dict[str, int] = {}
+            for p in page_params:
+                if (p.get('param') or '') == 'Device_ID':
+                    continue
+                did = _normalize_vfd_id(str(p.get('device_id') or ''))
+                if did and is_canonical_vfd_param(str(p.get('param') or '')):
+                    by_id_n[did] = by_id_n.get(did, 0) + 1
+            page_param_log.append({
+                'file': file_label,
+                'page': pdf_page_1based,
+                'mode': page_mode,
+                'native_chars': len(native or ''),
+                'vfd_ids': list(page_vfd_ids or []),
+                'title_x_ids': [v for v, _ in title_xs],
+                'cad_params': cad_param_n,
+                'table_ocr_tried': table_ocr_tried,
+                'table_ocr_raw_rows': table_ocr_raw,
+                'table_ocr_kept': table_ocr_kept,
+                'final_params': _count_real_vfd_params(page_params),
+                'params_per_device_id': by_id_n,
+                'ocr_text_sample': table_ocr_sample[:300] if table_ocr_sample else '',
+                'why_no_params': (
+                    '' if _count_real_vfd_params(page_params) > 0
+                    else (
+                        'no_vfd_ids_on_page' if not page_vfd_ids
+                        else (
+                            'table_ocr_empty_or_filtered'
+                            if table_ocr_tried
+                            else 'cad_text_no_table_and_ocr_skipped'
+                        )
+                    )
+                ),
+            })
             _page_progress(pdf_page_1based, n, page_mode)
         doc.close()
     elif suffix in ('.png', '.jpg', '.jpeg', '.tif', '.tiff', '.bmp', '.webp'):
@@ -2009,6 +2146,7 @@ def ocr_pdf_tokens(
         'conveyor_names': conveyor_names[:200],
         'vfd_params': vfd_params,
         'vfd_param_count': len(vfd_params),
+        'page_param_log': page_param_log,
     }
 
 
@@ -2690,6 +2828,64 @@ def cmd_ocr_print_sets(sets: list[dict], run_dir: Path | None) -> dict:
         drive_payload['drives_with_print_params'] = sum(
             1 for d in drive_payload['drives'] if d.get('print_param_count')
         )
+        # Per-page param extraction log (table OCR diagnostics)
+        try:
+            log_dir = REPO_ROOT / 'exports' / 'ocr-logs'
+            log_dir.mkdir(parents=True, exist_ok=True)
+            stamp = getattr(attach_print_params_to_drives, '_last_log_stamp', None)
+            if not stamp:
+                from datetime import datetime as _dt
+                stamp = _dt.now().strftime('%Y%m%d-%H%M%S')
+            pages = []
+            for o in ocr_results:
+                for row in (o.get('page_param_log') or []):
+                    pages.append(row)
+            with_final = [p for p in pages if (p.get('final_params') or 0) > 0]
+            path_j = log_dir / f'vfd_param_extract_{stamp}.json'
+            path_j.write_text(
+                json.dumps({
+                    'generated': stamp,
+                    'pdf_pages_logged': len(pages),
+                    'pages_with_params': len(with_final),
+                    'note': (
+                        'Each row is one PDF page. final_params>0 means PowerFlex table '
+                        'rows were kept. If table_ocr_tried and final_params=0, OCR text '
+                        'did not match P031/… patterns (see ocr_text_sample). '
+                        'VFD816 typically has cad_params>0 (CAD text layer present).'
+                    ),
+                    'pages': pages,
+                }, indent=2),
+                encoding='utf-8',
+            )
+            (log_dir / f'vfd_param_extract_{stamp}.txt').write_text(
+                '\n'.join([
+                    f'VFD PowerFlex param extract log {stamp}',
+                    f'Pages logged: {len(pages)} · pages with params: {len(with_final)}',
+                    '',
+                    'file | page | mode | ids | cad | ocr_kept | final | why',
+                    *([
+                        f"{p.get('file')}: p{p.get('page')} mode={p.get('mode')} "
+                        f"ids={p.get('vfd_ids')} cad={p.get('cad_params')} "
+                        f"ocr={p.get('table_ocr_kept')} final={p.get('final_params')} "
+                        f"per_id={p.get('params_per_device_id')} "
+                        f"why={p.get('why_no_params') or 'ok'}"
+                        for p in pages
+                        if p.get('vfd_ids') or (p.get('final_params') or 0) > 0
+                        or p.get('table_ocr_tried')
+                    ]),
+                    '',
+                    '--- OCR text samples (first pages with sample) ---',
+                    *([
+                        f"p{p.get('page')} {p.get('file')}: {p.get('ocr_text_sample')}"
+                        for p in pages if p.get('ocr_text_sample')
+                    ][:12]),
+                    '',
+                    f'Full JSON: {path_j}',
+                ]),
+                encoding='utf-8',
+            )
+        except Exception:
+            pass
 
     if points:
         crosswalk = crosswalk_prints_to_io(points, ocr_results)

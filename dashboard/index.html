@@ -272,7 +272,8 @@
     <!-- Workspace -->
 
     <!-- PLC Autogen (Python — not Excel VBA) -->
-    <section id="tab-autogen" class="h-full hidden p-5 gap-3 flex flex-col">
+    <!-- Outer column scrolls so Sorter build can sit BELOW the current screen without crowding it. -->
+    <section id="tab-autogen" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
       <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-violet-400">How to run PLC Autogen — workflow</summary>
         <div class="workflow-chart mt-3">
@@ -293,7 +294,9 @@
           <p><strong class="text-slate-400">Next site:</strong> no Excel workbook required — only tar.gz (+ optional PDF/DWG later).</p>
         </div>
       </details>
-      <div class="flex-1 min-h-0 flex gap-4">
+      <div class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4 pr-0.5">
+      <!-- Existing Autogen screen (unchanged layout when Sorter section is collapsed) -->
+      <div class="flex gap-4 min-h-[min(100%,720px)] shrink-0">
       <div class="w-[42%] flex flex-col gap-3 min-h-0">
         <div class="card p-4 shrink-0 border border-violet-900/40">
           <div class="flex items-center justify-between mb-2">
@@ -579,7 +582,123 @@
           </div>
         </div>
       </div>
-      </div><!-- end autogen content row -->
+      </div><!-- end autogen main row (program pack + site config) -->
+
+      <!-- Sorter build — BELOW current UI, collapsed by default. Demo-safe: no L5X wiring yet. -->
+      <details id="autogen-sorter-panel" class="card shrink-0 border border-cyan-900/40 bg-gradient-to-b from-[#0c1520] to-[#0a1018] open:shadow-lg">
+        <summary class="cursor-pointer px-4 py-3 flex items-center gap-2 select-none list-none [&::-webkit-details-marker]:hidden">
+          <i class="fa-solid fa-shuffle text-cyan-400"></i>
+          <span class="text-sm font-semibold text-cyan-300">Sorter build</span>
+          <span class="text-[10px] font-normal text-slate-500 ml-1">induct · tracking · encoder · diverts · PE (config only)</span>
+          <span id="autogen-sorter-summary" class="ml-auto text-[10px] mono text-slate-600">collapsed · no config</span>
+          <i class="fa-solid fa-chevron-down text-slate-600 text-xs ml-2 details-chevron"></i>
+        </summary>
+        <div class="px-4 pb-4 pt-1 border-t border-slate-800/70 space-y-4">
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            Configure sorter geometry from RUN conveyors / photoeyes. Values save with site config.
+            Encoder <strong class="text-slate-400">Yes</strong> = real <span class="mono text-cyan-600/90">Enc_UDT</span> + AOI;
+            pick <span class="mono text-amber-200/90">ENC###</span> from RUN (prefix ENC = encoder).
+            <strong class="text-slate-400">No</strong> = <span class="mono text-slate-500">NO_Enc</span>.
+            <strong class="text-emerald-500/90">Live:</strong> Generate PLC uses this config for
+            <span class="mono">Sorter_Track</span> (diverts × N, encoders, WaveFunction AOI) — not the Greensboro gold pack.
+            Check <strong class="text-slate-400">Sorter Track</strong> under Program pack <em>or</em> fill this panel.
+          </p>
+
+          <!-- Induct -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">1 · Induct</div>
+            <div class="flex flex-wrap gap-2 items-end">
+              <div class="min-w-[12rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Induct conveyor</label>
+                <select id="sorter-induct-conv" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+                  <option value="">Select induct conveyor…</option>
+                </select>
+              </div>
+              <div class="min-w-[12rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Induct photoeye</label>
+                <select id="sorter-induct-pe" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300">
+                  <option value="">Select photoeye…</option>
+                </select>
+              </div>
+              <div class="min-w-[7rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Encoder?</label>
+                <select id="sorter-induct-has-enc" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] text-slate-200">
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+              </div>
+            </div>
+            <div id="sorter-induct-enc-opts" class="hidden flex-wrap gap-2 items-end pt-1 border-t border-slate-800/80">
+              <div class="min-w-[10rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Encoder type (PLC AOI)</label>
+                <select id="sorter-induct-enc-type" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90">
+                  <option value="Enc_RIOCard">Enc_RIOCard (RIO pulse bit)</option>
+                  <option value="Enc_CounterCard">Enc_CounterCard (HSC / counter)</option>
+                  <option value="Enc_Virtual_DistBased">Enc_Virtual_DistBased (virtual)</option>
+                </select>
+              </div>
+              <div class="min-w-[12rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Encoder tag (optional)</label>
+                <select id="sorter-induct-enc-tag" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90">
+                  <option value="">Auto from conveyor (P###_Enc)…</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tracking conveyors -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold mb-1">2 · Tracking conveyors</div>
+                <label class="block text-[10px] text-slate-500 mb-1">How many tracking conveyors?</label>
+                <input id="sorter-track-count" type="number" min="0" max="40" value="0"
+                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <span class="text-[10px] text-slate-600 pb-2">Each row: conveyor · PE · encoder Yes/No · type/tag when Yes</span>
+            </div>
+            <div id="sorter-track-rows" class="space-y-2 max-h-72 overflow-y-auto"></div>
+          </div>
+
+          <!-- Diverts -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">3 · Diverts</div>
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <label class="block text-[10px] text-slate-500 mb-1">How many diverts?</label>
+                <input id="sorter-divert-count" type="number" min="0" max="64" value="0"
+                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <span class="text-[10px] text-slate-600 pb-2">Count only for now (lane naming later)</span>
+            </div>
+          </div>
+
+          <!-- Tracking photoeyes (standalone list) -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold mb-1">4 · Tracking photoeyes</div>
+                <label class="block text-[10px] text-slate-500 mb-1">How many tracking photoeyes?</label>
+                <input id="sorter-pe-count" type="number" min="0" max="64" value="0"
+                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <span class="text-[10px] text-slate-600 pb-2">Enter a number → that many PE dropdowns appear</span>
+            </div>
+            <div id="sorter-pe-rows" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 items-center">
+            <button type="button" id="btn-sorter-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs">
+              <i class="fa-solid fa-floppy-disk mr-1"></i>Save sorter config
+            </button>
+            <button type="button" id="btn-sorter-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">
+              Clear sorter fields
+            </button>
+            <span id="sorter-save-status" class="text-[10px] text-slate-600 mono"></span>
+          </div>
+        </div>
+      </details>
+      </div><!-- end scrollable autogen column -->
     </section>
 
     <section id="tab-workspace" class="h-full hidden p-5 gap-3 flex flex-col">

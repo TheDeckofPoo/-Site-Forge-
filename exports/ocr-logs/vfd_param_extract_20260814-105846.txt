@@ -1,0 +1,41 @@
+VFD PowerFlex param extract log 20260814-105846
+Pages logged: 63 · pages with params: 8
+
+file | page | mode | ids | cad | ocr_kept | final | why
+LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: p7 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: p8 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: p10 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: p20 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: p24 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: p27 mode=text+vfd+cols ids=['VFD504', 'VFD506'] cad=18 ocr=0 final=18 per_id={} why=ok
+LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: p28 mode=text+vfd+cols ids=['VFD507A', 'VFD507B'] cad=11 ocr=0 final=11 per_id={} why=ok
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p6 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p7 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p8 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p10 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p17 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p18 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p21 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p25 mode=text+vfd+cols ids=['VFD118', 'VFD212'] cad=15 ocr=0 final=15 per_id={} why=ok
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p26 mode=text+vfd+cols ids=['VFD312', 'VFD412'] cad=15 ocr=0 final=15 per_id={} why=ok
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p27 mode=text+vfd+cols ids=['VFD500', 'VFD532'] cad=19 ocr=0 final=19 per_id={} why=ok
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p28 mode=text+vfd ids=['VFD816'] cad=17 ocr=0 final=17 per_id={'VFD816': 17} why=ok
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p29 mode=text+vfd+cols ids=['VFD507B', 'VFD507C'] cad=18 ocr=0 final=18 per_id={} why=ok
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p30 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: p34 mode=text+vfd+cols ids=['VFD1100', 'VFD1109'] cad=15 ocr=0 final=15 per_id={} why=ok
+
+--- OCR text samples (first pages with sample) ---
+p7 LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: veo Figtencztst [i soreoor3 SI] Lg S005 151) | Fergie ge tia si | iZi Si Ugh S251) | Hershel ia S ia SI | BETWEEN 119-4 wee st Teh [f-wrnsaaer3 1S (ial —szi3 1) | BNO a0 uress geet [ff wrneoacr (Sy oa | 149209 ac aC HRP 12) —wrneozcr2 I] | Herisiiett [carmen IST] | wot SSH OSI | wwe Sea [gk wre IS |
+p8 LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: £ _ ASC-EBRS [PAR TTTTION PLATE FOR 140 2-WIRo SENTES TERIVEINAL BLURS ALLEN GVA | | 6 _|1492-FB3C30-__[3 POLE FUSE HOLDER, 30 AMP CLASS CC FUSE, WITH BLOWNFUSE INDICATOR(NEON) ALLEN BRADLEY | |__ 1 |1492-GHO10 [1 POLE CIRCUITBREAKER 250 VAC 1.0A-35MMDINRAILMOUNT ALLEN BRADLEY | [+ [rae2-cto1s [1 PO
+p10 LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: [____CnFDENTATTY STATEMENT‘ | | ocemey ane |||} Pane BILL _OF MATERIALS | _—————— ee 7 | g,cegmes comers, eagunes a | Beas em erat || [Ri oBissco | = | 
+p20 LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: 7 — OS LZ] m7 are) Ba ote 140884 | Satta omnce wouet b} = == @ | woes HERS poe Tee _woty rt _ | \ | aawee lt es aoeee | 140827 || OMA Eng TSE I 7 ‘ese | tt a---- pe tg ee | ences rear , | Ton a _ Poa | swosee co x to wee | rt Tar Vt | we 1 | “Tass Se? ty 140889, | 1 OO Ey EES H | 140830 Bis \ wow 10
+p24 LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf: 4 4 an. v aaize4 ve ' | wees 7 ee f | vweee Lo seer vite ; | woe | sees: i200 | | seizes izes Lo ere | ‘tea 41291 | ws1ese aio9e | 141299 [a] ww ten | owe uate93 ac | cas ons [5] | ssiess 41294 | i295. aio95 | wesc La) win ewe | oe i296 & | wares? 141297 | sess i298 | tess [ia] wie wayne | swe 14129
+p6 LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: | [stl@l S02 fel fe] at SI 7; WEG SI | Hisiist soe [gy amsser SS] a | ESS fig ase SH | JUMPERS AS Fetters} ima [8 | SHOWN. ERT ma SI cSt | festa Bae Pg wma Sy] | Sse [gi sneer | ACA AN | ADDED Se [igh sores IST] go | 112B-3 Se (igi war SIS) [ia sre | seks ESS aco [Ka sane I] | aa (sie aI | TERMINALS
+p7 LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: |__1__|1492-Gtog0___ [1 POLE CIRCUIT BREAKER 250 VAC 3.0A-35MMDINRAILMOUNT ALLEN BRADLEY | | |__1 _|1492-GHo7o | POLE CIRCUIT BREAKER 250 VAC 7.0A- 35MM DINRAILMOUNT. ALLEN BRADLEY | | [4 |14s0-Grt50 1 POLE CIRCUIT BREAKER 250 VAG 16A - 35MM OINRAILMOUNT ALLEN ALE | |_20 [149213 DINMITD. TERMINALS 2
+p8 LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: oF t VV JALARIVE FIOAIN DUA FUN O0U & 40U SENES FUNNS FREVENAL SIGNAL | [se] + |A21AGVA DISCONNECT CPERATOR ADAPTER FOR ALLEN GRADLEY DISCOWEGTSFORAS 1498 SSSSSSSSS*S CN | [69] 1 [ABaxw7etaFTc | ENCLOSURE DISCONNECT ENCLOSURE 2-DOOR F.S. PAINTED STEEL (84.12X78.50X18.12) INDUSTRIAL DISCONNECT |_HOFF
+p10 LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: 130125 op 1ats7s, or ranser 1219 oF aizas 22s | ‘oat ‘Tikes “Tee ico J aicoes | pie | Biss Tithnce Tats Tithe | [ees Tees ee Ha) Tees Vines [ets ees aa | ‘or rr 5 SES MIRSOTOCTTT FT SS uTASOTOC ATR IS TASTE TAS ISM TOoT TRS FE | 190128 ! | ' i I 4 4 4 4 i 1 1 t | 2019 4 4 ¢ ¢ ¢ ¢ 4 4 4 | i 3 4 e-sRs
+p17 LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: _f \—. a 68k 4 7 DAT — — = I $ 8174 i | taoses (|e fame] ppm nnn nA A EEE TT] 7 tanyar | amen rest mw ron) 4066 som wowe-1 | omar on? [7 ¢ | | 1wose6 iy sue L--- === === 4-4 ose \ \ | 1 : ' | ' ' Mose ! | | 140627 ' {reso rt 9309/10, —— i} | en REO TE 300/10 - 10-2 como ane Gop ooo fg 1 ys18068 | —-
+p18 LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: 140725 i ! [2] m7 oar cad 140784 | 0726 i | 140705, | ore? ! H 0786 | ares 1 Moo —- 4-822 1g we ome | oes ane 140787 | ares H H 140788 | 140730 1 ' 140789 | ' H 1302/11 | 140731 1 ee wre 6 mae 140790 | 7s H H 0791 | 0739 ! ! 0792 | 140734 1 ! [72] wre roa ome 140793 | 40735, H H 140794 | 140736 ! ! 
+p21 LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf: i i> Bt | eee Neue Neca Sree Neel” one “gp ¥"-t gua “ena” get! Nonna eat et! “aetna pf OS mace 141084 7 | wes i | 11085 pocnccn nono ggg cnc | ators Qe sa1086 ' ______ | | oo --- a - oa, ce ee 177 [5 fee] | sa10e7 po fara —b 4 ----se tag ne me | ppeney ay poggn 141087 son wmaciomnes | om ats j | i02
+
+Full JSON: C:\dev\worktree\FortnaPlus\exports\ocr-logs\vfd_param_extract_20260814-105846.json

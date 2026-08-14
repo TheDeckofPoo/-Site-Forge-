@@ -1309,6 +1309,16 @@ function rebuildDeviceList() {
     }
     byName.set(key, merged);
   }
+  // Cache ENC* names for Sorter build encoder dropdown (prefix ENC = encoder)
+  try {
+    const encNames = [...byName.values()]
+      .map((d) => d.name || d.fortna_name || '')
+      .filter((n) => /^ENC\d/i.test(n) || /^T_\d*ENC\d/i.test(n));
+    localStorage.setItem('fortna_last_equipment_names', JSON.stringify(encNames));
+    if (autogenState.workbook) {
+      autogenState.workbook.encoder_devices = encNames;
+    }
+  } catch (_) { /* ignore */ }
   ioState.devices = [...byName.values()].sort((a, b) =>
     a.typeLabel.localeCompare(b.typeLabel) || a.name.localeCompare(b.name)
   );
@@ -3008,7 +3018,510 @@ const autogenState = {
   workbook: null, // Inputdata replacement — auto from RUN, editable
   wbTab: 'conveyors',
   selected: new Set(),
+  // Sorter build UI (config only — not wired to L5X yet). Demo-safe.
+  sorter: {
+    induct_conveyor: '',
+    induct_pe: '',
+    tracking_count: 0,
+    tracking: [], // [{ conveyor, pe }]
+    divert_count: 0,
+    tracking_pe_count: 0,
+    tracking_pes: [], // [pe name, ...]
+  },
 };
+
+/** Empty tracking-conveyor row (encoder No = Slow_Flt uses NO_Enc UDT stub). */
+function emptySorterTrackRow() {
+  return {
+    conveyor: '',
+    pe: '',
+    has_encoder: 'no', // 'yes' | 'no'
+    encoder_type: 'Enc_RIOCard', // Enc_RIOCard | Enc_CounterCard | Enc_Virtual_DistBased
+    encoder_tag: '', // optional ENC### / P###_Enc; blank = auto P###_Enc
+  };
+}
+
+function defaultSorterConfig() {
+  return {
+    induct_conveyor: '',
+    induct_pe: '',
+    induct_has_encoder: 'no',
+    induct_encoder_type: 'Enc_RIOCard',
+    induct_encoder_tag: '',
+    tracking_count: 0,
+    tracking: [],
+    divert_count: 0,
+    tracking_pe_count: 0,
+    tracking_pes: [],
+  };
+}
+
+function normalizeSorterTrackRow(row) {
+  const r = { ...emptySorterTrackRow(), ...(row || {}) };
+  r.has_encoder = (r.has_encoder === 'yes' || r.has_encoder === true) ? 'yes' : 'no';
+  if (!['Enc_RIOCard', 'Enc_CounterCard', 'Enc_Virtual_DistBased'].includes(r.encoder_type)) {
+    r.encoder_type = 'Enc_RIOCard';
+  }
+  r.encoder_tag = r.encoder_tag || r.enc_tag || '';
+  return r;
+}
+
+function loadSorterFromWorkbook() {
+  const wb = autogenState.workbook;
+  const src = (wb && wb.sorter_build && typeof wb.sorter_build === 'object')
+    ? wb.sorter_build
+    : null;
+  autogenState.sorter = { ...defaultSorterConfig(), ...(src || {}) };
+  // Normalize arrays to counts
+  const s = autogenState.sorter;
+  s.tracking_count = Math.max(0, Math.min(40, Number(s.tracking_count) || (s.tracking || []).length || 0));
+  s.divert_count = Math.max(0, Math.min(64, Number(s.divert_count) || 0));
+  s.tracking_pe_count = Math.max(0, Math.min(64, Number(s.tracking_pe_count) || (s.tracking_pes || []).length || 0));
+  s.induct_has_encoder = (s.induct_has_encoder === 'yes' || s.induct_has_encoder === true) ? 'yes' : 'no';
+  if (!['Enc_RIOCard', 'Enc_CounterCard', 'Enc_Virtual_DistBased'].includes(s.induct_encoder_type)) {
+    s.induct_encoder_type = 'Enc_RIOCard';
+  }
+  while ((s.tracking || []).length < s.tracking_count) s.tracking.push(emptySorterTrackRow());
+  s.tracking = (s.tracking || []).slice(0, s.tracking_count).map(normalizeSorterTrackRow);
+  while ((s.tracking_pes || []).length < s.tracking_pe_count) s.tracking_pes.push('');
+  s.tracking_pes = (s.tracking_pes || []).slice(0, s.tracking_pe_count);
+}
+
+function conveyorNameList() {
+  const wb = autogenState.workbook;
+  const names = (wb?.conveyors || []).map((r) => r.conveyor || r.name || '').filter(Boolean);
+  // Also allow names already chosen in sorter (if RUN not loaded)
+  const s = autogenState.sorter || {};
+  if (s.induct_conveyor) names.push(s.induct_conveyor);
+  for (const t of s.tracking || []) if (t.conveyor) names.push(t.conveyor);
+  return [...new Set(names)].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+}
+
+function photoeyeNameList() {
+  const wb = autogenState.workbook;
+  const names = [];
+  const opts = wb?.options?.exit_pe || [];
+  for (const p of opts) if (p) names.push(String(p));
+  for (const r of wb?.conveyors || []) {
+    for (const p of (r.exit_pe_choices || [])) if (p) names.push(String(p));
+    if (r.exit_pe_tag) names.push(String(r.exit_pe_tag));
+  }
+  // IO map / pe devices if present
+  for (const p of wb?.pe_devices || []) {
+    const n = p.name || p.fortna_name || p.tag || '';
+    if (n) names.push(String(n));
+  }
+  for (const row of wb?.io_map || wb?.io_rows || []) {
+    const n = row.device || row.fortna_name || row.name || '';
+    const t = (row.type || row.device_type || '').toLowerCase();
+    if (n && (t.includes('photo') || t.includes('pe') || /^((ez)?pe)\d/i.test(n))) names.push(String(n));
+  }
+  const s = autogenState.sorter || {};
+  if (s.induct_pe) names.push(s.induct_pe);
+  for (const t of s.tracking || []) if (t.pe) names.push(t.pe);
+  for (const p of s.tracking_pes || []) if (p) names.push(p);
+  return [...new Set(names)].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+}
+
+/** ENC / encoder tags from workbook + I/O devices (prefix ENC = encoder). */
+function encoderNameList() {
+  const wb = autogenState.workbook;
+  const names = [];
+  const pushEnc = (n) => {
+    if (!n) return;
+    const s = String(n).trim();
+    if (!s) return;
+    // Fortna RUN: ENC414, ENC504, … (not conveyor P###)
+    if (/^ENC\d/i.test(s) || /^T_\d*ENC\d/i.test(s) || /_Enc$/i.test(s) || /encoder/i.test(s)) {
+      names.push(s);
+    }
+  };
+  for (const r of wb?.conveyors || []) {
+    pushEnc(r.encoder || r.encoder_tag || r.enc_tag);
+  }
+  for (const n of wb?.encoder_devices || []) pushEnc(n);
+  for (const d of wb?.devices || wb?.equipment || wb?.all_devices || wb?.device_list || []) {
+    const n = d.name || d.fortna_name || d.tag || d.device || '';
+    const t = (d.type || d.device_type || d.device_class || d.typeKey || '').toLowerCase();
+    if (/enc/.test(t) || /^ENC/i.test(n)) pushEnc(n);
+  }
+  // I/O & Prints live list (same session as Sorter build)
+  try {
+    if (typeof ioState !== 'undefined' && Array.isArray(ioState.devices)) {
+      for (const d of ioState.devices) pushEnc(d.name || d.fortna_name);
+    }
+  } catch (_) { /* ignore */ }
+  for (const row of wb?.io_map || wb?.io_rows || wb?.io_points || []) {
+    const n = row.device || row.fortna_name || row.name || row.device_name || row.tag || '';
+    const t = (row.type || row.device_type || '').toLowerCase();
+    if (/enc/.test(t) || /^ENC/i.test(n)) pushEnc(n);
+  }
+  // pe_devices / io tag rows sometimes carry ENC* misclassified as conveyor
+  for (const p of wb?.pe_devices || []) {
+    pushEnc(p.name || p.fortna_name || p.tag);
+  }
+  for (const row of wb?.io_tag_rows || []) {
+    pushEnc(row.tag || row.fortna_name || row.name);
+  }
+  // Dashboard master device list (I/O & Prints tab) if mirrored on workbook
+  for (const d of wb?.master_devices || wb?.print_devices || []) {
+    pushEnc(d.name || d.fortna_name || d.tag);
+  }
+  // Live equipment from last autogen workbook build (conveyor table rarely lists ENC)
+  try {
+    const raw = localStorage.getItem('fortna_last_equipment_names');
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) arr.forEach(pushEnc);
+    }
+  } catch (_) { /* ignore */ }
+  // Scan any string arrays that look like device inventories
+  for (const key of Object.keys(wb || {})) {
+    const v = wb[key];
+    if (!Array.isArray(v) || v.length > 5000) continue;
+    for (const item of v) {
+      if (typeof item === 'string') pushEnc(item);
+      else if (item && typeof item === 'object') {
+        pushEnc(item.name || item.fortna_name || item.tag || item.device || item.device_name);
+      }
+    }
+  }
+  const s = autogenState.sorter || {};
+  if (s.induct_encoder_tag) names.push(s.induct_encoder_tag);
+  for (const t of s.tracking || []) if (t.encoder_tag) names.push(t.encoder_tag);
+  return [...new Set(names)].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+}
+
+const SORTER_ENC_TYPE_OPTS = [
+  { value: 'Enc_RIOCard', label: 'Enc_RIOCard (RIO pulse)' },
+  { value: 'Enc_CounterCard', label: 'Enc_CounterCard (HSC)' },
+  { value: 'Enc_Virtual_DistBased', label: 'Enc_Virtual_DistBased' },
+];
+
+function sorterEncTypeOptionsHtml(selected) {
+  return SORTER_ENC_TYPE_OPTS.map((o) =>
+    `<option value="${o.value}" ${o.value === selected ? 'selected' : ''}>${escapeHtml(o.label)}</option>`
+  ).join('');
+}
+
+function sorterEncTagOptionsHtml(selected, encs) {
+  const items = [`<option value="">Auto ENC### from conveyor (or pick ENC…)…</option>`];
+  const seen = new Set();
+  for (const v of encs || []) {
+    if (!v || seen.has(v)) continue;
+    seen.add(v);
+    items.push(`<option value="${escapeHtml(v)}" ${v === selected ? 'selected' : ''}>${escapeHtml(v)}</option>`);
+  }
+  if (selected && !seen.has(selected)) {
+    items.push(`<option value="${escapeHtml(selected)}" selected>${escapeHtml(selected)} *</option>`);
+  }
+  if (!encs || !encs.length) {
+    items.push('<option value="" disabled>— no ENC* in RUN/I/O yet (load tar.gz) —</option>');
+  }
+  return items.join('');
+}
+
+function sorterSelectHtml(id, list, selected, emptyLabel) {
+  const items = [`<option value="">${escapeHtml(emptyLabel || 'Select…')}</option>`];
+  const seen = new Set();
+  for (const v of list || []) {
+    if (!v || seen.has(v)) continue;
+    seen.add(v);
+    items.push(`<option value="${escapeHtml(v)}" ${v === selected ? 'selected' : ''}>${escapeHtml(v)}</option>`);
+  }
+  if (selected && !seen.has(selected)) {
+    items.push(`<option value="${escapeHtml(selected)}" selected>${escapeHtml(selected)} *</option>`);
+  }
+  return `<select id="${id}" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">${items.join('')}</select>`;
+}
+
+function updateSorterSummary() {
+  const el = $('autogen-sorter-summary');
+  if (!el) return;
+  const s = autogenState.sorter || defaultSorterConfig();
+  const bits = [];
+  if (s.induct_conveyor) bits.push(`induct ${s.induct_conveyor}`);
+  if (s.tracking_count) bits.push(`${s.tracking_count} track`);
+  if (s.divert_count) bits.push(`${s.divert_count} divert`);
+  if (s.tracking_pe_count) bits.push(`${s.tracking_pe_count} PE`);
+  const encN = (s.tracking || []).filter((t) => t && t.has_encoder === 'yes').length
+    + (s.induct_has_encoder === 'yes' ? 1 : 0);
+  if (encN) bits.push(`${encN} enc`);
+  el.textContent = bits.length ? bits.join(' · ') : 'collapsed · no config';
+}
+
+function ensureSorterTrackRow(i) {
+  if (!autogenState.sorter.tracking) autogenState.sorter.tracking = [];
+  if (!autogenState.sorter.tracking[i]) {
+    autogenState.sorter.tracking[i] = emptySorterTrackRow();
+  } else {
+    autogenState.sorter.tracking[i] = normalizeSorterTrackRow(autogenState.sorter.tracking[i]);
+  }
+  return autogenState.sorter.tracking[i];
+}
+
+function renderSorterBuild() {
+  const s = autogenState.sorter || defaultSorterConfig();
+  const convs = conveyorNameList();
+  const pes = photoeyeNameList();
+  const encs = encoderNameList();
+
+  const inductC = $('sorter-induct-conv');
+  const inductP = $('sorter-induct-pe');
+  if (inductC) {
+    const cur = s.induct_conveyor || '';
+    inductC.innerHTML = `<option value="">Select induct conveyor…</option>`
+      + convs.map((n) => `<option value="${escapeHtml(n)}" ${n === cur ? 'selected' : ''}>${escapeHtml(n)}</option>`).join('');
+    if (cur && ![...inductC.options].some((o) => o.value === cur)) {
+      inductC.innerHTML += `<option value="${escapeHtml(cur)}" selected>${escapeHtml(cur)} *</option>`;
+    }
+  }
+  if (inductP) {
+    const cur = s.induct_pe || '';
+    inductP.innerHTML = `<option value="">Select photoeye…</option>`
+      + pes.map((n) => `<option value="${escapeHtml(n)}" ${n === cur ? 'selected' : ''}>${escapeHtml(n)}</option>`).join('');
+    if (cur && ![...inductP.options].some((o) => o.value === cur)) {
+      inductP.innerHTML += `<option value="${escapeHtml(cur)}" selected>${escapeHtml(cur)} *</option>`;
+    }
+  }
+
+  const inductHasEnc = $('sorter-induct-has-enc');
+  const inductEncOpts = $('sorter-induct-enc-opts');
+  const inductEncType = $('sorter-induct-enc-type');
+  const inductEncTag = $('sorter-induct-enc-tag');
+  if (inductHasEnc) inductHasEnc.value = s.induct_has_encoder === 'yes' ? 'yes' : 'no';
+  if (inductEncOpts) {
+    inductEncOpts.classList.toggle('hidden', s.induct_has_encoder !== 'yes');
+    inductEncOpts.classList.toggle('flex', s.induct_has_encoder === 'yes');
+  }
+  if (inductEncType) {
+    inductEncType.innerHTML = sorterEncTypeOptionsHtml(s.induct_encoder_type || 'Enc_RIOCard');
+  }
+  if (inductEncTag) {
+    inductEncTag.innerHTML = sorterEncTagOptionsHtml(s.induct_encoder_tag || '', encs);
+  }
+
+  const trackCount = $('sorter-track-count');
+  if (trackCount) trackCount.value = String(s.tracking_count || 0);
+  const divertCount = $('sorter-divert-count');
+  if (divertCount) divertCount.value = String(s.divert_count || 0);
+  const peCount = $('sorter-pe-count');
+  if (peCount) peCount.value = String(s.tracking_pe_count || 0);
+
+  const trackRows = $('sorter-track-rows');
+  if (trackRows) {
+    const n = s.tracking_count || 0;
+    if (!n) {
+      trackRows.innerHTML = '<div class="text-[10px] text-slate-600">Set count above to add tracking conveyor rows.</div>';
+    } else {
+      trackRows.innerHTML = Array.from({ length: n }, (_, i) => {
+        const row = normalizeSorterTrackRow((s.tracking || [])[i]);
+        const convOpts = convs.map((c) =>
+          `<option value="${escapeHtml(c)}" ${c === row.conveyor ? 'selected' : ''}>${escapeHtml(c)}</option>`
+        ).join('');
+        const peOpts = pes.map((p) =>
+          `<option value="${escapeHtml(p)}" ${p === row.pe ? 'selected' : ''}>${escapeHtml(p)}</option>`
+        ).join('');
+        const showEnc = row.has_encoder === 'yes';
+        return `<div class="rounded-lg border border-slate-800/80 bg-[#0a1016] p-2 space-y-1.5" data-track-i="${i}">
+          <div class="flex flex-wrap gap-2 items-center">
+            <span class="text-[10px] text-slate-600 w-6 mono">#${i + 1}</span>
+            <select class="sorter-track-conv flex-1 min-w-[9rem] bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-slate-200" data-i="${i}">
+              <option value="">Tracking conveyor…</option>${convOpts}
+            </select>
+            <select class="sorter-track-pe flex-1 min-w-[9rem] bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-sky-300" data-i="${i}">
+              <option value="">Tracking photoeye…</option>${peOpts}
+            </select>
+            <label class="flex items-center gap-1 text-[10px] text-slate-500 shrink-0">
+              <span>Enc</span>
+              <select class="sorter-track-has-enc bg-[#101820] border border-slate-700 rounded-lg px-1.5 py-1 text-[10px] text-slate-200" data-i="${i}">
+                <option value="no" ${row.has_encoder !== 'yes' ? 'selected' : ''}>No → NO_Enc</option>
+                <option value="yes" ${row.has_encoder === 'yes' ? 'selected' : ''}>Yes</option>
+              </select>
+            </label>
+          </div>
+          <div class="sorter-track-enc-opts flex flex-wrap gap-2 items-center pl-8 ${showEnc ? '' : 'hidden'}" data-i="${i}">
+            <select class="sorter-track-enc-type min-w-[11rem] bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1 text-[10px] mono text-amber-200/90" data-i="${i}">
+              ${sorterEncTypeOptionsHtml(row.encoder_type)}
+            </select>
+            <select class="sorter-track-enc-tag flex-1 min-w-[10rem] bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1 text-[10px] mono text-amber-200/90" data-i="${i}">
+              ${sorterEncTagOptionsHtml(row.encoder_tag, encs)}
+            </select>
+          </div>
+        </div>`;
+      }).join('');
+      trackRows.querySelectorAll('.sorter-track-conv').forEach((sel) => {
+        sel.addEventListener('change', () => {
+          const i = Number(sel.dataset.i);
+          ensureSorterTrackRow(i).conveyor = sel.value || '';
+          updateSorterSummary();
+        });
+      });
+      trackRows.querySelectorAll('.sorter-track-pe').forEach((sel) => {
+        sel.addEventListener('change', () => {
+          const i = Number(sel.dataset.i);
+          ensureSorterTrackRow(i).pe = sel.value || '';
+          updateSorterSummary();
+        });
+      });
+      trackRows.querySelectorAll('.sorter-track-has-enc').forEach((sel) => {
+        sel.addEventListener('change', () => {
+          const i = Number(sel.dataset.i);
+          const row = ensureSorterTrackRow(i);
+          row.has_encoder = sel.value === 'yes' ? 'yes' : 'no';
+          const opts = trackRows.querySelector(`.sorter-track-enc-opts[data-i="${i}"]`);
+          if (opts) opts.classList.toggle('hidden', row.has_encoder !== 'yes');
+          updateSorterSummary();
+        });
+      });
+      trackRows.querySelectorAll('.sorter-track-enc-type').forEach((sel) => {
+        sel.addEventListener('change', () => {
+          const i = Number(sel.dataset.i);
+          ensureSorterTrackRow(i).encoder_type = sel.value || 'Enc_RIOCard';
+          updateSorterSummary();
+        });
+      });
+      trackRows.querySelectorAll('.sorter-track-enc-tag').forEach((sel) => {
+        sel.addEventListener('change', () => {
+          const i = Number(sel.dataset.i);
+          ensureSorterTrackRow(i).encoder_tag = sel.value || '';
+          updateSorterSummary();
+        });
+      });
+    }
+  }
+
+  const peRows = $('sorter-pe-rows');
+  if (peRows) {
+    const n = s.tracking_pe_count || 0;
+    if (!n) {
+      peRows.innerHTML = '<div class="text-[10px] text-slate-600">Set count above to add tracking PE dropdowns.</div>';
+    } else {
+      peRows.innerHTML = Array.from({ length: n }, (_, i) => {
+        const cur = (s.tracking_pes || [])[i] || '';
+        const peOpts = pes.map((p) =>
+          `<option value="${escapeHtml(p)}" ${p === cur ? 'selected' : ''}>${escapeHtml(p)}</option>`
+        ).join('');
+        return `<div class="flex flex-wrap gap-2 items-center">
+          <span class="text-[10px] text-slate-600 w-6 mono">#${i + 1}</span>
+          <select class="sorter-extra-pe flex-1 min-w-[12rem] bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-sky-300" data-i="${i}">
+            <option value="">Tracking photoeye…</option>${peOpts}
+          </select>
+        </div>`;
+      }).join('');
+      peRows.querySelectorAll('.sorter-extra-pe').forEach((sel) => {
+        sel.addEventListener('change', () => {
+          const i = Number(sel.dataset.i);
+          autogenState.sorter.tracking_pes[i] = sel.value || '';
+          updateSorterSummary();
+        });
+      });
+    }
+  }
+  updateSorterSummary();
+}
+
+function persistSorterToWorkbook() {
+  if (!autogenState.workbook) autogenState.workbook = { conveyors: [], options: {} };
+  autogenState.workbook.sorter_build = { ...autogenState.sorter };
+}
+
+function wireSorterBuildUi() {
+  const trackCount = $('sorter-track-count');
+  const divertCount = $('sorter-divert-count');
+  const peCount = $('sorter-pe-count');
+  const inductC = $('sorter-induct-conv');
+  const inductP = $('sorter-induct-pe');
+  const inductHasEnc = $('sorter-induct-has-enc');
+  const inductEncType = $('sorter-induct-enc-type');
+  const inductEncTag = $('sorter-induct-enc-tag');
+
+  trackCount?.addEventListener('change', () => {
+    const n = Math.max(0, Math.min(40, parseInt(trackCount.value, 10) || 0));
+    trackCount.value = String(n);
+    autogenState.sorter.tracking_count = n;
+    const arr = (autogenState.sorter.tracking || []).map(normalizeSorterTrackRow);
+    while (arr.length < n) arr.push(emptySorterTrackRow());
+    autogenState.sorter.tracking = arr.slice(0, n);
+    renderSorterBuild();
+  });
+  divertCount?.addEventListener('change', () => {
+    const n = Math.max(0, Math.min(64, parseInt(divertCount.value, 10) || 0));
+    divertCount.value = String(n);
+    autogenState.sorter.divert_count = n;
+    updateSorterSummary();
+  });
+  peCount?.addEventListener('change', () => {
+    const n = Math.max(0, Math.min(64, parseInt(peCount.value, 10) || 0));
+    peCount.value = String(n);
+    autogenState.sorter.tracking_pe_count = n;
+    const arr = autogenState.sorter.tracking_pes || [];
+    while (arr.length < n) arr.push('');
+    autogenState.sorter.tracking_pes = arr.slice(0, n);
+    renderSorterBuild();
+  });
+  inductC?.addEventListener('change', () => {
+    autogenState.sorter.induct_conveyor = inductC.value || '';
+    updateSorterSummary();
+  });
+  inductP?.addEventListener('change', () => {
+    autogenState.sorter.induct_pe = inductP.value || '';
+    updateSorterSummary();
+  });
+  inductHasEnc?.addEventListener('change', () => {
+    autogenState.sorter.induct_has_encoder = inductHasEnc.value === 'yes' ? 'yes' : 'no';
+    const opts = $('sorter-induct-enc-opts');
+    if (opts) {
+      const show = autogenState.sorter.induct_has_encoder === 'yes';
+      opts.classList.toggle('hidden', !show);
+      opts.classList.toggle('flex', show);
+    }
+    updateSorterSummary();
+  });
+  inductEncType?.addEventListener('change', () => {
+    autogenState.sorter.induct_encoder_type = inductEncType.value || 'Enc_RIOCard';
+    updateSorterSummary();
+  });
+  inductEncTag?.addEventListener('change', () => {
+    autogenState.sorter.induct_encoder_tag = inductEncTag.value || '';
+    updateSorterSummary();
+  });
+
+  $('btn-sorter-save')?.addEventListener('click', async () => {
+    persistSorterToWorkbook();
+    const st = $('sorter-save-status');
+    try {
+      if (typeof fortnaAPI?.autogenWorkbookSave === 'function') {
+        await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
+      }
+      // Always mirror to localStorage for demo safety
+      try {
+        localStorage.setItem('fortna_sorter_build', JSON.stringify(autogenState.sorter));
+      } catch (_) { /* ignore */ }
+      if (st) { st.textContent = 'Saved'; st.className = 'text-[10px] text-emerald-500 mono'; }
+      autogenLog('Sorter build config saved (workbook + localStorage).', 'ok');
+    } catch (e) {
+      if (st) { st.textContent = 'Save failed'; st.className = 'text-[10px] text-red-400 mono'; }
+      autogenLog(`Sorter save failed: ${e?.message || e}`, 'err');
+    }
+  });
+  $('btn-sorter-clear')?.addEventListener('click', () => {
+    autogenState.sorter = defaultSorterConfig();
+    persistSorterToWorkbook();
+    renderSorterBuild();
+    const st = $('sorter-save-status');
+    if (st) { st.textContent = 'Cleared'; st.className = 'text-[10px] text-slate-500 mono'; }
+  });
+
+  // Restore localStorage if workbook empty
+  try {
+    const raw = localStorage.getItem('fortna_sorter_build');
+    if (raw && !autogenState.workbook?.sorter_build) {
+      autogenState.sorter = { ...defaultSorterConfig(), ...JSON.parse(raw) };
+    }
+  } catch (_) { /* ignore */ }
+  renderSorterBuild();
+}
 
 function autogenLog(msg, level = 'info') {
   const el = $('autogen-log');
@@ -3030,8 +3543,10 @@ function setAutogenStatus(text, kind) {
 function setWorkbook(wb) {
   autogenState.workbook = wb || null;
   autogenState.selected = new Set();
+  loadSorterFromWorkbook();
   renderWorkbook();
   renderCatalogChips();
+  renderSorterBuild();
 }
 
 /** Ensure workbook.options catalogs exist for dropdown customization. */
@@ -3459,6 +3974,7 @@ async function saveAutogenWorkbook() {
     autogenLog('Save API missing — relaunch app', 'warn');
     return;
   }
+  persistSorterToWorkbook();
   const res = await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
   if (!res?.success) {
     autogenLog(res?.message || 'Save failed', 'err');
@@ -3680,6 +4196,31 @@ async function runAutogenGenerate(mode) {
   }
   if ($('autogen-opt-wcs')?.checked) includePrograms.push('WCS_Interface_TCP_IP');
   if ($('autogen-opt-sorter-track')?.checked) includePrograms.push('Sorter_Track');
+  // Sorter build UI: if user configured tracking conveyors / induct, pull in Sorter_Track
+  // pack (gold P02_Track) and persist config with the workbook for L5X export notes.
+  const sorterCfg = autogenState.sorter || defaultSorterConfig();
+  const sorterConfigured = !!(
+    sorterCfg.induct_conveyor
+    || (sorterCfg.tracking_count || 0) > 0
+    || (sorterCfg.tracking || []).some((t) => t && (t.conveyor || t.has_encoder === 'yes'))
+  );
+  if (sorterConfigured && !includePrograms.includes('Sorter_Track')) {
+    includePrograms.push('Sorter_Track');
+    autogenLog(
+      'Sorter build has induct/tracking → auto-including Sorter_Track on P02_Track (gold finished pattern).',
+      'ok',
+    );
+  }
+  if (sorterConfigured) {
+    persistSorterToWorkbook();
+    const encYes = (sorterCfg.tracking || []).filter((t) => t && t.has_encoder === 'yes').length
+      + (sorterCfg.induct_has_encoder === 'yes' ? 1 : 0);
+    autogenLog(
+      `Sorter build: induct=${sorterCfg.induct_conveyor || '—'} · `
+      + `track=${sorterCfg.tracking_count || 0} · diverts=${sorterCfg.divert_count || 0} · encYes=${encYes}`,
+      'info',
+    );
+  }
   const noSys = !($('autogen-opt-sys')?.checked ?? true);
   // IO_MAP checkbox: checked = include RUN bank map; unchecked = omit IO_MAP from L5X
   const includeIoMap = !!($('autogen-opt-iomap')?.checked ?? true);
@@ -3707,6 +4248,7 @@ async function runAutogenGenerate(mode) {
       includeIoMap,
       noIoMap: !includeIoMap,
       workbook: mode === 'run' ? (autogenState.workbook || undefined) : undefined,
+      sorterBuild: sorterConfigured ? sorterCfg : undefined,
     });
   } catch (e) {
     res = { success: false, message: e?.message || String(e) };
@@ -3824,6 +4366,8 @@ $('btn-autogen-workbook-build')?.addEventListener('click', () => buildAutogenWor
 $('btn-autogen-workbook-save')?.addEventListener('click', () => saveAutogenWorkbook());
 $('btn-autogen-wb-apply-type')?.addEventListener('click', () => bulkApplyType());
 $('btn-autogen-wb-apply-area')?.addEventListener('click', () => bulkApplyArea());
+// Sorter build UI (below main autogen layout — config only)
+try { wireSorterBuildUi(); } catch (e) { console.warn('sorter UI wire failed', e); }
 $('btn-autogen-cat-area')?.addEventListener('click', () => {
   addCatalogValue('area', $('autogen-cat-area')?.value);
   if ($('autogen-cat-area')) $('autogen-cat-area').value = '';

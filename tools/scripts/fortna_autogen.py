@@ -197,6 +197,8 @@ class AutogenInput:
     include_sys: bool = True
     include_io_map: bool = True
     include_io_map_gold: bool = False
+    # Sorter build UI config (induct / tracking / encoders / divert count)
+    sorter_build: dict = field(default_factory=dict)
 
 
 def load_program_export(path: Path) -> dict | None:
@@ -314,6 +316,10 @@ def resolve_program_exports(
             "ShippingSorter_PopUpDivert",
         ):
             # Placeholder pack — no program file to merge yet
+            continue
+        # Sorter_Track gold pack is Greensboro-fixed (~15 diverts). Live build
+        # replaces it when sorter_build config is present (handled in build_l5x).
+        if k2 == "Sorter_Track":
             continue
         fname = OPTIONAL_PROGRAMS.get(k2) or OPTIONAL_PROGRAMS.get(k)
         if not fname:
@@ -1394,8 +1400,12 @@ def clone_template_for_conveyor(
     aoi = f"{base}_AOI"
     new_base = f"{conv}_Conv"
     new_aoi = f"{conv}_Conv_AOI"
-    vfd_tag = "PConv_VFD" if is_vfd else "NO_VFD"
-    ms_tag = "NO_MS" if is_vfd else f"{conv}_MS"
+    # Gold finished PLC5 (ORLY … PLC5Finished): tags named P###_VFD are
+    # Motor_Starter_UDT (aux / contactor I/O), NOT Ethernet VFD_UDT.
+    # Slow_Flt(IO_VFD=NO_VFD, IO_MS=P###_VFD) and Fast_Conv uses NO_VFD.
+    # True PowerFlex program params live in print OCR / docs, not this UDT.
+    vfd_tag = "NO_VFD"
+    ms_tag = f"{conv}_VFD" if is_vfd else f"{conv}_MS"
 
     exit_pe = _safe(exit_pe_tag) if exit_pe_tag else "NO_PE"
     add_pe = _safe(add_pe_tag) if add_pe_tag else "NO_PE"
@@ -1420,11 +1430,11 @@ def clone_template_for_conveyor(
             cloned = cloned.replace(old, new)
         tags.append(cloned)
 
-    # Motor starter UDT for MS conveyors (Slow_Flt arg)
-    if not is_vfd:
-        ms_src = extract_tag_block(library_text, "NO_MS")
-        if ms_src:
-            tags.append(ms_src.replace("NO_MS", ms_tag))
+    # Motor_Starter_UDT for Slow_Flt IO_MS — MS conveyors use P###_MS; VFD-fed
+    # discrete I/O conveyors use P###_VFD (same UDT, gold naming).
+    ms_src = extract_tag_block(library_text, "NO_MS")
+    if ms_src:
+        tags.append(ms_src.replace("NO_MS", ms_tag))
 
     # Real PE_UDT + PE_Logic / Full_PE AOI backing tags (cloned from library templates)
     pe_udt_src = (
@@ -1488,6 +1498,7 @@ def clone_template_for_conveyor(
     )
 
     # Excel Autogen rung comments (tilde banner — clean in Studio ladder view)
+    # "with VFD" = discrete VFD feeder (P###_VFD Motor_Starter_UDT), not Ethernet VFD_UDT
     conv_kind = "Accumulation Conv with VFD" if is_vfd else "Transport Conv with MS"
     if not is_vfd and any(
         x in (template or "").upper() for x in ("P3000", "P4000", "ACCUM", "ZERO")
@@ -1915,6 +1926,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # Prefer Fortna UDT stubs for device classes that IO_MAP addresses with .I./.O.
         # (BOOL stubs cause Studio 'Invalid member specifier' on ES500.I.ES_OK etc.)
         udt_block = None
+        # VFD500_AUX / VFD500_EN → do NOT create BOOL; use P500_VFD Motor_Starter_UDT
+        vfd_m = re.match(r"^VFD(\d+[A-Z]?)(?:_.*)?$", tname, re.I)
+        if vfd_m:
+            ms_name = f"P{vfd_m.group(1)}_VFD"
+            if ms_name not in seen_tag_names:
+                ms_src = extract_tag_block(library_text, "NO_MS")
+                if ms_src:
+                    _add_tag_block(ms_src.replace("NO_MS", ms_name))
+                else:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
+                        f'DataType="Motor_Starter_UDT" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated">'
+                        f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
+                    )
+            # Skip BOOL VFD500_AUX — IO_MAP addresses P###_VFD.I/O members
+            io_tag_rows.append({
+                "tag": ms_name,
+                "fortna_name": raw,
+                "fortna_address": (
+                    f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                ),
+                "description": f"VFD discrete → {ms_name} (Motor_Starter_UDT)",
+                "type": "Motor_Starter_UDT",
+                "device_class": "vfd_ms",
+            })
+            continue
         # ES_UDT for e-stops AND for MCR/ESR aux contacts that IO_MAP addresses as .I.ES_OK.
         # Names may be T_1MCR1_AUX (digit-leading Fortna tags get T_ prefix).
         needs_es_udt = (
@@ -2066,6 +2105,37 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             return word_map.get(str(int(w) - 1))
         return None
 
+    def _vfd_ms_member(tname: str, direction: str) -> str | None:
+        """Map VFD500_AUX / VFD500_EN → P500_VFD Motor_Starter_UDT members.
+
+        Gold finished: AUX → P###_VFD.I.Auxiliary_Forward; enable out often
+        P###_Conv.O.Run → module. We put EN into P###_VFD.O.Run so one UDT
+        owns the discrete VFD I/O (no duplicate BOOL VFD500_AUX tags).
+        """
+        m = re.match(r"^VFD(\d+[A-Z]?)(?:_(.+))?$", tname, re.I)
+        if not m:
+            return None
+        num = m.group(1)
+        suffix = (m.group(2) or "").upper()
+        base = f"P{num}_VFD"
+        d = (direction or "").upper()
+        if suffix in ("AUX", "AUXILIARY", "AUX_FWD", "AF", "FB", "FEEDBACK"):
+            return f"{base}.I.Auxiliary_Forward"
+        if suffix in ("OK", "CONTACTOR", "CONTACTOR_OK", "C_OK"):
+            return f"{base}.I.Contactor_OK"
+        if suffix in ("MS_OK", "OL", "OVERLOAD", "OVL"):
+            return f"{base}.I.MS_OK"
+        if suffix in ("EN", "ENABLE", "RUN", "CMD", "START"):
+            # Output enable → UDT.O.Run; input-style EN rare → Contactor_OK
+            if d in ("O", "OUT", "OUTPUT"):
+                return f"{base}.O.Run"
+            return f"{base}.I.Contactor_OK"
+        if not suffix:
+            if d in ("O", "OUT", "OUTPUT"):
+                return f"{base}.O.Run"
+            return f"{base}.I.Auxiliary_Forward"
+        return None
+
     def _device_member(device_type: str, tname: str, direction: str) -> str:
         """Logix tag member for OTE/XIC on the field-device side.
 
@@ -2074,6 +2144,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         'Invalid member specifier' if you write BOOL.I.ES_OK.
         """
         dt = (device_type or "").lower()
+        vfd_m = _vfd_ms_member(tname, direction)
+        if vfd_m:
+            return vfd_m
         if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", tname, re.I):
             return f"{tname}.I.PE_Clear"
         if (
@@ -2256,6 +2329,46 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             extra_dt_chunks.append(gp["datatypes_xml"])
         programs_xml.append(gp["program_xml"])
         gold_program_names.append(gname)
+
+    # --- Live Sorter_Track from Sorter build UI (not Greensboro gold pack) ---
+    sorter_cfg = dict(getattr(inp, "sorter_build", None) or {})
+    sorter_report: dict = {}
+    want_sorter = any(
+        (x or "").strip().lower().replace(" ", "_") in (
+            "sorter_track", "sortertrack", "sorter"
+        )
+        for x in (getattr(inp, "include_programs", None) or [])
+    )
+    try:
+        from fortna_sorter_build import (
+            build_live_sorter_track,
+            sorter_build_is_configured,
+        )
+        if sorter_build_is_configured(sorter_cfg) or want_sorter:
+            live = build_live_sorter_track(
+                sorter_cfg if sorter_build_is_configured(sorter_cfg) else {
+                    "divert_count": 0,
+                    "tracking": [],
+                },
+                library_text,
+                io_points=list(inp.io_points or []),
+                word_map=dict(getattr(inp, "io_word_map", None) or {}),
+            )
+            sorter_report = live.get("report") or {}
+            for block in live.get("tags") or []:
+                _upsert_tag_block(block, prefer=True)
+            if live.get("aoi_xml"):
+                extra_aoi_chunks.append(live["aoi_xml"])
+            programs_xml.append(live["program_xml"])
+            gold_program_names.append("Sorter_Track")
+            _emit_progress(
+                f"Live Sorter_Track: {sorter_report.get('divert_count', 0)} diverts, "
+                f"{sorter_report.get('encoder_count', 0)} encoders",
+                42,
+            )
+    except Exception as ex:
+        sorter_report = {"mode": "error", "error": str(ex)}
+        _emit_progress(f"Sorter_Track live build failed: {ex}", 42)
 
     if not gold_io_map_used and want_io_map:
         # RUN/tar.gz map: CP_I (inputs) + CP_O (outputs) from Conveyor.asc + EIP word_map
@@ -2538,12 +2651,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if m:
             prog_names.append(m.group(1))
 
-    # Own tasks for Sys + IO_MAP (not under P11). Optional sorter/WCS stay on P11 with area Slow.
-    own_task_programs = {"IO_MAP", "Sys"}
+    # Own tasks — match finished gold: P02_Track = IO_MAP + Sorter_Track; Sys alone.
+    # WCS / ShippingSorter L3 stay on P11 Slow until area packs are site-wired.
+    own_task_programs = {"IO_MAP", "Sys", "Sorter_Track"}
     optional_slow = {
-        "Sorter_Track", "WCS_Interface_TCP_IP", "ShippingSorter_Area_L3",
+        "WCS_Interface_TCP_IP", "ShippingSorter_Area_L3",
     }
-    # Also catch any gold program names that aren't Sys/IO_MAP
+    # Also catch any gold program names that aren't Sys/IO_MAP/Sorter_Track
     for gn in gold_program_names:
         if gn not in own_task_programs:
             optional_slow.add(gn)
@@ -2580,8 +2694,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     tags_block = "<Tags>\n" + "".join(all_tags) + "\n</Tags>"
     programs_block = "<Programs>\n" + "".join(programs_xml) + "\n</Programs>"
     tasks_block = '<Tasks>\n'
-    # Dedicated tasks — Sys and IO_MAP are standalone programs, not children of P11
-    if "IO_MAP" in prog_names:
+    # P02_Track (gold finished): IO_MAP + optional Sorter_Track on same task
+    p02_progs = [n for n in ("IO_MAP", "Sorter_Track") if n in prog_names]
+    if p02_progs:
+        tasks_block += _task_xml(
+            "P02_Track_10ms", rate=10, priority=2, watchdog=50, programs=p02_progs
+        )
+    elif "IO_MAP" in prog_names:
         tasks_block += _task_xml("IO_MAP", rate=20, priority=12, watchdog=100, programs=["IO_MAP"])
     if "Sys" in prog_names:
         tasks_block += _task_xml("Sys", rate=100, priority=13, watchdog=250, programs=["Sys"])
@@ -2682,10 +2801,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "gold_io_map_blocked": gold_io_blocked,
         "eip_modules_filtered_to_word_map": sorted(used_rios) if used_rios else [],
         "gold_programs": gold_program_names,
+        "sorter_build": sorter_report,
         "optional_programs_available": list(OPTIONAL_PROGRAMS.keys()),
         "task_schedule": {
-            "IO_MAP": "Task IO_MAP @ 20ms (own task — not under P11)",
-            "Sys": "Task Sys @ 100ms (own task — not under P11)",
+            "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
+            "Sys": "Task Sys @ 100ms (own task)",
             "P10_Fast_20ms": fast_names,
             "P11_Slow_200ms": slow_names,
         },
@@ -3148,13 +3268,16 @@ def main() -> int:
                     wb = load_workbook(Path(wb_path))
                     if wb:
                         inp = apply_workbook_to_input(inp, wb)
+                        sb = wb.get("sorter_build")
+                        if isinstance(sb, dict) and sb:
+                            inp.sorter_build = sb
                         _emit_progress(
                             f"Applied workbook ({len(wb.get('conveyors') or [])} rows)…",
                             12,
                         )
                 except Exception as wb_exc:
                     _emit_progress(f"Workbook apply skipped: {wb_exc}", 12)
-            # Optional gold programs (ShippingSorter / WCS / Sorter_Track)
+            # Optional gold programs (ShippingSorter / WCS) + live Sorter_Track
             raw_inc = getattr(args, "include_programs", "") or ""
             inp.include_programs = [
                 x.strip() for x in str(raw_inc).replace(";", ",").split(",") if x.strip()

@@ -1,0 +1,458 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.05" TargetName="Enc" TargetType="Routine" TargetSubType="ST" ContainsContext="true" ExportDate="Fri Aug 14 12:43:10 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Context" Name="ORLY_Greensboro_NC_PLC5">
+<DataTypes Use="Context">
+<DataType Name="Enc_Flt" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZEnc_Flt0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Enc" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault]]>
+</Description>
+</Member>
+<Member Name="PPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PPI Fault]]>
+</Description>
+</Member>
+<Member Name="UpStrmCommLoss" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IO Module Fault]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Enc_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="PPI_Ratio" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pulse Per Inch Ratio]]>
+</Description>
+</Member>
+<Member Name="Allowable_DiffSpd" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset:10;  Allowable Difference Between Actual Speed and Encoder Speed measured to generate PPI (High or Low) Fault]]>
+</Description>
+</Member>
+<Member Name="Allowable_PPIDiff" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Allowable PPI Difference in one "1" minute before calling PPI Fault]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZEnc_HMI3" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Disable_PPIFlt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_HMI3" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[To Disable the PPI Fault Logic]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Enc_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Flt" DataType="Enc_Flt" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Bits]]>
+</Description>
+</Member>
+<Member Name="Silenced" DataType="Enc_Flt" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Silenced Bits]]>
+</Description>
+</Member>
+<Member Name="HMI" DataType="Enc_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Sts_Enc_Flt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Stats]]>
+</Description>
+</Member>
+<Member Name="Sts_PPI_Flt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder PPI Fault Stats]]>
+</Description>
+</Member>
+<Member Name="Sts_HighPPI_AlmTot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Stats: High PPI Alarm Total]]>
+</Description>
+</Member>
+<Member Name="Sts_LowPPI_AlmTot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Stats: Low PPI Alarm Total]]>
+</Description>
+</Member>
+<Member Name="FPM" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conveyor FPM Speed]]>
+</Description>
+</Member>
+<Member Name="Enc_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset : 500; Encoder Fault Timer  (Generally should be 500)]]>
+</Description>
+</Member>
+<Member Name="PPI_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset : 15000; Encoder PPI Fault Timer (Use 15000 - For Pulses per Inch; 7500 - For Pulses for half of Inch)]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZEnc_UDT10" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Pulse Per Inch OR Pulse per half inch]]>
+</Description>
+</Member>
+<Member Name="Alm_LowPPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Alarm: Low PPI Fault]]>
+</Description>
+</Member>
+<Member Name="Alm_HighPPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Alarm: High PPI Fault]]>
+</Description>
+</Member>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Enc_Flt"/>
+<Dependency Type="DataType" Name="Enc_Flt"/>
+<Dependency Type="DataType" Name="Enc_HMI"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+</Dependencies>
+</DataType>
+<DataType Name="Stats_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="CurrentTime" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Current Time (Second) of current event]]>
+</Description>
+</Member>
+<Member Name="Tot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total No. of Occurrence]]>
+</Description>
+</Member>
+<Member Name="TotTimeHr" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Hour) of event]]>
+</Description>
+</Member>
+<Member Name="TotTimeSec" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Second) of event]]>
+</Description>
+</Member>
+<Member Name="TotTimeMin" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Min) of event]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+</DataTypes>
+<Tags Use="Context">
+<Tag Name="P504_Enc" TagType="Base" DataType="Enc_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0],[0],[5.00000000e-001,15,15,0],[0,22,169,45,43],[0,0,0,0,0],0,37,266,500,15000,1]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="Enc_UDT">
+<StructureMember Name="Flt" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="Enc_HMI">
+<DataValueMember Name="PPI_Ratio" DataType="REAL" Radix="Float" Value="0.5"/>
+<DataValueMember Name="Allowable_DiffSpd" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Allowable_PPIDiff" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Disable_PPIFlt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_Enc_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="22"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="169"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="45"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="43"/>
+</StructureMember>
+<StructureMember Name="Sts_PPI_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<DataValueMember Name="Sts_HighPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Sts_LowPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="37"/>
+<DataValueMember Name="FPM" DataType="DINT" Radix="Decimal" Value="266"/>
+<DataValueMember Name="Enc_FltTime" DataType="INT" Radix="Decimal" Value="500"/>
+<DataValueMember Name="PPI_FltTime" DataType="INT" Radix="Decimal" Value="15000"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="1"/>
+<DataValueMember Name="Alm_LowPPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_HighPPI" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="P506_Enc" TagType="Base" DataType="Enc_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0],[0],[5.04999995e-001,15,15,0],[0,13,93,14,51],[0,2,0,11,3],0,345,270,500,15000,1]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="Enc_UDT">
+<StructureMember Name="Flt" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="Enc_HMI">
+<DataValueMember Name="PPI_Ratio" DataType="REAL" Radix="Float" Value="0.505"/>
+<DataValueMember Name="Allowable_DiffSpd" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Allowable_PPIDiff" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Disable_PPIFlt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_Enc_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="13"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="93"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="14"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="51"/>
+</StructureMember>
+<StructureMember Name="Sts_PPI_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="2"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="11"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="3"/>
+</StructureMember>
+<DataValueMember Name="Sts_HighPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Sts_LowPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="345"/>
+<DataValueMember Name="FPM" DataType="DINT" Radix="Decimal" Value="270"/>
+<DataValueMember Name="Enc_FltTime" DataType="INT" Radix="Decimal" Value="500"/>
+<DataValueMember Name="PPI_FltTime" DataType="INT" Radix="Decimal" Value="15000"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="1"/>
+<DataValueMember Name="Alm_LowPPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_HighPPI" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="P508_Enc" TagType="Base" DataType="Enc_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0],[0],[5.00000000e-001,15,15,0],[0,0,0,0,0],[0,0,0,0,0],0,0,0,0,0,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="Enc_UDT">
+<StructureMember Name="Flt" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="Enc_HMI">
+<DataValueMember Name="PPI_Ratio" DataType="REAL" Radix="Float" Value="0.5"/>
+<DataValueMember Name="Allowable_DiffSpd" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Allowable_PPIDiff" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Disable_PPIFlt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_Enc_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_PPI_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<DataValueMember Name="Sts_HighPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Sts_LowPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="FPM" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Enc_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PPI_FltTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_LowPPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_HighPPI" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="P509_Enc" TagType="Base" DataType="Enc_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0],[0],[5.00000000e-001,15,15,0],[0,9,145,11,19],[0,0,0,0,0],0,33103,264,500,15000,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="Enc_UDT">
+<StructureMember Name="Flt" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="Enc_HMI">
+<DataValueMember Name="PPI_Ratio" DataType="REAL" Radix="Float" Value="0.5"/>
+<DataValueMember Name="Allowable_DiffSpd" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Allowable_PPIDiff" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Disable_PPIFlt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_Enc_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="9"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="145"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="11"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="19"/>
+</StructureMember>
+<StructureMember Name="Sts_PPI_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="0"/>
+</StructureMember>
+<DataValueMember Name="Sts_HighPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Sts_LowPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="33103"/>
+<DataValueMember Name="FPM" DataType="DINT" Radix="Decimal" Value="264"/>
+<DataValueMember Name="Enc_FltTime" DataType="INT" Radix="Decimal" Value="500"/>
+<DataValueMember Name="PPI_FltTime" DataType="INT" Radix="Decimal" Value="15000"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_LowPPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_HighPPI" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+<Tag Name="P510_Enc" TagType="Base" DataType="Enc_UDT" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[[[0],[0],[5.00000000e-001,15,15,0],[0,8,420,19,52],[0,0,165,32,25],0,33323,259,500,15000,0]]]>
+</Data>
+<Data Format="Decorated">
+<Structure DataType="Enc_UDT">
+<StructureMember Name="Flt" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Silenced" DataType="Enc_Flt">
+<DataValueMember Name="Enc" DataType="BOOL" Value="0"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="HMI" DataType="Enc_HMI">
+<DataValueMember Name="PPI_Ratio" DataType="REAL" Radix="Float" Value="0.5"/>
+<DataValueMember Name="Allowable_DiffSpd" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Allowable_PPIDiff" DataType="INT" Radix="Decimal" Value="15"/>
+<DataValueMember Name="Disable_PPIFlt" DataType="BOOL" Value="0"/>
+</StructureMember>
+<StructureMember Name="Sts_Enc_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="8"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="420"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="19"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="52"/>
+</StructureMember>
+<StructureMember Name="Sts_PPI_Flt" DataType="Stats_UDT">
+<DataValueMember Name="CurrentTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Tot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="TotTimeHr" DataType="DINT" Radix="Decimal" Value="165"/>
+<DataValueMember Name="TotTimeSec" DataType="SINT" Radix="Decimal" Value="32"/>
+<DataValueMember Name="TotTimeMin" DataType="SINT" Radix="Decimal" Value="25"/>
+</StructureMember>
+<DataValueMember Name="Sts_HighPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="Sts_LowPPI_AlmTot" DataType="DINT" Radix="Decimal" Value="33323"/>
+<DataValueMember Name="FPM" DataType="DINT" Radix="Decimal" Value="259"/>
+<DataValueMember Name="Enc_FltTime" DataType="INT" Radix="Decimal" Value="500"/>
+<DataValueMember Name="PPI_FltTime" DataType="INT" Radix="Decimal" Value="15000"/>
+<DataValueMember Name="PPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_LowPPI" DataType="BOOL" Value="0"/>
+<DataValueMember Name="Alm_HighPPI" DataType="BOOL" Value="0"/>
+</Structure>
+</Data>
+</Tag>
+</Tags>
+<Programs Use="Context">
+<Program Use="Context" Name="ShippingSorter_Area_L1">
+<Routines Use="Context">
+<Routine Use="Target" Name="Enc" Type="ST">
+<STContent>
+<Line Number="0">
+<![CDATA[P504_Enc.HMI.PPI_Ratio := 0.897;]]>
+</Line>
+<Line Number="1">
+<![CDATA[P504_Enc.Enc_FltTime := 500;]]>
+</Line>
+<Line Number="2">
+<![CDATA[P504_Enc.PPI_FltTime := 15000;]]>
+</Line>
+<Line Number="3">
+<![CDATA[]]>
+</Line>
+<Line Number="4">
+<![CDATA[P506_Enc.HMI.PPI_Ratio := 0.505;]]>
+</Line>
+<Line Number="5">
+<![CDATA[P506_Enc.Enc_FltTime := 500;]]>
+</Line>
+<Line Number="6">
+<![CDATA[P506_Enc.PPI_FltTime := 15000;]]>
+</Line>
+<Line Number="7">
+<![CDATA[]]>
+</Line>
+<Line Number="8">
+<![CDATA[P508_Enc.HMI.PPI_Ratio := 0.5;]]>
+</Line>
+<Line Number="9">
+<![CDATA[P508_Enc.Enc_FltTime := 500;]]>
+</Line>
+<Line Number="10">
+<![CDATA[P508_Enc.PPI_FltTime := 15000;]]>
+</Line>
+<Line Number="11">
+<![CDATA[]]>
+</Line>
+<Line Number="12">
+<![CDATA[P509_Enc.HMI.PPI_Ratio := 0.897;]]>
+</Line>
+<Line Number="13">
+<![CDATA[P509_Enc.Enc_FltTime := 500;]]>
+</Line>
+<Line Number="14">
+<![CDATA[P509_Enc.PPI_FltTime := 15000;]]>
+</Line>
+<Line Number="15">
+<![CDATA[]]>
+</Line>
+<Line Number="16">
+<![CDATA[P510_Enc.HMI.PPI_Ratio := 0.5;]]>
+</Line>
+<Line Number="17">
+<![CDATA[P510_Enc.Enc_FltTime := 500;]]>
+</Line>
+<Line Number="18">
+<![CDATA[P510_Enc.PPI_FltTime := 15000;]]>
+</Line>
+</STContent>
+</Routine>
+</Routines>
+</Program>
+</Programs>
+</Controller>
+</RSLogix5000Content>

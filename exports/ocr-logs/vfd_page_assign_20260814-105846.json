@@ -1,0 +1,936 @@
+{
+  "generated": "20260814-105846",
+  "drive_count": 30,
+  "drives_with_params": 2,
+  "page_winner_histogram": {
+    "27": 8,
+    "25": 4,
+    "26": 4,
+    "28": 4,
+    "29": 2,
+    "34": 2
+  },
+  "note": "Page log: if one page dominates, check page_hit_detail. Param log: see vfd_param_extract_*.json for per-PDF-page OCR. VFD816 often works because single-drive sheets have CAD text; dual sheets need table OCR (+tableocr in mode).",
+  "drives": [
+    {
+      "name": "VFD118_EN",
+      "base": "VFD118",
+      "print_page": 25,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "25": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 25,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD212_EN",
+      "base": "VFD212",
+      "print_page": 25,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "25": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 25,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD312_EN",
+      "base": "VFD312",
+      "print_page": 26,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "26": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 26,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD412_EN",
+      "base": "VFD412",
+      "print_page": 26,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "26": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 26,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD500_EN",
+      "base": "VFD500",
+      "print_page": 27,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "27": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 27,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD532_EN",
+      "base": "VFD532",
+      "print_page": 27,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "27": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 27,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD816_EN",
+      "base": "VFD816",
+      "print_page": 28,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 15,
+      "param_keys": [
+        "P031 MOTOR NP VOLTS",
+        "P033 MOTOR OL CURRENT",
+        "P041 ACCEL TIME 1",
+        "P042 DECEL TIME 1",
+        "P044 MAXIMUM FREQ",
+        "P045 STOP MODE",
+        "P046 START SOURCE 1",
+        "P047 SPEED REFERENCE 1",
+        "P062 T062 DIGIN TERMBLK 2",
+        "P076 T076 RELAY OUT1 SEL",
+        "P410 A410 PRESET FREQ 0",
+        "P434 A434 DC BRAKE TIME",
+        "P435 A435 DC BRAKE LEVEL",
+        "P437 A437 DB RESISTOR SEL",
+        "P544 A544 REVERSE DISABLE"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "28": 19
+      },
+      "page_hit_detail": [
+        {
+          "page": 28,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 MOTOR NP VOLTS",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 MOTOR OL CURRENT",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 MOTOR OL CURRENT",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P041 ACCEL TIME 1",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P042 DECEL TIME 1",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P044 MAXIMUM FREQ",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P045 STOP MODE",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P046 START SOURCE 1",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P047 SPEED REFERENCE 1",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "T062 DIGIN TERMBLK 2",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "T076 RELAY OUT1 SEL",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A410 PRESET FREQ 0",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A434 DC BRAKE TIME",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A435 DC BRAKE LEVEL",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A435 DC BRAKE LEVEL",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A437 DB RESISTOR SEL",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A544 REVERSE DISABLE",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 34,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD118_AUX",
+      "base": "VFD118",
+      "print_page": 25,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "25": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 25,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD212_AUX",
+      "base": "VFD212",
+      "print_page": 25,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "25": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 25,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD312_AUX",
+      "base": "VFD312",
+      "print_page": 26,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "26": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 26,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD412_AUX",
+      "base": "VFD412",
+      "print_page": 26,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "26": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 26,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD500_AUX",
+      "base": "VFD500",
+      "print_page": 27,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "27": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 27,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD532_AUX",
+      "base": "VFD532",
+      "print_page": 27,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "27": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 27,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD816_AUX",
+      "base": "VFD816",
+      "print_page": 28,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 15,
+      "param_keys": [
+        "P031 MOTOR NP VOLTS",
+        "P033 MOTOR OL CURRENT",
+        "P041 ACCEL TIME 1",
+        "P042 DECEL TIME 1",
+        "P044 MAXIMUM FREQ",
+        "P045 STOP MODE",
+        "P046 START SOURCE 1",
+        "P047 SPEED REFERENCE 1",
+        "P062 T062 DIGIN TERMBLK 2",
+        "P076 T076 RELAY OUT1 SEL",
+        "P410 A410 PRESET FREQ 0",
+        "P434 A434 DC BRAKE TIME",
+        "P435 A435 DC BRAKE LEVEL",
+        "P437 A437 DB RESISTOR SEL",
+        "P544 A544 REVERSE DISABLE"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "28": 19
+      },
+      "page_hit_detail": [
+        {
+          "page": 28,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 MOTOR NP VOLTS",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 MOTOR OL CURRENT",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 MOTOR OL CURRENT",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P041 ACCEL TIME 1",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P042 DECEL TIME 1",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P044 MAXIMUM FREQ",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P045 STOP MODE",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P046 START SOURCE 1",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P047 SPEED REFERENCE 1",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "T062 DIGIN TERMBLK 2",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "T076 RELAY OUT1 SEL",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A410 PRESET FREQ 0",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A434 DC BRAKE TIME",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A435 DC BRAKE LEVEL",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A435 DC BRAKE LEVEL",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A437 DB RESISTOR SEL",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        },
+        {
+          "page": 28,
+          "weight": 1,
+          "why": "param_row",
+          "param": "A544 REVERSE DISABLE",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 34,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD504_AUX",
+      "base": "VFD504",
+      "print_page": 27,
+      "print_file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "27": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 27,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD506_AUX",
+      "base": "VFD506",
+      "print_page": 27,
+      "print_file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "27": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 27,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD504_EN",
+      "base": "VFD504",
+      "print_page": 27,
+      "print_file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "27": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 27,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD506_EN",
+      "base": "VFD506",
+      "print_page": 27,
+      "print_file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "27": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 27,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD507A_AUX",
+      "base": "VFD507A",
+      "print_page": 28,
+      "print_file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "28": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 28,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD507B_AUX",
+      "base": "VFD507B",
+      "print_page": 29,
+      "print_file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "28": 2,
+        "29": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 28,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf"
+        },
+        {
+          "page": 29,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD507A_EN",
+      "base": "VFD507A",
+      "print_page": 28,
+      "print_file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "28": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 28,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD507B_EN",
+      "base": "VFD507B",
+      "print_page": 29,
+      "print_file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "28": 2,
+        "29": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 28,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP4_INSTALL_07142026.pdf"
+        },
+        {
+          "page": 29,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD501B-1_AUX",
+      "base": "VFD501B1",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD501B-2_AUX",
+      "base": "VFD501B2",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD501C_AUX",
+      "base": "VFD501C",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD1100_AUX",
+      "base": "VFD1100",
+      "print_page": 34,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "34": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 34,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD501B-1_EN",
+      "base": "VFD501B1",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD501B-2_EN",
+      "base": "VFD501B2",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD1100_EN",
+      "base": "VFD1100",
+      "print_page": 34,
+      "print_file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": true,
+      "page_votes": {
+        "34": 2
+      },
+      "page_hit_detail": [
+        {
+          "page": 34,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "LP0004765 - OREILLY_CO_CP3_INSTALL_07072026__LP0004765 - OREILLY_CO_CP3_INSTALL_07072026.pdf"
+        }
+      ],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "base_not_in_param_buckets"
+    },
+    {
+      "name": "VFD501C_EN",
+      "base": "VFD501C",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    }
+  ]
+}
