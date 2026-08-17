@@ -2763,7 +2763,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     lib_sw = re.search(r'SoftwareRevision="([^"]+)"', library_text)
     sw_rev = lib_sw.group(1) if lib_sw else f"{major}.{minor}"
     l5x = f'''<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="{sw_rev}" TargetName="{_xml_escape(proj)}" TargetType="Controller" ContainsContext="false" Owner="FortnaPlus" ExportDate="{stamp}" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="{sw_rev}" TargetName="{_xml_escape(proj)}" TargetType="Controller" ContainsContext="false" Owner="SiteForge" ExportDate="{stamp}" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
 <Controller Use="Target" Name="{_xml_escape(proj)}" ProcessorType="{_xml_escape(processor)}" MajorRev="{major}" MinorRev="{minor_i}" ProjectCreationDate="{stamp}" LastModifiedDate="{stamp}" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#0000_0000" MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false">
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
 <Security Code="0" ChangesToDetect="16#ffff_ffff_ffff_ffff"/>
@@ -2852,7 +2852,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "encoded_aois_stripped": False,
         "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
         "note": (
-            "FortnaPlus Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, "
+            "Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, "
             "full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types "
             "(DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) "
             "via EIPCSV Word map + octal bits. "
@@ -3122,7 +3122,7 @@ def generate(
 
     # Human report
     lines = [
-        f"FortnaPlus PLC Autogen (Python) — {stamp}",
+        f"Site Forge PLC Autogen (Python) — {stamp}",
         f"Project: {inp.project_name}",
         f"Processor: {inp.processor}  v{inp.major_rev}.{inp.minor_rev}",
         f"Library: {library.name}",
@@ -3203,7 +3203,7 @@ def generate(
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="FortnaPlus PLC Autogen (Excel → Python)")
+    ap = argparse.ArgumentParser(description="Site Forge PLC Autogen (Excel → Python)")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p_ins = sub.add_parser("inspect-excel", help="Explain sheets / why Excel feels locked")
@@ -3273,7 +3273,7 @@ def main() -> int:
     p_run.add_argument(
         "--workbook",
         default="",
-        help="Path to FortnaPlus autogen_workbook.json (dashboard edits). Applied over RUN before L5X.",
+        help="Path to Site Forge autogen_workbook.json (dashboard edits). Applied over RUN before L5X.",
     )
 
     args = ap.parse_args()

@@ -24,10 +24,10 @@ const AUTOGEN_WORKBOOK_PATH = path.join(REPO_ROOT, 'workspace', 'active', 'autog
 function configureElectronStorage() {
   // Keep Chromium caches off OneDrive / worktree — Local AppData only.
   // backend_impl "Critical error -8" / "Failed to save user data" = corrupt or locked
-  // Chromium profile. Fix: close all instances, delete %LOCALAPPDATA%\FortnaPlusDashboard.
+  // Chromium profile. Fix: close all instances, delete %LOCALAPPDATA%\SiteForgeDashboard.
   const root = path.join(
     process.env.LOCALAPPDATA || path.join(os.homedir(), 'AppData', 'Local'),
-    'FortnaPlusDashboard'
+    'SiteForgeDashboard'
   );
   const diskCache = path.join(root, 'disk-cache');
   const gpuCache = path.join(root, 'gpu-cache');
@@ -50,7 +50,7 @@ function configureElectronStorage() {
 
 configureElectronStorage();
 
-// Only one FortnaPlus window — second launch focuses the first (avoids cache lock spam)
+// Only one Site Forge window — second launch focuses the first (avoids cache lock spam)
 const gotSingleInstanceLock = app.requestSingleInstanceLock();
 if (!gotSingleInstanceLock) {
   app.quit();
@@ -273,7 +273,8 @@ function createWindow() {
     minWidth: 1100,
     minHeight: 700,
     backgroundColor: '#0a0f14',
-    title: 'FortnaPlus Control',
+    title: 'Site Forge',
+    icon: path.join(__dirname, 'assets', 'SiteForge.ico'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
@@ -464,7 +465,7 @@ function createWindow() {
       }
       if (!sets.length) return { success: false, message: 'No print files selected.' };
 
-      const tmpDir = path.join(os.tmpdir(), 'fortnaplus-prints');
+      const tmpDir = path.join(os.tmpdir(), 'siteforge-prints');
       fs.mkdirSync(tmpDir, { recursive: true });
       const stamp = Date.now();
       const tmpJson = path.join(tmpDir, `sets-${stamp}.json`);
@@ -1105,7 +1106,7 @@ function createWindow() {
         '--max-pe', String(data?.nPe || 12),
         '--canvas-w', String(data?.canvasW || 900),
         '--canvas-h', String(data?.canvasH || 1100),
-        '--project-name', data?.projectName || 'FortnaPlus_POC',
+        '--project-name', data?.projectName || 'SiteForge_POC',
         '--with-tags',
         '--conveyors', data?.conveyors || defaultConvs,
       ];
@@ -1169,8 +1170,8 @@ function createWindow() {
       const stamp = result.folder_stamp || '';
       const projName = result.project_name
         || (stamp
-          ? `FortnaPlus_${(result.machine || 'Machine').replace(/[^A-Za-z0-9_]/g, '')}_${stamp}`
-          : 'FortnaPlus_ORNCCP5');
+          ? `SiteForge_${(result.machine || 'Machine').replace(/[^A-Za-z0-9_]/g, '')}_${stamp}`
+          : 'SiteForge_ORNCCP5');
       const gwRoot = path.join(
         process.env['ProgramFiles'] || 'C:\\Program Files',
         'Inductive Automation',

@@ -1,4 +1,4 @@
-# FortnaPlus
+# Site Forge
 
 IPC → Rockwell recontrol toolkit: Electron dashboard + Python engines for PLC Autogen, I/O/print crosswalk, and Ignition layout packs.
 
@@ -7,7 +7,7 @@ IPC → Rockwell recontrol toolkit: Electron dashboard + Python engines for PLC 
 | Path | Role |
 |------|------|
 | `dashboard/` | UI (I/O & Prints, AutoGen workbook, Ignition) |
-| `desktop/` | Electron shell (`Launch-FortnaPlus.bat`) |
+| `desktop/` | Electron shell (`Launch-SiteForge.bat`) |
 | `tools/scripts/` | Python: `fortna_autogen.py`, `fortna_workbook.py`, ignition builders |
 | `tools/libraries/` | O'Reilly L5X library + program packs + VBA extracts |
 | `exports/` | Generated L5X / ignition folders (**gitignored** — rebuild locally) |

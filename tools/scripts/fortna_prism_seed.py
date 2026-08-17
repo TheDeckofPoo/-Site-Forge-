@@ -417,7 +417,7 @@ def run_seed(export_dir: Path | None, manifest_path: Path | None) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='FortnaPlus + PRISM PoC program seeding')
+    parser = argparse.ArgumentParser(description="Site Forge + PRISM PoC program seeding')
     parser.add_argument('--export-dir', help='FortnaPlus PLC export folder')
     parser.add_argument('--manifest', help='Path to fortna_io_manifest.json')
     args = parser.parse_args()

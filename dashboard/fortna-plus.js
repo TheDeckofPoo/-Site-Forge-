@@ -1,4 +1,4 @@
-/* FortnaPlus Control — dashboard frontend */
+/* Site Forge — dashboard frontend */
 
 const state = {
   recipes: [],
@@ -605,7 +605,7 @@ async function importRunPackage(path, name) {
 }
 
 $('btn-clear-workspace')?.addEventListener('click', async () => {
-  if (!confirm('Clear active workspace?\n\nThis removes the imported RUN from FortnaPlus (workspace/active).\nOriginal .tar.gz files on D:\\ are not deleted.')) {
+  if (!confirm('Clear active workspace?\n\nThis removes the imported RUN from Site Forge (workspace/active).\nOriginal .tar.gz files on D:\\ are not deleted.')) {
     return;
   }
   setBusy(true);
@@ -1800,7 +1800,7 @@ function renderDriveParameters(data) {
     }
     let msg = data?.message || 'Load a RUN package (.tar.gz) to list devices.';
     if (typeof msg === 'string' && (msg.length > 200 || msg.trim().startsWith('{'))) {
-      msg = 'Drive list failed to load — relaunch FortnaPlus and click refresh.';
+      msg = 'Drive list failed to load — relaunch Site Forge and click refresh.';
     }
     tbody.innerHTML = `<tr><td colspan="4" class="py-4 px-2 text-slate-500">${escapeHtml(msg)}</td></tr>`;
     if (stats) {
@@ -2780,7 +2780,7 @@ $('btn-io-browse-run')?.addEventListener('click', async () => {
 
 $('btn-io-clear-run')?.addEventListener('click', async () => {
   if (!confirm(
-    'Clear loaded RUN from FortnaPlus?\n\n'
+    'Clear loaded RUN from Site Forge?\n\n'
     + '• Removes active tar.gz workspace\n'
     + '• Clears banks, Devices (by type), and Merge & Crosswalk\n'
     + '• Original .tar.gz and PDFs on disk are not deleted'
@@ -3910,7 +3910,7 @@ function switchWbTab(tab) {
 
 async function buildAutogenWorkbook() {
   if (typeof fortnaAPI.autogenWorkbookBuild !== 'function') {
-    autogenLog('Workbook API missing — relaunch FortnaPlus desktop app', 'warn');
+    autogenLog('Workbook API missing — relaunch Site Forge desktop app', 'warn');
     return;
   }
   if (autogenState.busy) return;
@@ -4341,7 +4341,7 @@ async function runAutogenGenerate(mode) {
 
 $('btn-autogen-verify')?.addEventListener('click', async () => {
   if (typeof fortnaAPI.autogenVerify !== 'function') {
-    autogenLog('Verify API missing — relaunch FortnaPlus', 'warn');
+    autogenLog('Verify API missing — relaunch Site Forge', 'warn');
     return;
   }
   setAutogenStatus('Verifying…', 'busy');
@@ -4632,7 +4632,7 @@ function renderIgnitionResult(r) {
 async function runIgnitionBuild(opts = {}) {
   if (ignitionState.busy) return;
   if (typeof fortnaAPI.ignitionBuildLayout !== 'function') {
-    ignitionLog('API missing — relaunch FortnaPlus', 'warn');
+    ignitionLog('API missing — relaunch Site Forge', 'warn');
     return;
   }
   ignitionState.busy = true;
@@ -4675,7 +4675,7 @@ async function runIgnitionBuild(opts = {}) {
   const projNm = r.project_name || dep?.project_name || '';
   if (dep?.ok) {
     ignitionLog(
-      `Built ${stamp || ''} (${localT || 'now'}) → gateway project ${projNm || 'FortnaPlus_*'} `
+      `Built ${stamp || ''} (${localT || 'now'}) → gateway project ${projNm || 'SiteForge_*'} `
       + `(${r.plotted_count || 0} plotted). Scan Filesystem → open Smoke_Test.`,
       'ok',
     );
@@ -4700,7 +4700,7 @@ async function runIgnitionBuild(opts = {}) {
       dep?.ok ? 'Deploy: OK' : `Deploy: ${dep?.error || 'skipped'}`,
       '',
       '1) Gateway → Scan Filesystem',
-      `2) Designer → open ${projNm || 'FortnaPlus_*'} → Smoke_Test first`,
+      `2) Designer → open ${projNm || 'SiteForge_*'} → Smoke_Test first`,
       '3) Import tags_import.json from the export folder if needed',
       '',
       'Tip: exports/ignition-build/LATEST.txt always points at newest build.',
@@ -4726,7 +4726,7 @@ $('btn-ignition-open-test')?.addEventListener('click', () => {
 });
 $('btn-ignition-perspective')?.addEventListener('click', async () => {
   if (typeof fortnaAPI.ignitionPackPerspective !== 'function') {
-    ignitionLog('Pack API missing — relaunch FortnaPlus', 'warn');
+    ignitionLog('Pack API missing — relaunch Site Forge', 'warn');
     return;
   }
   setIgnitionStatus('Exporting…', 'busy');
@@ -4769,10 +4769,10 @@ $('btn-ignition-perspective')?.addEventListener('click', async () => {
       `Generated: ${when}`,
       r.project_dir || '',
       '',
-      '1) Copy FortnaPlus_POC →',
+      '1) Copy SiteForge_POC →',
       '   C:\\Program Files\\Inductive Automation\\Ignition\\data\\projects\\',
       '2) Gateway → Platform → System → Projects → Scan Filesystem',
-      '3) Designer → open FortnaPlus_POC → Views → FortnaPlus/POC/Plant_Layout',
+      '3) Designer → open SiteForge_POC → Views → SiteForge/POC/Plant_Layout',
       '4) Tag Browser (default) → right-click → Import Tags →',
       `   ${r.tags_import || '(tags_import.json in export folder)'}`,
       '   (Memory tags — toggle Run/Clear in Tag Browser to test colors)',

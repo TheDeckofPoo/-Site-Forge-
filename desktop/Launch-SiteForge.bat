@@ -1,5 +1,4 @@
 @echo off
-REM Legacy name ? use Launch-SiteForge.bat
 title Site Forge
 cd /d "%~dp0"
 powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0Launch-Electron.ps1"

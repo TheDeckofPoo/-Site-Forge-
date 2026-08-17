@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-fortna_workbook.py — FortnaPlus AutoGen workbook (Excel Inputdata replacement).
+fortna_workbook.py — Site Forge AutoGen workbook (Excel Inputdata replacement).
 
 Built automatically from a Fortna RUN (tar.gz extract):
   - Conveyor rows (area, safety zone, type, PE wiring, template)
@@ -494,7 +494,7 @@ def bulk_set_area(workbook: dict, conveyor_names: list[str], main_area: str, saf
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="FortnaPlus AutoGen workbook")
+    ap = argparse.ArgumentParser(description="Site Forge AutoGen workbook")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     b = sub.add_parser("build", help="Build workbook JSON from RUN")

@@ -489,7 +489,7 @@ def extract_gwbk(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='FortnaPlus — Ignition .gwbk extractor for Prism')
+    parser = argparse.ArgumentParser(description="Site Forge — Ignition .gwbk extractor for Prism')
     sub = parser.add_subparsers(dest='cmd', required=True)
 
     p_extract = sub.add_parser('extract', help='Extract metadata from a .gwbk gateway backup')

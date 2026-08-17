@@ -384,7 +384,7 @@ def after_export(
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="FortnaPlus → PRISM ingest")
+    ap = argparse.ArgumentParser(description="Site Forge → PRISM ingest")
     sub = ap.add_subparsers(dest="cmd", required=True)
 
     p1 = sub.add_parser("after-import", help="Stage RUN + index (dedupe by fingerprint)")

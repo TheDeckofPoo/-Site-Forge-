@@ -1,4 +1,4 @@
-# FortnaPlus Control — Electron launcher (separate from Rockwell Git)
+# Site Forge — Electron launcher (separate from Rockwell Git)
 $ErrorActionPreference = "Stop"
 
 $desktopDir = Split-Path -Parent $MyInvocation.MyCommand.Path
@@ -17,8 +17,8 @@ function Find-Python {
 
 Write-Host ''
 Write-Host '========================================' -ForegroundColor Cyan
-Write-Host '  FORTNAPLUS CONTROL' -ForegroundColor Cyan
-Write-Host '  Docs · Search · RUN Automation' -ForegroundColor Cyan
+Write-Host '  SITE FORGE' -ForegroundColor Cyan
+Write-Host '  Docs · RUN · PLC Autogen · Ignition' -ForegroundColor Cyan
 Write-Host '========================================' -ForegroundColor Cyan
 Write-Host ''
 
@@ -110,7 +110,7 @@ if (-not (Test-ElectronBinary)) {
 }
 
 Write-Host ''
-Write-Host 'START: FortnaPlus Control...' -ForegroundColor Cyan
+Write-Host 'START: Site Forge...' -ForegroundColor Cyan
 Write-Host ''
 
 npm start

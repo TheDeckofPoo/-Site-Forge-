@@ -7,7 +7,7 @@ sync or when you copy a pack from a synced Desktop folder.
 
 Usage:
   py tools/scripts/fix_ignition_project_attrs.py
-  py tools/scripts/fix_ignition_project_attrs.py --project FortnaPlus_ORNCCP5
+  py tools/scripts/fix_ignition_project_attrs.py --project SiteForge_ORNCCP5
   py tools/scripts/fix_ignition_project_attrs.py --path "C:\\Program Files\\...\\FortnaPlus_X"
 """
 from __future__ import annotations
@@ -28,7 +28,7 @@ DEFAULT_PROJECTS = Path(
 
 def main() -> int:
     ap = argparse.ArgumentParser(description="Clear ReadOnly on Ignition project")
-    ap.add_argument("--project", default="FortnaPlus_ORNCCP5", help="Project folder name")
+    ap.add_argument("--project", default="SiteForge_ORNCCP5", help="Project folder name")
     ap.add_argument("--path", default="", help="Full path override")
     args = ap.parse_args()
 

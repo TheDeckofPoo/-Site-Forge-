@@ -38,7 +38,7 @@ wireSorterBuildUi();
 ### Option B — full git revert of these files
 
 ```bash
-cd C:\dev\worktree\FortnaPlus
+cd C:\dev\worktree\Site Forge
 git checkout HEAD -- dashboard/index.html dashboard/fortna-plus.js
 ```
 

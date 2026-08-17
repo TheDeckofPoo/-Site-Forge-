@@ -1,4 +1,4 @@
-"""Sorter_Track from FortnaPlus Sorter build UI.
+"""Sorter_Track from Site Forge Sorter build UI.
 
 Primary path: load tools/libraries/programs/Sorter_Track_Program.L5X (gold Fortna
 sorter pack — diverts, encoders, track, wave, scanner) and **configure** it from
@@ -351,7 +351,7 @@ def _build_rename_pairs(sorter: dict) -> list[tuple[str, str]]:
 def _append_build_config_routine(program_xml: str, sorter: dict, renames: list) -> str:
     """Add Build_Config ST routine + JSR from Main if missing."""
     lines = [
-        '// FortnaPlus configured Sorter_Track_Program.L5X',
+        '// Site Forge configured Sorter_Track_Program.L5X',
         f'// Induct={(sorter.get("induct_conveyor") or "—")} PE={(sorter.get("induct_pe") or "—")}',
         f'// Tracking={int(sorter.get("tracking_count") or 0)} '
         f'diverts={int(sorter.get("divert_count") or 0)}',

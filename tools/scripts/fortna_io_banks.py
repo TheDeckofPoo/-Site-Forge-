@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""I/O bank inventory + optional print PDF OCR crosswalk for FortnaPlus recontrol."""
+"""I/O bank inventory + optional print PDF OCR crosswalk for Site Forge recontrol."""
 from __future__ import annotations
 
 import argparse
@@ -3161,7 +3161,7 @@ def cmd_ocr_print_sets(sets: list[dict], run_dir: Path | None) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='FortnaPlus I/O banks + print OCR crosswalk')
+    parser = argparse.ArgumentParser(description='Site Forge I/O banks + print OCR crosswalk')
     sub = parser.add_subparsers(dest='cmd', required=True)
 
     p_banks = sub.add_parser('banks', help='List I/O banks from active or given RUN')

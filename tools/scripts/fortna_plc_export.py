@@ -1102,7 +1102,7 @@ def cmd_import_export(archive: str, **kwargs) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description='FortnaPlus — Fortna RUN to Logix L5X + Factory I/O')
+    parser = argparse.ArgumentParser(description="Site Forge — Fortna RUN to Logix L5X + Factory I/O')
     sub = parser.add_subparsers(dest='cmd', required=True)
 
     p_import = sub.add_parser('import', help='Import tar.gz and export PLC artifacts')

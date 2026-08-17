@@ -53,7 +53,7 @@ def main() -> None:
     ap.add_argument(
         "--project-name",
         default="",
-        help="Gateway project folder name (default FortnaPlus_ORNCCP5 or from LATEST.json)",
+        help="Gateway project folder name (default SiteForge_ORNCCP5 or from LATEST.json)",
     )
     ap.add_argument(
         "--out-dir",
@@ -80,7 +80,7 @@ def main() -> None:
     if not proj_name:
         proj_name = (
             (latest_meta.get("project_name") or "").strip()
-            or f"FortnaPlus_ORNCCP5_{stamp}"
+            or f"SiteForge_ORNCCP5_{stamp}"
         )
 
     gw = PROJECTS / proj_name

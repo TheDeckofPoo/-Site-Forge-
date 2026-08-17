@@ -3,7 +3,7 @@
 fortna_perspective_pack.py — Generate importable Perspective views/components.
 
 Creates a minimal Ignition *project folder* you can:
-  1) Copy into  <Ignition>/data/projects/FortnaPlus_POC/
+  1) Copy into  <Ignition>/data/projects/SiteForge_POC/
   2) Or zip and import via Designer (File → Import)
 
 Layout strategy (match dashboard Ignition Build):
@@ -70,7 +70,7 @@ def _resource_json(files: list[str] | None = None) -> dict:
         "files": files or ["view.json"],
         "attributes": {
             "lastModification": {
-                "actor": "FortnaPlus",
+                "actor": "SiteForge",
                 "timestamp": _ts_utc(),
             }
         },
@@ -401,7 +401,7 @@ def _svg_data_url(svg_path: Path | None) -> str | None:
 def make_plant_view(
     instances: list[dict],
     *,
-    title: str = "FortnaPlus plant layout",
+    title: str = "Site Forge plant layout",
     canvas_w: int = 1400,
     canvas_h: int = 900,
     svg_underlay: str | None = None,
@@ -441,14 +441,14 @@ def make_plant_view(
         )
 
     _KIND_PATH = {
-        "conveyor": "FortnaPlus/Components/Conveyor",
-        "photoeye": "FortnaPlus/Components/Photoeye",
-        "beacon": "FortnaPlus/Components/Beacon",
-        "power_supply": "FortnaPlus/Components/PowerSupply",
+        "conveyor": "SiteForge/Components/Conveyor",
+        "photoeye": "SiteForge/Components/Photoeye",
+        "beacon": "SiteForge/Components/Beacon",
+        "power_supply": "SiteForge/Components/PowerSupply",
     }
     for i, inst in enumerate(instances):
         kind = inst.get("kind") or "conveyor"
-        path = _KIND_PATH.get(kind, "FortnaPlus/Components/Photoeye")
+        path = _KIND_PATH.get(kind, "SiteForge/Components/Photoeye")
         # Dots (PE/PS/beacon) = 6×6 circles; belts keep length×thickness
         if kind == "conveyor":
             w = int(inst.get("width") or 90)
@@ -558,7 +558,7 @@ def make_plant_view(
 
 # Back-compat alias
 def make_plant_small_view(instances: list[dict]) -> dict:
-    return make_plant_view(instances, title="FortnaPlus POC plant", canvas_w=1100, canvas_h=700)
+    return make_plant_view(instances, title="Site Forge POC plant", canvas_w=1100, canvas_h=700)
 
 
 def _plant_spans(symbols: dict) -> tuple[float, float, float, float]:
@@ -1243,7 +1243,7 @@ def _append_export_history(entry: dict) -> Path:
     hist.parent.mkdir(parents=True, exist_ok=True)
     if not hist.is_file():
         hist.write_text(
-            "# FortnaPlus Ignition / Perspective export history\n\n"
+            "# Site Forge Ignition / Perspective export history\n\n"
             "Each pack/export is logged here so you can track layout iterations.\n\n"
             "| Local time | Folder | Counts | Notes |\n"
             "|---|---|---|---|\n",
@@ -1263,7 +1263,7 @@ def _append_export_history(entry: dict) -> Path:
 def pack_perspective_project(
     out_dir: Path,
     *,
-    project_name: str = "FortnaPlus_POC",
+    project_name: str = "SiteForge_POC",
     symbols: dict | None = None,
     max_conv: int = 10,
     max_pe: int = 10,
@@ -1288,19 +1288,19 @@ def pack_perspective_project(
 
     # Components
     _write_view(
-        views_root / "FortnaPlus" / "Components" / "Conveyor",
+        views_root / "SiteForge" / "Components" / "Conveyor",
         make_conveyor_component(),
     )
     _write_view(
-        views_root / "FortnaPlus" / "Components" / "Photoeye",
+        views_root / "SiteForge" / "Components" / "Photoeye",
         make_photoeye_component(),
     )
     _write_view(
-        views_root / "FortnaPlus" / "Components" / "Beacon",
+        views_root / "SiteForge" / "Components" / "Beacon",
         make_beacon_component(),
     )
     _write_view(
-        views_root / "FortnaPlus" / "Components" / "PowerSupply",
+        views_root / "SiteForge" / "Components" / "PowerSupply",
         make_power_supply_component(),
     )
 
@@ -1330,10 +1330,10 @@ def pack_perspective_project(
         )
         machine = symbols.get("machine") or "Site"
         group_label = "merge group" if conveyor_names else "calibration"
-        title = f"FortnaPlus · {machine} · {group_label}"
+        title = f"Site Forge · {machine} · {group_label}"
     else:
         instances = default_demo_instances()
-        title = "FortnaPlus · demo layout"
+        title = "Site Forge · demo layout"
 
     plant = make_plant_view(
         instances,
@@ -1344,8 +1344,8 @@ def pack_perspective_project(
         generated_at=human,
     )
 
-    _write_view(views_root / "FortnaPlus" / "POC" / "Plant_Small", plant)
-    _write_view(views_root / "FortnaPlus" / "POC" / "Plant_Layout", plant)
+    _write_view(views_root / "SiteForge" / "POC" / "Plant_Small", plant)
+    _write_view(views_root / "SiteForge" / "POC" / "Plant_Layout", plant)
 
     # Minimal smoke view (2 embeds) — always opens in Designer for folder checks
     smoke_instances = [
@@ -1390,12 +1390,12 @@ def pack_perspective_project(
     ]
     smoke = make_plant_view(
         smoke_instances,
-        title="FortnaPlus · SMOKE (if you see cyan bar + green PE, project is OK)",
+        title="Site Forge · SMOKE (if you see cyan bar + green PE, project is OK)",
         canvas_w=900,
         canvas_h=400,
         generated_at=human,
     )
-    _write_view(views_root / "FortnaPlus" / "POC" / "Smoke_Test", smoke)
+    _write_view(views_root / "SiteForge" / "POC" / "Smoke_Test", smoke)
 
     proj.mkdir(parents=True, exist_ok=True)
 
@@ -1456,7 +1456,7 @@ def pack_perspective_project(
         json.dumps(
             {
                 "title": project_name,
-                "description": f"FortnaPlus layout · {n_view_conv} conv · {human}",
+                "description": f"Site Forge layout · {n_view_conv} conv · {human}",
                 "parent": "",
                 "enabled": True,
                 "inheritable": False,
@@ -1480,7 +1480,7 @@ def pack_perspective_project(
                 "files": ["data.bin"],
                 "attributes": {
                     "lastModification": {
-                        "actor": "FortnaPlus",
+                        "actor": "SiteForge",
                         "timestamp": _ts_utc(),
                     }
                 },
@@ -1528,7 +1528,7 @@ def pack_perspective_project(
 
     readme = out_dir / "IMPORT_TO_IGNITION.md"
     readme.write_text(
-        f"""# Import FortnaPlus Perspective project + tags
+        f"""# Import Site Forge Perspective project + tags
 
 **Generated (local):** `{human}`  
 **Folder stamp:** `{stamp}`  
@@ -1538,7 +1538,7 @@ def pack_perspective_project(
 ## Why tags need a one-click import
 
 Ignition keeps tags in the **gateway tag provider**, not inside the project folder.
-Copying `FortnaPlus_POC` alone will never create tags. This pack includes
+Copying `SiteForge_POC` alone will never create tags. This pack includes
 `tags_import.json` (Memory tags) that match every component `tagPath`.
 
 ## Steps
@@ -1555,14 +1555,14 @@ Copying `FortnaPlus_POC` alone will never create tags. This pack includes
    **Import Tags** → select:
 
    ```
-   {tags_import_path or "tags_import.json (next to FortnaPlus_POC)"}
+   {tags_import_path or "tags_import.json (next to SiteForge_POC)"}
    ```
 
    Format is a single JSON **object** (root folder `Site`) with `valueSource: memory`.
    No PLC / OPC device required.
 
 4. **Open view**  
-   Views → **FortnaPlus / POC / Plant_Layout**
+   Views → **SiteForge / POC / Plant_Layout**
 
 5. **Test**  
    Tag Browser → flip `Site/.../Run` or `.../Clear` → component color should change.
@@ -1598,10 +1598,10 @@ Copying `FortnaPlus_POC` alone will never create tags. This pack includes
         "generated_utc": meta["generated_utc"],
         "folder_stamp": stamp,
         "views": [
-            "FortnaPlus/Components/Conveyor",
-            "FortnaPlus/Components/Photoeye",
-            "FortnaPlus/POC/Plant_Small",
-            "FortnaPlus/POC/Plant_Layout",
+            "SiteForge/Components/Conveyor",
+            "SiteForge/Components/Photoeye",
+            "SiteForge/POC/Plant_Small",
+            "SiteForge/POC/Plant_Layout",
         ],
         "instances": instances,
         "instance_counts": counts,
@@ -1617,11 +1617,11 @@ Copying `FortnaPlus_POC` alone will never create tags. This pack includes
 
 
 def main() -> int:
-    ap = argparse.ArgumentParser(description="Pack FortnaPlus Perspective components for Ignition")
+    ap = argparse.ArgumentParser(description="Pack Site Forge Perspective components for Ignition")
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("pack", help="Write project folder + zip")
     p.add_argument("--out-dir", default="")
-    p.add_argument("--project-name", default="FortnaPlus_POC")
+    p.add_argument("--project-name", default="SiteForge_POC")
     p.add_argument("--symbols", default="", help="Optional hmi_symbols.json / hmi_symbols_poc.json")
     p.add_argument("--use-active-poc", action="store_true", help="Use latest *-POC export symbols")
     p.add_argument(
@@ -1723,7 +1723,7 @@ def main() -> int:
             names = result.get("device_names") or []
             copy_txt.write_text(
                 "\n".join([
-                    "FortnaPlus -> Ignition project pack (10+10 calibration)",
+                    "Site Forge -> Ignition project pack (10+10 calibration)",
                     "=" * 50,
                     f"Generated (local): {human}",
                     f"Generated (UTC):   {result.get('generated_utc')}",
@@ -1732,7 +1732,7 @@ def main() -> int:
                     "Project folder to copy:",
                     f"  {proj_dir}",
                     "",
-                    "1) Copy FortnaPlus_POC to:",
+                    "1) Copy SiteForge_POC to:",
                     f"  {ign_dest}",
                     "",
                     "2) Gateway -> Platform -> System -> Projects -> Scan Filesystem",
@@ -1742,8 +1742,8 @@ def main() -> int:
                     f"   File: {result.get('tags_import') or str(out / 'tags_import.json')}",
                     "   Memory tags (no PLC). Toggle Run/Clear to test component colors.",
                     "",
-                    "4) Designer -> Open FortnaPlus_POC",
-                    "   Views -> FortnaPlus -> POC -> Plant_Layout",
+                    "4) Designer -> Open SiteForge_POC",
+                    "   Views -> Site Forge -> POC -> Plant_Layout",
                     "",
                     f"Devices: {', '.join(names)}",
                     f"Counts: {json.dumps(counts)}",

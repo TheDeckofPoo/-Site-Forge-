@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 
 GATEWAY_PROJECT = Path(
-    r"C:\Program Files\Inductive Automation\Ignition\data\projects\FortnaPlus_ORNCCP5"
+    r"C:\Program Files\Inductive Automation\Ignition\data\projects\SiteForge_ORNCCP5"
 )
 GOOD_GLOBAL = Path(
     r"C:\Program Files\Inductive Automation\Ignition\data\projects\ProjectTest"
@@ -47,7 +47,7 @@ def main() -> None:
     (proj / "project.json").write_text(
         json.dumps(
             {
-                "title": "FortnaPlus_ORNCCP5",
+                "title": "SiteForge_ORNCCP5",
                 "description": "FortnaPlus plant layout for ORNCCP5",
                 "enabled": True,
                 "inheritable": False,
@@ -106,7 +106,7 @@ def main() -> None:
                     "position": {"x": 20, "y": 52, "width": 900, "height": 22},
                     "props": {
                         "text": (
-                            "Folder is correct: data/projects/FortnaPlus_ORNCCP5. "
+                            "Folder is correct: data/projects/SiteForge_ORNCCP5. "
                             "After this works, rebuild full plant layout."
                         ),
                         "style": {"color": "#94a3b8", "fontSize": "12px"},

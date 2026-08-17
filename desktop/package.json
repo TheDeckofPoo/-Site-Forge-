@@ -1,7 +1,7 @@
 {
-  "name": "fortnaplus-dashboard",
+  "name": "siteforge-dashboard",
   "version": "1.0.0",
-  "description": "FortnaPlus Control dashboard — docs, search, RUN automation",
+  "description": "Site Forge dashboard — docs, search, RUN automation",
   "main": "main.js",
   "scripts": {
     "start": "electron ."
