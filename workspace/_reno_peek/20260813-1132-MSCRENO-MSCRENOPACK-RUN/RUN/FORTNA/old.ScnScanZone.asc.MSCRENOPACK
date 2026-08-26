@@ -1,0 +1,23 @@
+"Name"~"Desc"~"pStatusMsg"~"RcvDataA"~"RxStatA"~"RcvDataB"~"RxStatB"~"Delimiter"~"LogLevel"~"ScanZoneID"~"CompareScans"~"TrackingTable"~"DeviceTrkTable"~"PrinterTrkTable"~"PrinterErrTable"~"CTRLProcess"~"ScanAlgorithm"~"Alg_P1"~"XfrZoneID"~"PrintLine"~"pRecordProcessed"~"pTrnDataRcv"~"pTrnTrkRecord"~"pTrnLastTrk"
+N/A~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+PACKE SCAN~ ~Created IO Records~ ~Empty~ ~Empty~ ~Level 2~SCNPACKE~N~SrtTrack1~SrtDevice1~None~None~ ~N/A~0~ ~N/A~1~0~0~0~
+PACK SCAN~ ~Created IO Records~ ~Empty~ ~Empty~ ~Level 2~SCNPACK~N~SrtTrack2~SrtDevice2~None~None~ ~N/A~0~ ~N/A~1~0~0~0~
+SZ03~ ~ ~ ~Empty~ ~Empty~ ~Level 0~SZ03~N~XfrTrack~XfrDevice~None~None~ ~N/A~0~ ~N/A~0~0~16~0~
+SZ04~ ~ ~ ~Empty~ ~Empty~ ~Level 0~SZ04~N~XfrTrack~XfrDevice~None~None~ ~N/A~0~ ~N/A~0~0~33~0~
+SZ05~ ~ ~ ~Empty~ ~Empty~ ~Level 0~SZ05~N~XfrTrack~XfrDevice~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+OIVP SCAN~ ~Created IO Records~ ~Empty~ ~Empty~ ~Level 2~SCNOIVP~N~SrtTrack3~SrtDevice3~None~None~ ~N/A~0~ ~N/A~1~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+
+

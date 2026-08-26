@@ -1,0 +1,73 @@
+<html>
+<head>
+<title>Connection Types Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Connection Types</h1><hr>
+<p>The Connection Types screen lists the types of connections to systems or devices 
+  supported by FortnaPlus&copy; for data exchange. The Connection Types screen 
+  also shows the functions used to initialize the connection, maintain the connection, 
+  send and receive messages for the connection. </p>
+<p>
+  The following are connection types currently supported by FortnaPlus&copy;:</p>
+<ul><blockquote>
+  <li> N/A - used in other tables as a filler. Its init, maintain, send, and receive 
+    functions should all be set to page 0. This must always be the first entry 
+    in the connect table.</li>
+  <li>Connect_TCP - used to connect systems using TCP/IP sockets</li>
+  <li>Connect_Serial - used to connect systems using serial communications or 
+    devices that communicate serially such as scanners and scales.</li>
+  <li>Connect_Disk - used to connect systems that send messages via the hard disk.</li>
+  <li>Connect_Modem - used to connect systems that send messages through the modem<br>
+  </li></blockquote>
+</ul>
+<p>The normal values for these connection types are:</p>
+<table width="638" border="1" height="189">
+  <tr> 
+    <td><b>Protocol</b></td>
+    <td><b>Init Function</b></td>
+    <td><b>Maintain Function</b></td>
+    <td><b>Send Function</b></td>
+    <td><b>Receive Function</b></td>
+  </tr>
+  <tr> 
+    <td>CONNECT_QNX</td>
+    <td>qnx_init</td>
+    <td>qnx_maintain</td>
+    <td>qnx_send</td>
+    <td>qnx_receive</td>
+  </tr>
+  <tr> 
+    <td>CONNECT_TCP</td>
+    <td>tcp_init</td>
+    <td>tcp_maintain</td>
+    <td>tcp_send</td>
+    <td>tcp_receive</td>
+  </tr>
+  <tr> 
+    <td>CONNECT_SERIAL</td>
+    <td>ser_init</td>
+    <td>N/A </td>
+    <td>ser_send</td>
+    <td>ser_receive</td>
+  </tr>
+  <tr> 
+    <td>CONNECT_DISK</td>
+    <td>disk_init</td>
+    <td>N/A </td>
+    <td>disk_send</td>
+    <td>disk_receive</td>
+  </tr>
+  <tr> 
+    <td>CONNECT_MODEM</td>
+    <td>modem_init</td>
+    <td>modem_maintain</td>
+    <td>modem_send</td>
+    <td>modem_receive</td>
+  </tr>
+</table>
+<p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

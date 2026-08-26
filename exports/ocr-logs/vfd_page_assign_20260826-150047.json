@@ -1,0 +1,1451 @@
+{
+  "generated": "20260826-150047",
+  "drive_count": 64,
+  "drives_with_params": 10,
+  "page_winner_histogram": {
+    "46": 4,
+    "47": 4,
+    "45": 2
+  },
+  "note": "Page log: if one page dominates, check page_hit_detail. Param log: see vfd_param_extract_*.json for per-PDF-page OCR. VFD816 often works because single-drive sheets have CAD text; dual sheets need table OCR (+tableocr in mode).",
+  "drives": [
+    {
+      "name": "VFD13-5",
+      "base": "VFD135",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD13-5_AUX",
+      "base": "VFD135",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD120_AUX",
+      "base": "VFD120",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD200_AUX",
+      "base": "VFD200",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD200A_AUX",
+      "base": "VFD200A",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD200B_AUX",
+      "base": "VFD200B",
+      "print_page": 45,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "45": 8
+      },
+      "page_hit_detail": [
+        {
+          "page": 45,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 18,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD201_AUX",
+      "base": "VFD201",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD202_AUX",
+      "base": "VFD202",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD204_AUX",
+      "base": "VFD204",
+      "print_page": 46,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "46": 8
+      },
+      "page_hit_detail": [
+        {
+          "page": 46,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 18,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD206_AUX",
+      "base": "VFD206",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD412_AUX",
+      "base": "VFD412",
+      "print_page": 46,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "46": 8
+      },
+      "page_hit_detail": [
+        {
+          "page": 46,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 18,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD506_AUX",
+      "base": "VFD506",
+      "print_page": 47,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "47": 7
+      },
+      "page_hit_detail": [
+        {
+          "page": 47,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 16,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD508_AUX",
+      "base": "VFD508",
+      "print_page": 47,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "47": 7
+      },
+      "page_hit_detail": [
+        {
+          "page": 47,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 16,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD508A_AUX",
+      "base": "VFD508A",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD524_AUX",
+      "base": "VFD524",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD1004_AUX",
+      "base": "VFD1004",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD120",
+      "base": "VFD120",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD200",
+      "base": "VFD200",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD200A",
+      "base": "VFD200A",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD200B",
+      "base": "VFD200B",
+      "print_page": 45,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "45": 8
+      },
+      "page_hit_detail": [
+        {
+          "page": 45,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 45,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 18,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD201",
+      "base": "VFD201",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD202",
+      "base": "VFD202",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD204",
+      "base": "VFD204",
+      "print_page": 46,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "46": 8
+      },
+      "page_hit_detail": [
+        {
+          "page": 46,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 18,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD206",
+      "base": "VFD206",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD412",
+      "base": "VFD412",
+      "print_page": 46,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "46": 8
+      },
+      "page_hit_detail": [
+        {
+          "page": 46,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 46,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 18,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD506",
+      "base": "VFD506",
+      "print_page": 47,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "47": 7
+      },
+      "page_hit_detail": [
+        {
+          "page": 47,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 16,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD508",
+      "base": "VFD508",
+      "print_page": 47,
+      "print_file": "CP_13.pdf",
+      "param_count": 5,
+      "param_keys": [
+        "P031 Motor NP Volts",
+        "P033 Motor OL Current",
+        "P039 Accel Time 1",
+        "P040 Decel Time 1",
+        "P070 Preset Freq"
+      ],
+      "vfd_from_print": true,
+      "page_votes": {
+        "47": 7
+      },
+      "page_hit_detail": [
+        {
+          "page": 47,
+          "weight": 2,
+          "why": "title_ocr",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P031 Motor NP Volts",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P033 Motor OL Current",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P039 Accel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P040 Decel Time 1",
+          "file": "CP_13.pdf"
+        },
+        {
+          "page": 47,
+          "weight": 1,
+          "why": "param_row",
+          "param": "P070 Preset Freq",
+          "file": "CP_13.pdf"
+        }
+      ],
+      "by_device_has_base": true,
+      "by_device_raw_rows": 16,
+      "why_no_params": ""
+    },
+    {
+      "name": "VFD508A",
+      "base": "VFD508A",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD524",
+      "base": "VFD524",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD1004",
+      "base": "VFD1004",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD228_AUX",
+      "base": "VFD228",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD302_AUX",
+      "base": "VFD302",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD400_AUX",
+      "base": "VFD400",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD400A_AUX",
+      "base": "VFD400A",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD228",
+      "base": "VFD228",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD302",
+      "base": "VFD302",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD400",
+      "base": "VFD400",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD400A",
+      "base": "VFD400A",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208_AUX",
+      "base": "VFD208",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208",
+      "base": "VFD208",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208AR",
+      "base": "VFD208AR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208BR",
+      "base": "VFD208BR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208CR",
+      "base": "VFD208CR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208DR",
+      "base": "VFD208DR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208ER",
+      "base": "VFD208ER",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208FR",
+      "base": "VFD208FR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208GR",
+      "base": "VFD208GR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208HR",
+      "base": "VFD208HR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208IR",
+      "base": "VFD208IR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208JR",
+      "base": "VFD208JR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208KR",
+      "base": "VFD208KR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208LR",
+      "base": "VFD208LR",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208AF",
+      "base": "VFD208AF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208BF",
+      "base": "VFD208BF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208CF",
+      "base": "VFD208CF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208DF",
+      "base": "VFD208DF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208EF",
+      "base": "VFD208EF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208FF",
+      "base": "VFD208FF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208GF",
+      "base": "VFD208GF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208HF",
+      "base": "VFD208HF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208IF",
+      "base": "VFD208IF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208JF",
+      "base": "VFD208JF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208KF",
+      "base": "VFD208KF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    },
+    {
+      "name": "VFD208LF",
+      "base": "VFD208LF",
+      "print_page": null,
+      "print_file": "",
+      "param_count": 0,
+      "param_keys": [],
+      "vfd_from_print": false,
+      "page_votes": {},
+      "page_hit_detail": [],
+      "by_device_has_base": false,
+      "by_device_raw_rows": 0,
+      "why_no_params": "no_print_page"
+    }
+  ]
+}

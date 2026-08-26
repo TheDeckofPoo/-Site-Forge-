@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if ps -ef | grep -v grep | grep Display
+then
+  echo Display Running, slaying
+  slay -f Display
+fi
+nice /usr/local/bin/Display -f Display.config.MSCRENOPICK

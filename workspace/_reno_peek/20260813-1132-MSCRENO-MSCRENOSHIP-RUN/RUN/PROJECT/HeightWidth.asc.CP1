@@ -1,0 +1,13 @@
+"Name"~"Status"~"SensorType"~"PrintLine"~"BoxDetectIn"~"TooShortIn"~"Height1In"~"Height2In"~"HeightInDT"~"BoxHgtInches1"~"SensorHgt1"~"BoxHgtInches2"~"SensorHgt2"~"WidthInDT"~"BoxWdtInches1"~"SensorWdt1"~"BoxWdtInches2"~"SensorWdt2"~"LengthTicksPerInch"~"ScalingFactor"~"ValidateHeight"~"ValidateWidth"~"MinHeightInches"~"MaxHeightInches"~"MinWidthInches"~"MaxWidthInches"~"LPNScanZone"~"VerifyScanZone"~"ChkLengthForAdjInches"~"TampAdjInches"~"pLastHeightInches"~"pLastSensorHgt"~"pLastWidthInches"~"pLastSensorWdt"~"pLastHeightPercent"~"pLastLengthInches"~"pLastWidthPercent"
+N/A~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+ ~ ~ ~N/A~INVALID~INVALID~INVALID~INVALID~0~       0.000~0~       0.000~0~0~       0.000~0~       0.000~0~       0.000~0~N~N~ 0.000~ 0.000~ 0.000~ 0.000~RECZERO~RECZERO~0~0~       0.000~0~       0.000~0~0~ 0.000~0~
+
+

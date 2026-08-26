@@ -1,0 +1,58 @@
+<html>
+<head>
+<title>Transfers Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><p align ="center">Transfers</p></h1><hr>
+<p>There are eight menus that work together to provide the flexibility enabling 
+  the setting up of or making changes to Transfers on-the-fly. We will provide a 
+  description of the logic used when a carton comes into a transfer and how these 
+  menus work together. 
+<p> The menu names are listed below:
+<br>Click on the link for more information about that menu.<p><blockquote>
+<UL>
+  <LI> <a href = "./transfer/xferBoss.htm"> XferBoss</a> - one record for each scan point
+  <LI> <a href = "./transfer/xferTree.htm">XferTree </a>- one record for each full tote path 
+  <LI> <a href = "./transfer/xferCheckSet.htm">XferCheckSet</a> - contains up to 5 XferCfg records. 
+  <LI> <a href = "./transfer/xferGoSet.htm">XferGoSet</a> - contains up to 5 XferCfg records and InitStates for each. 
+  <LI> <a href = "./transfer/xferCfg.htm">XferCfg</a> - contains all I/O and timers for each partial tote path. 
+  <LI> <a href = "./transfer/xferStatePop.htm">XferStatePop </a>- all STATE descriptions 
+  <LI> <a href = "./transfer/xferSensePop.htm">XferSensePop </a>- all SENSE descriptions 
+  <LI> <a href = "./transfer/xferActionPop.htm">XferActionPop </a>- all ACTION descriptions
+</UL></blockquote>
+<p>Within project code, a transfer is initiated by calling transfer induct with 
+  a Boss Record and a destination as a set of bits. If the transfer was able to 
+  start, transfer induct returns a 1, otherwise a 0. XferBoss_State is set to 
+  BOSS_SEARCH. </p>
+<p>Next, the destination is compared to a string of bits in XferTree_GoBits. If 
+  at least one position in the destination with a 1 in it matches a 1 in the 
+  same position of the GoBits, we can proceed. Otherwise a match is not found. 
+  The column NoGoBits is also checked for a match. If a one in the destination 
+  matches a NoGoBit then we cannot proceed and the product will not transfer. 
+</p>
+<p>After the destination check, XferTree is checked to find out what paths would 
+  need to be idle before proceeding. The MustBeIdle column will tell. For the 
+  paths, the Xfer_Cfg_State must be equal to XFER_IDLE. If not, the product will 
+  not move. The only exception allowed is provided for in the column XferTree_BusyContinue. 
+  If a 'Y' is displayed, the search will continue with the next XferTree record.</p>
+<p>If the XferTree_MustBeIdle check is successful, the set, XferTree_XferSet, 
+  is checked to see if each timer, XferCfg_DestClearTM is done. In other words, 
+  the destination is not full. If any are not done, the search stops and the tote 
+  doesn't move. However, if the XferTree_FullContinue is 'Y' , the search will 
+  continue with the next XferTree record.</p>
+<p>If the idle check and the full check are both successful, the XferBoss_State 
+  is set to BOSS_TRANSFER, XferBoss_CurrentTree is set to the XferTree record,
+and the set, XferTree_XferSet, is activated. This is accomplished by setting 
+  the XfetCfg_Go flag for each XferCfg listed in the XferTree_XferSet. In addition, 
+  the XferCfg_State is set to the XferGoSet_InitStateN value. This is normally 
+  XFER_IDLE, but may be used in multiple transfer applications to have a secondary 
+  transfer start in the XFER_HOLD state.</p>
+<p>Once the transfer is active (XferCfg_Go='Y'), the XferCfg sequences through 
+  the transfer based on the I/O and timers configured for that product path. When 
+  the transfer is complete (XferCfg_Go='N'), XferBoss_State is set back to BOSS_IDLE. 
+  At this point, another transfer may be initiated from project code.
+</p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

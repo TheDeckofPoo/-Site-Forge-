@@ -459,7 +459,7 @@ def import_package(archive: Path) -> dict:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Site Forge recipe runner')
+    parser = argparse.ArgumentParser(description="Site Forge recipe runner")
     sub = parser.add_subparsers(dest='cmd', required=True)
 
     p_import = sub.add_parser('import')

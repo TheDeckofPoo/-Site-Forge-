@@ -1,0 +1,13 @@
+"Name"~"Process"~"Owner"~"CurrInput"~"NumInputs"~"OperableInput"~"Valid"~"SwitchDelayTimer"~"SwitchDelayTimerPreset"~"IsSwitchDelay"~"pStatus"
+N/A~N/A~N/A~0~0~INVALID~N~N/A~       0.000~0~ ~
+P2-P18~CTRL~MSCRENOPICK~1~2~M3_AUX~N~N/A~       0.000~0~Invalid Presence Timer, P18~
+P15-P72~CTRL~MSCRENOPICK~1~2~M16_AUX~N~N/A~       0.000~0~Invalid Presence Timer, P72~
+ ~N/A~N/A~1~0~INVALID~N~N/A~       0.000~0~ ~
+ ~N/A~N/A~1~0~INVALID~N~N/A~       0.000~0~ ~
+ ~N/A~N/A~1~0~INVALID~N~N/A~       0.000~0~ ~
+ ~N/A~N/A~1~0~INVALID~N~N/A~       0.000~0~ ~
+ ~N/A~N/A~1~0~INVALID~N~N/A~       0.000~0~ ~
+ ~N/A~N/A~1~0~INVALID~N~N/A~       0.000~0~ ~
+ ~N/A~N/A~1~0~INVALID~N~N/A~       0.000~0~ ~
+
+

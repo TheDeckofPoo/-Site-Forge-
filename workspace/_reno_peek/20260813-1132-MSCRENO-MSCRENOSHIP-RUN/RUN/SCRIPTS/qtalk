@@ -1,0 +1,6 @@
+quics ATDT16135910934
+fortna23	ATDT1-610-376-7152 
+fortna31	ATDT1-610-373-7719 
+
+defaults
+ -h -m /dev/ser1 -b57600

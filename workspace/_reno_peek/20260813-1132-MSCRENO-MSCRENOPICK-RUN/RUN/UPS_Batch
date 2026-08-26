@@ -1,0 +1,110 @@
+#!/bin/sh
+
+#     $Date: 2015-02-25 14:02:48 -0500 (Wed, 25 Feb 2015) $
+# $Revision: 24063 $
+#   $Author: nmartin $
+#      $URL: http://svn.wcs.fortna.net/repo/projects/fpc/base/tags/Base-Releases/Version-11.40.0-Release-0/RUN/UPS_Batch $
+(
+echo "Starting $0 at" `date` "from Photon session '$PHOTON'"
+SLEEPTIME=20
+RUNNING=`pidin | grep -E "fortna|fpgui|fpctrl|fpsort|fpserv|fpsrv1|fpsrv2|watcher" | grep -v "grep"`
+FORTNARUNNING=`pidin | grep "fortna" | grep -v "grep"`
+OTHERSRUNNING=`pidin | grep -E "fpgui|fpctrl|fpsort|fpserv|fpsrv1|fpsrv2|watcher" | grep -v "grep"`
+if test "X$RUNNING" != "X"
+then
+	echo "These processes are still running:" $RUNNING
+fi
+if test "X$FORTNARUNNING" != "X"
+then
+	echo "The fortna process is still running, terminating this attempt to start it again"
+    # NOTE: The "$PHOTON" != "" test prevents the gsleep display if this command was run from a PuTTy session
+	if test -e /usr/local/bin/gsleep -a "$PHOTON" != ""
+	then
+		/usr/local/bin/gsleep $SLEEPTIME "The fortna process is already running"
+	fi
+    echo "Ending $0 at" `date` "from Photon session '$PHOTON'"
+	exit
+else
+	if test "X$OTHERSRUNNING" != "X"
+	then
+		echo "The fortna process is NOT running, but others are. Attempting to save data by alternate means and re-start"
+		RUNNING=`pidin | grep "fpgui" | grep -v "grep"`
+		if test "X$RUNNING" != "X"
+		then
+			echo "Using fpgui to save data. Wait $SLEEPTIME seconds for user message"
+			slay -s SIGUSR2 fpgui
+			if test -e /usr/local/bin/gsleep
+			then
+				/usr/local/bin/gsleep $SLEEPTIME "Using fpgui to save data before re-start"
+			else
+				sleep $SLEEPTIME
+			fi
+		else
+			RUNNING=`pidin | grep "fpserv" | grep -v "grep"`
+			if test "X$RUNNING" != "X"
+			then
+				echo "Using fpserv to save data. Wait $SLEEPTIME seconds for user message"
+				slay -s SIGUSR2 fpserv
+				if test -e /usr/local/bin/gsleep
+				then
+					/usr/local/bin/gsleep $SLEEPTIME "Using fpserv to save data before re-start"
+				else
+					sleep $SLEEPTIME
+				fi
+			else
+				echo "Unable to find a way to save data. Wait $SLEEPTIME seconds for user message"
+				if test -e /usr/local/bin/gsleep
+				then
+					/usr/local/bin/gsleep $SLEEPTIME "Unable to save data. Re-starting anyway"
+				else
+					sleep $SLEEPTIME
+				fi
+			fi	
+		fi
+		slay -f fortna fpgui fpctrl fpsort fpserv fpsrv1 fpsrv2 watcher
+		echo "Killing old processes. Wait $SLEEPTIME seconds for re-start"
+		if test -e /usr/local/bin/gsleep
+		then
+			/usr/local/bin/gsleep $SLEEPTIME "Please wait. Killing old processes"
+		else
+			sleep $SLEEPTIME
+		fi
+	else
+		echo "Normal start-up"
+	fi
+fi
+#cd /SortPlus/RUN
+FPC=./fortna
+if test -e $FPC
+then
+	on -C0 $FPC
+	Rtn=$?
+else
+	Rtn=99
+fi
+echo "Exit Code = $Rtn"
+
+if test $Rtn -eq 2
+then
+  echo "########################"
+  echo "Power Fail shutting down"
+  phshutdown -S system -u -v
+  echo "########################"
+elif test $Rtn -eq 3
+then
+  echo "########################"
+  echo "Power Fail shutting down"
+  phshutdown -S reboot -u -v
+  echo "########################"
+elif test $Rtn -eq 99
+then
+  echo "########################"
+  echo "$FPC NOT FOUND IN" `pwd`
+  echo "########################"
+else 
+  echo "Normal Shutdown"
+fi
+echo "Ending $0 at" `date` "from Photon session '$PHOTON'"
+echo
+echo
+) 2>&1 >> /tmp/error

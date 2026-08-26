@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>Transfer Configuration Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><p align="center"><a name="top">XferCfg Menu</a></p></h1><hr><p>
+<p>This menu contains all I/O and timers for each path or partial product path. 
+<p><a href="#pic">Click Here to see a screen shot of this menu. <img src="../../../images/smallxfercfg.gif" align = "middle"></a><p>
+  The fields are listed below: <br>&nbsp<p><blockquote>
+  Name - a description of a path or partial product path
+<p>Go - a boolean field handled automatically, displaying a 'Y' when the transfer 
+  is active and a 'N' when inactive</p>
+<p>Product INPUT - brings up the Conveyor menu from which to select the sensor 
+  detecting product presence</p>
+<p> 
+  Xfer Down INPUT - brings up the Conveyor menu from which to select the sensor 
+  detecting that the transfer is down</p>
+<p>Xfer Clear INPUT - brings up the Conveyor menu from which to select the sensor 
+  detecting the product has cleared the transfer</p>
+<p>Dest Clear TM - brings up the timer menu from which to select the timer indicating 
+  the destination is clear</p>
+<p>Release OUTPUT - brings up the Conveyor menu from which to select the output 
+  device responsible for the transfer action. </p>
+<p>Release ACTION - brings up the XferActionPop menu from which<br>
+  to select the desired action to take place. The selections in that menu<br>
+  are shown: <A href = "xferActionPop.htm">Click Here</a></p>
+<p>Direction OUTPUT - brings up the Conveyor menu from which to select<br>
+  the device responsibe for output in the correct direction</p>
+<p>Direction ACTION - brings up the XferActionPop menu from which to select the 
+  desired action.</p>
+<p>Raise INPUT - brings up the Conveyor menu from which to select the sensor detecting 
+  if the transfer device is in the raise position</p>
+<p> Raise SENSE - brings up the XferSensePop menu from which to select the state 
+  you want the RaiseINPUT to be in <a href = "xferSensePop.htm"> Click Here</a></p>
+<p>Raise DELAY - brings up the timer menu from which to select the timer responsible 
+  for timing a delay, for example of .3 sec </p>
+<p>Raise OUTPUT - brings up the Conveyor menu from which to select the solenoid 
+  or other device responsible for raising the transfer </p>
+<p>Raise ACTION - brings up the XferActionPop menu from which to select the action 
+  you want the RaiseOUTPUT to take</p>
+<p>Done INPUT - brings up the Conveyor menu from which to select the sensor detecting 
+  the product has completed the transfer</p>
+<p>Done SENSE - brings up the XferSensePop menu from which to select the state 
+  of the DoneINPUT which indicates done</p>
+<p>Done DELAY - brings up the timer menu from which to select a timer responsible 
+  for timing a delay before being declared to be done, for example .15 second</p>
+<p> 
+  Done OUTPUT - brings up the Conveyor menu from which to select an output device 
+  to fire or unfire at the completion of the transfer </p>
+<p>Done ACTION - brings up the XferActionPop menu from which to select the desired 
+  action for the Done OUTPUT to take at the completion of the transfer</p>
+<p>Prepared OUTPUT - brings up the Conveyor menu from which to select an output 
+  device, if necessary, that would be responsible for preparing the transfer for 
+  arrival of product</p>
+<p>Prepared ACTION - brings up the XferActionPop menu from which to select the 
+  desired action for the Prepared OUTPUT to take to prepare for product</p>
+<p>Prepared INPUT - brings up the Conveyor menu from which to select an input 
+  device telling us the preparation has been accomplish when it is in a particular 
+  state </p>
+<p>Prepared SENSE - brings up the XferSensePop menu to select a state for the 
+  above input device</p>
+<p>Prepared DELAY - brings up the timer menu from which to select a timer if a 
+  delay in action is desired</p>
+<p>Enabled INPUT - brings up the Conveyor menu from which to select an input device 
+  that is responsible for enabling the transfer</p>
+<p>Enabled SENSE - brings up the XferSensePop menu from which to select a desired 
+  state for the input device to be in when enabling the transfer</p>
+<p>Enabled DELAY - an option delay can be configured, bringing up the timermenu, 
+  selecting a timer preset for a delay </p>
+<p>State - internally controlled to display a current state of the transfer from 
+  the XferStatePop menu</p>
+<p>Debug - this flag, when set to 'Y' will cause the program to write to a log 
+  at each state change, when 'N', the logging is turned off.</p>
+<p>CurrentBoss - brings up the XferBoss menu</blockquote><p><hr>
+<p>
+<a name="pic">
+<img src="../../../images/xfercfg.gif" align="Center">
+</a><p>
+<a href="#top">Click Here to return to the top of the page.</a>
+<p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

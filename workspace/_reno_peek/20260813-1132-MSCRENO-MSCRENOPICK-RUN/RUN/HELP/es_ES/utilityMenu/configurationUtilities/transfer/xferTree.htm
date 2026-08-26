@@ -1,0 +1,32 @@
+<html>
+<head>
+<title>Transfer Tree Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><p align="center">XferTree Menu</p></h1><hr>
+<p>The XferTree menu should hold one record for each full path that product may 
+  take. The following fields are included:<blockquote>
+<p>Name - a string uniquely describing the path, for example &quot;xferSHIP straight&quot;</p>
+<p> Boss - brings up the XferBoss table from which to select the transfer this 
+  path is part of</p>
+<p>GoBits - the string of ones and dashes indicating the destination(s) that would 
+  be accepted for this path by one or more 1's in a particular position. The word 
+  &quot;ALL&quot; entered here would indicate that all destinations are accepted 
+  here and would be considered a match.<br>
+  <br>
+  NoGoBits - a string of ones and dashes indicating by positioning of a 1, the 
+  destinations which would not be accepted here. </p>
+<p>MustBeIdle - brings up the XferCheckSet menu from which to select the path 
+  or set of paths that must be clear in order to allow product to transfer</p>
+<p>BusyContinue - a boolean field. If 'Y' then if one XfetTree path is busy, the 
+  next path will be checked to see if it can accept this product.</p>
+<p>XferSet - brings up the XferGoSet menu from which to select the path in this 
+  record</p>
+<p>FullContinue - if this flag is 'Y' then even if one of the paths that must 
+  be idle is not clear, the logic will go on to check the next record in the XferTree.</blockquote>
+  <p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.<br>
+  <br>
+</body>
+</html>

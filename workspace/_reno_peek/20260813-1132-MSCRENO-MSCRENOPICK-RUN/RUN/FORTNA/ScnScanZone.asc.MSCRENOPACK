@@ -1,0 +1,23 @@
+"Name"~"Desc"~"pStatusMsg"~"RcvDataA"~"RxStatA"~"RcvDataB"~"RxStatB"~"RcvDataC"~"RxStatC"~"RcvDataD"~"RxStatD"~"Delimiter"~"LogLevel"~"ScanZoneID"~"CompareScans"~"ConcatScans"~"TrackingTable"~"DeviceTrkTable"~"PrinterTrkTable"~"PrinterErrTable"~"CTRLProcess"~"ScanAlgorithm"~"Alg_P1"~"XfrZoneID"~"PrintLine"~"pRecordProcessed"~"pTrnDataRcv"~"pTrnTrkRecord"~"pTrnLastTrk"
+N/A~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+PACKE SCAN~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 2~SCNPACKE~N~0~SrtTrack1~SrtDevice1~None~None~ ~N/A~0~ ~N/A~1~0~0~0~
+PACK SCAN~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 2~SCNPACK~N~0~SrtTrack2~SrtDevice2~None~None~ ~N/A~0~ ~N/A~1~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+
+

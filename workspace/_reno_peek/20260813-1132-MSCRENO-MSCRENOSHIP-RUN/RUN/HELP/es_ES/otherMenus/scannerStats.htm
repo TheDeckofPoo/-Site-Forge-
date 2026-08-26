@@ -1,0 +1,127 @@
+<html>
+<head>
+<title>Scanner Statistics Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Scanner Statistics Menu</h1>
+<hr>
+<p>The scanner statitistics menu shows the status of all of the system scanners. 
+  It includes many detailed columns to customize the control of system scanners. 
+<p>The following fields are part of this menu:
+<blockquote>
+  <p>Scanner Name - corresponds to the name on the eletrical layout prints </p>
+  <p>Number - this should not be changed as it represents the Fortna internal 
+    number which defines the port number and other parameters.</p>
+  <p>Last Read - when a scanner sends either a good read or the no read string, 
+    the message is copied into the &quot;Last Read&quot; column</p>
+  <p>&nbsp;</p>
+
+  <table width="513" border="1">
+    <tr> 
+      <td height="56" width="242" align="center" valign="middle"> 
+        <p>Consecutive NoReads<br>
+        <p>Good Reads<br>
+          NoReads<br>
+        <p>Read Rate</p>
+    </td>
+      <td height="56" width="255" valign="middle">the quantity of &quot;Consecutive 
+        No-Reads&quot;, &quot;Good Reads&quot;, &quot;NoReads&quot;, and the calulated 
+        &quot;Read Rate&quot; are displayed.</td>
+  </tr>
+</table>
+
+  <p>&nbsp;</p>
+  <p>Cons Flag - an internal flag which states that their have been consecutive 
+    no reads. </p>
+  <p>&nbsp;</p>
+
+  <table width="820" border="1">
+    <tr> 
+      <td width="123" height="119" align="center" valign="middle">Reset Consecutive 
+        <br>
+        Reset Stats</td>
+      <td width="681" height="119" valign="middle">The next two flags are reset 
+        flags for the operator to reset either &quot;Reset Consecutive&quot; or 
+        &quot;Reset Stats&quot;. As with all FortnaPlus data fields, the F2 key 
+        must be pressed to enter a new value. Also, the operator must have sufficient 
+        security to change any value. This field is a bolean truth field and is 
+        either a &quot;Y&quot; for yes or &quot;N&quot; for no. Setting this field 
+        to a &quot;Y&quot; will cause FortnaPlus to reset either the Consecutive 
+        No Reads or all of the statistics for that scanner.</td>
+  </tr>
+</table>
+
+  <p>&nbsp;</p><p>Maximum No Reads - may be set individually for each scanner. When the number 
+    of consecutive no reads matches this value, an error will be generated. This 
+    value defaults to the system wide MAXCONSECNOREADS value set in the &quot;Integer 
+    Flags&quot; menu at record number 131.</p>
+  <p>NoRead Error - The next field is the Error name that is generated when consecutive 
+    no reads are reached and should not be changed</p>
+</blockquote>
+<p> </p>
+<p><br>
+  VAS Entrance:</p>
+<p> The VAS entrance scanner is named &quot;VAS ENTRANCE (SCAN120)&quot;. This 
+  scanner will most likely require user interaction. If the number of consecutive 
+  no reads is reached at the VAS scanner, VAS induction will stop. Also, if the 
+  number of consecutive no vas destinations is reached the VAS induction will 
+  stop. This value is defined in the system wide &quot;Integer Flags&quot; menu 
+  as MAXCONSECNODATAS at record number 132. The VAS induction will also stop if 
+  the last lane at VAS is full causing the VAS sorter to stop. In all cases, the 
+  appropriate error will be generated. The operator should press the F10 key to 
+  view the current error status. If the error displayed indicates that the last 
+  lane is full, the only action to take is to clear the last VAS lane of totes. 
+  The sorter and induct will re-start automatically. If the error displayed indicates 
+  that the number of no datas is reached, the operator should investigate the 
+  stopped offending tote. It is likely that totes with no VAS destination have 
+  been inadvertantely place on the VAS line. In this case, the operator should 
+  remove the offending tote, check the last VAS lane for previously inducted eroneous 
+  totes, and place valid VAS totes on the line. The induct will re-start automatically. 
+  It is also possible that communications between the FortnaPlus system and the 
+  WMS are at fault. In this case further assistance from supervisory personel 
+  is indicated. </p>
+<p><br>
+  For all scanners, if an error indicates that the maximum number of no reads 
+  has been reached, the operator should check the labels on the 
+  totes in question and/or have maintenance check the scanner. Once the scanner 
+  is operational, the operator may reset the Consecutive Reset or
+  the Statistics reset. In the case of the VAS scanner, the induct will re-start 
+  automatically.</p>
+<p><br>
+  VAS Exit:</p>
+<p> The VAS exit scanner is named &quot;VAS EXIT (SCAN210)&quot;. The functionallity 
+  of this scanner is to simply notify the WMS that a tote is entering the main 
+  sorter loop. Any tote who's bar code cannot be read is diverted to the vas exit 
+  no read lane. There will be a FortnaPlus PC called &quot;VASMONITOR&quot; located 
+  in this vicinity. The operator should investigate the label quality of any totes 
+  ariving in this lane. The operator should also notify the WMS using a WMS terminal 
+  that the tote is entering the main sort loop. Once it is determined that the 
+  label is valid and readable, the tote will be placed back on the conveyor after 
+  the VAS exit divert. Totes will also arrive at this area from the Jackpot divert 
+  of the main sort loop. The operator may key in (or scan using a keyboard wedge 
+  provided by others) the tote number. In order to accomplish this, the operator 
+  must be viewing the Tote Status menu and the cursor must be located (highlighted) 
+  on the ToteID field. If the ToteId is found, the menu will display that tote's 
+  record on the top line. The fifth field in this menu is &quot;Divert_ Reason&quot;. 
+  If the reason listed is &quot;Normal Divert&quot;, then the scanner was unable 
+  to read the bar code and therefore could not update the tote list. The operator 
+  should investigate the readablility of the bar code and return the tote to the 
+  conveyor system. If the reason listed is &quot;Assigned Here&quot;, the operator 
+  should investigate using the WMS terminal. The tote was directed by the WMS 
+  to the Jackpot lane. If the reason listed is &quot;Over Recirc Limit&quot;, 
+  the operator should investigate with the WMS. It is possible that the tote has 
+  no destination and therefore recirculated the maximum number allowed. This value 
+  is defined in the &quot;Integer Flags&quot; menu as &quot;MAXRECIRCS&quot; at 
+  record number 133. It is also possible that the store put locations that the 
+  tote is destined to are all full and have been for some time. This can be determined 
+  using the FortnaPlus error screen. The only resolution in this case is to clear 
+  the store locations and return the tote to the conveyor system. 
+<p><hr>
+  <p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.<br>
+  <br>
+
+
+</body>
+
+</html>

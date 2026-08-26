@@ -1,0 +1,340 @@
+<html>
+<head>
+<title>Trigger Sets Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Trigger Sets</h1><hr>
+<p>FortnaPlus&copy; uses triggers like a PLC uses ladder logic.
+Triggers are used to control anything that does not have a pre-written module.
+Triggers are assigned to a FortnaPlus&copy; process.
+Usually, the controls and GUI processes are used to evaluate triggers.
+As each process executes its critical path, the process evaluates the triggers that belong to it.
+<p>Triggers can be very simple but they can also become very involved. Writing 
+  triggers should not be attempted without additional training from Fortna. Do 
+  not leave any lines blank because the program scans the trigger menu from top 
+  to bottom and stops when it gets to the first blank line.</p>
+<p>The Trigger Sets screen shows triggers that are currently false in red and 
+  shows triggers that are currently true in green.</p>
+<p><u>Fields</u>:</p><blockquote>
+<p>Trigger Set Name - a descriptive and unique name for the trigger that may be 
+  used in other menus</p>
+
+  <p>Trigger type - the trigger's type may be one of the following:</p>
+  <p><blockquote>
+    NONE - always false (this trigger is not used)<br>
+    ONIO - true when the I/O is on (high)<br>
+    OFFIO - true when the I/O is off (low)<br>
+    ONTIMER - true when the timer is done<br>
+    OFFTIMER - true when the timer is not done<br>
+    ONFLAG - true if the integer or floating variable in a menu (table) matches 
+    the given value<br>
+    OFFFLAG - true if the integer or floating point variable is greater than the variable in the menu<br>
+    GREATERTHANFLAG - true if the given integer or floating point value is greater than the variable in the menu<br>
+    LESSTHANFLAG - true if the given integer or floating point value is less than the variable in the menu<br>
+    ONANIMATE - not used<br>
+    OFFANIMATE - not used<br>
+    DRAWTHESAME - forces one part to draw the same color on the Main screen as 
+    another<br>
+    ONCOMBO - true when the given combination trigger is true<br>
+    TRANSON IO - true when the given I/O transitions from off (low) to on (high)<br>
+    TRANSOFF IO - true when the given I/O transitions from on (high) to off (low)<br>
+  TRANSON TIMERDONE - true when a timer transitions from timing to done<br>
+    TRANSOFF TIMERDONE - true when a timer transitions from done to timing<br>
+    KEYSTROKE - not used<br>
+    ENDBLOCK - marks the end of a block of triggers<br>
+    ISTIMING - true when a timer is timing
+</blockquote>
+<p>Triggerlocname - is the value used to evaluate the state of the trigger. The 
+  value to use in this field depends on the type of the trigger.</p><blockquote>
+<table width="684" border="1" height="226">
+  <tr> 
+    <td width="277" height="50"><b>Trigger Type</b></td>
+    <td width="391" height="50"><b>Description of the Triggerlocname</b></td>
+  </tr>
+  <tr> 
+    <td width="277"> ONIO <br>
+      OFFIO <br>
+      TRANSON IO <br>
+      TRANSOFF IO </td>
+    <td width="391">The name of the part to evaluate unless the trigger is used 
+      for drawing multiple parts</td>
+  </tr>
+  <tr> 
+    <td width="277"> ONTIMER<BR>
+      OFFTIMER<BR>
+      TRANSON TIMERDONE<BR>
+      TRANSOFF TIMERDONE<BR>
+      ISTIMING<br>
+    </td>
+    <td width="391">The name of the timer to evaluate</td>
+  </tr>
+  <tr> 
+    <td width="277">ONFLAG<BR>
+      OFFLAG<BR>
+      GREATER THANFLAG<BR>
+      LESS THANFLAG </td>
+    <td width="391">The name of the menu containing the variable to evaluate</td>
+  </tr>
+  <tr> 
+    <td width="277">ONCOMBO <br>
+    </td>
+    <td width="391">The name of the combination trigger</td>
+  </tr>
+  <tr> 
+    <td width="277">All others</td>
+    <td width="391">Not used</td>
+  </tr>
+</table></blockquote>
+<p>loc - this field is automatically generated and is used to find the Triggerlocname value in the proper menu.</p>
+<p>loc2 - this field is used to further define which variable to evaluate. This 
+  field is only used for ONFLAG, OFFLAG, GREATERTHANFLAG, and LESSTHANFLAG triggers. 
+  The loc2 value is the field (column) number of the variable in the menu. The 
+  fields are numbered from one.</p>
+<p>loc3 - this field is used to further define which variable to evaluate. This 
+  field is only used for <br>
+  ONFLAG, OFFLAG, GREATERTHANFLAG, and LESSTHANFLAG triggers. The loc3 value is 
+  the entry (row) number of the variable in the menu. The fields are numbered 
+  from zero</p>
+<p>Trig val - this field contains the value for comparison with the variable for 
+  ONFLAG, OFFLAG, GREATERTHANFLAG, and LESSTHANFLAG triggers. This field is not 
+  used for any other types of triggers.</p>
+<p>Resptype - the response type designates the action the process takes when the 
+  trigger is true. The response type may be one of the following values.
+<p><br>
+<blockquote> 
+  <table width="705" border="1">
+  <tr> 
+    <td width="120"><b>Type </b></td>
+    <td width="292"><b>Description</b></td>
+    <td width="133"><b>Action when Trigger is True</b></td>
+    <td width="132"><b>Action when Trigger is False</b></td>
+  </tr>
+  <tr> 
+    <td width="120">NONE </td>
+    <td width="292">No response occurs. This response is used for unused triggers 
+      and the individual triggers that make up a combination trigger</td>
+    <td width="133">None</td>
+    <td width="132">None</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_DRAW</td>
+    <td width="292"> This response draws a part on the screen in the designated 
+      colors. Triggers using this response must be referenced by the conveyor 
+      part(s) they are required to draw </td>
+    <td width="133">Draws the part in the Responcolor color </td>
+    <td width="132">Draws the part in the Respoffcolor color</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_FIRE</td>
+    <td width="292"> Fires (raises high) the designated part. This response type 
+      cannot be used for any part listed in the motor chains </td>
+    <td width="133">Fires the part</td>
+    <td width="132">Unfires the part</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_UNFIRE</td>
+    <td width="292"> Unfires (drops low) the designated part. This response type 
+      cannot be used for any part listed in the motor chains </td>
+    <td width="133">Unfires the part </td>
+    <td width="132">Fires the part</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_TIMERSTART</td>
+    <td width="292"> Starts timing with the designated timer </td>
+    <td width="133">Starts the timer timing </td>
+    <td width="132">Resets the timer</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_TIMERRESET</td>
+    <td width="292"> Starts timing with the designated timer </td>
+    <td width="133">Resets the timer </td>
+    <td width="132">Clears the timer reset</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_DATA</td>
+    <td width="292"> Sets a variable to a value </td>
+    <td width="133">Sets the variable </td>
+    <td width="132">None</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_ANDBLOCK</td>
+    <td width="292"> Used to create a block of triggers </td>
+    <td width="133">None </td>
+    <td width="132">None</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_SQL</td>
+    <td width="292"> Executes an SQL command </td>
+    <td width="133">Executes the command </td>
+    <td width="132">None</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_DOPROC</td>
+    <td width="292"> Executes a FortnaPlus procedure or function </td>
+    <td width="133">Executes the function or procedure </td>
+    <td width="132">None</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_ORBLOCK</td>
+    <td width="292"> Used to create a block of triggers </td>
+    <td width="133">None</td>
+    <td width="132">None </td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_ENABLE</td>
+    <td width="292"> Used to enable (allow to run) a part listed in the motor 
+      chains </td>
+    <td width="133">Clears the part's 14th disable bit </td>
+    <td width="132">Sets the part's 14th disable bit</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_DISABLE</td>
+    <td width="292"> Used to disable (stop from running) a part listed in the 
+      motor chains </td>
+    <td width="133">Sets the part's 14th disable bit if no Go Now bits are on 
+      for the part </td>
+    <td width="132">Clears the part's 14th disable bit</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_LATCH</td>
+    <td width="292"> Used to turn on a part and leave it running </td>
+    <td width="133">Fires the part </td>
+    <td width="132">None</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_UNLATCH</td>
+    <td width="292"> Used to turn off a part and leave it off </td>
+    <td width="133">Unfires the part </td>
+    <td width="132">None</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_GONOW</td>
+    <td width="292"> Used to force a part listed in the motor chains to run </td>
+    <td width="133">Sets the part's 14th Go Now bit </td>
+    <td width="132">Clears the part's 14th Go Now bit</td>
+  </tr>
+  <tr> 
+    <td width="120">RESP_STOPGONOW</td>
+    <td width="292"> Turns off the forcing of a part listed in the motor chains 
+    </td>
+    <td width="133">Clears the parts 14th Go Now bit </td>
+    <td width="132">Sets the part's 14th Go Now bit</td>
+  </tr>
+</table></blockquote>
+<p>Responcolor - used by RESP_DRAW to choose a color for drawing a part when the 
+  trigger is true</p>
+<p>Respoffcolor - used by RESP_DRAW to choose a color for drawing a part when 
+  the trigger is false</p>
+<p>Resplocname - is the value used to execute the trigger. The value to use in 
+  this field depends on the response type of the trigger. The values are:<blockquote><p>
+<table width="600" border="1">
+  <tr> 
+    <td> 
+      <blockquote> 
+        <p><b>Response Type</b></p>
+      </blockquote>
+    </td>
+    <td> 
+      <blockquote> 
+        <p><b>Description of Resplocname</b></p>
+      </blockquote>
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      
+        <p>RESP_FIRE<BR>
+          RESP_UNFIRE<BR>
+          RESP_ENABLE<BR>
+          RESP_DISABLE<BR>
+          RESP_LATCH<BR>
+          RESP_UNLATCH<BR>
+          RESP_GONOW<BR>
+          RESP_STOPGONOW</p>
+      
+    </td>
+    <td> 
+       
+        <p>The name of the part</p>
+      
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+       
+        <p>RESP_TIMERSTART<BR>
+          RESP_TIMERRESET</p>
+      
+    </td>
+    <td> 
+      
+        <p>The name of the timer</p>
+      
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      
+        <p>RESP_DATA</p>
+      
+    </td>
+    <td> 
+       
+        <p>The name of the menu containing the variable</p>
+      
+    </td>
+  </tr>
+  <tr> 
+    <td> 
+      
+        <p>all others</p>
+      
+    </td>
+    <td> 
+      
+        <p>Not used</p>
+      
+    </td>
+  </tr>
+</table></blockquote>
+<p>Rloc - this field is automatically generated by FortnaPlus and is used to find 
+  the Resplocname value in the proper menu (table).</p>
+<p>Rloc2 - this field is used by RESP_DATA to define which field (column) of the 
+  menu the variable is located in.<br>
+  <br>
+  Rloc3 - this field is only used for RESP_DATA and RESP_SQL. For RESP_DATA this 
+  field defines which entry (row) of the menu the variable is located in. For 
+  RESP_SQL this field defines which SQL command is executed from the SQL Queries 
+  menu. SQL commands and variable entries are counted from zero.</p>
+<p>Rvalue - this field is used for RESP_DATA triggers to designate the value to 
+  place in the variable.</p>
+<p>Rproc - this field designates which FortnaPlus process is responsible for evaluating 
+  and executing this trigger.</p>
+<p>State - this field records the state of the trigger from the last time it was 
+  evaluated.</p>
+<p>Striggerlocname - a string name </p>
+<p>Sloc - brings up the Conveyor menu</p>
+<p>Sloc2 - brings up the XferActionPop menu </p>
+<p>Sloc3 - brings up the Conveyor menu, pull down this one before the two proceding</p>
+  <p>Strig val - used in comparison triggers<br>
+  </p>
+<p>SResplocname - This field and those that follow </p>
+<p>SRloc - brings up the Conveyor menu</p>
+<p>SRloc2 - brings up the XferActionPop menu </p>
+<p>SRloc3 - brings up the Conveyor menu, pull down this one before the two proceding</p>
+  <p>Srvalue - used in extended RESP_DATA functions
+  <p>LogicRef - the second number in the logic help menu
+  <p>Family - not used
+  <p>PopUpMenu - which menu the trilogy (Loc, Loc2, Loc3) uses if a conditional 
+    situation exists
+  <p>PopUpResp - tells the trigger where to access data if a response side condition 
+    exists
+  <p>Popupsloc - conditional side of trilogy sets
+  <p>Popupsrloc - response side of trilogy sets
+  <p>
+  
+</blockquote><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

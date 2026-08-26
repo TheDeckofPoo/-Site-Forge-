@@ -351,8 +351,17 @@
               </div>
               <!-- Site optional -->
               <div>
-                <div class="text-[9px] uppercase tracking-wider text-violet-500/80 mb-1.5">Site optional · sorter / WCS</div>
+                <div class="text-[9px] uppercase tracking-wider text-violet-500/80 mb-1.5">Site optional · transport / sorter / WCS</div>
                 <div class="grid grid-cols-1 gap-1.5">
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-cyan-900/40 bg-cyan-950/20 cursor-pointer hover:border-cyan-700/50 transition-colors">
+                    <input id="autogen-opt-merges-2to1" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">Merge</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">
+                        Transport merges from the panel below (2:1 / 3:1 lane counts). Emit scaffold for 2:1 now; 3:1 config saved for later.
+                      </span>
+                    </span>
+                  </label>
                   <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
                     <input id="autogen-opt-shippingsorter" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
                     <span class="min-w-0">
@@ -587,7 +596,39 @@
       </div>
       </div><!-- end autogen main row (program pack + site config) -->
 
-      <!-- Sorter build — BELOW current UI, collapsed by default. Demo-safe: no L5X wiring yet. -->
+      <!-- Merges (transport — 2:1 / 3:1 lane counts from prints) -->
+      <details id="autogen-merge-panel" class="card shrink-0 border border-cyan-900/40 bg-gradient-to-b from-[#0c1520] to-[#0a1018]">
+        <summary class="cursor-pointer px-4 py-3 flex items-center gap-2 select-none list-none [&::-webkit-details-marker]:hidden">
+          <i class="fa-solid fa-code-merge text-cyan-400"></i>
+          <span class="text-sm font-semibold text-cyan-300">Merge</span>
+          <span class="text-[10px] font-normal text-slate-500 ml-1">transport · set count · lanes per merge (2:1 / 3:1)</span>
+          <span id="autogen-merge-summary" class="ml-auto text-[10px] mono text-slate-600">0 merges</span>
+          <i class="fa-solid fa-chevron-down text-slate-600 text-xs ml-2 details-chevron"></i>
+        </summary>
+        <div class="px-4 pb-4 pt-1 border-t border-slate-800/70 space-y-3">
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            From the prints: enter <strong class="text-slate-400">how many merges</strong>, then for each merge pick
+            <strong class="text-slate-400">how many lanes</strong> feed it (2 = 2:1, 3 = 3:1) and the conveyors / PEs.
+            Check <strong class="text-cyan-400">Merge</strong> under Program pack, save, then Generate.
+            <span class="text-slate-600">2:1 emits <span class="mono">Conv_Merge</span> / <span class="mono">Merge_2to1</span> now; 3:1 is stored for later.</span>
+          </p>
+          <div class="flex flex-wrap gap-2 items-center">
+            <label class="text-[10px] text-slate-500">How many merges?
+              <input id="merge-2to1-count" type="number" min="0" max="40" value="0"
+                class="ml-1 w-16 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[11px] mono text-slate-200"
+                title="Number of merge points on this controller">
+            </label>
+            <button type="button" id="btn-merge-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs">
+              <i class="fa-solid fa-floppy-disk mr-1"></i>Save merges
+            </button>
+            <button type="button" id="btn-merge-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">Clear</button>
+            <span id="merge-save-status" class="text-[10px] text-slate-600 mono"></span>
+          </div>
+          <div id="merge-2to1-rows" class="space-y-2 max-h-80 overflow-y-auto"></div>
+        </div>
+      </details>
+
+      <!-- Sorter build — BELOW current UI, collapsed by default. -->
       <details id="autogen-sorter-panel" class="card shrink-0 border border-cyan-900/40 bg-gradient-to-b from-[#0c1520] to-[#0a1018] open:shadow-lg">
         <summary class="cursor-pointer px-4 py-3 flex items-center gap-2 select-none list-none [&::-webkit-details-marker]:hidden">
           <i class="fa-solid fa-shuffle text-cyan-400"></i>

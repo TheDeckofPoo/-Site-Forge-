@@ -1,0 +1,15 @@
+"Sorter Name"~"Encoder ioName"~"Encoder tmName"~"Encoder Type"~"pStatus"~"Max Cartons"~"Max Verify Buffer"~"Dump NDX"~"Dump OUT"~"Dump IN"~"UseFirstShifterNdx"~"LastNdx"~"OK"~"ShiftOnOff"~"Machine"~"ManualShift"~"Shifted"~"Data LowRec"~"Data HighRec"~"Buffer LowRec"~"Buffer HighRec"~"Inpoints LowRec"~"Inpoints HighRec"~"Updates LowRec"~"Updates HighRec"~"Outpoints LowRec"~"Outpoints HighRec"~"ShiftCnt"~"TrigOnOnly"~"TrigOnOff"~"TrigTransOn"~"TrigTransOff"~"TrigWndwTicks"~"DivertEnableIO"~"InvertEnableIO"~"RecircRate"~"CntRecircWhenFull"~"RecircRateUpdPt"~"pDumpFrom"~"pDumpOffset"~"pLastDumpLoc"~"pFirstShifter"~"pLastShifter"~"pMaxNdx"
+Invalid~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~N/A~N~Invalid~0~0~0~0~0~99~
+INVALID~ENC1~N/A~0~ ~50~0~2~998~0~N~43~Y~N~MSCRENOPACK~N~N~1~200~1~1500~1~1~1~4~1~5~690~N~N~N~N~2~INVALID~N~N/A~N~Invalid~0~0~0~1~3~199~
+INVALID~ENC2~N/A~0~ ~50~0~3~961~0~N~113~Y~N~MSCRENOPACK~N~N~201~400~1501~3000~2~2~5~8~6~12~599~N~N~N~N~2~INVALID~N~N/A~N~Invalid~1~968~0~1~3~199~
+INVALID~Invalid~tmENC3_1~1~ ~50~0~-1~0~0~N~122~Y~N~MSCRENOPACK~N~N~401~600~3001~4500~3~3~9~12~13~19~671~N~N~N~N~2~INVALID~N~N/A~N~Invalid~2~1899~0~1~3~199~
+INVALID~Invalid~N/A~0~ ~0~0~-1~0~0~N~0~Y~N~MSCRENOPACK~N~N~601~800~4501~5000~4~4~13~16~0~0~3~N~N~N~N~2~INVALID~N~N/A~N~Invalid~0~0~0~4~4~199~
+PACK SCAN~ENC204~N/A~0~ ~50~0~6~146~0~N~80~Y~N~MSCRENOPACK~N~N~801~900~5001~5500~5~5~17~19~20~20~490~N~N~N~N~2~INVALID~N~N/A~N~Invalid~0~0~0~5~7~99~
+CURVE~ENC206~N/A~0~ ~50~0~7~63~0~N~35~Y~N~MSCRENOPACK~N~N~901~1000~5501~6000~6~6~20~20~21~21~208~N~N~N~N~2~INVALID~N~N/A~N~Invalid~5~116~0~5~7~99~
+PACK SORTER~ENC208~N/A~0~ ~50~0~-1~0~0~N~1~Y~N~MSCRENOPACK~N~N~1001~1500~6001~8000~7~7~21~25~22~57~886~N~N~N~N~2~INVALID~N~N/A~N~Invalid~6~149~0~5~7~99~
+OIVP SCAN~ENC506~N/A~0~ ~50~0~9~87~0~N~31~Y~N~MSCRENOPACK~N~N~1501~1600~8001~8500~8~8~26~28~58~58~997~N~N~N~N~2~INVALID~N~N/A~N~Invalid~0~0~0~8~9~99~
+OIVP SORTER~ENC508~N/A~0~ ~50~0~-1~0~0~N~99~Y~N~MSCRENOPACK~N~N~1601~1700~8501~9000~9~9~29~30~59~61~546~N~N~N~N~2~INVALID~N~N/A~N~Invalid~8~57~0~8~9~99~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~N/A~N~Invalid~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~N/A~N~Invalid~0~0~0~0~0~0~
+
+

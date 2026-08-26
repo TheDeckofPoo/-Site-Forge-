@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+#
+#
+if ps -ef | grep -v grep | grep LogSearch
+then
+  echo LogSearch Running, slaying
+  slay -f LogSearch
+  nice /usr/local/bin/LogSearch -f LogSearch.config
+else
+  nice /usr/local/bin/LogSearch -f LogSearch.config
+fi

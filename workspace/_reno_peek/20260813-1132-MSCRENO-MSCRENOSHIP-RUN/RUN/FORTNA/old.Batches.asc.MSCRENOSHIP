@@ -1,0 +1,63 @@
+"File_Name"~"Description"~"CurrentNum"~"HowOften"~"Increment"~"CurrentStat"~"WasStat"~"Type"~"Process"~"InternalProc"~"InternalProcCtrl"~"Machine"~"All Machines"~"DoFile"
+invalid~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+Display1~Display~0~0~INVALID~0~0~None~N/A~ ~ ~MSCRENOSHIP~N~Y~
+Display2~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+Display3~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+Display4~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+Logs~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+SHIFTER TEST~TEST~0~1~INVALID~0~0~Count~SORT~ ~Test Sorters~N/A~N~N~
+GAPPER~GAPPER~0~1~INVALID~0~0~Count~CTRL~ ~GapperProcess~N/A~N~N~
+Do Scans~ ~0~1~INVALID~0~0~Count~CTRL~ ~DO SCANS~N/A~N~N~
+UPS~UPS~0~1~INVALID~0~0~Count~GUI~UPS Monitor~ ~N/A~N~N~
+Hist Config~ ~0~1~Min~0~5~Elapsed~MAIN~Hist DbCapture Config~ ~MSCRENOSHIP~N~N~
+Hist Data~ ~0~1~Sec~0~13~Elapsed~MAIN~Hist DbCapture Data~ ~MSCRENOSHIP~N~N~
+Hist Process~ ~0~1~INVALID~0~0~Count~CTRL~ ~Hist Process~MSCRENOSHIP~N~N~
+Scan Process~ ~0~1~INVALID~0~0~Count~CTRL~ ~ScnApp CTRL~MSCRENOSHIP~N~N~
+Srt Ctrl~ ~0~1~INVALID~0~0~Count~CTRL~ ~SrtApp CTRL (CPN)~MSCRENOSHIP~N~N~
+Srt Serv~ ~0~1~INVALID~0~0~Count~SERV~SrtApp  SERV (CPN)~ ~MSCRENOSHIP~N~N~
+Xfr Serv~ ~0~1~INVALID~0~0~Count~SERV~XfrApp  SERV (CPN)~ ~N/A~N~N~
+Xfr Ctrl~ ~0~1~INVALID~0~0~Count~CTRL~ ~XfrApp  CTRL (CPN)~N/A~N~N~
+Xfr Run~ ~0~1~INVALID~0~0~Count~CTRL~ ~XfrProcess  (CTRL)~N/A~N~N~
+Serv Gapper~ ~0~1~INVALID~0~0~Count~SORT~ ~Servo Gapper (SORT)~N/A~N~N~
+Mtr Speed~ ~0~1~INVALID~0~0~Count~SORT~ ~Spd  SORT (CPN)~N/A~N~N~
+Zpr Sort~ ~0~1~INVALID~0~0~Count~SORT~ ~Zpr  SORT (CPN)~N/A~N~N~
+Zpr Ctrl~ ~0~1~INVALID~0~0~Count~CTRL~ ~Zpr  CTRL (CPN)~N/A~N~N~
+Stretch~ ~0~1~INVALID~0~0~Count~CTRL~ ~Stretch CTRL (CPN)~N/A~N~N~
+Print Main Screen~ ~0~30~Sec~3~13~Elapsed~GUI~Print Main Screen~ ~MSCRENOSHIP~N~N~
+SendConvImage~ ~0~30~Sec~14~39~Elapsed~GUI~ ~ ~N/A~N~Y~
+RESYNC EJF~Resync Errors Jams Fulls~0~2~Sec~1~13~Elapsed~SERV~Resync Errors (SERV)~ ~MSCRENOSHIP~N~N~
+BEACONS~ ~0~1~INVALID~0~0~Count~CTRL~ ~BeaconProcess~MSCRENOSHIP~N~N~
+InchStore~ ~0~1~INVALID~0~0~Count~CTRL~ ~InchStore   (CTRL)~N/A~N~N~
+HS SAWTOOTH CTRL~ ~0~1~INVALID~0~0~Count~CTRL~ ~HSSawTooth (CTRL)~N/A~N~N~
+HS SAWTOOTH SORT~ ~0~1~INVALID~0~0~Count~SORT~ ~HSSawTooth (SORT)~N/A~N~N~
+LIFTGATES~ ~0~1~INVALID~0~0~Count~CTRL~ ~LiftGateProcess~N/A~N~N~
+Mtr Speed CTRL~ ~0~1~INVALID~0~0~Count~CTRL~ ~Spd  CTRL (CPN)~N/A~N~N~
+Mtr Speed SORT~ ~0~1~INVALID~0~0~Count~SORT~ ~Spd  SORT (CPN)~N/A~N~N~
+RATE COUNTER~ ~0~1~INVALID~0~0~Count~CTRL~ ~Rate Process~N/A~N~N~
+SAWTOOTH~ ~0~1~INVALID~0~0~Count~CTRL~ ~SawTooth Process~MSCRENOSHIP~N~N~
+Export Data~Export Hist Data~0~1~Hour~0~0~Absolute~SRV1~Print One Menu~ ~MSCRENOSHIP~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+
+

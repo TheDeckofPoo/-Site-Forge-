@@ -1,0 +1,12 @@
+#!/bin/sh
+#
+#
+#
+if ps -ef | grep -v grep | grep Display
+then
+  echo Display Running, slaying
+  slay -f Display
+  nice /usr/local/bin/Display -f Display.config.CP1
+else
+  nice /usr/local/bin/Display -f Display.config.CP1
+fi

@@ -53,6 +53,8 @@ OPTIONAL_PROGRAMS: dict[str, str] = {
     "ShippingSorter_Area_L3": "ShippingSorter_Area_L3_Program.L5X",
     "WCS_Interface_TCP_IP": "WCS_Interface_TCP_IP_Program.L5X",
     "Sorter_Track": "Sorter_Track_Program.L5X",
+    # PLC4-class collector/sawtooth merge (optional template; not auto from tar)
+    "Sawtooth_Merge": "Sawtooth_Merge_Program.L5X",
 }
 
 # Fortna ASC mechanical types → Excel autogen TYPE strings
@@ -199,6 +201,11 @@ class AutogenInput:
     include_io_map_gold: bool = False
     # Sorter build UI config (induct / tracking / encoders / divert count)
     sorter_build: dict = field(default_factory=dict)
+    # 2:1 merges (PLC2-class transport) — list of dicts from workbook UI
+    # keys: name, area, lane_a, lane_b, discharge, pe_a, pe_b, jam_pe
+    merges_2to1: list = field(default_factory=list)
+    # Tar equipment inventory + build plan (fortna_equipment_plan)
+    equipment_plan: dict = field(default_factory=dict)
 
 
 def load_program_export(path: Path) -> dict | None:
@@ -309,6 +316,8 @@ def resolve_program_exports(
             "wcs_interface": "WCS_Interface_TCP_IP",
             "sorter_track": "Sorter_Track",
             "sortertrack": "Sorter_Track",
+            "sawtooth": "Sawtooth_Merge",
+            "sawtooth_merge": "Sawtooth_Merge",
         }
         k2 = aliases.get(k.lower().replace(" ", "_").replace("-", "_"), k)
         if k2 == "" or k in (
@@ -624,12 +633,20 @@ def _pe_wiring_for_conv(pe_rows: list[dict]) -> dict:
 
 
 # Library templates → Rockwell catalog + AB: config datatype (from OReilly_Library_v3)
+# 1794 = Flex I/O (Greensboro gold). 1734 = POINT I/O (MSC Reno tar EIPModules).
 EIP_CHILD_TEMPLATE = {
+    # Flex I/O (1794) — library IO_1N90_*
     "1794-IA16": "IO_1N90_1",   # AB:1794_DI_Delay16:C:0, catalog 1794-IA16/A
     "1794-OA8I": "IO_1N90_2",   # AB:1794_DO8:C:0
     "1794-OW8": "IO_1N90_3",    # AB:1794_DO8:C:0
     "1794-IB16": "IO_1N90_4",   # AB:1794_IB16:C:0
     "1794-OB16P": "IO_1N90_5",  # AB:1794_DO16:C:0
+    # POINT I/O (1734) — library IO_1N80_*
+    "1734-IB8": "IO_1N80_1",    # AB:1734_DI8:C:0
+    "1734-OB8E": "IO_1N80_2",   # AB:1734_DOB8:C:0
+    "1734-OB8": "IO_1N80_2",    # closest — no bare OB8 template
+    "1734-IA4": "IO_1N80_3",    # AB:1734_DI4:C:0
+    "1734-OA4": "IO_1N80_4",    # AB:1734_DO4:C:0
 }
 EIP_CATALOG = {
     "1794-AENT": "1794-AENT",
@@ -638,7 +655,42 @@ EIP_CATALOG = {
     "1794-OW8": "1794-OW8/A",
     "1794-IB16": "1794-IB16/A",
     "1794-OB16P": "1794-OB16P/A",
+    # POINT — library uses AENTR revision suffix
+    "1734-AENT": "1734-AENTR/C",
+    "1734-AENTR": "1734-AENTR/C",
+    "1734-IB8": "1734-IB8/C",
+    "1734-OB8E": "1734-OB8E/C",
+    "1734-OB8": "1734-OB8E/C",
+    "1734-IA4": "1734-IA4/C",
+    "1734-OA4": "1734-OA4/C",
 }
+EIP_PARENT_TEMPLATE = {
+    "1794": "IO_1N90",   # AB:1794_AEN_8SLOT — Bus Size 8
+    "1734": "IO_1N80",   # AB:1734_40SLOT — Bus Size 40
+}
+EIP_PARENT_BUS_SIZE = {
+    "1794": 8,
+    "1734": 40,
+}
+EIP_PARENT_CATALOG = {
+    "1794": "1794-AENT",
+    "1734": "1734-AENTR/C",
+}
+EIP_PARENT_TYPE = {
+    "1794": "1794-AENT",
+    "1734": "1734-AENT",
+}
+
+
+def _eip_family_from_types(types: list[str]) -> str:
+    """Return '1734' (POINT) or '1794' (Flex) from module type strings in the tar."""
+    joined = " ".join(types or []).upper()
+    if "1734" in joined or "1738" in joined:
+        return "1734"
+    if "1794" in joined:
+        return "1794"
+    # Default Flex (legacy Greensboro path)
+    return "1794"
 
 
 def _fortna_bit_to_data_bit(bit: str | int) -> int | None:
@@ -673,12 +725,15 @@ def _infer_rack_from_ip(ip: str, fallback: str = "CP5") -> str:
 
 def load_eip_topology(run_dir: Path) -> dict:
     """
-    Build named Flex I/O tree + Fortna Word→module map from RUN.
+    Build named remote I/O tree + Fortna Word→module map from RUN.
 
-    Naming matches edited gold: CP5RIO0, CP5RIO0_0 (OA8I), CP5RIO0_1 (IA16), …
-    Parent AENT uses AB:1794_AEN_8SLOT:I:0 / :O:0; children carry correct AB: C:0 types.
+    Naming matches edited gold: CP5RIO0, CP5RIO0_0, CP5RIO0_1, …
+    Family is taken from EIPModules / eipcfg:
+      1794 Flex → parent AB:1794_AEN_8SLOT (Bus 8)
+      1734 POINT → parent AB:1734_40SLOT (Bus 40) — MSC Reno
 
-    Fortna Conveyor.asc IO_Address_Word is the EIPCSV octal Word (e.g. 510 → IA16 on CP5RIO1).
+    Fortna Conveyor.asc IO_Address_Word maps via EIPCSV when present; otherwise
+    module InputBank/OutputBank is used as the word key (Reno EIPCSV often empty).
     """
     from fortna_asc import read_asc
 
@@ -890,7 +945,7 @@ def load_eip_topology(run_dir: Path) -> dict:
             bridged = [
                 m for m in sorted(ad.get("modules") or [], key=lambda x: int(x.get("slot") or 0))
                 if (m.get("connection") or "").upper() != "HEADNODE"
-                and (m.get("type") or "").upper() != "1794-AENT"
+                and "AENT" not in (m.get("type") or "").upper()
             ]
             # If modules list has no connection flags, skip pure AENT types
             if not bridged:
@@ -898,11 +953,14 @@ def load_eip_topology(run_dir: Path) -> dict:
                     m for m in sorted(ad.get("modules") or [], key=lambda x: int(x.get("slot") or 0))
                     if "AENT" not in (m.get("type") or "").upper()
                 ]
+            family = _eip_family_from_types(
+                [(m.get("type") or "") for m in (ad.get("modules") or [])]
+                + [(m.get("type") or "") for m in bridged]
+            )
             for m in bridged:
                 eip_slot = int(m.get("slot") or 0)
-                # Gold: first I/O card is flex address 0 (EIP often uses slot 1 after AENT@0)
+                # Gold: first I/O card is flex/point address 0 (EIP often uses slot 1 after AENT@0)
                 flex = eip_slot - 1 if eip_slot >= 1 else eip_slot
-                # If slots already 0-based without headnode, detect: min slot == 0 and type not AENT
                 mt = (m.get("type") or "").strip()
                 child_name = f"{rio}_{flex}"
                 catalog = EIP_CATALOG.get(mt, mt)
@@ -917,6 +975,17 @@ def load_eip_topology(run_dir: Path) -> dict:
                                     break
                             except Exception:
                                 pass
+                # Reno / empty EIPCSV: Fortna bank on the module IS the address key
+                if not word:
+                    ib = m.get("input_bank")
+                    ob = m.get("output_bank")
+                    try:
+                        if ib is not None and int(ib) > 0:
+                            word = str(int(ib))
+                        elif ob is not None and int(ob) > 0:
+                            word = str(int(ob))
+                    except Exception:
+                        word = str(ib or ob or "").strip()
                 child = {
                     "name": child_name,
                     "type": mt,
@@ -927,6 +996,7 @@ def load_eip_topology(run_dir: Path) -> dict:
                     "word": word,
                     "input_bank": m.get("input_bank"),
                     "output_bank": m.get("output_bank"),
+                    "family": family,
                     "direction": "I" if any(x in mt for x in ("IA", "IB", "IM")) else (
                         "O" if any(x in mt for x in ("OA", "OB", "OW")) else ""
                     ),
@@ -942,6 +1012,7 @@ def load_eip_topology(run_dir: Path) -> dict:
                         "rack": rack,
                         "ip": ip,
                         "direction": child["direction"],
+                        "family": family,
                     }
                 modules_flat.append(
                     IoModule(
@@ -985,13 +1056,14 @@ def load_eip_topology(run_dir: Path) -> dict:
                 "adapter_name": ad.get("name") or "",
                 "rack": rack,
                 "ip": ip,
+                "family": family,
                 "children": children,
             })
             modules_flat.insert(
                 0,
                 IoModule(
                     name=rio,
-                    type="1794-AENT",
+                    type=EIP_PARENT_TYPE.get(family, "1794-AENT"),
                     slot="0",
                     ip=ip,
                     parent="",
@@ -1299,6 +1371,20 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
 
     conveyors.sort(key=lambda c: c.conveyor)
 
+    equipment_plan: dict = {}
+    try:
+        from fortna_equipment_plan import inventory_and_plan
+
+        equipment_plan = inventory_and_plan(run_dir, machine_name=machine)
+        plan = equipment_plan.get("plan") or {}
+        _emit_progress(
+            f"Equipment[{machine}]: {equipment_plan.get('inventory', {}).get('counts', {})} "
+            f"profile={plan.get('profile')} packs={plan.get('packs')}",
+            18,
+        )
+    except Exception as ex:
+        equipment_plan = {"error": str(ex)}
+
     return AutogenInput(
         project_name=f"{project}_{machine}",
         processor=processor,
@@ -1314,6 +1400,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         eip_topology=eip_topology,
         io_word_map=io_word_map,
         pe_devices=pe_devices,
+        equipment_plan=equipment_plan,
     )
 
 
@@ -2030,6 +2117,32 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             + "</RLLContent></Routine>"
         )
 
+    def st_routine(name: str, lines: list[str]) -> str:
+        """Structured Text routine (gold Area_L2 Merge presets)."""
+        if not lines:
+            lines = ["NOP();"]
+        body = []
+        for i, line in enumerate(lines):
+            body.append(
+                f'<Line Number="{i}"><![CDATA[{line}]]></Line>'
+            )
+        return (
+            f'<Routine Name="{name}" Type="ST"><STContent>'
+            + "".join(body)
+            + "</STContent></Routine>"
+        )
+
+    def _merge_time_preset_lines(time_tag: str) -> list[str]:
+        """Gold L2 MergeTime.HMI defaults (Clear/NoCartons/Release/ReleaseFull)."""
+        if not time_tag or time_tag.startswith("NO_"):
+            return []
+        return [
+            f"{time_tag}.HMI.ClearTime := 8000;",
+            f"{time_tag}.HMI.NoCartonsTime := 8000;",
+            f"{time_tag}.HMI.ReleaseTime := 10000;",
+            f"{time_tag}.HMI.ReleaseTimeFull := 15000;",
+        ]
+
     # Build programs per area
     programs_xml = []
     pe_wired_count = 0
@@ -2054,7 +2167,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     if "PE_Logic" in r["text"] or "Full_PE" in r["text"]:
                         pe_wired_count += 1
 
-        # Slow = Jam + PE + Flt only. Fast = Fast_Conv only.
+        # Slow = Jam + PE + Flt only. Fast = Fast_Conv (+ optional Conv_Merge).
         # Putting Fast_Conv in BOTH Slow and Fast caused Studio:
         #   "Duplicate AOI Backing Tag Reference …_Conv_AOI.Fast"
         main_slow = [
@@ -2065,6 +2178,124 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         main_fast = [
             _rung_xml(0, "JSR(Conv_Fast,0);", "Conv_Fast"),
         ]
+
+        # Merges for this area (gold Conv_Merge + L2 ST). UI stores 2:1 / 3:1+;
+        # L5X emit is 2:1 only for now (3:1+ kept in workbook for later).
+        rungs_merge: list[str] = []
+        merge_st_lines: list[str] = []
+        area_merges = [
+            m for m in (getattr(inp, "merges_2to1", None) or [])
+            if isinstance(m, dict)
+            and (
+                not (m.get("area") or "").strip()
+                or _safe(m.get("area") or "") == _safe(area)
+                or (m.get("area") or "").strip() == area
+            )
+        ]
+        for m in area_merges:
+            try:
+                lane_n = int(m.get("lanes") or m.get("lane_count") or 2)
+            except (TypeError, ValueError):
+                lane_n = 2
+            if lane_n > 2:
+                # Config captured from prints; codegen TBD
+                continue
+            name = _safe(m.get("name") or m.get("merge") or "")
+            if not name:
+                continue
+            if not name.endswith("_Merge"):
+                merge_tag = f"{name}_Merge"
+            else:
+                merge_tag = name
+                name = name[: -len("_Merge")] or name
+            lane_a = _safe(m.get("lane_a") or m.get("induct") or "")
+            lane_b = _safe(m.get("lane_b") or m.get("main") or "")
+            discharge = _safe(m.get("discharge") or m.get("out") or name)
+            # Empty PE must stay NO_PE — _safe("") becomes "Tag"
+            _pe_a = (m.get("pe_a") or "").strip()
+            _pe_b = (m.get("pe_b") or "").strip()
+            _jam = (m.get("jam_pe") or "").strip()
+            pe_a = _safe(_pe_a) if _pe_a else "NO_PE"
+            pe_b = _safe(_pe_b) if _pe_b else "NO_PE"
+            jam_pe = _safe(_jam) if _jam else "NO_PE"
+            conv_a = f"{lane_a}_Conv" if lane_a and not lane_a.endswith("_Conv") else (lane_a or "NO_Conv")
+            conv_b = f"{lane_b}_Conv" if lane_b and not lane_b.endswith("_Conv") else (lane_b or "NO_Conv")
+            conv_out = (
+                f"{discharge}_Conv"
+                if discharge and not discharge.endswith("_Conv")
+                else (discharge or "NO_Conv")
+            )
+            time_a = f"{lane_a}_MergeTime" if lane_a else "NO_MergeTime"
+            time_b = f"{lane_b}_MergeTime" if lane_b else "NO_MergeTime"
+            # hold_mode: runhold (PLC2/4 BOOL) | stop_next (PLC5 Conv.PI.Stop_Next)
+            hold_mode = str(m.get("hold_mode") or m.get("hold") or "runhold").strip().lower()
+            if hold_mode in ("stop_next", "stopnext", "pi_stop_next", "plc5"):
+                hold_main = f"{conv_a}.PI.Stop_Next"
+                hold_induct = f"{conv_b}.PI.Stop_Next"
+                make_hold_bools = False
+            else:
+                hold_main = f"{name}_MainLane_Conv_RunHold"
+                hold_induct = f"{name}_InductLane_Conv_RunHold"
+                make_hold_bools = True
+            # Tags: Merge_2to1 instance + Merge_Time + optional BOOL holds
+            if merge_tag not in seen_tag_names:
+                _add_tag_block(
+                    f'<Tag Name="{_xml_escape(merge_tag)}" TagType="Base" '
+                    f'DataType="Merge_2to1" Constant="false" ExternalAccess="Read/Write">'
+                    f'<Data Format="Decorated"><Structure DataType="Merge_2to1"/></Data></Tag>'
+                )
+            for tname in (time_a, time_b):
+                if tname.startswith("NO_") or tname in seen_tag_names:
+                    continue
+                _add_tag_block(
+                    f'<Tag Name="{_xml_escape(tname)}" TagType="Base" '
+                    f'DataType="Merge_Time" Constant="false" ExternalAccess="Read/Write">'
+                    f'<Data Format="Decorated"><Structure DataType="Merge_Time"/></Data></Tag>'
+                )
+            if make_hold_bools:
+                for bname in (hold_main, hold_induct):
+                    if bname not in seen_tag_names:
+                        _add_tag_block(
+                            f'<Tag Name="{_xml_escape(bname)}" TagType="Base" DataType="BOOL" '
+                            f'Radix="Decimal" Constant="false" ExternalAccess="Read/Write">'
+                            f'<Data Format="L5K"><![CDATA[0]]></Data>'
+                            f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="0"/></Data></Tag>'
+                        )
+            # Gold Merge_2to1 signature (timers/CX members on merge UDT)
+            text = (
+                f"Merge_2to1({merge_tag},{conv_a},{conv_b},{conv_out},{conv_out},NO_Conv,"
+                f"1,1,{pe_a},{pe_b},{jam_pe},0,NO_PE,NO_PE,"
+                f"{time_a},{time_b},0,"
+                f"{merge_tag}.I_Merge_FltClearTime,{merge_tag}.I_MergeCX_Enable,"
+                f"{merge_tag}.I_MergeCX_TimeReset,{hold_main},{hold_induct});"
+            )
+            rungs_merge.append(
+                _rung_xml(
+                    0,
+                    text,
+                    f"~~~~~~~~~~~\n{merge_tag} 2:1 Merge\n(equipment pattern — Site Forge)\n~~~~~~~~~~~",
+                )
+            )
+            # Gold Area_L2 Merge ST presets
+            merge_st_lines.extend(
+                [
+                    f"// {merge_tag}",
+                    f"{merge_tag}.I_MergeCX_Enable := 0;",
+                    f"{merge_tag}.I_InductLane_AddNotlReadyBit := 0;",
+                    f"{merge_tag}.I_MainLane_AddNotReadyBit := 0;",
+                    f"{merge_tag}.I_Merge_FltClearTime := 10000;",
+                    "",
+                    "// Main lane MergeTime",
+                    *_merge_time_preset_lines(time_a),
+                    "",
+                    "// Induct lane MergeTime",
+                    *_merge_time_preset_lines(time_b),
+                    "",
+                ]
+            )
+
+        if rungs_merge:
+            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Merge,0);", "Conv_Merge 2:1"))
 
         prog_slow = f"{area}_Slow" if area.endswith("_Area") else f"{area}_Area_Slow"
         prog_fast = f"{area}_Fast" if area.endswith("_Area") else f"{area}_Area_Fast"
@@ -2082,15 +2313,35 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f'{routine("Conv_Flt", rungs_flt)}'
             f"</Routines></Program>"
         )
+        fast_routines = (
+            f'{routine("Main_Routine", main_fast)}'
+            f'{routine("Conv_Fast", rungs_fast)}'
+        )
+        if rungs_merge:
+            fast_routines += f'{routine("Conv_Merge", rungs_merge)}'
         programs_xml.append(
             f'<Program Name="{prog_fast}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'
             f"<Tags/>"
             f"<Routines>"
-            f'{routine("Main_Routine", main_fast)}'
-            f'{routine("Conv_Fast", rungs_fast)}'
+            f"{fast_routines}"
             f"</Routines></Program>"
         )
+
+        # Area_L2 Merge ST presets (gold PLC2 Module*_Area_L2 / Merge)
+        if merge_st_lines:
+            prog_l2 = f"{area}_L2" if area.endswith("_Area") else f"{area}_Area_L2"
+            prog_l2 = _safe(prog_l2)[:40]
+            main_l2 = [_rung_xml(0, "JSR(Merge,0);", "Merge presets")]
+            programs_xml.append(
+                f'<Program Name="{prog_l2}" TestEdits="false" MainRoutineName="Main_Routine" '
+                f'Disabled="false" UseAsFolder="false">'
+                f"<Tags/>"
+                f"<Routines>"
+                f'{routine("Main_Routine", main_l2)}'
+                f"{st_routine('Merge', merge_st_lines)}"
+                f"</Routines></Program>"
+            )
 
     # --- IO_MAP from RUN/tar.gz (default): Conveyor.asc Bank.Bit → CPxRIOn:I/O.Data via EIP ---
     # Gold Excel IO_MAP_Program.L5X is optional (include_io_map_gold) and replaces this scaffold.
@@ -2341,6 +2592,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         programs_xml.append(gp["program_xml"])
         gold_program_names.append(gname)
 
+    # --- Equipment plan from tar → auto-hint packs (Sorter Track, merges note) ---
+    equip = dict(getattr(inp, "equipment_plan", None) or {})
+    plan = dict(equip.get("plan") or {})
+    if plan.get("features", {}).get("sorter_track_pack"):
+        inc = list(getattr(inp, "include_programs", None) or [])
+        if "Sorter_Track" not in inc:
+            # Auto-include when tar shows sorter/ENC evidence (can still be empty config)
+            inc.append("Sorter_Track")
+            inp.include_programs = inc
+            _emit_progress("Tar equipment plan → auto-include Sorter_Track", 38)
+
     # --- Live Sorter_Track: ONLY when Program pack includes Sorter_Track (checkbox) ---
     # Double safety: sorter_build UI alone does not emit the program.
     sorter_cfg = dict(getattr(inp, "sorter_build", None) or {})
@@ -2461,13 +2723,16 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # cause Studio import noise and Local→Local1 rename when merging into an ACD).
     # Always open L5X as a NEW project (File→Open), not Import into an existing ACD.
     #
-    # Critical: 1794-AENT OutputTag is typed AB:1794_AEN_8SLOT:O:0 — Bus Size MUST be 8.
-    # Using a smaller Bus Size with the 8SLOT datatype causes Studio:
-    #   "Failed to set the 'Data' property (Data type mismatch...)"
-    # and then every child fails with ParentModule not found.
+    # Parent Bus Size MUST match the AENT datatype in the library template:
+    #   1794-AENT → AB:1794_AEN_8SLOT → Bus Size 8
+    #   1734-AENT → AB:1734_40SLOT   → Bus Size 40
+    # Wrong size → Studio "Data type mismatch" and children ParentModule not found.
     eip_module_names: list[str] = []
     eip_child_names: list[str] = []
-    aent_tmpl = _extract_module_xml(library_text, "IO_1N90")
+    parent_tmpls = {
+        fam: _extract_module_xml(library_text, name)
+        for fam, name in EIP_PARENT_TEMPLATE.items()
+    }
     child_tmpls = {
         key: _extract_module_xml(library_text, tmpl_name)
         for key, tmpl_name in EIP_CHILD_TEMPLATE.items()
@@ -2477,6 +2742,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Only emit RIO modules used by this site's word_map (Conveyor.asc banks).
     # Multi-panel RUN packages often list CP5/CP6 adapters that reuse CP1–CP4
     # IPs — Studio then shows Invalid data type on module :I/:O tags.
+    # If word_map is empty (e.g. Reno EIPCSV blank), keep full topology so
+    # 1734/1794 adapters still appear for commissioning.
     used_rios = {
         str((info or {}).get("rio_name") or "").strip()
         for info in (getattr(inp, "io_word_map", None) or {}).values()
@@ -2553,15 +2820,25 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         )
 
     extra_mods: list[str] = []
-    if aent_tmpl and topology:
+    if topology:
         for ad in topology:
             rio_name = ad.get("rio_name") or ""
             ip = (ad.get("ip") or "192.168.1.50").strip()
             if not rio_name:
                 continue
-            # Parent 1794-AENT — AB:1794_AEN_8SLOT:I:0 / :O:0 from template
+            kids = list(ad.get("children") or [])
+            family = (ad.get("family") or "").strip() or _eip_family_from_types(
+                [c.get("type") or "" for c in kids]
+            )
+            aent_tmpl = parent_tmpls.get(family) or parent_tmpls.get("1794")
+            if not aent_tmpl:
+                continue
+            parent_lib_name = EIP_PARENT_TEMPLATE.get(family, "IO_1N90")
+            bus_size = EIP_PARENT_BUS_SIZE.get(family, 8)
+            parent_cat = EIP_PARENT_CATALOG.get(family, "1794-AENT")
+            # Parent AENT — clone library template (1794 Flex or 1734 POINT)
             block = aent_tmpl
-            block = block.replace('Name="IO_1N90"', f'Name="{rio_name}"', 1)
+            block = block.replace(f'Name="{parent_lib_name}"', f'Name="{rio_name}"', 1)
             block = re.sub(
                 r'ParentModule="[^"]*"',
                 f'ParentModule="{enet_parent}"',
@@ -2574,11 +2851,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 block,
                 count=1,
             )
-            # ALWAYS Bus Size="8" — datatype is AB:1794_AEN_8SLOT (gold Excel always 8)
-            kids = list(ad.get("children") or [])
+            block = re.sub(
+                r'CatalogNumber="[^"]*"',
+                f'CatalogNumber="{_xml_escape(parent_cat)}"',
+                block,
+                count=1,
+            )
             block = re.sub(
                 r'(<Bus Size=")[^"]*("/>)',
-                r'\g<1>8\2',
+                rf'\g<1>{bus_size}\2',
                 block,
                 count=1,
             )
@@ -2594,10 +2875,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 cname = c.get("name") or f"{rio_name}_{c.get('flex_slot')}"
                 flex = int(c.get("flex_slot") or 0)
                 cblock = tmpl
-                # Rename module + parent + flex port address
-                # Template names: IO_1N90_1 etc.
+                # Rename module + parent + port address (Flex or PointIO)
                 cblock = re.sub(
-                    r'Name="IO_1N90_\d+"',
+                    r'Name="IO_1N(?:90|80)_\d+"',
                     f'Name="{cname}"',
                     cblock,
                     count=1,
@@ -2609,12 +2889,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     count=1,
                 )
                 cblock = re.sub(
-                    r'(<Port Id="1" Address=")[^"]*(" Type="Flex")',
+                    r'(<Port Id="1" Address=")[^"]*(" Type="(?:Flex|PointIO)")',
                     rf'\g<1>{flex}\2',
                     cblock,
                     count=1,
                 )
-                # Ensure catalog matches (template already has correct /A suffix)
                 catalog = c.get("catalog") or EIP_CATALOG.get(mt, mt)
                 cblock = re.sub(
                     r'CatalogNumber="[^"]*"',
@@ -2842,6 +3121,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "eip_modules_filtered_to_word_map": sorted(used_rios) if used_rios else [],
         "gold_programs": gold_program_names,
         "sorter_build": sorter_report,
+        "equipment_plan": getattr(inp, "equipment_plan", None) or {},
         "optional_programs_available": list(OPTIONAL_PROGRAMS.keys()),
         "task_schedule": {
             "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
@@ -2981,6 +3261,15 @@ def generate(
         "engine": "fortna_autogen.py (Python — RUN/tar.gz primary; Excel gold optional)",
     }
     (out / "autogen_input.json").write_text(json.dumps(snap, indent=2), encoding="utf-8")
+    # Tar equipment → build plan (AOIs/packs correlated to gold PLC2/4/5)
+    try:
+        ep = getattr(inp, "equipment_plan", None) or {}
+        if ep:
+            (out / "equipment_plan.json").write_text(
+                json.dumps(ep, indent=2), encoding="utf-8"
+            )
+    except Exception:
+        pass
 
     # Physical I/O verification: Fortna Word.Bit → CPxRIOn:I/O.Data[s].b
     # Sources: Conveyor.asc banks + EIPCSV/EIPModules word_map (same as eipcfg/ASC in RUN).
@@ -2991,8 +3280,9 @@ def generate(
         # RIO inventory for Studio module tree check
         rio_inv = {
             "note": (
-                "1794 Flex I/O from RUN PROJECT/EIPAdapters + EIPModules + EIPCSV "
-                "(and FORTNA/*eipcfg.xml). One RUN = one controller's network. "
+                "Remote I/O from RUN PROJECT/EIPAdapters + EIPModules + EIPCSV "
+                "(and FORTNA/*eipcfg.xml) — 1734 POINT or 1794 Flex per tar. "
+                "One RUN = one controller's network. "
                 "CP1/CP4 panels need their own RUN if they are separate PLCs."
             ),
             "interface_ip": getattr(inp, "eip_interface_ip", "") or "",
@@ -3150,7 +3440,7 @@ def generate(
         "Engine: fortna_autogen.py — IO_MAP from RUN/tar.gz banks + EIP modules by default.",
         "Gold Excel IO_MAP is optional (--io-map-gold / UI checkbox); it replaces RUN mapping.",
         "Logic: Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP CP_I/CP_O.",
-        "1794 tree: RUN EIPAdapters/EIPModules/EIPCSV + eipcfg.xml → CPxRIOn modules in L5X.",
+        "I/O tree: RUN EIPAdapters/EIPModules/EIPCSV + eipcfg.xml → CPxRIOn (1734 POINT or 1794 Flex).",
         "Verify: open physical_io_map.csv + rio_inventory.json next to the L5X.",
         "OPEN as NEW project in Studio (File→Open). Do not Import into existing .acd.",
     ]
@@ -3242,7 +3532,7 @@ def main() -> int:
         default="",
         help=(
             "Comma-separated optional programs to merge: "
-            "ShippingSorter_Area_L3,WCS_Interface_TCP_IP,Sorter_Track"
+            "ShippingSorter_Area_L3,WCS_Interface_TCP_IP,Sorter_Track,Sawtooth_Merge"
         ),
     )
     p_run.add_argument(
@@ -3311,6 +3601,13 @@ def main() -> int:
                         sb = wb.get("sorter_build")
                         if isinstance(sb, dict) and sb:
                             inp.sorter_build = sb
+                        m2 = wb.get("merges_2to1")
+                        if isinstance(m2, list) and m2:
+                            inp.merges_2to1 = m2
+                            _emit_progress(
+                                f"2:1 merges from workbook: {len(m2)}",
+                                12,
+                            )
                         _emit_progress(
                             f"Applied workbook ({len(wb.get('conveyors') or [])} rows)…",
                             12,

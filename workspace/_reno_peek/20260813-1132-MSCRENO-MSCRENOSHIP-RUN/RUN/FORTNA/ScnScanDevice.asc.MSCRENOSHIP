@@ -1,0 +1,23 @@
+"Name"~"RcvData"~"RxStat"~"ParsedData"~"ParsedStatus"~"pStatusMsg"~"ScanZone"~"ScanType"~"Field"~"UpdatePt"~"NoReadString"~"ReadConflictStr"~"StartChar"~"QtyChars"~"ChkLength"~"MinWeight"~"MaxWeight"~"pLeadEdgeNdx"~"pLeadEdgeShifter"~"pTrailEdgeNdx"~"pTrailEdgeShifter"~"pTrnDataRcv"~"pSrtDataRcv"
+N/A~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~0~0~0~0~0~0~
+SHIPSCAN1~697899384115FS1~Empty~697899384115FS1~Good Scan~Created IO Records~SHIP SCAN~Scan 1~Field 2A~SHIPSCAN_1~???????????????~***************~0~15~Y~       0.000~       0.000~-1~0~-1~0~0~0~
+TOTESCAN1~1ZE2W1200360979599~Empty~1ZE2W1200360979599~Good Scan~Created IO Records~SHIP SCAN~Tote 1~Field 4A~SHIPSCAN_1~??????????????????~******************~0~18~Y~       0.000~       0.000~-1~0~-1~0~0~0~
+TOTESCAN2~420841151928~Empty~420841151928~Good Scan~Created IO Records~SHIP SCAN~Tote 2~Field 3A~SHIPSCAN_1~????????????~************~0~12~Y~       0.000~       0.000~-1~0~-1~0~0~0~
+SHIPSCALE~2.20~Empty~2.20~Good Scan~Tracking Status Column error~SHIP SCAN~Scale~N/A~SCALE~ ~ ~0~0~N~       0.000~      75.000~-1~0~-1~0~0~0~
+SHIPSCAN2~464946403773041~Empty~ ~No Scan~Created IO Records~SHIP SCAN~Scan 2~Field 2B~SHIPSCAN_2~???????????????~***************~0~15~Y~       0.000~       0.000~-1~0~-1~0~0~0~
+TOTESCAN3~1ZE2W1200308430804~Empty~ ~No Scan~Created IO Records~SHIP SCAN~Tote 3~Field 4B~SHIPSCAN_2~??????????????????~******************~0~18~Y~       0.000~       0.000~-1~0~-1~0~0~0~
+TOTESCAN4~????????????~Empty~ ~No Scan~Created IO Records~SHIP SCAN~Tote 4~Field 3B~SHIPSCAN_2~????????????~************~0~12~Y~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+
+

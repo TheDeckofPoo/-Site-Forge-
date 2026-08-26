@@ -1,0 +1,23 @@
+"Name"~"Desc"~"pStatusMsg"~"RcvDataA"~"RxStatA"~"RcvDataB"~"RxStatB"~"RcvDataC"~"RxStatC"~"RcvDataD"~"RxStatD"~"Delimiter"~"LogLevel"~"ScanZoneID"~"CompareScans"~"ConcatScans"~"TrackingTable"~"DeviceTrkTable"~"PrinterTrkTable"~"PrinterErrTable"~"CTRLProcess"~"ScanAlgorithm"~"Alg_P1"~"XfrZoneID"~"PrintLine"~"pRecordProcessed"~"pTrnDataRcv"~"pTrnTrkRecord"~"pTrnLastTrk"
+N/A~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+SHIP SCAN~ ~Created IO Records~,M00000075439273,????????????,??????????????????,???,????????????,???????????????,~Empty~,M00000075439273,????????????,??????????????????,???,????????????,???????????????,~Empty~ ~RECZERO~ ~RECZERO~,~Level 2~SCNSHIP~N~0~SrtTrack1~SrtDevice1~None~None~ ~MSC Ship~18~ ~N/A~1~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~RECZERO~ ~RECZERO~ ~Level 0~ ~N~0~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+
+

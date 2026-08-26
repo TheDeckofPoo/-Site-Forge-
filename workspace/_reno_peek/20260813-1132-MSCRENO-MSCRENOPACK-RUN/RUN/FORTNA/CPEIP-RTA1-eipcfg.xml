@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EthernetIP name="Test Rack" version = "1" interfaceip="192.168.1.9">
+	<!--The name for the entire configuration.  Suggested names include the name of the machine or panel.-->
+	<!--Adapter - Contains the configuration for each head node and the device in each slot.-->
+
+	<Adapter targetip="192.168.1.51" 
+				 name="1734_AENT_51"
+				 InputAddress="48"
+				 OutputAddress="0">
+		<!-- Module contains the configuration for each slot in the Adapter.-->
+		<!-- 1734-AENT Input Size = 8, Output Size = 0 -->
+		<Module name="1734_AENT_0" 
+				type="1734-AENT" 
+				slot="0" 
+				connection="HEADNODE">
+			<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+			<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+			<Key Compatibility="true"
+				 VendorID="1" 
+				 DeviceType="12" 
+				 ProductCode="196" 
+				 MajorRevision="3" 
+				 MinorRevision="12" />
+				 <!-- T2OAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- O2TAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- BYTE = Data is aligned to 1 byte -->
+				 <!-- WORD = Data is aligned to 2 bytes -->
+				 <!-- DOUBLE = Data is aligned to 4 bytes -->
+				 <!-- FIXED = Each slot has a fixed size. -->
+				 <!-- T2OSlotSize and O2TSlotSize is used if Alignment is FIXED. -->
+				 <!-- T2OSlotSize and O2TSlotSize can range from 1 to 24 bytes. -->
+			<Parameters T2OAlignment="WORD"
+						T2OSlotSize="1"
+						O2TAlignment="WORD"
+						O2TSlotSize="1" />
+		</Module>
+		<!-- 1734-IB8 Input Size = 1, Output Size = 0 -->
+		<Module name="1734_IB8_1" 
+				type="1734-IB8" 
+				slot="1" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-OB8 Input Size = 1, Output Size = 1 -->
+		<Module name="1734_OB8_2" 
+				type="1734-OB8" 
+				slot="2" 
+				connection="RACKOPTIMIZED">
+		</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.52" 
+			 name="1734_AENT_52"
+			 InputAddress="64"
+			 OutputAddress="8">
+		<!--Module contains the configuration for each slot in the Adapter-->
+		<!-- 1734-AENT Input Size = 8, Output Size = 0 -->
+		<Module name="1734_AENT_0" 
+				type="1734-AENT" 
+				slot="0" 
+				connection="HEADNODE">
+			<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+			<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+			<Key Compatibility="true"
+				 VendorID="1" 
+				 DeviceType="12" 
+				 ProductCode="196" 
+				 MajorRevision="3" 
+				 MinorRevision="12" />
+				 <!-- T2OAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- O2TAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- BYTE = Data is aligned to 1 byte -->
+				 <!-- WORD = Data is aligned to 2 bytes -->
+				 <!-- DOUBLE = Data is aligned to 4 bytes -->
+				 <!-- FIXED = Each slot has a fixed size. -->
+				 <!-- T2OSlotSize and O2TSlotSize is used if Alignment is FIXED. -->
+				 <!-- T2OSlotSize and O2TSlotSize can range from 1 to 24 bytes. -->
+			<Parameters T2OAlignment="WORD"
+						T2OSlotSize="1"
+						O2TAlignment="WORD"
+						O2TSlotSize="1" />
+		</Module>
+		<!-- 1734-IB8 Input Size = 1, Output Size = 0 -->
+		<Module name="1734_IB8_1" 
+				type="1734-IB8" 
+				slot="1" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-OB8 Input Size = 1, Output Size = 1 -->
+		<Module name="1734_OB8_2" 
+				type="1734-OB8" 
+				slot="2" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-IA4 Input Size = 1, Output Size = 0 -->
+		<Module name="1734_IA4_3" 
+				type="1734-IA4" 
+				slot="3"
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-OA4 Input Size = 0, Output Size = 1 -->
+		<Module name="1734_OA4_4" 
+				type="1734-OA4" 
+				slot="4"
+				connection="RACKOPTIMIZED">
+		</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.53" 
+			 name="1734_AENT_53"
+			 InputAddress="80"
+			 OutputAddress="16">
+		<!--Module contains the configuration for each slot in the Adapter-->
+		<!-- 1734-AENT Input Size = 8, Output Size = 0 -->
+		<Module name="1734_AENT_0" 
+				type="1734-AENT" 
+				slot="0" 
+				connection="HEADNODE">
+			<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+			<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+			<Key Compatibility="true"
+				 VendorID="1" 
+				 DeviceType="12" 
+				 ProductCode="196" 
+				 MajorRevision="3" 
+				 MinorRevision="12" />
+				 <!-- T2OAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- O2TAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- BYTE = Data is aligned to 1 byte -->
+				 <!-- WORD = Data is aligned to 2 bytes -->
+				 <!-- DOUBLE = Data is aligned to 4 bytes -->
+				 <!-- FIXED = Each slot has a fixed size. -->
+				 <!-- T2OSlotSize and O2TSlotSize is used if Alignment is FIXED. -->
+				 <!-- T2OSlotSize and O2TSlotSize can range from 1 to 24 bytes. -->
+			<Parameters T2OAlignment="WORD"
+						T2OSlotSize="1"
+						O2TAlignment="WORD"
+						O2TSlotSize="1" />
+		</Module>
+		<!-- 1734-IB8 Input Size = 1, Output Size = 0 -->
+		<Module name="1734_IB8_1" 
+				type="1734-IB8" 
+				slot="1" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-OB8 Input Size = 1, Output Size = 1 -->
+		<Module name="1734_OB8_2" 
+				type="1734-OB8" 
+				slot="2" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-IA4 Input Size = 1, Output Size = 0 -->
+		<Module name="1734_IA4_3" 
+				type="1734-IA4" 
+				slot="3"
+			connection="RACKOPTIMIZED">
+		</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.54" 
+			 name="1734_AENT_54"
+			 InputAddress="96"
+			 OutputAddress="24">
+		<!--Module contains the configuration for each slot in the Adapter-->
+		<!-- 1734-AENT Input Size = 8, Output Size = 0 -->
+		<Module name="1734_AENT_0" 
+				type="1734-AENT" 
+				slot="0" 
+				connection="HEADNODE">
+			<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+			<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+			<Key Compatibility="false"
+				 VendorID="0" 
+				 DeviceType="0" 
+				 ProductCode="0" 
+				 MajorRevision="0" 
+				 MinorRevision="0" />
+				 <!-- T2OAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- O2TAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- BYTE = Data is aligned to 1 byte -->
+				 <!-- WORD = Data is aligned to 2 bytes -->
+				 <!-- DOUBLE = Data is aligned to 4 bytes -->
+				 <!-- FIXED = Each slot has a fixed size. -->
+				 <!-- T2OSlotSize and O2TSlotSize is used if Alignment is FIXED. -->
+				 <!-- T2OSlotSize and O2TSlotSize can range from 1 to 24 bytes. -->
+			<Parameters T2OAlignment="WORD"
+						T2OSlotSize="1"
+						O2TAlignment="WORD"
+						O2TSlotSize="1" />
+		</Module>
+		<!-- 1734-IB8 Input Size = 1, Output Size = 0 -->
+		<Module name="1734_IB8_1" 
+				type="1734-IB8" 
+				slot="1" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-OB8 Input Size = 1, Output Size = 1 -->
+		<Module name="1734_OB8_2" 
+				type="1734-OB8" 
+				slot="2" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-OA4 Input Size = 0, Output Size = 1 -->
+		<Module name="1734_OA4_3" 
+				type="1734-OA4" 
+				slot="3"
+				connection="RACKOPTIMIZED">
+		</Module>
+	</Adapter>
+	<Adapter name="1734_AENT_55" 
+			 targetip="192.168.1.55"
+			 InputAddress="112"
+			 OutputAddress="32">
+		<!--Module contains the configuration for each slot in the Adapter-->
+		<!-- 1734-AENT Input Size = 8, Output Size = 0 -->
+		<Module name="1734_AENT_0" 
+				type="1734-AENT" 
+				slot="0" 
+				connection="HEADNODE">
+			<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+			<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+			<Key Compatibility="true"
+				 VendorID="1" 
+				 DeviceType="12" 
+				 ProductCode="196" 
+				 MajorRevision="3" 
+				 MinorRevision="12" />
+				 <!-- T2OAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- O2TAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- BYTE = Data is aligned to 1 byte -->
+				 <!-- WORD = Data is aligned to 2 bytes -->
+				 <!-- DOUBLE = Data is aligned to 4 bytes -->
+				 <!-- FIXED = Each slot has a fixed size. -->
+				 <!-- T2OSlotSize and O2TSlotSize is used if Alignment is FIXED. -->
+				 <!-- T2OSlotSize and O2TSlotSize can range from 1 to 24 bytes. -->
+			<Parameters T2OAlignment="WORD"
+						T2OSlotSize="1"
+						O2TAlignment="WORD"
+						O2TSlotSize="1" />
+		</Module>
+		<!-- 1734-IB8 Input Size = 1, Output Size = 0 -->
+		<Module name="1734_IB8_1" 
+				type="1734-IB8" 
+				slot="1" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1734-OB8 Input Size = 1, Output Size = 1 -->
+		<Module name="1734_OB8_2" 
+				type="1734-OB8" 
+				slot="2" 
+				connection="RACKOPTIMIZED">
+		</Module>
+	</Adapter>
+	<Adapter name="1738_AENT_56" 
+			 targetip="192.168.1.56"
+			 InputAddress="140"
+			 OutputAddress="56">
+		<!--Module contains the configuration for each slot in the Adapter-->
+		<!-- 1738-AENT Input Size = 8, Output Size = 0 -->
+		<Module name="1738_AENT_0" 
+				type="1738-AENTR/B" 
+				slot="0" 
+				connection="HEADNODE">
+			<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+			<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+			<Key Compatibility="false"
+				 VendorID="0" 
+				 DeviceType="0" 
+				 ProductCode="0" 
+				 MajorRevision="0" 
+				 MinorRevision="0" />
+			 <!-- T2OAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+			 <!-- O2TAlignment = BYTE, WORD, DOUBLE, or FIXED -->
+				 <!-- BYTE = Data is aligned to 1 byte -->
+				 <!-- WORD = Data is aligned to 2 bytes -->
+				 <!-- DOUBLE = Data is aligned to 4 bytes -->
+				 <!-- FIXED = Each slot has a fixed size. -->
+			 <!-- T2OSlotSize and O2TSlotSize is used if Alignment is FIXED. -->
+			 <!-- T2OSlotSize and O2TSlotSize can range from 1 to 24 bytes. -->
+			<Parameters T2OAlignment="WORD"
+						T2OSlotSize="1"
+						O2TAlignment="WORD"
+						O2TSlotSize="1" />
+		</Module>
+		<!-- 1738-OB16 Input Size = 1, Output Size = 2 Word aligned -->
+		<Module name="1738_OB16_2" 
+				type="1738-OB16EM12" 
+				slot="1" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1738-IB16 Input Size = 3 Word aligned, Output Size = 0 -->
+		<Module name="1738_IB16_1" 
+				type="1738-IB16DM12" 
+				slot="2" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1738-OB16 Input Size = 1, Output Size = 2 Word aligned -->
+		<Module name="1738_OB16_2" 
+				type="1738-OB16EM12" 
+				slot="3" 
+				connection="RACKOPTIMIZED">
+		</Module>
+		<!-- 1738-IB16 Input Size = 3, Output Size = 0 -->
+		<Module name="1738_IB16_1" 
+				type="1738-IB16DM12" 
+				slot="4" 
+				connection="RACKOPTIMIZED">
+		</Module>
+	</Adapter>
+	<Adapter name="VU4A0004_152" 
+			 targetip="192.168.1.152"
+			 InputAddress="160"
+			 OutputAddress="70">
+		<!-- Yaskawa VU4A0004 Input Size = 44, Output Size = 44 -->
+		<Module name="Yaskawa VU4A0004" 
+				type="VU4A0004" 
+				slot="0" 
+				connection="HEADNODE">
+			<O2T rpi_us="5000" cnxn_type="POINT2POINT"/>
+			<T2O rpi_us="5000" cnxn_type="MULTICAST"/>
+			<Key Compatibility="false"
+				 VendorID="0" 
+				 DeviceType="0" 
+				 ProductCode="0" 
+				 MajorRevision="0" 
+				 MinorRevision="0" />
+		</Module>
+	</Adapter>
+</EthernetIP>

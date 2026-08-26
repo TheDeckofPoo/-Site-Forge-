@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>Combiners Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><p align ="center">Combiners</p></h1><hr>
+<p>This menu allows on-site configuration of combiners. There are two menus which 
+  work together to provide this capability. The CombLane menu controls the individual 
+  lanes, while the CombBoss controls the action of the combiner itself.
+<p> <font size="5"><b><p align ="center">CombLane</p></b></font>
+<p>Fields:</p><blockquote>
+<p>Name - a string uniquely describing the lane of the combiner</p>
+<p>Prescence Eye - brings up the Conveyor menu, from which the IO of 
+  the presence eye can be selected</p>
+<p>Analog IO - brings up the Conveyor menu, so the IO can be selected</p>
+<p>Current Value - an integer</p>
+<p>Priority - an integer</p>
+<p>Full Timer - brings up the Timer menu</p>
+<p>Waiting Timer - brings up the Timer menu</p>
+<p>Other Bit - an integer</p>
+<p>Wide Box - brings up the Conveyor menu</p>
+<p>Shifter - brings up the Shifters menu</p>
+<p>Stop Value - integer value</p>
+<p>Slow Value - integer value</p>
+<p>Fast Value - integer value</p>
+<p>Go Fast - brings up the Conveyor menu</p>
+<p>Go Slow - brings up the Conveyor menu</p>
+<p>Go Stop - brings up the Conveyor menu</p>
+<p>Boss Record - brings up the CombBoss menu, from which the Combiner that will control this lane can be selected</p>
+<p>AccumSSV - brings up the Conveyor menu, from which the solenoid controlling accumulation can be selected</p>
+<p>EnableIO - brings up the Conveyor menu, so the IO can be selected</p>
+<p>LastToRun - an integer </p>
+<p>State - an integer indicating the state of the lane</p>
+<p> <br></blockquote><p>&nbsp;<p><p align = "center">
+  <font size="5"><b>CombBoss</b></font></p>
+
+<table><tr><td>
+
+<p></p>
+<p>Fields:</p><blockquote>
+<p>Name - a string uniquely describing the combiner</p>
+<p>Valid - automatically filled in to tell the user if the information is valid, displaying '1' if correct, or '0' if incorrect</p>
+<p>Number of Inducts - the number of lanes coming into the Combiner</p>
+<p>Operable Input - brings up the Conveyor menu</p>
+<p>ShifterMain - brings up the Shifters menu</p>
+<p>Current Lane - brings up the CombLane menu<p>
+  Current Sent - a boolean field</p>
+<p>Procnum - brings up the Process Type menu, from which the FortnaPlus&copy; process controlling the Combiner can be selected<br>
+</p></blockquote>
+</td><td><img src="../../images/combboss.gif">
+</tr></table>
+<hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

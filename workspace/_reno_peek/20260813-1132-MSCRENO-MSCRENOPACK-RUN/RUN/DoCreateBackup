@@ -1,0 +1,158 @@
+#!/bin/sh
+#
+#     $Date: 2017-10-26 15:30:38 -0400 (Thu, 26 Oct 2017) $
+# $Revision: 38375 $
+#   $Author: tkremser $
+#      $URL: http://svn.wcs.fortna.net/repo/projects/fpc/base/tags/Base-Releases/Version-11.40.0-Release-0/RUN/DoCreateBackup $
+#
+ProjectName="ControlNode"
+
+Node=`uname -n`
+#
+# Check if a parameter was entered
+#
+if test $# -lt 1
+then
+  ProjectName="ControlNode"
+else
+  ProjectName=$1
+fi
+#
+# Remove the "#" character from the following line and add the 
+# Customer Name, if the backups do not have the desired Customer
+# name.
+# ================================================================
+# ProjectName="CutomerName"
+# ================================================================
+#
+# check if /TARS directory is a valid directory
+#
+if test -d /TARS
+then
+	Temp="Temp"
+else 
+    echo "\r"
+    echo "========================================================================\r"
+    echo "Creating TARS Directory.\r"
+    mkdir /TARS
+fi
+
+if test -d /TARS
+then
+	Temp="Temp"
+else 
+    echo "\r"
+    echo "========================================================================\r"
+    echo "TARS Directory was not found.\r"
+    echo "Exiting backup routine.\r"
+    exit
+fi
+
+#
+# check if current directory is a valid directory
+#
+if test -d ../RUN
+then
+	Temp="Temp"
+else 
+    echo "\r"
+    echo "========================================================================\r"
+    echo "Run Directory was not found.\r"
+    echo "Exiting backup routine.\r"
+    exit
+fi
+
+# Allow time for Save Data to complete, if called from FortnaPlus
+# by a Create Backup request
+echo "Begin DoCreateBackup"
+sleep 7
+
+#
+# Set date time stamp
+#
+Date=`date +%Y%m%d`
+Time=`date +%H%M`
+#
+# Before running backup, copy System Files to a subdirectory under the RUN
+#
+if test -d SystemFiles
+then
+  echo "\r"
+else
+  echo "\r"
+  echo "Creating the Application SystemFiles Directory\r"
+  echo "\r"
+  mkdir SystemFiles
+fi
+
+if test -d SystemFiles
+then
+  echo "Saving files to the Application SystemFiles Directory\r"
+  echo "\r"
+  cp /etc/ntp/ntp.conf SystemFiles/
+  cp /etc/profile.d/aliases SystemFiles/
+  cp /etc/profile.d/kshrc.sh SystemFiles/
+  cp /etc/rc.d/rc.local SystemFiles/
+  cp /etc/rc.d/rc.sysinit SystemFiles/
+  cp /etc/system/sysinit SystemFiles/
+  cp /etc/system/enum/include/net SystemFiles/
+  cp /etc/fstab SystemFiles/
+  cp /etc/group SystemFiles/
+  cp /etc/hosts* SystemFiles/
+  cp /etc/inetd.conf SystemFiles/
+  cp /etc/motd SystemFiles/
+  cp /etc/my.cnf SystemFiles/
+  cp /etc/net* SystemFiles/
+  cp /etc/odbc.ini SystemFiles/
+  cp /etc/passwd SystemFiles/
+  cp /etc/resolv.conf SystemFiles/
+  cp /etc/services SystemFiles/
+  cp /etc/shadow SystemFiles/
+  cp /etc/photon/launchmenu/Fortna.tgt SystemFiles/
+  cp /root/.kshrc SystemFiles/
+  cp /usr/local/bin/startfp SystemFiles/
+  cp /usr/local/var/fortna/control.fil SystemFiles/
+  cp /usr/local/etc/stunnel/stunnel.conf SystemFiles/
+  cp /usr/local/etc/stunnel/stunnel.pem SystemFiles/
+  ls -DR /home/ > SystemFiles/HomeDirectory.txt
+else
+  echo "==========================================================================\r"
+  echo "Failed to create the SystemFiles Directory\r"
+  echo "Exiting backup routine.\r"
+  exit
+fi
+#
+# perform backup routine
+#
+cd ..
+
+Machine=`grep MACHINENAME RUN/project.cfg.$Node 2>/dev/null | sed -e "s/MACHINENAME = //g"|sed -e "s/ //g"|sed -e "s/	//g"`
+
+if test "X$Machine" = "X"
+then
+  #
+  # The Machine was not found, try the generic project.cfg
+  #
+  Machine=`grep MACHINENAME RUN/project.cfg 2>/dev/null | sed -e "s/MACHINENAME = //g"|sed -e "s/ //g"|sed -e "s/	//g"`
+fi
+
+BackupString1="$Date-$Time-$ProjectName-$Machine-RUN.tar.gz"
+
+echo "Backup started for $Machine (node $Node)\r"
+
+backtofile RUN > /TARS/$BackupString1 2>/dev/null
+
+echo "============================================================================\r"
+echo "Done creating the /TARS/$BackupString1 \r"
+
+#distribute backups made
+
+cd /TARS
+echo "Distributing to all nodes\r"
+echo "============================================================================\r"
+
+sh -c "distribute $BackupString1"
+
+echo "Done distributing backup\r"
+
+

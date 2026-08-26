@@ -1,0 +1,72 @@
+VFD print-page + param attach log 20260826-150047
+Drives: 64 · with PowerFlex params: 10
+Page histogram: {'46': 4, '47': 4, '45': 2}
+
+name | page | params | why_no_params | file
+VFD13-5: page=None params=0 why=no_print_page keys=[] file=
+VFD13-5_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD120_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD200_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD200A_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD200B_AUX: page=45 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD201_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD202_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD204_AUX: page=46 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD206_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD412_AUX: page=46 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD506_AUX: page=47 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD508_AUX: page=47 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD508A_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD524_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD1004_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD120: page=None params=0 why=no_print_page keys=[] file=
+VFD200: page=None params=0 why=no_print_page keys=[] file=
+VFD200A: page=None params=0 why=no_print_page keys=[] file=
+VFD200B: page=45 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD201: page=None params=0 why=no_print_page keys=[] file=
+VFD202: page=None params=0 why=no_print_page keys=[] file=
+VFD204: page=46 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD206: page=None params=0 why=no_print_page keys=[] file=
+VFD412: page=46 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD506: page=47 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD508: page=47 params=5 why=ok keys=['P031 Motor NP Volts', 'P033 Motor OL Current', 'P039 Accel Time 1', 'P040 Decel Time 1', 'P070 Preset Freq'] file=CP_13.pdf
+VFD508A: page=None params=0 why=no_print_page keys=[] file=
+VFD524: page=None params=0 why=no_print_page keys=[] file=
+VFD1004: page=None params=0 why=no_print_page keys=[] file=
+VFD228_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD302_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD400_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD400A_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD228: page=None params=0 why=no_print_page keys=[] file=
+VFD302: page=None params=0 why=no_print_page keys=[] file=
+VFD400: page=None params=0 why=no_print_page keys=[] file=
+VFD400A: page=None params=0 why=no_print_page keys=[] file=
+VFD208_AUX: page=None params=0 why=no_print_page keys=[] file=
+VFD208: page=None params=0 why=no_print_page keys=[] file=
+VFD208AR: page=None params=0 why=no_print_page keys=[] file=
+VFD208BR: page=None params=0 why=no_print_page keys=[] file=
+VFD208CR: page=None params=0 why=no_print_page keys=[] file=
+VFD208DR: page=None params=0 why=no_print_page keys=[] file=
+VFD208ER: page=None params=0 why=no_print_page keys=[] file=
+VFD208FR: page=None params=0 why=no_print_page keys=[] file=
+VFD208GR: page=None params=0 why=no_print_page keys=[] file=
+VFD208HR: page=None params=0 why=no_print_page keys=[] file=
+VFD208IR: page=None params=0 why=no_print_page keys=[] file=
+VFD208JR: page=None params=0 why=no_print_page keys=[] file=
+VFD208KR: page=None params=0 why=no_print_page keys=[] file=
+VFD208LR: page=None params=0 why=no_print_page keys=[] file=
+VFD208AF: page=None params=0 why=no_print_page keys=[] file=
+VFD208BF: page=None params=0 why=no_print_page keys=[] file=
+VFD208CF: page=None params=0 why=no_print_page keys=[] file=
+VFD208DF: page=None params=0 why=no_print_page keys=[] file=
+VFD208EF: page=None params=0 why=no_print_page keys=[] file=
+VFD208FF: page=None params=0 why=no_print_page keys=[] file=
+VFD208GF: page=None params=0 why=no_print_page keys=[] file=
+VFD208HF: page=None params=0 why=no_print_page keys=[] file=
+VFD208IF: page=None params=0 why=no_print_page keys=[] file=
+VFD208JF: page=None params=0 why=no_print_page keys=[] file=
+VFD208KF: page=None params=0 why=no_print_page keys=[] file=
+VFD208LF: page=None params=0 why=no_print_page keys=[] file=
+
+Full JSON: C:\dev\worktree\FortnaPlus\exports\ocr-logs\vfd_page_assign_20260826-150047.json
+Also see: vfd_param_extract_20260826-150047.json (per-page table OCR)

@@ -1,0 +1,13 @@
+"Name"~"Status"~"MtrStatus"~"SendAvailStatus"~"AvailAppSorter"~"ErrConfig"~"LogLevel"~"CartonIdUpdate"~"CrrMsgTable"~"DcmMsgTable"~"CsuMsgTable"~"CsmMsgTable"~"SecondCrrMsgTable"~"SecondDcmMsgTable"~"SecondCsuMsgTable"~"ControlMachine"~"SorterCnvMtr"~"MtrACTION"~"MtrBIT"~"NotAvailErrSig"~"NotAvailACTION"~"NotAvailBIT"~"ScanErrSig"~"ScanACTION"~"ScanBIT"~"DataErrLight"~"DataACTION"~"DataBIT"~"MtrMinStopTime"~"SndShipInCRR"~"SndPackInCRR"~"pErrorFlag"~"pResetFault"~"pMaxResponse"~"pGrtHalfSecond"~"pGrtQtrSecond"~"pNumSamples"~"pTrigError"~"pErrDesc"~"pScanError"~"pDataError"~"pWrkScanError"~"pWrkDataError"
+N/A~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+SHIP SORTER~Zone Ship08, not available~Mtr Running~N~0~Stop if Not Avail~Level 2~N~MsgCR1~MsgDC1~None~MsgCR2~None~None~None~MSCRENOSHIP~VFDS1~Disable~2~LANE_NOT_AVAIL~Fire~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~    1094.817~6~1~465~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~RECZERO~RECZERO~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+
+

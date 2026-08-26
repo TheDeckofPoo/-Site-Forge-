@@ -1,0 +1,1 @@
+1|Shifter Window Button Help Menu|./ShifterWindow.htm

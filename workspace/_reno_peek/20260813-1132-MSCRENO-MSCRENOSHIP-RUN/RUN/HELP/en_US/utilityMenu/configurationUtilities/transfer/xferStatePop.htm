@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>Transfer State Pop Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><p align="center">XferStatePop Menu</p></h1><hr>
+<p>Below is a description of the transfer states in the Xfer State Pop menu:
+<p><b>XFER_IDLE:</b><p>
+<blockquote> WHEN<blockquote>
+  ProductINPUT is high<br>
+  XferDownINPUT is high (or N/A)<br>
+  XferClearINPUT is low (or N/A)<br>
+  DestClearTM is done (or N/A)<br>
+  and Go is 'Y'<br><blockquote>
+  SET State=XFER_RELEASE<p></p></blockquote></blockquote></blockquote>
+<p><b>XFER_RELEASE:</b><p>
+<blockquote>WHEN <br>
+<blockquote>
+  Product INPUT is low<blockquote>
+  SET State=XFER_HOLD</blockquote></blockquote>
+<p>OR WHEN<blockquote>
+  XferRaiseINPUT matches XferRaiseSENSE plus XferRaiseDELAY<p>
+    <p><blockquote>SET State=XFER_RAISESET ReleaseOUTPUT to ReleaseACTION<br>
+      SET DirectionOUPUT to DirectionACTION<br>
+      SET RaiseOUTPUT to NOT RaiseACTION<br>
+      SET DoneOUTPUT to NOT DoneACTION
+    <p></p></blockquote></blockquote></blockquote>
+<p><b>XFER_HOLD:</b><p><blockquote>
+  WHEN<br><blockquote>
+  XferRaiseINPUT matches XferRaiseSENSE plus XferRaiseDELAY<br><blockquote>
+  SET State=XFER_RAISE<br>
+  SET ReleaseOUTPUT to NOT ReleaseACTION<br>
+  SET DirectionOUTPUT to DirectionACTION<br>
+  SET RaiseOUTPUT to NOT RaiseACTION<br>
+  SET DoneOUTPUT to NOT DoneACTION<p></p></blockquote></blockquote></blockquote>
+<p><b>XFER_RAISE</b><p><blockquote>
+  WHEN <br><blockquote>
+  XferDoneINPUT matches XferDoneSENSE plus XferDoneDELAY<br><blockquote>
+  SET State=XFER_DONE<br>
+  SET ReleaseOUTPUT to NOT ReleaseACTION<br>
+  SET DirectionOUTPUT to DirectionACTION<br>
+  SET RaiseOUTPUT to RaiseACTION<br>
+  SET DoneOUTPUT to NOT DoneACTION<p></p></blockquote></blockquote></blockquote>
+<p><b>XFER_DONE:</b><p><blockquote><blockquote>
+  SET State=XFER_IDLE<br>
+  SET Go='N'<br>
+  SET ReleaseOUTPUT to NOT ReleaseACTION<br>
+  SET DirectionOUTPUT to NOT DirectionACTION<br>
+  SET RaiseOUTPUT to NOT RaiseACTION<br>
+  SET DoneOUTPUT to DoneACTION<br></blockquote></blockquote>
+<p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.<br>
+  <br>
+</body>
+</html>

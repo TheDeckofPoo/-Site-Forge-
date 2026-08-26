@@ -1,0 +1,9 @@
+#!/bin/sh
+# A Script to run checkup.sh
+# Intended for use with cron, to be run weekly
+# with an entry such as this:
+# 1 14 * * 6 /usr/local/bin/runcheckup
+# which will run every Saturday at 2:01PM
+
+DATE=`date +%U`
+/usr/local/bin/checkup.sh > /var/log/checkup.log.${DATE}

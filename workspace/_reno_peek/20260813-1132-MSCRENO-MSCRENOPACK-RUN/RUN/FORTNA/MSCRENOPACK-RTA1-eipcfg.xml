@@ -1,0 +1,970 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EthernetIP name="MSCRENOPACK" version="1.0" interfaceip="192.168.1.9">
+	<Adapter targetip="192.168.1.54"
+		name="AENTR3"
+		InputAddress="48"
+		OutputAddress="0">
+			<Module name="AENTR3"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="9"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="10"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="11"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="12"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="13"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OV8E"
+				type="1734-OB8E"
+				slot="14"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="15"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="16"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="17"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="18"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.57"
+		name="AENTR6"
+		InputAddress="116"
+		OutputAddress="18">
+			<Module name="AENTR6"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR6-IV8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR6-IV8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR6-IV8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR6-IV8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR6-OV8E"
+				type="1734-OB8E"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR6-OA4"
+				type="1734-OA4"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR6-OA4"
+				type="1734-OA4"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.58"
+		name="AENTR7"
+		InputAddress="130"
+		OutputAddress="22">
+			<Module name="AENTR7"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR7-IV8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-IV8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-IV8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-IV8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-IA4"
+				type="1734-IA4"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-IA4"
+				type="1734-IA4"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-IA4"
+				type="1734-IA4"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-IA4"
+				type="1734-IA4"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-OV8E"
+				type="1734-OB8E"
+				slot="9"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-OA4"
+				type="1734-OA4"
+				slot="10"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-OA4"
+				type="1734-OA4"
+				slot="11"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-OA4"
+				type="1734-OA4"
+				slot="12"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR7-OA4"
+				type="1734-OA4"
+				slot="13"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.51"
+		name="AENTR13"
+		InputAddress="196"
+		OutputAddress="28">
+			<Module name="AENTR13"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR13-IB8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IB8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="9"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="10"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-IA4"
+				type="1734-IA4"
+				slot="11"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-OA4"
+				type="1734-OA4"
+				slot="12"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-OA4"
+				type="1734-OA4"
+				slot="13"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-OA4"
+				type="1734-OA4"
+				slot="14"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-OA4"
+				type="1734-OA4"
+				slot="15"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-OA4"
+				type="1734-OA4"
+				slot="16"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-OA4"
+				type="1734-OA4"
+				slot="17"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13-OA4"
+				type="1734-OA4"
+				slot="18"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.52"
+		name="AENTR13RP1"
+		InputAddress="216"
+		OutputAddress="36">
+			<Module name="AENTR13RP1"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="9"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-IB8"
+				type="1734-IB8"
+				slot="10"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-OB8E"
+				type="1734-OB8E"
+				slot="11"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-OB8E"
+				type="1734-OB8E"
+				slot="12"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-OB8E"
+				type="1734-OB8E"
+				slot="13"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-OB8E"
+				type="1734-OB8E"
+				slot="14"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP1-OB8E"
+				type="1734-OB8E"
+				slot="15"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.53"
+		name="AENTR13RP2"
+		InputAddress="240"
+		OutputAddress="42">
+			<Module name="AENTR13RP2"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR13RP2-IB8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP2-IB8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP2-IB8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP2-IB8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP2-IB8"
+				type="1734-IB8"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP2-OB8E"
+				type="1734-OB8E"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP2-OB8E"
+				type="1734-OB8E"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR13RP2-OB8E"
+				type="1734-OB8E"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.59"
+		name="AENTR14"
+		InputAddress="304"
+		OutputAddress="46">
+			<Module name="AENTR14"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR14-IA4"
+				type="1734-IA4"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14-IA4"
+				type="1734-IA4"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14-OA4"
+				type="1734-OA4"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14-OA4"
+				type="1734-OA4"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.60"
+		name="AENTR14RP1"
+		InputAddress="314"
+		OutputAddress="48">
+			<Module name="AENTR14RP1"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="9"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="10"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="11"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="12"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="13"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="14"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="15"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="16"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="17"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="18"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-IB8"
+				type="1734-IB8"
+				slot="19"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="20"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="21"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="22"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="23"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="24"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="25"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="26"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="27"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="28"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="29"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="30"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="31"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="32"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="33"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="34"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="35"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="36"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP1-OB8E"
+				type="1734-OB8E"
+				slot="37"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.61"
+		name="AENTR14RP2"
+		InputAddress="360"
+		OutputAddress="66">
+			<Module name="AENTR14RP2"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="9"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="10"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="11"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="12"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="13"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="14"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="15"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="16"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="17"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="18"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="19"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-IB8"
+				type="1734-IB8"
+				slot="20"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="21"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="22"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="23"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="24"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="25"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="26"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="27"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="28"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="29"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="30"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="31"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="32"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="33"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="34"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="35"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="36"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="37"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="38"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR14RP2-OB8E"
+				type="1734-OB8E"
+				slot="39"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+</EthernetIP>
+

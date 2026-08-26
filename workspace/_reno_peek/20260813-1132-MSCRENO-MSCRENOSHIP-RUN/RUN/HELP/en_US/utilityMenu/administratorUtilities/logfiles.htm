@@ -1,0 +1,70 @@
+<html>
+
+<head>
+<title>Log Files Help Menu</title>
+</head>
+
+<body bgcolor="#ffffff"><a name="top">
+
+<h1 align="center">Log Files</h1><hr></a>
+
+
+The Log Files Menu is used to configure the log to which a process writes and how often. The program is often instructed to log particular variables and their values, errors or records of events.
+This can be accomplished  within the program code itself by using the 'logevent' command, providing the logfile name as a parameter.
+In the following explanation, we will refer to these fields:
+<p>
+Fields:
+<P><blockquote>
+File Name - desired name for the log. will be followed by an underscore and the File Num.
+<P>
+Description - a meaningful description
+<P>
+File Handle - internally assigned
+<P>
+Max File Num - file numbers will start at 0 and increment to the Max File Num, then roll to 0 again.
+<P>
+Current Num - automatically displays the number of this file, from 0 to MaxFileNum.
+ <P>
+How Often -  an integer to fill in the phrase, 'every &nbsp &nbsp &nbsp        Increment(s) '
+<P><a href="#pic">Click Here to see a screen shot of this menu. <img src="../../images/smalllogfiles.gif" align="middle"></a>
+<p>
+Increment - choose from the list of intervals on the Increments Menu
+<P>
+Current Stat - automatically increments.  When greater than How Often, log will roll.
+<P>
+Was Stat - used internally. compared to Today Menu data. If not the same, Current Stat increments and Was Stat is set to Today Menu data.
+<P>
+Log Type - brings up the Log File Types Menu with these options:<BR>
+a+ - append or create a file to read/write<BR>
+w+ - create a file to read/write <p>
+
+Process - brings up the Process Type Menu, which displays the four system processes<BR>
+GUI - priority of 10, polled for activity approximately every 1/4 sec or every 250ms<BR>
+CTRL - priority of 12, polled for activity approximately every 1/10 sec or every 100ms<BR>
+SORT - priority of 13, polled for activity approximately every 1/20 sec or every 50ms<br>
+SERV - priority of 11
+<P>
+Name Type  - a pull down into the Interval Menu. If the value is Absolute, and the Increment is Mday, the log will roll every day and be given the date in the log name. <br> Ex. A Comm log generated on the 
+14th of the month will be named Comm.14 .
+<P></blockquote><b><BR><P>
+EXAMPLE: TO CREATE A LOG FOR MESSAGING, ROLLING EACH DAY</b><blockquote>
+<P>
+1. Select Utility Menu from the Main Menu
+<P>
+2. Select Administrator Utilities from the Utility Menu
+<P>
+3. Select Log Files from the Administrator Utilities Menu
+<P>
+4. Type "InfoLog" in the File Name Field of the first empty record.
+<P>
+5. Type "Messaging Log File" in the Description field.
+<P>
+6. Type 7 in the MaxFileNum.
+<P></blockquote><hr>
+<p>
+<a name="pic">
+<img src ="../../images/logfiles.gif" align="center"></a><p>
+<a href="#top">Click Here to return to the top of the page.</a><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

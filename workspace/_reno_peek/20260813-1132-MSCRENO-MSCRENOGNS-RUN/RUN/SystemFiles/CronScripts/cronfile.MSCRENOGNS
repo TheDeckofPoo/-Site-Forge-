@@ -1,0 +1,5 @@
+17 1 * * 3 /usr/local/bin/logroll
+1 14 * * 6 /usr/local/bin/runcheckup
+# Configure the RunCheckupSummary on ONE AC before activating the next line
+1 15 * * 6 /usr/local/bin/RunCheckupSummary MSCRENO
+0 0,6,12,18 * * * /usr/local/bin/SetHardwareClock >> /tmp/error

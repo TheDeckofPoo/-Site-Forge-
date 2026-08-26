@@ -1,0 +1,47 @@
+<html>
+<head>
+<title>Message Map Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Message Map</h1><hr>
+<p>The message map controls the flow of out-bound messages, and FortnaPlus&copy; 
+  recognition of in-bound messages.</p>
+<p>Fields:</p>
+<blockquote>
+  <p>Message Name - the name of the message for reference in code</p>
+  <p>Machine Name - the name of the machine as it is configured in the machine 
+    table</p>
+  <p>Recv Msg Type -incoming messages are scanned for this pattern at the beginning 
+    of the message or receive ALL</p>
+  <p>Send Msg Type - outgoing messages may use this field to start the message 
+  </p>
+  <p>Ack Msg Type -incoming messages are scanned for this pattern at the beginning 
+    of the acknowledgement</p>
+  <p>Menu Name - name of the menu the from which the data will come</p>
+  <p>Menu Index - automatically fills in reference to the menu</p>
+  <p>Low Cursor - the lowest column in the menu to store data</p>
+  <p>High Cursor - highest column in the menu to store data</p>
+  <p>Stat Cursor - column in the menu used to contain the message status</p>
+  <p>Last Record - holds the index to the last record filled in by a message</p>
+  <p>Low Head - the number of the field that the data will start to be inserted 
+    into for message headers</p>
+  <p>High Head - the number of the field that the end of the data will be inserted 
+    into for message headers</p>
+  <p>Key Cursor - the number of the field that will hold the database key</p>
+  <p>Id - the field which the Ignore Dupes feature looks at for duplicates</p>
+  <p>Last Id - the field where the Ignore Dupes feature stores the last value 
+    from the Id field</p>
+  <p>Record - the number of the record to use for this message (used if the menu 
+    holds more than one message)</p>
+  <p>Delimiter - brings up the Ascii menu to select a delimiter if used</p>
+  <p>Field Length - column which specifies the length fo the binary large data 
+    object </p>
+  <p>AckLen - length of acknowledgement header</p>
+  <p>CheckFile - logical yes if msgmap entry specifies a filename for ftp, nfs, 
+    or samba
+</blockquote><p>
+<hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

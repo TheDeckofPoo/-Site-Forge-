@@ -1,0 +1,93 @@
+SHIP SCAN,HistData,5,1,No Selection,No Selection,0,Menu 1,2,0,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+1:GdRd_Cpy,No Selection,0,0,Menu 1,2,0,Work Area,1,1,1,Copy Src to Dst,0,MSCRENOSHIP,1
+2:NoRd:SHIP SCAN,HistData,5,8,No Selection,No Selection,0,Menu 1,4,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+2:NoRd_Cpy,No Selection,0,0,Menu 1,4,0,Work Area,1,2,1,Copy Src to Dst,0,MSCRENOSHIP,1
+3:Cnfl:SHIP SCAN,HistData,5,15,No Selection,No Selection,0,Menu 1,5,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+3:Cnfl_Cpy,No Selection,0,0,Menu 1,5,0,Work Area,1,3,1,Copy Src to Dst,0,MSCRENOSHIP,1
+4:BdRd:SHIP SCAN,HistData,5,22,No Selection,No Selection,0,Menu 1,6,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+4:BdRd_Cpy,No Selection,0,0,Menu 1,6,0,Work Area,1,4,1,Copy Src to Dst,0,MSCRENOSHIP,1
+5:NoSc:SHIP SCAN,HistData,5,29,No Selection,No Selection,0,Menu 1,7,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+5:NoSc_Cpy,No Selection,0,0,Menu 1,7,0,Work Area,1,5,1,Copy Src to Dst,0,MSCRENOSHIP,1
+Sum,No Selection,0,0,Work Area,1,1,Menu 1,1,0,5,Sum the Src,0,MSCRENOSHIP,1
+Calc %,HistData,5,1,Menu 1,1,0,Menu 1,3,0,7,Calc % (Day),0,MSCRENOSHIP,1
+SHIPSCAN1,HistData,5,36,No Selection,No Selection,0,Menu 1,2,1,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+6:GdRd_Cpy,No Selection,0,0,Menu 1,2,1,Work Area,1,1,1,Copy Src to Dst,0,MSCRENOSHIP,1
+7:NoRd:SHIPSCAN1,HistData,5,43,No Selection,No Selection,0,Menu 1,4,1,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+7:NoRd_Cpy,No Selection,0,0,Menu 1,4,1,Work Area,1,2,1,Copy Src to Dst,0,MSCRENOSHIP,1
+8:Cnfl:SHIPSCAN1,HistData,5,50,No Selection,No Selection,0,Menu 1,5,1,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+8:Cnfl_Cpy,No Selection,0,0,Menu 1,5,1,Work Area,1,3,1,Copy Src to Dst,0,MSCRENOSHIP,1
+9:BdRd:SHIPSCAN1,HistData,5,57,No Selection,No Selection,0,Menu 1,6,1,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+9:BdRd_Cpy,No Selection,0,0,Menu 1,6,1,Work Area,1,4,1,Copy Src to Dst,0,MSCRENOSHIP,1
+10:NoSc:SHIPSCAN1,HistData,5,64,No Selection,No Selection,0,Menu 1,7,1,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+10:NoSc_Cpy,No Selection,0,0,Menu 1,7,1,Work Area,1,5,1,Copy Src to Dst,0,MSCRENOSHIP,1
+Sum,No Selection,0,0,Work Area,1,1,Menu 1,1,1,5,Sum the Src,0,MSCRENOSHIP,1
+Calc %,HistData,5,36,Menu 1,1,1,Menu 1,3,1,7,Calc % (Day),0,MSCRENOSHIP,1
+SHIPSCALE,HistData,5,71,No Selection,No Selection,0,Menu 1,2,2,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+11:GdRd_Cpy,No Selection,0,0,Menu 1,2,2,Work Area,1,1,1,Copy Src to Dst,0,MSCRENOSHIP,1
+12:NoRd:SHIPSCALE,HistData,5,78,No Selection,No Selection,0,Menu 1,4,2,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+12:NoRd_Cpy,No Selection,0,0,Menu 1,4,2,Work Area,1,2,1,Copy Src to Dst,0,MSCRENOSHIP,1
+13:Cnfl:SHIPSCALE,HistData,5,85,No Selection,No Selection,0,Menu 1,5,2,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+13:Cnfl_Cpy,No Selection,0,0,Menu 1,5,2,Work Area,1,3,1,Copy Src to Dst,0,MSCRENOSHIP,1
+14:BdRd:SHIPSCALE,HistData,5,92,No Selection,No Selection,0,Menu 1,6,2,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+14:BdRd_Cpy,No Selection,0,0,Menu 1,6,2,Work Area,1,4,1,Copy Src to Dst,0,MSCRENOSHIP,1
+15:NoSc:SHIPSCALE,HistData,5,99,No Selection,No Selection,0,Menu 1,7,2,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+15:NoSc_Cpy,No Selection,0,0,Menu 1,7,2,Work Area,1,5,1,Copy Src to Dst,0,MSCRENOSHIP,1
+Sum,No Selection,0,0,Work Area,1,1,Menu 1,1,2,5,Sum the Src,0,MSCRENOSHIP,1
+Calc %,HistData,5,71,Menu 1,1,2,Menu 1,3,2,7,Calc % (Day),0,MSCRENOSHIP,1
+SHIPSCAN2,HistData,5,106,No Selection,No Selection,0,Menu 1,2,3,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+16:GdRd_Cpy,No Selection,0,0,Menu 1,2,3,Work Area,1,1,1,Copy Src to Dst,0,MSCRENOSHIP,1
+17:NoRd:SHIPSCAN2,HistData,5,113,No Selection,No Selection,0,Menu 1,4,3,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+17:NoRd_Cpy,No Selection,0,0,Menu 1,4,3,Work Area,1,2,1,Copy Src to Dst,0,MSCRENOSHIP,1
+18:Cnfl:SHIPSCAN2,HistData,5,120,No Selection,No Selection,0,Menu 1,5,3,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+18:Cnfl_Cpy,No Selection,0,0,Menu 1,5,3,Work Area,1,3,1,Copy Src to Dst,0,MSCRENOSHIP,1
+19:BdRd:SHIPSCAN2,HistData,5,127,No Selection,No Selection,0,Menu 1,6,3,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+19:BdRd_Cpy,No Selection,0,0,Menu 1,6,3,Work Area,1,4,1,Copy Src to Dst,0,MSCRENOSHIP,1
+20:NoSc:SHIPSCAN2,HistData,5,134,No Selection,No Selection,0,Menu 1,7,3,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+20:NoSc_Cpy,No Selection,0,0,Menu 1,7,3,Work Area,1,5,1,Copy Src to Dst,0,MSCRENOSHIP,1
+Sum,No Selection,0,0,Work Area,1,1,Menu 1,1,3,5,Sum the Src,0,MSCRENOSHIP,1
+Calc %,HistData,5,106,Menu 1,1,3,Menu 1,3,3,7,Calc % (Day),0,MSCRENOSHIP,1
+SHIP SORTER,HistData,5,141,No Selection,No Selection,60,Menu 2,1,0,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+SHIP SORTER,HistData,5,141,No Selection,No Selection,60,Menu 4,2,0,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+22:Stps:SHIP SORTER,HistData,5,148,No Selection,No Selection,0,Menu 2,2,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+23:Itms:SHIP SORTER,HistData,5,155,No Selection,No Selection,0,Menu 2,3,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+23:Itms:SHIP SORTER,HistData,5,155,No Selection,No Selection,0,Menu 4,1,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP SORTER,HistData,5,155,Menu 4,2,0,Menu 4,3,0,7,Division (Day),0,MSCRENOSHIP,1
+24:Max:SHIP SORTER,HistData,5,162,No Selection,No Selection,0,Menu 4,4,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+25:GpAb:SHIP SORTER,HistData,5,169,No Selection,No Selection,0,Menu 2,7,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP01,HistData,5,176,No Selection,No Selection,0,Menu 3,1,0,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+27:FlAb:SHIP01,HistData,5,183,No Selection,No Selection,0,Menu 3,2,0,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP02,HistData,5,190,No Selection,No Selection,0,Menu 3,1,1,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+29:FlAb:SHIP02,HistData,5,197,No Selection,No Selection,0,Menu 3,2,1,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP03,HistData,5,204,No Selection,No Selection,0,Menu 3,1,2,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+31:FlAb:SHIP03,HistData,5,211,No Selection,No Selection,0,Menu 3,2,2,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP04,HistData,5,218,No Selection,No Selection,0,Menu 3,1,3,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+33:FlAb:SHIP04,HistData,5,225,No Selection,No Selection,0,Menu 3,2,3,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP05,HistData,5,232,No Selection,No Selection,0,Menu 3,1,4,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+35:FlAb:SHIP05,HistData,5,239,No Selection,No Selection,0,Menu 3,2,4,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP06,HistData,5,246,No Selection,No Selection,0,Menu 3,1,5,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+37:FlAb:SHIP06,HistData,5,253,No Selection,No Selection,0,Menu 3,2,5,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP07,HistData,5,260,No Selection,No Selection,0,Menu 3,1,6,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+39:FlAb:SHIP07,HistData,5,267,No Selection,No Selection,0,Menu 3,2,6,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP08,HistData,5,274,No Selection,No Selection,0,Menu 3,1,7,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+41:FlAb:SHIP08,HistData,5,281,No Selection,No Selection,0,Menu 3,2,7,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP09,HistData,5,288,No Selection,No Selection,0,Menu 3,1,8,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+43:FlAb:SHIP09,HistData,5,295,No Selection,No Selection,0,Menu 3,2,8,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP10,HistData,5,302,No Selection,No Selection,0,Menu 3,1,9,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+45:FlAb:SHIP10,HistData,5,309,No Selection,No Selection,0,Menu 3,2,9,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP11,HistData,5,316,No Selection,No Selection,0,Menu 3,1,10,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+47:FlAb:SHIP11,HistData,5,323,No Selection,No Selection,0,Menu 3,2,10,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP12,HistData,5,330,No Selection,No Selection,0,Menu 3,1,11,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+49:FlAb:SHIP12,HistData,5,337,No Selection,No Selection,0,Menu 3,2,11,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP13,HistData,5,344,No Selection,No Selection,0,Menu 3,1,12,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+51:FlAb:SHIP13,HistData,5,351,No Selection,No Selection,0,Menu 3,2,12,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP14,HistData,5,358,No Selection,No Selection,0,Menu 3,1,13,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+53:FlAb:SHIP14,HistData,5,365,No Selection,No Selection,0,Menu 3,2,13,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP15,HistData,5,372,No Selection,No Selection,0,Menu 3,1,14,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+55:FlAb:SHIP15,HistData,5,379,No Selection,No Selection,0,Menu 3,2,14,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP16,HistData,5,386,No Selection,No Selection,0,Menu 3,1,15,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+57:FlAb:SHIP16,HistData,5,393,No Selection,No Selection,0,Menu 3,2,15,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+SHIP17,HistData,5,400,No Selection,No Selection,0,Menu 3,1,16,7,Copy Fortna (Day),1,MSCRENOSHIP,1
+59:FlAb:SHIP17,HistData,5,407,No Selection,No Selection,0,Menu 3,2,16,7,Copy Fortna (Day),0,MSCRENOSHIP,1
+Sum Dv 2,No Selection,0,0,Menu 3,1,0,Menu 2,4,0,17,Sum the Src,0,MSCRENOSHIP,1
+Recr: 2,HistData,5,155,Menu 2,4,0,Menu 2,5,0,7,Diff (Day),0,MSCRENOSHIP,1
+Sum Ab 2,No Selection,0,0,Menu 3,2,0,Menu 2,6,0,17,Sum the Src,0,MSCRENOSHIP,1

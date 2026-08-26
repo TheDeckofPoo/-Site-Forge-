@@ -1,0 +1,18 @@
+"Name"~"MergeBoss"~"Valid"~"MyTurn"~"Index"~"CalcPriority"~"MergeRoute"~"IsClear"~"RanEnough"~"Presense"~"LaneReadyInput1"~"LaneReadyInput2"~"ReleaseIO"~"DontFireRelease"~"Priority"~"FullClearTimerName"~"ClrTimerName"~"ClrTimerPreset"~"RunTimerName"~"RunTimerPreset"~"LnClrTimerName"~"LnClrTimerPreset"~"RlsDelayTimerName"~"RlsDelayTimerPreset"~"LaneLatch"~"InputDisabled"~"InvertDisable"~"LnClear"~"LatchOffTimer"~"RunOffTimerFlag"~"PitchTimerName"~"PitchFlag"~"RouteDisable"~"pLastRunSec"~"pLastRunMSec"
+N/A~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+ ~N/A~N~Stopped~0~0~N/A~0~0~INVALID~RECZERO~RECZERO~INVALID~N~0~N/A~N/A~       0.000~N/A~       0.000~N/A~       0.000~N/A~       0.000~0~INVALID~N~0~N/A~0~N/A~0~0~0~0~
+
+

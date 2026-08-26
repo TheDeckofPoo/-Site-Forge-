@@ -1,0 +1,41 @@
+<html>
+<head>
+<title>Integer Flags Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Integer Flags</h1><hr>
+<p>FortnaPlus&copy; uses Integer Flags as permanent variables to store information and as signals between the various program processes. The first 100 flags are common to all FortnaPlus&copy; installations. The flags above 100 are specific to a particular installation.</p>
+
+<p>Some of the more important flags are:</p>
+<ul>
+  <li> pleasestart (flag 0) - please start is 1 when the system is running and 
+    0 when the system is stopped.</li>
+  <li> TIMERGUI (flag 8) - controls the priority of the GUI process by setting 
+    the requested maximum time between time slices for the GUI process.</li>
+  <li>TIMERCRITICAL (flag 9) - controls the priority of the Controls process by 
+    setting the requested maximum time between time slices for the Controls process.</li>
+  <li>TIMERSORT (flag 10) - controls the priority of the Sort process by setting 
+    the requested maximum time between time slices for the SORT process.</li>
+  <li>JAM (flag 12) - set to 1 when a jam condition exists in the system.</li>
+  <li>PIXELS PER FEET (flag 14) - controls the scale of the main screen drawing 
+    (how many screen pixels are used to draw a foot of the conveyor system).</li>
+  <li>MYNODE (flag 53) - displays the node number of the PC.</li>
+  <li>FLAG PROTECT FORCE (flag 75) - when set to 1, restricts the other nodes on 
+    the system from using 'force' to control I/O devices controlled by this machine. 
+    When set to 0, allows other nodes the freedom to force or manually control 
+    the I/O devices controlled by this machine.</li>
+  <li>Project-specific flags, over 100, may include those specifying maximum number 
+    of times allowable for various utilities or functions, such as the following:</li>
+  <li>MAXCONSECNOREADS - used by scanstats</li>
+  <li>MAXCONSECNODATAS - used by scanstats</li>
+  <li>MAXRECIRCS - used by scanstats</li>
+</ul>
+<p>Project-specific flags configuring use of lanes may also be included:</p>
+<ul>
+  <li>JACKPOTLANE - used by scanstats</li>
+</ul>
+<hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

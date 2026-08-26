@@ -1,0 +1,8 @@
+"Name"~"EnableFlag"~"Status"~"AppSorter"~"StopSorterOnErr"~"StopSrtOnHostErr"~"AutoResetError"~"ControlMachine"~"MsgMenu"~"HrtMsgTable"~"HBTimeIntrvl"~"HBMsgIntrvl"~"MsgErrTime"~"SendInitMsg"~"CommErrSignal"~"CommErrACTION"~"CommErrBIT"~"CommErrBit"~"HostErrSignal"~"HostErrACTION"~"HostErrBIT"~"HostErrBit"~"HostMsg"~"ResetCommError"~"ResetCommErrSig"~"ErrorsRecord"~"pQtyQueue"~"pCommAlrmState"~"pHostAlrmState"~"pLastTime"~"pLastMsgTime"~"pLastDbKey"~"pLastQueTime"~"pErrorFlag"~"pCommAlrmLtch"~"pHostAlrmLtch"
+N/A~N~ ~N/A~N~N~N~N/A~None~None~0~0~0~N~INVALID~N/A~0~INVALID~INVALID~N/A~0~INVALID~0~N~INVALID~INVALID~0~0~0~0~0~0~0~0~0~0~
+ ~N~ ~N/A~N~N~N~N/A~None~None~0~0~0~N~INVALID~N/A~0~INVALID~INVALID~N/A~0~INVALID~0~N~INVALID~INVALID~0~0~0~0~0~0~0~0~0~0~
+ ~N~ ~N/A~N~N~N~N/A~None~None~0~0~0~N~INVALID~N/A~0~INVALID~INVALID~N/A~0~INVALID~0~N~INVALID~INVALID~0~0~0~0~0~0~0~0~0~0~
+ ~N~ ~N/A~N~N~N~N/A~None~None~0~0~0~N~INVALID~N/A~0~INVALID~INVALID~N/A~0~INVALID~0~N~INVALID~INVALID~0~0~0~0~0~0~0~0~0~0~
+ ~N~ ~N/A~N~N~N~N/A~None~None~0~0~0~N~INVALID~N/A~0~INVALID~INVALID~N/A~0~INVALID~0~N~INVALID~INVALID~0~0~0~0~0~0~0~0~0~0~
+
+

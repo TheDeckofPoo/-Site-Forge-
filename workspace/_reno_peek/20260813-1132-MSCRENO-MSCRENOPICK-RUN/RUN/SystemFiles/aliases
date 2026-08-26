@@ -1,0 +1,30 @@
+alias ll='ls -l'
+#alias ls='ls -F'
+alias l='ls -avF'
+alias dir='ls -avF'
+alias ch='ls -avF *.[ch]'
+alias see='ls -al /dev/shmem'
+alias cd..='cd ..'
+alias goso='cd /SortPlus'
+alias go='cd /SortPlus/RUN'
+alias gof='cd /SortPlus/RUN/FORTNA'
+alias gol='cd /SortPlus/LOGS'
+alias gop='cd /SortPlus/RUN/PROJECT'
+alias gos='cd /usr/local/var'
+alias pp='cd /SortPlus/RUN; (on -t con1 ./UPS_Batch)&'
+alias man='use'
+alias whereis='which -aL'
+alias vi='vim'
+alias fdo='for f in `alive -u | grep -v "^7$"`; do'
+alias onf='on -f $f'
+alias singn='sin gn | grep _P'
+alias bye='clear; logout'
+alias copy='cp'
+alias e='head *.err'
+alias vv='ped'
+
+if test $TERM = 'qansi-m'
+then
+   export PS1="$HOSTNAME: \$PWD
+[`basename \$HOME`] > "
+fi

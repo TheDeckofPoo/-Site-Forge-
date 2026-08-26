@@ -1,0 +1,40 @@
+#!/bin/sh
+
+date
+
+case $HOSTNAME in
+	CP1)  	PCTYPE="PANEL";	NEEDFP=1;;
+	CP2)		PCTYPE="DATA";	NEEDFP=1;;
+	CP3)  	PCTYPE="COMM";	NEEDFP=1;;
+	CP4)  	PCTYPE="PANEL";	NEEDFP=1;;
+esac
+
+echo "NODE=$HOSTNAME PCTYPE=$PCTYPE NEEDFP=$NEEDFP"
+
+if test $NEEDFP -eq 1
+then
+
+	echo "\n\n==> LOOKING FOR FortnaPlus <=="
+	date
+	sleep 1
+	ALREADY=`ps -ef | grep fortna | wc -l`
+	if test $ALREADY -gt 0
+	then
+		echo "    FortnaPlus is already running."
+		sleep 1
+	else
+		echo "\n\n==> STARTING FortnaPlus <=="
+		date
+		sleep 1
+
+		cd /SortPlus/RUN/
+		echo >> /tmp/error
+		echo "Starting FortnaPlus" >> /tmp/error
+		date >> /tmp/error
+		echo >> /tmp/error
+		/SortPlus/RUN/fortna 2>&1 | tee -a /tmp/error
+	fi
+fi
+
+echo "\n\n==> DONE <=="
+date

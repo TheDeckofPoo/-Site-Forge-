@@ -1,0 +1,7 @@
+Scanner 1,HistData,5,8,No Selection,No Selection,0,Menu 1,1,0,7,Copy Fortna (Day),1
+Scanner 2,HistData,5,8,Menu 1,1,60,Menu 1,1,1,7,Copy Fortna (Day),1
+Scanner 3,HistData,5,8,Menu 1,No Selection,60,Menu 1,1,2,7,Copy Fortna (Day),1
+Shipping ,HistData,5,8,No Selection,No Selection,60,Menu 2,1,0,7,Copy Fortna (Day),1
+Lane 1,HistData,5,8,No Selection,No Selection,61,Menu 3,1,0,7,Copy Fortna (Day),1
+Lane 2,HistData,5,8,No Selection,No Selection,62,Menu 3,2,1,7,Copy Fortna (Day),1
+Lane 2,HistData,5,8,No Selection,No Selection,63,Menu 3,1,1,7,Copy Fortna (Day),0

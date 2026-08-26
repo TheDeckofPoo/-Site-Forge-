@@ -1,0 +1,95 @@
+<html>
+<head>
+<title>Machine Menu Help</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000"><a name="top">
+<h1 align="center">Machine Menu</h1><hr></a>
+<p>The Machine screen lists the other systems and devices that FortnaPlus&copy; 
+  communicates with. These are typically other FortnaPlus&copy; systems, scanners, 
+  scales, and Warehouse Management systems.<p>
+<p>
+  In an installation where there are multiple FortnaPlus&copy; systems, all of 
+  the FortnaPlus&copy; systems are listed in each machine's Machine menu. Every 
+  FortnaPlus&copy; system name other than the machine the copy of FortnaPlus&copy; 
+  is on, has a P2 appended to its name. FortnaPlus&copy; uses these names to communicate 
+  the status of parts between systems. The names of the other systems and devices 
+  are arbitrary names chosen by Fortna personnel.</p>
+<p>The other fields that must be configured are the connection type, communication 
+  protocol, port, process, and whether messages will be stored in the database.</p>
+<p>
+<a href="#pic">Click Here to see a screen shot of this menu. <img src="../../../images/smallmachine.gif" align="middle"width="162" height="119"> 
+</a><p>Fields:</p>
+<blockquote> 
+  <ul>
+    <li>Machine Name - the name of the machine or device 
+      <p> 
+    </li>
+    <li>Machine Index - automatically generated 
+      <p> 
+    </li>
+    <li>Machine PID - automatically generated 
+      <p> 
+    </li>
+    <li>Connection Type - a pull down into the Connection Types menu 
+      <p> 
+    </li>
+    <li>Communication Protocol - a pull down into the Protocol Types menu 
+      <p> 
+    </li>
+    <li>Machine Port - the path for the device or computer 
+      <p> 
+    </li>
+    <li>Transmit Retry - the amount of time to wait before resending a message, 
+      which has not been acknowledged by the machine. 
+      <p> 
+    </li>
+    <li>Offline - 'Y' if data has been lost due to unacknowledged messages. 
+      <p> 
+    </li>
+    <li>Process - a pull down into the Process Type menu 
+      <p> 
+    </li>
+    <li>UseDB - uses the database for message tracking 
+      <p> 
+    </li>
+    <li>Ignore Dupes - 'Y' to ignore duplicate transmissions for this machine. 
+      'N' tp accept duplicate transmissions 
+      <p> 
+    </li>
+    <li>No Circbuff - used to conserve memory if UseDB is set 
+      <p> 
+    </li>
+    <li>CircSize - used to modify the default circular buffer size for transmitting 
+      messages 
+      <p> 
+    </li>
+    <li>Trig Size - incoming messages will be processes after this many characters 
+      <p> 
+    </li>
+    <li>Trig InterChar - incoming messages will be processed after this amount 
+      of time between characters 
+      <p> 
+    </li>
+    <li>Trig Time Out - incoming messages will be processed after this amount 
+      of time with no characters </li>
+ <p>
+    <li>LogFile - a boolean variable that determines if communications are to 
+      be logged in a file</li>
+  <p>
+    <li>LogLength - determines how many characters of a message are sent to the 
+      logfile</li>
+    <p>
+    <li>TSN - Transaction Sequence Number - defined by FortnaPlus&copy;. A holding 
+      place for protocols that require a TSN. 
+      <p> 
+    </li>
+  </ul>
+</blockquote><hr>
+<p>
+<a name="pic"><img src="../../../images/machine.gif"></a> 
+<p><a href="#top">Click Here to return to the top of the page. </a>
+<p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

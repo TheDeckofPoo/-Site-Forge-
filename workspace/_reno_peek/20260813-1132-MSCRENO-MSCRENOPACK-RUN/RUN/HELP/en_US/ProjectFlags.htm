@@ -1,0 +1,44 @@
+<html>
+<head>
+<title>Project Flags Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><p align="center">Project Flags</p></h1><hr>
+<p> 
+<p>The Project Flags Menu allows on the fly configuration of project variables. 
+</p> 
+<p>Fields:</p><blockquote>
+<p><b>Exception Lane Name</b> - To change the lane designated as the Exception Lane, enter the lane name in the StrFlag column, 
+exactly as it is named in the first column of the Lane table. This lane will receive 'No Reads', 'No Scans',
+and product having invalid customer numbers.</p>
+<p><b>Scan Info Record</b> - This number is maintained internally. It is the last record number used in the ScanInfo 
+table to represent the last product passing the scanner.</p>
+<p><b>Jackpot Unavailable</b> - This IntFlag is used to tell the system that the Jackpot and/or the RunnOff 
+lane is full or disabled by setting the value to 1. If this condition occurs the sorter is stopped. When the Jackpot or RunnOff 
+becomes available, the sorter will start again automatically by setting the flag to 0.</p>
+<p><b>CTRL Log Level</b> - The CTRL process in this application controls the I/O devices. During its processing 
+comments are written out to a file in the /SortPlus/Briggs/v7.0/RUN/LOGS directory. A new CTRL file is 
+begun everyday and includes the date in the file name extension. ex. BriggsCTRL.15 . These log files are 
+held for 30 days at which time the name is reused. The number shown as the log level can range from 1 to 6 with 6 
+being the most extensive. When debugging, the number can be increased to show more comments on behavior. In 
+normal everyday processing, the number can be reduced to the average of 3, to display scans and possible error conditions 
+encountered.<br>
+</p>
+<p><b>SERV Log Level</b> - The SERV process in this application controls the sortation logic, decisions, and database 
+queries and updates. During its processing 
+comments are written out to a file in the /SortPlus/Briggs/v7.0/RUN/LOGS directory. A new SERV file is 
+begun everyday and includes the date in the file name extension. ex. BriggsSERV.30 . These log files are 
+held for 30 days at which time the name is reused. The number shown as the log level can range from 1 to 6 with 6 
+being the most extensive. When debugging, the number can be increased to show more comments on behavior. In 
+normal everyday processing, the number can be reduced to the average of 3, to display lane assignments 
+and possible error conditions encountered.<br>
+</p>
+</ul><p><hr>
+<p align="center"><a href="BriggsMenu.htm">Click Here to return to Briggs Menu Help</a></p><hr>
+<p>
+<p align="center"><a href="MainHelp.htm">Click Here to return to Main Menu Help</a></p><hr>
+  <br>
+
+</body>
+</html>

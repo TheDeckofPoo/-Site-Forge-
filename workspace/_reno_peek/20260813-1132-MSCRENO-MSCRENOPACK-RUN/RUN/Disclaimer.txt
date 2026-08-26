@@ -1,0 +1,303 @@
+++++++++++++++++++++++++++++++++++++++++
+Fortna
+
+Copyright (c) 1991 - 2018 Fortna, Inc. -- All rights reserved
+
+++++++++++++++++++++++++++++++++++++++++
+ ABDriver
+
+ Author(s): Matt Dettmer-Radtke
+ Copyright (c) 1997 Allen-Bradley Company
+
+++++++++++++++++++++++++++++++++++++++++
+Apache Portable Runtime
+
+Copyright (c) 2011 The Apache Software Foundation.
+
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
+
+Portions of this software were developed at the National Center
+for Supercomputing Applications (NCSA) at the University of
+Illinois at Urbana-Champaign.
+
+This software contains code derived from the RSA Data Security
+Inc. MD5 Message-Digest Algorithm.
+
+This software contains code derived from UNIX V7, Copyright(C)
+Caldera International Inc.
+
+++++++++++++++++++++++++++++++++++++++++
+Apache Portable Runtime Utility Library
+
+Copyright (c) 2011 The Apache Software Foundation.
+
+This product includes software developed by
+The Apache Software Foundation (http://www.apache.org/).
+
+Portions of this software were developed at the National Center
+for Supercomputing Applications (NCSA) at the University of
+Illinois at Urbana-Champaign.
+
+This software contains code derived from the RSA Data Security
+Inc. MD5 Message-Digest Algorithm, including various
+modifications by Spyglass Inc., Carnegie Mellon University, and
+Bell Communications Research, Inc (Bellcore).
+
+++++++++++++++++++++++++++++++++++++++++
+cJSON
+
+Copyright (c) 2009 Dave Gamble
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+++++++++++++++++++++++++++++++++++++++++
+ControlNetCtl
+
+Copyright (c) 1998-2000 SST, a division of Woodhead Canada Limited
+
+++++++++++++++++++++++++++++++++++++++++
+eips
+
+Copyright (c) 2002-2013 by Real Time Automation, Inc.
+
+This software is copyrighted by and is the sole property of
+Real Time Automation, Inc. (RTA).  All rights, title, ownership,
+or other interests in the software remain the property of RTA.
+This software may only be used in accordance with the corresponding
+license agreement.  Any unauthorized use, duplication, transmission,
+distribution, or disclosure of this software is expressly forbidden.
+
+This Copyright notice MAY NOT be removed or modified without prior
+written consent of RTA.
+
+RTA reserves the right to modify this software without notice.
+
+Real Time Automation
+150 S. Sunny Slope Road            USA 262.439.4999
+Suite 130                          www.rtaautomation.com
+Brookfield, WI 53005               software@rtaautomation.com
+
+++++++++++++++++++++++++++++++++++++++++
+gettext
+
+Convenience header for conditional use of GNU <libintl.h>.
+Copyright (C) 1995-1998, 2000-2002, 2004 Free Software Foundation, Inc.
+
+This program is free software; you can redistribute it and/or modify it
+under the terms of the GNU Library General Public License as published
+by the Free Software Foundation; either version 2, or (at your option)
+any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+Library General Public License for more details.
+
+You should have received a copy of the GNU Library General Public
+License along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
+USA.
+
+++++++++++++++++++++++++++++++++++++++++
+iODBC Driver Manager
+
+Copyright (C) 1995 by Ke Jin <kejin@empress.com>
+Copyright (C) 1996-2009 by OpenLink Software <iodbc@openlinksw.com>
+All Rights Reserved.
+
+This software is released under either the GNU Library General Public
+License (see LICENSE.LGPL) or the BSD License (see LICENSE.BSD).
+
+Note that the only valid version of the LGPL license as far as this
+project is concerned is the original GNU Library General Public License
+Version 2, dated June 1991.
+
+While not mandated by the BSD license, any patches you make to
+the iODBC may be contributed back into the iODBC project at your
+discretion. Contributions will benefit the Open Source and Data Access
+community as a whole. Submissions may be made at http://www.iodbc.org.
+
+++++++++++++++++++++++++++++++++++++++++
+MySQL
+
+Copyright (C) 2005-2006 MySQL AB
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; version 2 of the License.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA */
+
+++++++++++++++++++++++++++++++++++++++++
+MySQL Connector ODBC 
+
+Copyright (C) 2000-2007 MySQL AB
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of version 2 of the GNU General Public License as
+published by the Free Software Foundation.
+
+There are special exceptions to the terms and conditions of the GPL
+as it is applied to this software. View the full text of the exception
+in file LICENSE.exceptions in the top-level directory of this software
+distribution.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+++++++++++++++++++++++++++++++++++++++++
+OpenSSL
+
+Copyright (c) 1998-2000 The OpenSSL Project.  All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+1. Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer. 
+
+2. Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in
+   the documentation and/or other materials provided with the
+   distribution.
+
+3. All advertising materials mentioning features or use of this
+   software must display the following acknowledgment:
+   "This product includes software developed by the OpenSSL Project
+   for use in the OpenSSL Toolkit. (http://www.openssl.org/)"
+
+4. The names "OpenSSL Toolkit" and "OpenSSL Project" must not be used to
+   endorse or promote products derived from this software without
+   prior written permission. For written permission, please contact
+   openssl-core@openssl.org.
+
+5. Products derived from this software may not be called "OpenSSL"
+   nor may "OpenSSL" appear in their names without prior written
+   permission of the OpenSSL Project.
+
+6. Redistributions of any form whatsoever must retain the following
+   acknowledgment:
+   "This product includes software developed by the OpenSSL Project
+   for use in the OpenSSL Toolkit (http://www.openssl.org/)"
+
+THIS SOFTWARE IS PROVIDED BY THE OpenSSL PROJECT ``AS IS'' AND ANY
+EXPRESSED OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE OpenSSL PROJECT OR
+ITS CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
+HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
+OF THE POSSIBILITY OF SUCH DAMAGE.
+========================================
+
+This product includes cryptographic software written by Eric Young
+(eay@cryptsoft.com).  This product includes software written by Tim
+Hudson (tjh@cryptsoft.com).
+
+++++++++++++++++++++++++++++++++++++++++
+Profibus
+
+SST Profibus interface card Shared Memory Interface Definitions
+Copyright (c) 1995-2003 SST/Woodhead Cananda Ltd.
+
+++++++++++++++++++++++++++++++++++++++++
+smbus
+
+$QNXLicenseC:
+Copyright 2011-2012, QNX Software Systems.
+Copyright 2011-2012, Mike Gorchak.
+
+Licensed under the Apache License, Version 2.0 (the "License"). You
+may not reproduce, modify or distribute this software except in
+compliance with the License. You may obtain a copy of the License
+at: http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" basis,
+WITHOUT WARRANTIES OF ANY KIND, either express or implied.
+
+This file may contain contributions from others, either as
+contributors under the License or as licensors under other terms.
+Please review this entire file for other proprietary rights or license
+notices, as well as the QNX Development Suite License Guide at
+http://licensing.qnx.com/license-guide/ for other information.
+
+++++++++++++++++++++++++++++++++++++++++
+libstomp
+Copyright 2005 LogicBlaze Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+
+++++++++++++++++++++++++++++++++++++++++
+libxml
+
+Except where otherwise noted in the source code (e.g. the files hash.c,
+list.c and the trio files, which are covered by a similar licence but
+with different Copyright notices) all the files are:
+
+ Copyright (C) 1998-2012 Daniel Veillard.  All Rights Reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is fur-
+nished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FIT-
+NESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+++++++++++++++++++++++++++++++++++++++++

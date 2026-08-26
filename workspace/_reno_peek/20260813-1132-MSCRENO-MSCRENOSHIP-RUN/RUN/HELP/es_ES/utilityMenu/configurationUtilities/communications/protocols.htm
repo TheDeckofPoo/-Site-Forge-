@@ -1,0 +1,76 @@
+<html>
+<head>
+<title>Protocols Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Protocols</h1><hr>
+<p> The Protocols screen lists the messaging protocols FortnaPlus&copy; supports 
+  for data exchange with other systems or devices. The Protocols screen also shows 
+  the FortnaPlus&copy; functions used to initialize handling of the protocol, 
+  maintain the protocol, build messages, and parse received messages for the protocol. 
+  <p>The protocol types are:<p><blockquote>
+<ul>
+  <li>N/A - used in other tables as a filler. Its init, maintain, build and parse 
+    functions should all be set to page 0. This must always be the first entry 
+    in the protocols table.</li>
+  <li>HOST_SORTPLUS - used to communicate between FortnaPlus&copy; controller 
+    systems.</li>
+  <li> HOST_STD - used to communicate with WMS systems using a sequence number 
+    and acknowledgement format.</li>
+  <li>HOST_RAW - used to communicate with devices such as scanners and scales. 
+    Messages for this protocol use no header information and require no acknowledgement.</li>
+  <li>HOST_ECHO - used to communicate with WMS systems that require echoing of 
+    the complete original message as an acknowledgement.</li>
+  <li>MOVE - used to communicate with MOVE systems.</li>
+</ul>
+</blockquote>
+
+<table width="600" border="1">
+  <tr> 
+    <td><b>Protocol Name</b></td>
+    <td><b>Init Function</b></td>
+    <td><b>Maintain Function</b></td>
+    <td><b>Build Function</b></td>
+    <td><b>Parse Function</b></td>
+  </tr>
+  <tr> 
+    <td>HOST_SORTPLUS</td>
+    <td>sortplus_init</td>
+    <td>N/A</td>
+    <td>sortplus_build</td>
+    <td>sortplus_parse</td>
+  </tr>
+  <tr> 
+    <td>HOST_STD</td>
+    <td>hoststd_init</td>
+    <td>N/A </td>
+    <td>hoststd_build</td>
+    <td>hoststd_parse</td>
+  </tr>
+  <tr> 
+    <td>HOST_RAW</td>
+    <td>hostraw_init</td>
+    <td>N/A </td>
+    <td>hostraw_build</td>
+    <td>hostraw_parse</td>
+  </tr>
+  <tr> 
+    <td>HOST_ECHO</td>
+    <td>hostecho_init</td>
+    <td>N/A </td>
+    <td>hostecho_build</td>
+    <td>hostecho_parse</td>
+  </tr>
+  <tr> 
+    <td>MOVE</td>
+    <td>move_init</td>
+    <td>move_maintain</td>
+    <td>move_build</td>
+    <td>move_parse</td>
+  </tr>
+</table>
+<p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

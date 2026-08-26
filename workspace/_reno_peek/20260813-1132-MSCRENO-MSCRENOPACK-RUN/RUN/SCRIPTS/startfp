@@ -1,0 +1,57 @@
+#!/bin/sh
+
+date
+
+case $NODE in
+	1)  	PCTYPE="PANEL";	NEEDFP=1;	NEEDDB=1;;
+	2)		PCTYPE="DATA";	NEEDFP=1;	NEEDDB=1;;
+	3)  	PCTYPE="COMM";	NEEDFP=1;	NEEDDB=1;;
+	4)  	PCTYPE="PANEL";	NEEDFP=1;	NEEDDB=1;;
+esac
+
+echo "NODE=$NODE PCTYPE=$PCTYPE ($NEEDFP,$NEEDDB)"
+
+if test $NEEDDB -eq 1
+then
+	echo "\n\n==> STARTING DATABASES <=="
+	date
+	sleep 1
+	/usr/local/bin/startalldb
+	sleep 2
+fi
+
+
+if test $NEEDFP -eq 1
+then
+
+	echo "\n\n==> LOOKING FOR FORTNAPLUS <=="
+	date
+	sleep 1
+	ALREADY=`sin -h -PRUN | wc -l`
+	if test $ALREADY -gt 0
+	then
+		echo "    FORTNAPLUS is already running."
+		sleep 1
+	else
+		echo "\n\n==> LOOKING FOR DATABASES <=="
+		date
+		sleep 1
+
+		echo "\n\n==> STARTING FORTNAPLUS <=="
+		date
+		sleep 1
+
+		cd /SortPlus/RUN/
+		/usr/local/bin/scc
+		echo >> /error
+		echo "Starting FORTNAPLUS" >> /error
+		date >> /error
+		echo >> /error
+		fortna 2>&1 | tee -a /error
+	fi
+fi
+
+echo "\n\n==> DONE <=="
+date
+sleep 1
+

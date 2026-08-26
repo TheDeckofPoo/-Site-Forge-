@@ -1,0 +1,56 @@
+<html>
+<head>
+<title>Divert Points/Sorter Outpoints Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Divert Points / Sorter Outpoints</h1>
+<hr>
+<p>
+This menu is used to configure the divert points on a sorter.
+The Outpoints Table is displayed.
+The Outpoints Table controls the points where items are diverted, monitors whether the lanes are full, and verifies that diverts have actually occurred.
+<blockquote>
+  <p>Outpoint Name - this string will automatically fill in if left blank.
+  <p>Sorter - a pull-down into the Sorter Configuration table.
+  <p>Outpoint Number - ranging from 0 through the number of outpoints on this sorter record.
+  <p>Outpoint Location - the tic location of the outpoint.
+  <p>Outpoint I/O Name - a pull-down into the Conveyor file.
+  <p>Verify Location - the location of the verify photo eye.
+  <p>Verify I/O Name - the name of the verify photo eye.
+  <p>Fullclr Timer Name - a pull-down into Timers. The clear timer is used by the full lane photo eye.
+  <p>Trigger I/O Name - the name of the photo eye prior to the divert.
+  <p>LoLane - the lowest lane that will be accepted at this divert.
+  <p>HiLane - the highest lane that will be accepted at this divert.
+  <p>Retent - holds the last state.
+  <p>Latch - only fire the output, do not unfire the output.
+  <p>LoAltLane - the lowest lane that will be accepted to this divert.
+  <p>HiAltLane - the highest lane that will be accepted at this divert.
+  <p>LoAlt1Lane - first alternative lowest lane accepted at this divert.
+  <p>HiAlt1Lane - first alternative highest lane accepted at this divert.
+  <p>LoAlt2Lane - second alternative lowest lane accepted at this divert.
+  <p>HiAlt2Lane - second alternative highest lane accepted at this divert.
+  <p>Set Fixed Dwell - the number of ticks to keep firing.
+  <p>Percent Fixed Dwell - this integer represents a percent of the carton added to the Set Fixed Dwell value.
+  <p>Percent Box Dwell - info displayed here is automatically copied from the data table.
+  <p>Set Fixed Delay - if set in the data table, the value is automatically shown here.
+  <p>Percent Box Delay - if there is a BoxDelay set in the data table, it will be copied here and used.
+  <p>Dwell - if there is a dwell set in the data table, it will be copied here and used.
+  <p>BoxDelay - if there is a BoxDelay set in the data table, it will be copied here and used.
+  <p>Don't Set Expect - a boolean field, set to an N if &qout;set expected&quot; is not needed.
+  <p>ArmFriend - used to have multiple outpoints fire same box, index in data to other outgoing.
+  <p>UseArmed - set to a Y on the second output to fire.
+  <p>RatePop - a pull-down into the Rate table. Used to limit throughput to any 
+    given lane.
+  <p>Enable IO - optional I/O to use, which, if on, would be treated as a full.
+  <p>Number of Diverts - holds the data of the number of boxes that have been diverted</p>
+  <p>FireBackDSV - the name of the Double Solenoid Valve that is fired after the divert.
+  <p>FireBackDwell - the duration in ticks to fire the DSV in the fire-back cycle.
+  <p>FireBackCount - keeps track of how many ticks have passed in the fire-back 
+    cycle.
+</blockquote>
+<p>
+<hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

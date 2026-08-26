@@ -1,0 +1,63 @@
+"Machine_Name"~"Status"~"Error"~"Machine_Index"~"Machine_Pid"~"Connection_Type"~"Communication_Protocol"~"Machine_Port"~"Transmit_Retry"~"Offline"~"Process"~"UseDB"~"IgnoreDupes"~"NoCircbuff"~"CircSize"~"Trig_Size"~"Trig_InterChar"~"Trig_Timeout"~"Trig_MsgEndChar"~"Log File"~"Log Length"~"NumCbItems"~"LastMsgAttempts"~"MaxAttempts"~"StripNulls"~"TimerId"~"RetryCount"~"MaxRetries"~"FortnaMachine"~"NeedACK"~"LogLevel"~"Username"~"Password"~"CloseDelay(ms)"~"OpenTimeout(ms)"~"pCBuff"~"pCBuffLen"~"pCBMaxLen"~"pCTimeout"~"pCharSet"~"pSendSequence"~"pRecvSequence"
+N/A~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~0~0~
+CP1~ ~ ~-1~-1~N/A~N/A~ ~0~N~N/A~N~N~N~1200~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+WCS_OUTBOUND~ ~ ~-1~-1~N/A~N/A~/topic/WCSEVENT.FPC.FP.MISC~0~Y~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~-1~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+WCS_IN_TOPIC~ ~ ~-1~-1~N/A~N/A~/topic/WCSREQUESTTOPIC~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~-1~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+WCS_IN_QUEUE~ ~ ~-1~-1~N/A~N/A~/queue/WCSREQUESTQUEUE~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~-1~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+NMS_OUTBOUND~ ~ ~-1~-1~CONNECT_TCPCLIENT~N/A~5817~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~-1~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+MSCRENOPICK~ ~ ~-1~-1~CONNECT_QNX~HOST_SORTPLUS~MSCRENOPICK_P2~0~N~SERV~N~N~N~1200~0~0~102000~INVALID~N/A~0~0~0~0~0~0~0~0~Y~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+MSCRENOPACK~ ~ ~-1~-1~CONNECT_QNX~HOST_SORTPLUS~MSCRENOPACK_P2~0~N~N/A~N~N~N~1200~0~0~102000~INVALID~N/A~0~0~0~0~0~0~0~0~Y~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+MSCRNEOSHIP~ ~ ~-1~-1~CONNECT_QNX~HOST_SORTPLUS~MSCRENOSHIP_P2~0~N~N/A~N~N~N~1200~0~0~102000~INVALID~N/A~0~0~0~0~0~0~0~0~Y~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~ ~0~0~0~ ~1~1~
+
+

@@ -1,0 +1,33 @@
+"Inpoint Name"~"Sorter"~"Induct Number"~"Induct Location"~"Induct I/O Name"~"Trailing_Edge_Pad"~"Minimum Gap"~"Longest Package"~"Data"~"CurrData"~"Gap Aborts"~"Cons GapAborts"~"Cons GapAbortFlag"~"Maximum GapAborts"~"GapAbort Error"~"Reset ConsGapAborts"~"Inducting"~"Mergetype"~"HRTotalIn"~"HRGapAborts"~"HRMinRate"~"HRMaxRate"~"MinLenTicks"
+Invalid~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+SCAN~SHIP SCAN~0~0~INVALID~5~3~30~-1~-1~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+SHIP~SHIP SORTER~0~50~PE60_I~5~3~30~-1~-1~5235~5235~N~0~INVALID~N~N~N~43:Itms:SHIP SORTER~45:GpAb:SHIP SORTER~N/A~44:Max:SHIP SORTER~0~
+INPOINT~SHIP SAWTOOTH~0~30~MEM_SHIP_SAW~0~0~0~326~-1~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+LANE 1~SHIP SAWTOOTH~1~100~MEM_PE87_P~20~0~30~402~-1~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+LANE 3~SHIP SAWTOOTH~2~215~MEM_EZPE31_P~20~0~30~975~-1~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+LANE 2~SHIP SAWTOOTH~3~176~MEM_PE520_P~20~0~30~595~-1~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+ ~Invalid~0~0~INVALID~0~0~0~0~0~0~0~N~0~INVALID~N~N~N~N/A~N/A~N/A~N/A~0~
+
+

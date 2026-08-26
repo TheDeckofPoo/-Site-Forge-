@@ -1,0 +1,53 @@
+"Message_Name"~"Machine_Name"~"Recv_Msg_Type"~"Send_Msg_Type"~"Ack_Msg_Type"~"Menu_Name"~"Low_Cursor"~"High_Cursor"~"Stat_Cursor"~"Last_Record"~"Low_Head"~"High_Head"~"Key_Cursor"~"Id"~"LastId"~"Record"~"Delimiter"~"FieldLength"~"AckLen"~"CheckFile"~"pMsgType"
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+WCS_EVENT~WCS_OUTBOUND~ ~ALL~ ~MsgWCS~1~1~3~0~0~0~4~0~0~0~INVALID~0~0~N~0~
+NMS_EVENT~NMS_OUTBOUND~ ~ALL~ ~MsgNMS~1~1~3~0~0~0~4~0~0~0~INVALID~0~0~N~0~
+ErrorsMsg~N/A~ ~ ~ ~Errors~12~12~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+jammsg~N/A~ ~ ~ ~Jamcheck~9~9~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+fulmsg~N/A~ ~ ~ ~Fullline~15~15~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+SHIPSCAN_1~SCNSHIP_1~ALL~ ~ ~ScnScanZone~4~4~5~0~0~0~0~0~0~1~INVALID~0~0~N~0~
+SHIPSCAN_2~SCNSHIP_2~ALL~ ~ ~ScnScanZone~6~6~7~0~0~0~0~0~0~1~INVALID~0~0~N~0~
+SHIP_SCALE~SHIP_SCALE~ALL~ALL~ALL~ScnScanDevice~2~2~3~0~0~0~0~0~0~4~INVALID~0~0~N~0~
+SHIP_CRR~SHIP_CRR~CRR~CRR~CRR~MsgCR1~1~44~67~0~0~0~68~0~0~0~INVALID~0~0~N~0~
+SHIP_DCM~SHIP_DCM_CSU~DCM~DCM~DCM~MsgDC1~1~44~67~0~0~0~68~0~0~0~INVALID~0~0~N~0~
+SHIP_CSM~SHIP_CSM~ALL~ALL~ALL~MsgCR2~1~44~67~0~0~0~68~0~0~0~INVALID~0~0~N~0~
+M34Errors~MSCRENOPICK~ ~ ~ ~Errors~12~12~0~0~0~0~0~0~0~0~INVALID~0~0~N~545~
+M34Jamcheck~N/A~ ~ ~ ~Jamcheck~9~9~0~0~0~0~0~0~0~0~INVALID~0~0~N~545~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+ ~N/A~ ~ ~ ~None~0~0~0~0~0~0~0~0~0~0~INVALID~0~0~N~0~
+
+

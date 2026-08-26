@@ -1,0 +1,23 @@
+"Name"~"RcvData"~"RxStat"~"ParsedData"~"ParsedStatus"~"pStatusMsg"~"ScanZone"~"ScanType"~"Field"~"UpdatePt"~"NoReadString"~"ReadConflictStr"~"StartChar"~"QtyChars"~"ChkLength"~"MinWeight"~"MaxWeight"~"pLeadEdgeNdx"~"pLeadEdgeShifter"~"pTrailEdgeNdx"~"pTrailEdgeShifter"~"pTrnDataRcv"~"pSrtDataRcv"
+N/A~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~0~0~0~0~0~0~
+PACK SCANE~B0236~Empty~B0236~Good Scan~Created IO Records~PACKE SCAN~Scan~N/A~SCAN~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+PACK SCAN~ ~Empty~ ~N/A~ ~PACK SCAN~Scan~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+ ~ ~Empty~ ~N/A~ ~N/A~N/A~N/A~Invalid~ ~ ~0~0~N~       0.000~       0.000~-1~0~-1~0~0~0~
+
+

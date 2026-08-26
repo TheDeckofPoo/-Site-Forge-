@@ -1,0 +1,16 @@
+#
+# Host Database
+#
+127.1		localhost.localdomain localhost	
+::1		localhost.localdomain localhost
+
+172.19.46.61	MSCRENOGNS
+172.19.46.62	MSCRENOPICK
+172.19.46.63	MSCRENOPACK
+172.19.46.64	MSCRENOSHIP
+
+172.19.46.35	WCS_OUTBOUND WCS_IN_TOPIC WCS_IN_QUEUE
+
+
+
+

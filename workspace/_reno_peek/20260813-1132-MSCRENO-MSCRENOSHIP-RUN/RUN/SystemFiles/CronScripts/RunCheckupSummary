@@ -1,0 +1,83 @@
+#!/bin/sh
+#=============================================================================
+#     $Date:: 2025-10-09 09:14:28 -0400 (Thu, 09 Oct 2025)                   $
+# $Revision:: 39184                                                          $
+#   $Author:: tkremser                                                       $
+#   $Author:: tkremser                                                       $
+#      $URL: http://svn.wcs.fortna.net/repo/projects/fpc/Utils/trunk/Config/usr/local/bin/RunCheckupSummary $
+#=============================================================================
+
+
+# This shell script is intended to be used with cron to run the CheckupSummary tool
+# CheckupSummary acts on the data gathered by the checkup.sh script, which is also
+# run by cron, typically weekly on Saturday at 2:01PM
+# Suggested cron entry for this script is 3:01PM each Saturday:
+# 1 15 * * 6 /usr/local/bin/RunCheckupSummary CUSTNAME
+# Where CUSTNAME is the customer name / site
+# The result will be a compressed tar archive containing all the input data from
+# the /var/log/checkup.log.ww files and the output of the CheckupSummary tool
+# where ww is the week number, 00-52, of the most recent log files
+# The CheckupSummary output is best viewed using "less -r" to show the ANSI color
+# codes as color highlights.
+# Set this script up to run on ONE AC, which will summarize the data for the entire
+# site.  The resultant archive can be expanded off-site, and CheckupSummary can be
+# re-run against the data, if desired.  The archive will expand into a local tree
+# structure starting with "net", similar to this (note there is no leading slash):
+# net/AC1/var/log/checkup.log.ww
+#     AC2/var/log/checkup.log.ww
+#     AC3/var/log/checkup.log.ww
+# Where ww is the week number of the latest checkup.sh output.
+# The summary from CheckupSummary will be in a file named with the Site
+# and the date, something like this:
+#  CheckupSummary-CUSTNAME-2025-39.txt
+# The compressed archive name intentionally does not include the current year so
+# only one year's worth of files will be kept to put a bound on disk usage, like:
+#  CheckupSummary-CUSTNAME-39.tar.gz
+# The archive will be found in /tmp
+# If you do not provide a CUSTNAME, this script will use "TEST"
+
+if test $# -lt 1
+then
+	CUSTSITE="TEST"
+else
+	CUSTSITE=$1
+fi
+
+BASENAME=`basename $0 .sh`
+CURRWEEK=`date +%U`
+CURRYEAR=`date +%Y`
+
+#echo "$BASENAME Script"
+#echo "CURRWEEK=$CURRWEEK"
+
+NEWESTFILE=`ls -t /net/*/var/log/checkup.log.* | head -1`
+NEWESTWEEK=`echo $NEWESTFILE | awk -F"." '{ print $NF }'`
+#echo "NEWESTFILE=$NEWESTFILE, NEWESTWEEK=$NEWESTWEEK"
+
+LOGFILELIST=`ls /net/*/var/log/checkup.log.$NEWESTWEEK`
+#echo "Log files included: $LOGFILELIST"
+
+SUMMARYFILE="/tmp/CheckupSummary-$CUSTSITE-$CURRYEAR-$NEWESTWEEK.txt"
+#echo "Creating Summary to $SUMMARYFILE.txt"
+/usr/local/bin/CheckupSummary -N > $SUMMARYFILE
+
+READMEFILE="/tmp/README"
+cat << README > $READMEFILE
+To view the Summary Report with color highlighting, use:
+  less -r $SUMMARYFILE
+
+Expand this archive into a temporary directory.
+The log files from the checkup.sh script will be found in
+local directory "net", in a structure similar to this example:
+  net/AC1/var/log/checkup.log.ww
+      AC2/var/log/checkup.log.ww
+      AC3/var/log/checkup.log.ww
+Where ww is the week number of the latest checkup.sh output.
+README
+
+SUMMARYARCHIVE="/tmp/CheckupSummary-$CUSTSITE-$NEWESTWEEK.tar.gz"
+#echo "Creating archive $SUMMARYARCHIVE"
+/usr/bin/tar zcvf $SUMMARYARCHIVE $LOGFILELIST --transform="s/tmp\///" $SUMMARYFILE $READMEFILE
+
+# Clean up
+rm -f $SUMMARYFILE $READMEFILE

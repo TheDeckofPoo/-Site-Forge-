@@ -1,0 +1,494 @@
+#!/bin/sh
+#
+# Add a Column to each of the designated files
+#
+if test $# -lt 1
+then
+echo "**********************************************************"
+echo "*                                                        *"
+echo "*  Add a Column to Ascii Files                           *"
+echo "*                                                        *"
+echo "*  Useage: AddColumn CpuName                             *"
+echo "*                                                        *"
+echo "*  Example: AddColumn CP1                                *"
+echo "*                                                        *"
+echo "**********************************************************"
+echo
+exit
+fi
+###############################################################
+#                                                             #
+# Add a column to the Configio Menu, if needed                #
+#                                                             #
+###############################################################
+MenuName="FORTNA/Configio"
+FirstColumn="\"Bank\""
+NotUsedString="0"
+
+FileName="$MenuName.asc.$1"
+
+if test -f $FileName
+then
+  FileFnd=1
+else
+  FileName="$MenuName.asc"
+  if test -f $FileName
+  then
+    FileFnd=1
+  else
+    FileFnd=0
+  fi
+fi
+
+if test FileFnd -eq 1
+then
+  #
+  # Check if Menu already has enough columns
+  #
+  awk -F "[,~]" '{if ($1==firstcolumn) {exit(1);}
+              else {exit(0);}
+              }' firstcolumn="$FirstColumn" $FileName
+  Rtn=$?
+
+  if test $Rtn -eq 1
+  then
+	FileUpdate=1
+  else
+	FileUpdate=0
+  fi
+fi
+
+if test FileUpdate -gt 0
+then
+  #
+  # Add a column to File, it needs a Description Column
+  #
+  CommaPresent=`head -1 $FileName | grep "," | wc -l`
+  TildePresent=`head -1 $FileName | grep "~" | wc -l`
+  if test $CommaPresent -gt $TildePresent
+  then
+    HeaderSep=","
+  else
+    HeaderSep="~"
+  fi
+  (
+  awk -F "~" '(x==0) {printf "\"Desc\"%s%s\n",headersep,$0;}
+              (x==1) {printf "N/A~%s\n",$0;}
+              ($2!=notusedstring && x>1 && NF>1) {printf "Row %d~%s\n",x-1,$0;}
+ 			  ($2==notusedstring && x>1 && NF>1) {printf " ~%s\n",$0;}
+ 			  (x>1 && NF<=1) {printf "%s\n",$0;}
+			  {x=x+1}' notusedstring="$NotUsedString" headersep="$HeaderSep" $FileName
+  ) > "$MenuName.tmp"
+  #
+  # Replace the old File with the new file
+  #
+  mv $FileName $FileName.old
+  mv $MenuName.tmp $FileName
+  echo
+  echo $FileName updated
+  echo 
+else
+  echo
+  if test FileFnd -eq 1
+  then
+    echo $FileName file already updated
+  else
+    echo $FileName file not found
+  fi
+  echo 
+fi
+###############################################################
+#                                                             #
+# Add a column to the EStop Menu, if needed                   #
+#                                                             #
+###############################################################
+MenuName="FORTNA/EStop"
+FirstColumn="\"Part\""
+NotUsedString="INVALID"
+
+FileName="$MenuName.asc.$1"
+
+if test -f $FileName
+then
+  FileFnd=1
+else
+  FileName="$MenuName.asc"
+  if test -f $FileName
+  then
+    FileFnd=1
+  else
+    FileFnd=0
+  fi
+fi
+
+if test FileFnd -eq 1
+then
+  #
+  # Check if Menu already has enough columns
+  #
+  awk -F "[,~]" '{if ($1==firstcolumn) {exit(1);}
+              else {exit(0);}
+              }' firstcolumn="$FirstColumn" $FileName
+  Rtn=$?
+
+  if test $Rtn -eq 1
+  then
+	FileUpdate=1
+  else
+	FileUpdate=0
+  fi
+fi
+
+if test FileUpdate -gt 0
+then
+  #
+  # Add a column to File, it needs a Description Column
+  #
+  CommaPresent=`head -1 $FileName | grep "," | wc -l`
+  TildePresent=`head -1 $FileName | grep "~" | wc -l`
+  if test $CommaPresent -gt $TildePresent
+  then
+    HeaderSep=","
+  else
+    HeaderSep="~"
+  fi
+  (
+  awk -F "~" '(x==0) {printf "\"Desc\"%s%s\n",headersep,$0;}
+              (x==1) {printf "N/A~%s\n",$0;}
+              ($1!=notusedstring && x>1 && NF>1) {printf "Row %d~%s\n",x-1,$0;}
+ 		      ($1==notusedstring && x>1 && NF>1) {printf " ~%s\n",$0;}
+ 			  (x>1 && NF<=1) {printf "%s\n",$0;}
+			  {x=x+1}' notusedstring="$NotUsedString" headersep="$HeaderSep" $FileName
+  ) > "$MenuName.tmp"
+  #
+  # Replace the old File with the new file
+  #
+  mv $FileName $FileName.old
+  mv $MenuName.tmp $FileName
+  echo
+  echo $FileName updated
+  echo 
+else
+  echo
+  if test FileFnd -eq 1
+  then
+    echo $FileName file already updated
+  else
+    echo $FileName file not found
+  fi
+  echo 
+fi
+###############################################################
+#                                                             #
+# Add a column to the FullLine Menu, if needed                #
+#                                                             #
+###############################################################
+MenuName="FORTNA/Fullline"
+FirstColumn="\"Sensor_Name\""
+NotUsedString="INVALID"
+
+FileName="$MenuName.asc.$1"
+
+if test -f $FileName
+then
+  FileFnd=1
+else
+  FileName="$MenuName.asc"
+  if test -f $FileName
+  then
+    FileFnd=1
+  else
+    FileFnd=0
+  fi
+fi
+
+if test FileFnd -eq 1
+then
+  #
+  # Check if Menu already has enough columns
+  #
+  awk -F "[,~]" '{if ($1==firstcolumn) {exit(1);}
+              else {exit(0);}
+              }' firstcolumn="$FirstColumn" $FileName
+  Rtn=$?
+
+  if test $Rtn -eq 1
+  then
+	FileUpdate=1
+  else
+	FileUpdate=0
+  fi
+fi
+
+if test FileUpdate -gt 0
+then
+  #
+  # Add a column to File, it needs a Description Column
+  #
+  CommaPresent=`head -1 $FileName | grep "," | wc -l`
+  TildePresent=`head -1 $FileName | grep "~" | wc -l`
+  if test $CommaPresent -gt $TildePresent
+  then
+    HeaderSep=","
+  else
+    HeaderSep="~"
+  fi
+  (
+  awk -F "~" '(x==0) {printf "\"Desc\"%s%s\n",headersep,$0;}
+              (x==1) {printf "N/A~%s\n",$0;}
+              ($1!=notusedstring && x>1 && NF>1) {printf "Row %d~%s\n",x-1,$0;}
+ 		      ($1==notusedstring && x>1 && NF>1) {printf " ~%s\n",$0;}
+ 			  (x>1 && NF<=1) {printf "%s\n",$0;}
+			  {x=x+1}' notusedstring="$NotUsedString" headersep="$HeaderSep" $FileName
+  ) > "$MenuName.tmp"
+  #
+  # Replace the old File with the new file
+  #
+  mv $FileName $FileName.old
+  mv $MenuName.tmp $FileName
+  echo
+  echo $FileName updated
+  echo 
+else
+  echo
+  if test FileFnd -eq 1
+  then
+    echo $FileName file already updated
+  else
+    echo $FileName file not found
+  fi
+  echo 
+fi
+###############################################################
+#                                                             #
+# Add a column to the JamCheck Menu, if needed                #
+#                                                             #
+###############################################################
+MenuName="FORTNA/Jamcheck"
+FirstColumn="\"Sensor_Name\""
+NotUsedString="INVALID"
+
+FileName="$MenuName.asc.$1"
+
+if test -f $FileName
+then
+  FileFnd=1
+else
+  FileName="$MenuName.asc"
+  if test -f $FileName
+  then
+    FileFnd=1
+  else
+    FileFnd=0
+  fi
+fi
+
+if test FileFnd -eq 1
+then
+  #
+  # Check if Menu already has enough columns
+  #
+  awk -F "[,~]" '{if ($1==firstcolumn) {exit(1);}
+              else {exit(0);}
+              }' firstcolumn="$FirstColumn" $FileName
+  Rtn=$?
+
+  if test $Rtn -eq 1
+  then
+	FileUpdate=1
+  else
+	FileUpdate=0
+  fi
+fi
+
+if test FileUpdate -gt 0
+then
+  #
+  # Add a column to File, it needs a Description Column
+  #
+  CommaPresent=`head -1 $FileName | grep "," | wc -l`
+  TildePresent=`head -1 $FileName | grep "~" | wc -l`
+  if test $CommaPresent -gt $TildePresent
+  then
+    HeaderSep=","
+  else
+    HeaderSep="~"
+  fi
+  (
+  awk -F "~" '(x==0) {printf "\"Desc\"%s%s\n",headersep,$0;}
+              (x==1) {printf "N/A~%s\n",$0;}
+              ($1!=notusedstring && x>1 && NF>1) {printf "Row %d~%s\n",x-1,$0;}
+ 		      ($1==notusedstring && x>1 && NF>1) {printf " ~%s\n",$0;}
+ 			  (x>1 && NF<=1) {printf "%s\n",$0;}
+			  {x=x+1}' notusedstring="$NotUsedString" headersep="$HeaderSep" $FileName
+  ) > "$MenuName.tmp"
+  #
+  # Replace the old File with the new file
+  #
+  mv $FileName $FileName.old
+  mv $MenuName.tmp $FileName
+  echo
+  echo $FileName updated
+  echo 
+else
+  echo
+  if test FileFnd -eq 1
+  then
+    echo $FileName file already updated
+  else
+    echo $FileName file not found
+  fi
+  echo 
+fi
+###############################################################
+#                                                             #
+# Add a column to the MotorChain Menu, if needed              #
+#                                                             #
+###############################################################
+MenuName="FORTNA/Mtrchain"
+FirstColumn="\"Motor_Name\""
+NotUsedString=" "
+
+FileName="$MenuName.asc.$1"
+
+if test -f $FileName
+then
+  FileFnd=1
+else
+  FileName="$MenuName.asc"
+  if test -f $FileName
+  then
+    FileFnd=1
+  else
+    FileFnd=0
+  fi
+fi
+
+if test FileFnd -eq 1
+then
+  #
+  # Check if Menu already has enough columns
+  #
+  awk -F "[,~]" '{if ($1==firstcolumn) {exit(1);}
+              else {exit(0);}
+              }' firstcolumn="$FirstColumn" $FileName
+  Rtn=$?
+
+  if test $Rtn -eq 1
+  then
+	FileUpdate=1
+  else
+	FileUpdate=0
+  fi
+fi
+
+if test FileUpdate -gt 0
+then
+  #
+  # Change the 2nd column to match the first column
+  #
+  (
+  awk -F "~" '(x==0) {printf "%s",$0;}
+              ($1!=notusedstring && x>0 && NF>1) {for(y=1;y<NF;y++) 
+                     {if(y==2) {printf "%s~",$1;} 
+                      else     {printf "%s~",$y;} }
+                     }
+              ($1==notusedstring && x>0 && NF>1) {for(y=1;y<NF;y++) 
+                     {if(y==2) {printf "%s~","INVALID";} 
+                      else     {printf "%s~",$y;} }
+                     }
+			  {printf "\n";}
+			  {x++;}' notusedstring="$NotUsedString" $FileName
+  ) > "$MenuName.tmp"
+  #
+  # Replace the old File with the new file
+  #
+  mv $FileName $FileName.old
+  mv $MenuName.tmp $FileName
+  echo
+  echo $MenuName updated
+  echo 
+else
+  echo
+  if test FileFnd -eq 1
+  then
+    echo $MenuName file already updated
+  else
+    echo $MenuName file not found
+  fi
+  echo 
+fi
+###############################################################
+#                                                             #
+# Zero MsgMap_Menu_Index column -- no longer used             #
+#                                                             #
+###############################################################
+MenuName="FORTNA/MsgMap"
+
+FileName="$MenuName.asc.$1"
+
+if test -f $FileName
+then
+  FileFnd=1
+else
+  FileName="$MenuName.asc"
+  if test -f $FileName
+  then
+    FileFnd=1
+  else
+    FileFnd=0
+  fi
+fi
+
+if test FileFnd -eq 1
+then
+  #
+  # Check if Menu_Index has already been zeroed
+  #
+  awk -F "~" 'BEGIN {updateneeded = 0}
+              (NF >= 7) { if ($7 != 0) { updateneeded = 1; } }
+			  END { if (updateneeded == 1) { exit(1); }
+			        else { exit(0); }
+			  }' $FileName
+  Rtn=$?
+
+  if test $Rtn -eq 1
+  then
+	FileUpdate=1
+  else
+	FileUpdate=0
+  fi
+fi
+
+if test FileUpdate -gt 0
+then
+  #
+  # Set the 7th column (Menu_Index) to zero
+  #
+  (
+  awk -F "~" '(x==0) {printf "%s",$0;}
+              (x>0 && NF>=7) {for(y=1;y<NF;y++) 
+                     {if(y==7) {printf "0~";} 
+                      else     {printf "%s~",$y;} }
+                     }
+			  {printf "\n";}
+			  {x++;}' $FileName
+  ) > "$MenuName.tmp"
+  #
+  # Replace the old File with the new file
+  #
+  mv $FileName $FileName.old
+  mv $MenuName.tmp $FileName
+  echo
+  echo $MenuName updated
+  echo 
+else
+  echo
+  if test FileFnd -eq 1
+  then
+    echo $MenuName file already updated
+  else
+    echo $MenuName file not found
+  fi
+  echo 
+fi

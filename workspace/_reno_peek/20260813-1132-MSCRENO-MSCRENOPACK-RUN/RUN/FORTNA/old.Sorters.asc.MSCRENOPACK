@@ -1,0 +1,15 @@
+"Sorter Name"~"Encoder ioName"~"Encoder tmName"~"Encoder Type"~"Max Cartons"~"Max Verify Buffer"~"Dump NDX"~"Dump OUT"~"Dump IN"~"UseFirstShifterNdx"~"LastNdx"~"OK"~"ShiftOnOff"~"TrigOnOnly"~"MaxNdx"~"Machine"~"ManualShift"~"Shifted"~"Data LowRec"~"Data HighRec"~"Buffer LowRec"~"Buffer HighRec"~"Inpoints LowRec"~"Inpoints HighRec"~"Updates LowRec"~"Updates HighRec"~"Outpoints LowRec"~"Outpoints HighRec"~"ShiftCnt"~"TrigOnOff"~"DivertEnableIO"~"InvertEnableIO"~"RecircRate"~"CntRecircWhenFull"~"RecircRateUpdPt"~"pDumpFrom"~"pDumpOffset"~"pLastDumpLoc"~"pFirstShifter"
+Invalid~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+PACK SORT 1~ENC1~N/A~0~50~0~2~998~0~N~65~Y~N~N~199~MSCRENOPACK~N~N~1~200~1~1500~1~1~1~4~1~5~904~N~INVALID~N~N/A~N~Invalid~0~0~0~1~
+PACK SORT 2~ENC2~N/A~0~50~0~3~961~0~N~108~Y~N~N~199~MSCRENOPACK~N~N~201~400~1501~3000~2~2~5~8~6~12~434~N~INVALID~N~N/A~N~Invalid~1~968~0~1~
+PACK SORT 3~Invalid~tmENC3_1~1~50~0~-1~0~0~N~113~Y~N~N~199~MSCRENOPACK~N~N~401~600~3001~4500~3~3~9~12~13~19~458~N~INVALID~N~N/A~N~Invalid~2~1899~0~1~
+PACK SORT 4~ENC4~N/A~0~0~0~-1~0~0~N~0~Y~N~N~0~MSCRENOPACK~N~N~601~800~4501~5000~4~4~13~16~0~0~1~N~INVALID~N~N/A~N~Invalid~0~0~0~4~
+PACK SCAN~ENC204~N/A~0~50~0~6~146~0~N~68~Y~N~N~99~MSCRENOPACK~N~N~801~900~5001~5500~5~5~17~19~20~20~627~N~INVALID~N~N/A~N~Invalid~0~0~0~5~
+CURVE~ENC206~N/A~0~50~0~7~63~0~N~56~Y~N~N~99~MSCRENOPACK~N~N~901~1000~5501~6000~6~6~20~20~21~21~716~N~INVALID~N~N/A~N~Invalid~5~116~0~5~
+PACK SORTER~ENC208~N/A~0~50~0~-1~0~0~N~363~Y~N~N~499~MSCRENOPACK~N~N~1001~1500~6001~8000~7~7~21~25~22~57~404~N~INVALID~N~N/A~N~Invalid~6~149~0~5~
+OIVP SCAN~ENC506~N/A~0~50~0~9~87~0~N~28~Y~N~N~99~MSCRENOPACK~N~N~1501~1600~8001~8500~8~8~26~28~58~58~857~N~INVALID~N~N/A~N~Invalid~0~0~0~8~
+OIVP SORTER~ENC508~N/A~0~50~0~-1~0~0~N~12~Y~N~N~99~MSCRENOPACK~N~N~1601~1700~8501~9000~9~9~29~30~59~61~842~N~INVALID~N~N/A~N~Invalid~8~57~0~8~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+
+

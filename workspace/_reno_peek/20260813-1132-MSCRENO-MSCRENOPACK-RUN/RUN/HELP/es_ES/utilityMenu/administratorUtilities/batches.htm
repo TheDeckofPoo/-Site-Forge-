@@ -1,0 +1,78 @@
+<html>
+
+<head>
+<title>Batches Help Menu</title>
+</head>
+
+<body bgcolor="#ffffff">
+
+<h1><p align="center">Batches</p></h1><P><hr>
+
+The Batches menu is used to assign system procedures to nodes on the network and to assign execution timing. We will refer to the following fields when configuring batch processing:
+<P>
+Fields:
+<P><blockquote>
+File Name - a meaningful name of 25 characters for the procedure
+<P>
+Description - a meaningful description of 25 characters
+<P>
+Current Num - an integer.  NOT USED
+<P>
+How Often - the number of increments that pass before calling on the procedure 
+<BR>example:  do every   2    minutes
+<P>
+Increment - brings up the Increments table where various increments of time are displayed.  
+<BR>Not used when Type is Count.
+<P>
+Current Stat - handled internally, not used when Type is Absolute
+<P>
+Was Stat - when applicable, displays the status of  the increment used from the Today Menu
+<P>
+Type - brings up the Type of Interval menu which displays four options:
+<p><blockquote>None - 
+<BR>Elapsed - calls the procedure after the increment of time has elapsed
+<BR>Absolute- calls the procedure at a specific increment
+<BR>Count - calls the procedure once every time through the critical loop of the program</blockquote>
+<P>
+Process - brings up the Process Type menu which displays the four system processes
+<p><blockquote>GUI - priority of 10, polled for activity approximately every 1/4 sec or every 250ms
+<br>CTRL - priority of 12, polled for activity approximately every 1/10 sec or every 100ms
+<BR>SORT - priority of 13, polled for activity approximately every 1/20 sec or every 50ms
+<BR>SERV - priority of 11</blockquote>
+<P>
+
+Internal Proc - brings up the list of procedures initialized in the project.c file. Choose from this list with the GUI or SERV processes.
+<P>
+Internal Proc Ctrl - brings up the procedures controlled by the ctrl process through the cproject.c file. Choose from this list with the CTRL or SORT processes.
+<P>
+Machine - brings up the Machine menu listing all the machines on the FortnaPlus&copy; network
+ 	<BR>Chose the machine to execute the procedure.
+  <P> All Machines - a boolean field accepting Y or N indicating if all the machines should do the procedure 
+  <P>DoFile - a boolean indicator that determines whether or not a shell is opened to run a batch file
+  <P></blockquote>
+<u>EXAMPLE:&nbsp;&nbsp; CREATE A BATCH TO SAVE DATA EVERY EVENING AT 3AM
+</u><P>
+1. 	Select Administration Utilities from the Main menu.
+<p>
+2.    Select Batches
+<P>
+3. 	Begin with record 0 or the first empty record.
+<P>
+4. 	Type "fortna menus" in File Name field.
+<P>
+5. 	Type "timed saving of data" in the Description field.
+<P>
+6. 	Type 3 in the How Often field.
+<P>
+7. 	Click the pull-down symbol in the Increment field, select Hour
+<P>
+8. 	Click the pull-down symbol in the Type field, select Absolute
+<P>
+9. 	Click the pull-down symbol in the Process field, select GUI
+<P>
+10. 	Click the pull-down symbol  Internal Proc field, select Save Data
+<P>
+Select one of the machines to handle the processing in the Machine field or type Y in All Machines.<p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

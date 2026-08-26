@@ -1,0 +1,28 @@
+"Encoder Name"~"Encoder I/O"~"Encoder Timer"~"Ticks Per Foot"~"Encoder Ticks"~"Calculated FPM"~"Target FPM"~"DupToMemBit"~"Tolerance_FPM"~"Delay Timer"~"Error"~"StoponError"~"EnableBit"~"Jamzone"~"NoSortonError"~"Failed"~"SampleSeconds"~"SampleTicks"~"Minimum_Calc_FPM"~"Maximum_Calc_FPM"~"NoSortOnSpeed"~"pSpeedOkay"
+Invalid~INVALID~N/A~       0.000~0~        -nan~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ENC1~ENC1~tmENC1~      11.000~0~       0.000~     120.000~INVALID~      10.000~tmDelayENC1~ENC1_Encoder~N~M5_AUX~INVALID~N~N~       1.000~22~       0.000~     217.819~Y~N~
+ENC2~ENC2~tmENC2~      11.000~0~       0.000~     120.000~INVALID~      10.000~tmDelayENC2~ENC2_Encoder~N~M6_AUX~INVALID~N~N~       1.000~22~       0.000~     129.609~Y~N~
+ENC204~ENC204~tmENC204~       6.000~2~     268.197~     265.000~INVALID~      10.000~tmDelayENC204~ENC204_Encoder~N~VFD204_AUX~INVALID~N~N~       1.000~26~       0.000~     277.179~N~Y~
+ENC206~ENC206~tmENC206~       6.000~23~     241.243~     240.000~INVALID~      10.000~tmDelayENC206~ENC206_Encoder~N~VFD206_AUX~INVALID~N~N~       1.000~24~       0.000~     252.670~N~Y~
+ENC208~ENC208~tmENC208~       6.000~0~     263.777~     260.000~INVALID~      10.000~tmDelayENC208~ENC208_Encoder~N~VFD208_AUX~INVALID~N~N~       1.000~26~       0.000~     275.904~Y~Y~
+ENC506~ENC506~tmENC506~       6.000~0~       0.000~     240.000~INVALID~      10.000~tmDelayENC506~ENC506_Encoder~N~VFD506_AUX~INVALID~N~N~       1.000~24~       0.000~     251.347~N~N~
+ENC508~ENC508~tmENC508~       6.000~0~       0.000~     265.000~INVALID~      10.000~tmDelayENC508~ENC508_Encoder~N~VFD508_AUX~INVALID~N~N~       1.000~26~       0.000~     272.769~N~N~
+ ~INVALID~N/A~       0.000~0~         nan~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+ ~INVALID~N/A~       0.000~0~       0.000~       0.000~INVALID~       0.000~N/A~INVALID~N~INVALID~INVALID~N~N~       0.000~0~       0.000~       0.000~N~N~
+
+

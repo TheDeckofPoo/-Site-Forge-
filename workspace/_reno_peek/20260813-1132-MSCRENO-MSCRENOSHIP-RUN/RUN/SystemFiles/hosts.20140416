@@ -1,0 +1,9 @@
+#
+# Host Database
+#
+127.1		localhost.localdomain localhost	
+::1		localhost.localdomain localhost
+
+# FTP4 server.  External: 173.231.81.106 Internal: 10.5.100.21 dcsw1.fortna.net
+10.5.100.21 ftp4
+#173.231.81.106 ftp4

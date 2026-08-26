@@ -1,0 +1,15 @@
+"Sorter Name"~"Encoder ioName"~"Encoder tmName"~"Encoder Type"~"pStatus"~"Max Cartons"~"Max Verify Buffer"~"Dump NDX"~"Dump OUT"~"Dump IN"~"UseFirstShifterNdx"~"LastNdx"~"OK"~"ShiftOnOff"~"Machine"~"ManualShift"~"Shifted"~"Data LowRec"~"Data HighRec"~"Buffer LowRec"~"Buffer HighRec"~"Inpoints LowRec"~"Inpoints HighRec"~"Updates LowRec"~"Updates HighRec"~"Outpoints LowRec"~"Outpoints HighRec"~"ShiftCnt"~"TrigOnOnly"~"TrigOnOff"~"TrigTransOn"~"TrigTransOff"~"TrigWndwTicks"~"DivertEnableIO"~"InvertEnableIO"~"RecircRate"~"CntRecircWhenFull"~"RecircRateUpdPt"~"pDumpFrom"~"pDumpOffset"~"pLastDumpLoc"~"pFirstShifter"~"pLastShifter"~"pMaxNdx"
+Invalid~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+ ~Invalid~N/A~0~ ~0~0~0~0~0~N~0~N~N~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~N~N~N~0~INVALID~N~RECZERO~N~RECZERO~0~0~0~0~0~0~
+
+

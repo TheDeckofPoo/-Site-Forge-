@@ -545,16 +545,32 @@ function resetWorkspaceUi() {
 /** Import RUN from I/O tab or Workspace — same backend. */
 async function importRunPackage(path, name) {
   if (!path) return false;
+  if (typeof fortnaAPI?.importRun !== 'function') {
+    const msg = 'Site Forge API missing — relaunch via Launch-SiteForge.bat (not a browser tab).';
+    log(msg, 'err');
+    setIoRunStatus(msg, 'error');
+    return false;
+  }
   setBusy(true);
   setIoRunStatus(`Importing ${name || 'archive'}…`, 'busy');
   setStatus('workspace-status', 'Importing…', 'busy');
   log(`Importing ${name || path}…`, 'info');
-  const res = await fortnaAPI.importRun(path);
-  setBusy(false);
-  if (!res.success) {
-    log(res.message || 'Import failed', 'err');
+  let res;
+  try {
+    res = await fortnaAPI.importRun(path);
+  } catch (e) {
+    setBusy(false);
+    const msg = (e && e.message) ? e.message : String(e || 'Import failed');
+    log(msg, 'err');
     setStatus('workspace-status', 'Import failed', 'error');
-    setIoRunStatus(res.message || 'Import failed', 'error');
+    setIoRunStatus(msg, 'error');
+    return false;
+  }
+  setBusy(false);
+  if (!res || !res.success) {
+    log(res?.message || 'Import failed', 'err');
+    setStatus('workspace-status', 'Import failed', 'error');
+    setIoRunStatus(res?.message || 'Import failed', 'error');
     return false;
   }
   state.workspace = res.meta;
@@ -3018,7 +3034,7 @@ const autogenState = {
   workbook: null, // Inputdata replacement — auto from RUN, editable
   wbTab: 'conveyors',
   selected: new Set(),
-  // Sorter build UI (config only — not wired to L5X yet). Demo-safe.
+  // Sorter build UI
   sorter: {
     induct_conveyor: '',
     induct_pe: '',
@@ -3028,6 +3044,8 @@ const autogenState = {
     tracking_pe_count: 0,
     tracking_pes: [], // [pe name, ...]
   },
+  // PLC2-class 2:1 merges → Conv_Merge / Merge_2to1
+  merges_2to1: [],
 };
 
 /** Empty tracking-conveyor row (encoder No = Slow_Flt uses NO_Enc UDT stub). */
@@ -4213,6 +4231,25 @@ async function runAutogenGenerate(mode) {
     autogenLog('ShippingSorter (PopUp Divert) selected — pack mapping TBD (no L5X merge yet).', 'warn');
   }
   if ($('autogen-opt-wcs')?.checked) includePrograms.push('WCS_Interface_TCP_IP');
+  // Merges → workbook.merges_2to1 (emitted when pack checkbox on)
+  const mergeOn = !!$('autogen-opt-merges-2to1')?.checked;
+  const mergeRows = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
+  const merge2 = mergeRows.filter((m) => (Number(m.lanes) || 2) <= 2);
+  const merge3 = mergeRows.filter((m) => (Number(m.lanes) || 2) >= 3);
+  if (mergeOn && mergeRows.length) {
+    persistMergesToWorkbook();
+    autogenLog(
+      `Merge ON — ${mergeRows.length} configured (${merge2.length}× 2:1 emit, ${merge3.length}× 3+:1 saved for later)`,
+      'ok',
+    );
+    if (merge3.length) {
+      autogenLog('3:1+ merges are stored in the workbook; L5X scaffold still emits 2:1 only.', 'warn');
+    }
+  } else if (mergeRows.length && !mergeOn) {
+    autogenLog('Merge rows present but Merge pack is OFF — not emitting Conv_Merge.', 'warn');
+  } else if (mergeOn && !mergeRows.length) {
+    autogenLog('Merge pack ON but no merge rows — set count in the Merge panel.', 'warn');
+  }
   const sorterCfg = autogenState.sorter || defaultSorterConfig();
   const sorterConfigured = !!(
     sorterCfg.induct_conveyor
@@ -4394,8 +4431,223 @@ $('btn-autogen-workbook-build')?.addEventListener('click', () => buildAutogenWor
 $('btn-autogen-workbook-save')?.addEventListener('click', () => saveAutogenWorkbook());
 $('btn-autogen-wb-apply-type')?.addEventListener('click', () => bulkApplyType());
 $('btn-autogen-wb-apply-area')?.addEventListener('click', () => bulkApplyArea());
-// Sorter build UI (below main autogen layout — config only)
+// 2:1 Merges + Sorter build UI
+try { wireMergeBuildUi(); } catch (e) { console.warn('merge UI wire failed', e); }
 try { wireSorterBuildUi(); } catch (e) { console.warn('sorter UI wire failed', e); }
+
+function emptyMergeRow() {
+  return {
+    name: '',
+    area: '',
+    lanes: 2, // 2 = 2:1, 3 = 3:1 (from prints)
+    lane_a: '',
+    lane_b: '',
+    lane_c: '',
+    discharge: '',
+    pe_a: '',
+    pe_b: '',
+    pe_c: '',
+    jam_pe: '',
+  };
+}
+
+function mergeLaneCount(m) {
+  const n = Number(m?.lanes);
+  if (n === 3 || n === 4) return n;
+  return 2;
+}
+
+function persistMergesToWorkbook() {
+  if (!autogenState.workbook) autogenState.workbook = { conveyors: [], options: {} };
+  autogenState.workbook.merges_2to1 = [...(autogenState.merges_2to1 || [])];
+}
+
+function updateMergeSummary() {
+  const el = $('autogen-merge-summary');
+  if (!el) return;
+  const list = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
+  const n = list.length;
+  if (!n) {
+    el.textContent = '0 merges';
+    return;
+  }
+  const n2 = list.filter((m) => mergeLaneCount(m) === 2).length;
+  const n3 = list.filter((m) => mergeLaneCount(m) >= 3).length;
+  const bits = [];
+  if (n2) bits.push(`${n2}×2:1`);
+  if (n3) bits.push(`${n3}×3:1`);
+  el.textContent = `${n} merge${n === 1 ? '' : 's'}${bits.length ? ` · ${bits.join(' ')}` : ''}`;
+}
+
+function renderMergeBuild() {
+  const rows = $('merge-2to1-rows');
+  const countEl = $('merge-2to1-count');
+  if (!rows) return;
+  const convs = conveyorNameList();
+  const pes = photoeyeNameList();
+  const areas = [...new Set((autogenState.workbook?.conveyors || []).map((r) => r.area).filter(Boolean))].sort();
+  let n = Math.max(0, Math.min(40, parseInt(countEl?.value, 10) || 0));
+  if (countEl) countEl.value = String(n);
+  while ((autogenState.merges_2to1 || []).length < n) autogenState.merges_2to1.push(emptyMergeRow());
+  autogenState.merges_2to1 = (autogenState.merges_2to1 || []).slice(0, n);
+  if (!n) {
+    rows.innerHTML = '<div class="text-[10px] text-slate-600">Set “How many merges?” above, then choose lanes per merge (2:1 or 3:1) from the prints.</div>';
+    updateMergeSummary();
+    return;
+  }
+  const convOpts = (sel) => convs.map((c) =>
+    `<option value="${escapeHtml(c)}" ${c === sel ? 'selected' : ''}>${escapeHtml(c)}</option>`
+  ).join('');
+  const peOpts = (sel) => pes.map((p) =>
+    `<option value="${escapeHtml(p)}" ${p === sel ? 'selected' : ''}>${escapeHtml(p)}</option>`
+  ).join('');
+  const areaOpts = (sel) => areas.map((a) =>
+    `<option value="${escapeHtml(a)}" ${a === sel ? 'selected' : ''}>${escapeHtml(a)}</option>`
+  ).join('');
+  rows.innerHTML = autogenState.merges_2to1.map((m, i) => {
+    const lanes = mergeLaneCount(m);
+    const laneLabel = lanes === 2 ? '2:1' : lanes === 3 ? '3:1' : `${lanes}:1`;
+    const laneC = lanes >= 3
+      ? `<select class="merge-lane-c flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono" data-i="${i}">
+          <option value="">Lane C…</option>${convOpts(m.lane_c || '')}
+        </select>`
+      : '';
+    const peC = lanes >= 3
+      ? `<select class="merge-pe-c flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300" data-i="${i}">
+          <option value="">PE C…</option>${peOpts(m.pe_c || '')}
+        </select>`
+      : '';
+    return `
+    <div class="rounded-lg border border-slate-800 bg-[#0a1016] p-2 space-y-1.5" data-merge-i="${i}">
+      <div class="flex flex-wrap gap-2 items-center">
+        <span class="text-[10px] text-slate-600 w-6 mono">#${i + 1}</span>
+        <input class="merge-name w-24 bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-amber-200/90"
+          data-i="${i}" placeholder="P316" value="${escapeHtml(m.name || '')}" title="Merge name → P316_Merge">
+        <label class="text-[10px] text-slate-500 flex items-center gap-1" title="How many lanes feed this merge?">
+          Lanes
+          <select class="merge-lanes w-20 bg-[#101820] border border-cyan-900/50 rounded px-1.5 py-1 text-[10px] mono text-cyan-300" data-i="${i}">
+            <option value="2" ${lanes === 2 ? 'selected' : ''}>2 (2:1)</option>
+            <option value="3" ${lanes === 3 ? 'selected' : ''}>3 (3:1)</option>
+            <option value="4" ${lanes === 4 ? 'selected' : ''}>4 (4:1)</option>
+          </select>
+        </label>
+        <span class="text-[9px] mono text-slate-600">${laneLabel}</span>
+        <select class="merge-area min-w-[8rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] text-slate-200" data-i="${i}">
+          <option value="">Area (optional)…</option>${areaOpts(m.area || '')}
+        </select>
+      </div>
+      <div class="flex flex-wrap gap-2 items-center pl-6">
+        <select class="merge-lane-a flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono" data-i="${i}">
+          <option value="">Lane A…</option>${convOpts(m.lane_a || '')}
+        </select>
+        <select class="merge-lane-b flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono" data-i="${i}">
+          <option value="">Lane B…</option>${convOpts(m.lane_b || '')}
+        </select>
+        ${laneC}
+        <select class="merge-discharge flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono" data-i="${i}">
+          <option value="">Discharge…</option>${convOpts(m.discharge || '')}
+        </select>
+      </div>
+      <div class="flex flex-wrap gap-2 items-center pl-6">
+        <select class="merge-pe-a flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300" data-i="${i}">
+          <option value="">PE A…</option>${peOpts(m.pe_a || '')}
+        </select>
+        <select class="merge-pe-b flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300" data-i="${i}">
+          <option value="">PE B…</option>${peOpts(m.pe_b || '')}
+        </select>
+        ${peC}
+        <select class="merge-jam-pe flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300" data-i="${i}">
+          <option value="">Jam PE…</option>${peOpts(m.jam_pe || '')}
+        </select>
+      </div>
+      ${lanes >= 3 ? '<div class="pl-6 text-[9px] text-amber-600/80">3:1+ config saved — L5X emit still 2:1 only (testing).</div>' : ''}
+    </div>`;
+  }).join('');
+  const bind = (cls, key) => {
+    rows.querySelectorAll(`.${cls}`).forEach((el) => {
+      el.addEventListener('change', () => {
+        const i = Number(el.dataset.i);
+        if (!autogenState.merges_2to1[i]) autogenState.merges_2to1[i] = emptyMergeRow();
+        if (key === 'lanes') {
+          autogenState.merges_2to1[i].lanes = Number(el.value) || 2;
+          renderMergeBuild(); // rebuild lane C / PE C fields
+          return;
+        }
+        autogenState.merges_2to1[i][key] = el.value || '';
+        updateMergeSummary();
+      });
+      if (el.tagName === 'INPUT') {
+        el.addEventListener('input', () => {
+          const i = Number(el.dataset.i);
+          if (!autogenState.merges_2to1[i]) autogenState.merges_2to1[i] = emptyMergeRow();
+          autogenState.merges_2to1[i][key] = el.value || '';
+          updateMergeSummary();
+        });
+      }
+    });
+  };
+  bind('merge-name', 'name');
+  bind('merge-area', 'area');
+  bind('merge-lanes', 'lanes');
+  bind('merge-lane-a', 'lane_a');
+  bind('merge-lane-b', 'lane_b');
+  bind('merge-lane-c', 'lane_c');
+  bind('merge-discharge', 'discharge');
+  bind('merge-pe-a', 'pe_a');
+  bind('merge-pe-b', 'pe_b');
+  bind('merge-pe-c', 'pe_c');
+  bind('merge-jam-pe', 'jam_pe');
+  updateMergeSummary();
+}
+
+function wireMergeBuildUi() {
+  $('merge-2to1-count')?.addEventListener('change', () => {
+    renderMergeBuild();
+  });
+  $('btn-merge-save')?.addEventListener('click', async () => {
+    persistMergesToWorkbook();
+    const st = $('merge-save-status');
+    const list = (autogenState.merges_2to1 || []).filter((m) => m && m.name);
+    const n = list.length;
+    const n2 = list.filter((m) => mergeLaneCount(m) === 2).length;
+    const n3 = list.filter((m) => mergeLaneCount(m) >= 3).length;
+    if (n && $('autogen-opt-merges-2to1')) $('autogen-opt-merges-2to1').checked = true;
+    try {
+      if (typeof fortnaAPI?.autogenWorkbookSave === 'function') {
+        await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
+      }
+      localStorage.setItem('fortna_merges_2to1', JSON.stringify(autogenState.merges_2to1 || []));
+      if (st) {
+        st.textContent = `Saved ${n} (${n2}×2:1${n3 ? `, ${n3}×3:1` : ''})`;
+        st.className = 'text-[10px] text-emerald-500 mono';
+      }
+      autogenLog(`Saved ${n} merge row(s) to workbook (${n2}× 2:1, ${n3}× 3:1+).`, 'ok');
+    } catch (e) {
+      if (st) { st.textContent = 'Save failed'; st.className = 'text-[10px] text-red-400 mono'; }
+      autogenLog(`Merge save failed: ${e?.message || e}`, 'err');
+    }
+  });
+  $('btn-merge-clear')?.addEventListener('click', () => {
+    autogenState.merges_2to1 = [];
+    if ($('merge-2to1-count')) $('merge-2to1-count').value = '0';
+    persistMergesToWorkbook();
+    renderMergeBuild();
+    const st = $('merge-save-status');
+    if (st) { st.textContent = 'Cleared'; st.className = 'text-[10px] text-slate-500 mono'; }
+  });
+  try {
+    const raw = localStorage.getItem('fortna_merges_2to1');
+    if (raw && !(autogenState.workbook?.merges_2to1 || []).length) {
+      autogenState.merges_2to1 = JSON.parse(raw) || [];
+      if ($('merge-2to1-count')) $('merge-2to1-count').value = String(autogenState.merges_2to1.length);
+    }
+  } catch (_) { /* ignore */ }
+  if (Array.isArray(autogenState.workbook?.merges_2to1)) {
+    autogenState.merges_2to1 = autogenState.workbook.merges_2to1;
+    if ($('merge-2to1-count')) $('merge-2to1-count').value = String(autogenState.merges_2to1.length);
+  }
+  renderMergeBuild();
+}
 $('btn-autogen-cat-area')?.addEventListener('click', () => {
   addCatalogValue('area', $('autogen-cat-area')?.value);
   if ($('autogen-cat-area')) $('autogen-cat-area').value = '';

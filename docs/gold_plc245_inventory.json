@@ -1,0 +1,204 @@
+{
+  "source": "ORielly Green *S.L5X call-site harvest",
+  "note": "AOI definitions still EncodedData; counts are call sites + program structure",
+  "controllers": {
+    "PLC2": {
+      "path": "C:\\Users\\curtiskricke\\Desktop\\ORielly Green\\1 PLC2\\ORLY_Greensboro_NC_PLC2s.L5X",
+      "size_bytes": 3951399,
+      "sealed_aoi_defs": 68,
+      "open_aoi_defs": 3,
+      "programs": [
+        "ES",
+        "IO_MAP",
+        "ModuleB_Area_Fast",
+        "ModuleB_Area_L1",
+        "ModuleB_Area_L2",
+        "ModuleB_Area_Slow",
+        "ModuleB_Trash_Area_Fast",
+        "ModuleB_Trash_Area_L1",
+        "ModuleB_Trash_Area_L2",
+        "ModuleB_Trash_Area_Slow",
+        "ModuleC_Area_Fast",
+        "ModuleC_Area_L1",
+        "ModuleC_Area_L2",
+        "ModuleC_Area_Slow",
+        "ModuleC_Trash_Area_Fast",
+        "ModuleC_Trash_Area_L1",
+        "ModuleC_Trash_Area_L2",
+        "ModuleC_Trash_Area_Slow",
+        "PLC_Fast",
+        "Sys",
+        "System"
+      ],
+      "routine_count": 122,
+      "aoi_calls": {
+        "Fast_Conv": 57,
+        "Slow_Flt": 57,
+        "Slow_Jam": 57,
+        "PE_Logic": 28,
+        "Full_PE": 7,
+        "Merge_2to1": 4,
+        "Slow_Area": 4,
+        "Slow_ControlStation": 4,
+        "AOI_CommDiag": 39
+      },
+      "merge_2to1_holds": [
+        {
+          "merge": "P316_Merge",
+          "hold_a": "P316_MainLane_Conv_RunHold",
+          "hold_b": "P316_InductLane_Conv_RunHold",
+          "n_args": 22
+        },
+        {
+          "merge": "P406_Merge",
+          "hold_a": "P406_MainLane_Conv_RunHold",
+          "hold_b": "P406_InductLane_Conv_RunHold",
+          "n_args": 22
+        },
+        {
+          "merge": "P324_Merge",
+          "hold_a": "P324_MainLane_Conv_RunHold",
+          "hold_b": "P324_InductLane_Conv_RunHold",
+          "n_args": 22
+        },
+        {
+          "merge": "P400_Merge",
+          "hold_a": "P400_MainLane_Conv_RunHold",
+          "hold_b": "P400_InductLane_Conv_RunHold",
+          "n_args": 22
+        }
+      ],
+      "has_sawtooth_merge_program": false,
+      "has_sorter_track_program": false
+    },
+    "PLC4": {
+      "path": "C:\\Users\\curtiskricke\\Desktop\\ORielly Green\\2 PLC4\\ORLY_Greensboro_NC_PLC4S.L5X",
+      "size_bytes": 8345543,
+      "sealed_aoi_defs": 69,
+      "open_aoi_defs": 3,
+      "programs": [
+        "CityCounter_Area_Fast",
+        "CityCounter_Area_L1",
+        "CityCounter_Area_L2",
+        "CityCounter_Area_L3",
+        "CityCounter_Area_Slow",
+        "ES",
+        "HMI",
+        "IO_MAP",
+        "ModuleA_Area_Fast",
+        "ModuleA_Area_L1",
+        "ModuleA_Area_L2",
+        "ModuleA_Area_Slow",
+        "PLC_Fast",
+        "SawtoothNewLane_Area_Fast",
+        "SawtoothNewLane_Area_L1",
+        "SawtoothNewLane_Area_L2",
+        "SawtoothNewLane_Area_Slow",
+        "Sawtooth_Area_Fast",
+        "Sawtooth_Area_L1",
+        "Sawtooth_Area_L2",
+        "Sawtooth_Area_Slow",
+        "Sawtooth_Merge",
+        "Sorter_Track",
+        "Sys",
+        "System",
+        "WCS_Interface_TCP_IP"
+      ],
+      "routine_count": 172,
+      "aoi_calls": {
+        "Fast_Conv": 58,
+        "Slow_Flt": 58,
+        "Slow_Jam": 57,
+        "PE_Logic": 42,
+        "Full_PE": 16,
+        "Merge_2to1": 2,
+        "TRK_Divert": 1,
+        "TRK_Divert_WaveFunction": 1,
+        "TRK_Pointer": 1,
+        "Enc_RIOCard": 1,
+        "Slow_Area": 4,
+        "Slow_ControlStation": 4,
+        "AOI_CommDiag": 40
+      },
+      "merge_2to1_holds": [
+        {
+          "merge": "P212_Merge",
+          "hold_a": "P212_MainLane_Conv_RunHold",
+          "hold_b": "P212_InductLane_Conv_RunHold",
+          "n_args": 22
+        },
+        {
+          "merge": "P215_Merge",
+          "hold_a": "P215_MainLane_Conv_RunHold",
+          "hold_b": "P215_InductLane_Conv_RunHold",
+          "n_args": 22
+        }
+      ],
+      "has_sawtooth_merge_program": true,
+      "has_sorter_track_program": true
+    },
+    "PLC5": {
+      "path": "C:\\Users\\curtiskricke\\Desktop\\ORielly Green\\3 PLC5\\ORLY_Greensboro_NC_PLC5S.L5X",
+      "size_bytes": 8078083,
+      "sealed_aoi_defs": 69,
+      "open_aoi_defs": 3,
+      "programs": [
+        "ES",
+        "HMI",
+        "IO_MAP",
+        "PLC_Fast",
+        "Redroom_Area_Fast",
+        "Redroom_Area_L1",
+        "Redroom_Area_L2",
+        "Redroom_Area_Slow",
+        "ShippingSorter_Area_Fast",
+        "ShippingSorter_Area_L1",
+        "ShippingSorter_Area_L2",
+        "ShippingSorter_Area_L3",
+        "ShippingSorter_Area_Slow",
+        "Sorter_Track",
+        "Sys",
+        "System",
+        "WCS_Interface_TCP_IP"
+      ],
+      "routine_count": 115,
+      "aoi_calls": {
+        "Fast_Conv": 78,
+        "Slow_Flt": 65,
+        "Slow_Jam": 65,
+        "PE_Logic": 55,
+        "Full_PE": 37,
+        "Merge_2to1": 3,
+        "TRK_Divert": 16,
+        "TRK_Divert_WaveFunction": 16,
+        "TRK_Pointer": 5,
+        "Enc_RIOCard": 5,
+        "Slow_Area": 2,
+        "Slow_ControlStation": 3,
+        "AOI_CommDiag": 63
+      },
+      "merge_2to1_holds": [
+        {
+          "merge": "P812_Merge",
+          "hold_a": "P802_Conv.PI.Stop_Next",
+          "hold_b": "P810_Conv.PI.Stop_Next",
+          "n_args": 22
+        },
+        {
+          "merge": "P530_P2_Merge",
+          "hold_a": "P530_P1_Conv.PI.Stop_Next",
+          "hold_b": "P718_Conv.PI.Stop_Next",
+          "n_args": 22
+        },
+        {
+          "merge": "P500_Merge",
+          "hold_a": "P444_Conv.PI.Stop_Next",
+          "hold_b": "P544_Conv.PI.Stop_Next",
+          "n_args": 22
+        }
+      ],
+      "has_sawtooth_merge_program": false,
+      "has_sorter_track_program": true
+    }
+  }
+}

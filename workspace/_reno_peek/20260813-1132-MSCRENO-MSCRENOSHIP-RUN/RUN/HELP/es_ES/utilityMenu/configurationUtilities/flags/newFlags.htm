@@ -1,0 +1,40 @@
+<html>
+<head>
+<title>New Flags Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000"><a name="top">
+<h1 align="center">New Flags</h1><hr></a>
+
+<p><br>
+  The New Flags Menu contains integer flags. Some of the flags in New Flags are shown below.<p>
+  <a href="#pic">Click Here to see a screen shot of this menu.
+<img src="../../../images/smallnewflags.gif" align="middle"></a></p>
+<blockquote> 
+  <p>Record #14 is used to turn on/off a carton index displayed through the shift print line in logs</p>
+  <p>Record #26 is used for the draw conveyor flag. A '1' in &quot;flag value&quot; causes graphical display<br>
+    to disappear and text: &quot;Conveyor is off&quot; to display on the screen.</p>
+  <p>Record #29 contains current view index, CURR_VIEW, which is used internally 
+  <p>Record #30 contains flag, AUTO_LOGIN, enabling auto login. If it is set to 
+    1, FortnaPlus&copy; checks whether user guest already exists, if not, it creates 
+    user guest with password of guest and level=9900 and then performs auto login 
+    as a guest with no password dialogue.</p>
+  <p>Record #31 USE_HELPVIEWER, causes FortnaPlus&copy; to use the Photon Help 
+    Viewer to view htm files when its value is set to 1.</p>
+  <p>Record #40 LOGS VERBOSE, turns on additional logging when its value is '1'</p>
+  <p>Record #41 LOGS VERY VERBOSE, turns on a second level of additional logging 
+    when its value is a '1'.</p>
+  <p>Record # 42 MASTER_IO_MACHINE. should reference the record in the Machine 
+    menu which holds the machine who should broadcast the IO states to all.</p>
+  <p>Record #43 I OWN ALL ERRORS is useful for testing or in a demo state. When 
+    set to a 1, this machine believes it owns all the Errors.</p>
+  <p>Record #44 AUTOSENDTIME, if set to 0, it will be set automatically when using 
+    flag #42.</blockquote><p><hr>
+  <p>
+<a name="pic">
+<img src ="../../../images/newflags.gif" align="center"></a>
+<p>
+<a href="#top"><p >Click Here to return to the top of page.</p></a><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

@@ -1,0 +1,15 @@
+"Sorter Name"~"Encoder ioName"~"Encoder tmName"~"Encoder Type"~"Max Cartons"~"Max Verify Buffer"~"Dump NDX"~"Dump OUT"~"Dump IN"~"UseFirstShifterNdx"~"LastNdx"~"OK"~"ShiftOnOff"~"TrigOnOnly"~"MaxNdx"~"Machine"~"ManualShift"~"Shifted"~"Data LowRec"~"Data HighRec"~"Buffer LowRec"~"Buffer HighRec"~"Inpoints LowRec"~"Inpoints HighRec"~"Updates LowRec"~"Updates HighRec"~"Outpoints LowRec"~"Outpoints HighRec"~"ShiftCnt"~"TrigOnOff"~"DivertEnableIO"~"InvertEnableIO"~"RecircRate"~"CntRecircWhenFull"~"RecircRateUpdPt"~"pDumpFrom"~"pDumpOffset"~"pLastDumpLoc"~"pFirstShifter"
+Invalid~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+SHIP SCAN~Invalid~N/A~0~50~0~-1~0~0~N~6~Y~N~N~999~MSCRENOSHIP~N~N~1~1000~1~500~1~1~1~4~1~1~947~N~INVALID~N~N/A~N~Invalid~0~0~0~1~
+SHIP SORTER~SHIP SORT~N/A~0~50~0~-1~0~0~N~253~Y~N~N~999~MSCRENOSHIP~N~N~1001~2000~501~2000~2~2~5~8~2~20~128~N~INVALID~N~N/A~N~Invalid~0~0~0~2~
+SHIP SAWTOOTH~Invalid~tmSHIP_SAW_ENC~1~30~0~0~0~0~N~623~Y~N~N~999~MSCRENOSHIP~N~N~2001~3000~2001~2500~3~6~9~16~21~21~99~N~INVALID~N~N/A~N~Invalid~0~0~0~3~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+
+

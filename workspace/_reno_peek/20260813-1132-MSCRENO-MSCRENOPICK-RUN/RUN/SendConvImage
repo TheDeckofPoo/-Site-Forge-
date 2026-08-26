@@ -1,0 +1,92 @@
+#!/bin/sh
+
+REMOTEHOST=WCS_OUTBOUND
+REMOTETOPIC="/topic/WCS.IMAGE.CONVEYOR"
+# Must match ScreenCapture_FileName in FPC
+INFILEGLOB=fpcscreen*
+# Use most recent
+INFILE=`ls -tr ${INFILEGLOB} 2>/dev/null | tail -n 1`
+TMPPHSFILE=tmpimage.phs
+TMPBMPFILE=tmpimage.bmp
+TMPPNGFILE=tmpimage.${HOSTNAME}.png
+PNGFILE=fpcimage.latest.png
+STAMPFILE=/tmp/$0.stamp
+RELEASE=`uname -r | sed 's/\.//g'`
+
+# bmp2png needs this
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+
+# Logging
+#LOGGING=Y
+LOGGING=N
+LOGFILE=/tmp/$0.log
+
+# Sleep for a second to offset from the image generation batch
+sleep 1
+
+NOW=`date +%Y%m%d%H%M%S`
+
+# Got something to do?
+if test -f "${INFILE}"
+then
+	chmod 666 ${INFILE}
+	if [ 0${RELEASE} -ge 640 ]
+	then
+		# FPC produces bmp file directly
+		mv ${INFILE} ${TMPBMPFILE}
+	else
+		# FPC produces phs file, convert to bmp
+		# Set input file aside to avoid over-writes
+		mv ${INFILE} ${TMPPHSFILE}
+		# Create bitmap in temporary file since it takes a while
+		phs-to-bmp ${TMPPHSFILE} > ${TMPBMPFILE}
+	fi
+	if test -f ${TMPBMPFILE}
+	then
+		# Convert to more compact png format
+		rm -f ${TMPPNGFILE}*
+		bmp2png -QO ${TMPPNGFILE} ${TMPBMPFILE}
+		if test -f ${TMPPNGFILE}
+		then
+			# compare new to old, quit if no change
+			# $?: 0=same, 1=differ, 2=missing file
+			# NOTE: The PHS files have a timestamp, so will always differ
+			# It takes longer to cmp the BMPs than to convert them to PNG
+			# then cmp them!
+			if test ! -f ${PNGFILE}
+			then
+				touch ${PNGFILE}
+			fi
+			cmp -s ${PNGFILE} ${TMPPNGFILE}
+			if [ 0$? -ne 0 ]
+			then
+				# Send the file
+				stompputfile ${REMOTEHOST} fpc pw "${REMOTETOPIC}" "${TMPPNGFILE}"
+				mv ${TMPPNGFILE} ${PNGFILE}
+				if [ X${LOGGING} == XY ]
+				then
+					echo "${NOW} File has changed" >> ${LOGFILE}
+				fi
+			else
+				if [ X${LOGGING} == XY ]
+				then
+					echo "${NOW} File has NOT changed" >> ${LOGFILE}
+				fi
+			fi
+			if [ X${LOGGING} == XY ]
+			then
+				echo "${NOW} $0: Done. ${INFILE} -> ${PNGFILE}" >> ${LOGFILE}
+			fi
+		fi
+	fi
+else
+	if [ X${LOGGING} == XY ]
+	then
+		echo "${NOW} $0: Nothing to do." >> ${LOGFILE}
+	fi
+fi
+# Save the timestamp for the next round
+echo ${NOW} > ${STAMPFILE}
+
+# Clean up
+rm -f ${INFILEGLOB} ${TMPPHSFILE} ${TMPBMPFILE} ${TMPPNGFILE}*

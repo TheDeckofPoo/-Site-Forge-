@@ -1,0 +1,49 @@
+<html>
+<head>
+<title>Sorter Data Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Sorter Data Menu</h1>
+<hr>
+<p>
+<p>This menu holds a record for each entry being shifted. The records are used 
+  sequentially, and when the end of those records available to the particular 
+  shifter has been reached, it will continue at the beginning.</p>
+<p>Fields:</p>
+<ul>
+  <li>Sorter - shifter name, a pop up into the Sorter table</li><p>
+  <li>Data - the record number in the sequence of records used by that shifter 
+  </li><p>
+  <li>Lane - automatically generated, displays the lane this product is to divert 
+    at</li><p>
+  <li>Index - automatically generated, indexes a project-specific table</li><p>
+  <li>Description - usually the barcode</li><p>
+  <li>Expected Lane - automatically displays where the product is expected to 
+    divert</li><p>
+  <li>Confirmed - automatically displays the lane where the divert verified</li><p>
+  <li>LaneAlt1 - an optional alternate destination lane to be used in the event 
+    the destination is full</li><p>
+  <li>LaneAlt2 - a second optional alternate destination lane to be used in the 
+    event the destination and LaneAlt1 is full</li><p>
+  <li>LaneAlt3 - a third optional alternate destination lane to be used in the 
+    event the destination and LaneAlt1&amp;2 are full</li><p>
+  <li>Box Size - automatically generated based on the induct eye's detection of 
+    the box</li><p>
+  <li>Fixed Dwell - dwell is the time to keep firing. A fixed dwell will keep 
+    firing for the time it takes to cover a fixed number of ticks. If this field 
+    is filled, it will override the Fixed Dwell field in the Outpoints table.</li><p>
+  <li>Percent Box Dwell - the number of ticks passing in front of the induct eye 
+    will represent the length of the box. The time to continue firing can be entered 
+    as a percent of the box. If this field is filled in, it will override the 
+    Percent Box Dwell field in the Outpoints table.</li><p>
+  <li>Armed - generated automatically in cooperation with the armed Friend field 
+    in the Outpoints menu</li><p>
+</ul>
+<hr>
+  <p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.<br>
+  <br>
+
+</body>
+
+</html>

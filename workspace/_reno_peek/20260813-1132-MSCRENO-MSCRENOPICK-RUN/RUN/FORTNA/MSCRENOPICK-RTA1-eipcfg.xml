@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EthernetIP name="MSCRENOPICK" version="1.0" interfaceip="192.168.1.9">
+	<Adapter targetip="192.168.1.52"
+		name="AENTR1"
+		InputAddress="48"
+		OutputAddress="0">
+			<Module name="AENTR"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR1-IB8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR1-IB8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR1-IB8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR1-IB8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR1-OA4"
+				type="1734-OA4"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR1-OA4"
+				type="1734-OA4"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR1-OA4"
+				type="1734-OA4"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR1-OA4"
+				type="1734-OA4"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.63"
+		name="AENTR2"
+		InputAddress="60"
+		OutputAddress="4">
+			<Module name="AENTR2"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR2-IA4"
+				type="1734-IA4"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR2-IA4"
+				type="1734-IA4"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR2-IA4"
+				type="1734-IA4"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR2-IA4"
+				type="1734-IA4"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR2-OA4"
+				type="1734-OA4"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR2-OA4"
+				type="1734-OA4"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+	<Adapter targetip="192.168.1.53"
+		name="AENTR3"
+		InputAddress="72"
+		OutputAddress="6">
+			<Module name="AENTR3"
+				type="1734-AENT"
+				slot="0"
+				connection="HEADNODE">
+				<O2T rpi_us="4000" cnxn_type="POINT2POINT"/>
+				<T2O rpi_us="4000" cnxn_type="MULTICAST"/>
+				<Key Compatibility="false" VendorID="0" DeviceType="0" ProductCode="0" MajorRevision="0" MinorRevision="0"/>
+				<Parameters
+					T2OAlignment="WORD"
+					T2OSlotSize="1"
+					O2TAlignment="WORD"
+					O2TSlotSize="1"
+				/>
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="1"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="2"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="3"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IV8"
+				type="1734-IB8"
+				slot="4"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IA4"
+				type="1734-IA4"
+				slot="5"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-IA4"
+				type="1734-IA4"
+				slot="6"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="7"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="8"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="9"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="10"
+				connection="RACKOPTIMIZED">
+			</Module>
+			<Module name="AENTR3-OA4"
+				type="1734-OA4"
+				slot="11"
+				connection="RACKOPTIMIZED">
+			</Module>
+	</Adapter>
+</EthernetIP>
+

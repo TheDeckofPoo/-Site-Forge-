@@ -1,0 +1,43 @@
+"File_Name"~"Description"~"CurrentNum"~"HowOften"~"Increment"~"CurrentStat"~"WasStat"~"Type"~"Process"~"InternalProc"~"InternalProcCtrl"~"Machine"~"All Machines"~"DoFile"
+invalid~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+Display1~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+Display2~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+Display3~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+Display4~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+Logs~Display~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~Y~
+SHIFTER TEST~TEST~0~1~INVALID~0~0~Count~N/A~ ~Test Sorters~N/A~N~N~
+GAPPER~GAPPER~0~1~INVALID~0~0~Count~CTRL~ ~GapperProcess~N/A~N~N~
+Do Scans~ ~0~1~INVALID~0~0~Count~CTRL~ ~DO SCANS~N/A~N~N~
+UPS~UPS~0~1~INVALID~0~0~Count~GUI~UPS Monitor~ ~N/A~N~N~
+Hist Config~ ~0~1~Min~0~21~Elapsed~MAIN~Hist DbCapture Config~ ~N/A~N~N~
+Hist Data~ ~0~1~Sec~0~39~Elapsed~MAIN~Hist DbCapture Data~ ~N/A~N~N~
+Hist Process~ ~0~1~INVALID~0~0~Count~CTRL~ ~Hist Process~N/A~N~N~
+Scan Process~ ~0~1~INVALID~0~0~Count~CTRL~ ~ScnApp CTRL~CP1~N~N~
+Srt Ctrl~ ~0~1~INVALID~0~0~Count~CTRL~ ~SrtApp CTRL (CPN)~CP1~N~N~
+Srt Serv~ ~0~1~INVALID~0~0~Count~SERV~SrtApp  SERV (CPN)~ ~CP1~N~N~
+Xfr Serv~ ~0~1~INVALID~0~0~Count~SERV~XfrApp  SERV (CPN)~ ~CP1~N~N~
+Xfr Ctrl~ ~0~1~INVALID~0~0~Count~CTRL~ ~XfrApp  CTRL (CPN)~CP1~N~N~
+Xfr Run~ ~0~1~INVALID~0~0~Count~CTRL~ ~XfrProcess  (CTRL)~CP1~N~N~
+Serv Gapper~ ~0~1~INVALID~0~0~Count~SORT~ ~Servo Gapper (SORT)~N/A~N~N~
+Mtr Speed~ ~0~1~INVALID~0~0~Count~SORT~ ~Spd  SORT (CPN)~N/A~N~N~
+Zpr Sort~ ~0~1~INVALID~0~0~Count~SORT~ ~Zpr  SORT (CPN)~N/A~N~N~
+Zpr Ctrl~ ~0~1~INVALID~0~0~Count~CTRL~ ~Zpr  CTRL (CPN)~N/A~N~N~
+Stretch~ ~0~1~INVALID~0~0~Count~CTRL~ ~Stretch CTRL (CPN)~N/A~N~N~
+Print Main Screen~ ~0~30~Sec~0~21~Elapsed~GUI~Print Main Screen~ ~N/A~N~N~
+SendConvImage~ ~0~30~Sec~0~21~Elapsed~GUI~ ~ ~N/A~N~Y~
+RESYNC EJF~Resync Errors Jams Fulls~0~2~Sec~0~0~Elapsed~SERV~Resync Errors (SERV)~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+ ~ ~0~0~INVALID~0~0~None~N/A~ ~ ~N/A~N~N~
+
+

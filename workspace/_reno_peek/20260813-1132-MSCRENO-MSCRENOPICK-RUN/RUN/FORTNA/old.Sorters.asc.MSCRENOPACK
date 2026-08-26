@@ -1,0 +1,15 @@
+"Sorter Name"~"Encoder ioName"~"Encoder tmName"~"Encoder Type"~"Max Cartons"~"Max Verify Buffer"~"Dump NDX"~"Dump OUT"~"Dump IN"~"UseFirstShifterNdx"~"LastNdx"~"OK"~"ShiftOnOff"~"TrigOnOnly"~"MaxNdx"~"Machine"~"ManualShift"~"Shifted"~"Data LowRec"~"Data HighRec"~"Buffer LowRec"~"Buffer HighRec"~"Inpoints LowRec"~"Inpoints HighRec"~"Updates LowRec"~"Updates HighRec"~"Outpoints LowRec"~"Outpoints HighRec"~"ShiftCnt"~"TrigOnOff"~"DivertEnableIO"~"InvertEnableIO"~"RecircRate"~"CntRecircWhenFull"~"RecircRateUpdPt"~"pDumpFrom"~"pDumpOffset"~"pLastDumpLoc"~"pFirstShifter"
+Invalid~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+PACK SORT 1~ENC1~N/A~0~50~0~2~998~0~N~66~Y~N~N~199~MSCRENOPACK~N~N~1~200~1~1500~1~1~1~4~1~5~811~N~INVALID~N~N/A~N~Invalid~0~0~0~1~
+PACK SORT 2~ENC2~N/A~0~50~0~3~961~0~N~60~Y~N~N~199~MSCRENOPACK~N~N~201~400~1501~3000~2~2~5~8~6~12~319~N~INVALID~N~N/A~N~Invalid~1~968~0~1~
+PACK SORT 3~ENC3~N/A~0~50~0~-1~0~0~N~16~Y~N~N~199~MSCRENOPACK~N~N~401~600~3001~4500~3~3~9~12~13~19~379~N~INVALID~N~N/A~N~Invalid~2~1899~0~1~
+PACK SORT 4~ENC4~N/A~0~0~0~-1~0~0~N~0~Y~N~N~0~MSCRENOPACK~N~N~601~800~4501~5000~4~4~13~16~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~4~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+ ~Invalid~N/A~0~0~0~0~0~0~N~0~N~N~N~0~N/A~N~N~0~0~0~0~0~0~0~0~0~0~0~N~INVALID~N~N/A~N~Invalid~0~0~0~0~
+
+

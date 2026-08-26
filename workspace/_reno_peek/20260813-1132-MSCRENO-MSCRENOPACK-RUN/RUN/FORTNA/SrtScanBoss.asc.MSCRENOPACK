@@ -1,0 +1,15 @@
+"Name"~"ErrorMsg"~"ScanStatus"~"AppSorter"~"ScanZone"~"AssignUpdatePt"~"ScanError"~"ScanConflict"~"CommErr"~"SpcLane"~"Lane"~"TooLateUpdatePt"~"SendCRRUpdatePt"~"LengthUpdatePt"~"TooTallUpdatePt"~"TooTallSignal"~"SecondCRRUpdPt"~"SecondScanZone"~"SecondChkDiverted"~"ToteUpdatePt"~"ToteSignal"~"ToteUpdErrOnly"~"ToteErr"~"ToteErrMsg"~"ToteID"~"ToteUpdCSMAlso"~"pToteTrkMnu"~"pToteTrkIndx"~"pToteFound"
+N/A~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+PACKE SORTER~ ~Assign: Zone  , Lane: 34~PACKE SORTER~PACKE SCAN~SCAN~N/A~N/A~N/A~N/A~34~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+PACK SORTER~ ~Zone PACK17, Lane: 17~PACK SORTER~PACK SCAN~Invalid~N/A~N/A~N/A~N/A~17~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+OIVP SORTER~ ~Zone OIVP, Lane: 501~OIVP SORTER~OIVP SCAN~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+ ~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+ ~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+ ~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+ ~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+ ~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+ ~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+ ~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+ ~ ~ ~N/A~N/A~Invalid~N/A~N/A~N/A~N/A~0~Invalid~Invalid~Invalid~Invalid~INVALID~Invalid~N/A~N~Invalid~INVALID~N~ ~ ~ ~N~0~0~0~
+
+

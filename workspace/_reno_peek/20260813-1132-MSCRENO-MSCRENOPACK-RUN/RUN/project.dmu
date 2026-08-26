@@ -1,0 +1,286 @@
+MENUNAME          ROW  COL  FG   BG  HFG  HBG  FONT 
+
+'MsgBox'          29    2   15    4   15    4    0 
+'SYSTEM HAS ERRORS .... PRESS F10 TO VIEW                                    '
+
+'FormatHl'        12    3    1   14   15    1    0 
+' Choose a video format for the video feed '
+' '
+
+'AudioMdH'        12    3    1   14   15    1    0 
+' Select an audio mode for the audio / video feed '
+' '
+
+'MapHelp'         10    3   10    0    3    1    0 
+'MapHelp.htm'
+
+'hlpvideo'         2    7    8    3   10    3    0 
+'hlpvideo.htm'
+
+'admnutlH'        12    3    1   14   15    1    0 
+'hlpadmnu.htm'
+
+'OperatHl'        12    3    1   14   15    1    0 
+' Configures the operators used in building Logic Help '
+
+'contactH'        12    3    1   14   15    1    0 
+'hlpconta.htm'
+
+'connectH'        12    3    1   14   15    1    0 
+'hlpconne.htm'
+
+'protocHl'        12    3    1   14   15    1    0 
+'hlpproto.htm'
+
+'ProcTypH'        12    3    1   14   15    1    0 
+'hlpproct.htm'
+
+'MachineH'        12    3    1   14   15    1    0 
+'hlpmachi.htm'
+
+'SendStHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'RecvStHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'MsgMapHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'AutoSndH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'ProductH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'PathSetH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'InductsH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'OutductH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'ErrsevHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'TrigrTyH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'RespTypH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'CombosHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'iotypeHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'iostatuH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'interfaH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'lowhighH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'inoutHlp'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'dtypesHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'ErrsugtH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'ErrorsHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'LayerseH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'LayeronH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'fontmenH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'Ppophelp'         9    6    1   14   15    1    0 
+'hlpppop.htm'
+
+'iomodulH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'beltHelp'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'partnumH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'convdesH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'convtypH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'iohelp'          10    2   15    1    1    3    0 
+'hlpio.htm'
+
+'passworH'        12    3    1   14   15    1    0 
+'hlppassw.htm'
+
+'GroupsHl'        12    3    1   14   15    1    0 
+'hlpgroup.htm'
+
+'timemenH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'worldhelp'       12    3   12   15   15    1    0 
+'hlpworld.htm'
+
+'getpwHlp'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'getuser'          5    3    1   14   15    1    0 
+' Select User Name From List using the arrow keys. Press Enter. '
+
+'cnvhelp'          9    2   11    0   15    1    0 
+'hlpcnv.htm'
+
+'selconvH'        10    2   15    1    1    3    0 
+'hlpselco.htm'
+
+'offsetH'         10    2   15    1    1    3    0 
+'hlpoffse.htm'
+
+'AnimateH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'ConvpatH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'JamchecH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'FulllinH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'MaintaHl'        12    3    1   14   15    1    0 
+' Use the mouse or arrow keys to select a menu item. Use the right '
+' mouse button or Enter to do the item. Escape always takes you '
+' back. '
+
+'MotorsHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'DvMaintH'        25    6    1   14   15    1    0 
+'hlpdvmai.htm'
+
+'EntrMlgH'        25    6    1   14   15    1    0 
+' Type your maintenance report. Press ALT-F10 to save or '
+' Escape to cancel. '
+
+'MaintlgH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'flagmenH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'flagsmnH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'sqlquerH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'cfigioHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'cfigutlH'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'commHelp'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'SysutlHl'        12    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'MainHelp'        10    3   10    0    3    1    0 
+'MainHelp.htm'
+
+'SimPathH'        10    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'scanmenH'        10    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'reptmenH'        10    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'DatautlH'        10    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'trackuHl'        10    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'ShifterH'        10    3    1   14   15    1    0 
+'ShifterWindow.htm'
+'hlpgen.htm'
+
+'SimulatH'        10    3    1   14   15    1    0 
+'hlpgen.htm'
+
+'MainmenH'        10    3   10    0   15    2    0 
+'hlpmainm.htm'
+
+'DefaultHelp'     25    6    7    0   13    7    0 
+' Use the mouse or arrow keys to select a menu item. Use the right '
+' mouse button or Enter to do the item. Escape always takes you '
+' back. '
+
+'lpmostat'        11    2   14    1    1   14    0 
+'hlplpmos.htm'
+
+'errinst'         25   12   15    1    1   15    0 
+' PRESS: <INSERT> - acknowledge;     <DELETE> - clear.   '
+'       <HOME>,<END>,<PGUP>,<PGDN>,<UP>,<DN> - position. '
+
+'mnuIOkey'        28    1   15    1    1   15    0 
+'                                                                         '
+
+'hitany'          15   67   15    0   14    1    0 
+'HIT ANY KEY'
+
+'KTX_LIST'        15   67   15    0   14    1    0 
+'KTX_LIST'
+
+'showloc'         16   68    9    7    2    1    0 
+'CTRL F1 '
+'FOR I/O '
+'LOCATION'
+
+'noloc'            5   50    1   15   14    1    0 
+'NO LOCATION'
+
+'menuerror'        3    9    4   14   15    1    0 
+' Conveyor Error Display       Time =                          '
+' Description                                    Time          '
+
+'msgmenu'         27    4    1   15   14    1    0 
+'                         '
+
+'levelinst'       37    2   10    6    3    7   22 
+'hlplevel.htm'
+
+'PartEditor'      25    6    7    0   13    7    0 
+'Under construction'
+'PartEditor.htm'
+
+'TableWindow'     25    6    7    0   13    7    0 
+'TableWindow.htm'
+
+'MenuWindow'      25    6    7    0   13    7    0 
+'MenuWindow.htm'
+'asdf'
+

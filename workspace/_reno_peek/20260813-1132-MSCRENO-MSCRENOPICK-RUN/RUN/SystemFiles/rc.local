@@ -1,0 +1,286 @@
+##################################################
+# Fortna rc.local Configuration Area
+# (c) 2008 by Fortna, Inc.
+# All Rights Reserved
+##################################################
+
+# Set a one word name for this customer
+FORTNA_CUSTOMER_NAME="Fortna"
+
+# Set the list of nodes that are controlled by Fortna
+# `ls /net` would be all visible nodes on this network
+FORTNA_NODE_LIST=`ls /net`
+
+# Set the time zone
+# Pacific
+ FORTNA_TZ=PST08PDT07,M3.2.0/2,M11.1.0/2
+# Mountain
+#FORTNA_TZ=MST07MDT06,M3.2.0/2,M11.1.0/2
+# Central
+#FORTNA_TZ=CST06CDT05,M3.2.0/2,M11.1.0/2
+# Eastern
+#FORTNA_TZ=EST05EDT04,M3.2.0/2,M11.1.0/2
+
+# Network Card selection
+case $HOSTNAME in
+ CP1) FORTNA_LOAD_NET_CARD1="#none"
+      FORTNA_LOAD_NET_CARD2="#none"
+      ;;
+   *) FORTNA_LOAD_NET_CARD1="#none"
+      FORTNA_LOAD_NET_CARD2="#none"
+      ;;
+esac
+
+# Set Global Name Server
+# Choose a single node to be the name server
+# All others will be clients
+# Set FORTNA_GNS_ENABLE=0 if you don't want gns to be started. For FPC V11 and newer only!
+FORTNA_GNS_ENABLE=0
+case $HOSTNAME in
+ COMM) FORTNA_GNS_SERVER=1
+       ;;
+    *) FORTNA_GNS_SERVER=0
+       ;;
+esac
+
+# Set Default RocketPort Baud Rate
+# FORTNA_ROCKETPORT_BAUD=0 will disable the RocketPort driver
+# Use FORTNA_SERIALPORT_OVERRIDE to set different
+# baud rates for individual ports (RocketPort or regular Serial Port)
+# Examples:
+#  FORTNA_SERIALPORT_OVERRIDE="stty baud=19200 < /dev/ser-rckt9;"
+#  FORTNA_SERIALPORT_OVERRIDE="stty baud=9600 < /dev/ser1; stty baud=57600 < /dev/ser2;"
+case $HOSTNAME in
+ CP1) FORTNA_ROCKETPORT_BAUD=38400
+      FORTNA_ROCKETPORT_OVERRIDE=""
+      ;;
+   *) FORTNA_ROCKETPORT_BAUD=9600
+      FORTNA_SERIALPORT_OVERRIDE=""
+      ;;
+esac
+
+# Run cron facility
+case $HOSTNAME in
+  CP1) FORTNA_RUN_CRON=1
+       ;;
+    *) FORTNA_RUN_CRON=1
+       ;;
+esac
+
+# Modem Configuration
+case $HOSTNAME in
+ COMM) FORTNA_RUN_MODEM=1
+       FORTNA_MODEM_PORT="/dev/ser1"
+       ;;
+    *) FORTNA_RUN_MODEM=0
+       FORTNA_MODEM_PORT="#none"
+       ;;
+esac
+
+# TCP/IP Configuration
+case $HOSTNAME in
+ CP1) FORTNA_LOAD_INETD=1
+      ;;
+   *) FORTNA_LOAD_INETD=1
+      ;;
+esac
+
+# Start Local MySQL Database
+case $HOSTNAME in
+ CP1) FORTNA_LOCAL_DB=1
+      ;;
+   *) FORTNA_LOCAL_DB=1
+      ;;
+esac
+
+# Start NUT UPS monitoring
+case $HOSTNAME in
+ CP1) START_NUT=0
+      ;;
+   *) START_NUT=0
+      ;;
+esac
+
+
+##################################################
+# Now, the actual commands...
+##################################################
+RELEASE=`uname -r | sed 's/\.//g'`
+
+# Run chkfsys
+if [ 0$RELEASE -ge 640 ]
+then
+  /sbin/chkqnx6fs -svv /dev/hd0t179
+else
+  /sbin/chkfsys -Prm /dev/hd0t79
+fi
+
+# Set Timezone
+export TZ=$FORTNA_TZ
+
+# Start cron
+if test /usr/sbin/cron; then
+  if test $FORTNA_RUN_CRON -eq 1; then
+    /usr/sbin/cron &
+  fi
+fi
+
+# Start qconn server
+#if test -x /usr/sbin/qconn; then
+#  /usr/sbin/qconn &
+#fi
+
+# Set hosts file
+if test -f /etc/hosts.$HOSTNAME; then
+	cp /etc/hosts.$HOSTNAME /etc/hosts
+fi
+
+# Start internet services
+if test -x /usr/sbin/inetd; then
+  if test $FORTNA_LOAD_INETD -eq 1; then
+    /usr/sbin/inetd &
+  fi
+fi
+
+# Start secure shell daemon
+if [ 0$RELEASE -ge 640 ]
+then
+  if test -f /etc/ssh/sshd_config; then
+    if test -x /usr/pkg/sbin/sshd; then
+      /usr/pkg/sbin/sshd
+    fi
+  fi
+else
+  if test -f /etc/openssh/sshd_config; then
+    if test -x /opt/sbin/sshd; then
+      /opt/sbin/sshd
+    fi
+  fi
+fi
+
+if test $FORTNA_GNS_ENABLE -eq 1; then
+  # Start the High-Availability Manager
+  if test -x /usr/sbin/ham; then
+    /usr/sbin/ham -f /var/log/ham.log -t absolute
+  fi
+
+  # Start global name service
+  if test -x /usr/sbin/gns; then
+    if test -x /usr/local/bin/ham_gns_restart; then
+      if test $FORTNA_GNS_SERVER -eq 1; then
+        /usr/local/bin/ham_gns_restart "/usr/sbin/gns -s"
+      else
+        /usr/local/bin/ham_gns_restart "/usr/sbin/gns -c"
+      fi
+    else
+      if test $FORTNA_GNS_SERVER -eq 1; then
+        /usr/sbin/gns -s
+      else
+        /usr/sbin/gns -c
+      fi
+    fi
+  fi
+fi
+
+#Link to the inputtrap configuration
+if ! test -e /etc/system/trap/input.$HOSTNAME ; then
+    ln -s /etc/system/trap/input /etc/system/trap/input.$HOSTNAME
+fi
+
+# Start RocketPort drivers and Set Baud Rates
+echo " -> STARTING ROCKETPORT Universal PCI DRIVER"
+if test -x /usr/local/bin/devc-rckt; then
+  if test -c /dev/ser-rckt1; then
+    echo "    -> ALREADY RUNNING!"
+  else
+    if test $FORTNA_ROCKETPORT_BAUD -gt 0; then
+      echo "    -> STARTING DRIVER"
+      /usr/local/bin/devc-rckt -b $FORTNA_ROCKETPORT_BAUD
+    fi
+  fi
+fi
+echo " -> STARTING ROCKETPORT Infinity DRIVER"
+if test -x /usr/local/bin/devc-inf; then
+  if test -c /dev/ser-inf1; then
+    echo "    -> ALREADY RUNNING!"
+  else
+    if test $FORTNA_ROCKETPORT_BAUD -gt 0; then
+      if test -e /etc/devc-inf.conf; then
+        echo "    -> STARTING DRIVER"
+        /usr/local/bin/devc-inf -b $FORTNA_ROCKETPORT_BAUD
+	  else
+        echo "ROCKETPORT Infinity Configuration file /etc/devc-inf.conf DOES NOT EXIST"
+      fi
+    fi
+  fi
+fi
+echo " -> ROCKETPORT DRIVER STARTED"
+
+# Override baud rates for individual ports
+if test "$FORTNA_SERIALPORT_OVERRIDE" != ""; then
+  echo "    -> SETTING BAUD RATES"
+  sh -c "$FORTNA_SERIALPORT_OVERRIDE"
+fi
+
+# Start system logging
+if test -x /usr/sbin/syslogd; then
+  /usr/sbin/syslogd
+fi
+
+# Start printing service
+#if test -x /usr/bin/lpd; then
+#  # remove lock file, if it is there
+#  if test -f /usr/spool/output/lpd.lock; then
+#    rm /usr/spool/output/lpd.lock
+#  fi
+#  /usr/bin/lpd
+#fi
+
+# Start photon print spooler
+#if test -x /usr/sbin/spooler; then
+#  if test -f /etc/printers/pclremote.cfg; then
+#    /usr/sbin/spooler -d /dev/null -c /etc/printers/pclremote.cfg -n lp
+#  fi
+#fi
+
+# Start snmp daemon
+if test -x /usr/local/sbin/snmpd; then
+ if test -f /usr/local/share/snmp/snmpd.conf; then
+  /usr/local/sbin/snmpd
+ fi
+fi
+
+# Start procagent
+if test -x /usr/local/sbin/procagent; then
+  /usr/local/sbin/procagent -h $HOSTNAME
+fi
+
+# Start mysql server
+if test $FORTNA_LOCAL_DB -eq 1; then
+  if test -x /usr/local/bin/mysqld_safe; then
+    /usr/local/bin/mysqld_safe --user=mysql &
+  fi
+fi
+
+# Start stunnel to secure stomp connection
+if test -x /usr/local/bin/stunnel; then
+	/usr/local/bin/stunnel
+fi
+
+# Start NUT UPS monitoring
+# Configuration in /usr/local/ups/etc, if installed
+if test $START_NUT -eq 1; then
+  if test -f /usr/local/ups/sbin/nutctrl; then
+    /usr/local/ups/sbin/nutctrl start
+  fi
+fi
+
+# Start ntpd
+if test -f /etc/ntp/ntp.conf; then
+  if test -x /usr/sbin/ntpd; then
+    /usr/sbin/ntpd -c /etc/ntp/ntp.conf -g
+  fi
+fi
+
+# Un-comment the following line to auto-login as user fortna at boot
+/usr/photon/bin/Photon -l '/usr/photon/bin/phlogin -Ufortna:'

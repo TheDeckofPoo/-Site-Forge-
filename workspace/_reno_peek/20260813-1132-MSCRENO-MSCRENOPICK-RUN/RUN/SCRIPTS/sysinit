@@ -1,0 +1,436 @@
+
+#####################################################
+# FORTNA SYSTEM INITIALIZATION CONFIGURATION AREA
+# (c) 2001,2002 by Fortna Inc.
+# All Rights Reserved
+#####################################################
+#
+#
+# -----------------------
+# node list configuration
+# -----------------------
+# What customer is this for?  What are the nodes on the network?
+#
+# Set FORTNA_CUSTOMER_NAME to one word description or abbrieviation
+# of the customer.  (Probably what ever the project directory is called
+# not including the version number)
+# For Example: tessco (or heb or avnet)
+#
+# Set FORTNA_NODE_LIST to all of the nodes on the network.
+# For Example: FORTNA_NODE_LIST="1 2 3 4 5"
+#
+#
+FORTNA_CUSTOMER_NAME="Customer"
+FORTNA_NODE_LIST="1"
+#
+#
+# -------------------
+# time zone selection
+# -------------------
+# Where is this job site located?
+#
+# Set FORTNA_TZ to:
+#    "est05edt" for Eastern
+#    "est05"    for Indiana
+#    "cst06cdt" for Central
+#    "mst07mdt" for Mountain
+#    "mst07"    for Arizona
+#    "pst08pdt" for Pacific
+#
+#
+FORTNA_TZ=cst06cdt
+#
+# 
+# ----------------------
+# network card selection
+# ----------------------
+# How many cards are in this PC?  What drivers?  What parameters?
+#
+# Set FORTNA_LOAD_NET_CARD1 and FORTNA_LOAD_NET_CARD2 to the "driver start
+# statement" for each node.  Use a "case" statement to set the variables 
+# differently based on node number.  Use "#none" for nodes that don't have
+# one or more network cards.
+#
+# For Example:
+# case $NODE in
+#    31) FORTNA_LOAD_NET_CARD1="Net.ether905 -I0 -l1 -s100 -v"
+#        FORTNA_LOAD_NET_CARD2="Net.ether905 -I1 -l2 -s100 -v"
+#        ;;
+#     *) FORTNA_LOAD_NET_CARD1="Net.ether905 -I0 -l1 -s100 -v"
+#        FORTNA_LOAD_NET_CARD2="#none"
+#        ;;
+# esac
+#
+#
+case $NODE in
+	1) FORTNA_LOAD_NET_CARD1="Net.ether905 -I0 -l1 -s100 -v"
+		FORTNA_LOAD_NET_CARD2="#none"
+		;;
+	*) FORTNA_LOAD_NET_CARD1="Net.ether905 -I0 -l1 -s100 -v"
+		FORTNA_LOAD_NET_CARD2="Net.ether905 -I1 -l2 -s100 -v"
+		;;
+esac
+#
+# 
+# -----------------------
+# nameloc nodes selection
+# -----------------------
+# Which nodes should run "nameloc"?
+#
+# Several (but not all!) nodes on the network need to run
+# nameloc.  This is how QNX monitors the licenses.
+#
+# Set FORTNA_RUN_NAMELOC to 1 for nodes that should run 
+# "nameloc" and 0 for those that should not run "nameloc".
+# Also, set FORTNA_NAMELOC_NODES to a list of nodes that
+# nameloc will be running on so that we can retrieve license
+# information prior to loading Photon.
+# For Example: FORTNA_NAMELOC_NODES="3 5"
+#
+#
+FORTNA_NAMELOC_NODES="1"
+case $NODE in
+	1)	FORTNA_RUN_NAMELOC=1;;
+	*)	FORTNA_RUN_NAMELOC=1;;
+esac
+#
+# 
+# -------------------
+# serial card drivers
+# -------------------
+# Which PC's have serial cards?  How are the drivers started?
+#
+# Set FORTNA_LOAD_SERIAL_CARD to the "driver start statement" for each node.  Use a "case" statement to set the variables 
+# differently based on node number.  Use "#none" for nodes that don't have
+# one or more network cards.
+#
+# For Example:
+# case $NODE in
+#    1) FORTNA_LOAD_SERIAL_CARD="Dev32.rckt -F -b38400";;
+#    2) FORTNA_LOAD_SERIAL_CARD="Dev32.rckt -F -b38400";;
+#    *) FORTNA_LOAD_SERIAL_CARD="#none";;
+# esac
+case $NODE in
+	*)	FORTNA_LOAD_SERIAL_CARD="Dev32.rckt -F -b19200";;
+	*)	FORTNA_LOAD_SERIAL_CARD="#none";;
+esac
+#
+#
+# -----------------
+# ticksize settings
+# -----------------
+# At what resolution should this PC be able to switch processes?
+# 
+# In order to sample I/O quickly, a process needs to be able to be
+# triggered faster than the default 10 ms rate.
+#
+# Set FORTNA_TICKSIZE to 10 for servers and 1 for control nodes.
+#
+#
+case $NODE in
+	1)	FORTNA_TICKSIZE=1;;
+	*)	FORTNA_TICKSIZE=10;;
+esac
+#
+#
+# --------------------
+# dumper configuration
+# --------------------
+# Is there a need to generate "dump" files for troubleshooting?
+#
+# Set FORTNA_RUN_DUMPER to 1 to run the "dumper" utility and 
+# 0 to not run it.  If a process dies, "dumper" will capture
+# important troubleshooting information.
+#
+#
+FORTNA_RUN_DUMPER=1
+#
+#
+# ------------------
+# cron configuration
+# ------------------
+# Which nodes need to run automated, timed scripts?
+#
+# On some servers we use a "cron job" to execute certain batch 
+# files (shell scripts) at a timed interval.  For example, cleaning
+# up files from NFS directories, FTP scripts, sending emails for
+# lost processes, etc...
+# 
+# Set FORTNA_RUN_CRON to 1 to run the "cron" utility and 0 to not run 
+# it.  After "cron" is running, "cron jobs" are configured through the 
+# "crontab" utility.
+#
+#
+FORTNA_RUN_CRON=1
+#
+#
+# -------------------
+# modem configuration
+# -------------------
+# Which nodes have a modem?  What port is the modem plugged into?
+#
+# Set FORTNA_RUN_MODEM to 1 to run the "modem" utility and 0 to not run 
+# it.  Also set FORTNA_MODEM_PORT to the appropriate serial port.
+#
+#
+case $NODE in
+	1) FORTNA_RUN_MODEM=1
+		FORTNA_MODEM_PORT="/dev/ser1"
+		;;
+	*)	FORTNA_RUN_MODEM=0
+		FORTNA_MODEM_PORT="n/a"
+		;;
+esac
+#
+#
+# --------------------
+# tcp/ip configuration
+# --------------------
+# Which nodes are to run Sockets?  What "services" will be needed?
+# What IP address will this node be?  Are there special network settings?
+#
+#
+# Set FORTNA_LOAD_SOCKETS to a project specific script which can load
+# the Socket program and associated drivers.  Use "#none" to not load
+# sockets.
+#
+# Examples: 
+#    execute tcp/ip commands "inline" (because of the period at the start of the 
+#    line) from the default tcp/ip setup...
+#    FORTNA_LOAD_SOCKETS=". /etc/config/bin/tcpip.$NODE"
+#
+#    execute a "standard" startnet command...
+#    FORTNA_LOAD_SOCKETS="/usr/local/bin/startnet heb WMS en2 255.255.0.0"
+#
+#
+case $NODE in
+	#1) FORTNA_LOAD_SOCKETS="/usr/local/bin/startnet tessco NODE1 en2 255.255.255.0 &";;
+	#2) FORTNA_LOAD_SOCKETS="/usr/local/bin/startnet tessco NODE2 en2 255.255.255.0 &";;
+	#3) FORTNA_LOAD_SOCKETS="/usr/local/bin/startnet tessco NODE3 en2 255.255.255.0 &";;
+	#4) FORTNA_LOAD_SOCKETS="/usr/local/bin/startnet tessco NODE5 en2 255.255.255.0 &";;
+	#5) FORTNA_LOAD_SOCKETS="/usr/local/bin/startnet fisher COMM en2 255.255.255.0 &";;
+	#*) FORTNA_LOAD_SOCKETS="#none";;
+	#
+	# TEMPORARY for use at fortna
+	*)
+	#	FORTNA_LOAD_SOCKETS="/usr/local/bin/fortna_dhcp tessco$NODE"
+		;;
+esac
+# 
+#
+# --------------------
+# photon configuration
+# --------------------
+# Should photon run automatically at startup?  What user's permissions
+# should photon load with?
+#
+# Set FORTNA_RUN_PHOTON to 1 to start photon automatically and 0 otherwise.
+# Also set FORTNA_PHOTON_LOGNAME to a user name (listed in /etc/passwd) that
+# photon will be loaded as.
+#
+# For Example: FORTNA_PHOTON_LOGNAME="root"
+# 
+#
+FORTNA_RUN_PHOTON=1
+FORTNA_PHOTON_LOGNAME="root"
+#
+#
+#
+#
+######################################################
+# END FORTNA CONFIGURATION AREA
+#####################################################
+
+#####################################################
+# BELOW THIS LINE ARE THE ACTUAL SYSINIT COMMANDS
+#####################################################
+
+#
+# Set some environment variables that some programs use
+#
+echo "ENVIRONMENT"
+export KBD=en_US_101.kbd
+export ABLANG=en
+export CON_KBD=USA
+export ENV=/.kshrc
+export FORTNA_CUSTOMER_NAME
+
+#
+# Set the time from the hardware clock
+#
+echo "TIME"
+export TZ=$FORTNA_TZ
+/bin/rtc hw
+
+#
+# Load the device manager and other OS procs
+#
+echo "DEV"
+Dev -n128 &
+emu87 &
+Pipe &
+
+#
+# Load the serial port driver.  note: this assumes a
+# single serial port at the default address of (3f8,4).
+# This may need to be moved to the CONFIG AREA if we
+# start getting PC's with 2 ports again...
+#
+echo "SER"
+/bin/Dev.ser &
+
+#
+# Load the console, printer and terminal drivers
+#
+echo "CON"
+Dev.ansi -Q -n9 &
+reopen /dev/con1
+kbd $CON_KBD
+prefix -A /dev/console=/dev/con1
+Dev.par &
+Dev.pty -n16 &
+
+#
+# Load the floppy and cd drivers
+#
+echo "FLOPPY/CD"
+/bin/Fsys.floppy -a3f0 -i6
+#/bin/Fsys.eide fsys -Ndsk1 -n0=hd1. -n5=cd1. eide
+#/bin/Iso9660fsys /cd1.0=/dev/cd1.0 &
+#/bin/prefix -A /cd=//0/cd1.0
+
+#
+# Load the network drivers
+#
+echo "NET"
+Net &
+
+#
+# Load node list from configuration file: /etc/config/netmap
+#
+echo "NETMAP"
+netmap -f
+
+#
+# Load the network card drivers based on settings in the CONFIG AREA
+#
+echo "NIC"
+$FORTNA_LOAD_NET_CARD1 &
+$FORTNA_LOAD_NET_CARD2 &
+
+#
+# Mask off the "second" network cards so that qnx traffic 
+# doesn't go over the tcp/ip network
+#
+echo "MASK"
+for f in $FORTNA_NODE_LIST
+do
+	netmap -m"m $f 2"
+done
+
+#
+# Start nameloc on some nodes
+#
+echo "NAMELOC"
+if test $FORTNA_RUN_NAMELOC -eq 1 
+then
+	nameloc &
+fi
+
+#
+# Load the RocketPort driver based on settings in the CONFIG AREA
+#
+echo "ROCKET"
+$FORTNA_LOAD_SERIAL_CARD &
+
+#
+# Check the disk for corrupted files
+#
+echo "CHKFSYS"
+chkfsys -P /
+
+#
+# Start "dumper" on some nodes
+#
+echo "DUMPER"
+if test $FORTNA_RUN_DUMPER -eq 1
+then
+	dumper -d /tmp &
+fi
+
+#
+# Set the ticksize (minimum sampling interval)
+#
+echo "TICKSIZE"
+ticksize $FORTNA_TICKSIZE
+
+#
+# Run "cron" on some nodes
+#
+echo "CRON"
+if test $FORTNA_RUN_CRON -eq 1
+then
+	cron -L &
+fi
+
+#
+# Run "modem" on some nodes
+#
+echo "MODEM"
+if test $FORTNA_RUN_MODEM -eq 1
+then
+	tinit -c "modem -b57600 -L -ctermdef -s5" -m20 -t $FORTNA_MODEM_PORT &
+fi
+
+#
+# Kick the nameloc program so we can have updated licenses
+# prior to running photon... otherwise Photon won't load
+#
+echo "LICENSE"
+for f in $FORTNA_NAMELOC_NODES
+do
+	nameloc -k $f
+done
+
+#
+# Load the TCP/IP drivers based on settings in the CONFIG AREA
+#
+echo "SOCKETS"
+$FORTNA_LOAD_SOCKETS &
+
+#
+# Load Photon if desired
+#
+echo "PHOTON"
+if test $FORTNA_RUN_PHOTON -eq 1
+then
+	#
+	# Execute (inline) the profile commands to set some environment variables.
+	#
+	. /etc/profile
+
+	#
+	# Set our "login name" so that Photon will load without a password box
+	#
+	export LOGNAME=$FORTNA_PHOTON_LOGNAME
+
+	#
+	# Load Photon
+	#
+	ph
+	sleep 5
+fi
+
+#
+# Start the console termimal drivers so we can still "ditto" to 
+# the "back door"...
+#
+echo "TERMINAL"
+tinit -t /dev/con[1-3] &
+tinit -T /dev/con[5-9] &
+
+echo "DONE\n\n\n\n"
+#####################################################
+# END OF SYSINIT FILE
+#####################################################
+

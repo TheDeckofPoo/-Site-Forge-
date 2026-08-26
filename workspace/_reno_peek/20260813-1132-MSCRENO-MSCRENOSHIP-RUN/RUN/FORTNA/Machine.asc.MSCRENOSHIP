@@ -1,0 +1,63 @@
+"Machine_Name"~"Status"~"Error"~"Machine_Index"~"Machine_Pid"~"Connection_Type"~"Communication_Protocol"~"Machine_Port"~"Transmit_Retry"~"Offline"~"Process"~"UseDB"~"IgnoreDupes"~"NoCircbuff"~"CircSize"~"Trig_Size"~"Trig_InterChar"~"Trig_Timeout"~"Trig_MsgEndChar"~"Log File"~"Log Length"~"NumCbItems"~"LastMsgAttempts"~"MaxAttempts"~"StripNulls"~"TimerId"~"RetryCount"~"MaxRetries"~"FortnaMachine"~"NeedACK"~"LogLevel"~"Username"~"Password"~"CloseDelay(ms)"~"OpenTimeout(ms)"~"DontSetNeedAck"~"pCBuff"~"pCBuffLen"~"pCBMaxLen"~"pCTimeout"~"pCharSet"~"pSendSequence"~"pRecvSequence"
+N/A~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~0~0~
+CP1~ ~ ~-1~-1~N/A~N/A~ ~0~N~N/A~N~N~N~1200~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+WCS_OUTBOUND~AMQ Send~ ~-1~1073741827~WCS_TALK~WCS~/topic/WCSEVENT.FPC.FP.MISC~10~N~SRV1~N~N~N~0~0~0~50~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+WCS_IN_TOPIC~AMQ Init~ ~-1~1073741829~WCS_LISTEN~WCS~/topic/WCSREQUESTTOPIC~10~N~SRV1~N~N~N~0~0~0~50~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+WCS_IN_QUEUE~AMQ Init~ ~-1~1073741830~WCS_LISTEN~WCS~/queue/WCSREQUESTQUEUE~10~N~SRV1~N~N~N~0~0~0~50~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+NMS_OUTBOUND~ ~ ~-1~-1~CONNECT_TCPCLIENT~WCS~5817~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~-1~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+MSCRENOPICK~Send Ok~ ~-1~1073741827~CONNECT_UDP~HOST_SORTPLUS~9200~0~N~SERV~N~N~N~1200~0~0~102000~INVALID~N/A~0~0~0~0~0~0~0~0~Y~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+MSCRENOPACK~Send Ok~ ~-1~1073741829~CONNECT_UDP~HOST_SORTPLUS~9201~0~N~SERV~N~N~N~1200~0~0~102000~INVALID~N/A~0~0~0~0~0~0~0~0~Y~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+MSCRENOSHIP~socket open~ ~-1~1073741830~CONNECT_UDP~HOST_SORTPLUS~9202~0~N~SERV~N~N~N~1200~0~0~102000~INVALID~N/A~0~0~0~0~0~0~0~0~Y~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+SCNSHIP_1~socket open~ ~-1~1073741827~CONNECT_TCPCLIENT~STXETX~51236~10~N~CTRL~N~N~N~0~0~0~0~CTRL M (CR)~N/A~0~0~0~0~0~0~0~0~N~0~Level 2~ ~ ~0~0~N~ ~0~2048~1~ ~1~1~
+SCNSHIP_2~socket open~ ~-1~1073741829~CONNECT_TCPCLIENT~STXETX~51236~10~N~CTRL~N~N~N~0~0~0~0~CTRL M (CR)~N/A~0~0~0~0~0~0~0~0~N~0~Level 2~ ~ ~0~0~N~ ~0~2048~1~ ~1~1~
+SHIP_SCALE~socket open~ ~-1~1073741830~CONNECT_TCPCLIENT~AlphaNum~1702~10~N~CTRL~N~N~N~0~0~0~0~CTRL J (LF)~N/A~0~0~0~0~0~0~0~0~N~0~Level 2~ ~ ~0~0~N~ ~0~2048~1~ ~1~1~
+SHIP_CRR~Send Ok~ ~-1~1073741831~CONNECT_TCPCLIENT~SrtCommSeq~9170~10~N~SERV~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~1~Level 3~ ~ ~0~0~N~ ~0~0~0~ ~35727~1~
+SHIP_DCM_CSU~Send Ok~ ~-1~1073741832~CONNECT_TCPCLIENT~SrtCommSeq~9171~10~N~SERV~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~1~Level 3~ ~ ~0~0~N~ ~0~0~0~ ~29879~1~
+SHIP_CSM~Send Ok~ ~-1~1073741833~CONNECT_TCPCLIENT~SrtCommSeq~9172~10~N~SERV~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~1~Level 3~ ~ ~0~0~N~ ~0~0~0~ ~35817~1~
+REST Listen~ ~ ~-1~1073741831~TCPSERVC_LISTEN~HOST_REST~9123~0~N~SRV1~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~1~ ~1~1~
+REST RdWr~ ~ ~-1~-1~TCPSERVC_RDWR~HOST_REST~9123~0~N~SRV1~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~1~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~-1~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+ ~ ~ ~0~0~N/A~N/A~ ~0~N~N/A~N~N~N~0~0~0~0~INVALID~N/A~0~0~0~0~0~0~0~0~N~0~Level 0~ ~ ~0~0~N~ ~0~0~0~ ~1~1~
+
+

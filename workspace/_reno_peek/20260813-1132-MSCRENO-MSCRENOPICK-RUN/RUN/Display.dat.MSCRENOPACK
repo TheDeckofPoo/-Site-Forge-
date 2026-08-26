@@ -1,0 +1,83 @@
+PACK SCANE,HistData,5,1,No Selection,No Selection,0,Menu 1,2,0,7,Copy Fortna (Day),1,MSCRENOPACK,1
+1:GdRd_Cpy,No Selection,0,0,Menu 1,2,0,Work Area,1,1,1,Copy Src to Dst,0,MSCRENOPACK,1
+2:NoRd:PACK SCANE,HistData,5,8,No Selection,No Selection,0,Menu 1,4,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+2:NoRd_Cpy,No Selection,0,0,Menu 1,4,0,Work Area,1,2,1,Copy Src to Dst,0,MSCRENOPACK,1
+3:Cnfl:PACK SCANE,HistData,5,15,No Selection,No Selection,0,Menu 1,5,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+3:Cnfl_Cpy,No Selection,0,0,Menu 1,5,0,Work Area,1,3,1,Copy Src to Dst,0,MSCRENOPACK,1
+4:BdRd:PACK SCANE,HistData,5,22,No Selection,No Selection,0,Menu 1,6,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+4:BdRd_Cpy,No Selection,0,0,Menu 1,6,0,Work Area,1,4,1,Copy Src to Dst,0,MSCRENOPACK,1
+5:NoSc:PACK SCANE,HistData,5,29,No Selection,No Selection,0,Menu 1,7,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+5:NoSc_Cpy,No Selection,0,0,Menu 1,7,0,Work Area,1,5,1,Copy Src to Dst,0,MSCRENOPACK,1
+Sum,No Selection,0,0,Work Area,1,1,Menu 1,1,0,5,Sum the Src,0,MSCRENOPACK,1
+Calc %,HistData,5,1,Menu 1,1,0,Menu 1,3,0,7,Calc % (Day),0,MSCRENOPACK,1
+PACK SORT 1,HistData,5,36,No Selection,No Selection,60,Menu 2,1,0,7,Copy Fortna (Day),1,MSCRENOPACK,1
+PACK SORT 1,HistData,5,36,No Selection,No Selection,60,Menu 4,2,0,7,Copy Fortna (Day),1,MSCRENOPACK,1
+7:Stps:PACK SORT 1,HistData,5,43,No Selection,No Selection,0,Menu 2,2,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+8:Itms:PACK SORT 1,HistData,5,50,No Selection,No Selection,0,Menu 2,3,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+8:Itms:PACK SORT 1,HistData,5,50,No Selection,No Selection,0,Menu 4,1,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK SORT 1,HistData,5,50,Menu 4,2,0,Menu 4,3,0,7,Division (Day),0,MSCRENOPACK,1
+9:Max:PACK SORT 1,HistData,5,57,No Selection,No Selection,0,Menu 4,4,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+10:GpAb:PACK SORT 1,HistData,5,64,No Selection,No Selection,0,Menu 2,7,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK SORT 2,HistData,5,71,No Selection,No Selection,60,Menu 2,1,1,7,Copy Fortna (Day),1,MSCRENOPACK,1
+PACK SORT 2,HistData,5,71,No Selection,No Selection,60,Menu 4,2,1,7,Copy Fortna (Day),1,MSCRENOPACK,1
+12:Stps:PACK SORT 2,HistData,5,78,No Selection,No Selection,0,Menu 2,2,1,7,Copy Fortna (Day),0,MSCRENOPACK,1
+13:Itms:PACK SORT 2,HistData,5,85,No Selection,No Selection,0,Menu 2,3,1,7,Copy Fortna (Day),0,MSCRENOPACK,1
+13:Itms:PACK SORT 2,HistData,5,85,No Selection,No Selection,0,Menu 4,1,1,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK SORT 2,HistData,5,85,Menu 4,2,1,Menu 4,3,1,7,Division (Day),0,MSCRENOPACK,1
+14:Max:PACK SORT 2,HistData,5,92,No Selection,No Selection,0,Menu 4,4,1,7,Copy Fortna (Day),0,MSCRENOPACK,1
+15:GpAb:PACK SORT 2,HistData,5,99,No Selection,No Selection,0,Menu 2,7,1,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK SORT 3,HistData,5,106,No Selection,No Selection,60,Menu 2,1,2,7,Copy Fortna (Day),1,MSCRENOPACK,1
+PACK SORT 3,HistData,5,106,No Selection,No Selection,60,Menu 4,2,2,7,Copy Fortna (Day),1,MSCRENOPACK,1
+17:Stps:PACK SORT 3,HistData,5,113,No Selection,No Selection,0,Menu 2,2,2,7,Copy Fortna (Day),0,MSCRENOPACK,1
+18:Itms:PACK SORT 3,HistData,5,120,No Selection,No Selection,0,Menu 2,3,2,7,Copy Fortna (Day),0,MSCRENOPACK,1
+18:Itms:PACK SORT 3,HistData,5,120,No Selection,No Selection,0,Menu 4,1,2,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK SORT 3,HistData,5,120,Menu 4,2,2,Menu 4,3,2,7,Division (Day),0,MSCRENOPACK,1
+19:Max:PACK SORT 3,HistData,5,127,No Selection,No Selection,0,Menu 4,4,2,7,Copy Fortna (Day),0,MSCRENOPACK,1
+20:GpAb:PACK SORT 3,HistData,5,134,No Selection,No Selection,0,Menu 2,7,2,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 31,HistData,5,141,No Selection,No Selection,0,Menu 3,1,0,7,Copy Fortna (Day),1,MSCRENOPACK,1
+22:FlAb:PACK  LANE 31,HistData,5,148,No Selection,No Selection,0,Menu 3,2,0,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 32,HistData,5,155,No Selection,No Selection,0,Menu 3,1,1,7,Copy Fortna (Day),1,MSCRENOPACK,1
+24:FlAb:PACK  LANE 32,HistData,5,162,No Selection,No Selection,0,Menu 3,2,1,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 33,HistData,5,169,No Selection,No Selection,0,Menu 3,1,2,7,Copy Fortna (Day),1,MSCRENOPACK,1
+26:FlAb:PACK  LANE 33,HistData,5,176,No Selection,No Selection,0,Menu 3,2,2,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 34,HistData,5,183,No Selection,No Selection,0,Menu 3,1,3,7,Copy Fortna (Day),1,MSCRENOPACK,1
+28:FlAb:PACK  LANE 34,HistData,5,190,No Selection,No Selection,0,Menu 3,2,3,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 35,HistData,5,197,No Selection,No Selection,0,Menu 3,1,4,7,Copy Fortna (Day),1,MSCRENOPACK,1
+30:FlAb:PACK  LANE 35,HistData,5,204,No Selection,No Selection,0,Menu 3,2,4,7,Copy Fortna (Day),0,MSCRENOPACK,1
+Sum Dv 1,No Selection,0,0,Menu 3,1,0,Menu 2,4,0,5,Sum the Src,0,MSCRENOPACK,1
+Recr: 1,HistData,5,50,Menu 2,4,0,Menu 2,5,0,7,Diff (Day),0,MSCRENOPACK,1
+Sum Ab 1,No Selection,0,0,Menu 3,2,0,Menu 2,6,0,5,Sum the Src,0,MSCRENOPACK,1
+PACK  LANE 36,HistData,5,211,No Selection,No Selection,0,Menu 3,1,5,7,Copy Fortna (Day),1,MSCRENOPACK,1
+32:FlAb:PACK  LANE 36,HistData,5,218,No Selection,No Selection,0,Menu 3,2,5,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 37,HistData,5,225,No Selection,No Selection,0,Menu 3,1,6,7,Copy Fortna (Day),1,MSCRENOPACK,1
+34:FlAb:PACK  LANE 37,HistData,5,232,No Selection,No Selection,0,Menu 3,2,6,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 38,HistData,5,239,No Selection,No Selection,0,Menu 3,1,7,7,Copy Fortna (Day),1,MSCRENOPACK,1
+36:FlAb:PACK  LANE 38,HistData,5,246,No Selection,No Selection,0,Menu 3,2,7,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 39,HistData,5,253,No Selection,No Selection,0,Menu 3,1,8,7,Copy Fortna (Day),1,MSCRENOPACK,1
+38:FlAb:PACK  LANE 39,HistData,5,260,No Selection,No Selection,0,Menu 3,2,8,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 40,HistData,5,267,No Selection,No Selection,0,Menu 3,1,9,7,Copy Fortna (Day),1,MSCRENOPACK,1
+40:FlAb:PACK  LANE 40,HistData,5,274,No Selection,No Selection,0,Menu 3,2,9,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 41,HistData,5,281,No Selection,No Selection,0,Menu 3,1,10,7,Copy Fortna (Day),1,MSCRENOPACK,1
+42:FlAb:PACK  LANE 41,HistData,5,288,No Selection,No Selection,0,Menu 3,2,10,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 42,HistData,5,295,No Selection,No Selection,0,Menu 3,1,11,7,Copy Fortna (Day),1,MSCRENOPACK,1
+44:FlAb:PACK  LANE 42,HistData,5,302,No Selection,No Selection,0,Menu 3,2,11,7,Copy Fortna (Day),0,MSCRENOPACK,1
+Sum Dv 2,No Selection,0,0,Menu 3,1,5,Menu 2,4,1,7,Sum the Src,0,MSCRENOPACK,1
+Recr: 2,HistData,5,85,Menu 2,4,1,Menu 2,5,1,7,Diff (Day),0,MSCRENOPACK,1
+Sum Ab 2,No Selection,0,0,Menu 3,2,5,Menu 2,6,1,7,Sum the Src,0,MSCRENOPACK,1
+PACK  LANE 43,HistData,5,309,No Selection,No Selection,0,Menu 3,1,12,7,Copy Fortna (Day),1,MSCRENOPACK,1
+46:FlAb:PACK  LANE 43,HistData,5,316,No Selection,No Selection,0,Menu 3,2,12,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 44,HistData,5,323,No Selection,No Selection,0,Menu 3,1,13,7,Copy Fortna (Day),1,MSCRENOPACK,1
+48:FlAb:PACK  LANE 44,HistData,5,330,No Selection,No Selection,0,Menu 3,2,13,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 45,HistData,5,337,No Selection,No Selection,0,Menu 3,1,14,7,Copy Fortna (Day),1,MSCRENOPACK,1
+50:FlAb:PACK  LANE 45,HistData,5,344,No Selection,No Selection,0,Menu 3,2,14,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 46,HistData,5,351,No Selection,No Selection,0,Menu 3,1,15,7,Copy Fortna (Day),1,MSCRENOPACK,1
+52:FlAb:PACK  LANE 46,HistData,5,358,No Selection,No Selection,0,Menu 3,2,15,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 47,HistData,5,365,No Selection,No Selection,0,Menu 3,1,16,7,Copy Fortna (Day),1,MSCRENOPACK,1
+54:FlAb:PACK  LANE 47,HistData,5,372,No Selection,No Selection,0,Menu 3,2,16,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 48,HistData,5,379,No Selection,No Selection,0,Menu 3,1,17,7,Copy Fortna (Day),1,MSCRENOPACK,1
+56:FlAb:PACK  LANE 48,HistData,5,386,No Selection,No Selection,0,Menu 3,2,17,7,Copy Fortna (Day),0,MSCRENOPACK,1
+PACK  LANE 51,HistData,5,393,No Selection,No Selection,0,Menu 3,1,18,7,Copy Fortna (Day),1,MSCRENOPACK,1
+58:FlAb:PACK  LANE 51,HistData,5,400,No Selection,No Selection,0,Menu 3,2,18,7,Copy Fortna (Day),0,MSCRENOPACK,1
+Sum Dv 3,No Selection,0,0,Menu 3,1,12,Menu 2,4,2,7,Sum the Src,0,MSCRENOPACK,1
+Recr: 3,HistData,5,120,Menu 2,4,2,Menu 2,5,2,7,Diff (Day),0,MSCRENOPACK,1
+Sum Ab 3,No Selection,0,0,Menu 3,2,12,Menu 2,6,2,7,Sum the Src,0,MSCRENOPACK,1

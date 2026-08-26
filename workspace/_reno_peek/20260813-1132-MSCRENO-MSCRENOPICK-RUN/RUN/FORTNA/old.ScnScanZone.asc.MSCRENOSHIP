@@ -1,0 +1,23 @@
+"Name"~"Desc"~"pStatusMsg"~"RcvDataA"~"RxStatA"~"RcvDataB"~"RxStatB"~"Delimiter"~"LogLevel"~"ScanZoneID"~"CompareScans"~"TrackingTable"~"DeviceTrkTable"~"PrinterTrkTable"~"PrinterErrTable"~"CTRLProcess"~"ScanAlgorithm"~"Alg_P1"~"XfrZoneID"~"PrintLine"~"pRecordProcessed"~"pTrnDataRcv"~"pTrnTrkRecord"~"pTrnLastTrk"
+N/A~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+SHIP SCAN~ ~Created IO Records~,M00000075439273,????????????,??????????????????,???,????????????,???????????????,~Empty~,M00000075439273,????????????,??????????????????,???,????????????,???????????????,~Empty~,~Level 2~SCNSHIP~N~SrtTrack1~SrtDevice1~None~None~ ~MSC Ship~18~ ~N/A~1~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+ ~ ~ ~ ~Empty~ ~Empty~ ~Level 0~ ~N~None~None~None~None~ ~N/A~0~ ~N/A~0~0~0~0~
+
+

@@ -1,0 +1,57 @@
+<html>
+<head>
+<title>System Errors Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">System Errors</h1><hr>
+<p>In this menu all system errors may be edited. These are the error messages 
+  that appear on the error screen. When they are set up at Fortna they are generic 
+  so you may wish to make them more applicable to your operation.
+<blockquote>
+  <p>ErrorName - this field typically contains the name of the device that generates 
+    the error message. For example, for conveyor 101 is full, the ErrorName would 
+    be &quot;PE101F&quot; which is the full line photoeye on conveyor 101. To 
+    edit these type in a name and press Enter.</p>
+  <p>Status - this field is set by the software. The status is one if the error 
+    is active and zero otherwise</p>
+  <p>Description - this is the field that is displayed on the error screen. This 
+    is where you will want to put a good, brief description of where the error 
+    is. For example when the software is setup at Fortna &quot;Conveyor 101 is 
+    full&quot; may be the description for PE101F. This probably will not mean 
+    much to an operator at your facility. You may want to change that to something like &quot;Conveyor 
+    at Dock 2 is full&quot;. Choose something that will mean something to your employees and the 
+    condition may be resolved faster.</p>
+  <p>Suggestion - this is a pull-down into the Error Suggestion menu. These are 
+    suggestions that can be selected based on the error. To select a suggestion 
+    click on the arrow symbol in that field this will display the Suggestion Menu. 
+    Scroll though to find the suggestion that fits the error. To add to the Suggestion 
+    Menu, double-right-click in the Suggestion field. Move the cursor to a blank line and 
+    type in the suggestion you would like. Press Enter. Press Save. Now go back 
+    to the Edit System Errors Menu and make that selection.</p>
+  <p>Severity - this will determine what color the Status Bar on the main screen 
+    will be when a particular error occurs. This is a pull-down into Error Severity 
+    Levels. Press Enter and then select from the severity level and press Enter 
+    again. Errors that do not shut any conveyor down typically are &quot;Information 
+    Only&quot;, errors for full conditions are &quot;Warning&quot;, and errors 
+    that will stop conveyors that will not automatically restart such as Jams 
+    are &quot;Hard Error System Stops&quot;.</p>
+  <p>Trigger - is not used</p>
+  <p>SetStatus - this field is set by the software based on whether the error 
+    is active or not. </p>
+  <p>Changed - this field is set by the software based on whether the error SetStatus 
+    is changed or not.</p>
+  <p>Frequency - this field is set by the software and counts the number of times 
+    the error changes states in a given amount of time. It is used to determine 
+    if an error is unstable.</p>
+  <p> 
+    Idle - this field is set by the software based on the amount of time since 
+    the last state change. It is used to determine if an error is unstable.</p>
+  <p>TurnedOnTime - the software, based on the time the error occurred, sets this 
+    field. It is used to determine if an error is unstable.</p>
+  <p>Owner - this is the machine that controls the I/O responsible for triggering 
+    the error
+</blockquote><p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

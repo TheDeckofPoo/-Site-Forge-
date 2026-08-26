@@ -1,0 +1,40 @@
+<html>
+
+<head>
+
+<title>New Conveyor Types Help Menu</title>
+</head>
+
+<body bgcolor="#ffffff">
+
+<h1>
+  <p align ="center">New Conveyor Types</p>
+</h1><hr>
+<p>The following fields appear in the New Conveyor Types Menu:</p>
+<p><dl><dt> BUTTON:</dt><dd>Simply a widget button. If partgen is 0, this button calls up the menu 
+  that is listed in the General Description field. If partgen is 5, this button 
+  will call the procedure that is listed in the General Description field. The 
+  text in the Motor field, will display on the button.
+  </dd><br><dt>FIELD: </dt><dd>This is an edit widget. It is activated when the user changes the value 
+  of the editable field and presses enter. If partgen is 5, the widget calls the 
+  procedure listed in the Motor text. If partgen is 6, the data the user enters, 
+  is transfered to the dataset listed in the Trilogy Sets menu whose name matches 
+  the text in the Motor field. The text in the Motor field also displays to the 
+  left of the editable data.
+  </dd><br><dt>HELP:</dt><dd> The help button type is used to display an HTML help file. The help file 
+  name is derived by appending a &quot;.htm&quot; to the text listed in the General 
+  Description field. The text listed in the motor field is displayed on the help 
+  button.</dd><br>
+    <p><dt>IN GENERAL: </dt>
+  <dd>Part Names are no longer used for displaying of text or for targeting menus, 
+    procedures, etc. Any type of conveyor piece can be used to call a procedure. 
+    If Gen_Part is positive, clicking on the part will cause the procedure described 
+    by the text in the General Description field to be called.</dd>
+</dl>
+<hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.<br>
+  <br>
+
+</body>
+
+</html>

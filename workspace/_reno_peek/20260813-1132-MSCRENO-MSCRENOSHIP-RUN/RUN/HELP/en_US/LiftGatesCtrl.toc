@@ -1,0 +1,1 @@
+1|Lift Gates Control Help Menu|./LiftGatesCtrl.htm

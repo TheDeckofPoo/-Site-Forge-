@@ -1,0 +1,49 @@
+#!/bin/sh
+#=============================================================================
+#     $Date:: 2015-03-12 11:13:58 -0400 (Thu, 12 Mar 2015)                   $
+# $Revision:: 24346                                                          $
+#   $Author:: tkremser                                                       $
+#   $Author:: tkremser                                                       $
+#      $URL: http://svn.wcs.fortna.net/repo/projects/fpc/Utils/trunk/Config/usr/local/bin/SetHardwareClock $
+#=============================================================================
+
+
+# Set the hardware clock only if the system clock is synchronized via ntp
+
+# The first character of each line of output from the ntpq -p
+# command for each defined server is a "Tally Code"
+# that indicates the synchronization status of that server
+# The codes are:
+# "*" sys.peer   the current time source
+# "+" selected   good and preferred remote peer or server
+# "#" candidat   good remote peer or server but not utilized (ready as a backup)
+# "o" pps.peer   Pulse Per Second peer selected
+# "-" outlyer    out of tolerance (discarded by the cluster algorithm)
+# "x" falsetick  out of tolerance (discarded by the intersection algorithm)
+# "." excess     not among the first ten peers or servers by synchronization distance
+# " " reject     non-communicating, LOCAL, unutilized high-stratum, or looped server
+
+# This script is intended to be run via cron with a crontab line like this:
+# 0 0,6,12,18 * * *  /usr/local/bin/SetHardwareClock >> /tmp/error
+# which will run it once every 6 hours, on the hour, and append the output to
+# /tmp/error and /var/log/syslog
+
+BASENAME=`basename $0`
+
+DATE=`date`
+
+NTPSTATE=`ntpq -p | grep "^[\*+]" | wc -l`
+
+let NTPSTATE="$NTPSTATE + 0"
+
+#echo "NTPSTATE=$NTPSTATE"
+
+if [ $NTPSTATE -gt 0 ]
+then
+	echo "$0: $DATE: Updating the Hardware Clock"
+	/usr/sbin/logger -t $BASENAME "Updating the Hardware Clock"
+	/sbin/rtc -s hw
+else
+	echo "$0: $DATE: System Clock is NOT synchronized, NOT setting the Hardware Clock"
+	/usr/sbin/logger -t $BASENAME "System Clock is NOT synchronized, NOT setting the Hardware Clock"
+fi

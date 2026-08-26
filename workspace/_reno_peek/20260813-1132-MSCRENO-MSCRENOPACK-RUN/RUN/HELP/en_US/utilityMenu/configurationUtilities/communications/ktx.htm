@@ -1,0 +1,100 @@
+<html>
+<head>
+<title>KTX Utility Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1><p align="center">KTX Utility Menu</p></h1><hr>
+<h3 align="center"><b>Used by Fortna personnel for advanced configuration.<br>&nbsp<br>
+Do not modify settings unless you are qualified to do so.</b></h3><hr><p>&nbsp<br>
+
+
+
+
+	The first consideration in using the 1784ktx card is loading the 
+protocol. This is accomplished via the KTX_UTILS menu.  First the card
+should be reset.  Next, clear the RAM by selecting "Clear Ram". Then, 
+either load the DataHighway Plus protocol or the Remote I/O protocol.
+<p>   
+<h3><blockquote>Data Highway Plus Protocol</blockquote></h3>
+	If you have loaded the Datahighway Plus protocol, It should be active
+with a solid green light.  You can view the active nodes on the network
+by selecting View Dual Port Ram from the KTX_UTILS menu.  Locations 0x40h
+through 0x7Fh are the active nodes.  The node numbers are the hexadecimal
+equivilent of the octal node number. <p> 
+To use the datahighway protocol, you either request data from a node or 
+send data to a node.  This is done through the menu KTX_LIST.  This menu 
+is structured similar to the Batches menu. You can set up the frequency 
+that these commands will be sent to the ktx board.  The first column is 
+name column and can be any name you choose.  The next three columns are 
+a dataset list similar to the datasets in the Trigrset menu.  This is the
+location where the ktx board will get the data to send or place the data
+it receives. The next column is called FortnaI/O.  If there is a positive
+octal value in this column, then the dataset is ignored and the data is
+either read from or written to this I/O word.  The next column, TNS, is 
+filled in by the program.  You should not place values in this column.  
+The next column is Destination or "DST".  You should enter the octal network
+node number of the partner you wish to communicate with.  The next few 
+columns are:<p>&nbsp;<p>
+<table align="center" border="1">
+<tr><td>
+
+<b>NAME</b>	</td><td><b>	TYPE</b>	</td><td><b>	EXPLANATION</b></td></tr>
+
+<tr><td>Byte Size </td><td>  integer	</td><td>	The number of words you wish to transfer.</td></tr>
+<tr><td>File Number</td><td>	integer	</td><td>	The file number in the PLC</td></tr>
+<tr><td>File Type</td><td>	hexadecimal</td><td> The file type according to DataHighway<br>
+							0x89h  integer<br>
+							0x85h  bit<br>
+							0x8e   ascii<br>
+							Note! there are many more</td></tr>
+<tr><td>Element </td><td>	integer	</td><td>	The offset in the file</td></tr>
+<tr><td>Sub_Element</td><td>	integer	</td><td>	The bit offset in the word</td></tr>
+<tr><td>ReadWrite</td><td>	integer	</td><td>	0 = Datahighway Read<br>
+						1 = Datahighway Write<br>
+						2 = Remote I/O Block Transfer Read<br>
+						3 = Remote I/O Block Transfer Write<br>
+</td></tr></table>
+The remaining columns function exactly as the corresponding columns in 
+Batches or HouseKeeping.  <b>Caution </b>should be used in setting the frequency
+of the read and write commands so that the ktx card can keep up with the
+requests.  (see ktx manuals for timing discussions).<p>
+
+<h3><blockquote>Remote I/O Protocol</blockquote></h3><p>
+
+	If you have selected Remote I/O as the protocol, there are some initial
+setup steps to perform.  First, make sure you place the card in the program
+mode.  Next, you can execute the autoconfiguration function (recommended).
+This will cause the card to go out on the network and find all the adapters
+it can. (An adapter is a remote I/O scanner card "ASB").  Each adapter has
+three bytes of information.  The configuration byte, the fault byte, and
+the retry_count byte.  These bytes are placed in the DUALPORT RAM beginning
+at location 0x080 through 0x1ff. There is room for 128 link addresses.  
+There can only be 32 adapters.  Link addresses are basically the rack number
+times 4 plus the starting quarter (don't ask).  The link address is the
+offset in the adapter configuration table from 0x080. 
+Next, set the card to the run mode.  You should now have a solid green light
+on the card and on all remote I/O adapters in the network.
+The only other required step is the configuration of the I/O in the configio
+menu.  The I/O is configured exactly like Pamux except you pop up the AB 
+Remote I/O interface instead of Pamux.<p>
+
+The other method of communication with adapters is called block transfer. We
+use the KTX_LIST menu for this as well.  Block transfer must be used to 
+communicate with inteligent I/O adapters. (such as analog modules). Again, use
+the same methods of dataset location or FortnaI/O to describe the location 
+the ktx card will get the data for the block transfer write or put the data
+it receives from a block transfer read. You specify the number of words of 
+data to read or write (up to 63 words) in the Bsize Column.  The logical
+rack address is set in the Element column and the module slot address (0-15)
+is set in the Sub_Element column.  The frequency columns should be configured
+to set the frequency to issue the bt_read or bt_write commands.
+<p>
+Theoretically, one could enter the configuration bytes of the adapters that 
+were found in the KTX_RIO_SCANLIST table and then run the "Set Scan List" 
+function.  The only motive for doing this is that an adapter could be 
+entered more than once in the scan list and therefore would be scanned 
+more often (not recomended).<p><hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

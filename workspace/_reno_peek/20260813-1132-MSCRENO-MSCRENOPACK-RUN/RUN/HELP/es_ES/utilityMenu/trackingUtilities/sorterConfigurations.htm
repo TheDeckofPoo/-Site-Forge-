@@ -1,0 +1,60 @@
+<html>
+<head>
+<title>Sorter Configurations Help Menu</title>
+</head>
+
+<body bgcolor="#FFFFFF" text="#000000">
+<h1 align="center">Sorter Configurations</h1><hr>
+<p>
+This menu displayed is known as the Sorters Table and is where you set up the sorter parameters.
+Each record in this menu is a length of conveyor where product is tracked through an encoder or a timer. 
+<p>
+<table align="center">
+<tr>
+<td><img src ="../../images/sortercfgs.gif"></td>
+</tr>
+</table>
+<p>
+The following fields are included in this menu:
+<blockquote>
+  <p>Sorter Name - type in the name of the sorter.
+  <p>Encoder ioName - pull down into the Encoders Menu.
+  <p>Encoder tmName - pull down into the timer menu.
+  <p>Encoder Type - a value of '0' indicates use of an encoder where a value of '1' indicates a timer.
+  <p>Max Cartons - enter the maximum number of cartons per minute that can be put onto the sorter.
+  <p>Max Verify Buffer - size of the verify buffer.
+  <p>Dump NDX - used when shifters are chained together.
+  <p>Dump OUT - used when shifters are chained together.
+  <p>Dump IN - used when shifters are chained together.
+  <p>Last NDX - this is set by the software and is not user configurable.
+  <p>OK - this field is filled in by the software to tell you if it thinks that the shifter is set up properly.
+  <p>ShiftOnOff - is used to increase the resolution of an encoder.
+  <p>TrigOnOnly - will look at a trigger.
+  <p>MaxNdx - the largest index for this sorter.
+  <p>Machine - pull-down into the machine menu from which to select the machine responsible for this shifter.
+  <p>Manual Shift - a boolean value.
+  <p>Shifted - manipulated and used internally.
+  <p>DataLowRec - for each sorter there is a beginning point and and ending point. 
+    The number of records in between represent the amount of possible product 
+    on the sorter.
+  <p>DataHighRec - the next sorter can begin where this one ends.
+  <p>BufferLowRec - the buffer section assigned to each sorter represents the 
+    length of the sorter in ticks. Some encoders have a resolution of 5 ticks 
+    per foot and some are 12 ticks per foot. If for example, our encoder gives 
+    10 ticks per foot and the length we want to track is 12 feet then we need 
+    120 as a minimum between our BufferLowRec and BufferHighRec. As a rule, allow plenty of extra.
+  <p>BufferHighRec - a number representing the high range of this sorter.
+  <p>InpointsLowRec - each sorter typically has one point of induction.
+     The number of records needed in inpoints would be the number of points of induction. 
+    Fills in automatically from the Inpoints Menu.
+  <p>InpointsHighRec - if only one induct, the high rec and low rec are the same. Fills in automatically.
+  <p>UpdatesLowRec - Fills in automatically from the Updates Menu.
+  <p>UpdatesHighRec - The upper range of update points. Fills in automatically.
+  <p>OutpointsLowRec - Automatically fills in the low range of the outpoints configured for this sorter.
+  <p>OutpointsHighRec - Automatically fills in the high range of the outpoints configured for this sorter. 
+</blockquote>
+
+<hr>
+<p align="center">Copyright &copy; 2001 Fortna Inc. All rights reserved.
+</body>
+</html>

@@ -1,0 +1,35 @@
+#!/bin/sh
+# Log Roller
+# Meant to be run weekly
+# Each log file will be compressed to <filename>.<week number>.gz
+
+LOGDIR=/var/log
+LOGWEEK=`date +%U`
+
+cd $LOGDIR
+
+# The programs that write these logs are capable of being told to restart logging
+LOGLIST=`ls syslog stunnel.log`
+
+for LOG in $LOGLIST
+do
+  mv $LOG $LOG.$LOGWEEK
+  cp /dev/null $LOG
+  chmod 644 $LOG
+  kill -HUP `cat /var/run/$LOG.pid`
+  nice -n2 /bin/gzip -f /var/log/$LOG.$LOGWEEK
+done
+
+# The programs that write these logs are NOT capable of being told to restart logging
+# We must risk losing some...
+LOGLIST=`ls mgetty.ser? procagent.log /tmp/error FPCLogForward.log`
+
+chown fortna:fortna /tmp/error
+chmod 666 /tmp/error
+
+for LOG in $LOGLIST
+do
+  cp $LOG $LOG.$LOGWEEK
+  cat /dev/null > $LOG
+  nice -n2 /bin/gzip -f $LOG.$LOGWEEK
+done

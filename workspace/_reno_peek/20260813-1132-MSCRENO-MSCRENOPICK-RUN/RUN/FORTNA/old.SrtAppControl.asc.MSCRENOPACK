@@ -1,0 +1,13 @@
+"Name"~"Status"~"MtrStatus"~"SendAvailStatus"~"AvailAppSorter"~"ErrConfig"~"LogLevel"~"CartonIdUpdate"~"CrrMsgTable"~"DcmMsgTable"~"CsuMsgTable"~"CsmMsgTable"~"SecondCrrMsgTable"~"SecondDcmMsgTable"~"SecondCsuMsgTable"~"ControlMachine"~"SorterCnvMtr"~"MtrACTION"~"MtrBIT"~"NotAvailErrSig"~"NotAvailACTION"~"NotAvailBIT"~"ScanErrSig"~"ScanACTION"~"ScanBIT"~"DataErrLight"~"DataACTION"~"DataBIT"~"MtrMinStopTime"~"pErrorFlag"~"pResetFault"~"pMaxResponse"~"pGrtHalfSecond"~"pGrtQtrSecond"~"pNumSamples"~"pTrigError"~"pErrDesc"~"pScanError"~"pDataError"~"pWrkScanError"~"pWrkDataError"
+N/A~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+PACKE SORTER~Zone PACK51, not available~Mtr Running~Y~0~N/A~Level 2~N~MsgCR4~MsgDC4~MsgDC4~None~None~None~None~MSCRENOPACK~M5_AUX~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~    2164.186~78~14~401~0~ ~0~0~0~0~
+PACK SORTER~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+ ~ ~ ~N~0~N/A~Level 0~N~None~None~None~None~None~None~None~N/A~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~INVALID~N/A~0~N/A~0~0~       0.000~0~0~0~0~ ~0~0~0~0~
+
+

@@ -1,0 +1,43 @@
+#!/bin/sh
+
+#     $Date: 2015-08-04 15:32:57 -0400 (Tue, 04 Aug 2015) $
+# $Revision: 27415 $
+#   $Author: tkremser $
+#      $URL: http://svn.wcs.fortna.net/repo/projects/fpc/base/tags/Base-Releases/Version-11.40.0-Release-0/RUN/Start_UPS_Batch $
+
+SLEEPTIME=20
+RUNNING=`pidin | grep -E "fortna|fpgui|fpctrl|fpsort|fpserv|fpsrv1|fpsrv2|watcher" | grep -v "grep"`
+
+echo "Starting $0 at" `date` "from Photon session '$PHOTON'"
+echo "check /tmp/error for output"
+echo "Please BE PATIENT"
+touch /tmp/error
+chown fortna:fortna /tmp/error
+chmod 666 /tmp/error
+(
+echo "Starting $0 at" `date` "from Photon session '$PHOTON'"
+# NOTE: Null Photon session and 'on -tcon1' allow this script to be run from a PuTTy session
+#       this section prevents starting from a Phindows 'from the back' session
+if test "$PHOTON" != "/dev/photon" -a "$PHOTON" != ""
+then
+  if test "X$RUNNING" != "X"
+  then
+    echo "FortnaPlus is running on the main console"
+    if test -e /usr/local/bin/gsleep
+    then
+      /usr/local/bin/gsleep $SLEEPTIME "FortnaPlus is running on the main console"
+    fi
+  else
+    echo "Start FortnaPlus from the main console!!!"
+    if test -e /usr/local/bin/gsleep
+    then
+      /usr/local/bin/gsleep $SLEEPTIME "Start FortnaPlus from the main console!!!"
+    fi
+  fi
+  echo "Ending $0 at" `date` "from Photon session '$PHOTON'"
+  exit
+fi
+
+cd /SortPlus/RUN
+on -tcon1 ./UPS_Batch
+) >> /tmp/error

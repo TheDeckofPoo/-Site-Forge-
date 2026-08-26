@@ -1,0 +1,42 @@
+VFD PowerFlex param extract log 20260826-150047
+Pages logged: 212 · pages with params: 8
+
+file | page | mode | ids | cad | ocr_kept | final | why
+AC_3.pdf: p5 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+AC_3.pdf: p18 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+AC_3.pdf: p31 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+AC_3.pdf: p44 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+AC_3.pdf: p52 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+AC_3.pdf: p63 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP_13.pdf: p26 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP_13.pdf: p38 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP_13.pdf: p44 mode=text ids=[] cad=3 ocr=0 final=3 per_id={} why=ok
+CP_13.pdf: p45 mode=text+vfd ids=['VFD200B'] cad=6 ocr=0 final=6 per_id={'VFD200B': 6} why=ok
+CP_13.pdf: p46 mode=text+vfd+cols ids=['VFD204', 'VFD412'] cad=6 ocr=0 final=12 per_id={'VFD204': 6, 'VFD412': 6} why=ok
+CP_13.pdf: p47 mode=text+vfd+cols ids=['VFD506', 'VFD508'] cad=5 ocr=0 final=10 per_id={'VFD506': 5, 'VFD508': 5} why=ok
+CP_13.pdf: p48 mode=text ids=[] cad=6 ocr=0 final=6 per_id={} why=ok
+CP_13.pdf: p51 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP_13.pdf: p63 mode=text ids=[] cad=3 ocr=0 final=3 per_id={} why=ok
+CP_13.pdf: p64 mode=text ids=[] cad=3 ocr=0 final=3 per_id={} why=ok
+CP_13.pdf: p66 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP_14.pdf: p7 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP_14.pdf: p20 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP_14.pdf: p50 mode=text ids=[] cad=5 ocr=0 final=5 per_id={} why=ok
+CP_14.pdf: p56 mode=text ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+CP_14.pdf: p79 mode=ocr ids=[] cad=0 ocr=0 final=0 per_id={} why=no_vfd_ids_on_page
+
+--- OCR text samples (first pages with sample) ---
+p5 AC_3.pdf: : ——————————— | ABLE OF CONTENTS rr | see —r ee eset | = we ep en pre paper a a i | 
+p18 AC_3.pdf: peiachalraaiemeuhalreiraenshinhs. pleat sinaidibiiatnadiieteiasahenaalnhalil © (Gables tor cabled devices shell be continuously supported Gy condul, weeseeee | mechanical and eletncal adjustable brackets, saws, ot {conveyor wieway,ete-excepl where the cable terminates at the device, d | + Condit wil
+p31 AC_3.pdf: (© =Conduts on oF near Conveyor equipment wil be mounted Clear som (© Cables for cabled devices shall be continuously supported by conduit, waaEEESE | mechanical and electrical asjustable bracket, Scrws, ot Earweyor witeway-eleoxcopt where the cabo lemunaes ale deve. 7 | ‘© Conduit wit nt be atached
+p44 AC_3.pdf: © Conduits on oF near conveyor equipment val be mounted clear from © Cables tor cabled devices shell be continuously supported by condul, wheebede | mechanical and slectncal agustable brackets, screws, ot. Conveyor, wireway. ec excapt where the cable tominates at he deve 7 | Conduit wit normally run
+p52 AC_3.pdf: (© SOndulis on OF Near Conveyor equipment wil be mounied clear rom ‘* Cables for cabled devices shall be continuously supported by conduit, eaaebbas | mechanical and eletncal adjustable brackets, saws, ot anveyor wireway le except where tne cabo terminates al fe device id | + Condit wil nt be atacho
+p63 AC_3.pdf: (© SOndulis on OF Near Conveyor equipment wil be mounied clear rom ‘* Cables for cabled devices shall be continuously supported by conduit, eaaebbas | mechanical and eletncal adjustable brackets, saws, ot anveyor wireway le except where tne cabo terminates al fe device id | + Condit wil nt be atacho
+p26 CP_13.pdf: © Conduits on oF near conveyor equipment val be mounted clear from © Cables tor cabled devices shell be continuously supported by condul, wheebede | mechanical and slectncal agustable brackets, screws, ot. Conveyor, wireway. ec excapt where the cable tominates at he deve "| | «Cantu wil notbe aachad
+p38 CP_13.pdf: tangas [LOU |__|} j---------~-~jerowm wane } — — - — - —-- 4 4 — = = - 2 7 | sore wt | i Pr es SLEEP, | 140426 i ET ' | 140427 | | | 140428 \ i | \ \ | 140429 { \ | 404 ' ' | 140430 ! ! | 140431 \ I smenesz= | \ i fee 8 GOR 5 | aoe i ' "eee 9 ne apa | vase (OC f 4 from oe 7 | ! suse Bue P= | 40435 \
+p44 CP_13.pdf: wom | [@e[==: | weet coc wm coc aRAa AAR | veo || [o7|e= | we | | [o7[e | seme || [o7|e= | TTT | vo tt oo ves 1 | lena vee 1 | lea | reo ft wwe | | [awe | wan | | | woe | etme | we tt je4m= | emf | je4ee | F | we tf [oof | vw || [efron | sone | | [enfmro | | ves ft [evfowones | ae | | [2 vfewanss | 
+p46 CP_13.pdf: wan tt [Oelmer | nm td [ovlae | wae tt {von | wen | [14m | won tt mi Poa | woe | | Sei ea weit | 1 if TPesnaee tae | wes | | Rr —P eae —| we | Eee | wan 1 {| [ig loeettmet —t—oase woe | | Eps —p | i a a el wees | | Caetenngsare —1 | wm tt waa | | | it it | me 1 mee | wey wmf | rt 1 | wer yt wens 1 |
+p47 CP_13.pdf: pome baa o oe oe | a jnor-+ | | | veo 22928 [9 | | 443308, Pore eke -fowe | [os |amon | wor | | [raven | orn vase | bo 7 | i en | eee if [aefmn | an i fee[eon | wee 1 | [Oe [ems | tara pb Hl | we tt [os[==. | wo tt loner | teow ft [Oven | wom | [ova | vot | [oqumn mt | coer | ws it [ounwn | we [Orfe
+p51 CP_13.pdf: 3 VGNGIES Of OF NEST CONVOYOr SLAP IETE WS DO RM ERS oer Sore ‘* Cables for cabled devices shall be continuously supported by conduit, eeSSCE8E | mechanical and eletncal adjustable brackets, saws, ot {conveyor wieway,ete-excepl where the cable terminates at the device, d | + Condit wil nt be atachod
+
+Full JSON: C:\dev\worktree\FortnaPlus\exports\ocr-logs\vfd_param_extract_20260826-150047.json
