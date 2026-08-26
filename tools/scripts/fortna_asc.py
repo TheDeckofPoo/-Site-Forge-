@@ -81,8 +81,14 @@ def categorize_device(table_file: str, row: dict[str, str], primary_name: str) -
         return 'photoeye'
     if typ in CONVEYOR_TYPES:
         return 'conveyor'
-    if typ == 'MOTOR' or name_u.startswith('M'):
+    # VFDs before motors — names like VFD200 / VFD200_AUX must not fall through as generic
+    if name_u.startswith('VFD') or typ in ('VFD', 'VARIABLE FREQUENCY DRIVE', 'DRIVE'):
+        return 'vfd'
+    if typ == 'MOTOR' or (name_u.startswith('M') and not name_u.startswith('MDR')):
         return 'motor'
+    # ENC* / ENCODER — Fortna often mislabels Type=BEACON
+    if name_u.startswith('ENC') or 'ENCODER' in (row.get('General_Description') or '').upper():
+        return 'encoder'
     if typ == 'BEACON':
         return 'beacon'
     if typ == 'ZEROPRESSURE':

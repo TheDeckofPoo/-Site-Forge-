@@ -414,14 +414,6 @@
               <i class="fa-solid fa-floppy-disk mr-1"></i>Save config
             </button>
           </div>
-          <div class="flex flex-wrap gap-2 mt-2">
-            <button id="btn-autogen-preview-run" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Quick count preview">
-              <i class="fa-solid fa-eye mr-1"></i>Quick preview
-            </button>
-            <button id="btn-autogen-verify" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Check engine, RUN, library, last export">
-              <i class="fa-solid fa-vial mr-1"></i>Verify engine
-            </button>
-          </div>
           <p class="text-[10px] text-cyan-600/80 mt-2 leading-relaxed">
             <strong>Site config</strong> (right) = our Inputdata — areas, safety, TYPE, exit PE.
             No Excel / VBS. After edits + program pack → <strong>Export L5X Package</strong> (files only — Studio stays closed).
@@ -843,13 +835,11 @@
         <div class="workflow-chart mt-3">
           <div class="workflow-box"><strong>① Load RUN</strong><span>Drop .tar.gz here<br>(sets active machine)</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box accent"><strong>② Master</strong><span>Green card — only<br>master rack PDF(s)</span></div>
+          <div class="workflow-box"><strong>② Prints</strong><span>Drop panel PDFs<br>(CP13, CP14, AC…)</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box"><strong>③ Remotes</strong><span>Blue card — CP1–CP9<br>one remote per PDF</span></div>
+          <div class="workflow-box warn"><strong>③ OCR</strong><span>Fill PRINT column<br>vs tar.gz compare</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box warn"><strong>④ OCR</strong><span>Merge remotes → master<br>fill PRINT column</span></div>
-          <span class="workflow-arrow">→</span>
-          <div class="workflow-box violet"><strong>⑤ Next</strong><span>PLC Autogen or<br>PLC Export</span></div>
+          <div class="workflow-box violet"><strong>④ Next</strong><span>PLC Autogen or<br>PLC Export</span></div>
         </div>
         <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
           <p><strong class="text-slate-300">This tab owns the active RUN</strong> used by Autogen and Export — you do not reload on those tabs.</p>
@@ -877,61 +867,40 @@
           <div id="io-run-status" class="mono text-[10px] text-slate-500 mt-2">No RUN loaded</div>
         </div>
 
-        <!-- Master controller - ONLY master PDFs (green). Remotes go in blue card below. -->
-        <div id="master-dropzone" class="card p-3 shrink-0 border-2 border-emerald-800/60 dropzone min-h-[150px] bg-emerald-950/10">
-          <div class="flex items-center justify-between mb-2">
-            <div class="text-xs uppercase tracking-wider text-emerald-400 font-semibold">
-              <i class="fa-solid fa-crown mr-1"></i> 1 · Master controller
-            </div>
-            <span class="text-[9px] text-emerald-600/80">local rack prints only</span>
-          </div>
-          <p class="text-[10px] text-slate-600 mb-2 leading-relaxed">
-            Drop <strong class="text-emerald-400/90">only the master's</strong> local rack PDF(s) on this green card.
-            Remotes never go here — use the blue card below.
-          </p>
-          <div class="flex gap-2 mb-2">
-            <input id="master-name-input" type="text" placeholder="Master name (e.g. CP5 / Main)"
-              class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs">
-            <button id="btn-set-master" type="button" class="btn-primary px-3 py-1.5 rounded-lg text-xs">
-              Set master
-            </button>
-            <button id="btn-browse-master-prints" type="button" class="btn-ghost px-2 py-1.5 rounded-lg text-xs border border-emerald-800/50 text-emerald-300" title="Browse master PDFs">
-              <i class="fa-solid fa-folder-open"></i>
-            </button>
-          </div>
-          <div id="master-panel-card" class="rounded-lg border border-dashed border-emerald-700/50 bg-emerald-950/20 px-2 py-2 text-xs min-h-[52px]">
-            <div class="text-slate-600 italic">Drop master PDF(s) here — separate from remotes.</div>
-          </div>
-          <div id="master-file-list" class="mono text-[10px] text-emerald-400/90 mt-1.5 max-h-16 overflow-y-auto space-y-0.5"></div>
-        </div>
-
-        <!-- Remote I/O — multi-drop = one remote per PDF (CP1.pdf -> CP1). Never mixes into master. -->
-        <div id="remote-dropzone" class="card p-3 shrink-0 border-2 border-sky-800/50 dropzone min-h-[160px] bg-sky-950/10">
+        <!-- Electrical prints — one panel per PDF (named from filename). No separate "master". -->
+        <div id="remote-dropzone" class="card p-3 shrink-0 border-2 border-sky-800/50 dropzone min-h-[180px] bg-sky-950/10">
           <div class="flex items-center justify-between mb-2">
             <div class="text-xs uppercase tracking-wider text-sky-400 font-semibold">
-              <i class="fa-solid fa-network-wired mr-1"></i> 2 · Remote I/O panels
+              <i class="fa-solid fa-file-pdf mr-1"></i> Electrical prints
             </div>
-            <span id="remote-panel-count" class="text-[10px] mono text-sky-400">0 remotes</span>
+            <span id="remote-panel-count" class="text-[10px] mono text-sky-400">0 panels</span>
           </div>
           <p class="text-[10px] text-slate-600 mb-2 leading-relaxed">
-            Drop the <strong class="text-sky-300">other panel PDFs here</strong> (CP1-CP4, CP6-CP9…).
-            Multi-select = <strong class="text-slate-400">one remote per file</strong> (named from the filename).
-            Stays separate from master.
+            Drop panel PDFs here (CP13, CP14, AC3…). Multi-select =
+            <strong class="text-slate-400">one panel per file</strong> (named from the filename).
+            Used for OCR VFD/params — not required for tar→L5X module tree.
           </p>
           <div class="flex gap-2 mb-2">
-            <input id="remote-name-input" type="text" placeholder="Or name one remote then Browse"
+            <input id="remote-name-input" type="text" placeholder="Or name one panel then Browse"
               class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs">
             <button id="btn-add-remote" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs border-sky-800/50 text-sky-300">
               <i class="fa-solid fa-plus"></i> Add
             </button>
-            <button id="btn-browse-remote-prints" type="button" class="btn-ghost px-2 py-1.5 rounded-lg text-xs border border-sky-800/50 text-sky-300" title="Browse remote PDFs (multi = one panel per file)">
+            <button id="btn-browse-remote-prints" type="button" class="btn-ghost px-2 py-1.5 rounded-lg text-xs border border-sky-800/50 text-sky-300" title="Browse panel PDFs">
               <i class="fa-solid fa-folder-open"></i>
             </button>
           </div>
-          <div id="remote-panels-list" class="space-y-1.5 max-h-40 overflow-y-auto text-xs min-h-[48px]">
-            <div class="text-slate-600 italic">Drop CP1.pdf, CP2.pdf, … here — each becomes its own remote.</div>
+          <div id="remote-panels-list" class="space-y-1.5 max-h-48 overflow-y-auto text-xs min-h-[48px]">
+            <div class="text-slate-600 italic">Drop CP_13.pdf, CP_14.pdf, AC_3.pdf… — each becomes its own panel.</div>
           </div>
         </div>
+        <!-- Kept for JS compatibility; master UI removed -->
+        <div id="master-dropzone" class="hidden" aria-hidden="true"></div>
+        <div id="master-panel-card" class="hidden" aria-hidden="true"></div>
+        <div id="master-file-list" class="hidden" aria-hidden="true"></div>
+        <input id="master-name-input" type="hidden" value="">
+        <button id="btn-set-master" type="button" class="hidden" aria-hidden="true"></button>
+        <button id="btn-browse-master-prints" type="button" class="hidden" aria-hidden="true"></button>
 
         <div id="prints-dropzone" class="hidden" aria-hidden="true">
           <div id="prints-active-label" class="hidden"></div>
@@ -942,7 +911,7 @@
         <div class="card p-3 shrink-0">
           <div class="flex flex-wrap gap-2">
             <button id="btn-run-ocr" class="btn-primary flex-1 py-2 rounded-xl text-sm" type="button" disabled>
-              <i class="fa-solid fa-code-merge mr-2"></i>OCR · merge remotes → master · vs tar.gz
+              <i class="fa-solid fa-code-merge mr-2"></i>OCR · vs tar.gz
             </button>
             <button id="btn-refresh-banks" class="btn-ghost py-2 px-3 rounded-xl text-sm" type="button" title="Refresh banks from RUN">
               <i class="fa-solid fa-rotate"></i>
@@ -950,7 +919,7 @@
           </div>
           <p class="text-[10px] text-slate-600 mt-2 leading-relaxed">
             Load <strong class="text-slate-400">.tar.gz</strong> at the top of this tab (Workspace not required).
-            Merges remote I/O names + racks onto master, then compares to program I/O. Remotes fill conveyor + VFD params.
+            OCR reads panel PDFs and compares to program I/O / VFD params from the RUN.
           </p>
           <!-- Live OCR progress -->
           <div id="ocr-progress-wrap" class="mt-3 hidden">

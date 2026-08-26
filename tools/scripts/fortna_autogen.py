@@ -43,6 +43,9 @@ DEFAULT_LIBRARY = REPO_ROOT / "tools" / "libraries" / "OReilly_Library_v3.L5X"
 DEFAULT_SAMPLE_XLS = REPO_ROOT / "tools" / "libraries" / "autogen_VBS_test.xlsm"
 DEFAULT_RUN = REPO_ROOT / "workspace" / "active" / "RUN"
 PROGRAM_LIBRARY_DIR = REPO_ROOT / "tools" / "libraries" / "programs"
+# Side-loaded AOI exports (e.g. Slow_Flt_AOI.L5X from source-key re-export).
+# Replaces same-named AOI defs in the main library during build_l5x.
+AOI_OVERLAY_DIR = REPO_ROOT / "tools" / "libraries"
 
 # Gold program exports from Excel/Studio (Desktop/Autogen) — always or optional
 ALWAYS_PROGRAMS: dict[str, str] = {
@@ -189,6 +192,8 @@ class AutogenInput:
     eip_topology: list = field(default_factory=list)
     # Fortna octal Word → {rio_name, flex_slot, catalog, direction}
     io_word_map: dict = field(default_factory=dict)
+    # Configio.asc: Fortna Octal_Word → [{bank, lohi, desc}, ...] (Reno primary map)
+    configio_octal_map: dict = field(default_factory=dict)
     # All photoeyes (for PE_UDT tags + IO_MAP)
     pe_devices: list = field(default_factory=list)
     # Optional gold programs to merge (keys from OPTIONAL_PROGRAMS)
@@ -693,19 +698,384 @@ def _eip_family_from_types(types: list[str]) -> str:
     return "1794"
 
 
-def _fortna_bit_to_data_bit(bit: str | int) -> int | None:
-    """Fortna PE bits are PLC-5 octal style (0-7, 10-17) → Logix Data bit 0-15."""
+def _fortna_bit_to_data_bit(bit: str | int, *, max_bit: int = 15) -> int | None:
+    """Fortna PE bits → Logix Data bit.
+
+    Prefer PLC-5 octal (0-7, 10-17 → 0-15) for 16-pt Flex cards.
+    For 1734 4/8-pt POINT cards, clamp to max_bit (3 or 7); if octal
+    overshoots, retry as decimal.
+    """
     s = str(bit or "").strip()
     if not s:
         return None
+    val: int | None = None
     try:
-        # Prefer octal (matches gold IO_MAP 93/94 cases)
-        return int(s, 8)
+        val = int(s, 8)
     except ValueError:
         try:
-            return int(s, 10)
+            val = int(s, 10)
         except ValueError:
             return None
+    if val is None:
+        return None
+    if val > max_bit:
+        try:
+            val = int(s, 10)
+        except ValueError:
+            return None
+    if val < 0 or val > max_bit:
+        return None
+    return val
+
+
+def _point_card_max_bit(mod_type: str) -> int:
+    """Max Data bit index for a POINT/Flex card type."""
+    mt = (mod_type or "").upper()
+    if "IA4" in mt or "OA4" in mt or "IB4" in mt or "OB4" in mt:
+        return 3
+    if "IB8" in mt or "OB8" in mt or "IA8" in mt or "OA8" in mt:
+        return 7
+    return 15
+
+
+def _io_point_want_dir(device_name: str, device_type: str, direction: str) -> str:
+    """Desired card direction for a field device (I=input card, O=output card)."""
+    n = (device_name or "").upper()
+    dt = (device_type or "").lower()
+    # Solenoids / pusher outputs before generic rules
+    if dt in ("digital_out", "solenoid", "output") or re.search(r"SSV", n):
+        return "O"
+    # Feedback / sense points are always inputs
+    if n.endswith("_AUX") or dt in ("photoeye", "pushbutton", "digital_in", "encoder"):
+        return "I"
+    if n.startswith("ENC") or "ENCODER" in n:
+        return "I"
+    # E-stop PB / pullcord feedbacks are inputs; MCR/ES *coil* tags are outputs
+    if dt in ("estop", "e-stop", "e_stop", "es"):
+        if re.search(r"MCR\d*$", n) or re.match(r"^\d*ES\d+$", n) or re.match(r"^ES\d+$", n):
+            # 14MCR1 / 14ES1 coil (no _AUX) → output; 14ES1_AUX already caught above
+            if not n.endswith("_AUX"):
+                d = (direction or "").upper()
+                if d in ("O", "OUT", "OUTPUT"):
+                    return "O"
+                # Default: bare MCR/ES coil is an energize output on Fortna prints
+                if "MCR" in n:
+                    return "O"
+        return "I"
+    if dt in ("beacon",):
+        return "O"
+    d = (direction or "").upper()
+    if d in ("O", "OUT", "OUTPUT"):
+        return "O"
+    return "I"
+
+
+def _fortna_bit_is_high(bit: str | int) -> bool:
+    """True when Fortna IO_Address_Bit is the high half (octal 10-17 → Data 8-15)."""
+    s = str(bit or "").strip()
+    if not s:
+        return False
+    try:
+        v = int(s, 8)
+    except ValueError:
+        try:
+            v = int(s, 10)
+        except ValueError:
+            return False
+    return v >= 8
+
+
+def _rio_numeric_key(rio: str) -> tuple:
+    """Sort key so AENTR3 < AENTR5 < AENTR13 < AENTR14 < AENTR14RP1."""
+    s = (rio or "").strip().upper()
+    m = re.match(r"AENTR(\d+)(?:RP(\d+))?", s)
+    if m:
+        return (int(m.group(1)), int(m.group(2) or 0), s)
+    m = re.search(r"(\d+)", s)
+    if m:
+        return (int(m.group(1)), 0, s)
+    return (9999, 0, s)
+
+
+def _load_configio_octal_map(run_dir: Path, machine: str = "") -> dict[int, list[dict]]:
+    """Load FORTNA/Configio.asc[.MACHINE] → Octal_Word → [{bank, lohi, desc}].
+
+    This is the authoritative Fortna word→EIP bank map when EIPCSV is empty
+    (MSC Reno). Example: Octal 400 Low→bank 312 (AENTR14 IA4), 1047→banks 15/16.
+    """
+    from fortna_asc import read_asc
+
+    run_dir = Path(run_dir)
+    if (run_dir / "RUN" / "project.cfg").is_file():
+        run_dir = run_dir / "RUN"
+    fortna = run_dir / "FORTNA"
+    mach = (machine or "").strip()
+    candidates: list[Path] = []
+    if mach:
+        candidates.append(fortna / f"Configio.asc.{mach}")
+    candidates.append(fortna / "Configio.asc")
+    path = next((p for p in candidates if p.is_file()), None)
+    if not path:
+        return {}
+    try:
+        _, rows = read_asc(path)
+    except Exception:
+        return {}
+    out: dict[int, list[dict]] = {}
+    for r in rows:
+        try:
+            octal = int(float(r.get("Octal_Word") or 0))
+            bank = int(float(r.get("Bank") or -1))
+        except Exception:
+            continue
+        # Octal_Word 0 rows are unused placeholders. Bank 0 is valid —
+        # AENTR3 slot14 OB8E uses OutputBank 0 (MX1–MX6 SSV pushers).
+        if octal <= 0 or bank < 0:
+            continue
+        lohi = (r.get("LoHi") or "").strip() or "Low"
+        desc = (r.get("Desc") or "").strip()
+        out.setdefault(octal, []).append({
+            "bank": bank,
+            "lohi": lohi,
+            "desc": desc,
+        })
+    return out
+
+
+def _build_eip_bank_index(topology: list[dict]) -> dict[int, list[dict]]:
+    """Map Fortna/EIP bank number → candidate module slots (may be multiple)."""
+    bank_map: dict[int, list[dict]] = {}
+    for ad in topology or []:
+        rio = ad.get("rio_name") or ""
+        family = ad.get("family") or "1794"
+        for c in ad.get("children") or []:
+            direction = (c.get("direction") or "").upper()
+            # Index input cards by InputBank only; output cards by OutputBank only.
+            # OB8E status InputBank must NOT steal discrete input words (e.g. 400).
+            keys: list[str] = []
+            if direction == "I":
+                keys = ["input_bank", "word"]
+            elif direction == "O":
+                keys = ["output_bank", "word"]
+            else:
+                keys = ["input_bank", "output_bank", "word"]
+            for key in keys:
+                raw = c.get(key)
+                if raw is None or str(raw).strip() == "":
+                    continue
+                try:
+                    b = int(raw)
+                except Exception:
+                    continue
+                # InputBank 0 is unused placeholder; OutputBank 0 is valid (AENTR3 OB8E).
+                if key == "input_bank" and b <= 0:
+                    continue
+                if key == "output_bank" and b < 0:
+                    continue
+                if key == "word" and b < 0:
+                    continue
+                if direction == "I" and b <= 0:
+                    continue
+                bank_map.setdefault(b, []).append({
+                    "rio_name": rio,
+                    "child_name": c.get("name") or "",
+                    "flex_slot": int(c.get("flex_slot") or 0),
+                    "type": c.get("type") or "",
+                    "direction": direction,
+                    "family": family or c.get("family") or "1794",
+                    "via": key,
+                })
+    return bank_map
+
+
+# Configio Desc → AENTR rio name (bank numbers collide across adapters!)
+_CONFIGIO_DESC_TO_RIO = {
+    "EP3RP": "AENTR3",
+    "EP4RP": "AENTR4",
+    "EP5RP": "AENTR5",
+    "EP6RP": "AENTR6",
+    "EP7RP": "AENTR7",
+    "CP13": "AENTR13",
+    "13RP1": "AENTR13RP1",
+    "13RP2": "AENTR13RP2",
+    "CP14": "AENTR14",
+    "14RP1": "AENTR14RP1",
+    "14RP2": "AENTR14RP2",
+}
+
+
+def _configio_desc_to_rio(desc: str) -> str:
+    d = (desc or "").strip().upper()
+    if not d:
+        return ""
+    for key, rio in _CONFIGIO_DESC_TO_RIO.items():
+        if d == key.upper():
+            return rio
+    # Fallback: EP3 → AENTR3, CP14 → AENTR14
+    m = re.match(r"^EP(\d+)RP$", d)
+    if m:
+        return f"AENTR{m.group(1)}"
+    m = re.match(r"^CP(\d+)$", d)
+    if m:
+        return f"AENTR{m.group(1)}"
+    m = re.match(r"^(\d+)RP(\d+)$", d)
+    if m:
+        return f"AENTR{m.group(1)}RP{m.group(2)}"
+    return ""
+
+
+def _resolve_via_configio(
+    word: int,
+    bit: str,
+    *,
+    want_dir: str,
+    bank_index: dict[int, list[dict]],
+    configio_map: dict[int, list[dict]],
+) -> dict | None:
+    """Resolve Fortna Octal_Word via Configio → EIP bank → module.
+
+    Critical:
+      1) Scope by Configio Desc→AENTR* (bank 68 is IB on AENTR3 AND OB on AENTR14RP2).
+      2) Filter by want_dir so mixed I/O words (1022 Low=IB High=OB) never mirror.
+      3) When both halves match want_dir, pick by bit half using bank NUMBER order.
+    """
+    entries = configio_map.get(word) or []
+    if not entries:
+        return None
+    want = (want_dir or "I").upper()
+
+    # (lohi, bank, info) for cards on the Configio adapter with matching direction
+    matched: list[tuple[str, int, dict]] = []
+    for e in entries:
+        side = (e.get("lohi") or "").strip() or "Low"
+        try:
+            b = int(e.get("bank"))
+        except Exception:
+            continue
+        if b < 0:
+            continue
+        expect_rio = _configio_desc_to_rio(e.get("desc") or "")
+        for info in bank_index.get(b) or []:
+            if (info.get("direction") or "").upper() != want:
+                continue
+            rio = (info.get("rio_name") or "").upper()
+            if expect_rio and rio != expect_rio.upper():
+                continue
+            matched.append((side, b, info))
+            break
+
+    if not matched:
+        return None
+
+    banks = sorted({b for _s, b, _i in matched})
+    if len(banks) >= 2:
+        target = banks[1] if _fortna_bit_is_high(bit) else banks[0]
+    else:
+        highs = [b for s, b, _i in matched if s == "High"]
+        lows = [b for s, b, _i in matched if s == "Low"]
+        if _fortna_bit_is_high(bit) and highs:
+            target = highs[0]
+        elif not _fortna_bit_is_high(bit) and lows:
+            target = lows[0]
+        else:
+            target = banks[0]
+
+    for _side, b, info in matched:
+        if b == target:
+            out = dict(info)
+            out["resolved_bank"] = target
+            out["resolve_how"] = "configio"
+            return out
+    out = dict(matched[0][2])
+    out["resolved_bank"] = matched[0][1]
+    out["resolve_how"] = "configio"
+    return out
+
+
+def _resolve_fortna_bank(
+    bank: str | int,
+    *,
+    want_dir: str,
+    bank_index: dict[int, list[dict]],
+    bit: str = "",
+    configio_map: dict[int, list[dict]] | None = None,
+) -> dict | None:
+    """Resolve Conveyor.asc IO_Address_Word → EIP module slot.
+
+    Priority (Reno / empty EIPCSV):
+      1) Configio.asc Octal_Word → Bank (authoritative)
+      2) direct bank number
+      3) fragile heuristics (m1000/m800/oct) — last resort only
+    Only accepts cards whose direction matches want_dir when possible.
+    """
+    try:
+        w = int(float(str(bank).strip()))
+    except Exception:
+        return None
+    if w <= 0:
+        return None
+    want = (want_dir or "I").upper()
+    if configio_map:
+        hit = _resolve_via_configio(
+            w, bit, want_dir=want, bank_index=bank_index, configio_map=configio_map
+        )
+        if hit:
+            return hit
+    trials: list[tuple[str, int]] = [("direct", w)]
+    # Heuristics only when Configio has no row for this word
+    if not (configio_map and w in configio_map):
+        if w >= 1000:
+            trials.append(("m1000", w - 1000))
+        if w >= 800:
+            trials.append(("m800", w - 800))
+        s = str(w)
+        if re.fullmatch(r"[0-7]+", s):
+            try:
+                trials.append(("oct", int(s, 8)))
+            except Exception:
+                pass
+    for _how, val in trials:
+        if val <= 0:
+            continue
+        for info in bank_index.get(val) or []:
+            if (info.get("direction") or "").upper() == want:
+                out = dict(info)
+                out["resolved_bank"] = val
+                out["resolve_how"] = _how
+                return out
+    return None
+
+
+def _safe_rio_name(adapter_name: str, fallback: str) -> str:
+    """Prefer Fortna adapter name (AENTR13) over invented CPxRIOn."""
+    raw = (adapter_name or "").strip()
+    if not raw or raw.upper() in ("N/A", "INVALID", "NONE"):
+        return fallback
+    t = _safe(raw)
+    if not t or t.lower() in ("tag", "n_a"):
+        return fallback
+    return t[:40]
+
+
+# Gold Greensboro controller stems that appear in Sys / AOI context exports
+_GOLD_SITE_NAME_RE = re.compile(
+    r"ORLY_Greensboro_NC_(?:PLC|CP)\d+"
+    r"|OReillyGreensboro_ORNCCP\d+"
+    r"|OReillyGreensboro_[A-Za-z0-9]+"
+    r"|ORLY\s+Greensboro\s+NC\s+PLC\d+",
+    re.I,
+)
+
+
+def _retarget_gold_site_names(xml: str, site_name: str) -> str:
+    """Rewrite gold Greensboro controller/tag names to this site's project name.
+
+    Sys_Program.L5X and AOI context exports embed ORLY_Greensboro_NC_PLC5_System, etc.
+    """
+    site = _safe(site_name) or "Site"
+    if not xml:
+        return xml
+    return _GOLD_SITE_NAME_RE.sub(site, xml)
 
 
 def _infer_rack_from_ip(ip: str, fallback: str = "CP5") -> str:
@@ -937,8 +1307,45 @@ def load_eip_topology(run_dir: Path) -> dict:
         # Gold Excel / IO_MAP names CP7 heads CP7RIO1 + CP7RIO2 (no CP7RIO0).
         # CP5/CP6 use RIO0..n. Mismatch left gold IO_MAP OTE(CP7RIO2:…) undefined.
         rio_start = 1 if str(rack).upper() in ("CP7", "PLC7") else 0
-        for idx, ad in enumerate(by_rack[rack]):
-            rio = f"{rack}RIO{idx + rio_start}"
+        # Dedupe adapters that share an IP (eipcfg synthetic 1734_AENT_51 + ASC AENTR13).
+        # Prefer Fortna print names: AENTR* over invented 1734_AENT_* / CPxRIO*.
+        ads_in = list(by_rack[rack])
+        by_ip: dict[str, dict] = {}
+        no_ip: list[dict] = []
+
+        def _name_rank(n: str) -> tuple:
+            u = (n or "").upper()
+            if u.startswith("AENTR"):
+                return (0, u)
+            if "1734_AENT" in u or "1738_AENT" in u:
+                return (2, u)
+            return (1, u)
+
+        for ad in ads_in:
+            ip_k = (ad.get("ip") or "").strip()
+            if not ip_k:
+                no_ip.append(ad)
+                continue
+            prev = by_ip.get(ip_k)
+            if not prev or _name_rank(ad.get("name") or "") < _name_rank(prev.get("name") or ""):
+                # Keep richer module list
+                if prev and len(prev.get("modules") or []) > len(ad.get("modules") or []):
+                    ad = {**ad, "modules": prev.get("modules") or ad.get("modules") or []}
+                elif prev and not ad.get("modules") and prev.get("modules"):
+                    ad = {**ad, "modules": prev["modules"]}
+                by_ip[ip_k] = ad
+            elif prev and len(ad.get("modules") or []) > len(prev.get("modules") or []):
+                by_ip[ip_k] = {**prev, "modules": ad["modules"], "name": prev.get("name") or ad.get("name")}
+        ads_deduped = list(by_ip.values()) + no_ip
+
+        used_rio_names: set[str] = set()
+        for idx, ad in enumerate(ads_deduped):
+            # Prints / eipcfg use Fortna names (AENTR13, AENTR13RP1) — prefer those.
+            fallback = f"{rack}RIO{idx + rio_start}"
+            rio = _safe_rio_name(ad.get("name") or "", fallback)
+            if rio in used_rio_names:
+                rio = f"{rio}_{idx + rio_start}"
+            used_rio_names.add(rio)
             ip = (ad.get("ip") or "").strip()
             children = []
             # Bridged modules only; Flex address = EIP slot - 1 when slot0 is AENT headnode
@@ -959,8 +1366,10 @@ def load_eip_topology(run_dir: Path) -> dict:
             )
             for m in bridged:
                 eip_slot = int(m.get("slot") or 0)
-                # Gold: first I/O card is flex/point address 0 (EIP often uses slot 1 after AENT@0)
-                flex = eip_slot - 1 if eip_slot >= 1 else eip_slot
+                # Chassis slot must match prints / Studio POINT addressing:
+                #   print "13:1:I.Data" → PointIO Address=1 → parent Data[1]
+                # Do NOT subtract 1 (that shifted every card and broke IO vs drawings).
+                flex = eip_slot if eip_slot >= 1 else eip_slot
                 mt = (m.get("type") or "").strip()
                 child_name = f"{rio}_{flex}"
                 catalog = EIP_CATALOG.get(mt, mt)
@@ -975,14 +1384,26 @@ def load_eip_topology(run_dir: Path) -> dict:
                                     break
                             except Exception:
                                 pass
-                # Reno / empty EIPCSV: Fortna bank on the module IS the address key
+                # Direction first — needed to pick the right bank key below
+                child_dir = (
+                    "I" if any(x in mt for x in ("IA", "IB", "IM")) else (
+                        "O" if any(x in mt for x in ("OA", "OB", "OW")) else ""
+                    )
+                )
+                # Reno / empty EIPCSV: Fortna bank on the module IS the address key.
+                # Output cards: prefer OutputBank (0 is valid — AENTR3 OB8E).
+                # Input cards: prefer InputBank (>0). Never use OB8E status IB as word.
                 if not word:
                     ib = m.get("input_bank")
                     ob = m.get("output_bank")
                     try:
-                        if ib is not None and int(ib) > 0:
+                        if child_dir == "O" and ob is not None and int(ob) >= 0:
+                            word = str(int(ob))
+                        elif child_dir == "I" and ib is not None and int(ib) > 0:
                             word = str(int(ib))
-                        elif ob is not None and int(ob) > 0:
+                        elif ib is not None and int(ib) > 0:
+                            word = str(int(ib))
+                        elif ob is not None and int(ob) >= 0:
                             word = str(int(ob))
                     except Exception:
                         word = str(ib or ob or "").strip()
@@ -997,9 +1418,7 @@ def load_eip_topology(run_dir: Path) -> dict:
                     "input_bank": m.get("input_bank"),
                     "output_bank": m.get("output_bank"),
                     "family": family,
-                    "direction": "I" if any(x in mt for x in ("IA", "IB", "IM")) else (
-                        "O" if any(x in mt for x in ("OA", "OB", "OW")) else ""
-                    ),
+                    "direction": child_dir,
                 }
                 children.append(child)
                 if word:
@@ -1014,6 +1433,23 @@ def load_eip_topology(run_dir: Path) -> dict:
                         "direction": child["direction"],
                         "family": family,
                     }
+                # Also index output cards by OutputBank (including 0)
+                try:
+                    ob = int(m.get("output_bank"))
+                except Exception:
+                    ob = -1
+                if child["direction"] == "O" and ob >= 0:
+                    word_map.setdefault(str(ob), {
+                        "rio_name": rio,
+                        "child_name": child_name,
+                        "flex_slot": flex,
+                        "type": mt,
+                        "catalog": catalog,
+                        "rack": rack,
+                        "ip": ip,
+                        "direction": "O",
+                        "family": family,
+                    })
                 modules_flat.append(
                     IoModule(
                         name=child_name,
@@ -1164,6 +1600,8 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
 
     # EIP first — word_map scopes devices to this master PLC's RIO network
     eip_adapters, eip_ip, eip_modules, eip_topology, io_word_map = _load_eip_adapters(run_dir)
+    # Configio: Fortna Octal_Word → EIP Bank (authoritative when EIPCSV empty)
+    configio_octal_map = _load_configio_octal_map(run_dir, machine)
 
     from fortna_io_extract import belongs_to_controller, row_machine_matches
 
@@ -1264,8 +1702,16 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                     linked_conveyors.add(f"P{dm.group(1)}")
             io_dir = str(p.get("io_type") or "").upper()
             direction = "O" if io_dir in ("OUT", "O", "OUTPUT") else "I"
+            # Encoders are inputs (pulse) — never force to output even if Type=BEACON
+            if kind in ("encoder",) or re.match(r"^ENC\d", name, re.I) or re.search(
+                r"ENCODER", name + " " + str(p.get("description") or ""), re.I
+            ):
+                direction = "I"
+            # Solenoids / pusher SSV outputs (Type=TRIANG often mislabeled)
+            elif kind in ("digital_out", "solenoid") or re.search(r"SSV", name, re.I):
+                direction = "O"
             # Beacons / horns are almost always outputs even if Type mislabeled
-            if kind in ("beacon",) or re.search(r"WH\d|HORN|BEACON|LAMP", name, re.I):
+            elif kind in ("beacon",) or re.search(r"WH\d|HORN|BEACON|LAMP", name, re.I):
                 direction = "O"
             io_points.append(
                 IoPoint(
@@ -1339,7 +1785,9 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         type_map = FORTNA_TYPE_TO_AUTOGEN_VFD if is_vfd else FORTNA_TYPE_TO_AUTOGEN
         ag_type = type_map.get(typ, "Transport with MS")
 
-        area = _area_from_conveyor_name(name, f"{_safe(machine)}_Area")
+        # One L5X per controller → one area named for the machine (MSCRENOPACK_Area).
+        # Do NOT invent Zone1–Zone9 from P-number prefixes.
+        area = f"{_safe(machine)}_Area"
         if area not in areas:
             areas.append(area)
 
@@ -1352,7 +1800,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 number=n,
                 system=machine,
                 main_area=area,
-                safety_zone=f"{area.replace('_Area', '')}_ESZone1",
+                safety_zone=f"{_safe(machine)}_ESZone1",
                 conveyor=name,
                 type=ag_type,
                 downstream="",  # topology not reliable in ASC
@@ -1369,7 +1817,18 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
             )
         )
 
-    conveyors.sort(key=lambda c: c.conveyor)
+    # Dedupe by conveyor name (ASC sometimes lists the same P### twice → duplicate AOI refs)
+    seen_conv: set[str] = set()
+    deduped: list[ConveyorRow] = []
+    for c in sorted(conveyors, key=lambda x: x.conveyor):
+        key = (c.conveyor or "").upper()
+        if not key or key in seen_conv:
+            continue
+        seen_conv.add(key)
+        deduped.append(c)
+    conveyors = deduped
+    for i, c in enumerate(conveyors, start=1):
+        c.number = i
 
     equipment_plan: dict = {}
     try:
@@ -1399,6 +1858,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         eip_interface_ip=eip_ip,
         eip_topology=eip_topology,
         io_word_map=io_word_map,
+        configio_octal_map=configio_octal_map,
         pe_devices=pe_devices,
         equipment_plan=equipment_plan,
     )
@@ -1770,6 +2230,100 @@ def _shorten_aoi_descriptions(aoi_xml: str) -> str:
     return aoi_xml
 
 
+
+def _filter_aois_to_used(aoi_xml: str, keep: set[str]) -> str:
+    """Keep only named AOI defs (sealed EncodedData or plaintext) that are used."""
+    if not keep:
+        return "<AddOnInstructionDefinitions/>"
+    parts: list[str] = []
+    for m in re.finditer(
+        r'<EncodedData\s+EncodedType="AddOnInstructionDefinition"\s+Name="([^"]+)"[^>]*>.*?</EncodedData>',
+        aoi_xml,
+        re.S,
+    ):
+        if m.group(1) in keep:
+            parts.append(m.group(0))
+    for m in re.finditer(
+        r'<AddOnInstructionDefinition\s+Name="([^"]+)"[^>]*>.*?</AddOnInstructionDefinition>',
+        aoi_xml,
+        re.S,
+    ):
+        if m.group(1) in keep:
+            parts.append(m.group(0))
+    if not parts:
+        return aoi_xml  # safety: don't wipe library if keep-set mismatched
+    return "<AddOnInstructionDefinitions>\n" + "\n".join(parts) + "\n</AddOnInstructionDefinitions>"
+
+
+def _overlay_aoi_exports(aoi_xml: str, overlay_dir: Path | None = None) -> str:
+    """Replace AOI defs with matching *_AOI.L5X exports (source-key re-seals).
+
+    Example: tools/libraries/Slow_Flt_AOI.L5X replaces library Slow_Flt EncodedData
+    so Studio signature matches the key used to export it.
+    """
+    odir = Path(overlay_dir) if overlay_dir else AOI_OVERLAY_DIR
+    if not odir.is_dir():
+        return aoi_xml
+    replaced: list[str] = []
+    for path in sorted(odir.glob("*_AOI.L5X")):
+        try:
+            text = path.read_text(encoding="utf-8", errors="ignore")
+        except Exception:
+            continue
+        # Prefer EncodedData (typical sealed export), else plaintext definition
+        blocks = re.findall(
+            r'<EncodedData\s+EncodedType="AddOnInstructionDefinition"\s+Name="([^"]+)"[^>]*>.*?</EncodedData>',
+            text,
+            re.S,
+        )
+        # re.findall with one group returns names only — re-extract full blocks
+        for m in re.finditer(
+            r'<EncodedData\s+EncodedType="AddOnInstructionDefinition"\s+Name="([^"]+)"[^>]*>.*?</EncodedData>',
+            text,
+            re.S,
+        ):
+            name, block = m.group(1), m.group(0)
+            pat = re.compile(
+                rf'<EncodedData\s+EncodedType="AddOnInstructionDefinition"\s+Name="{re.escape(name)}"[^>]*>.*?</EncodedData>',
+                re.S,
+            )
+            if pat.search(aoi_xml):
+                aoi_xml = pat.sub(block, aoi_xml, count=1)
+                replaced.append(name)
+            else:
+                # Insert before closing wrapper
+                if aoi_xml.rstrip().endswith("</AddOnInstructionDefinitions>"):
+                    aoi_xml = (
+                        aoi_xml.rstrip()[: -len("</AddOnInstructionDefinitions>")]
+                        + "\n"
+                        + block
+                        + "\n</AddOnInstructionDefinitions>"
+                    )
+                    replaced.append(f"{name}+")
+        for m in re.finditer(
+            r'<AddOnInstructionDefinition\s+Name="([^"]+)"[^>]*>.*?</AddOnInstructionDefinition>',
+            text,
+            re.S,
+        ):
+            name, block = m.group(1), m.group(0)
+            # Only overlay plaintext if no EncodedData of that name remains
+            if re.search(
+                rf'EncodedData[^>]*Name="{re.escape(name)}"', aoi_xml
+            ):
+                continue
+            pat = re.compile(
+                rf'<AddOnInstructionDefinition\s+Name="{re.escape(name)}"[^>]*>.*?</AddOnInstructionDefinition>',
+                re.S,
+            )
+            if pat.search(aoi_xml):
+                aoi_xml = pat.sub(block, aoi_xml, count=1)
+                replaced.append(name)
+    if replaced:
+        _emit_progress(f"AOI overlay: {', '.join(replaced)}", 86)
+    return aoi_xml
+
+
+
 def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     library_text = library_path.read_text(encoding="utf-8", errors="replace")
 
@@ -1981,6 +2535,16 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     for p in inp.io_points or []:
         raw = (p.device_name or "").strip()
         if not raw:
+            continue
+        # Spares omitted — engineers add later if needed
+        _rn = raw.upper()
+        _dt = (p.device_type or "").lower()
+        if (
+            _dt in ("spare", "invalid")
+            or _rn in ("SPARE", "INVALID", "N/A")
+            or _rn.startswith("SPARE")
+            or "_SPARE" in _rn
+        ):
             continue
         tname = _safe(raw)[:40]
         if not tname or tname in seen_tag_names:
@@ -2343,14 +2907,29 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 f"</Routines></Program>"
             )
 
-    # --- IO_MAP from RUN/tar.gz (default): Conveyor.asc Bank.Bit → CPxRIOn:I/O.Data via EIP ---
+    # --- IO_MAP from RUN/tar.gz (default): Conveyor.asc Bank.Bit → AENTR:I/O.Data[slot] ---
     # Gold Excel IO_MAP_Program.L5X is optional (include_io_map_gold) and replaces this scaffold.
     word_map = dict(getattr(inp, "io_word_map", None) or {})
+    bank_index = _build_eip_bank_index(list(getattr(inp, "eip_topology", None) or []))
+    configio_map = dict(getattr(inp, "configio_octal_map", None) or {})
 
-    def _word_info(word: str) -> dict | None:
+    def _word_info(word: str, *, want_dir: str = "", bit: str = "") -> dict | None:
+        """Resolve Fortna word → module. Prefer Configio, then heuristics, then EIPCSV."""
         w = str(word or "").strip()
         if not w:
             return None
+        # 1) Configio + bank heuristics (Reno: EIPCSV empty)
+        if want_dir:
+            hit = _resolve_fortna_bank(
+                w,
+                want_dir=want_dir,
+                bank_index=bank_index,
+                bit=bit,
+                configio_map=configio_map,
+            )
+            if hit:
+                return hit
+        # 2) Legacy word_map from EIPCSV / InputBank index
         info = word_map.get(w)
         if info:
             return info
@@ -2360,7 +2939,6 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             info = None
         if info:
             return info
-        # 16-bit modules sometimes list only the low word (510); high half is 511
         if w.isdigit() and int(w) % 2 == 1:
             return word_map.get(str(int(w) - 1))
         return None
@@ -2441,66 +3019,120 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     ]
     io_map_mapped = 0
     io_map_unmapped = 0
+    io_map_skipped_spare = 0
+    io_map_skipped_dir = 0
+
+    def _is_spare_io_point(p: IoPoint) -> bool:
+        n = (p.device_name or "").strip().upper()
+        dt = (p.device_type or "").strip().lower()
+        desc = (getattr(p, "description", None) or "").strip().upper()
+        if dt in ("spare", "invalid"):
+            return True
+        if not n or n in ("SPARE", "INVALID", "N/A", "NONE"):
+            return True
+        if n.startswith("SPARE") or "_SPARE" in n or n.endswith("SPARE"):
+            return True
+        if "SPARE" in desc and "NOT SPARE" not in desc:
+            return True
+        return False
+
+    io_map_skipped_spare = sum(
+        1 for p in (inp.io_points or []) if _is_spare_io_point(p)
+    )
     map_points = [
         p for p in (inp.io_points or [])
-        if (p.device_name or "").strip() and (p.fortna_bank or p.fortna_bit)
+        if (p.device_name or "").strip()
+        and (p.fortna_bank or p.fortna_bit)
+        and not _is_spare_io_point(p)
     ]
-    map_points.sort(
-        key=lambda p: (
-            str(p.fortna_bank or ""),
-            str(p.fortna_bit or ""),
-            str(p.device_name or ""),
-        )
-    )
-    last_rio_i = ""
-    last_rio_o = ""
+    # Resolve first, then emit in numerical adapter/slot order (AENTR3…AENTR14)
+    resolved_rows: list[dict] = []
     for p in map_points:
         tname = _safe(p.device_name)
         if not tname:
             continue
         word = str(p.fortna_bank or "").strip()
         fbit = str(p.fortna_bit or "").strip()
-        data_bit = _fortna_bit_to_data_bit(fbit)
-        info = _word_info(word)
+        want = _io_point_want_dir(p.device_name or "", p.device_type or "", p.direction or "")
+        info = _word_info(word, want_dir=want, bit=fbit)
+        # No EIP card for this bank → omit (spares / unfinished can be added later)
+        if not info:
+            io_map_unmapped += 1
+            continue
+        mod_type = (info.get("type") or "")
+        family = (info.get("family") or (
+            "1734" if "1734" in mod_type or "1738" in mod_type else "1794"
+        ))
+        max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
+        # Configio splits one Fortna word across two cards (Low/High). High-half
+        # bits (octal 10-17) become Data[0..] on the High card — remap before clamp.
+        bit_for_card = fbit
+        if _fortna_bit_is_high(fbit) and (info.get("resolve_how") or "") == "configio":
+            try:
+                hv = int(str(fbit).strip(), 8)
+            except ValueError:
+                try:
+                    hv = int(str(fbit).strip(), 10)
+                except ValueError:
+                    hv = -1
+            if hv >= 8:
+                bit_for_card = str(hv - 8)
+        data_bit = _fortna_bit_to_data_bit(bit_for_card, max_bit=max_bit)
+        if data_bit is None:
+            io_map_unmapped += 1
+            continue
         member = _device_member(p.device_type or "", tname, p.direction or "")
-        is_out = _is_output_point(p, info)
+        how = info.get("resolve_how") or "map"
         comment = (
             f"{tname} · Bank{word}.{fbit}"
+            + (f" · EIP{info.get('resolved_bank')}" if info.get("resolved_bank") else "")
             + (f" · {info.get('type')}" if info else "")
+            + (f" · via {how}" if how not in ("direct", "map") else "")
         )
-        if info and data_bit is not None and 0 <= data_bit <= 15:
-            rio = info["rio_name"]
-            slot = int(info["flex_slot"])
-            # Prefer module direction from EIP card type; fall back to point direction
-            mod_dir = (info.get("direction") or ("O" if is_out else "I")).upper()
-            if mod_dir == "O" or is_out:
-                # Output: field tag → module output bit
-                if rio != last_rio_o:
-                    cp_o_rungs.append(_rung_xml(0, "NOP();", rio))
-                    last_rio_o = rio
-                text = f"XIC({member})OTE({rio}:O.Data[{slot}].{data_bit});"
-                cp_o_rungs.append(_rung_xml(0, text, comment))
-            else:
-                # Input: module input bit → field tag
-                if rio != last_rio_i:
-                    cp_i_rungs.append(_rung_xml(0, "NOP();", rio))
-                    last_rio_i = rio
-                text = f"XIC({rio}:I.Data[{slot}].{data_bit})OTE({member});"
-                cp_i_rungs.append(_rung_xml(0, text, comment))
-            io_map_mapped += 1
+        rio = info["rio_name"]
+        slot = int(info["flex_slot"])
+        # PHYSICAL card direction wins (IB8 has no :O — never OTE to an input card).
+        mod_dir = (info.get("direction") or want or "").upper()
+        if mod_dir not in ("I", "O"):
+            io_map_skipped_dir += 1
+            continue
+        channel = f"{rio}:{mod_dir}.Data[{slot}].{data_bit}"
+        resolved_rows.append({
+            "rio": rio,
+            "slot": slot,
+            "data_bit": data_bit,
+            "mod_dir": mod_dir,
+            "member": member,
+            "channel": channel,
+            "comment": comment,
+            "tname": tname,
+        })
+        io_map_mapped += 1
+
+    resolved_rows.sort(
+        key=lambda r: (
+            _rio_numeric_key(r["rio"]),
+            r["slot"],
+            r["data_bit"],
+            r["tname"],
+        )
+    )
+    last_rio_i = ""
+    last_rio_o = ""
+    for row in resolved_rows:
+        rio = row["rio"]
+        if row["mod_dir"] == "O":
+            if rio != last_rio_o:
+                cp_o_rungs.append(_rung_xml(0, "NOP();", rio))
+                last_rio_o = rio
+            text = f"XIC({row['member']})OTE({row['channel']});"
+            cp_o_rungs.append(_rung_xml(0, text, row["comment"]))
         else:
-            # Keep a visible placeholder so unmapped banks are obvious in Studio
-            if is_out:
-                text = f"XIC({member})OTE(AlwaysOff);"
-                cp_o_rungs.append(
-                    _rung_xml(0, text, comment + " · UNMAPPED bank (not in EIPCSV)")
-                )
-            else:
-                text = f"XIC(AlwaysOff)OTE({member});"
-                cp_i_rungs.append(
-                    _rung_xml(0, text, comment + " · UNMAPPED bank (not in EIPCSV)")
-                )
-            io_map_unmapped += 1
+            if rio != last_rio_i:
+                cp_i_rungs.append(_rung_xml(0, "NOP();", rio))
+                last_rio_i = rio
+            text = f"XIC({row['channel']})OTE({row['member']});"
+            cp_i_rungs.append(_rung_xml(0, text, row["comment"]))
 
     # --- Gold program exports: Sys (default). Gold Excel IO_MAP is CLI-only. ---
     # UI "IO_MAP" checkbox → include_io_map (RUN banks). Gold Excel is separate.
@@ -2577,19 +3209,29 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 all_tags[i] = block
             return
 
+    site_stem = _safe(inp.project_name) or proj
     for gp in gold_programs:
         gname = gp["name"]
         # Prefer gold IO_MAP over RUN scaffold
         if gname == "IO_MAP":
             gold_io_map_used = True
+        # Retarget Greensboro gold names → this site (MSCRENO_MSCRENOPACK, etc.)
         # Merge controller tags from the program export — gold wins over BOOL stubs
         for block in gp.get("tags") or []:
-            _upsert_tag_block(block, prefer=True)
+            _upsert_tag_block(
+                _retarget_gold_site_names(block, site_stem), prefer=True
+            )
         if gp.get("aois_xml"):
-            extra_aoi_chunks.append(gp["aois_xml"])
+            extra_aoi_chunks.append(
+                _retarget_gold_site_names(gp["aois_xml"], site_stem)
+            )
         if gp.get("datatypes_xml"):
-            extra_dt_chunks.append(gp["datatypes_xml"])
-        programs_xml.append(gp["program_xml"])
+            extra_dt_chunks.append(
+                _retarget_gold_site_names(gp["datatypes_xml"], site_stem)
+            )
+        programs_xml.append(
+            _retarget_gold_site_names(gp["program_xml"], site_stem)
+        )
         gold_program_names.append(gname)
 
     # --- Equipment plan from tar → auto-hint packs (Sorter Track, merges note) ---
@@ -2926,9 +3568,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
 
     dt_xml = datatypes.group(0) if datatypes else "<DataTypes/>"
-    # KEEP sealed EncodedData AOIs byte-for-byte from the O'Reilly library (Excel path).
-    # Stripping them left only NOP rungs. Open as new project so signatures stay valid.
+    # Start from full library AOIs; later prune to only AOIs actually called so
+    # unused sealed TRK_* etc. don't fail Studio verify (Invalid signature ID).
     aoi_xml = aois.group(0) if aois else "<AddOnInstructionDefinitions/>"
+    # Prefer side-loaded exports (Slow_Flt_AOI.L5X from source-key re-export)
+    aoi_xml = _overlay_aoi_exports(aoi_xml)
+
+    # AOI prune happens after programs/tags are known (see below).
 
     # Merge extra DataTypes / AOIs from gold program exports (skip names already present)
     def _merge_named_blocks(host: str, chunks: list[str], wrapper: str, item_tag: str) -> str:
@@ -2963,6 +3609,67 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     # Shorten only unsealed AOI Description text. Never rewrite EncodedData.
     aoi_xml = _shorten_aoi_descriptions(aoi_xml)
+
+    # Keep only AOIs actually used in rungs/tags — drops unused sealed TRK_* etc.
+    # (Studio verifies every AOI def; unused sealed ones still throw Invalid signature.)
+    _aoi_lib_names = set(
+        re.findall(
+            r'(?:EncodedData EncodedType="AddOnInstructionDefinition"|AddOnInstructionDefinition)'
+            r'[^>]*Name="([^"]+)"',
+            aoi_xml,
+        )
+    )
+    _used = set()
+    for _chunk in list(programs_xml) + list(all_tags):
+        _used.update(re.findall(r"\b([A-Za-z][A-Za-z0-9_]{2,60})\s*\(", _chunk))
+        _used.update(re.findall(r'DataType="([^"]+)"', _chunk))
+    _keep = _aoi_lib_names & _used
+    # Always keep core transport AOIs if present (safety net)
+    for _core in ("Fast_Conv", "Slow_Flt", "Slow_Jam", "PE_Logic", "Full_PE", "Merge_2to1"):
+        if _core in _aoi_lib_names:
+            _keep.add(_core)
+    if _keep:
+        before_n = len(_aoi_lib_names)
+        aoi_xml = _filter_aois_to_used(aoi_xml, _keep)
+        _emit_progress(
+            f"AOIs kept {len(_keep)}/{before_n} (dropped unused sealed defs)",
+            88,
+        )
+        # Drop UDTs that embed removed AOIs (e.g. Track_Divert_AOI → TRK_Divert)
+        def _strip_udts_for_missing_aois(dt_block: str, keep_aois: set[str]) -> str:
+            out_parts: list[str] = []
+            # Keep opening wrapper
+            m_wrap = re.match(r"(<DataTypes\b[^>]*>)", dt_block)
+            head = m_wrap.group(1) if m_wrap else "<DataTypes>"
+            for dm in re.finditer(
+                r'<DataType\s+Name="([^"]+)"[^>]*>.*?</DataType>', dt_block, re.S
+            ):
+                body = dm.group(0)
+                # Member DataType references to AOIs not in keep → drop whole UDT
+                member_types = set(re.findall(r'DataType="([^"]+)"', body))
+                # Skip the DataType's own Name attribute match by checking Members only
+                mem_section = re.search(r"<Members>(.*?)</Members>", body, re.S)
+                if mem_section:
+                    member_types = set(
+                        re.findall(r'DataType="([^"]+)"', mem_section.group(1))
+                    )
+                else:
+                    member_types = set()
+                bad = [
+                    mt for mt in member_types
+                    if mt in _aoi_lib_names and mt not in keep_aois
+                ]
+                if bad:
+                    continue
+                # Also drop obvious sorter track UDTs when no TRK AOIs kept
+                name = dm.group(1)
+                if not any(a.startswith("TRK_") for a in keep_aois):
+                    if name.startswith("Track_") or name.startswith("TRK"):
+                        continue
+                out_parts.append(body)
+            return head + "\n" + "\n".join(out_parts) + "\n</DataTypes>"
+
+        dt_xml = _strip_udts_for_missing_aois(dt_xml, _keep)
 
     prog_names = []
     for p in programs_xml:
@@ -3146,6 +3853,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
     # Final pass: unsealed AOI descriptions only (never EncodedData / sealed bodies)
     l5x = _shorten_aoi_descriptions(l5x)
+    # Last chance: any leftover gold Greensboro names → this site
+    l5x = _retarget_gold_site_names(l5x, site_stem)
     return l5x, report
 
 
@@ -3298,34 +4007,67 @@ def generate(
         report["rio_module_count"] = rio_inv["module_count"]
         report["rio_names"] = rio_inv["rio_names"]
 
-        def _resolve_physical(bank: str, bit: str) -> tuple[str, str]:
-            """Return (module_data_ref, note)."""
+        bank_index_phys = _build_eip_bank_index(topo)
+        configio_phys = dict(getattr(inp, "configio_octal_map", None) or {})
+
+        def _resolve_physical(bank: str, bit: str, *, want_dir: str = "") -> tuple[str, str]:
+            """Return (module_data_ref, note). Prefer Configio when EIPCSV empty."""
             w = str(bank or "").strip()
             b = str(bit or "").strip()
-            data_bit = _fortna_bit_to_data_bit(b)
-            info = word_map.get(w)
+            info = None
+            if want_dir:
+                info = _resolve_fortna_bank(
+                    w,
+                    want_dir=want_dir,
+                    bank_index=bank_index_phys,
+                    bit=b,
+                    configio_map=configio_phys,
+                )
+            if not info:
+                info = word_map.get(w)
             if not info:
                 try:
                     info = word_map.get(str(int(float(w))))
                 except Exception:
                     info = None
-            # 16-bit modules sometimes list high-half words (511 for 510) in CSV only
             if not info and w.isdigit() and int(w) % 2 == 1:
                 info = word_map.get(str(int(w) - 1))
-            if info and data_bit is not None and 0 <= data_bit <= 15:
-                rio = info.get("rio_name") or ""
-                slot = int(info.get("flex_slot") or 0)
-                direction = (info.get("direction") or "I").upper()
-                # Studio-style: CP5RIO0:4:O.Data.3  (also valid: :I.Data[4].3)
-                ref = f"{rio}:{slot}:{direction}.Data.{data_bit}"
-                alt = f"{rio}:{direction}.Data[{slot}].{data_bit}"
-                return ref, f"alt={alt}; type={info.get('type')}; word={w}"
             if not info:
                 return "", (
-                    f"UNMAPPED word {w} — not in this RUN EIPCSV "
+                    f"UNMAPPED word {w} — not in Configio/EIPCSV "
                     f"(other panel/PLC bank, or missing module)"
                 )
-            return "", f"bad bit {b} for word {w}"
+            mod_type = (info.get("type") or "")
+            family = info.get("family") or (
+                "1734" if "1734" in mod_type or "1738" in mod_type else "1794"
+            )
+            max_bit = _point_card_max_bit(mod_type) if family == "1734" else 15
+            bit_for_card = b
+            if _fortna_bit_is_high(b) and (info.get("resolve_how") or "") == "configio":
+                try:
+                    hv = int(str(b).strip(), 8)
+                except ValueError:
+                    try:
+                        hv = int(str(b).strip(), 10)
+                    except ValueError:
+                        hv = -1
+                if hv >= 8:
+                    bit_for_card = str(hv - 8)
+            data_bit = _fortna_bit_to_data_bit(bit_for_card, max_bit=max_bit)
+            if data_bit is None or data_bit < 0:
+                return "", f"bad bit {b} for word {w}"
+            rio = info.get("rio_name") or ""
+            slot = int(info.get("flex_slot") or 0)
+            direction = (info.get("direction") or want_dir or "I").upper()
+            ref = f"{rio}:{slot}:{direction}.Data.{data_bit}"
+            alt = f"{rio}:{direction}.Data[{slot}].{data_bit}"
+            how = info.get("resolve_how") or "map"
+            note = f"alt={alt}; type={info.get('type')}; word={w}"
+            if info.get("resolved_bank"):
+                note += f"; eip={info.get('resolved_bank')}"
+            if how not in ("direct", "map"):
+                note += f"; via={how}"
+            return ref, note
 
         map_lines = [
             "fortna_name,device_type,direction,fortna_bank,fortna_bit,"
@@ -3335,7 +4077,9 @@ def generate(
         unmapped_n = 0
         # PE devices
         for p in getattr(inp, "pe_devices", None) or []:
-            ref, note = _resolve_physical(str(p.get("bank") or ""), str(p.get("bit") or ""))
+            ref, note = _resolve_physical(
+                str(p.get("bank") or ""), str(p.get("bit") or ""), want_dir="I"
+            )
             ok = "Y" if ref else "N"
             if ref:
                 mapped_n += 1
@@ -3355,7 +4099,7 @@ def generate(
                     ]
                 )
             )
-        # Other IO points from io_points (beacons, etc.)
+        # Other IO points from io_points (beacons, encoders, motors, …)
         seen_names = {
             (p.get("fortna_name") or p.get("name") or "").upper()
             for p in (getattr(inp, "pe_devices", None) or [])
@@ -3369,18 +4113,16 @@ def generate(
             bit = str(getattr(p, "fortna_bit", None) or "")
             if not bank and not bit:
                 continue
-            ref, note = _resolve_physical(bank, bit)
+            # Prefer name/type rules (_AUX→I, ENC→I, beacon→O) over stale ASC io_type
+            direction = _io_point_want_dir(
+                dname, dtype, getattr(p, "direction", None) or ""
+            )
+            ref, note = _resolve_physical(bank, bit, want_dir=direction)
             ok = "Y" if ref else "N"
             if ref:
                 mapped_n += 1
             else:
                 unmapped_n += 1
-            # Infer direction from type / name
-            direction = "O" if re.search(
-                r"beacon|horn|lamp|light|output|OB|OA", dtype + dname, re.I
-            ) else "I"
-            if getattr(p, "io_type", None):
-                direction = "O" if str(p.io_type).upper() in ("O", "OUT", "OUTPUT") else direction
             map_lines.append(
                 ",".join(
                     [

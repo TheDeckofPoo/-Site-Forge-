@@ -1,0 +1,1046 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--Conveyor Fault
+Fault logic, Fault Sum logic & Fault Silence logic-->
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.05" TargetName="Slow_Flt" TargetType="AddOnInstructionDefinition" TargetRevision="1.6 " TargetLastEdited="2026-07-29T14:51:52.885Z" TargetSignature="16#e034_1258" ContainsContext="true" ExportDate="Wed Aug 26 16:25:47 2026" ExportOptions="References NoRawData L5KData DecoratedData Context Dependencies ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Context" Name="SiteForge_AOI_Library">
+<DataTypes Use="Context">
+<DataType Name="Additional_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZAdditional0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZAdditional0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Additional_Fault_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Flt" DataType="Additional_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Silenced" DataType="Additional_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Additional_Fault"/>
+<Dependency Type="DataType" Name="Additional_Fault"/>
+</Dependencies>
+</DataType>
+<DataType Name="AirPressure_Switch_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZAirPressur0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Pressure_Fault" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZAirPressur0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="AirPressure_Switch_I" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZAirPressur0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Pressure_OK" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZAirPressur0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="AirPressure_Switch_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="I" DataType="AirPressure_Switch_I" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="AirPressure_Switch_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Silenced" DataType="AirPressure_Switch_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Flt_Time" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="AirPressure_Switch_I"/>
+<Dependency Type="DataType" Name="AirPressure_Switch_Fault"/>
+<Dependency Type="DataType" Name="AirPressure_Switch_Fault"/>
+</Dependencies>
+</DataType>
+<DataType Name="Area_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZArea_HMI0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Enable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_HMI0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_HMI0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Silence" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_HMI0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="Start" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_HMI0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Stop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_HMI0" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="Jam_Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_HMI0" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Motor_Fault_Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_HMI0" BitNumber="6" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Area_PI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZArea_PI0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="EngMgmtRst" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Jam" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="JamRst" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Mtr_FltRst" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI0" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI0" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Restart_TT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI0" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Rst" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI0" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZArea_PI9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Silenced_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI9" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Rst_AntiTieDown" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI9" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Stop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI9" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="StopFlt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI9" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Stop_AntiTieDown" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI9" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="Start" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI9" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Start_AntiTieDown" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_PI9" BitNumber="6" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Area_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="HMI" DataType="Area_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="PI" DataType="Area_PI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="EngMgmtTime" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="StartTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="RstTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="SilTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="AutoSilTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="JamRstTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="FltRstTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZArea_UDT9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_UDT9" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_UDT9" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Silence" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_UDT9" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="Start" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_UDT9" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Jam_Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_UDT9" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="MtrFlt_Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_UDT9" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="EngMgmtTmr_Dn" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_UDT9" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="EngMgmt_AreaStop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZArea_UDT9" BitNumber="7" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Area_HMI"/>
+<Dependency Type="DataType" Name="Area_PI"/>
+</Dependencies>
+</DataType>
+<DataType Name="Conv_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZConv_Fault0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv in Fault Condition]]>
+</Description>
+</Member>
+<Member Name="Jam" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv in Jam Condition]]>
+</Description>
+</Member>
+<Member Name="Mtr_Start_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Start Fault]]>
+</Description>
+</Member>
+<Member Name="Mtr_Stop_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Stop Fault]]>
+</Description>
+</Member>
+<Member Name="EStopped" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Estopped Fault]]>
+</Description>
+</Member>
+<Member Name="VFD_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor VFD Fault]]>
+</Description>
+</Member>
+<Member Name="Mtr_Overload_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Overload Fault]]>
+</Description>
+</Member>
+<Member Name="Mtr_Contactor_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_Fault0" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Contactor Fault]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="EngMgmtTime" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Energy Management Timer value]]>
+</Description>
+</Member>
+<Member Name="Color" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Color]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZConv_HMI2" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Jog" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Jog]]>
+</Description>
+</Member>
+<Member Name="Manual" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Manual]]>
+</Description>
+</Member>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Reset]]>
+</Description>
+</Member>
+<Member Name="Manual_ONS" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Manual ONS Bit]]>
+</Description>
+</Member>
+<Member Name="Reverse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Reverse]]>
+</Description>
+</Member>
+<Member Name="Release" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[HMI Conv Release]]>
+</Description>
+</Member>
+<Member Name="DisableEngMgmt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_HMI2" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Disable Energy Management]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_O" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZConv_O0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_O0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Output - Conv is Running]]>
+</Description>
+</Member>
+<Member Name="Release" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_O0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Output - Conv is Releasing]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_PI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZConv_PI0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Enable_hold" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Hold Enable - This bit will stop the Conv from running
+(When this bit gets low, conv wait for Restart Time to Run again)]]>
+</Description>
+</Member>
+<Member Name="Jam" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Jam Bit]]>
+</Description>
+</Member>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Reset Bit]]>
+</Description>
+</Member>
+<Member Name="Run_Hold" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Run Hold - This bit will stop the Conv from Running. 
+(When this bit gets low, conv don't need to wait for Restart Time to Run again)]]>
+</Description>
+</Member>
+<Member Name="Stop_Next" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Stop Next - This bit helps to Run Conveyor till Exit PE detects the packages. Generally it is used for Cascade Stop]]>
+</Description>
+</Member>
+<Member Name="Full" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv in Full Condition]]>
+</Description>
+</Member>
+<Member Name="EngMgmt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_PI0" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv in Engery Managment State]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Conv_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Run_Stats" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Run Stats]]>
+</Description>
+</Member>
+<Member Name="Flt" DataType="Conv_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Faults Bits]]>
+</Description>
+</Member>
+<Member Name="Silenced" DataType="Conv_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Fault Silenced Bits]]>
+</Description>
+</Member>
+<Member Name="HMI" DataType="Conv_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv HMI Bits]]>
+</Description>
+</Member>
+<Member Name="PI" DataType="Conv_PI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Program Inputs Bits]]>
+</Description>
+</Member>
+<Member Name="O" DataType="Conv_O" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Output Bits]]>
+</Description>
+</Member>
+<Member Name="Mtr_Start_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Motor Start Fault Time]]>
+</Description>
+</Member>
+<Member Name="Mtr_Stop_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Motor Stop Fault Time]]>
+</Description>
+</Member>
+<Member Name="Ready_To_Receive_Time" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Ready To Receive Time]]>
+</Description>
+</Member>
+<Member Name="Reset_Time" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Fault/Jam Reset Time]]>
+</Description>
+</Member>
+<Member Name="Restart_Time" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Restart Time]]>
+</Description>
+</Member>
+<Member Name="Spd" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Speed]]>
+</Description>
+</Member>
+<Member Name="Type" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Type
+0 = Transport Conv with VFD
+1 = Accum. Conv with VFD
+2 = Transport Conv with MS
+3 = Accum. Conv with MS]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZConv_UDT13" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="EngMgmt_Rst" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PE on Conv Reset Energy Management Timer]]>
+</Description>
+</Member>
+<Member Name="LastConv" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Very Downstream Conv where System should Start Cascade Start]]>
+</Description>
+</Member>
+<Member Name="Ready" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Ready to Run]]>
+</Description>
+</Member>
+<Member Name="Ready_To_Receive" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Ready To Receive from Upstream]]>
+</Description>
+</Member>
+<Member Name="Release" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv (Accum.) Release]]>
+</Description>
+</Member>
+<Member Name="Reset" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Fault/Jam Reset]]>
+</Description>
+</Member>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Run Signal]]>
+</Description>
+</Member>
+<Member Name="Running" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT13" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv is Running]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZConv_UDT22" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Reverse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Reverse Run Signal]]>
+</Description>
+</Member>
+<Member Name="RestartTmr_DN" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Restart Timer Done Bit]]>
+</Description>
+</Member>
+<Member Name="RestartTmr_TT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Restart Timer operation is in process Bit]]>
+</Description>
+</Member>
+<Member Name="FltSilenced" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Flt is Silenced]]>
+</Description>
+</Member>
+<Member Name="JamSilenced" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conv Jam is Silenced]]>
+</Description>
+</Member>
+<Member Name="Indexing" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Loaded" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Anti_Gridlock" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT22" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZConv_UDT31" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Disabled" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT31" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="VFD_Running" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZConv_UDT31" BitNumber="1" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="Conv_Fault"/>
+<Dependency Type="DataType" Name="Conv_Fault"/>
+<Dependency Type="DataType" Name="Conv_HMI"/>
+<Dependency Type="DataType" Name="Conv_PI"/>
+<Dependency Type="DataType" Name="Conv_O"/>
+</Dependencies>
+</DataType>
+<DataType Name="Enc_Flt" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZEnc_Flt0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Enc" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault]]>
+</Description>
+</Member>
+<Member Name="PPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PPI Fault]]>
+</Description>
+</Member>
+<Member Name="UpStrmCommLoss" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_Flt0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[IO Module Fault]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Enc_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="PPI_Ratio" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pulse Per Inch Ratio]]>
+</Description>
+</Member>
+<Member Name="Allowable_DiffSpd" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset:10;  Allowable Difference Between Actual Speed and Encoder Speed measured to generate PPI (High or Low) Fault]]>
+</Description>
+</Member>
+<Member Name="Allowable_PPIDiff" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Allowable PPI Difference in one "1" minute before calling PPI Fault]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZEnc_HMI3" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Disable_PPIFlt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_HMI3" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[To Disable the PPI Fault Logic]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="Enc_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Flt" DataType="Enc_Flt" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Bits]]>
+</Description>
+</Member>
+<Member Name="Silenced" DataType="Enc_Flt" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Silenced Bits]]>
+</Description>
+</Member>
+<Member Name="HMI" DataType="Enc_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Sts_Enc_Flt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Fault Stats]]>
+</Description>
+</Member>
+<Member Name="Sts_PPI_Flt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder PPI Fault Stats]]>
+</Description>
+</Member>
+<Member Name="Sts_HighPPI_AlmTot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Stats: High PPI Alarm Total]]>
+</Description>
+</Member>
+<Member Name="Sts_LowPPI_AlmTot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Stats: Low PPI Alarm Total]]>
+</Description>
+</Member>
+<Member Name="FPM" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conveyor FPM Speed]]>
+</Description>
+</Member>
+<Member Name="Enc_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset : 500; Encoder Fault Timer  (Generally should be 500)]]>
+</Description>
+</Member>
+<Member Name="PPI_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset : 15000; Encoder PPI Fault Timer (Use 15000 - For Pulses per Inch; 7500 - For Pulses for half of Inch)]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZEnc_UDT10" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Encoder Pulse Per Inch OR Pulse per half inch]]>
+</Description>
+</Member>
+<Member Name="Alm_LowPPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Alarm: Low PPI Fault]]>
+</Description>
+</Member>
+<Member Name="Alm_HighPPI" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZEnc_UDT10" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Alarm: High PPI Fault]]>
+</Description>
+</Member>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Enc_Flt"/>
+<Dependency Type="DataType" Name="Enc_Flt"/>
+<Dependency Type="DataType" Name="Enc_HMI"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+</Dependencies>
+</DataType>
+<DataType Name="Motor_Starter_I" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZPanel_Moto0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Auxiliary_Forward" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPanel_Moto0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Contactor_OK" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPanel_Moto0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="MS_OK" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPanel_Moto0" BitNumber="2" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Motor_Starter_O" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZMotor_Star0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZMotor_Star0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="Motor_Starter_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="I" DataType="Motor_Starter_I" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="O" DataType="Motor_Starter_O" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="PS_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MtrOverload_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MtrContactor_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="Motor_Starter_I"/>
+<Dependency Type="DataType" Name="Motor_Starter_O"/>
+<Dependency Type="DataType" Name="PS_Fault"/>
+</Dependencies>
+</DataType>
+<DataType Name="PS_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="PS_FltTmr" DataType="TIMER" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZPS_Fault1" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PS_Flt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPS_Fault1" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="PS_I" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZPS_I0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="PS_OK" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZPS_I0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Power Supply Healthy]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="PS_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="I" DataType="PS_I" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Flt" DataType="PS_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="PS_FltTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="PS_I"/>
+<Dependency Type="DataType" Name="PS_Fault"/>
+</Dependencies>
+</DataType>
+<DataType Name="Stats_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="CurrentTime" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Current Time (Second) of current event]]>
+</Description>
+</Member>
+<Member Name="Tot" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total No. of Occurrence]]>
+</Description>
+</Member>
+<Member Name="TotTimeHr" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Hour) of event]]>
+</Description>
+</Member>
+<Member Name="TotTimeSec" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Second) of event]]>
+</Description>
+</Member>
+<Member Name="TotTimeMin" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total Time (Min) of event]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="String_15" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="15" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="String_20" Family="StringFamily" Class="User">
+<Members>
+<Member Name="LEN" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="DATA" DataType="SINT" Dimension="20" Radix="ASCII" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_Fault" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZVFD_Fault0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="CommLoss" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_Fault0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="VFDFlt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_Fault0" BitNumber="1" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_HMI" Family="NoFamily" Class="User">
+<Members>
+<Member Name="FPM_at60hz" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Motor Speed (FPM) at 60Hz]]>
+</Description>
+</Member>
+<Member Name="JogFreq" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[To run VFD at Jog Freq]]>
+</Description>
+</Member>
+<Member Name="ZZZZZZZZZZVFD_HMI2" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Enable_60Hz" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_HMI2" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[To run VFD at 60Hz]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="VFD_O" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZVFD_O0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Run" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_O0" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_PF525_VFDIn" Family="NoFamily" Class="User">
+<Members>
+<Member Name="DriveStatus" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="OutputFreq" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="OutputCurrent" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="FaultCode" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZVFD_PF525_4" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="Accelerating" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="ActualDir" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="AtReference" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="CommandDir" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="CommFreqCnt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="CommLogicCnt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Decelerating" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_4" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZVFD_PF525_13" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="DigIn1Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="DigIn2Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="DigIn3Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="DigIn4Active" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="Faulted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="ParmsLocked" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Ready" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_13" BitNumber="6" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_PF525_VFDOut" Family="NoFamily" Class="User">
+<Members>
+<Member Name="FreqCommand" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="LogicCommand" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="JogFrequency" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZVFD_PF525_3" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="AccelRate1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="AccelRate2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="ClearFaults" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="DecelRate1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="DecelRate2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="ForceKeypadCtrl" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Forward" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="FreqSel01" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_3" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZVFD_PF525_12" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="FreqSel02" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="FreqSel03" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Jog" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="MOPDecrement" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="MOPIncrement" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="Reverse" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="Start" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="Stop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZVFD_PF525_12" BitNumber="7" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="VFD_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="VFDIn" DataType="VFD_PF525_VFDIn" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Inputs]]>
+</Description>
+</Member>
+<Member Name="VFDOut" DataType="VFD_PF525_VFDOut" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Outputs]]>
+</Description>
+</Member>
+<Member Name="Flt" DataType="VFD_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Faults]]>
+</Description>
+</Member>
+<Member Name="Silenced" DataType="VFD_Fault" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Faults Silenced]]>
+</Description>
+</Member>
+<Member Name="O" DataType="VFD_O" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="HMI" DataType="VFD_HMI" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Sts_VFDFlt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[VFD Fault Stats]]>
+</Description>
+</Member>
+<Member Name="Sts_CommFlt" DataType="Stats_UDT" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Comm Fault Stats]]>
+</Description>
+</Member>
+<Member Name="IP_Address" DataType="String_15" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="MACId" DataType="String_20" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="FPM_Feedback" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Firmware" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Comm_Code" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[0000 - Standby
+4096 - Faulted
+8192 - Validating
+12288 - Connecting
+16384 - Running
+20480- Shutting Down
+24576 - Inhibited
+28672 - Waiting
+36864 - FMW Updating
+40960 - Configuring]]>
+</Description>
+</Member>
+</Members>
+<Dependencies>
+<Dependency Type="DataType" Name="VFD_PF525_VFDIn"/>
+<Dependency Type="DataType" Name="VFD_PF525_VFDOut"/>
+<Dependency Type="DataType" Name="VFD_Fault"/>
+<Dependency Type="DataType" Name="VFD_Fault"/>
+<Dependency Type="DataType" Name="VFD_O"/>
+<Dependency Type="DataType" Name="VFD_HMI"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="Stats_UDT"/>
+<Dependency Type="DataType" Name="String_15"/>
+<Dependency Type="DataType" Name="String_20"/>
+</Dependencies>
+</DataType>
+</DataTypes>
+<AddOnInstructionDefinitions Use="Context">
+<EncodedData EncodedType="AddOnInstructionDefinition" Name="Slow_Flt" Revision="1.6" Vendor="FORTNA" SignatureID="E0341258" SignatureTimestamp="2026-07-29T14:51:52.885Z" EditedDate="2026-07-29T14:51:52.885Z" SoftwareRevision="v35.02" EncryptionConfig="9">
+<Description>
+<![CDATA[Conveyor Fault
+Fault logic, Fault Sum logic & Fault Silence logic]]>
+</Description>
+<RevisionNote>
+<![CDATA[ v1.6: Mtr_Overload_FltLogic changed : Pratik Pat 
+v1.5: PS_Flt Logic added : Manthan Patel
+v1.4: Mtr_Overload_FltTmr Seprated : Manthan Patel
+v1.3: Name Change / Author: Jayesh Parikh
+v1.2: Updated Fault Silenced Logic / Author: Jayesh Parikh
+v1.1: MDR MS Fault & Stop fault Input added / Author: Pratik Patel & Jayesh Parikh
+v1.0 / Author: Jayesh Parikh
+
+
+Copyright © 2023 FORTNA Inc.
+All Rights Reserved. 
+
+Unauthorized use is strictly prohibited.
+Contact FORTNA, Inc. for additional information.]]>
+</RevisionNote>
+<Parameters>
+<Parameter Name="EnableIn" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Input - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="EnableOut" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="false" ExternalAccess="Read Only">
+<Description>
+<![CDATA[Enable Output - System Defined Parameter]]>
+</Description>
+</Parameter>
+<Parameter Name="IO_Conv" TagType="Base" DataType="Conv_UDT" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Conveyor Name]]>
+</Description>
+</Parameter>
+<Parameter Name="IO_Area" TagType="Base" DataType="Area_UDT" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Area Name where Conveyor is located]]>
+</Description>
+</Parameter>
+<Parameter Name="IO_VFD" TagType="Base" DataType="VFD_UDT" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[VFD Name]]>
+</Description>
+</Parameter>
+<Parameter Name="IO_Enc" TagType="Base" DataType="Enc_UDT" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Encoder Name used on the Conv]]>
+</Description>
+</Parameter>
+<Parameter Name="I_MS_Type" TagType="Base" DataType="SINT" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[0=VFD without MCP Input 
+1=VFD with MCP Input
+2=Motor Starter Without contactor Input
+3=Motor Starter with contactor Input
+4=MDR Power supply Motor Starter Without contactor Input
+5= MDR Power supply Motor Starter with contactor Input]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="SINT" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="IO_MS" TagType="Base" DataType="Motor_Starter_UDT" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Motor Starter Name used for the Conveyor]]>
+</Description>
+</Parameter>
+<Parameter Name="IO_PS" TagType="Base" DataType="PS_UDT" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Power Supply Fault]]>
+</Description>
+</Parameter>
+<Parameter Name="IO_AirPress" TagType="Base" DataType="AirPressure_Switch_UDT" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Air Pressure Fault - Air pressure Fault is used for only conveyor that require air to operate normally]]>
+</Description>
+</Parameter>
+<Parameter Name="IO_Additional_Flt" TagType="Base" DataType="Additional_Fault_UDT" Usage="InOut" Required="true" Visible="true" Constant="false">
+<Description>
+<![CDATA[Any Additional Fault associated with the Conveyor]]>
+</Description>
+</Parameter>
+<Parameter Name="I_MtrFltReset" TagType="Base" DataType="BOOL" Usage="Input" Radix="Decimal" Required="true" Visible="true" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Conveyor/Area/Motor fault Reset bit to clear the Motor Faults]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Mtr_StartFlt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Motor Start Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Mtr_StopFlt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Motor Stop Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_VFD_CommFlt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor VFD Communication Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_VFD_Flt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor VFD Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Enc_PPIFlt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Encoder PPI Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Enc_Flt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Encoder Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Mtr_OverloadFlt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Motor Overload Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Mtr_ContactorFlt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Motor Contactor Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_AirPress_Flt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Air Pressure Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Additional_Flt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Any Additional Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Conv_Flt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Convyor in Fault Condition]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Conv_FltSilenceON" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Conveyor Fault Sileneced Bit is ON]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_Conv_FltSilenced" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Conveyor Fault is Sileneced]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+<Parameter Name="M_PS_Flt" TagType="Base" DataType="BOOL" Usage="Output" Radix="Decimal" Required="false" Visible="true" ExternalAccess="Read Only">
+<Description>
+<![CDATA[To Monitor Power Supply Fault]]>
+</Description>
+<DefaultData Format="L5K">
+<![CDATA[0]]>
+</DefaultData>
+<DefaultData Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</DefaultData>
+</Parameter>
+</Parameters>
+<Dependencies>
+<Dependency Type="DataType" Name="Additional_Fault_UDT"/>
+<Dependency Type="DataType" Name="AirPressure_Switch_UDT"/>
+<Dependency Type="DataType" Name="Area_UDT"/>
+<Dependency Type="DataType" Name="Conv_UDT"/>
+<Dependency Type="DataType" Name="Enc_UDT"/>
+<Dependency Type="DataType" Name="Motor_Starter_UDT"/>
+<Dependency Type="DataType" Name="PS_UDT"/>
+<Dependency Type="DataType" Name="VFD_UDT"/>
+</Dependencies>
+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</EncodedData>
+</AddOnInstructionDefinitions>
+</Controller>
+</RSLogix5000Content>

@@ -215,6 +215,35 @@ def equipment_kind(io_name: str, device_type: str = '', description: str = '', *
         return 'vfd'
     if re.search(r'\bVFD\d{2,}', name_u) or re.search(r'\bVFD\d{2,}', desc_u):
         return 'vfd'
+    # Encoders — Fortna often mislabels Type=BEACON on ENC* rows
+    if (
+        name_u.startswith('ENC')
+        or 'ENCODER' in desc_u
+        or typ == 'ENCODER'
+    ):
+        return 'encoder'
+    # Solenoids / pusher outputs — Type=TRIANG would otherwise become 'conveyor'
+    # and get dropped from IO_MAP (MX2P_SSV2, EZSSV*, SSV208A, …).
+    if (
+        re.search(r'SSV', name_u)
+        or name_u.startswith('EZSSV')
+        or re.search(r'_SSV\d*$', name_u)
+        or re.search(r'SOLENOID|\bSOL\b|PUSHER.*(?:PO|OUT|SSV)', desc_u)
+    ):
+        return 'digital_out'
+    # E-stops / pullcords / MCR aux — before BEACON type (ASC often wrong)
+    if (
+        re.match(r'^ESL?\d', name_u)
+        or re.match(r'^ESTP\d', name_u)
+        or re.match(r'^ESPB\d', name_u)
+        or re.match(r'^\d+ES\d', name_u)
+        or re.match(r'^\d+MCR\d', name_u)
+        or name_u.startswith('MCR')
+        or ('ESTOP' in desc_u and (name_u.startswith('ES') or 'ES' in name_u[:4]))
+        or 'E-STOP' in desc_u
+        or 'E STOP' in desc_u
+    ):
+        return 'estop'
     # Photoeyes before bare P…
     if name_u.startswith('EZPE') or re.match(r'^PE\d', name_u) or name_u.startswith('PE_'):
         return 'photoeye'
@@ -377,7 +406,14 @@ def extract_io_points(run_dir: Path, *, include_spares: bool = False) -> list[di
             continue
 
         device_type = (row.get('Type') or '').strip().upper()
-        if device_type == 'INVALID' and not include_spares:
+        desc = (row.get('General_Description') or row.get('Device_Description') or '').strip()
+        drive = (row.get('Drive') or '').strip()
+        kind = equipment_kind(io_name, device_type, desc, drive=drive)
+        # Type=INVALID is often a Fortna placeholder — still keep named field devices
+        # (14MCR1 energize, encoder pulses, etc.) when the name/desc is clear.
+        if device_type == 'INVALID' and not include_spares and kind in (
+            'spare', 'other', 'invalid', ''
+        ):
             continue
 
         tag = _sanitize_tag(io_name)
@@ -385,12 +421,9 @@ def extract_io_points(run_dir: Path, *, include_spares: bool = False) -> list[di
             continue
         seen.add(tag)
 
-        desc = (row.get('General_Description') or row.get('Device_Description') or '').strip()
-        drive = (row.get('Drive') or '').strip()
         motor = (row.get('Motor') or '').strip()
         speed = (row.get('Speed') or '').strip()
         area = _infer_area(io_name, desc)
-        kind = equipment_kind(io_name, device_type, desc, drive=drive)
         dc = _device_class(device_type, io_name, desc, drive=drive)
         io_type = _io_direction(device_type)
         # VFD only when classified as vfd — never EZPWS power supplies or bare M contactors

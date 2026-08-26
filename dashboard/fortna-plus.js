@@ -1378,10 +1378,10 @@ function updateRecontrolReady() {
   const hasRun = !!(state.workspace || ioState.banks?.machine);
   const printFiles = typeof totalPrintFiles === 'function' ? totalPrintFiles() : 0;
   const hasPrints = printFiles > 0;
-  const hasMaster = typeof getMasterPanel === 'function' ? !!getMasterPanel() : false;
   const hasOcr = !!(ioState.ocrResult?.crosswalk);
   const matchN = ioState.ocrResult?.crosswalk?.matched_count || 0;
-  const ready = hasRun && hasPrints && hasMaster;
+  // Tar alone is enough to export L5X; prints/OCR are optional (VFD PRINT column).
+  const ready = hasRun;
 
   const list = $('plc-ready-checklist');
   if (list) {
@@ -1389,9 +1389,8 @@ function updateRecontrolReady() {
       `<div class="${ok ? 'text-emerald-400' : 'text-slate-500'}">${ok ? '✓' : '○'} ${text}</div>`;
     list.innerHTML = [
       row(hasRun, `RUN tar.gz loaded${ioState.banks?.machine ? ` (${ioState.banks.machine})` : state.workspace?.machine ? ` (${state.workspace.machine})` : ''}`),
-      row(hasMaster, 'Master panel set'),
-      row(hasPrints, `Print PDFs assigned (${printFiles} file${printFiles === 1 ? '' : 's'})`),
-      row(hasOcr, hasOcr ? `OCR compare done (${matchN} matches)` : 'OCR compare not run yet (optional for export)'),
+      row(hasPrints, `Print PDFs (${printFiles}) — optional for OCR`),
+      row(hasOcr, hasOcr ? `OCR compare done (${matchN} matches)` : 'OCR not run yet (optional)'),
     ].join('');
   }
 
@@ -1405,7 +1404,7 @@ function updateRecontrolReady() {
     } else {
       btn.className = 'w-full py-3 rounded-xl text-sm font-semibold border-2 border-slate-700 bg-slate-900 text-slate-500 cursor-not-allowed';
       btn.innerHTML = '<i class="fa-solid fa-file-export mr-2"></i>Export PLC Package';
-      btn.title = 'Load tar.gz + assign prints first';
+      btn.title = 'Load a .tar.gz RUN first';
     }
   }
 }
@@ -1598,7 +1597,7 @@ function renderPanelSets() {
     }
   }
   if ($('btn-run-ocr')) {
-    $('btn-run-ocr').disabled = ioState.busy || totalPrintFiles() === 0 || !getMasterPanel();
+    $('btn-run-ocr').disabled = ioState.busy || totalPrintFiles() === 0;
   }
   renderPrintsList();
 }
@@ -2966,8 +2965,8 @@ $('btn-run-ocr')?.addEventListener('click', async () => {
   }
   ioState.busy = false;
   if (ocrBtn) {
-    ocrBtn.disabled = totalPrintFiles() === 0 || !getMasterPanel();
-    ocrBtn.innerHTML = ocrBtnHtml || '<i class="fa-solid fa-code-merge mr-2"></i>OCR · merge remotes → master · vs tar.gz';
+    ocrBtn.disabled = totalPrintFiles() === 0;
+    ocrBtn.innerHTML = ocrBtnHtml || '<i class="fa-solid fa-code-merge mr-2"></i>OCR · vs tar.gz';
   }
   if (!res.success) {
     ioLog(res.message || 'OCR failed', 'err');
