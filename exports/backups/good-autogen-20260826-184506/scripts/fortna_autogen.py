@@ -1057,36 +1057,6 @@ def _safe_rio_name(adapter_name: str, fallback: str) -> str:
     return t[:40]
 
 
-# MSC Reno SHIP: ASC/eipcfg uses AENTR-1..4; prints use AENTR15 / RP1 / RP2 / AENTR16
-_SHIP_AENTR_PRINT_NAMES = {
-    "AENTR-1": "AENTR15",
-    "AENTR_1": "AENTR15",
-    "AENTR1": "AENTR15",
-    "AENTR-2": "AENTR15RP1",
-    "AENTR_2": "AENTR15RP1",
-    "AENTR2": "AENTR15RP1",
-    "AENTR-3": "AENTR15RP2",
-    "AENTR_3": "AENTR15RP2",
-    "AENTR3": "AENTR15RP2",
-    "AENTR-4": "AENTR16",
-    "AENTR_4": "AENTR16",
-    "AENTR4": "AENTR16",
-}
-
-
-def _print_rio_name(adapter_name: str, machine: str = "") -> str:
-    """Map tar adapter names to print / Studio names when they differ."""
-    raw = (adapter_name or "").strip()
-    mach = (machine or "").upper()
-    if "SHIP" in mach:
-        hit = _SHIP_AENTR_PRINT_NAMES.get(raw) or _SHIP_AENTR_PRINT_NAMES.get(
-            raw.replace("_", "-")
-        ) or _SHIP_AENTR_PRINT_NAMES.get(_safe(raw))
-        if hit:
-            return hit
-    return _safe_rio_name(raw, raw[:40] if raw else "RIO")
-
-
 # Gold Greensboro controller stems that appear in Sys / AOI context exports
 _GOLD_SITE_NAME_RE = re.compile(
     r"ORLY_Greensboro_NC_(?:PLC|CP)\d+"
@@ -1123,71 +1093,7 @@ def _infer_rack_from_ip(ip: str, fallback: str = "CP5") -> str:
     return fallback
 
 
-def _synthesize_point_io_banks(adapters: list[dict]) -> None:
-    """Fill InputBank/OutputBank when EIPModules left them at 0 (MSC Reno SHIP).
-
-    PACK stamps real banks on every card. SHIP leaves IB=0/OB=0, so Configio
-    octal→bank cannot resolve to a slot. Mirror Fortna RTA layout:
-      first child InputBank = adapter.InputAddress + 8
-      first child OutputBank = adapter.OutputAddress
-      each IB8/IA4/IM consumes one InputBank
-      each OA4/OB consumes one OutputBank
-      OB8E also consumes one InputBank (channel status word)
-    Only runs when every bridged card on an adapter still has IB=0 and OB=0.
-    """
-    for ad in adapters or []:
-        mods = list(ad.get("modules") or [])
-        bridged = sorted(
-            [
-                m for m in mods
-                if (m.get("connection") or "").upper() != "HEADNODE"
-                and "AENT" not in (m.get("type") or "").upper()
-            ],
-            key=lambda m: int(m.get("slot") or 0),
-        )
-        if not bridged:
-            continue
-        all_zero = True
-        for m in bridged:
-            try:
-                ib = int(m.get("input_bank") or 0)
-                ob = int(m.get("output_bank") or 0)
-            except Exception:
-                ib = ob = 0
-            if ib != 0 or ob != 0:
-                all_zero = False
-                break
-        if not all_zero:
-            continue
-        try:
-            in_addr = int(float(ad.get("input_address") or 0))
-        except Exception:
-            in_addr = 0
-        try:
-            out_addr = int(float(ad.get("output_address") or 0))
-        except Exception:
-            out_addr = 0
-        if in_addr <= 0 and out_addr < 0:
-            continue
-        next_ib = in_addr + 8 if in_addr > 0 else 0
-        next_ob = out_addr if out_addr >= 0 else 0
-        for m in bridged:
-            mt = (m.get("type") or "").upper()
-            is_in = any(x in mt for x in ("IA", "IB", "IM"))
-            is_out = any(x in mt for x in ("OA", "OB", "OW"))
-            if is_in:
-                m["input_bank"] = next_ib
-                next_ib += 1
-            if is_out:
-                # OB8/OB8E carry a status input image word in Fortna/EIP layout
-                if "OB8" in mt or "OB16" in mt:
-                    m["input_bank"] = next_ib
-                    next_ib += 1
-                m["output_bank"] = next_ob
-                next_ob += 1
-
-
-def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
+def load_eip_topology(run_dir: Path) -> dict:
     """
     Build named remote I/O tree + Fortna Word→module map from RUN.
 
@@ -1205,20 +1111,12 @@ def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
     if (run_dir / "RUN" / "project.cfg").is_file():
         run_dir = run_dir / "RUN"
 
-    if not machine:
-        try:
-            from fortna_io_extract import read_project_meta
-            machine = (read_project_meta(run_dir).get("machine_name") or "").strip()
-        except Exception:
-            machine = ""
-
     result: dict = {
         "interface_ip": "",
         "adapters_raw": [],
         "topology": [],  # named CPxRIOn with children
         "word_map": {},  # str(word) -> mapping
         "modules_flat": [],
-        "machine": machine,
     }
 
     # --- Adapters + modules from ASC (most complete for slot/bank) ---
@@ -1228,66 +1126,23 @@ def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
     mod_path = next(iter(sorted(proj.glob("EIPModules.asc*"))), None)
     csv_path = next(iter(sorted(proj.glob("EIPCSV.asc*"))), None)
 
-    # Prefer THIS machine's eipcfg for adapter inventory. Multi-PLC Reno tars
-    # often ship a polluted PROJECT/EIPAdapters.asc (PICK contains PACK's
-    # AENTR3–7). When machine eipcfg lists AENTR*, treat it as the allowlist.
-    eipcfg_allow_names: set[str] = set()
-    eipcfg_allow_ips: set[str] = set()
-    eipcfg_is_authoritative = False
+    # Prefer eipcfg for IPs
     try:
         from fortna_ignition_build import load_eip_modules
 
         eip = load_eip_modules(run_dir)
         result["interface_ip"] = eip.get("interface_ip") or ""
-        sources = [str(s).upper() for s in (eip.get("sources") or [])]
-        mach_u = (machine or "").upper()
-        eipcfg_is_authoritative = bool(
-            mach_u
-            and any(mach_u in s and "EIPCFG" in s for s in sources)
-            and (eip.get("adapters") or [])
-        )
         if eip.get("adapters"):
             for a in eip["adapters"]:
-                nm = (a.get("name") or "").strip()
-                ip = (a.get("ip") or "").strip()
                 adapters.append({
-                    "name": nm,
-                    "ip": ip,
+                    "name": a.get("name") or "",
+                    "ip": a.get("ip") or "",
                     "rack": (a.get("rack") or "").strip(),
                     "input_address": a.get("input_address") or "",
-                    "output_address": a.get("output_address") or "",
                     "modules": list(a.get("modules") or []),
                 })
-                if nm:
-                    eipcfg_allow_names.add(nm)
-                    eipcfg_allow_names.add(nm.replace("-", "_"))
-                if ip:
-                    eipcfg_allow_ips.add(ip)
     except Exception:
         pass
-
-    # Detect polluted EIPAdapters.asc (PICK tar copies PACK's AENTR3–7 and
-    # omits this machine's AENTR1/AENTR2 from eipcfg). If most eipcfg AENTR
-    # names are missing from ASC, ignore ASC-only adapter rows.
-    skip_asc_new_adapters = False
-    if eipcfg_is_authoritative and eipcfg_allow_names and ad_path and ad_path.is_file():
-        try:
-            _, _asc_probe = read_asc(ad_path)
-            asc_names_probe = {
-                (r.get("Name") or "").strip()
-                for r in _asc_probe
-                if (r.get("Name") or "").strip()
-                and (r.get("Name") or "").strip().upper() not in ("N/A", "INVALID")
-            }
-            eip_aentr = {
-                n for n in eipcfg_allow_names
-                if n.upper().startswith("AENTR")
-            }
-            missing = eip_aentr - asc_names_probe
-            if eip_aentr and len(missing) * 2 >= len(eip_aentr):
-                skip_asc_new_adapters = True
-        except Exception:
-            skip_asc_new_adapters = False
 
     if ad_path and ad_path.is_file():
         _, rows = read_asc(ad_path)
@@ -1299,28 +1154,17 @@ def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
             ip = (r.get("TargetIP") or "").strip()
             rack = (r.get("Rack") or "").strip()
             if name in by_name:
-                # Enrich existing eipcfg adapter — do not steal IP from another panel
-                if ip and (
-                    not eipcfg_is_authoritative
-                    or not by_name[name].get("ip")
-                    or by_name[name].get("ip") == ip
-                ):
+                if ip:
                     by_name[name]["ip"] = ip
                 if rack:
                     by_name[name]["rack"] = rack
-                if not by_name[name].get("input_address"):
-                    by_name[name]["input_address"] = r.get("InputAddress") or ""
-                if not by_name[name].get("output_address"):
-                    by_name[name]["output_address"] = r.get("OutputAddress") or ""
+                by_name[name]["input_address"] = r.get("InputAddress") or by_name[name].get("input_address")
             else:
-                if skip_asc_new_adapters:
-                    continue
                 adapters.append({
                     "name": name,
                     "ip": ip,
                     "rack": rack,
                     "input_address": r.get("InputAddress") or "",
-                    "output_address": r.get("OutputAddress") or "",
                     "modules": [],
                 })
                 by_name[name] = adapters[-1]
@@ -1357,22 +1201,8 @@ def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
                 "word": "",  # filled from EIPCSV
             }
             if ad in by_name:
-                existing = by_name[ad].setdefault("modules", [])
-                # Machine eipcfg already listed cards for this adapter — do not
-                # merge polluted EIPModules from another panel (PICK AENTR3 vs
-                # PACK AENTR3 share a name but different IPs/slots).
-                if (
-                    eipcfg_is_authoritative
-                    and eipcfg_allow_names
-                    and ad in eipcfg_allow_names
-                    and any(
-                        (m.get("connection") or "").upper() != "HEADNODE"
-                        and "AENT" not in (m.get("type") or "").upper()
-                        for m in existing
-                    )
-                ):
-                    continue
                 # replace empty modules list from xml with ASC detail
+                existing = by_name[ad].setdefault("modules", [])
                 # avoid dupes by slot
                 if not any(int(m.get("slot") or -1) == slot for m in existing):
                     existing.append(rec)
@@ -1433,12 +1263,6 @@ def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
                     "bank": str(r.get("Bank") or "").strip(),
                 }
 
-    # SHIP (and similar): EIPModules leaves InputBank/OutputBank at 0 for every
-    # POINT card. Configio still has the real Fortna banks. Synthesize from
-    # adapter InputAddress/OutputAddress using the same +8 head offset PACK uses
-    # (InAddr 48 → first child IB 56). OB8E also consumes a status InputBank.
-    _synthesize_point_io_banks(adapters)
-
     # Stamp words onto adapter modules when type+rack match
     for ad in adapters:
         for m in ad.get("modules") or []:
@@ -1465,37 +1289,6 @@ def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
                         ):
                             m["word"] = w
                             break
-
-    # When PROJECT/EIPAdapters.asc lists Fortna AENTR* racks, drop synthetic
-    # eipcfg leftovers from other machines in the same tar (1734_AENT_51, VU4…).
-    asc_aentr = {
-        (a.get("name") or "").strip()
-        for a in adapters
-        if (a.get("name") or "").upper().startswith("AENTR")
-        and (a.get("modules") or [])
-    }
-    # Also count names that came from ASC file specifically
-    asc_names: set[str] = set()
-    if ad_path and ad_path.is_file():
-        try:
-            _, _ad_rows = read_asc(ad_path)
-            for r in _ad_rows:
-                n = (r.get("Name") or "").strip()
-                if n and n.upper() not in ("N/A", "INVALID"):
-                    asc_names.add(n)
-        except Exception:
-            asc_names = set()
-    if asc_names:
-        fortna_asc = [n for n in asc_names if n.upper().startswith("AENTR")]
-        if fortna_asc:
-            adapters = [
-                a for a in adapters
-                if (a.get("name") or "").strip() in asc_names
-                or (
-                    (a.get("name") or "").upper().startswith("AENTR")
-                    and (a.get("modules") or [])
-                )
-            ]
 
     # Name adapters CPxRIOn and children CPxRIOn_k
     by_rack: dict[str, list] = {}
@@ -1548,12 +1341,8 @@ def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
         used_rio_names: set[str] = set()
         for idx, ad in enumerate(ads_deduped):
             # Prints / eipcfg use Fortna names (AENTR13, AENTR13RP1) — prefer those.
-            # SHIP ASC uses AENTR-1..4 → print names AENTR15 / RP1 / RP2 / AENTR16.
             fallback = f"{rack}RIO{idx + rio_start}"
-            raw_name = ad.get("name") or ""
-            rio = _print_rio_name(raw_name, machine) if raw_name else ""
-            if not rio or rio.lower() in ("tag", "n_a"):
-                rio = _safe_rio_name(raw_name, fallback)
+            rio = _safe_rio_name(ad.get("name") or "", fallback)
             if rio in used_rio_names:
                 rio = f"{rio}_{idx + rio_start}"
             used_rio_names.add(rio)
@@ -3592,28 +3381,20 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     }
     enet_parent = "CPXXENET1"  # library EN2T under Local
     topology = list(getattr(inp, "eip_topology", None) or [])
-    # Greensboro multi-panel tars: optionally trim to word_map RIO only.
-    # Reno / SHIP: word_map can be nearly empty (empty EIPCSV) — NEVER drop
-    # AENTR* racks from EIPAdapters (SHIP previously collapsed to AENTR_4 only).
+    # Only emit RIO modules used by this site's word_map (Conveyor.asc banks).
+    # Multi-panel RUN packages often list CP5/CP6 adapters that reuse CP1–CP4
+    # IPs — Studio then shows Invalid data type on module :I/:O tags.
+    # If word_map is empty (e.g. Reno EIPCSV blank), keep full topology so
+    # 1734/1794 adapters still appear for commissioning.
     used_rios = {
         str((info or {}).get("rio_name") or "").strip()
         for info in (getattr(inp, "io_word_map", None) or {}).values()
         if isinstance(info, dict) and (info or {}).get("rio_name")
     }
-    aentr_in_topo = [
-        ad for ad in topology
-        if str(ad.get("rio_name") or "").upper().startswith("AENTR")
-    ]
-    if used_rios and len(used_rios) >= 2 and not (
-        # Keep all AENTR* when tar lists multiple print racks
-        len(aentr_in_topo) > len(used_rios)
-    ):
+    if used_rios:
         filtered = [ad for ad in topology if (ad.get("rio_name") or "") in used_rios]
         if filtered:
             topology = filtered
-    # Always prefer emitting every AENTR* adapter present in topology
-    elif aentr_in_topo:
-        topology = aentr_in_topo
 
     # --- Local controller module (fixed Ports like gold EDITED L5X) ---
     # Library Local is often L81E at chassis slot 4 — wrong for L83E open/import.

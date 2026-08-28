@@ -30,6 +30,9 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   autogenVerify: () => ipcRenderer.invoke('autogen-verify'),
   autogenSelectExcel: () => ipcRenderer.invoke('autogen-select-excel'),
   autogenSelectLibrary: () => ipcRenderer.invoke('autogen-select-library'),
+  transportBuildPoc: (data) => ipcRenderer.invoke('transport-build-poc', data || {}),
+  transportLatestMerges: (data) => ipcRenderer.invoke('transport-latest-merges', data || {}),
+  transportApplyAutogen: (data) => ipcRenderer.invoke('transport-apply-autogen', data || {}),
   onAutogenProgress: (cb) => {
     const handler = (_e, data) => cb(data);
     ipcRenderer.on('autogen-progress', handler);

@@ -47,6 +47,89 @@
       font-weight: 600;
     }
 
+    /* —— Transport Build POC (Node-RED style) —— */
+    .tb-grid {
+      background-color: #0a0f14;
+      background-image:
+        radial-gradient(circle, #1e293b 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    .tb-palette-item {
+      cursor: grab;
+      user-select: none;
+      transition: border-color 0.12s, background 0.12s, transform 0.12s;
+    }
+    .tb-palette-item:hover {
+      border-color: #a855f7;
+      background: #1a1025;
+      transform: translateY(-1px);
+    }
+    .tb-palette-item:active { cursor: grabbing; }
+    .tb-node {
+      position: absolute;
+      min-width: 148px;
+      border-radius: 10px;
+      border: 1.5px solid #334155;
+      background: linear-gradient(180deg, #1a2332 0%, #131c27 100%);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+      cursor: move;
+      z-index: 2;
+      user-select: none;
+    }
+    .tb-node.selected {
+      border-color: #c026d3;
+      box-shadow: 0 0 0 2px rgba(192, 38, 211, 0.35), 0 6px 18px rgba(0,0,0,0.45);
+    }
+    .tb-node .tb-head {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px 6px;
+      border-bottom: 1px solid #1e293b;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .tb-node .tb-body {
+      padding: 6px 10px 10px;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+    .tb-port {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      border: 2px solid #0a0f14;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 3;
+      cursor: crosshair;
+    }
+    .tb-port.in { left: -7px; background: #22c55e; }
+    .tb-port.out { right: -7px; background: #f43f5e; }
+    .tb-port.linking { box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.45); }
+    .tb-node.tb-merge { border-color: #ea580c; min-width: 168px; }
+    .tb-node.tb-merge .tb-head { color: #fdba74; }
+    .tb-device-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 9px;
+      margin: 2px 2px 0 0;
+      border: 1px solid #334155;
+      background: #0f172a;
+      color: #cbd5e1;
+    }
+    #tb-wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+    .tb-wire { fill: none; stroke: #64748b; stroke-width: 2.5; }
+    .tb-wire.active { stroke: #e879f9; }
+    .tb-wire-temp { stroke: #f472b6; stroke-dasharray: 6 4; }
+    #remote-prints-details > summary { list-style: none; }
+    #remote-prints-details > summary::-webkit-details-marker { display: none; }
+    #remote-prints-details[open] > summary .fa-chevron-down { transform: rotate(180deg); }
+
     .card {
       background: var(--panel);
       border: 1px solid var(--border);
@@ -218,6 +301,10 @@
     <button class="tab-btn py-3 px-3 text-sm" data-tab="plc"><i class="fa-solid fa-microchip mr-2"></i>PLC Export</button>
     <button class="tab-btn py-3 px-3 text-sm" data-tab="autogen"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>PLC Autogen</button>
     <button class="tab-btn py-3 px-3 text-sm" data-tab="ignition"><i class="fa-solid fa-fire mr-2"></i>Ignition Build</button>
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="transport" title="Proof of concept — visual transport builder">
+      <i class="fa-solid fa-diagram-project mr-2"></i>Transport Build
+      <span class="ml-1 text-[9px] px-1.5 py-0.5 rounded bg-fuchsia-950/80 text-fuchsia-300 border border-fuchsia-800/50">POC</span>
+    </button>
     <!-- Secondary tools — far right while recontrol is primary -->
     <div class="flex-1"></div>
     <div class="flex items-center gap-1 border-l border-slate-800 pl-3 ml-2">
@@ -613,6 +700,9 @@
             <button type="button" id="btn-merge-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs">
               <i class="fa-solid fa-floppy-disk mr-1"></i>Save merges
             </button>
+            <button type="button" id="btn-merge-from-transport" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-fuchsia-900/50 text-fuchsia-300" title="Import latest exports/transport-poc/transport_autogen_merges_*.json">
+              <i class="fa-solid fa-diagram-project mr-1"></i>From Transport Build
+            </button>
             <button type="button" id="btn-merge-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">Clear</button>
             <span id="merge-save-status" class="text-[10px] text-slate-600 mono"></span>
           </div>
@@ -867,33 +957,40 @@
           <div id="io-run-status" class="mono text-[10px] text-slate-500 mt-2">No RUN loaded</div>
         </div>
 
-        <!-- Electrical prints — one panel per PDF (named from filename). No separate "master". -->
-        <div id="remote-dropzone" class="card p-3 shrink-0 border-2 border-sky-800/50 dropzone min-h-[180px] bg-sky-950/10">
-          <div class="flex items-center justify-between mb-2">
-            <div class="text-xs uppercase tracking-wider text-sky-400 font-semibold">
+        <!-- Electrical prints — collapsible (tar.gz is source of truth; PDFs optional for OCR) -->
+        <details id="remote-prints-details" class="card shrink-0 border-2 border-sky-800/50 bg-sky-950/10 group">
+          <summary class="px-3 py-2.5 cursor-pointer list-none flex items-center justify-between gap-2 select-none">
+            <span class="text-xs uppercase tracking-wider text-sky-400 font-semibold">
               <i class="fa-solid fa-file-pdf mr-1"></i> Electrical prints
+              <span class="font-normal normal-case text-slate-500 ml-1">(optional)</span>
+            </span>
+            <span class="flex items-center gap-2">
+              <span id="remote-panel-count" class="text-[10px] mono text-sky-400">0 panels</span>
+              <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 group-open:rotate-180 transition-transform"></i>
+            </span>
+          </summary>
+          <div id="remote-dropzone" class="dropzone px-3 pb-3 min-h-[140px] border-t border-sky-900/40">
+            <p class="text-[10px] text-slate-600 mb-2 leading-relaxed pt-2">
+              Drop panel PDFs here (CP13, CP14, AC3…). Multi-select =
+              <strong class="text-slate-400">one panel per file</strong> (named from the filename).
+              Used for OCR VFD/params — <strong class="text-slate-400">not required</strong> for tar→L5X
+              (DWG/WDP often missing; rely on the RUN above).
+            </p>
+            <div class="flex gap-2 mb-2">
+              <input id="remote-name-input" type="text" placeholder="Or name one panel then Browse"
+                class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs">
+              <button id="btn-add-remote" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs border-sky-800/50 text-sky-300">
+                <i class="fa-solid fa-plus"></i> Add
+              </button>
+              <button id="btn-browse-remote-prints" type="button" class="btn-ghost px-2 py-1.5 rounded-lg text-xs border border-sky-800/50 text-sky-300" title="Browse panel PDFs">
+                <i class="fa-solid fa-folder-open"></i>
+              </button>
             </div>
-            <span id="remote-panel-count" class="text-[10px] mono text-sky-400">0 panels</span>
+            <div id="remote-panels-list" class="space-y-1.5 max-h-48 overflow-y-auto text-xs min-h-[48px]">
+              <div class="text-slate-600 italic">Drop CP_13.pdf, CP_14.pdf, AC_3.pdf… — each becomes its own panel.</div>
+            </div>
           </div>
-          <p class="text-[10px] text-slate-600 mb-2 leading-relaxed">
-            Drop panel PDFs here (CP13, CP14, AC3…). Multi-select =
-            <strong class="text-slate-400">one panel per file</strong> (named from the filename).
-            Used for OCR VFD/params — not required for tar→L5X module tree.
-          </p>
-          <div class="flex gap-2 mb-2">
-            <input id="remote-name-input" type="text" placeholder="Or name one panel then Browse"
-              class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs">
-            <button id="btn-add-remote" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs border-sky-800/50 text-sky-300">
-              <i class="fa-solid fa-plus"></i> Add
-            </button>
-            <button id="btn-browse-remote-prints" type="button" class="btn-ghost px-2 py-1.5 rounded-lg text-xs border border-sky-800/50 text-sky-300" title="Browse panel PDFs">
-              <i class="fa-solid fa-folder-open"></i>
-            </button>
-          </div>
-          <div id="remote-panels-list" class="space-y-1.5 max-h-48 overflow-y-auto text-xs min-h-[48px]">
-            <div class="text-slate-600 italic">Drop CP_13.pdf, CP_14.pdf, AC_3.pdf… — each becomes its own panel.</div>
-          </div>
-        </div>
+        </details>
         <!-- Kept for JS compatibility; master UI removed -->
         <div id="master-dropzone" class="hidden" aria-hidden="true"></div>
         <div id="master-panel-card" class="hidden" aria-hidden="true"></div>
@@ -1208,6 +1305,216 @@
       </div>
     </section>
 
+    <!-- Transport Build POC — Node-RED style conveyor graph (visual first) -->
+    <section id="tab-transport" class="h-full hidden flex flex-col min-h-0 overflow-hidden relative">
+      <!-- In-app dialog (Electron disables window.prompt) — fixed so it always covers the window -->
+      <div id="tb-dialog" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/70" style="display:none">
+        <div class="bg-[#131c27] border border-fuchsia-800/50 rounded-xl p-4 w-[360px] max-w-[92vw] shadow-2xl space-y-3">
+          <div id="tb-dialog-title" class="text-sm font-semibold text-fuchsia-300">Title</div>
+          <p id="tb-dialog-msg" class="text-[11px] text-slate-400 leading-relaxed whitespace-pre-wrap"></p>
+          <input id="tb-dialog-input" type="text" class="w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200" />
+          <pre id="tb-dialog-detail" class="hidden mono text-[10px] text-slate-400 bg-slate-950/80 border border-slate-800 rounded-lg p-2 max-h-40 overflow-auto whitespace-pre-wrap"></pre>
+          <div class="flex gap-2 justify-end">
+            <button type="button" id="tb-dialog-cancel" class="btn-ghost text-xs px-3 py-1.5 rounded-lg">Cancel</button>
+            <button type="button" id="tb-dialog-ok" class="btn-ghost text-xs px-3 py-1.5 rounded-lg border border-fuchsia-700 text-fuchsia-300">OK</button>
+          </div>
+        </div>
+      </div>
+      <!-- Toast — high-contrast status so "nothing happened" is impossible -->
+      <div id="tb-toast" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-[210] max-w-[90vw] px-4 py-2 rounded-lg border border-fuchsia-700/60 bg-[#1a1025] text-fuchsia-100 text-xs shadow-xl" style="display:none"></div>
+      <div class="shrink-0 px-4 py-2 border-b border-slate-800 bg-[#0c1219] flex items-center gap-3 flex-wrap">
+        <div class="text-sm font-semibold text-fuchsia-300">
+          <i class="fa-solid fa-diagram-project mr-1.5"></i>Transport Build
+          <span class="text-[10px] font-normal text-fuchsia-400/70 ml-1">POC — Greensboro PLC2 patterns next</span>
+        </div>
+        <div class="flex items-center gap-2 ml-auto">
+          <label class="text-[10px] text-slate-500 uppercase tracking-wider">Area</label>
+          <select id="tb-area-select" class="bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200 min-w-[140px]"></select>
+          <button type="button" id="tb-area-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-900/50 text-fuchsia-300">
+            <i class="fa-solid fa-plus mr-1"></i>New area
+          </button>
+          <button type="button" id="tb-area-rename" class="btn-ghost text-xs px-2 py-1.5 rounded-lg" title="Rename area">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <button type="button" id="tb-area-delete" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-red-400/80" title="Delete area">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+          <span class="w-px h-5 bg-slate-800 mx-1"></span>
+          <button type="button" id="tb-export-json" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700" title="Copy graph JSON for future Python build">
+            <i class="fa-solid fa-code mr-1"></i>Export JSON
+          </button>
+          <button type="button" id="tb-build-poc" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-800/60 text-fuchsia-300" title="Proof-of-concept: run Python graph → report under exports/transport-poc">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Build POC
+          </button>
+          <button type="button" id="tb-apply-autogen" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-800/60 text-emerald-300" title="Push latest transport_autogen_merges_*.json into PLC Autogen workbook">
+            <i class="fa-solid fa-file-import mr-1"></i>Apply to Autogen
+          </button>
+          <button type="button" id="tb-open-exports" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Open exports/transport-poc">
+            <i class="fa-solid fa-folder-open"></i>
+          </button>
+          <button type="button" id="tb-clear-canvas" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg text-slate-500">Clear canvas</button>
+        </div>
+      </div>
+      <div class="flex-1 min-h-0 flex">
+        <!-- Palette -->
+        <aside class="w-[200px] shrink-0 border-r border-slate-800 bg-[#0d141c] flex flex-col min-h-0">
+          <div class="px-3 py-2 text-[10px] uppercase tracking-widest text-slate-500 border-b border-slate-800">Palette</div>
+          <div class="flex-1 overflow-y-auto p-2 space-y-3">
+            <div>
+              <div class="text-[10px] text-fuchsia-400/80 font-semibold mb-1.5 px-1">Conveyor</div>
+              <div class="space-y-1.5">
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="conv_straight" data-tb-label="Straight">
+                  <span class="w-8 h-8 rounded-md bg-sky-950/80 border border-sky-800/60 flex items-center justify-center text-sky-300"><i class="fa-solid fa-minus"></i></span>
+                  <div><div class="text-xs text-slate-200">Straight</div><div class="text-[9px] text-slate-500">Entrance → Exit</div></div>
+                </div>
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="conv_right" data-tb-label="90° Right">
+                  <span class="w-8 h-8 rounded-md bg-sky-950/80 border border-sky-800/60 flex items-center justify-center text-sky-300"><i class="fa-solid fa-arrow-turn-up fa-rotate-90"></i></span>
+                  <div><div class="text-xs text-slate-200">90° Right</div><div class="text-[9px] text-slate-500">Curve R</div></div>
+                </div>
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="conv_left" data-tb-label="90° Left">
+                  <span class="w-8 h-8 rounded-md bg-sky-950/80 border border-sky-800/60 flex items-center justify-center text-sky-300"><i class="fa-solid fa-arrow-turn-down fa-rotate-270"></i></span>
+                  <div><div class="text-xs text-slate-200">90° Left</div><div class="text-[9px] text-slate-500">Curve L</div></div>
+                </div>
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-orange-800/50" draggable="true" data-tb-kind="conv_merge" data-tb-label="Merge">
+                  <span class="w-8 h-8 rounded-md bg-orange-950/80 border border-orange-800/60 flex items-center justify-center text-orange-300"><i class="fa-solid fa-code-merge"></i></span>
+                  <div><div class="text-xs text-slate-200">Merge</div><div class="text-[9px] text-slate-500">2:1 / 3:1 lanes</div></div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div class="text-[10px] text-amber-400/80 font-semibold mb-1.5 px-1">Devices</div>
+              <div class="space-y-1.5">
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="motor" data-tb-label="Motor">
+                  <span class="w-8 h-8 rounded-md bg-amber-950/70 border border-amber-800/50 flex items-center justify-center text-amber-300"><i class="fa-solid fa-gear"></i></span>
+                  <div class="text-xs text-slate-200">Motor</div>
+                </div>
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="estop" data-tb-label="E-Stop">
+                  <span class="w-8 h-8 rounded-md bg-red-950/70 border border-red-800/50 flex items-center justify-center text-red-300"><i class="fa-solid fa-hand"></i></span>
+                  <div class="text-xs text-slate-200">E-Stop</div>
+                </div>
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="pws" data-tb-label="Power Supply">
+                  <span class="w-8 h-8 rounded-md bg-yellow-950/70 border border-yellow-800/50 flex items-center justify-center text-yellow-300"><i class="fa-solid fa-bolt"></i></span>
+                  <div class="text-xs text-slate-200">Power Supply</div>
+                </div>
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="encoder" data-tb-label="Encoder">
+                  <span class="w-8 h-8 rounded-md bg-violet-950/70 border border-violet-800/50 flex items-center justify-center text-violet-300"><i class="fa-solid fa-compact-disc"></i></span>
+                  <div class="text-xs text-slate-200">Encoder</div>
+                </div>
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="photoeye" data-tb-label="Photoeye">
+                  <span class="w-8 h-8 rounded-md bg-emerald-950/70 border border-emerald-800/50 flex items-center justify-center text-emerald-300"><i class="fa-solid fa-eye"></i></span>
+                  <div class="text-xs text-slate-200">Photoeye</div>
+                </div>
+              </div>
+            </div>
+            <p class="text-[9px] text-slate-600 leading-relaxed px-1 pt-2 border-t border-slate-800/80">
+              Drag a <strong class="text-slate-500">conveyor</strong> onto the grid first. Drop <strong class="text-slate-500">devices</strong> onto a conveyor (or use Attach in the inspector). Wire <span class="text-rose-400">exit</span> → <span class="text-emerald-400">entrance</span> to connect flow.
+            </p>
+          </div>
+        </aside>
+
+        <!-- Canvas -->
+        <div class="flex-1 min-w-0 min-h-0 relative flex flex-col">
+          <div id="tb-canvas-empty" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
+            <div class="text-center text-slate-600 max-w-sm px-6">
+              <i class="fa-solid fa-vector-square text-3xl mb-3 text-slate-700"></i>
+              <div class="text-sm text-slate-500 mb-1">Create or select an area, then drag a conveyor onto the grid</div>
+              <div class="text-[11px] text-slate-600">POC — graph is saved in the browser; Python build comes later</div>
+            </div>
+          </div>
+          <div id="tb-canvas" class="tb-grid flex-1 min-h-0 relative overflow-auto">
+            <svg id="tb-wires" xmlns="http://www.w3.org/2000/svg"></svg>
+            <div id="tb-nodes" class="absolute inset-0" style="min-width:1600px;min-height:1000px;"></div>
+          </div>
+        </div>
+
+        <!-- Inspector -->
+        <aside class="w-[280px] shrink-0 border-l border-slate-800 bg-[#0d141c] flex flex-col min-h-0">
+          <div class="px-3 py-2 text-[10px] uppercase tracking-widest text-slate-500 border-b border-slate-800">Inspector</div>
+          <div id="tb-inspector-empty" class="p-4 text-[11px] text-slate-600 leading-relaxed">
+            Select a conveyor on the canvas to name it, bind a controller conveyor tag, and attach devices.
+          </div>
+          <div id="tb-inspector" class="hidden flex-1 overflow-y-auto p-3 space-y-3">
+            <div>
+              <label class="text-[10px] text-slate-500 uppercase tracking-wider">Selection</label>
+              <div id="tb-insp-kind" class="text-xs text-fuchsia-300 mt-0.5 mono">—</div>
+            </div>
+            <!-- Conveyor mode -->
+            <div id="tb-insp-conv-panel" class="space-y-3">
+              <div>
+                <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="tb-insp-label">Display name</label>
+                <input id="tb-insp-label" type="text" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200" placeholder="e.g. Induct / Merge">
+              </div>
+              <div id="tb-insp-conv-wrap">
+                <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="tb-insp-conveyor">Controller conveyor</label>
+                <select id="tb-insp-conveyor" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200">
+                  <option value="">— select P### from RUN —</option>
+                </select>
+                <p class="text-[9px] text-slate-600 mt-1">Conveyor tags only (P100, P208A…). SS / SSV / ENC are not listed here.</p>
+              </div>
+              <div id="tb-insp-orient-wrap" class="flex gap-2">
+                <button type="button" id="tb-insp-rotate" class="btn-ghost flex-1 text-[10px] py-1.5 rounded-lg border border-slate-700" title="Rotate node 90°">
+                  <i class="fa-solid fa-rotate-right mr-1"></i>Rotate 90°
+                </button>
+                <span id="tb-insp-rotation" class="mono text-[10px] text-slate-500 self-center">0°</span>
+              </div>
+              <div id="tb-insp-merge-wrap" class="hidden">
+                <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="tb-insp-merge-lanes">Merge inbound lanes</label>
+                <select id="tb-insp-merge-lanes" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5">
+                  <option value="2">2:1 (two entrances)</option>
+                  <option value="3">3:1 (three entrances)</option>
+                  <option value="4">4:1 (four entrances)</option>
+                </select>
+              </div>
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="text-[10px] text-slate-500 uppercase tracking-wider">Attached devices</label>
+                  <button type="button" id="tb-insp-add-device" class="text-[10px] text-fuchsia-400 hover:text-fuchsia-300">+ Attach</button>
+                </div>
+                <div id="tb-insp-devices" class="space-y-1 min-h-[40px]"></div>
+                <div id="tb-insp-add-row" class="hidden mt-2 space-y-1">
+                  <select id="tb-insp-device-kind" class="w-full bg-slate-900 border border-slate-700 rounded-lg text-[10px] px-1.5 py-1">
+                    <option value="motor">Motor</option>
+                    <option value="estop">E-Stop</option>
+                    <option value="pws">Power Supply</option>
+                    <option value="encoder">Encoder</option>
+                    <option value="photoeye">Photoeye</option>
+                  </select>
+                  <select id="tb-insp-device-tag-new" class="w-full bg-slate-900 border border-slate-700 rounded-lg text-[10px] px-1.5 py-1">
+                    <option value="">— tag from RUN —</option>
+                  </select>
+                  <button type="button" id="tb-insp-device-ok" class="btn-ghost w-full text-[10px] px-2 py-1 rounded-lg border border-emerald-900/50 text-emerald-400">Add device</button>
+                </div>
+              </div>
+            </div>
+            <!-- Device mode (chip or palette focus) -->
+            <div id="tb-insp-dev-panel" class="hidden space-y-3">
+              <div>
+                <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="tb-insp-dev-tag">Device tag</label>
+                <select id="tb-insp-dev-tag" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200">
+                  <option value="">— select from RUN —</option>
+                </select>
+                <p id="tb-insp-dev-hint" class="text-[9px] text-slate-600 mt-1">Only tags matching this device type.</p>
+              </div>
+              <button type="button" id="tb-insp-dev-back" class="btn-ghost w-full text-[10px] py-1.5 rounded-lg border border-slate-700">
+                ← Back to conveyor
+              </button>
+            </div>
+            <div class="pt-2 border-t border-slate-800 flex gap-2">
+              <button type="button" id="tb-insp-delete" class="btn-ghost flex-1 text-xs py-1.5 rounded-lg text-red-400/90 border border-red-950/50">
+                <i class="fa-solid fa-trash mr-1"></i>Delete
+              </button>
+            </div>
+            <div class="text-[9px] text-slate-600 leading-relaxed pt-1">
+              Click a device chip to assign its tag. Wire <span class="text-rose-400">exit</span> → <span class="text-emerald-400">entrance</span> to connect conveyors.
+            </div>
+          </div>
+          <div class="shrink-0 border-t border-slate-800 p-2">
+            <pre id="tb-status" class="mono text-[10px] text-fuchsia-300/90 whitespace-pre-wrap max-h-20 overflow-y-auto">Ready.</pre>
+          </div>
+        </aside>
+      </div>
+    </section>
+
     <!-- Recipes -->
     <section id="tab-recipes" class="h-full hidden p-5 gap-3 flex flex-col">
       <details class="workflow-help shrink-0 px-4 py-3">
@@ -1234,5 +1541,6 @@
   </main>
 
   <script src="fortna-plus.js"></script>
+  <script src="transport-build.js"></script>
 </body>
 </html>

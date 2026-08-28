@@ -1092,6 +1092,221 @@ function createWindow() {
     }
   });
 
+  function transportPocDir() {
+    return path.join(REPO_ROOT, 'exports', 'transport-poc');
+  }
+
+  /** Newest transport_autogen_merges_*.json under exports/transport-poc. */
+  function findLatestTransportMerges(preferredPath) {
+    if (preferredPath && fs.existsSync(preferredPath)) {
+      return preferredPath;
+    }
+    const dir = transportPocDir();
+    if (!fs.existsSync(dir)) return null;
+    const files = fs
+      .readdirSync(dir)
+      .filter((f) => /^transport_autogen_merges_.*\.json$/i.test(f))
+      .map((f) => {
+        const full = path.join(dir, f);
+        return { full, mtime: fs.statSync(full).mtimeMs };
+      })
+      .sort((a, b) => b.mtime - a.mtime);
+    return files[0]?.full || null;
+  }
+
+  /** Map merge.area onto a real workbook conveyor area (PLC2 emit filters by area). */
+  function resolveMergeArea(merge, conveyors) {
+    const tags = [merge.discharge, merge.lane_a, merge.lane_b, merge.lane_c]
+      .map((t) => String(t || '').trim())
+      .filter(Boolean);
+    for (const tag of tags) {
+      const row = (conveyors || []).find(
+        (c) => String(c?.conveyor || c?.name || '').trim().toUpperCase() === tag.toUpperCase()
+      );
+      // Workbook rows use main_area; some UI paths use area
+      const area = row?.main_area || row?.area;
+      if (area) return String(area).trim();
+    }
+    return String(merge.area || '').trim();
+  }
+
+  /** Transport Build POC — analyze Node-RED graph JSON (no full L5X yet). */
+  ipcMain.handle('transport-build-poc', async (_event, data) => {
+    try {
+      const script = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_transport_graph.py');
+      if (!fs.existsSync(script)) {
+        return { ok: false, success: false, error: `Missing ${script}` };
+      }
+      const graph = data?.graph;
+      if (!graph || typeof graph !== 'object') {
+        return { ok: false, success: false, error: 'No graph JSON provided' };
+      }
+      const outDir = transportPocDir();
+      fs.mkdirSync(outDir, { recursive: true });
+      const tmpGraph = path.join(outDir, `_graph_input_${Date.now()}.json`);
+      fs.writeFileSync(tmpGraph, JSON.stringify(graph, null, 2), 'utf8');
+      const result = await runPythonAsync(
+        [script, '--graph', tmpGraph, '--out', outDir],
+        REPO_ROOT,
+      );
+      try { fs.unlinkSync(tmpGraph); } catch (_) { /* ignore */ }
+      if (result.error && !result.stdout) {
+        return { ok: false, success: false, error: result.error || result.stderr || 'python failed' };
+      }
+      let parsed = {};
+      try {
+        const line = (result.stdout || '').trim().split(/\r?\n/).filter(Boolean).pop();
+        parsed = JSON.parse(line || '{}');
+      } catch (_) {
+        return {
+          ok: false,
+          success: false,
+          error: result.stderr || result.stdout || 'Could not parse POC output',
+        };
+      }
+      return {
+        ok: !!parsed.ok,
+        success: !!parsed.ok,
+        summary: parsed.summary || '',
+        report_path: parsed.report_path || '',
+        json_path: parsed.json_path || '',
+        autogen_merges_path: parsed.autogen_merges_path || '',
+        merges_2to1_count: parsed.merges_2to1_count || 0,
+        totals: parsed.totals || {},
+        exports_dir: outDir,
+      };
+    } catch (e) {
+      return { ok: false, success: false, error: e.message || String(e) };
+    }
+  });
+
+  /** Read latest (or given) transport_autogen_merges_*.json fragment. */
+  ipcMain.handle('transport-latest-merges', async (_event, data) => {
+    try {
+      const mergesPath = findLatestTransportMerges(data?.path || data?.autogen_merges_path);
+      if (!mergesPath) {
+        return {
+          ok: false,
+          success: false,
+          error: `No transport_autogen_merges_*.json in ${transportPocDir()} — run Build POC first.`,
+          exports_dir: transportPocDir(),
+        };
+      }
+      const fragment = JSON.parse(fs.readFileSync(mergesPath, 'utf8'));
+      const merges = Array.isArray(fragment.merges_2to1) ? fragment.merges_2to1 : [];
+      return {
+        ok: true,
+        success: true,
+        path: mergesPath,
+        exports_dir: transportPocDir(),
+        merges_2to1: merges,
+        count: merges.length,
+        generated_at: fragment.generated_at || null,
+        gold_pattern: fragment.gold_pattern || '',
+      };
+    } catch (e) {
+      return { ok: false, success: false, error: e.message || String(e) };
+    }
+  });
+
+  /**
+   * Apply Transport Build merges_2to1 into Autogen workbook on disk.
+   * Upserts by merge name; remaps area from workbook conveyors when possible.
+   */
+  ipcMain.handle('transport-apply-autogen', async (_event, data) => {
+    try {
+      const mergesPath = findLatestTransportMerges(data?.path || data?.autogen_merges_path);
+      if (!mergesPath) {
+        return {
+          ok: false,
+          success: false,
+          error: `No transport_autogen_merges_*.json in ${transportPocDir()} — run Build POC first.`,
+          exports_dir: transportPocDir(),
+        };
+      }
+      const fragment = JSON.parse(fs.readFileSync(mergesPath, 'utf8'));
+      const incoming = Array.isArray(fragment.merges_2to1) ? fragment.merges_2to1 : [];
+      if (!incoming.length) {
+        return {
+          ok: false,
+          success: false,
+          error: 'Fragment has 0 merges — add a Merge node, wire lanes, Build POC again.',
+          path: mergesPath,
+        };
+      }
+
+      let wb = {};
+      if (fs.existsSync(AUTOGEN_WORKBOOK_PATH)) {
+        wb = JSON.parse(fs.readFileSync(AUTOGEN_WORKBOOK_PATH, 'utf8'));
+      } else {
+        wb = { conveyors: [], options: {}, merges_2to1: [] };
+      }
+      const conveyors = Array.isArray(wb.conveyors) ? wb.conveyors : [];
+      const existing = Array.isArray(wb.merges_2to1) ? wb.merges_2to1 : [];
+      const byKey = new Map();
+      const noKey = [];
+      for (const m of existing) {
+        const key = String(m?.name || m?.discharge || '').trim().toUpperCase();
+        if (key) byKey.set(key, { ...m });
+        else noKey.push({ ...m });
+      }
+
+      const applied = [];
+      const areaWarnings = [];
+      for (const raw of incoming) {
+        const row = { ...raw };
+        const resolved = resolveMergeArea(row, conveyors);
+        if (resolved) row.area = resolved;
+        if (!conveyors.length) {
+          areaWarnings.push(
+            `${row.name || row.discharge}: workbook has no conveyors yet — build Autogen workbook from RUN, then re-apply so area matches.`
+          );
+        } else if (
+          row.area
+          && !conveyors.some((c) => String(c.main_area || c.area || '') === row.area)
+        ) {
+          areaWarnings.push(
+            `${row.name || row.discharge}: area “${row.area}” not on any conveyor — emit may skip this merge.`
+          );
+        } else if (!row.area) {
+          areaWarnings.push(
+            `${row.name || row.discharge}: no area resolved — set area in Merge panel or bind P### that exist in workbook.`
+          );
+        }
+        const key = String(row.name || row.discharge || '').trim().toUpperCase();
+        if (key && byKey.has(key)) {
+          Object.assign(byKey.get(key), row);
+          applied.push(byKey.get(key));
+        } else if (key) {
+          byKey.set(key, row);
+          applied.push(row);
+        } else {
+          noKey.push(row);
+          applied.push(row);
+        }
+      }
+      wb.merges_2to1 = [...byKey.values(), ...noKey];
+
+      fs.mkdirSync(path.dirname(AUTOGEN_WORKBOOK_PATH), { recursive: true });
+      fs.writeFileSync(AUTOGEN_WORKBOOK_PATH, JSON.stringify(wb, null, 2), 'utf8');
+
+      return {
+        ok: true,
+        success: true,
+        path: mergesPath,
+        workbook_path: AUTOGEN_WORKBOOK_PATH,
+        exports_dir: transportPocDir(),
+        merges_2to1: wb.merges_2to1,
+        applied_count: applied.length,
+        total_count: wb.merges_2to1.length,
+        area_warnings: areaWarnings,
+        note: 'Check Program pack → Merge, then Generate on PLC Autogen.',
+      };
+    } catch (e) {
+      return { ok: false, success: false, error: e.message || String(e) };
+    }
+  });
+
   /** Pack Perspective components for Designer/gateway import (no full build required). */
   ipcMain.handle('ignition-pack-perspective', async (_event, data) => {
     try {

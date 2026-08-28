@@ -1,0 +1,78 @@
+{
+  "ok": true,
+  "poc": true,
+  "generated_at": "2026-08-28T06:27:44.657948+00:00",
+  "totals": {
+    "areas": 1,
+    "nodes": 2,
+    "wires": 1,
+    "merges": 1,
+    "devices": 1,
+    "unbound_conveyors": 0,
+    "untagged_devices": 0,
+    "issues": []
+  },
+  "areas": [
+    {
+      "id": "a1",
+      "name": "Transport_1",
+      "conveyor_count": 2,
+      "wire_count": 1,
+      "merges": [
+        {
+          "id": "n2",
+          "label": "Merge 2:1",
+          "lanes": 2,
+          "discharge": "P208",
+          "rotation": 0,
+          "suggested_aoi": "Merge_2to1",
+          "inbound": [
+            {
+              "port": "in0",
+              "from_tag": "P100"
+            }
+          ],
+          "note": "Maps to existing fortna_autogen merges_2to1 workbook shape."
+        }
+      ],
+      "nodes": [
+        {
+          "id": "n1",
+          "kind": "conv_straight",
+          "label": "P100",
+          "conveyorTag": "P100",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "M100"
+            }
+          ]
+        },
+        {
+          "id": "n2",
+          "kind": "conv_merge",
+          "label": "Merge 2:1",
+          "conveyorTag": "P208",
+          "rotation": 0,
+          "inPorts": 2,
+          "devices": []
+        }
+      ],
+      "wires": [
+        {
+          "from": "n1",
+          "to": "n2",
+          "toPort": "in0"
+        }
+      ]
+    }
+  ],
+  "next_steps": [
+    "Bind every conveyor node to a P### tag from the RUN.",
+    "Tag motors as M### / VFD### only; ENC* for encoders; PE*/EZPE* for eyes.",
+    "2:1 merges \u2192 feed fortna_autogen merges_2to1 list (discharge + lanes).",
+    "Full L5X emit from this graph is Phase 2b (not this POC)."
+  ]
+}

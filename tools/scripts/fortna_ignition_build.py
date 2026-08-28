@@ -274,17 +274,54 @@ def load_eip_modules(run_dir: Path) -> dict:
         "sources": [],
     }
 
-    # XML (RTA eipcfg) — best structured source
-    xml_hits = list((run_dir / "FORTNA").glob("*-eipcfg.xml")) + list(
+    # XML (RTA eipcfg) — prefer THIS machine's file. Multi-PLC Reno tars ship
+    # MSCRENOPACK/PICK/SHIP + CPEIP eipcfg side-by-side; taking the first
+    # alphabetically left SHIP with only PACK/test racks.
+    machine = ""
+    try:
+        from fortna_io_extract import read_project_meta
+        machine = (read_project_meta(run_dir).get("machine_name") or "").strip()
+    except Exception:
+        machine = ""
+    all_xml = list((run_dir / "FORTNA").glob("*-eipcfg.xml")) + list(
         (run_dir / "FORTNA").glob("*eipcfg*.xml")
     )
+    # de-dupe paths
+    seen_xp: set[str] = set()
+    xml_hits: list[Path] = []
+    for xp in all_xml:
+        k = str(xp.resolve())
+        if k in seen_xp:
+            continue
+        seen_xp.add(k)
+        xml_hits.append(xp)
+
+    def _xml_rank(xp: Path) -> tuple:
+        n = xp.name.upper()
+        mach_u = machine.upper()
+        if mach_u and mach_u in n and "SAVE" not in n:
+            return (0, n)
+        if mach_u and mach_u.replace("MSCRENO", "") and mach_u.replace("MSCRENO", "") in n:
+            # e.g. SHIP in MSCRENOSHIP-RTA1-eipcfg.xml
+            return (0, n)
+        if n.startswith("CPEIP") or "TEST" in n:
+            return (3, n)
+        if "SAVE" in n:
+            return (4, n)
+        # Other site machines in the same tar
+        if any(x in n for x in ("PACK", "PICK", "SHIP", "GNS")) and (
+            not mach_u or mach_u not in n
+        ):
+            return (2, n)
+        return (1, n)
+
+    xml_hits.sort(key=_xml_rank)
     for xp in xml_hits:
         try:
             root = ET.parse(xp).getroot()
         except ET.ParseError:
             continue
-        result["interface_ip"] = root.get("interfaceip") or root.get("name") or ""
-        result["sources"].append(str(xp.relative_to(run_dir)))
+        adapters_here = []
         types: Counter = Counter()
         for ad in root.findall("Adapter"):
             mods = []
@@ -298,7 +335,7 @@ def load_eip_modules(run_dir: Path) -> dict:
                 })
                 if mt:
                     types[mt] += 1
-            result["adapters"].append({
+            adapters_here.append({
                 "name": ad.get("name") or "",
                 "ip": ad.get("targetip") or "",
                 "input_address": ad.get("InputAddress") or "",
@@ -306,11 +343,21 @@ def load_eip_modules(run_dir: Path) -> dict:
                 "module_count": len(mods),
                 "modules": mods,
             })
+        if not adapters_here:
+            continue
+        result["interface_ip"] = root.get("interfaceip") or root.get("name") or ""
+        result["sources"].append(str(xp.relative_to(run_dir)))
+        result["adapters"] = adapters_here
         result["module_type_counts"] = dict(types)
         result["adapter_count"] = len(result["adapters"])
         result["module_count"] = sum(a["module_count"] for a in result["adapters"])
-        if result["adapters"]:
+        # Prefer machine-matched eipcfg; otherwise keep first usable and continue
+        # only if this file is ranked as this machine's.
+        if _xml_rank(xp)[0] == 0 or not machine:
             return result
+        # Non-matching file: keep as fallback but try a better one
+        # (loop continues; better rank already sorted first so we usually return above)
+        return result
 
     # Fallback ASC
     proj = run_dir / "PROJECT"

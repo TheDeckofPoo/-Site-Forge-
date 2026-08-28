@@ -39,7 +39,7 @@ function setBusy(busy) {
 }
 
 // All main panes — must include every data-tab value or that tab stays blank
-const ALL_TABS = ['search', 'workspace', 'io', 'recipes', 'plc', 'autogen', 'ignition'];
+const ALL_TABS = ['search', 'workspace', 'io', 'recipes', 'plc', 'autogen', 'ignition', 'transport'];
 
 // Tabs
 document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -61,6 +61,9 @@ document.querySelectorAll('.tab-btn').forEach((btn) => {
     if (tab === 'autogen') {
       // Site config table: auto-build from active RUN when engineer opens PLC Autogen
       ensureAutogenWorkbookFromRun({ reason: 'opened PLC Autogen tab' }).catch(() => {});
+    }
+    if (tab === 'transport' && typeof window.transportBuildRefresh === 'function') {
+      window.transportBuildRefresh();
     }
   });
 });
@@ -1555,7 +1558,10 @@ function renderPanelSets() {
   // Keep PLC green-button checklist in sync when prints change
   try { updateRecontrolReady(); } catch (_) { /* early init */ }
 
-  if (remoteCount) remoteCount.textContent = `${remotes.length} remote${remotes.length === 1 ? '' : 's'}`;
+  if (remoteCount) remoteCount.textContent = `${remotes.length} panel${remotes.length === 1 ? '' : 's'}`;
+  // Auto-expand prints when panels exist; leave collapsed when empty (tar.gz is enough)
+  const printsDetails = $('remote-prints-details');
+  if (printsDetails && remotes.length > 0) printsDetails.open = true;
 
   if (masterCard) {
     if (!master) {
@@ -4461,6 +4467,75 @@ function persistMergesToWorkbook() {
   autogenState.workbook.merges_2to1 = [...(autogenState.merges_2to1 || [])];
 }
 
+/**
+ * Apply Transport Build merges fragment into Autogen UI + workbook.
+ * Called from Transport tab or Merge panel. Returns a short status object.
+ */
+async function applyTransportMergesToAutogen(opts = {}) {
+  if (typeof fortnaAPI?.transportApplyAutogen !== 'function') {
+    return { ok: false, error: 'Desktop IPC missing — restart Site Forge.' };
+  }
+  const res = await fortnaAPI.transportApplyAutogen({
+    path: opts.path || opts.autogen_merges_path || undefined,
+  });
+  if (!res?.ok && !res?.success) {
+    return { ok: false, error: res?.error || 'Apply failed', exports_dir: res?.exports_dir };
+  }
+  const merges = Array.isArray(res.merges_2to1) ? res.merges_2to1 : [];
+  autogenState.merges_2to1 = merges;
+  if (!autogenState.workbook) autogenState.workbook = { conveyors: [], options: {} };
+  // Prefer disk workbook if IPC returned path — reload full workbook when possible
+  if (typeof fortnaAPI.autogenWorkbookLoad === 'function') {
+    try {
+      const full = await fortnaAPI.autogenWorkbookLoad();
+      if (full?.success && full.workbook) {
+        autogenState.workbook = full.workbook;
+        if (Array.isArray(full.workbook.merges_2to1)) {
+          autogenState.merges_2to1 = full.workbook.merges_2to1;
+        }
+      }
+    } catch (_) {
+      autogenState.workbook.merges_2to1 = [...merges];
+    }
+  } else {
+    autogenState.workbook.merges_2to1 = [...merges];
+  }
+  if ($('merge-2to1-count')) {
+    $('merge-2to1-count').value = String(autogenState.merges_2to1.length);
+  }
+  if (autogenState.merges_2to1.length && $('autogen-opt-merges-2to1')) {
+    $('autogen-opt-merges-2to1').checked = true;
+  }
+  try { localStorage.setItem('fortna_merges_2to1', JSON.stringify(autogenState.merges_2to1 || [])); } catch (_) { /* ignore */ }
+  renderMergeBuild();
+  updateMergeSummary();
+  const n = autogenState.merges_2to1.filter((m) => m && (m.name || m.lane_a)).length;
+  const st = $('merge-save-status');
+  if (st) {
+    st.textContent = `From Transport: ${n} merge(s)`;
+    st.className = 'text-[10px] text-emerald-500 mono';
+  }
+  if (typeof autogenLog === 'function') {
+    autogenLog(
+      `Transport Build → Autogen: applied ${res.applied_count || n} merge row(s) `
+      + `(workbook ${res.workbook_path || 'saved'}). Check Program pack · Merge, then Generate.`,
+      'ok',
+    );
+    for (const w of res.area_warnings || []) autogenLog(w, 'warn');
+  }
+  return {
+    ok: true,
+    applied_count: res.applied_count || n,
+    total_count: res.total_count || n,
+    workbook_path: res.workbook_path,
+    path: res.path,
+    exports_dir: res.exports_dir,
+    area_warnings: res.area_warnings || [],
+    note: res.note || '',
+  };
+}
+window.applyTransportMergesToAutogen = applyTransportMergesToAutogen;
+
 function updateMergeSummary() {
   const el = $('autogen-merge-summary');
   if (!el) return;
@@ -4624,6 +4699,25 @@ function wireMergeBuildUi() {
     } catch (e) {
       if (st) { st.textContent = 'Save failed'; st.className = 'text-[10px] text-red-400 mono'; }
       autogenLog(`Merge save failed: ${e?.message || e}`, 'err');
+    }
+  });
+  $('btn-merge-from-transport')?.addEventListener('click', async () => {
+    const st = $('merge-save-status');
+    if (st) { st.textContent = 'Importing…'; st.className = 'text-[10px] text-fuchsia-400 mono'; }
+    try {
+      const res = await applyTransportMergesToAutogen({});
+      if (!res?.ok) {
+        if (st) { st.textContent = res?.error || 'Import failed'; st.className = 'text-[10px] text-red-400 mono'; }
+        autogenLog(`Transport import failed: ${res?.error || 'unknown'}`, 'err');
+        return;
+      }
+      autogenLog(
+        `Imported ${res.applied_count} merge(s) from Transport Build. Program pack · Merge is ON — Generate to emit.`,
+        'ok',
+      );
+    } catch (e) {
+      if (st) { st.textContent = 'Import failed'; st.className = 'text-[10px] text-red-400 mono'; }
+      autogenLog(`Transport import error: ${e?.message || e}`, 'err');
     }
   });
   $('btn-merge-clear')?.addEventListener('click', () => {

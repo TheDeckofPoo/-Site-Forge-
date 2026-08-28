@@ -1,0 +1,28 @@
+Site Forge PLC Autogen (Python) — 20260826-184033
+Project: MSCRENO_MSCRENOPACK
+Processor: 1756-L83E  v35.00
+Library: OReilly_Library_v3.L5X
+Conveyors: 248  (with real PE: 112) — scoped to this master PLC only
+Areas: 1
+Tags: 2081
+PE devices: 309  PE_Logic/Full_PE rungs: 250
+Slow_Flt rungs: 248
+EIP adapters: 12  RIO: ['AENTR13', 'AENTR13RP1', 'AENTR13RP2', 'AENTR14', 'AENTR14RP1', 'AENTR14RP2', 'AENTR3', 'AENTR4', 'AENTR5', 'AENTR6', 'AENTR7']
+EIP child cards: 193 (AB: typed C/I/O tags)
+IO_MAP source: run_tar_gz_banks_eip — Built from RUN Conveyor.asc banks + EIP word_map → CPxRIOn modules
+IO_MAP: 922 mapped, 84 unmapped (word map entries: 175)
+RIO modules: 194  names: AENTR13, AENTR13RP1, AENTR13RP2, VU4A0004_152, AENTR14, AENTR14RP1, AENTR14RP2, AENTR3, AENTR4, AENTR5, AENTR6, AENTR7
+Physical map: 922 mapped / 84 unmapped → physical_io_map.csv
+Studio tag CSV: (none) (0 rows)
+Programs: MSCRENOPACK_Area_Slow, MSCRENOPACK_Area_Fast, Sys, IO_MAP
+Templates: {'P4000_Conv': 37, 'P3000_Conv': 193, 'P1000_Conv': 17, 'P2000_Conv': 1}
+Output: C:\dev\worktree\FortnaPlus\exports\autogen\20260826-184033-20260813-1132-MSCRENO-MSCRENOPACK-RUN\MSCRENO_MSCRENOPACK.L5X
+
+Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File→Open L5X).
+Engine: fortna_autogen.py — IO_MAP from RUN/tar.gz banks + EIP modules by default.
+Gold Excel IO_MAP is optional (--io-map-gold / UI checkbox); it replaces RUN mapping.
+Logic: Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP CP_I/CP_O.
+I/O tree: RUN EIPAdapters/EIPModules/EIPCSV + eipcfg.xml → CPxRIOn (1734 POINT or 1794 Flex).
+Verify: open physical_io_map.csv + rio_inventory.json next to the L5X.
+OPEN as NEW project in Studio (File→Open). Do not Import into existing .acd.
+Excel templates not in library (used fallbacks): P7000_Conv, P8000_Conv
