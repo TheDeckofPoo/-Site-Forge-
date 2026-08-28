@@ -1,0 +1,40 @@
+{
+  "version": 1,
+  "built": "2026-06-21",
+  "headline": "Good morning — Project Intake worked the night shift.",
+  "subtitle": "Mission Control is live. One button runs your whole pipeline.",
+  "whats_new": [
+    {
+      "icon": "rocket",
+      "title": "Mission Control bar",
+      "detail": "Profile health tracker, Run Full Pipeline, and quick-open export folders — right under the pipeline cards."
+    },
+    {
+      "icon": "wand-magic-sparkles",
+      "title": "One-click full pipeline",
+      "detail": "Import I/O → Scaffold → Spatial (when layout files exist) in sequence with a live progress stepper."
+    },
+    {
+      "icon": "file-circle-check",
+      "title": "Drop-zone filename verify",
+      "detail": "Excel, L5X, overlay, and section drops now show the real filename + full path so you know exactly what landed."
+    },
+    {
+      "icon": "map",
+      "title": "Spatial Layout tab",
+      "detail": "Second tab on Project Intake — overlay + section PNGs → zone map + OCR labels → spatial_layout.json."
+    },
+    {
+      "icon": "keyboard",
+      "title": "Keyboard shortcuts",
+      "detail": "Ctrl+1 I/O tab · Ctrl+2 Spatial · Ctrl+Shift+R Run Full Pipeline · Ctrl+B Morning Brief · F1 shortcuts help"
+    }
+  ],
+  "quick_start": [
+    "Select or create an intake profile (SITE_MCP05, MGE9_MCP05, etc.)",
+    "Drop PLC.xls + your .L5X — verify filenames in the slots",
+    "Click Run Full Pipeline in Mission Control",
+    "Spatial tab: drop overlay + sections when drawings are ready"
+  ],
+  "easter_egg": "You built the future of conveyor commissioning. Coffee first. Then hit Run Full Pipeline."
+}

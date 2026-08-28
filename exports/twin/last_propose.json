@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "site": "MSCRENO_MSCRENOSHIP",
+  "mode": "prism_heuristic",
+  "model": null,
+  "gap_count": 3,
+  "patch_count": 1,
+  "patches": [
+    {
+      "id": "patch_2_note",
+      "gap_id": "gap_2",
+      "target": "workbook",
+      "op": "note_only",
+      "conveyor": "P55",
+      "value": "Tag",
+      "cite": "knowledge-corpus/20260624_1716_OReillyGreensboro_ORNCCP5_RUN/generated/plc/studio_import/03_import_routines_into_MainProgram/RT_Fortna_IO_Map.L5X",
+      "confidence": 0.2,
+      "source": "prism_heuristic",
+      "rationale": "PE not in active RUN IO \u2014 bind a real SHIP PE in Transport roles or enable create-missing-PE on merge. AI needs XAI_API_KEY for mapped suggestions.",
+      "approved": false
+    }
+  ],
+  "prism_hit_count": 12,
+  "note": "missing_xai_api_key",
+  "generated_utc": "2026-08-28T20:22:28Z"
+}

@@ -1,0 +1,5 @@
+﻿BACKUP 2026-08-28
+- Local suite snapshot: FortnaPlus\exports\backups\suite-20260828-163000 (93 files)
+- Code zip: FortnaPlus\exports\backups\fortnaplus-code-20260828-163000.zip (~1.1 MB)
+- D:\WorktTree full robocopy: PARTIAL FAIL — D: only had ~2.5 GB free; ran out mid-copy.
+  Free space on D: then re-run: C:\dev\worktree\Run-Backup-Now.ps1

@@ -1,0 +1,19 @@
+{
+  "name": "rockwell-git-dashboard",
+  "version": "1.0.0",
+  "description": "Rockwell PLC Git Dashboard - Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^32.3.3"
+  },
+  "build": {
+    "appId": "com.rockwell.git.dashboard",
+    "productName": "Rockwell Git",
+    "win": {
+      "target": "portable"
+    }
+  }
+}

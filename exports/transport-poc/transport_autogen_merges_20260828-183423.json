@@ -1,0 +1,25 @@
+{
+  "source": "transport_build_graph",
+  "gold_pattern": "Greensboro PLC2 Merge_2to1 + Area_L2 ST presets",
+  "generated_at": "2026-08-28T18:34:23.167979+00:00",
+  "merges_2to1": [
+    {
+      "name": "P400",
+      "area": "Transport_2",
+      "lanes": 2,
+      "lane_a": "Straight",
+      "lane_b": "Straight",
+      "lane_c": "",
+      "discharge": "P400",
+      "pe_a": "",
+      "pe_b": "",
+      "pe_c": "",
+      "jam_pe": "EZPE29_F",
+      "allow_undefined_pe": false,
+      "hold_mode": "runhold",
+      "source": "transport_build_graph",
+      "suggested_aoi": "Merge_2to1"
+    }
+  ],
+  "note": "Drop/merge this list into the Site Forge Autogen workbook (inp.merges_2to1). AOIs stay sealed \u2014 call-site wiring only."
+}

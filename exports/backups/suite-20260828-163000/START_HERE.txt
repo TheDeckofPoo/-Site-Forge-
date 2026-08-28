@@ -1,0 +1,30 @@
+﻿================================================================================
+  C:\dev\worktree — THREE SEPARATE PROJECTS (2026-08-13)
+================================================================================
+
+1) FortnaPlus
+   Path:    C:\dev\worktree\FortnaPlus
+   GitHub:  https://github.com/TheDeckofPoo/FortnaPlus
+   Desktop: FortnaPlus.lnk · FortnaPlus-Git.lnk
+
+2) Rockwell Git  (team branches / L5X merge)
+   Path:    C:\dev\worktree\Rockwell_GitHub
+   Desktop: Rockwell Git.lnk · Rockwell Git (VS Code).lnk
+   Launch:  C:\dev\worktree\Launch-RockwellGit.bat
+   Git:     local main @ 807ae44 — push to NEW empty GitHub repo when ready
+
+3) PRISM  (vector knowledge engine — ChromaDB)
+   Path:    C:\dev\worktree\PRISM
+   Desktop: PRISM.lnk · PRISM (VS Code).lnk
+   Launch:  C:\dev\worktree\Launch-PRISM.bat
+   CLI:     C:\dev\worktree\Launch-RockwellVectorDB.bat
+   Git:     local main @ a35d954 — push to NEW empty GitHub repo when ready
+   Data:    knowledge-corpus/ + rockwell-vector-db/collections (gitignored, local only)
+
+FortnaPlus auto-ingest points at PRISM (not Rockwell_GitHub).
+
+BACKUP (D:):
+  D:\WorktTree\worktree\...
+
+DO NOT use OneDrive Desktop\worktree for live work.
+================================================================================

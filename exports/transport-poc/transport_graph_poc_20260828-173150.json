@@ -1,0 +1,284 @@
+{
+  "ok": true,
+  "poc": true,
+  "generated_at": "2026-08-28T17:31:50.640073+00:00",
+  "totals": {
+    "areas": 1,
+    "nodes": 10,
+    "wires": 9,
+    "merges": 1,
+    "devices": 14,
+    "unbound_conveyors": 5,
+    "untagged_devices": 0,
+    "issues": [
+      "Merge1: node Straight has no P### tag",
+      "Merge1: node Straight has no P### tag",
+      "Merge1: node 90\u00b0 Left has no P### tag",
+      "Merge1: node 90\u00b0 Right has no P### tag",
+      "Merge1: node 90\u00b0 Left has no P### tag"
+    ]
+  },
+  "areas": [
+    {
+      "id": "area_laf8ds9",
+      "name": "Merge1",
+      "conveyor_count": 10,
+      "wire_count": 9,
+      "merges": [
+        {
+          "id": "node_v01o3dx",
+          "label": "Merge 2:1",
+          "lanes": 2,
+          "discharge": "P400",
+          "rotation": 0,
+          "pe_a": "",
+          "pe_b": "",
+          "pe_c": "",
+          "jam_pe": "",
+          "allow_undefined_pe": false,
+          "suggested_aoi": "Merge_2to1",
+          "inbound": [
+            {
+              "port": "in0",
+              "from_tag": "P302"
+            },
+            {
+              "port": "in1",
+              "from_tag": "P228"
+            }
+          ],
+          "note": "Maps to existing fortna_autogen merges_2to1 workbook shape."
+        }
+      ],
+      "nodes": [
+        {
+          "id": "node_e95vx17",
+          "kind": "conv_straight",
+          "label": "P302",
+          "conveyorTag": "P302",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "VFD302"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "Photoeye_2"
+            }
+          ]
+        },
+        {
+          "id": "node_37ejguk",
+          "kind": "conv_straight",
+          "label": "P228",
+          "conveyorTag": "P228",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "VFD228"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "Photoeye_2"
+            }
+          ]
+        },
+        {
+          "id": "node_v01o3dx",
+          "kind": "conv_merge",
+          "label": "Merge 2:1",
+          "conveyorTag": "P400",
+          "rotation": 0,
+          "inPorts": 2,
+          "devices": []
+        },
+        {
+          "id": "node_qm1c537",
+          "kind": "conv_straight",
+          "label": "Straight",
+          "conveyorTag": "",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "pws",
+              "tag": "Power Supply_1"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "Photoeye_2"
+            }
+          ]
+        },
+        {
+          "id": "node_1kf8e0x",
+          "kind": "conv_straight",
+          "label": "Straight",
+          "conveyorTag": "",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "pws",
+              "tag": "Power Supply_1"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "Photoeye_2"
+            }
+          ]
+        },
+        {
+          "id": "node_h0gpf1d",
+          "kind": "conv_left",
+          "label": "90\u00b0 Left",
+          "conveyorTag": "",
+          "rotation": 270,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "photoeye",
+              "tag": "Photoeye_1"
+            },
+            {
+              "kind": "motor",
+              "tag": "Motor_2"
+            }
+          ]
+        },
+        {
+          "id": "node_w2uzesv",
+          "kind": "conv_right",
+          "label": "90\u00b0 Right",
+          "conveyorTag": "",
+          "rotation": 180,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "photoeye",
+              "tag": "Photoeye_1"
+            }
+          ]
+        },
+        {
+          "id": "node_wvp5c58",
+          "kind": "conv_straight",
+          "label": "P220",
+          "conveyorTag": "P220",
+          "rotation": 180,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "Motor_1"
+            }
+          ]
+        },
+        {
+          "id": "node_urxp9pn",
+          "kind": "conv_left",
+          "label": "90\u00b0 Left",
+          "conveyorTag": "",
+          "rotation": 270,
+          "inPorts": 1,
+          "devices": []
+        },
+        {
+          "id": "node_xgcblfq",
+          "kind": "conv_straight",
+          "label": "P10A",
+          "conveyorTag": "P10A",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "M10"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "Photoeye_2"
+            }
+          ]
+        }
+      ],
+      "wires": [
+        {
+          "from": "node_v01o3dx",
+          "to": "node_xgcblfq",
+          "toPort": "in"
+        },
+        {
+          "from": "node_e95vx17",
+          "to": "node_v01o3dx",
+          "toPort": "in0"
+        },
+        {
+          "from": "node_37ejguk",
+          "to": "node_v01o3dx",
+          "toPort": "in1"
+        },
+        {
+          "from": "node_1kf8e0x",
+          "to": "node_37ejguk",
+          "toPort": "in"
+        },
+        {
+          "from": "node_qm1c537",
+          "to": "node_e95vx17",
+          "toPort": "in"
+        },
+        {
+          "from": "node_h0gpf1d",
+          "to": "node_1kf8e0x",
+          "toPort": "in"
+        },
+        {
+          "from": "node_w2uzesv",
+          "to": "node_h0gpf1d",
+          "toPort": "in"
+        },
+        {
+          "from": "node_wvp5c58",
+          "to": "node_w2uzesv",
+          "toPort": "in"
+        },
+        {
+          "from": "node_urxp9pn",
+          "to": "node_wvp5c58",
+          "toPort": "in"
+        }
+      ]
+    }
+  ],
+  "merges_2to1": [
+    {
+      "name": "P400",
+      "area": "Merge1",
+      "lanes": 2,
+      "lane_a": "P302",
+      "lane_b": "P228",
+      "lane_c": "",
+      "discharge": "P400",
+      "pe_a": "",
+      "pe_b": "",
+      "pe_c": "",
+      "jam_pe": "",
+      "allow_undefined_pe": false,
+      "hold_mode": "runhold",
+      "source": "transport_build_graph",
+      "suggested_aoi": "Merge_2to1"
+    }
+  ],
+  "next_steps": [
+    "Bind every conveyor node to a P### tag from the RUN.",
+    "Tag motors as M### / VFD### only; ENC* for encoders; PE*/EZPE* for eyes.",
+    "2:1 merges \u2192 Autogen merges_2to1 (PLC2 runhold). Import fragment into PLC Autogen workbook.",
+    "Keep sealed Fast_Conv / Slow_* / Merge_2to1 AOIs; only wire call sites.",
+    "Full L5X emit from this graph is Phase 2b (IO map + transport focus)."
+  ]
+}

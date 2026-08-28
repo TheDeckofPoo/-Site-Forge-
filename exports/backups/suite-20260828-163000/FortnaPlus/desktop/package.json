@@ -1,0 +1,12 @@
+{
+  "name": "siteforge-dashboard",
+  "version": "1.0.0",
+  "description": "Site Forge dashboard — docs, search, RUN automation",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^32.3.3"
+  }
+}

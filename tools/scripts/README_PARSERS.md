@@ -45,12 +45,21 @@ Entry points:
 | **`fortna_perspective_pack.py`** | Perspective project zip + Plant_Layout views |
 | **`fortna_ignition_extract.py`** | Helpers for EIP / device maps |
 
-## PRISM / knowledge corpus
+## Transport Build
 
 | Script | Role |
 |--------|------|
-| **`fortna_prism_ingest.py`** | Dedupe + ingest export artifacts into PRISM |
+| **`fortna_transport_graph.py`** | Areas + PE roles (P/J/F) + merges → workbook Apply; clear P### removes Transport emit |
+
+## PRISM / knowledge corpus / Site Twin
+
+| Script | Role |
+|--------|------|
+| **`fortna_prism_ingest.py`** | Dedupe + ingest exports; **`stage_twin`** → `twin/gaps.json` |
+| **`fortna_prism_twin.py`** | Load gaps · PRISM search · SpaceXAI propose · apply workbook patches |
 | **`fortna_prism_seed.py`** / **`fortna_prism_build.py`** | Seed L5X snippets for vector DB |
+
+Site Forge UI: **PLC Autogen → Site Twin · Gaps** (Refresh / Search PRISM / Propose gap-fill).
 
 ## Supporting
 
