@@ -1,0 +1,15 @@
+XIC(MRG414_xINIT)OTU(MRG414_xCollTrackConfigured)OTU(MRG414_xINIT);
+XIC(MRG414_xLaneClctrTrkHistorize)NOP();
+XIC(MRG414_xCollResetCounts)NOP();
+XIC(MRG414_xLaneClctrTrkAryFreeze)NOP();
+XIC(MRG414_xLaneClctrPeCalibrate)XIC(MRG414_xCollTrackPE_OffsetCaptureArm)NOP();
+XIC(MRG414_xLaneOffsetFind)XIC(MRG414_xLane_OffsetCaptureArm)NOP();
+XIC(MRG414_xCollLaneMrgCaptureArm)MOV(MRG414_stCollLaneMrgCapture.diTrackId,MRG414_stCollLaneMrgCapture.diTrackId)MOV(MRG414_stCollLaneMrgCapture.diLaneId,MRG414_stCollLaneMrgCapture.diLaneId)MOV(MRG414_stCollLaneMrgCapture.diDelta,MRG414_stCollLaneMrgCapture.diDelta);
+JSR(Conv_Fast,0);
+JSR(Conv_PE,0);
+JSR(Conv_Enc,0);
+XIC(Enable_Merge2_Trk)[XIC(Use_GapStore_Belts) MOV(400,P414_SawMerge_HMI.ClctrSpeed_FPM) ,XIO(Use_GapStore_Belts) MOV(140,P414_SawMerge_HMI.ClctrSpeed_FPM) ];
+XIC(Enable_Merge2_Trk)XIO(Use_GapStore_Belts)JSR(RT_DeltaDist_NoGapStore,0);
+XIC(Enable_Merge2_Trk)XIO(Use_GapStore_Belts)JSR(RT_IO_Map_NoGapStore,0);
+XIC(Enable_Merge2_Trk)XIC(Enable_Merge1_Reserv)JSR(RT_CollTrackMain,0);
+XIC(S:FS)MOV(1,MRG414_stCollStatus.diClctrMode);

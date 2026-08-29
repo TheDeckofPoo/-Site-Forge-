@@ -25,9 +25,13 @@ IPC → Rockwell recontrol toolkit: Electron dashboard + Python engines for PLC 
 
 1. **I/O & Prints** → load `.tar.gz` (+ optional PDFs / OCR).
 2. **Transport Build** → areas, bind P###, PE roles (P/J/F), merges → **Apply to Autogen**.
-3. **PLC Autogen** → program pack → **Export L5X Package**.
-4. **Site Twin · Gaps** (left column) → Refresh / Search PRISM / Propose gap-fill → Apply approved → Export again.
-5. Open L5X in Studio yourself (Site Forge does not launch Studio).
+3. **Sorter Build** → choose **Shoe Sorter** or **Pop-Up Divert** → induct / tracking / diverts → **Save**.
+4. **Sawtooth Merge** (optional) → collector / lanes / PEs (PLC4 pattern; RUN has `SawMerge.asc` / `SawLane.asc`) → **Save**.
+5. **PLC Autogen** (compile hub) → program pack → review site config → **Export L5X Package**.
+6. **Site Twin · Gaps** → Refresh / Search PRISM / Propose → Apply approved → Export again.
+7. Open L5X in Studio yourself (Site Forge does not launch Studio).
+
+**Nav note:** PLC Export and Ignition Build tabs are hidden (code kept). Design = Transport + Sorter + Sawtooth; compile = Autogen.
 
 ### Clear a conveyor tag
 Clear P### on a Transport node → **Apply** → that belt leaves the Transport area in the next L5X (stubs removed; RUN tags restored to site area).

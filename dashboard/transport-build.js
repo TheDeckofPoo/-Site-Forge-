@@ -730,6 +730,16 @@
     render();
   }
 
+  function resetPeRoleUi() {
+    PE_ROLE_ORDER.forEach((r) => {
+      const el = $(`tb-insp-pe-role-${r}`);
+      if (el) el.checked = false;
+    });
+    $('tb-insp-pe-roles-wrap')?.classList.add('hidden');
+    $('tb-insp-dev-panel')?.classList.add('hidden');
+    $('tb-insp-conv-panel')?.classList.remove('hidden');
+  }
+
   function renderInspector() {
     const empty = $('tb-inspector-empty');
     const panel = $('tb-inspector');
@@ -738,6 +748,7 @@
     if (!n) {
       empty?.classList.remove('hidden');
       panel?.classList.add('hidden');
+      resetPeRoleUi();
       return;
     }
     empty?.classList.add('hidden');
@@ -1100,6 +1111,13 @@
       status(`Renamed area to “${a.name}”`);
     });
 
+    function resetPeRoleCheckboxes() {
+      PE_ROLE_ORDER.forEach((r) => {
+        const el = $(`tb-insp-pe-role-${r}`);
+        if (el) el.checked = false;
+      });
+    }
+
     $('tb-area-delete')?.addEventListener('click', async () => {
       const a = activeArea();
       if (!a) return;
@@ -1109,10 +1127,11 @@
       tb.activeAreaId = tb.areas[0]?.id || null;
       tb.selectedId = null;
       tb.selectedDeviceId = null;
+      resetPeRoleCheckboxes();
       ensureArea();
       save();
       render();
-      status('Area deleted');
+      status('Area deleted — PE roles reset');
     });
 
     $('tb-clear-canvas')?.addEventListener('click', async () => {
@@ -1124,9 +1143,10 @@
       a.wires = [];
       tb.selectedId = null;
       tb.selectedDeviceId = null;
+      resetPeRoleCheckboxes();
       save();
       render();
-      status('Canvas cleared');
+      status('Canvas cleared — PE roles reset');
     });
 
     // Build POC kept as internal helper (toolbar button removed) — Apply is the main path
@@ -1614,16 +1634,22 @@
         const d = n?.devices?.find((x) => x.id === tb.selectedDeviceId);
         if (!d || d.kind !== 'photoeye') return;
         const next = PE_ROLE_ORDER.filter((r) => !!$(`tb-insp-pe-role-${r}`)?.checked);
-        d.roles = next.length ? next : ['exit'];
-        d.rolesManual = true;
-        // Keep at least Exit if they uncheck everything (Fast_Conv needs a slot)
+        if (!next.length) {
+          // Cleared all roles → restore original tag-inferred defaults (not "stuck on previous")
+          d.rolesManual = false;
+          d.roles = inferPeRoles(d.tag || d.name || '');
+          status(`PE roles cleared → defaults ${(d.roles || []).join('+') || 'exit'}`);
+        } else {
+          d.roles = next;
+          d.rolesManual = true;
+          status(`PE roles → ${d.roles.join('+')}`);
+        }
         PE_ROLE_ORDER.forEach((r) => {
           const el = $(`tb-insp-pe-role-${r}`);
-          if (el) el.checked = d.roles.includes(r);
+          if (el) el.checked = (d.roles || []).includes(r);
         });
         save();
         render();
-        status(`PE roles → ${d.roles.join('+')}`);
       });
     });
 
@@ -1805,6 +1831,24 @@
   // Expose refresh when tab opens (conveyor dropdown)
   window.transportBuildRefresh = function () {
     render();
+  };
+
+  /** Wipe all Transport Build areas (Transport1, Merge5, …) and reset PE role UI. */
+  window.transportBuildClearAll = function () {
+    tb.areas = [];
+    tb.activeAreaId = null;
+    tb.selectedId = null;
+    tb.selectedDeviceId = null;
+    try { localStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
+    ensureArea();
+    resetPeRoleUi();
+    save();
+    render();
+    // Force inspector empty state (PE roles must not linger after Clear project builds)
+    $('tb-inspector-empty')?.classList.remove('hidden');
+    $('tb-inspector')?.classList.add('hidden');
+    status('All transport areas cleared — PE roles reset');
+    return true;
   };
 
   if (document.readyState === 'loading') {

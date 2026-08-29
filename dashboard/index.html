@@ -361,16 +361,21 @@
   </header>
 
   <nav class="flex items-center gap-1 px-4 border-b border-slate-800 shrink-0 bg-[#0c1219]">
-    <!-- Primary work tabs (recontrol focus) -->
+    <!-- Primary workflow: design → compile -->
     <button class="tab-btn active py-3 px-3 text-sm" data-tab="io"><i class="fa-solid fa-server mr-2"></i>I/O &amp; Prints</button>
-    <button class="tab-btn py-3 px-3 text-sm" data-tab="plc"><i class="fa-solid fa-microchip mr-2"></i>PLC Export</button>
-    <button class="tab-btn py-3 px-3 text-sm" data-tab="autogen"><i class="fa-solid fa-wand-magic-sparkles mr-2"></i>PLC Autogen</button>
-    <button class="tab-btn py-3 px-3 text-sm" data-tab="ignition"><i class="fa-solid fa-fire mr-2"></i>Ignition Build</button>
-    <button class="tab-btn py-3 px-3 text-sm" data-tab="transport" title="Proof of concept — visual transport builder">
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="transport" title="Design transport areas, merges, PE roles">
       <i class="fa-solid fa-diagram-project mr-2"></i>Transport Build
-      <span class="ml-1 text-[9px] px-1.5 py-0.5 rounded bg-fuchsia-950/80 text-fuchsia-300 border border-fuchsia-800/50">POC</span>
     </button>
-    <!-- Secondary tools — far right while recontrol is primary -->
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="sorter" title="Design sorter induct / tracking / diverts">
+      <i class="fa-solid fa-shuffle mr-2"></i>Sorter Build
+    </button>
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="sawtooth" title="Sawtooth / collector merge design (PLC4 pattern)">
+      <i class="fa-solid fa-bars-staggered mr-2"></i>Sawtooth Merge
+    </button>
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="autogen" title="Compile Transport + Sorter + site config → L5X">
+      <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>PLC Autogen
+    </button>
+    <!-- Secondary tools -->
     <div class="flex-1"></div>
     <div class="flex items-center gap-1 border-l border-slate-800 pl-3 ml-2">
       <span class="text-[9px] uppercase tracking-widest text-slate-600 mr-1 hidden sm:inline">Tools</span>
@@ -427,23 +432,22 @@
     <!-- Outer column scrolls so Sorter build can sit BELOW the current screen without crowding it. -->
     <section id="tab-autogen" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
       <details class="workflow-help shrink-0 px-4 py-3">
-        <summary class="text-sm font-semibold text-violet-400">How to run PLC Autogen — workflow</summary>
+        <summary class="text-sm font-semibold text-violet-400">How to run PLC Autogen — compile hub</summary>
         <div class="workflow-chart mt-3">
           <div class="workflow-box"><strong>① Load RUN</strong><span>I/O &amp; Prints<br>.tar.gz once</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box violet"><strong>② Site config</strong><span>Dropdowns auto-fill<br>zones · TYPE · PE</span></div>
+          <div class="workflow-box"><strong>② Transport</strong><span>Areas · merges · PE<br>Apply to workbook</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box violet"><strong>③ Program pack</strong><span>Sys · IO_MAP<br>sorter / WCS</span></div>
+          <div class="workflow-box"><strong>③ Sorter</strong><span>Induct · track · divert<br>Save sorter config</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box accent"><strong>④ Generate PLC</strong><span>Studio L5X<br>no Excel / VBS</span></div>
+          <div class="workflow-box violet"><strong>④ Autogen</strong><span>Program pack · review<br>Export L5X Package</span></div>
           <span class="workflow-arrow">→</span>
           <div class="workflow-box"><strong>⑤ Studio</strong><span>File → Open L5X<br>as NEW project</span></div>
         </div>
         <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
-          <p><strong class="text-emerald-500/90">Workbook</strong> replaces the green Excel Inputdata sheet — filled from tar.gz, editable here.</p>
-          <p><strong class="text-violet-300">IO map</strong> auto from banks + EIP (IO tab). TYPE auto: ACCUM→Accumulation, VFD tags→Transport with VFD.</p>
+          <p><strong class="text-fuchsia-300">Transport Build</strong> and <strong class="text-cyan-300">Sorter Build</strong> are design tabs — Autogen compiles them with site config.</p>
+          <p><strong class="text-emerald-500/90">Workbook</strong> = Inputdata replacement (areas · TYPE · Exit PE). Merges come from Transport Apply.</p>
           <p><strong class="text-amber-400/90">Studio:</strong> <em>File → Open</em> L5X as new project (do not Import into existing .acd).</p>
-          <p><strong class="text-slate-400">Next site:</strong> no Excel workbook required — only tar.gz (+ optional PDF/DWG later).</p>
         </div>
       </details>
       <div class="flex-1 min-h-0 overflow-y-auto flex flex-col gap-4 pr-0.5">
@@ -547,6 +551,15 @@
                       <span class="block text-[10px] text-slate-500 leading-snug">
                         Puts <span class="mono text-slate-400">Sorter_Track</span> on P02 (Sorter_Track_Program.L5X).
                         Not ShippingSorter L3. Auto-on when sorter config is saved.
+                      </span>
+                    </span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
+                    <input id="autogen-opt-sawtooth" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">Sawtooth Merge</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">
+                        Collector track pack (<span class="mono text-slate-400">Sawtooth_Merge_Program.L5X</span> on P02). Auto-on when Sawtooth tab is saved.
                       </span>
                     </span>
                   </label>
@@ -785,156 +798,62 @@
       </div>
       </div><!-- end autogen main row (program pack + site config) -->
 
-      <!-- Merges (transport — 2:1 / 3:1 lane counts from prints) -->
-      <details id="autogen-merge-panel" class="card shrink-0 border border-cyan-900/40 bg-gradient-to-b from-[#0c1520] to-[#0a1018]">
-        <summary class="cursor-pointer px-4 py-3 flex items-center gap-2 select-none list-none [&::-webkit-details-marker]:hidden">
-          <i class="fa-solid fa-code-merge text-cyan-400"></i>
-          <span class="text-sm font-semibold text-cyan-300">Merge</span>
-          <span class="text-[10px] font-normal text-slate-500 ml-1">transport · set count · lanes per merge (2:1 / 3:1)</span>
-          <span id="autogen-merge-summary" class="ml-auto text-[10px] mono text-slate-600">0 merges</span>
-          <i class="fa-solid fa-chevron-down text-slate-600 text-xs ml-2 details-chevron"></i>
-        </summary>
-        <div class="px-4 pb-4 pt-1 border-t border-slate-800/70 space-y-3">
-          <p class="text-[11px] text-slate-500 leading-relaxed">
-            From the prints: enter <strong class="text-slate-400">how many merges</strong>, then for each merge pick
-            <strong class="text-slate-400">how many lanes</strong> feed it (2 = 2:1, 3 = 3:1) and the conveyors / PEs.
-            Check <strong class="text-cyan-400">Merge</strong> under Program pack, save, then Generate.
-            <span class="text-slate-600">2:1 emits <span class="mono">Conv_Merge</span> / <span class="mono">Merge_2to1</span> now; 3:1 is stored for later.</span>
-          </p>
-          <div class="flex flex-wrap gap-2 items-center">
-            <label class="text-[10px] text-slate-500">How many merges?
-              <input id="merge-2to1-count" type="number" min="0" max="40" value="0"
-                class="ml-1 w-16 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[11px] mono text-slate-200"
-                title="Number of merge points on this controller">
-            </label>
-            <button type="button" id="btn-merge-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs">
-              <i class="fa-solid fa-floppy-disk mr-1"></i>Save merges
-            </button>
-            <button type="button" id="btn-merge-from-transport" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-fuchsia-900/50 text-fuchsia-300" title="Import latest exports/transport-poc/transport_autogen_merges_*.json">
-              <i class="fa-solid fa-diagram-project mr-1"></i>From Transport Build
-            </button>
-            <button type="button" id="btn-merge-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">Clear</button>
-            <span id="merge-save-status" class="text-[10px] text-slate-600 mono"></span>
-          </div>
-          <div id="merge-2to1-rows" class="space-y-2 max-h-80 overflow-y-auto"></div>
+      
+      <!-- Compile hub: Transport + Sorter status (design happens on other tabs) -->
+      <div id="autogen-compile-hub" class="card shrink-0 border border-violet-900/40 bg-gradient-to-b from-[#12101a] to-[#0a1018] p-4">
+        <div class="flex flex-wrap items-center gap-2 mb-2">
+          <i class="fa-solid fa-layer-group text-violet-400"></i>
+          <span class="text-sm font-semibold text-violet-300">Compile hub</span>
+          <span class="text-[10px] text-slate-500">Transport + Sorter designs land here → Export L5X</span>
         </div>
-      </details>
-
-      <!-- Sorter build — BELOW current UI, collapsed by default. -->
-      <details id="autogen-sorter-panel" class="card shrink-0 border border-cyan-900/40 bg-gradient-to-b from-[#0c1520] to-[#0a1018] open:shadow-lg">
-        <summary class="cursor-pointer px-4 py-3 flex items-center gap-2 select-none list-none [&::-webkit-details-marker]:hidden">
-          <i class="fa-solid fa-shuffle text-cyan-400"></i>
-          <span class="text-sm font-semibold text-cyan-300">Sorter build</span>
-          <span class="text-[10px] font-normal text-slate-500 ml-1">induct · tracking · encoder · diverts · PE (config only)</span>
-          <span id="autogen-sorter-summary" class="ml-auto text-[10px] mono text-slate-600">collapsed · no config</span>
-          <i class="fa-solid fa-chevron-down text-slate-600 text-xs ml-2 details-chevron"></i>
-        </summary>
-        <div class="px-4 pb-4 pt-1 border-t border-slate-800/70 space-y-4">
-          <p class="text-[11px] text-slate-500 leading-relaxed">
-            Configure sorter geometry from RUN conveyors / photoeyes. Values save with site config.
-            Encoder <strong class="text-slate-400">Yes</strong> = real <span class="mono text-cyan-600/90">Enc_UDT</span> + AOI;
-            pick <span class="mono text-amber-200/90">ENC###</span> from RUN (prefix ENC = encoder).
-            <strong class="text-slate-400">No</strong> = <span class="mono text-slate-500">NO_Enc</span>.
-            <strong class="text-emerald-500/90">How to get Sorter_Track in Studio:</strong>
-            fill this panel → <strong>Save sorter config</strong> (auto-checks Program pack · Sorter Track)
-            → Generate PLC. That loads <span class="mono">Sorter_Track_Program.L5X</span> under
-            <span class="mono">P02_Track</span> (not ShippingSorter L3 — that is a different pack).
-          </p>
-
-          <!-- Induct -->
-          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">1 · Induct</div>
-            <div class="flex flex-wrap gap-2 items-end">
-              <div class="min-w-[12rem] flex-1">
-                <label class="block text-[10px] text-slate-500 mb-1">Induct conveyor</label>
-                <select id="sorter-induct-conv" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
-                  <option value="">Select induct conveyor…</option>
-                </select>
-              </div>
-              <div class="min-w-[12rem] flex-1">
-                <label class="block text-[10px] text-slate-500 mb-1">Induct photoeye</label>
-                <select id="sorter-induct-pe" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300">
-                  <option value="">Select photoeye…</option>
-                </select>
-              </div>
-              <div class="min-w-[7rem]">
-                <label class="block text-[10px] text-slate-500 mb-1">Encoder?</label>
-                <select id="sorter-induct-has-enc" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] text-slate-200">
-                  <option value="no">No</option>
-                  <option value="yes">Yes</option>
-                </select>
-              </div>
-            </div>
-            <div id="sorter-induct-enc-opts" class="hidden flex-wrap gap-2 items-end pt-1 border-t border-slate-800/80">
-              <div class="min-w-[10rem]">
-                <label class="block text-[10px] text-slate-500 mb-1">Encoder type (PLC AOI)</label>
-                <select id="sorter-induct-enc-type" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90">
-                  <option value="Enc_RIOCard">Enc_RIOCard (RIO pulse bit)</option>
-                  <option value="Enc_CounterCard">Enc_CounterCard (HSC / counter)</option>
-                  <option value="Enc_Virtual_DistBased">Enc_Virtual_DistBased (virtual)</option>
-                </select>
-              </div>
-              <div class="min-w-[12rem] flex-1">
-                <label class="block text-[10px] text-slate-500 mb-1">Encoder tag (optional)</label>
-                <select id="sorter-induct-enc-tag" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90">
-                  <option value="">Auto from conveyor (P###_Enc)…</option>
-                </select>
-              </div>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-[11px]">
+          <div class="rounded-xl border border-fuchsia-900/40 bg-[#0c1219] p-3">
+            <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/90 font-semibold mb-1">Transport</div>
+            <div id="autogen-hub-transport" class="mono text-slate-400">Apply from Transport Build</div>
+            <button type="button" class="tab-jump mt-2 text-[10px] text-fuchsia-300 hover:underline" data-jump-tab="transport">Open Transport Build →</button>
           </div>
-
-          <!-- Tracking conveyors -->
-          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="flex flex-wrap items-end gap-3">
-              <div>
-                <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold mb-1">2 · Tracking conveyors</div>
-                <label class="block text-[10px] text-slate-500 mb-1">How many tracking conveyors?</label>
-                <input id="sorter-track-count" type="number" min="0" max="40" value="0"
-                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
-              </div>
-              <span class="text-[10px] text-slate-600 pb-2">Each row: conveyor · PE · encoder Yes/No · type/tag when Yes</span>
-            </div>
-            <div id="sorter-track-rows" class="space-y-2 max-h-72 overflow-y-auto"></div>
+          <div class="rounded-xl border border-cyan-900/40 bg-[#0c1219] p-3">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold mb-1">Sorter</div>
+            <div id="autogen-hub-sorter" class="mono text-slate-400">Save config on Sorter Build</div>
+            <button type="button" class="tab-jump mt-2 text-[10px] text-cyan-300 hover:underline" data-jump-tab="sorter">Open Sorter Build →</button>
           </div>
-
-          <!-- Diverts -->
-          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">3 · Diverts</div>
-            <div class="flex flex-wrap items-end gap-3">
-              <div>
-                <label class="block text-[10px] text-slate-500 mb-1">How many diverts?</label>
-                <input id="sorter-divert-count" type="number" min="0" max="64" value="0"
-                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
-              </div>
-              <span class="text-[10px] text-slate-600 pb-2">Count only for now (lane naming later)</span>
-            </div>
+          <div class="rounded-xl border border-amber-900/40 bg-[#0c1219] p-3">
+            <div class="text-[10px] uppercase tracking-wider text-amber-400/90 font-semibold mb-1">Sawtooth</div>
+            <div id="autogen-hub-sawtooth" class="mono text-slate-400">Save on Sawtooth Merge tab</div>
+            <button type="button" class="tab-jump mt-2 text-[10px] text-amber-300 hover:underline" data-jump-tab="sawtooth">Open Sawtooth Merge →</button>
           </div>
-
-          <!-- Tracking photoeyes (standalone list) -->
-          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="flex flex-wrap items-end gap-3">
-              <div>
-                <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold mb-1">4 · Tracking photoeyes</div>
-                <label class="block text-[10px] text-slate-500 mb-1">How many tracking photoeyes?</label>
-                <input id="sorter-pe-count" type="number" min="0" max="64" value="0"
-                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
-              </div>
-              <span class="text-[10px] text-slate-600 pb-2">Enter a number → that many PE dropdowns appear</span>
-            </div>
-            <div id="sorter-pe-rows" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
-          </div>
-
-          <div class="flex flex-wrap gap-2 items-center">
-            <button type="button" id="btn-sorter-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs">
-              <i class="fa-solid fa-floppy-disk mr-1"></i>Save sorter config
-            </button>
-            <button type="button" id="btn-sorter-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">
-              Clear sorter fields
-            </button>
-            <span id="sorter-save-status" class="text-[10px] text-slate-600 mono"></span>
+          <div class="rounded-xl border border-violet-900/40 bg-[#0c1219] p-3">
+            <div class="text-[10px] uppercase tracking-wider text-violet-400/90 font-semibold mb-1">Site config</div>
+            <div id="autogen-hub-workbook" class="mono text-slate-400">Conveyors · areas · IO map</div>
+            <div class="text-[9px] text-slate-600 mt-2">Program pack checkboxes above · then Export</div>
           </div>
         </div>
-      </details>
+        <!-- Transport actions (hidden until Transport Build has content) + full clear -->
+        <div class="mt-3 pt-3 border-t border-slate-800/80 space-y-2">
+          <div id="autogen-hub-transport-actions" class="hidden space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/90 font-semibold">Transport Autogen</div>
+            <div class="flex flex-wrap gap-2">
+              <button type="button" id="btn-hub-from-transport" class="btn-ghost px-3 py-2 rounded-xl text-[11px] border border-fuchsia-800/50 text-fuchsia-300 hover:bg-fuchsia-950/40" title="Pull Transport Build graph into the Autogen workbook">
+                <i class="fa-solid fa-diagram-project mr-1"></i>Apply Transport Build → workbook
+              </button>
+              <button type="button" id="btn-hub-save-transport-wb" class="btn-ghost px-3 py-2 rounded-xl text-[11px] border border-violet-800/50 text-violet-300 hover:bg-violet-950/40" title="Save Autogen workbook to disk">
+                <i class="fa-solid fa-floppy-disk mr-1"></i>Save workbook
+              </button>
+            </div>
+          </div>
+          <div id="autogen-hub-empty-hint" class="text-[10px] text-slate-500 leading-relaxed">
+            Empty project — load a RUN on <strong class="text-slate-400">I/O &amp; Prints</strong>, or design on Transport / Sorter / Sawtooth.
+          </div>
+          <button type="button" id="btn-clear-project-builds" class="w-full sm:w-auto px-3 py-2.5 rounded-xl text-[11px] font-semibold bg-red-950/70 border border-red-600/70 text-red-200 hover:bg-red-900/80 hover:border-red-500" title="Wipe site config table, transport/sorter/sawtooth, merges, prints, and workbook file">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i>Clear project builds
+          </button>
+          <p class="text-[9px] text-slate-600 leading-relaxed">
+            Clear wipes Conveyors / IO map / Areas / Report, Transport · Sorter · Sawtooth, merges, prints, and
+            <span class="mono text-slate-500">workspace/autogen_workbook.json</span>. Asks for confirmation first.
+          </p>
+        </div>
+      </div>
+
       </div><!-- end scrollable autogen column -->
     </section>
 
@@ -1246,7 +1165,7 @@
       </div><!-- end I/O content row -->
     </section>
 
-    <!-- PLC Export — uses active RUN from I/O & Prints (no second tar.gz load) -->
+    <!-- PLC Export (tab removed from nav — section kept for legacy scripts) -->
     <section id="tab-plc" class="h-full hidden p-5 gap-3 flex flex-col">
       <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-emerald-400">How to run PLC Export — workflow</summary>
@@ -1325,6 +1244,7 @@
     </section>
 
     <!-- Ignition Build — layout + tag/device seed toward .gwbk -->
+    <!-- Ignition Build tab removed from nav — section kept -->
     <section id="tab-ignition" class="h-full hidden p-5 gap-3 flex flex-col">
       <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-orange-400">How to use Ignition Build — workflow</summary>
@@ -1416,7 +1336,267 @@
     </section>
 
     <!-- Transport Build POC — Node-RED style conveyor graph (visual first) -->
-    <section id="tab-transport" class="h-full hidden flex flex-col min-h-0 overflow-hidden relative">
+    
+    <!-- Sorter Build — design induct / tracking / diverts (compiled in PLC Autogen) -->
+    <section id="tab-sorter" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
+      <details class="workflow-help shrink-0 px-4 py-3">
+        <summary class="text-sm font-semibold text-cyan-400">How to build a sorter — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① Load RUN</strong><span>I/O &amp; Prints<br>conveyors + PEs</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>② Configure</strong><span>Induct · tracking<br>encoder · diverts</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box accent"><strong>③ Save</strong><span>Writes sorter_build<br>into workbook</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box violet"><strong>④ Autogen</strong><span>Check Sorter Track<br>Export L5X</span></div>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
+          Sorter design lives here. <strong class="text-violet-300">PLC Autogen</strong> compiles it with Transport + site config.
+          Encoder <strong class="text-slate-400">Yes</strong> = real Enc_UDT; <strong class="text-slate-400">No</strong> = NO_Enc.
+        </p>
+      </details>
+      <div class="flex-1 min-h-0 overflow-y-auto">
+        <div class="card border border-cyan-900/40 bg-gradient-to-b from-[#0c1520] to-[#0a1018] p-4 space-y-4" id="autogen-sorter-panel">
+          <div class="flex items-center gap-2 flex-wrap">
+            <i class="fa-solid fa-shuffle text-cyan-400"></i>
+            <span class="text-sm font-semibold text-cyan-300">Sorter design</span>
+            <span id="autogen-sorter-summary" class="ml-auto text-[10px] mono text-slate-600">no config</span>
+          </div>
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">0 · Sorter type</div>
+            <div class="flex flex-wrap gap-3 items-end">
+              <div class="min-w-[16rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Equipment pattern</label>
+                <select id="sorter-type" class="w-full bg-[#101820] border border-cyan-900/40 rounded-lg px-2 py-1.5 text-[11px] text-slate-200">
+                  <option value="">Select sorter type…</option>
+                  <option value="shoe_sorter">Shoe Sorter (ShippingSorter Area L3)</option>
+                  <option value="popup_divert">Pop-Up Divert Sorter</option>
+                </select>
+              </div>
+              <p class="text-[9px] text-slate-600 flex-1 min-w-[14rem] leading-relaxed">
+                Shoe = sliding shoe / ShippingSorter pack. Pop-Up = popup divert pack.
+                Saving config checks the matching Program pack box on PLC Autogen.
+              </p>
+            </div>
+          </div>
+
+          <p class="text-[11px] text-slate-500 leading-relaxed">
+            Configure sorter geometry from RUN conveyors / photoeyes. Values save with site config.
+            Encoder <strong class="text-slate-400">Yes</strong> = real <span class="mono text-cyan-600/90">Enc_UDT</span> + AOI;
+            pick <span class="mono text-amber-200/90">ENC###</span> from RUN (prefix ENC = encoder).
+            <strong class="text-slate-400">No</strong> = <span class="mono text-slate-500">NO_Enc</span>.
+            <strong class="text-emerald-500/90">How to get Sorter_Track in Studio:</strong>
+            fill this panel → <strong>Save sorter config</strong> (auto-checks Program pack · Sorter Track)
+            → Generate PLC. That loads <span class="mono">Sorter_Track_Program.L5X</span> under
+            <span class="mono">P02_Track</span> (not ShippingSorter L3 — that is a different pack).
+          </p>
+
+          <!-- Induct -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">1 · Induct</div>
+            <div class="flex flex-wrap gap-2 items-end">
+              <div class="min-w-[12rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Induct conveyor</label>
+                <select id="sorter-induct-conv" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+                  <option value="">Select induct conveyor…</option>
+                </select>
+              </div>
+              <div class="min-w-[12rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Induct photoeye</label>
+                <select id="sorter-induct-pe" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300">
+                  <option value="">Select photoeye…</option>
+                </select>
+              </div>
+              <div class="min-w-[7rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Encoder?</label>
+                <select id="sorter-induct-has-enc" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] text-slate-200">
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+              </div>
+            </div>
+            <div id="sorter-induct-enc-opts" class="hidden flex-wrap gap-2 items-end pt-1 border-t border-slate-800/80">
+              <div class="min-w-[10rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Encoder type (PLC AOI)</label>
+                <select id="sorter-induct-enc-type" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90">
+                  <option value="Enc_RIOCard">Enc_RIOCard (RIO pulse bit)</option>
+                  <option value="Enc_CounterCard">Enc_CounterCard (HSC / counter)</option>
+                  <option value="Enc_Virtual_DistBased">Enc_Virtual_DistBased (virtual)</option>
+                </select>
+              </div>
+              <div class="min-w-[12rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Encoder tag (optional)</label>
+                <select id="sorter-induct-enc-tag" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90">
+                  <option value="">Auto from conveyor (P###_Enc)…</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tracking conveyors -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold mb-1">2 · Tracking conveyors</div>
+                <label class="block text-[10px] text-slate-500 mb-1">How many tracking conveyors?</label>
+                <input id="sorter-track-count" type="number" min="0" max="40" value="0"
+                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <span class="text-[10px] text-slate-600 pb-2">Each row: conveyor · PE · encoder Yes/No · type/tag when Yes</span>
+            </div>
+            <div id="sorter-track-rows" class="space-y-2 max-h-72 overflow-y-auto"></div>
+          </div>
+
+          <!-- Diverts -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">3 · Diverts</div>
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <label class="block text-[10px] text-slate-500 mb-1">How many diverts?</label>
+                <input id="sorter-divert-count" type="number" min="0" max="64" value="0"
+                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <span class="text-[10px] text-slate-600 pb-2">Count only for now (lane naming later)</span>
+            </div>
+          </div>
+
+          <!-- Tracking photoeyes (standalone list) -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold mb-1">4 · Tracking photoeyes</div>
+                <label class="block text-[10px] text-slate-500 mb-1">How many tracking photoeyes?</label>
+                <input id="sorter-pe-count" type="number" min="0" max="64" value="0"
+                  class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <span class="text-[10px] text-slate-600 pb-2">Enter a number → that many PE dropdowns appear</span>
+            </div>
+            <div id="sorter-pe-rows" class="space-y-1.5 max-h-48 overflow-y-auto"></div>
+          </div>
+
+          <div class="flex flex-wrap gap-2 items-center">
+            <button type="button" id="btn-sorter-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs">
+              <i class="fa-solid fa-floppy-disk mr-1"></i>Save sorter config
+            </button>
+            <button type="button" id="btn-sorter-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">
+              Clear sorter fields
+            </button>
+            <span id="sorter-save-status" class="text-[10px] text-slate-600 mono"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- Sawtooth Merge — PLC4 collector track design (compiled via Autogen Sawtooth_Merge pack) -->
+    <section id="tab-sawtooth" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
+      <details class="workflow-help shrink-0 px-4 py-3">
+        <summary class="text-sm font-semibold text-amber-400">How sawtooth / collector merge works</summary>
+        <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
+          <p><strong class="text-amber-300">Gold pattern:</strong> Greensboro PLC4 <span class="mono">P02_Track_5ms</span> → program <span class="mono">Sawtooth_Merge</span> (collector tracking + lane reservation).</p>
+          <p><strong class="text-slate-300">Example equipment (PLC4):</strong> lanes <span class="mono">P412 / P120 / P218</span> (+ buffers) → collector <span class="mono">P414</span> (+ <span class="mono">P418</span>), encoder <span class="mono">P414_Enc</span>.</p>
+          <p><strong class="text-emerald-400">RUN tar.gz:</strong> yes — FortnaPlus tables <span class="mono">SawMerge.asc</span>, <span class="mono">SawLane.asc</span>, <span class="mono">HSSawLane.asc</span>, <span class="mono">HSSawParm.asc</span> (QNX saw-merge / C-side). Autogen emits Logix pack from gold L5X; Asc tables feed site parameters later.</p>
+          <p>Design here → Save → Autogen checks <strong>Sawtooth_Merge</strong> program pack → Export L5X.</p>
+        </div>
+      </details>
+      <div class="flex-1 min-h-0 overflow-y-auto">
+        <div class="card border border-amber-900/40 bg-gradient-to-b from-[#15120c] to-[#0a1018] p-4 space-y-4" id="sawtooth-panel">
+          <div class="flex items-center gap-2 flex-wrap">
+            <i class="fa-solid fa-bars-staggered text-amber-400"></i>
+            <span class="text-sm font-semibold text-amber-300">Sawtooth / collector merge</span>
+            <span id="sawtooth-summary" class="ml-auto text-[10px] mono text-slate-600">no config</span>
+          </div>
+
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">1 · Collector (takeaway)</div>
+            <div class="flex flex-wrap gap-2 items-end">
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Collector conveyor</label>
+                <select id="saw-collector-conv" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200"></select>
+              </div>
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Downstream / gap-store (optional)</label>
+                <select id="saw-downstream-conv" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200"></select>
+              </div>
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Collector encoder</label>
+                <select id="saw-collector-enc" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90"></select>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 items-end">
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Clctr speed (FPM)</label>
+                <input id="saw-clctr-speed" type="number" value="140" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Runout dist (pulses)</label>
+                <input id="saw-clctr-runout" type="number" value="0" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <label class="flex items-center gap-2 text-[10px] text-slate-400 pb-2">
+                <input id="saw-use-gapstore" type="checkbox" class="rounded border-slate-600"> Use gap-store belts
+              </label>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold mb-1">2 · Induct lanes</div>
+                <label class="block text-[10px] text-slate-500 mb-1">How many lanes?</label>
+                <input id="saw-lane-count" type="number" min="1" max="12" value="4" class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <span class="text-[9px] text-slate-600 pb-2">Defaults from PLC4 example: P412, P120, P218 (+ lane 4). Each lane: conveyor · PE · jam PE · merge-point PE</span>
+            </div>
+            <div id="saw-lane-rows" class="space-y-2 max-h-80 overflow-y-auto"></div>
+          </div>
+
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">3 · Collector PEs / tracking</div>
+            <div class="flex flex-wrap gap-2 items-end">
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Collector jam PE</label>
+                <select id="saw-coll-jam-pe" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300"></select>
+              </div>
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">End-of-wave PE</label>
+                <select id="saw-eow-pe" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300"></select>
+              </div>
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Merge instance / MRG#</label>
+                <input id="saw-mrg-id" type="text" value="414" placeholder="414" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90">
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-3 text-[10px] text-slate-400">
+              <label class="flex items-center gap-1.5"><input id="saw-enable-trk" type="checkbox" checked class="rounded border-slate-600"> Enable collector track (Merge2_Trk)</label>
+              <label class="flex items-center gap-1.5"><input id="saw-enable-resv" type="checkbox" checked class="rounded border-slate-600"> Enable lane reservation</label>
+              <label class="flex items-center gap-1.5"><input id="saw-no-carton-check" type="checkbox" class="rounded border-slate-600"> Enable no-carton check</label>
+            </div>
+          </div>
+
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-1">
+            <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Reference · FortnaPlus RUN tables</div>
+            <p class="text-[9px] text-slate-600 leading-relaxed">
+              Tar.gz includes <span class="mono text-slate-400">SawMerge.asc</span> (MotorIO, ReserveIN, EOW_*),
+              <span class="mono text-slate-400">SawLane.asc</span> / <span class="mono text-slate-400">HSSawLane.asc</span> (LanePE, Slow/Fast bits, gap timers),
+              <span class="mono text-slate-400">HSSawParm.asc</span> (reservation spacing). QNX SawMerge / HSSawMerge modules are C-side; Logix pack is gold <span class="mono">Sawtooth_Merge_Program.L5X</span>.
+            </p>
+          </div>
+
+          <div class="flex flex-wrap gap-2 items-center">
+            <button type="button" id="btn-saw-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-amber-800/50 text-amber-200">
+              <i class="fa-solid fa-floppy-disk mr-1"></i>Save sawtooth config
+            </button>
+            <button type="button" id="btn-saw-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">Clear</button>
+            <button type="button" id="btn-saw-defaults-plc4" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-slate-700 text-slate-300" title="Prefill Greensboro PLC4 example tags">
+              Prefill PLC4 example
+            </button>
+            <span id="saw-save-status" class="text-[10px] text-slate-600 mono"></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+<section id="tab-transport" class="h-full hidden flex flex-col min-h-0 overflow-hidden relative">
       <!-- In-app dialog (Electron disables window.prompt) — fixed so it always covers the window -->
       <div id="tb-dialog" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/70" style="display:none">
         <div class="bg-[#131c27] border border-fuchsia-800/50 rounded-xl p-4 w-[360px] max-w-[92vw] shadow-2xl space-y-3">
@@ -1452,7 +1632,7 @@
       <div class="shrink-0 px-4 py-2 border-b border-slate-800 bg-[#0c1219] flex items-center gap-3 flex-wrap">
         <div class="text-sm font-semibold text-fuchsia-300">
           <i class="fa-solid fa-diagram-project mr-1.5"></i>Transport Build
-          <span class="text-[10px] font-normal text-fuchsia-400/70 ml-1">POC — areas + transport + merges → Autogen</span>
+          <span class="text-[10px] font-normal text-fuchsia-400/70 ml-1">Areas · merges · PE roles → Apply → Autogen</span>
         </div>
         <div class="flex items-center gap-2 ml-auto">
           <label class="text-[10px] text-slate-500 uppercase tracking-wider">Area</label>

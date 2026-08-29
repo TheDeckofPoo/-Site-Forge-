@@ -39,33 +39,107 @@ function setBusy(busy) {
 }
 
 // All main panes — must include every data-tab value or that tab stays blank
-const ALL_TABS = ['search', 'workspace', 'io', 'recipes', 'plc', 'autogen', 'ignition', 'transport'];
+// plc + ignition kept in DOM (legacy) but removed from nav
+const ALL_TABS = ['search', 'workspace', 'io', 'recipes', 'plc', 'autogen', 'ignition', 'transport', 'sorter', 'sawtooth'];
+
+function activateTab(tab) {
+  if (!tab) return;
+  document.querySelectorAll('.tab-btn').forEach((b) => {
+    b.classList.toggle('active', b.dataset.tab === tab);
+  });
+  ALL_TABS.forEach((t) => {
+    const pane = $(`tab-${t}`);
+    if (pane) pane.classList.toggle('hidden', t !== tab);
+  });
+  if (tab === 'recipes') renderRecipeList();
+  if (tab === 'io') {
+    refreshIoBanks().then(() => {
+      if (ioState.ocrResult) mergeOcrPrintParamsIntoDrives(ioState.ocrResult);
+    }).catch(() => {});
+  }
+  if (tab === 'autogen') {
+    ensureAutogenWorkbookFromRun({ reason: 'opened PLC Autogen tab' }).catch(() => {});
+    refreshAutogenCompileHub();
+  }
+  if (tab === 'transport' && typeof window.transportBuildRefresh === 'function') {
+    window.transportBuildRefresh();
+  }
+  if (tab === 'sorter') {
+    try { renderSorterBuild(); } catch (_) { /* ignore */ }
+    try { updateSorterSummary(); } catch (_) { /* ignore */ }
+  }
+  if (tab === 'sawtooth') {
+    try { renderSawtoothBuild(); } catch (_) { /* ignore */ }
+    try { updateSawtoothSummary(); } catch (_) { /* ignore */ }
+  }
+}
+
+/** PLC Autogen compile hub — status from Transport Apply + Sorter Save */
+function refreshAutogenCompileHub() {
+  const tEl = $('autogen-hub-transport');
+  const sEl = $('autogen-hub-sorter');
+  const wEl = $('autogen-hub-workbook');
+  const merges = autogenState.merges_2to1 || [];
+  const wb = autogenState.workbook;
+  const tbRows = (wb?.conveyors || []).filter((r) => r && (r.transport_build || r.source === 'transport_build_graph'));
+  let hasTransportGraph = false;
+  try {
+    const raw = localStorage.getItem('siteforge.transportBuild.v1');
+    if (raw) {
+      const data = JSON.parse(raw);
+      hasTransportGraph = Array.isArray(data.areas) && data.areas.some((a) => (a.nodes || []).length);
+    }
+  } catch (_) { /* ignore */ }
+  if (tEl) {
+    tEl.textContent = merges.length || tbRows.length
+      ? `${tbRows.length} transport row(s) · ${merges.length} merge(s)`
+      : (hasTransportGraph ? 'Graph on Transport Build — Apply when ready' : 'Empty — open Transport Build');
+  }
+  const s = autogenState.sorter || {};
+  const trackN = Number(s.tracking_count || 0);
+  const divertN = Number(s.divert_count || 0);
+  const stype = s.sorter_type === 'shoe_sorter' ? 'shoe' : (s.sorter_type === 'popup_divert' ? 'popup' : '');
+  const hasSorter = !!(s.induct_conveyor || trackN || divertN || stype);
+  if (sEl) {
+    sEl.textContent = hasSorter
+      ? `${stype || 'type?'} · induct ${s.induct_conveyor || '—'} · track ${trackN} · divert ${divertN}`
+      : 'Empty — open Sorter Build';
+  }
+  const saw = autogenState.sawtooth || {};
+  const sawEl = $('autogen-hub-sawtooth');
+  const hasSaw = !!saw.collector_conveyor;
+  if (sawEl) {
+    const ln = Number(saw.lane_count || (saw.lanes || []).length || 0);
+    sawEl.textContent = hasSaw
+      ? `Collector ${saw.collector_conveyor} · ${ln} lane(s) · MRG${saw.mrg_id || '—'}`
+      : 'Empty — open Sawtooth Merge';
+  }
+  const convN = (wb?.conveyors || []).filter((r) => r?.include !== false).length;
+  if (wEl) {
+    wEl.textContent = convN
+      ? `${convN} conveyor(s) · ${(wb.areas || []).length || '—'} area(s)`
+      : 'Empty — load RUN to build site config';
+  }
+  // Show Apply/Save only when there is something to apply
+  const showTransportActions = hasTransportGraph || tbRows.length > 0 || merges.length > 0;
+  $('autogen-hub-transport-actions')?.classList.toggle('hidden', !showTransportActions);
+  $('autogen-hub-empty-hint')?.classList.toggle(
+    'hidden',
+    !!(convN || hasTransportGraph || hasSorter || hasSaw || merges.length)
+  );
+}
 
 // Tabs
 document.querySelectorAll('.tab-btn').forEach((btn) => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach((b) => b.classList.remove('active'));
-    btn.classList.add('active');
-    const tab = btn.dataset.tab;
-    ALL_TABS.forEach((t) => {
-      const pane = $(`tab-${t}`);
-      if (pane) pane.classList.toggle('hidden', t !== tab);
-    });
-    if (tab === 'recipes') renderRecipeList();
-    if (tab === 'io') {
-      // Reload banks from RUN, then re-apply any OCR print params (don't wipe PRINT column)
-      refreshIoBanks().then(() => {
-        if (ioState.ocrResult) mergeOcrPrintParamsIntoDrives(ioState.ocrResult);
-      }).catch(() => {});
-    }
-    if (tab === 'autogen') {
-      // Site config table: auto-build from active RUN when engineer opens PLC Autogen
-      ensureAutogenWorkbookFromRun({ reason: 'opened PLC Autogen tab' }).catch(() => {});
-    }
-    if (tab === 'transport' && typeof window.transportBuildRefresh === 'function') {
-      window.transportBuildRefresh();
-    }
-  });
+  btn.addEventListener('click', () => activateTab(btn.dataset.tab));
+});
+
+// Compile hub jump links
+document.addEventListener('click', (ev) => {
+  const jump = ev.target.closest?.('[data-jump-tab]');
+  if (!jump) return;
+  ev.preventDefault();
+  activateTab(jump.dataset.jumpTab);
 });
 
 // Default landing tab: I/O & Prints (recontrol focus)
@@ -3041,6 +3115,7 @@ const autogenState = {
   selected: new Set(),
   // Sorter build UI
   sorter: {
+    sorter_type: '', // shoe_sorter | popup_divert
     induct_conveyor: '',
     induct_pe: '',
     tracking_count: 0,
@@ -3048,6 +3123,23 @@ const autogenState = {
     divert_count: 0,
     tracking_pe_count: 0,
     tracking_pes: [], // [pe name, ...]
+  },
+  // Sawtooth / collector merge (PLC4 Sawtooth_Merge pattern)
+  sawtooth: {
+    collector_conveyor: '',
+    downstream_conveyor: '',
+    collector_encoder: '',
+    clctr_speed_fpm: 140,
+    clctr_runout_dist: 0,
+    use_gapstore: false,
+    lane_count: 4,
+    lanes: [], // [{ conveyor, pe, jam_pe, merge_pe }]
+    collector_jam_pe: '',
+    eow_pe: '',
+    mrg_id: '414',
+    enable_track: true,
+    enable_reserve: true,
+    no_carton_check: false,
   },
   // Site Twin gaps / SpaceXAI patches
   twinGaps: [],
@@ -3070,6 +3162,7 @@ function emptySorterTrackRow() {
 
 function defaultSorterConfig() {
   return {
+    sorter_type: '', // shoe_sorter | popup_divert
     induct_conveyor: '',
     induct_pe: '',
     induct_has_encoder: 'no',
@@ -3081,6 +3174,29 @@ function defaultSorterConfig() {
     tracking_pe_count: 0,
     tracking_pes: [],
   };
+}
+
+function defaultSawtoothConfig() {
+  return {
+    collector_conveyor: '',
+    downstream_conveyor: '',
+    collector_encoder: '',
+    clctr_speed_fpm: 140,
+    clctr_runout_dist: 0,
+    use_gapstore: false,
+    lane_count: 4,
+    lanes: [],
+    collector_jam_pe: '',
+    eow_pe: '',
+    mrg_id: '414',
+    enable_track: true,
+    enable_reserve: true,
+    no_carton_check: false,
+  };
+}
+
+function emptySawLaneRow() {
+  return { conveyor: '', pe: '', jam_pe: '', merge_pe: '' };
 }
 
 function normalizeSorterTrackRow(row) {
@@ -3263,6 +3379,7 @@ function sorterSelectHtml(id, list, selected, emptyLabel) {
 }
 
 function updateSorterSummary() {
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   const el = $('autogen-sorter-summary');
   if (!el) return;
   const s = autogenState.sorter || defaultSorterConfig();
@@ -3514,7 +3631,13 @@ function wireSorterBuildUi() {
     updateSorterSummary();
   });
 
+  $('sorter-type')?.addEventListener('change', () => {
+    autogenState.sorter.sorter_type = $('sorter-type').value || '';
+    updateSorterSummary();
+  });
+
   $('btn-sorter-save')?.addEventListener('click', async () => {
+    if ($('sorter-type')) autogenState.sorter.sorter_type = $('sorter-type').value || '';
     persistSorterToWorkbook();
     const st = $('sorter-save-status');
     // Auto-enable Program pack · Sorter Track when config has real content
@@ -3524,12 +3647,21 @@ function wireSorterBuildUi() {
       || (s.tracking_count || 0) > 0
       || (s.divert_count || 0) > 0
       || (s.tracking || []).some((t) => t && t.conveyor)
+      || s.sorter_type
     );
     if (hasData) {
       const pack = $('autogen-opt-sorter-track');
       if (pack && !pack.checked) {
         pack.checked = true;
         autogenLog('Saved sorter config → checked Program pack · Sorter Track for next generate.', 'ok');
+      }
+      if (s.sorter_type === 'shoe_sorter' && $('autogen-opt-shippingsorter')) {
+        $('autogen-opt-shippingsorter').checked = true;
+        autogenLog('Shoe Sorter → checked ShippingSorter (Shoe) pack.', 'ok');
+      }
+      if (s.sorter_type === 'popup_divert' && $('autogen-opt-shippingsorter-popup')) {
+        $('autogen-opt-shippingsorter-popup').checked = true;
+        autogenLog('Pop-Up Divert → checked ShippingSorter (PopUp) pack.', 'ok');
       }
     }
     try {
@@ -3565,8 +3697,196 @@ function wireSorterBuildUi() {
       autogenState.sorter = { ...defaultSorterConfig(), ...JSON.parse(raw) };
     }
   } catch (_) { /* ignore */ }
+  if ($('sorter-type')) $('sorter-type').value = autogenState.sorter.sorter_type || '';
   renderSorterBuild();
 }
+
+/* —— Sawtooth / collector merge design —— */
+function updateSawtoothSummary() {
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  const el = $('sawtooth-summary');
+  if (!el) return;
+  const s = autogenState.sawtooth || {};
+  const n = Number(s.lane_count || (s.lanes || []).length || 0);
+  el.textContent = s.collector_conveyor
+    ? `${s.collector_conveyor} · ${n} lane(s) · MRG${s.mrg_id || '?'}`
+    : 'no config';
+}
+
+function persistSawtoothToWorkbook() {
+  if (!autogenState.workbook) autogenState.workbook = { conveyors: [], options: {} };
+  autogenState.workbook.sawtooth_build = { ...autogenState.sawtooth };
+}
+
+function fillSawSelect(sel, values, current, allowBlank = true) {
+  if (!sel) return;
+  const cur = current || '';
+  let html = allowBlank ? '<option value="">—</option>' : '';
+  (values || []).forEach((v) => {
+    html += `<option value="${escapeHtml(v)}" ${v === cur ? 'selected' : ''}>${escapeHtml(v)}</option>`;
+  });
+  if (cur && !(values || []).includes(cur)) {
+    html += `<option value="${escapeHtml(cur)}" selected>${escapeHtml(cur)} (custom)</option>`;
+  }
+  sel.innerHTML = html;
+}
+
+function renderSawtoothBuild() {
+  const s = autogenState.sawtooth || (autogenState.sawtooth = defaultSawtoothConfig());
+  const convs = typeof conveyorNameList === 'function' ? conveyorNameList() : [];
+  const pes = typeof photoeyeNameList === 'function' ? photoeyeNameList() : [];
+  const encs = typeof encoderNameList === 'function' ? encoderNameList() : [];
+
+  fillSawSelect($('saw-collector-conv'), convs, s.collector_conveyor);
+  fillSawSelect($('saw-downstream-conv'), convs, s.downstream_conveyor);
+  fillSawSelect($('saw-collector-enc'), encs.length ? encs : convs.map((c) => `${c}_Enc`), s.collector_encoder);
+  fillSawSelect($('saw-coll-jam-pe'), pes, s.collector_jam_pe);
+  fillSawSelect($('saw-eow-pe'), pes, s.eow_pe);
+  if ($('saw-clctr-speed')) $('saw-clctr-speed').value = String(s.clctr_speed_fpm ?? 140);
+  if ($('saw-clctr-runout')) $('saw-clctr-runout').value = String(s.clctr_runout_dist ?? 0);
+  if ($('saw-use-gapstore')) $('saw-use-gapstore').checked = !!s.use_gapstore;
+  if ($('saw-lane-count')) $('saw-lane-count').value = String(s.lane_count || 4);
+  if ($('saw-mrg-id')) $('saw-mrg-id').value = s.mrg_id || '414';
+  if ($('saw-enable-trk')) $('saw-enable-trk').checked = s.enable_track !== false;
+  if ($('saw-enable-resv')) $('saw-enable-resv').checked = s.enable_reserve !== false;
+  if ($('saw-no-carton-check')) $('saw-no-carton-check').checked = !!s.no_carton_check;
+
+  const n = Math.max(1, Math.min(12, Number(s.lane_count) || 4));
+  s.lane_count = n;
+  while ((s.lanes || []).length < n) s.lanes.push(emptySawLaneRow());
+  s.lanes = (s.lanes || []).slice(0, n);
+
+  const host = $('saw-lane-rows');
+  if (host) {
+    host.innerHTML = s.lanes.map((lane, i) => `
+      <div class="rounded-lg border border-slate-800 bg-[#070b12] p-2 grid grid-cols-1 md:grid-cols-4 gap-2" data-saw-lane="${i}">
+        <div>
+          <label class="block text-[9px] text-slate-500 mb-0.5">Lane ${i + 1} conveyor</label>
+          <select data-saw-field="conveyor" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-slate-200"></select>
+        </div>
+        <div>
+          <label class="block text-[9px] text-slate-500 mb-0.5">Lane PE</label>
+          <select data-saw-field="pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+        </div>
+        <div>
+          <label class="block text-[9px] text-slate-500 mb-0.5">Jam PE</label>
+          <select data-saw-field="jam_pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+        </div>
+        <div>
+          <label class="block text-[9px] text-slate-500 mb-0.5">Merge-point PE</label>
+          <select data-saw-field="merge_pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+        </div>
+      </div>`).join('');
+    host.querySelectorAll('[data-saw-lane]').forEach((row) => {
+      const i = Number(row.dataset.sawLane);
+      const lane = s.lanes[i] || emptySawLaneRow();
+      row.querySelectorAll('[data-saw-field]').forEach((sel) => {
+        const field = sel.dataset.sawField;
+        const opts = field === 'conveyor' ? convs : pes;
+        fillSawSelect(sel, opts, lane[field] || '');
+        sel.addEventListener('change', () => {
+          s.lanes[i] = s.lanes[i] || emptySawLaneRow();
+          s.lanes[i][field] = sel.value || '';
+          updateSawtoothSummary();
+        });
+      });
+    });
+  }
+  updateSawtoothSummary();
+}
+
+function wireSawtoothBuildOnce() {
+  if (wireSawtoothBuildOnce._done) return;
+  wireSawtoothBuildOnce._done = true;
+
+  $('saw-lane-count')?.addEventListener('change', () => {
+    const n = Math.max(1, Math.min(12, parseInt($('saw-lane-count').value, 10) || 4));
+    autogenState.sawtooth.lane_count = n;
+    renderSawtoothBuild();
+  });
+  const bind = (id, fn) => $(id)?.addEventListener('change', fn);
+  bind('saw-collector-conv', () => { autogenState.sawtooth.collector_conveyor = $('saw-collector-conv').value || ''; updateSawtoothSummary(); });
+  bind('saw-downstream-conv', () => { autogenState.sawtooth.downstream_conveyor = $('saw-downstream-conv').value || ''; updateSawtoothSummary(); });
+  bind('saw-collector-enc', () => { autogenState.sawtooth.collector_encoder = $('saw-collector-enc').value || ''; updateSawtoothSummary(); });
+  bind('saw-clctr-speed', () => { autogenState.sawtooth.clctr_speed_fpm = Number($('saw-clctr-speed').value) || 140; });
+  bind('saw-clctr-runout', () => { autogenState.sawtooth.clctr_runout_dist = Number($('saw-clctr-runout').value) || 0; });
+  bind('saw-use-gapstore', () => { autogenState.sawtooth.use_gapstore = !!$('saw-use-gapstore').checked; });
+  bind('saw-coll-jam-pe', () => { autogenState.sawtooth.collector_jam_pe = $('saw-coll-jam-pe').value || ''; });
+  bind('saw-eow-pe', () => { autogenState.sawtooth.eow_pe = $('saw-eow-pe').value || ''; });
+  bind('saw-mrg-id', () => { autogenState.sawtooth.mrg_id = $('saw-mrg-id').value || '414'; updateSawtoothSummary(); });
+  bind('saw-enable-trk', () => { autogenState.sawtooth.enable_track = !!$('saw-enable-trk').checked; });
+  bind('saw-enable-resv', () => { autogenState.sawtooth.enable_reserve = !!$('saw-enable-resv').checked; });
+  bind('saw-no-carton-check', () => { autogenState.sawtooth.no_carton_check = !!$('saw-no-carton-check').checked; });
+
+  $('btn-saw-defaults-plc4')?.addEventListener('click', () => {
+    const s = autogenState.sawtooth;
+    s.collector_conveyor = 'P414';
+    s.downstream_conveyor = 'P418';
+    s.collector_encoder = 'P414_Enc';
+    s.clctr_speed_fpm = 140;
+    s.mrg_id = '414';
+    s.lane_count = 4;
+    s.lanes = [
+      { conveyor: 'P412', pe: 'PE410_P', jam_pe: '', merge_pe: '' },
+      { conveyor: 'P120', pe: 'PE118_P', jam_pe: '', merge_pe: '' },
+      { conveyor: 'P218', pe: 'PE216_P', jam_pe: '', merge_pe: '' },
+      { conveyor: 'P219', pe: 'PE219_P', jam_pe: 'PE219A_J', merge_pe: '' },
+    ];
+    s.collector_jam_pe = 'PE414_J';
+    s.eow_pe = '';
+    s.enable_track = true;
+    s.enable_reserve = true;
+    renderSawtoothBuild();
+    const st = $('saw-save-status');
+    if (st) { st.textContent = 'PLC4 example filled — review then Save'; st.className = 'text-[10px] text-amber-400 mono'; }
+  });
+
+  $('btn-saw-save')?.addEventListener('click', async () => {
+    persistSawtoothToWorkbook();
+    const s = autogenState.sawtooth || {};
+    const hasData = !!(s.collector_conveyor || (s.lanes || []).some((l) => l && l.conveyor));
+    if (hasData && $('autogen-opt-sawtooth')) {
+      $('autogen-opt-sawtooth').checked = true;
+      autogenLog('Saved sawtooth config → checked Program pack · Sawtooth Merge.', 'ok');
+    }
+    try {
+      if (typeof fortnaAPI?.autogenWorkbookSave === 'function') {
+        await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
+      }
+      try { localStorage.setItem('fortna_sawtooth_build', JSON.stringify(autogenState.sawtooth)); } catch (_) { /* ignore */ }
+      const st = $('saw-save-status');
+      if (st) { st.textContent = hasData ? 'Saved · Sawtooth pack ON' : 'Saved'; st.className = 'text-[10px] text-emerald-500 mono'; }
+      updateSawtoothSummary();
+      autogenLog('Sawtooth merge config saved.', 'ok');
+    } catch (e) {
+      const st = $('saw-save-status');
+      if (st) { st.textContent = 'Save failed'; st.className = 'text-[10px] text-red-400 mono'; }
+      autogenLog(`Sawtooth save failed: ${e?.message || e}`, 'err');
+    }
+  });
+
+  $('btn-saw-clear')?.addEventListener('click', () => {
+    autogenState.sawtooth = defaultSawtoothConfig();
+    persistSawtoothToWorkbook();
+    renderSawtoothBuild();
+    const st = $('saw-save-status');
+    if (st) { st.textContent = 'Cleared'; st.className = 'text-[10px] text-slate-500 mono'; }
+  });
+
+  try {
+    const raw = localStorage.getItem('fortna_sawtooth_build');
+    if (raw && !autogenState.workbook?.sawtooth_build) {
+      autogenState.sawtooth = { ...defaultSawtoothConfig(), ...JSON.parse(raw) };
+    }
+  } catch (_) { /* ignore */ }
+  if (autogenState.workbook?.sawtooth_build) {
+    autogenState.sawtooth = { ...defaultSawtoothConfig(), ...autogenState.workbook.sawtooth_build };
+  }
+  renderSawtoothBuild();
+}
+
+// Boot sawtooth wiring after DOM ready (same pattern as sorter)
+setTimeout(() => { try { wireSawtoothBuildOnce(); } catch (_) { /* ignore */ } }, 0);
 
 function autogenLog(msg, level = 'info') {
   const el = $('autogen-log');
@@ -3703,18 +4023,22 @@ function renderWorkbook() {
   const countEl = $('autogen-wb-count');
   const typeBar = $('autogen-wb-type-bar');
   const areasEl = $('autogen-wb-areas');
-  if (!wb) {
+  const rows = wb?.conveyors || [];
+  if (!wb || !rows.length) {
     if (tbody) {
       tbody.innerHTML = '<tr><td colspan="8" class="py-6 px-3 text-slate-500 text-center">'
         + 'No site config yet.<br><span class="text-slate-400">Load a .tar.gz on I/O &amp; Prints</span> — '
         + 'conveyors appear here with Area / Safety / TYPE / Exit PE dropdowns.</td></tr>';
     }
+    if (ioBody) {
+      ioBody.innerHTML = '<tr><td colspan="6" class="py-4 px-2 text-slate-500">IO map fills with workbook build.</td></tr>';
+    }
     if (countEl) countEl.textContent = '0 rows';
     if (typeBar) { typeBar.classList.add('hidden'); typeBar.innerHTML = ''; }
     if (areasEl) areasEl.textContent = '—';
+    if ($('autogen-detail')) $('autogen-detail').textContent = '—';
     return;
   }
-  const rows = wb.conveyors || [];
   const opts = wb.options || {};
   const types = opts.types || wb.autogen_types || [
     'Transport with MS', 'Accumulation with MS', 'Transport with VFD', 'Accumulation with VFD',
@@ -4240,6 +4564,7 @@ async function runAutogenGenerate(mode) {
     autogenLog('ShippingSorter (PopUp Divert) selected — pack mapping TBD (no L5X merge yet).', 'warn');
   }
   if ($('autogen-opt-wcs')?.checked) includePrograms.push('WCS_Interface_TCP_IP');
+  if ($('autogen-opt-sawtooth')?.checked) includePrograms.push('Sawtooth_Merge');
   // Merges → workbook.merges_2to1 (emitted when pack checkbox on)
   const mergeOn = !!$('autogen-opt-merges-2to1')?.checked;
   const mergeRows = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
@@ -4689,6 +5014,161 @@ $('btn-autogen-wb-apply-area')?.addEventListener('click', () => bulkApplyArea())
 try { wireMergeBuildUi(); } catch (e) { console.warn('merge UI wire failed', e); }
 try { wireSorterBuildUi(); } catch (e) { console.warn('sorter UI wire failed', e); }
 
+/** Compile-hub: pull Transport Build → Autogen (same as legacy merge-from-transport). */
+$('btn-hub-from-transport')?.addEventListener('click', () => {
+  const legacy = $('btn-merge-from-transport');
+  if (legacy && legacy !== $('btn-hub-from-transport')) {
+    legacy.click();
+    return;
+  }
+  // Inline path when merge panel button is absent
+  (async () => {
+    try {
+      let graph = null;
+      try {
+        const raw = localStorage.getItem('siteforge.transportBuild.v1');
+        if (raw) {
+          const data = JSON.parse(raw);
+          if (Array.isArray(data.areas)) graph = { version: 1, areas: data.areas };
+        }
+      } catch (_) { /* ignore */ }
+      if (!graph?.areas?.length) {
+        autogenLog('No Transport Build areas yet — draw Transport1 / Merge5 on Transport Build, then Apply or use this button.', 'warn');
+        return;
+      }
+      const res = await applyTransportMergesToAutogen({ graph });
+      if (!res?.ok) {
+        autogenLog(`Transport stub import failed: ${res?.error || 'unknown'}`, 'err');
+        return;
+      }
+      refreshAutogenCompileHub();
+      autogenLog(`Transport stubs/merges applied: ${res.summary || 'ok'}`, 'ok');
+    } catch (e) {
+      autogenLog(`Transport stub import error: ${e?.message || e}`, 'err');
+    }
+  })();
+});
+
+$('btn-hub-save-transport-wb')?.addEventListener('click', async () => {
+  await saveAutogenWorkbook();
+  refreshAutogenCompileHub();
+});
+
+/**
+ * Full project wipe: site-config table + Transport/Sorter/Sawtooth + merges + prints + workbook file.
+ * Does not delete the original .tar.gz on disk; clears in-app Autogen state so you start empty.
+ */
+async function clearProjectBuilds() {
+  const ok = confirm(
+    'Clear ALL project builds (start empty)?\n\n'
+    + 'This will wipe:\n'
+    + '• Site config table — Conveyors / IO map / Areas / Report\n'
+    + '• workspace/autogen_workbook.json on disk\n'
+    + '• Transport Build areas and PE role selections\n'
+    + '• Sawtooth + Sorter configs and merge rows\n'
+    + '• Panel prints + OCR / merge-crosswalk results\n'
+    + '• Program-pack checkboxes\n\n'
+    + 'You will need to load a RUN again to refill the table.\n'
+    + 'This cannot be undone from the UI. Continue?'
+  );
+  if (!ok) return;
+
+  const ok2 = confirm(
+    'Final warning: wipe site config + Transport / Sawtooth / Sorter / merges / prints now?'
+  );
+  if (!ok2) return;
+
+  try {
+    if (typeof window.transportBuildClearAll === 'function') {
+      window.transportBuildClearAll();
+    } else {
+      try { localStorage.removeItem('siteforge.transportBuild.v1'); } catch (_) { /* ignore */ }
+    }
+    ['tb-insp-pe-role-exit', 'tb-insp-pe-role-add', 'tb-insp-pe-role-jam', 'tb-insp-pe-role-full'].forEach((id) => {
+      const el = $(id);
+      if (el) el.checked = false;
+    });
+    $('tb-insp-pe-roles-wrap')?.classList.add('hidden');
+    $('tb-inspector')?.classList.add('hidden');
+    $('tb-inspector-empty')?.classList.remove('hidden');
+    if (typeof window.transportBuildRefresh === 'function') window.transportBuildRefresh();
+
+    autogenState.merges_2to1 = [];
+    try { localStorage.removeItem('fortna_merges_2to1'); } catch (_) { /* ignore */ }
+    if ($('merge-2to1-count')) $('merge-2to1-count').value = '0';
+    try { renderMergeBuild(); } catch (_) { /* ignore */ }
+
+    autogenState.sawtooth = defaultSawtoothConfig();
+    try { localStorage.removeItem('fortna_sawtooth_build'); } catch (_) { /* ignore */ }
+    try { renderSawtoothBuild(); updateSawtoothSummary(); } catch (_) { /* ignore */ }
+
+    autogenState.sorter = defaultSorterConfig();
+    try { localStorage.removeItem('fortna_sorter_build'); } catch (_) { /* ignore */ }
+    try { renderSorterBuild(); } catch (_) { /* ignore */ }
+
+    // Uncheck all program-pack options
+    [
+      'autogen-opt-merges-2to1',
+      'autogen-opt-shippingsorter',
+      'autogen-opt-shippingsorter-popup',
+      'autogen-opt-sorter-track',
+      'autogen-opt-sawtooth',
+      'autogen-opt-wcs',
+    ].forEach((id) => {
+      if ($(id)) $(id).checked = false;
+    });
+
+    // Wipe entire Autogen workbook (conveyors / IO / areas / report) and persist empty file
+    const emptyWb = {
+      version: 1,
+      kind: 'fortna_autogen_workbook',
+      generated_utc: new Date().toISOString(),
+      source: 'cleared',
+      site: '',
+      conveyors: [],
+      io_map: [],
+      areas: [],
+      merges_2to1: [],
+      options: { areas: [], safety_zones: [], exit_pe: [], types: [] },
+      stats: { conveyor_count: 0, io_mapped: 0 },
+      type_counts: {},
+    };
+    autogenState.workbook = emptyWb;
+    autogenState.selected = new Set();
+    if (typeof fortnaAPI?.autogenWorkbookSave === 'function') {
+      await fortnaAPI.autogenWorkbookSave({ workbook: emptyWb });
+    }
+    try { setWorkbook(emptyWb); } catch (_) {
+      try { renderWorkbook(); } catch (__) { /* ignore */ }
+    }
+
+    if ($('autogen-summary')) {
+      $('autogen-summary').innerHTML =
+        'Cleared — load a <strong class="text-slate-300">.tar.gz</strong> on I/O &amp; Prints to refill site config.';
+    }
+    if ($('autogen-stats')) {
+      $('autogen-stats').classList.add('hidden');
+      $('autogen-stats').innerHTML = '';
+    }
+    if ($('autogen-wb-count')) $('autogen-wb-count').textContent = '0 rows';
+    if ($('autogen-detail')) $('autogen-detail').textContent = '—';
+    setAutogenStatus('Cleared', 'idle');
+
+    try {
+      clearIoCompareState({ clearPanels: true });
+    } catch (_) { /* ignore */ }
+
+    refreshAutogenCompileHub();
+    autogenLog('Project cleared — site config + Transport / Sorter / Sawtooth / merges / prints wiped.', 'ok');
+  } catch (e) {
+    autogenLog(`Clear project builds failed: ${e?.message || e}`, 'err');
+  }
+}
+
+$('btn-clear-project-builds')?.addEventListener('click', () => {
+  clearProjectBuilds().catch((e) => autogenLog(`Clear failed: ${e?.message || e}`, 'err'));
+});
+
 function emptyMergeRow() {
   return {
     name: '',
@@ -4803,6 +5283,7 @@ async function applyTransportMergesToAutogen(opts = {}) {
 window.applyTransportMergesToAutogen = applyTransportMergesToAutogen;
 
 function updateMergeSummary() {
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   const el = $('autogen-merge-summary');
   if (!el) return;
   const list = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
