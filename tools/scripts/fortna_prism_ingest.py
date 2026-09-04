@@ -197,9 +197,23 @@ def stage_run_to_corpus(
         )
     io_summary["prints_copied"] = print_n
 
+    # Site Forge / FortnaPlus intakes land in the lab lane until explicitly promoted.
+    existing_manifest = {}
+    man_path = site_dir / "manifest.json"
+    if man_path.is_file():
+        try:
+            existing_manifest = json.loads(man_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            existing_manifest = {}
+    prior_status = str(existing_manifest.get("corpus_status") or "").strip().lower()
+    # Never demote a production site on re-ingest
+    corpus_status = prior_status if prior_status == "production" else "lab"
+
     manifest = {
+        "site": site,
         "primary": site,
         "quality_tier": "fortna_plus_intake",
+        "corpus_status": corpus_status,
         "mechanism": "fortna_plus_run_tar_gz",
         "conveyance_tags": [],
         "sources": {

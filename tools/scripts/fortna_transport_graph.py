@@ -217,6 +217,7 @@ def _stub_conveyor(tag: str, main_area: str) -> dict:
         "exit_pe_opt": "",
         "jam_opt": "",
         "full_opt": "",
+        "downstream": "",
         "motor_starter": "Yes",
         "espc": "",
         "control_station": "",
@@ -255,7 +256,19 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     updated_tags: list[str] = []
     created_tags: list[str] = []
     unbound = 0
+    # Wire exit → entrance means destination is downstream of source (Fast_Conv IO_Downstream_Conv)
+    downstream_by_tag: dict[str, str] = {}
     for area in graph.get("areas") or []:
+        by_id = {n.get("id"): n for n in (area.get("nodes") or []) if n.get("id")}
+        for w in area.get("wires") or []:
+            src = by_id.get(w.get("from"))
+            dst = by_id.get(w.get("to"))
+            if not src or not dst:
+                continue
+            src_tag = (src.get("conveyorTag") or "").strip()
+            dst_tag = (dst.get("conveyorTag") or "").strip()
+            if src_tag and dst_tag:
+                downstream_by_tag[src_tag.upper()] = dst_tag
         for n in area.get("nodes") or []:
             if not str(n.get("kind") or "").startswith("conv_"):
                 continue
@@ -370,10 +383,15 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
                         + list(row.get("full_pe_tags") or [])
                     )
                 )
+            # Transport wire graph owns downstream when connected
+            if tag_u in downstream_by_tag:
+                row["downstream"] = downstream_by_tag[tag_u]
             updated_tags.append(display)
         else:
             stub = _stub_conveyor(display, aname)
             stub.update(pe_fields)
+            if tag_u in downstream_by_tag:
+                stub["downstream"] = downstream_by_tag[tag_u]
             wb["conveyors"].append(stub)
             by_name[tag_u] = stub
             created_tags.append(display)
@@ -685,6 +703,14 @@ def analyze(graph: dict) -> dict:
                     "conveyorTag": n.get("conveyorTag") or "",
                     "rotation": int(n.get("rotation") or 0),
                     "inPorts": n.get("inPorts"),
+                    "motorCount": n.get("motorCount"),
+                    "motors": [
+                        str(t).strip()
+                        for t in (n.get("motors") or [])
+                        if str(t).strip()
+                    ]
+                    if (n.get("kind") or "") == "conv_spiral"
+                    else [],
                     "devices": [
                         {
                             "kind": d.get("kind"),

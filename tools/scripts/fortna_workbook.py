@@ -150,6 +150,7 @@ def build_workbook_from_run(
             "exit_pe_opt": c.exit_pe or "",
             "jam_opt": c.jam or "",
             "full_opt": c.full or "",
+            "downstream": (c.downstream or prev.get("downstream") or "").strip(),
             "motor_starter": c.motor_starter or ("" if is_vfd else "Yes"),
             "espc": c.espc or "",
             "control_station": c.control_station or "",
@@ -412,6 +413,8 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
                 c.add_pe_tag = (w.get("add_pe_tag") or "").strip()
             if "exit_pe_opt" in w and w.get("exit_pe_opt") is not None:
                 c.exit_pe = (w.get("exit_pe_opt") or "").strip()
+            if "downstream" in w and w.get("downstream") is not None:
+                c.downstream = (w.get("downstream") or "").strip()
             for k in ("jam_pe_tags", "full_pe_tags", "product_pe_tags", "all_pe_tags"):
                 if k in w and w.get(k) is not None:
                     setattr(
@@ -451,6 +454,7 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
             main_area=main_area,
             safety_zone=(w.get("safety_zone") or f"{main_area.replace('_Area', '')}_ESZone1"),
             type=(w.get("type") or "Transport with MS"),
+            downstream=(w.get("downstream") or "").strip(),
             motor_starter="Yes" if "vfd" not in str(w.get("type") or "").lower() else "",
             exit_pe_tag=exit_pe_tag,
             add_pe_tag=add_pe_tag,

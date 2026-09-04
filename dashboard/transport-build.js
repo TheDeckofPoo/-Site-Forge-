@@ -9,12 +9,36 @@
     conv_right: { icon: 'fa-arrow-turn-up fa-rotate-90', color: 'text-sky-300', isConv: true, title: '90° Right' },
     conv_left: { icon: 'fa-arrow-turn-down fa-rotate-270', color: 'text-sky-300', isConv: true, title: '90° Left' },
     conv_merge: { icon: 'fa-code-merge', color: 'text-orange-300', isConv: true, isMerge: true, title: 'Merge' },
+    conv_spiral: {
+      icon: 'fa-dharmachakra',
+      color: 'text-teal-300',
+      isConv: true,
+      isSpiral: true,
+      title: 'Spiral',
+    },
     motor: { icon: 'fa-gear', color: 'text-amber-300', isConv: false, title: 'Motor', svg: 'motor' },
     estop: { icon: 'fa-hand', color: 'text-red-300', isConv: false, title: 'E-Stop', svg: 'estop' },
     pws: { icon: 'fa-bolt', color: 'text-yellow-300', isConv: false, title: 'Power Supply' },
     encoder: { icon: 'fa-compact-disc', color: 'text-violet-300', isConv: false, title: 'Encoder', svg: 'encoder' },
     photoeye: { icon: 'fa-eye', color: 'text-emerald-300', isConv: false, title: 'Photoeye', svg: 'photoeye' },
   };
+
+  const SPIRAL_MOTOR_MIN = 1;
+  const SPIRAL_MOTOR_MAX = 6;
+  const SPIRAL_MOTOR_DEFAULT = 3;
+
+  function normalizeSpiralMotors(node) {
+    if (!node || !KIND_META[node.kind]?.isSpiral) return [];
+    let count = Number(node.motorCount);
+    if (!Number.isFinite(count)) count = SPIRAL_MOTOR_DEFAULT;
+    count = Math.min(SPIRAL_MOTOR_MAX, Math.max(SPIRAL_MOTOR_MIN, count));
+    node.motorCount = count;
+    const prev = Array.isArray(node.motors) ? node.motors.map((t) => String(t || '').trim()) : [];
+    const next = [];
+    for (let i = 0; i < count; i++) next.push(prev[i] || '');
+    node.motors = next;
+    return next;
+  }
 
   /** Fortna PE suffix → Autogen roles (multi-select; Exit+Jam is normal for _P). */
   const PE_ROLE_ORDER = ['exit', 'add', 'jam', 'full'];
@@ -148,6 +172,13 @@
     }, 4500);
   }
 
+  function isTransportDialogOpen() {
+    const dlg = $('tb-dialog');
+    if (!dlg) return false;
+    if (dlg.classList.contains('hidden')) return false;
+    return dlg.style.display !== 'none';
+  }
+
   /** Electron often disables window.prompt/confirm — use fixed overlay instead. */
   function askDialog({ title, message, defaultValue, showInput, detail, okLabel, cancelLabel, hideCancel }) {
     return new Promise((resolve) => {
@@ -168,7 +199,9 @@
       if (input) {
         const show = !!showInput;
         input.classList.toggle('hidden', !show);
-        input.style.display = show ? '' : 'none';
+        input.style.display = show ? 'block' : 'none';
+        input.readOnly = false;
+        input.disabled = false;
         input.value = defaultValue || '';
       }
       if (detailEl) {
@@ -182,25 +215,46 @@
       cancel.classList.toggle('hidden', !!hideCancel);
       cancel.style.display = hideCancel ? 'none' : '';
 
+      dlg.dataset.open = '1';
       dlg.classList.remove('hidden');
       dlg.style.display = 'flex';
+      // Frameless Electron: keep dialog out of titlebar drag region
+      dlg.style.webkitAppRegion = 'no-drag';
 
       const finish = (val) => {
+        dlg.dataset.open = '0';
         dlg.classList.add('hidden');
         dlg.style.display = 'none';
         ok.onclick = null;
         cancel.onclick = null;
-        if (input) input.onkeydown = null;
+        if (input) {
+          input.onkeydown = null;
+          input.onkeyup = null;
+        }
         resolve(val);
       };
       cancel.onclick = () => finish(showInput ? null : false);
       ok.onclick = () => finish(showInput ? (input?.value ?? '') : true);
       if (showInput && input) {
-        setTimeout(() => { try { input.focus(); input.select(); } catch (_) { /* ignore */ } }, 30);
+        const focusInput = () => {
+          try {
+            input.focus({ preventScroll: true });
+            input.select();
+          } catch (_) {
+            try { input.focus(); input.select(); } catch (__) { /* ignore */ }
+          }
+        };
+        // Canvas tabindex steals focus — retry a few times
+        focusInput();
+        setTimeout(focusInput, 0);
+        setTimeout(focusInput, 50);
+        setTimeout(focusInput, 150);
         input.onkeydown = (e) => {
+          e.stopPropagation();
           if (e.key === 'Enter') { e.preventDefault(); finish(input.value); }
           if (e.key === 'Escape') { e.preventDefault(); finish(null); }
         };
+        input.onkeyup = (e) => e.stopPropagation();
       } else {
         setTimeout(() => { try { ok.focus(); } catch (_) { /* ignore */ } }, 30);
       }
@@ -528,18 +582,37 @@
     return !!(KIND_META[kind] && KIND_META[kind].isConv);
   }
 
+  /** Canvas content coordinates (accounts for #tb-canvas scroll). */
+  function canvasPointFromEvent(ev) {
+    const canvas = $('tb-canvas');
+    if (!canvas) return { x: 0, y: 0 };
+    const rect = canvas.getBoundingClientRect();
+    return {
+      x: ev.clientX - rect.left + canvas.scrollLeft,
+      y: ev.clientY - rect.top + canvas.scrollTop,
+    };
+  }
+
   function nodeAtPoint(x, y, area) {
-    // Hit-test conveyors for device drop — padded so 90° curves are easier targets
-    const pad = 28;
+    // Hit-test in canvas content coords (same space as node.x / node.y)
+    const pad = 36;
+    const canvas = $('tb-canvas');
+    if (!canvas) return null;
+    const cr = canvas.getBoundingClientRect();
     for (let i = area.nodes.length - 1; i >= 0; i--) {
       const n = area.nodes[i];
       if (!isConv(n.kind)) continue;
       const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
-      if (!el) continue;
+      if (!el) {
+        // Fallback to stored position + typical node size
+        if (x >= n.x - pad && x <= n.x + 160 + pad && y >= n.y - pad && y <= n.y + 72 + pad) {
+          return n;
+        }
+        continue;
+      }
       const r = el.getBoundingClientRect();
-      const host = $('tb-nodes').getBoundingClientRect();
-      const left = r.left - host.left - pad;
-      const top = r.top - host.top - pad;
+      const left = r.left - cr.left + canvas.scrollLeft - pad;
+      const top = r.top - cr.top + canvas.scrollTop - pad;
       const w = r.width + pad * 2;
       const h = r.height + pad * 2;
       if (x >= left && x <= left + w && y >= top && y <= top + h) return n;
@@ -610,6 +683,9 @@
       const mergeNote = meta.isMerge
         ? `<div class="text-orange-400/80 text-[9px] mt-0.5">${n.inPorts || 2}:1 merge</div>`
         : '';
+      const spiralNote = meta.isSpiral
+        ? `<div class="text-teal-400/80 text-[9px] mt-0.5">${normalizeSpiralMotors(n).filter(Boolean).length}/${n.motorCount || SPIRAL_MOTOR_DEFAULT} motors</div>`
+        : '';
       const orientNote = rot
         ? `<div class="tb-orient mt-0.5">flow ${rot}°</div>`
         : '';
@@ -640,6 +716,7 @@
           <div class="tb-body">
             ${isConv(n.kind) ? bind : ''}
             ${mergeNote}
+            ${spiralNote}
             ${orientNote}
             <div class="mt-1 flex flex-wrap">${chips || (isConv(n.kind) ? '<span class="text-slate-700 text-[9px]">Drop devices here</span>' : '')}</div>
           </div>
@@ -658,10 +735,11 @@
           return;
         }
         selectNode(n.id);
+        const pt = canvasPointFromEvent(ev);
         tb.moving = {
           id: n.id,
-          ox: ev.clientX - n.x,
-          oy: ev.clientY - n.y,
+          ox: pt.x - n.x,
+          oy: pt.y - n.y,
         };
         ev.preventDefault();
       });
@@ -679,6 +757,7 @@
       host.appendChild(el);
     });
 
+    ensureCanvasExtents(area);
     drawWires();
     renderInspector();
   }
@@ -690,14 +769,35 @@
     let p = el.querySelector(`.tb-port[data-port="${key}"]`);
     if (!p && key === 'in') p = el.querySelector('.tb-port.in');
     if (!p && String(key).startsWith('in')) p = el.querySelector(`.tb-port[data-port="${key}"]`);
-    const host = $('tb-nodes');
-    if (!p || !host) return null;
+    const canvas = $('tb-canvas');
+    if (!p || !canvas) return null;
     const pr = p.getBoundingClientRect();
-    const hr = host.getBoundingClientRect();
+    const cr = canvas.getBoundingClientRect();
     return {
-      x: pr.left + pr.width / 2 - hr.left,
-      y: pr.top + pr.height / 2 - hr.top,
+      x: pr.left + pr.width / 2 - cr.left + canvas.scrollLeft,
+      y: pr.top + pr.height / 2 - cr.top + canvas.scrollTop,
     };
+  }
+
+  /** Grow the drawable grid when nodes sit near the edge (fixes deep-scroll drop/wire). */
+  function ensureCanvasExtents(area) {
+    const host = $('tb-nodes');
+    const wires = $('tb-wires');
+    if (!host) return;
+    let maxX = 1600;
+    let maxY = 1000;
+    (area?.nodes || []).forEach((n) => {
+      maxX = Math.max(maxX, (Number(n.x) || 0) + 280);
+      maxY = Math.max(maxY, (Number(n.y) || 0) + 180);
+    });
+    host.style.minWidth = `${maxX}px`;
+    host.style.minHeight = `${maxY}px`;
+    if (wires) {
+      wires.setAttribute('width', String(maxX));
+      wires.setAttribute('height', String(maxY));
+      wires.style.width = `${maxX}px`;
+      wires.style.height = `${maxY}px`;
+    }
   }
 
   function drawWires(temp) {
@@ -705,8 +805,13 @@
     const host = $('tb-nodes');
     if (!svg || !host) return;
     const area = activeArea();
-    svg.setAttribute('width', host.scrollWidth || host.offsetWidth);
-    svg.setAttribute('height', host.scrollHeight || host.offsetHeight);
+    ensureCanvasExtents(area);
+    const w = Math.max(host.scrollWidth || 0, host.offsetWidth || 0, parseInt(host.style.minWidth || '0', 10) || 0);
+    const h = Math.max(host.scrollHeight || 0, host.offsetHeight || 0, parseInt(host.style.minHeight || '0', 10) || 0);
+    svg.setAttribute('width', String(w));
+    svg.setAttribute('height', String(h));
+    svg.style.width = `${w}px`;
+    svg.style.height = `${h}px`;
     let html = '';
     (area?.wires || []).forEach((w) => {
       const a = portCenter(w.from, 'out');
@@ -815,6 +920,46 @@
         }
         const allow = $('tb-insp-merge-allow-pe');
         if (allow) allow.checked = !!n.allow_undefined_pe;
+      }
+    }
+
+    const spiralWrap = $('tb-insp-spiral-wrap');
+    if (spiralWrap) {
+      spiralWrap.classList.toggle('hidden', !meta.isSpiral);
+      if (meta.isSpiral) {
+        const motors = normalizeSpiralMotors(n);
+        const countSel = $('tb-insp-spiral-motors');
+        if (countSel) countSel.value = String(n.motorCount || SPIRAL_MOTOR_DEFAULT);
+        const list = $('tb-insp-spiral-motor-list');
+        if (list) {
+          list.innerHTML = motors
+            .map((tag, idx) => {
+              const id = `tb-insp-spiral-motor-${idx}`;
+              return `<div>
+                <label class="text-[10px] text-slate-500" for="${id}">Motor ${idx + 1}</label>
+                <div class="tb-combo mt-0.5">
+                  <select id="${id}" data-tb-combo="1" data-spiral-motor="${idx}"
+                    class="w-full bg-slate-900 border border-slate-700 rounded-lg text-[10px] px-1.5 py-1 text-amber-300"></select>
+                </div>
+              </div>`;
+            })
+            .join('');
+          motors.forEach((tag, idx) => {
+            const sel = $(`tb-insp-spiral-motor-${idx}`);
+            if (!sel) return;
+            fillTagSelect(sel, 'motor', tag || '');
+            sel.onchange = () => {
+              const a2 = activeArea();
+              const n2 = a2?.nodes.find((x) => x.id === tb.selectedId);
+              if (!n2 || !KIND_META[n2.kind]?.isSpiral) return;
+              normalizeSpiralMotors(n2);
+              n2.motors[idx] = sel.value || '';
+              save();
+              render();
+              status(`Spiral motor ${idx + 1} → ${sel.value || '(none)'}`);
+            };
+          });
+        }
       }
     }
 
@@ -988,7 +1133,7 @@
     }
 
     // Don't call prompt() inside drop handlers — Electron/Chromium often cancels the drop.
-    // Merges default to 2:1; change lanes in the inspector (or we ask right after render).
+    // Merges default to 2:1; spirals default to 3 motors (change in inspector).
     let inPorts = 1;
     let label = meta.title;
     if (meta.isMerge) {
@@ -1007,9 +1152,27 @@
       rotation: 0,
       inPorts,
     };
+    if (meta.isSpiral) {
+      node.motorCount = SPIRAL_MOTOR_DEFAULT;
+      node.motors = Array(SPIRAL_MOTOR_DEFAULT).fill('');
+      label = `Spiral (${SPIRAL_MOTOR_DEFAULT} motors)`;
+      node.label = label;
+    }
+    // Straight / 90° belts: auto-attach one motor chip (user still picks M### / VFD###).
+    // Merge / Spiral use their own motor / PE inspectors — do not auto-add here.
+    let autoMotorId = null;
+    if (meta.isConv && !meta.isMerge && !meta.isSpiral) {
+      autoMotorId = uid('dev');
+      node.devices.push({
+        id: autoMotorId,
+        kind: 'motor',
+        tag: '',
+        name: '',
+      });
+    }
     area.nodes.push(node);
     tb.selectedId = node.id;
-    tb.selectedDeviceId = null;
+    tb.selectedDeviceId = autoMotorId;
     save();
     render();
 
@@ -1032,6 +1195,10 @@
         render();
         status(`Merge set to ${lanes}:1 — wire each green entrance`);
       }, 50);
+    } else if (meta.isSpiral) {
+      status(`Added Spiral — set ${SPIRAL_MOTOR_DEFAULT} motors (M### / VFD###) in the inspector`);
+    } else if (autoMotorId) {
+      status(`Added ${meta.title} + motor — bind P### and pick motor tag (M### / VFD###)`);
     } else {
       status(`Added ${meta.title} — bind a controller conveyor in the inspector`);
     }
@@ -1366,15 +1533,15 @@
         status('Drop failed — unknown palette item');
         return;
       }
-      const hr = nodesHost.getBoundingClientRect();
-      const x = ev.clientX - hr.left + nodesHost.parentElement.scrollLeft;
-      const y = ev.clientY - hr.top + nodesHost.parentElement.scrollTop;
+      const pt = canvasPointFromEvent(ev);
+      const x = pt.x;
+      const y = pt.y;
       const area = activeArea();
       let onto = null;
       if (!isConv(kind) && area) {
         onto = nodeAtPoint(x, y, area);
       }
-      addNode(kind, x - 70, y - 24, onto);
+      addNode(kind, Math.max(0, x - 70), Math.max(0, y - 24), onto);
       tb.dragKind = null;
     });
 
@@ -1383,23 +1550,25 @@
         const area = activeArea();
         const n = area?.nodes.find((x) => x.id === tb.moving.id);
         if (n) {
-          n.x = Math.max(0, ev.clientX - tb.moving.ox);
-          n.y = Math.max(0, ev.clientY - tb.moving.oy);
+          const pt = canvasPointFromEvent(ev);
+          n.x = Math.max(0, pt.x - tb.moving.ox);
+          n.y = Math.max(0, pt.y - tb.moving.oy);
           const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
           if (el) {
             el.style.left = `${n.x}px`;
             el.style.top = `${n.y}px`;
           }
+          ensureCanvasExtents(area);
           drawWires();
         }
       }
       if (tb.linkFrom) {
         const a = portCenter(tb.linkFrom.nodeId, 'out');
         if (a) {
-          const host = $('tb-nodes').getBoundingClientRect();
+          const pt = canvasPointFromEvent(ev);
           drawWires({
             from: a,
-            to: { x: ev.clientX - host.left, y: ev.clientY - host.top },
+            to: { x: pt.x, y: pt.y },
           });
         }
       }
@@ -1460,6 +1629,40 @@
       status(`Rotated ${n.label || n.id} to ${n.rotation}°`);
     });
 
+    $('tb-insp-spiral-motors')?.addEventListener('change', (e) => {
+      const a = activeArea();
+      const n = a?.nodes.find((x) => x.id === tb.selectedId);
+      if (!n || !KIND_META[n.kind]?.isSpiral) return;
+      n.motorCount = Math.min(
+        SPIRAL_MOTOR_MAX,
+        Math.max(SPIRAL_MOTOR_MIN, parseInt(e.target.value, 10) || SPIRAL_MOTOR_DEFAULT),
+      );
+      normalizeSpiralMotors(n);
+      if (!n.label || /^Spiral/i.test(n.label)) {
+        n.label = `Spiral (${n.motorCount} motors)`;
+      }
+      save();
+      render();
+      status(`Spiral set to ${n.motorCount} motor(s) — pick M### / VFD### tags`);
+    });
+
+    $('tb-insp-spiral-motors')?.addEventListener('change', (e) => {
+      const a = activeArea();
+      const n = a?.nodes.find((x) => x.id === tb.selectedId);
+      if (!n || !KIND_META[n.kind]?.isSpiral) return;
+      n.motorCount = Math.min(
+        SPIRAL_MOTOR_MAX,
+        Math.max(SPIRAL_MOTOR_MIN, parseInt(e.target.value, 10) || SPIRAL_MOTOR_DEFAULT),
+      );
+      normalizeSpiralMotors(n);
+      if (!n.label || /^Spiral/i.test(n.label)) {
+        n.label = `Spiral (${n.motorCount} motors)`;
+      }
+      save();
+      render();
+      status(`Spiral set to ${n.motorCount} motor(s) — pick M### / VFD### tags`);
+    });
+
     $('tb-insp-merge-lanes')?.addEventListener('change', (e) => {
       const a = activeArea();
       const n = a?.nodes.find((x) => x.id === tb.selectedId);
@@ -1506,8 +1709,12 @@
     window.addEventListener('keydown', (ev) => {
       const tab = $('tab-transport');
       if (!tab || tab.classList.contains('hidden')) return;
+      // Never steal keys while New/Rename area (or any Transport dialog) is open
+      if (isTransportDialogOpen()) return;
       const tag = (ev.target && ev.target.tagName) || '';
-      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA') return;
+      if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || ev.target?.isContentEditable) return;
+      // Also ignore when focus is inside the dialog overlay
+      if (ev.target?.closest?.('#tb-dialog')) return;
 
       const a = activeArea();
       if (!a || !tb.selectedId) return;

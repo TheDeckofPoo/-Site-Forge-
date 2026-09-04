@@ -482,7 +482,7 @@
           <div class="mt-3 rounded-xl border border-slate-800/80 bg-gradient-to-b from-[#0e1520] to-[#0a1018] overflow-hidden">
             <div class="px-3 py-2 border-b border-slate-800/80 flex items-center justify-between">
               <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Program pack</div>
-              <span class="text-[9px] text-slate-600 mono">gold L5X merge</span>
+              <span class="text-[9px] text-slate-600 mono">library L5X merge</span>
             </div>
             <div class="p-3 space-y-3">
               <!-- Core (recommended on) -->
@@ -494,17 +494,28 @@
                     <span class="min-w-0">
                       <span class="block text-[11px] text-slate-200 font-medium">Sys</span>
                       <span class="block text-[10px] text-slate-500 leading-snug">
-                        Constants / Type codes / null objects (gold <span class="mono">Sys</span> on Sys event task). Independent of System.
+                        Constants / Type codes / null objects (<span class="mono">Sys</span> event task). Independent of Device Comms / NTP / System Logic.
                       </span>
                     </span>
                   </label>
                   <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer hover:border-emerald-700/40 transition-colors">
                     <input id="autogen-opt-system" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
                     <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">System</span>
+                      <span class="block text-[11px] text-slate-200 font-medium">Device Comms</span>
                       <span class="block text-[10px] text-slate-500 leading-snug">
-                        Comm diagnostics — <span class="mono">Devices_Comm_Logic</span> / <span class="mono">AOI_CommDiag</span>
-                        from this site’s tar (gold <span class="mono">System</span> under P11_Slow_200ms). Check with Sys for both.
+                        RIO / Ethernet comm diagnostics
+                        (<span class="mono">Devices_Comm_Logic</span> · <span class="mono">AOI_CommDiag</span>)
+                        plus cookie-cutter <span class="mono">NTP</span> / <span class="mono">AOI_SNTP_QUERY</span>.
+                      </span>
+                    </span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer hover:border-emerald-700/40 transition-colors">
+                    <input id="autogen-opt-system-logic" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">System Logic</span>
+                      <span class="block text-[10px] text-slate-500 leading-snug">
+                        Cookie-cutter start / stop / reset HMI bits — stamped with this site’s
+                        <span class="mono">&lt;Site&gt;_System</span> tag.
                       </span>
                     </span>
                   </label>
@@ -574,7 +585,7 @@
               </div>
               <p class="text-[9px] text-slate-600 leading-relaxed">
                 Always built from RUN: zone Fast/Slow, PE logic, Flex I/O tree, tags.
-                Optional packs merge gold exports from <span class="mono text-slate-500">tools/libraries/programs/</span>.
+                Optional packs merge library programs from <span class="mono text-slate-500">tools/libraries/programs/</span>.
               </p>
             </div>
           </div>
@@ -1494,7 +1505,8 @@
         <summary class="text-sm font-semibold text-amber-400">How sawtooth / collector merge works</summary>
         <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
           <p><strong class="text-amber-300">Gold pattern:</strong> Greensboro PLC4 <span class="mono">P02_Track_5ms</span> → program <span class="mono">Sawtooth_Merge</span> (collector tracking + lane reservation).</p>
-          <p><strong class="text-slate-300">Example equipment (PLC4):</strong> lanes <span class="mono">P412 / P120 / P218</span> (+ buffers) → collector <span class="mono">P414</span> (+ <span class="mono">P418</span>), encoder <span class="mono">P414_Enc</span>.</p>
+          <p><strong class="text-slate-300">Example equipment (PLC4):</strong> lanes <span class="mono">P412 / P120 / P218</span> (+ buffers) → collector <span class="mono">P414</span> (+ <span class="mono">P418</span>), carton-track encoder <span class="mono">P414_Enc</span> (ENC* from RUN).</p>
+          <p><strong class="text-amber-200/90">Encoders:</strong> set the <em>collector tracking encoder</em> in section 1 (required when track is enabled). Optional per-lane encoders are on each lane row.</p>
           <p><strong class="text-emerald-400">RUN tar.gz:</strong> yes — FortnaPlus tables <span class="mono">SawMerge.asc</span>, <span class="mono">SawLane.asc</span>, <span class="mono">HSSawLane.asc</span>, <span class="mono">HSSawParm.asc</span> (QNX saw-merge / C-side). Autogen emits Logix pack from gold L5X; Asc tables feed site parameters later.</p>
           <p>Design here → Save → Autogen checks <strong>Sawtooth_Merge</strong> program pack → Export L5X.</p>
         </div>
@@ -1518,9 +1530,33 @@
                 <label class="block text-[10px] text-slate-500 mb-1">Downstream / gap-store (optional)</label>
                 <select id="saw-downstream-conv" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200"></select>
               </div>
-              <div class="min-w-[10rem] flex-1">
-                <label class="block text-[10px] text-slate-500 mb-1">Collector encoder</label>
-                <select id="saw-collector-enc" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90"></select>
+            </div>
+            <div class="rounded-lg border border-amber-900/50 bg-amber-950/20 p-2.5 space-y-2">
+              <div class="text-[10px] font-semibold text-amber-300">
+                <i class="fa-solid fa-compact-disc mr-1"></i>Carton tracking encoder (collector)
+              </div>
+              <p class="text-[9px] text-slate-500 leading-relaxed">
+                Required when <strong class="text-slate-400">Enable collector track</strong> is on.
+                Pick an <span class="mono text-amber-200/90">ENC###</span> / <span class="mono text-amber-200/90">P###_Enc</span> from the RUN (same pattern as Sorter Build).
+              </p>
+              <div class="flex flex-wrap gap-2 items-end">
+                <div class="min-w-[7rem]">
+                  <label class="block text-[10px] text-slate-500 mb-1">Has encoder?</label>
+                  <select id="saw-collector-has-enc" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] text-slate-200">
+                    <option value="yes">Yes</option>
+                    <option value="no">No → NO_Enc</option>
+                  </select>
+                </div>
+                <div id="saw-collector-enc-opts" class="flex flex-wrap gap-2 items-end flex-1 min-w-[14rem]">
+                  <div class="min-w-[10rem] flex-1">
+                    <label class="block text-[10px] text-slate-500 mb-1">Encoder type</label>
+                    <select id="saw-collector-enc-type" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] text-slate-200"></select>
+                  </div>
+                  <div class="min-w-[10rem] flex-1">
+                    <label class="block text-[10px] text-slate-500 mb-1">Encoder tag</label>
+                    <select id="saw-collector-enc" class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90"></select>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="flex flex-wrap gap-2 items-end">
@@ -1545,18 +1581,38 @@
                 <label class="block text-[10px] text-slate-500 mb-1">How many lanes?</label>
                 <input id="saw-lane-count" type="number" min="1" max="12" value="4" class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
               </div>
-              <span class="text-[9px] text-slate-600 pb-2">Defaults from PLC4 example: P412, P120, P218 (+ lane 4). Each lane: conveyor · PE · jam PE · merge-point PE</span>
+              <span class="text-[9px] text-slate-600 pb-2">
+                Each lane: conveyor · PE · jam · merge-point · optional <strong class="text-amber-300/90">lane encoder</strong> for carton tracking.
+              </span>
             </div>
-            <div id="saw-lane-rows" class="space-y-2 max-h-80 overflow-y-auto"></div>
+            <div id="saw-lane-rows" class="space-y-2 max-h-96 overflow-y-auto"></div>
           </div>
 
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">3 · Collector PEs / tracking</div>
+            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">3 · Collector PEs / enables (PLC4)</div>
+            <p class="text-[9px] text-slate-500 leading-relaxed">
+              Maps to <span class="mono text-slate-400">Enable_Merge2_Trk</span>, <span class="mono text-slate-400">Enable_Merge1_Reserv</span>,
+              <span class="mono text-slate-400">Use_GapStore_Belts</span>, jam PEs on collector (<span class="mono">PE414_J</span> / A–D), and EOW.
+            </p>
             <div class="flex flex-wrap gap-2 items-end">
               <div class="min-w-[10rem] flex-1">
-                <label class="block text-[10px] text-slate-500 mb-1">Collector jam PE</label>
+                <label class="block text-[10px] text-slate-500 mb-1">Collector jam PE (primary)</label>
                 <select id="saw-coll-jam-pe" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300"></select>
               </div>
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Jam PE B (optional)</label>
+                <select id="saw-coll-jam-pe-b" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300"></select>
+              </div>
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Jam PE C (optional)</label>
+                <select id="saw-coll-jam-pe-c" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300"></select>
+              </div>
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Jam PE D (optional)</label>
+                <select id="saw-coll-jam-pe-d" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300"></select>
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 items-end">
               <div class="min-w-[10rem] flex-1">
                 <label class="block text-[10px] text-slate-500 mb-1">End-of-wave PE</label>
                 <select id="saw-eow-pe" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-sky-300"></select>
@@ -1565,20 +1621,94 @@
                 <label class="block text-[10px] text-slate-500 mb-1">Merge instance / MRG#</label>
                 <input id="saw-mrg-id" type="text" value="414" placeholder="414" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90">
               </div>
+              <div class="min-w-[10rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Area name (CS / WH)</label>
+                <input id="saw-area-name" type="text" placeholder="CP4_Sawtooth_Area" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
             </div>
             <div class="flex flex-wrap gap-3 text-[10px] text-slate-400">
-              <label class="flex items-center gap-1.5"><input id="saw-enable-trk" type="checkbox" checked class="rounded border-slate-600"> Enable collector track (Merge2_Trk)</label>
-              <label class="flex items-center gap-1.5"><input id="saw-enable-resv" type="checkbox" checked class="rounded border-slate-600"> Enable lane reservation</label>
+              <label class="flex items-center gap-1.5"><input id="saw-enable-trk" type="checkbox" checked class="rounded border-slate-600"> Enable collector track (<span class="mono text-slate-500">Enable_Merge2_Trk</span>)</label>
+              <label class="flex items-center gap-1.5"><input id="saw-enable-resv" type="checkbox" checked class="rounded border-slate-600"> Enable lane reservation (<span class="mono text-slate-500">Enable_Merge1_Reserv</span>)</label>
               <label class="flex items-center gap-1.5"><input id="saw-no-carton-check" type="checkbox" class="rounded border-slate-600"> Enable no-carton check</label>
             </div>
           </div>
 
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="flex flex-wrap items-end gap-3">
+              <div>
+                <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold mb-1">4 · Collector track PEs</div>
+                <label class="block text-[10px] text-slate-500 mb-1">How many track PEs? (<span class="mono">astCollPeCfg</span>)</label>
+                <input id="saw-track-pe-count" type="number" min="0" max="16" value="0" class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+              </div>
+              <span class="text-[9px] text-slate-600 pb-2">
+                PLC4 calibrates collector PE pulse locations for carton tracking (ST routines
+                <span class="mono">RT_CollPeTrackCal</span> / <span class="mono">RT_CollTrackHist</span>).
+                Leave 0 if you will fill later in Studio.
+              </span>
+            </div>
+            <div id="saw-track-pe-rows" class="space-y-2 max-h-64 overflow-y-auto"></div>
+          </div>
+
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">5 · Tracking system params (PLC4 HMI / ST_CollTrkSysCfg)</div>
+            <p class="text-[9px] text-slate-500 leading-relaxed">
+              Site values that feed <span class="mono">P###_SawMerge_HMI</span> and collector track ST
+              (<span class="mono">(RT_CollTrackMain</span>, <span class="mono">RT_DeltaDist_*</span>, <span class="mono">SR_LaneCntrl)</span>.
+              Anything not listed here can still be tuned manually in Studio after Export.
+            </p>
+            <div class="flex flex-wrap gap-2 items-end">
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Slug gap adder</label>
+                <input id="saw-slug-gap-adder" type="number" value="0" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200" title="ClctrSlugGapAdder">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Safety tmr preset (ms)</label>
+                <input id="saw-safety-tmr" type="number" value="0" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200" title="ClctrSrtSafteyTmrPreset">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Min gap</label>
+                <input id="saw-min-gap" type="number" step="0.1" value="0" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200" title="rClctrMinGap">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Slot reserve multiple</label>
+                <input id="saw-slot-resv-mult" type="number" step="0.1" value="1" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200" title="rSlotReserveMultiple">
+              </div>
+            </div>
+            <div class="flex flex-wrap gap-2 items-end">
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Real enc IPP</label>
+                <input id="saw-real-enc-ipp" type="number" step="0.001" value="0" class="w-28 bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90" title="rClctrRealEnc_IPP">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Pseudo enc IPP</label>
+                <input id="saw-pseudo-enc-ipp" type="number" step="0.001" value="0" class="w-28 bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-200/90" title="rClctrPsuedoEnc_IPP">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Pseudo enc max cnt</label>
+                <input id="saw-pseudo-enc-max" type="number" value="0" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200" title="diPsuedoEncMaxCnt">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Track array size</label>
+                <input id="saw-trk-array-size" type="number" value="0" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200" title="diCollTrkPkgArySize">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">Lane empty opt preset</label>
+                <input id="saw-lane-empty-opt" type="number" value="0" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200" title="diCollLaneEmptyOptPreset">
+              </div>
+            </div>
+          </div>
+
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-1">
-            <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Reference · FortnaPlus RUN tables</div>
+            <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">PLC4 reference · what Autogen will wire</div>
             <p class="text-[9px] text-slate-600 leading-relaxed">
-              Tar.gz includes <span class="mono text-slate-400">SawMerge.asc</span> (MotorIO, ReserveIN, EOW_*),
-              <span class="mono text-slate-400">SawLane.asc</span> / <span class="mono text-slate-400">HSSawLane.asc</span> (LanePE, Slow/Fast bits, gap timers),
-              <span class="mono text-slate-400">HSSawParm.asc</span> (reservation spacing). QNX SawMerge / HSSawMerge modules are C-side; Logix pack is gold <span class="mono">Sawtooth_Merge_Program.L5X</span>.
+              Program <span class="mono text-slate-400">Sawtooth_Merge</span> (Main → Conv_Fast / Conv_PE / Conv_Enc + ST track/reserve).
+              Instance prefix <span class="mono text-amber-200/90">MRG{id}_*</span>, HMI <span class="mono">P{id}_SawMerge_HMI</span>
+              (ClctrSpeed_FPM, ClctrRunOutDist, ClctrSlugGapAdder, ClctrSrtSafteyTmrPreset, Lane[]).
+              ST track: <span class="mono">RT_CollTrackMain</span>, <span class="mono">RT_CollTrackResvMngr</span>,
+              <span class="mono">RT_CollPeTrackCal</span>, <span class="mono">SR_LaneCntrl</span>,
+              <span class="mono">RT_DeltaDist_NoGapStore</span> / <span class="mono">RT_IO_Map_NoGapStore</span> when gap-store is off.
+              Tar.gz Asc tables (<span class="mono">SawMerge / SawLane / HSSawParm</span>) remain C-side; Logix pack is the L5X template.
+              Anything not captured above can be finished manually in Studio after Export.
             </p>
           </div>
 
@@ -1598,11 +1728,13 @@
 
 <section id="tab-transport" class="h-full hidden flex flex-col min-h-0 overflow-hidden relative">
       <!-- In-app dialog (Electron disables window.prompt) — fixed so it always covers the window -->
-      <div id="tb-dialog" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/70" style="display:none">
-        <div class="bg-[#131c27] border border-fuchsia-800/50 rounded-xl p-4 w-[360px] max-w-[92vw] shadow-2xl space-y-3">
+      <div id="tb-dialog" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/70" style="display:none;-webkit-app-region:no-drag" data-open="0">
+        <div class="bg-[#131c27] border border-fuchsia-800/50 rounded-xl p-4 w-[360px] max-w-[92vw] shadow-2xl space-y-3" style="-webkit-app-region:no-drag" onclick="event.stopPropagation()">
           <div id="tb-dialog-title" class="text-sm font-semibold text-fuchsia-300">Title</div>
           <p id="tb-dialog-msg" class="text-[11px] text-slate-400 leading-relaxed whitespace-pre-wrap"></p>
-          <input id="tb-dialog-input" type="text" class="w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200" />
+          <input id="tb-dialog-input" type="text" autocomplete="off" spellcheck="false"
+            class="w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200"
+            style="-webkit-app-region:no-drag" />
           <pre id="tb-dialog-detail" class="hidden mono text-[10px] text-slate-400 bg-slate-950/80 border border-slate-800 rounded-lg p-2 max-h-40 overflow-auto whitespace-pre-wrap"></pre>
           <div class="flex gap-2 justify-end">
             <button type="button" id="tb-dialog-cancel" class="btn-ghost text-xs px-3 py-1.5 rounded-lg">Cancel</button>
@@ -1682,6 +1814,10 @@
                 <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-orange-800/50" draggable="true" data-tb-kind="conv_merge" data-tb-label="Merge">
                   <span class="w-8 h-8 rounded-md bg-orange-950/80 border border-orange-800/60 flex items-center justify-center text-orange-300"><i class="fa-solid fa-code-merge"></i></span>
                   <div><div class="text-xs text-slate-200">Merge</div><div class="text-[9px] text-slate-500">2:1 / 3:1 lanes</div></div>
+                </div>
+                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-teal-800/50" draggable="true" data-tb-kind="conv_spiral" data-tb-label="Spiral">
+                  <span class="w-8 h-8 rounded-md bg-teal-950/80 border border-teal-800/60 flex items-center justify-center text-teal-300"><i class="fa-solid fa-dharmachakra"></i></span>
+                  <div><div class="text-xs text-slate-200">Spiral</div><div class="text-[9px] text-slate-500">1–6 motors</div></div>
                 </div>
               </div>
             </div>
@@ -1805,6 +1941,25 @@
                   <input id="tb-insp-merge-allow-pe" type="checkbox" class="rounded border-slate-600 bg-slate-900">
                   Create missing PE tags in L5X (override)
                 </label>
+              </div>
+              <div id="tb-insp-spiral-wrap" class="hidden space-y-2">
+                <div>
+                  <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="tb-insp-spiral-motors">Spiral motors</label>
+                  <select id="tb-insp-spiral-motors" class="mt-1 w-full bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5">
+                    <option value="1">1 motor</option>
+                    <option value="2">2 motors</option>
+                    <option value="3" selected>3 motors (default)</option>
+                    <option value="4">4 motors</option>
+                    <option value="5">5 motors</option>
+                    <option value="6">6 motors</option>
+                  </select>
+                </div>
+                <p class="text-[9px] text-slate-500 leading-relaxed border border-teal-900/40 bg-teal-950/20 rounded-lg px-2 py-1.5">
+                  <strong class="text-teal-400">Spiral drives live here</strong> — pick each
+                  <span class="mono text-amber-300">M###</span> / <span class="mono text-amber-300">VFD###</span> from the RUN.
+                  Default is 3; you can add or remove up to 6.
+                </p>
+                <div id="tb-insp-spiral-motor-list" class="space-y-1.5"></div>
               </div>
               <div>
                 <div class="flex items-center justify-between mb-1">

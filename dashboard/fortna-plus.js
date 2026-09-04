@@ -110,8 +110,11 @@ function refreshAutogenCompileHub() {
   const hasSaw = !!saw.collector_conveyor;
   if (sawEl) {
     const ln = Number(saw.lane_count || (saw.lanes || []).length || 0);
+    const enc = saw.collector_has_encoder === 'no'
+      ? 'NO_Enc'
+      : (saw.collector_encoder || 'enc?');
     sawEl.textContent = hasSaw
-      ? `Collector ${saw.collector_conveyor} · ${ln} lane(s) · MRG${saw.mrg_id || '—'}`
+      ? `Collector ${saw.collector_conveyor} · enc ${enc} · ${ln} lane(s) · MRG${saw.mrg_id || '—'}`
       : 'Empty — open Sawtooth Merge';
   }
   const convN = (wb?.conveyors || []).filter((r) => r?.include !== false).length;
@@ -3128,15 +3131,34 @@ const autogenState = {
   sawtooth: {
     collector_conveyor: '',
     downstream_conveyor: '',
+    collector_has_encoder: 'yes',
+    collector_encoder_type: 'Enc_RIOCard',
     collector_encoder: '',
     clctr_speed_fpm: 140,
     clctr_runout_dist: 0,
+    clctr_slug_gap_adder: 0,
+    clctr_safety_tmr_preset: 0,
+    clctr_min_gap: 0,
+    slot_reserve_multiple: 1,
+    real_enc_ipp: 0,
+    pseudo_enc_ipp: 0,
+    pseudo_enc_max_cnt: 0,
+    track_array_size: 0,
+    lane_empty_opt_preset: 0,
     use_gapstore: false,
     lane_count: 4,
-    lanes: [], // [{ conveyor, pe, jam_pe, merge_pe }]
+    // lanes: [{ conveyor, pe, jam_pe, merge_pe, has_encoder, encoder_type, encoder_tag }]
+    lanes: [],
     collector_jam_pe: '',
+    collector_jam_pe_b: '',
+    collector_jam_pe_c: '',
+    collector_jam_pe_d: '',
     eow_pe: '',
     mrg_id: '414',
+    area_name: '',
+    track_pe_count: 0,
+    // track_pes: [{ pe, pls_location, blocked_jam_pre }]
+    track_pes: [],
     enable_track: true,
     enable_reserve: true,
     no_carton_check: false,
@@ -3180,23 +3202,85 @@ function defaultSawtoothConfig() {
   return {
     collector_conveyor: '',
     downstream_conveyor: '',
+    collector_has_encoder: 'yes',
+    collector_encoder_type: 'Enc_RIOCard',
     collector_encoder: '',
     clctr_speed_fpm: 140,
     clctr_runout_dist: 0,
+    clctr_slug_gap_adder: 0,
+    clctr_safety_tmr_preset: 0,
+    clctr_min_gap: 0,
+    slot_reserve_multiple: 1,
+    real_enc_ipp: 0,
+    pseudo_enc_ipp: 0,
+    pseudo_enc_max_cnt: 0,
+    track_array_size: 0,
+    lane_empty_opt_preset: 0,
     use_gapstore: false,
     lane_count: 4,
     lanes: [],
     collector_jam_pe: '',
+    collector_jam_pe_b: '',
+    collector_jam_pe_c: '',
+    collector_jam_pe_d: '',
     eow_pe: '',
     mrg_id: '414',
+    area_name: '',
+    track_pe_count: 0,
+    track_pes: [],
     enable_track: true,
     enable_reserve: true,
     no_carton_check: false,
   };
 }
 
+function emptySawTrackPeRow() {
+  return { pe: '', pls_location: 0, blocked_jam_pre: 60 };
+}
+
 function emptySawLaneRow() {
-  return { conveyor: '', pe: '', jam_pe: '', merge_pe: '' };
+  return {
+    conveyor: '',
+    pe: '',
+    jam_pe: '',
+    merge_pe: '',
+    has_encoder: 'no',
+    encoder_type: 'Enc_RIOCard',
+    encoder_tag: '',
+  };
+}
+
+function normalizeSawLaneRow(row) {
+  const r = { ...emptySawLaneRow(), ...(row || {}) };
+  r.has_encoder = (r.has_encoder === 'yes' || r.has_encoder === true) ? 'yes' : 'no';
+  if (!['Enc_RIOCard', 'Enc_CounterCard', 'Enc_Virtual_DistBased'].includes(r.encoder_type)) {
+    r.encoder_type = 'Enc_RIOCard';
+  }
+  r.encoder_tag = r.encoder_tag || r.enc_tag || '';
+  return r;
+}
+
+function normalizeSawtoothConfig(raw) {
+  const s = { ...defaultSawtoothConfig(), ...(raw || {}) };
+  s.collector_has_encoder = (s.collector_has_encoder === 'no' || s.collector_has_encoder === false)
+    ? 'no'
+    : 'yes';
+  // Legacy: encoder tag set ⇒ has encoder
+  if (s.collector_encoder && s.collector_has_encoder !== 'no') s.collector_has_encoder = 'yes';
+  if (!['Enc_RIOCard', 'Enc_CounterCard', 'Enc_Virtual_DistBased'].includes(s.collector_encoder_type)) {
+    s.collector_encoder_type = 'Enc_RIOCard';
+  }
+  s.lanes = (s.lanes || []).map((l) => normalizeSawLaneRow(l));
+  const tpn = Math.max(0, Math.min(16, Number(s.track_pe_count) || 0));
+  s.track_pe_count = tpn;
+  while ((s.track_pes || []).length < tpn) s.track_pes.push(emptySawTrackPeRow());
+  s.track_pes = (s.track_pes || []).slice(0, tpn).map((r) => ({
+    ...emptySawTrackPeRow(),
+    ...(r || {}),
+    pls_location: Number(r?.pls_location) || 0,
+    blocked_jam_pre: Number(r?.blocked_jam_pre) || 60,
+  }));
+  return s;
 }
 
 function normalizeSorterTrackRow(row) {
@@ -3708,8 +3792,12 @@ function updateSawtoothSummary() {
   if (!el) return;
   const s = autogenState.sawtooth || {};
   const n = Number(s.lane_count || (s.lanes || []).length || 0);
+  const enc = s.collector_has_encoder === 'no'
+    ? 'NO_Enc'
+    : (s.collector_encoder || 'enc?');
+  const laneEnc = (s.lanes || []).filter((l) => l && l.has_encoder === 'yes').length;
   el.textContent = s.collector_conveyor
-    ? `${s.collector_conveyor} · ${n} lane(s) · MRG${s.mrg_id || '?'}`
+    ? `${s.collector_conveyor} · enc ${enc} · ${n} lane(s)${laneEnc ? ` · ${laneEnc} lane-enc` : ''} · MRG${s.mrg_id || '?'}`
     : 'no config';
 }
 
@@ -3732,65 +3820,177 @@ function fillSawSelect(sel, values, current, allowBlank = true) {
 }
 
 function renderSawtoothBuild() {
-  const s = autogenState.sawtooth || (autogenState.sawtooth = defaultSawtoothConfig());
+  const s = autogenState.sawtooth = normalizeSawtoothConfig(
+    autogenState.sawtooth || defaultSawtoothConfig(),
+  );
   const convs = typeof conveyorNameList === 'function' ? conveyorNameList() : [];
   const pes = typeof photoeyeNameList === 'function' ? photoeyeNameList() : [];
   const encs = typeof encoderNameList === 'function' ? encoderNameList() : [];
+  const encFallback = encs.length ? encs : convs.map((c) => `${c}_Enc`);
 
   fillSawSelect($('saw-collector-conv'), convs, s.collector_conveyor);
   fillSawSelect($('saw-downstream-conv'), convs, s.downstream_conveyor);
-  fillSawSelect($('saw-collector-enc'), encs.length ? encs : convs.map((c) => `${c}_Enc`), s.collector_encoder);
   fillSawSelect($('saw-coll-jam-pe'), pes, s.collector_jam_pe);
+  fillSawSelect($('saw-coll-jam-pe-b'), pes, s.collector_jam_pe_b);
+  fillSawSelect($('saw-coll-jam-pe-c'), pes, s.collector_jam_pe_c);
+  fillSawSelect($('saw-coll-jam-pe-d'), pes, s.collector_jam_pe_d);
   fillSawSelect($('saw-eow-pe'), pes, s.eow_pe);
   if ($('saw-clctr-speed')) $('saw-clctr-speed').value = String(s.clctr_speed_fpm ?? 140);
   if ($('saw-clctr-runout')) $('saw-clctr-runout').value = String(s.clctr_runout_dist ?? 0);
+  if ($('saw-slug-gap-adder')) $('saw-slug-gap-adder').value = String(s.clctr_slug_gap_adder ?? 0);
+  if ($('saw-safety-tmr')) $('saw-safety-tmr').value = String(s.clctr_safety_tmr_preset ?? 0);
+  if ($('saw-min-gap')) $('saw-min-gap').value = String(s.clctr_min_gap ?? 0);
+  if ($('saw-slot-resv-mult')) $('saw-slot-resv-mult').value = String(s.slot_reserve_multiple ?? 1);
+  if ($('saw-real-enc-ipp')) $('saw-real-enc-ipp').value = String(s.real_enc_ipp ?? 0);
+  if ($('saw-pseudo-enc-ipp')) $('saw-pseudo-enc-ipp').value = String(s.pseudo_enc_ipp ?? 0);
+  if ($('saw-pseudo-enc-max')) $('saw-pseudo-enc-max').value = String(s.pseudo_enc_max_cnt ?? 0);
+  if ($('saw-trk-array-size')) $('saw-trk-array-size').value = String(s.track_array_size ?? 0);
+  if ($('saw-lane-empty-opt')) $('saw-lane-empty-opt').value = String(s.lane_empty_opt_preset ?? 0);
   if ($('saw-use-gapstore')) $('saw-use-gapstore').checked = !!s.use_gapstore;
   if ($('saw-lane-count')) $('saw-lane-count').value = String(s.lane_count || 4);
+  if ($('saw-track-pe-count')) $('saw-track-pe-count').value = String(s.track_pe_count || 0);
   if ($('saw-mrg-id')) $('saw-mrg-id').value = s.mrg_id || '414';
+  if ($('saw-area-name')) $('saw-area-name').value = s.area_name || '';
   if ($('saw-enable-trk')) $('saw-enable-trk').checked = s.enable_track !== false;
   if ($('saw-enable-resv')) $('saw-enable-resv').checked = s.enable_reserve !== false;
   if ($('saw-no-carton-check')) $('saw-no-carton-check').checked = !!s.no_carton_check;
 
+  // Collector carton-tracking encoder
+  const hasEnc = $('saw-collector-has-enc');
+  if (hasEnc) hasEnc.value = s.collector_has_encoder === 'no' ? 'no' : 'yes';
+  const encOpts = $('saw-collector-enc-opts');
+  if (encOpts) {
+    const show = s.collector_has_encoder !== 'no';
+    encOpts.classList.toggle('hidden', !show);
+    encOpts.classList.toggle('flex', show);
+  }
+  const encType = $('saw-collector-enc-type');
+  if (encType) encType.innerHTML = sorterEncTypeOptionsHtml(s.collector_encoder_type || 'Enc_RIOCard');
+  const encTag = $('saw-collector-enc');
+  if (encTag) encTag.innerHTML = sorterEncTagOptionsHtml(s.collector_encoder || '', encFallback);
+
   const n = Math.max(1, Math.min(12, Number(s.lane_count) || 4));
   s.lane_count = n;
   while ((s.lanes || []).length < n) s.lanes.push(emptySawLaneRow());
-  s.lanes = (s.lanes || []).slice(0, n);
+  s.lanes = (s.lanes || []).slice(0, n).map((l) => normalizeSawLaneRow(l));
 
   const host = $('saw-lane-rows');
   if (host) {
-    host.innerHTML = s.lanes.map((lane, i) => `
-      <div class="rounded-lg border border-slate-800 bg-[#070b12] p-2 grid grid-cols-1 md:grid-cols-4 gap-2" data-saw-lane="${i}">
-        <div>
-          <label class="block text-[9px] text-slate-500 mb-0.5">Lane ${i + 1} conveyor</label>
-          <select data-saw-field="conveyor" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-slate-200"></select>
+    host.innerHTML = s.lanes.map((lane, i) => {
+      const showEnc = lane.has_encoder === 'yes';
+      return `
+      <div class="rounded-lg border border-slate-800 bg-[#070b12] p-2 space-y-2" data-saw-lane="${i}">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <div>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Lane ${i + 1} conveyor</label>
+            <select data-saw-field="conveyor" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-slate-200"></select>
+          </div>
+          <div>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Lane PE</label>
+            <select data-saw-field="pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+          </div>
+          <div>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Jam PE</label>
+            <select data-saw-field="jam_pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+          </div>
+          <div>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Merge-point PE</label>
+            <select data-saw-field="merge_pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+          </div>
         </div>
-        <div>
-          <label class="block text-[9px] text-slate-500 mb-0.5">Lane PE</label>
-          <select data-saw-field="pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 border-t border-slate-800/80 pt-2">
+          <div>
+            <label class="block text-[9px] text-amber-600/90 mb-0.5">Lane encoder?</label>
+            <select data-saw-field="has_encoder" class="w-full bg-[#101820] border border-amber-900/40 rounded px-1.5 py-1 text-[10px] text-slate-200">
+              <option value="no" ${lane.has_encoder !== 'yes' ? 'selected' : ''}>No → NO_Enc</option>
+              <option value="yes" ${lane.has_encoder === 'yes' ? 'selected' : ''}>Yes</option>
+            </select>
+          </div>
+          <div class="${showEnc ? '' : 'hidden'}" data-saw-enc-opts>
+            <label class="block text-[9px] text-amber-600/90 mb-0.5">Encoder type</label>
+            <select data-saw-field="encoder_type" class="w-full bg-[#101820] border border-amber-900/40 rounded px-1.5 py-1 text-[10px] text-slate-200">
+              ${sorterEncTypeOptionsHtml(lane.encoder_type || 'Enc_RIOCard')}
+            </select>
+          </div>
+          <div class="${showEnc ? '' : 'hidden'}" data-saw-enc-opts>
+            <label class="block text-[9px] text-amber-600/90 mb-0.5">Encoder tag</label>
+            <select data-saw-field="encoder_tag" class="w-full bg-[#101820] border border-amber-900/40 rounded px-1.5 py-1 text-[10px] mono text-amber-200/90">
+              ${sorterEncTagOptionsHtml(lane.encoder_tag || '', encFallback)}
+            </select>
+          </div>
         </div>
-        <div>
-          <label class="block text-[9px] text-slate-500 mb-0.5">Jam PE</label>
-          <select data-saw-field="jam_pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
-        </div>
-        <div>
-          <label class="block text-[9px] text-slate-500 mb-0.5">Merge-point PE</label>
-          <select data-saw-field="merge_pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
-        </div>
-      </div>`).join('');
+      </div>`;
+    }).join('');
     host.querySelectorAll('[data-saw-lane]').forEach((row) => {
       const i = Number(row.dataset.sawLane);
       const lane = s.lanes[i] || emptySawLaneRow();
       row.querySelectorAll('[data-saw-field]').forEach((sel) => {
         const field = sel.dataset.sawField;
-        const opts = field === 'conveyor' ? convs : pes;
-        fillSawSelect(sel, opts, lane[field] || '');
+        if (field === 'conveyor') fillSawSelect(sel, convs, lane.conveyor || '');
+        else if (field === 'pe' || field === 'jam_pe' || field === 'merge_pe') {
+          fillSawSelect(sel, pes, lane[field] || '');
+        } else if (field === 'has_encoder') {
+          sel.value = lane.has_encoder === 'yes' ? 'yes' : 'no';
+        } else if (field === 'encoder_type') {
+          sel.value = lane.encoder_type || 'Enc_RIOCard';
+        } else if (field === 'encoder_tag') {
+          // already painted via sorterEncTagOptionsHtml
+          if (lane.encoder_tag) sel.value = lane.encoder_tag;
+        }
         sel.addEventListener('change', () => {
-          s.lanes[i] = s.lanes[i] || emptySawLaneRow();
+          s.lanes[i] = normalizeSawLaneRow(s.lanes[i] || emptySawLaneRow());
+          if (field === 'has_encoder') {
+            s.lanes[i].has_encoder = sel.value === 'yes' ? 'yes' : 'no';
+            renderSawtoothBuild();
+            return;
+          }
           s.lanes[i][field] = sel.value || '';
           updateSawtoothSummary();
         });
       });
     });
+  }
+
+  // Collector track PE calibration rows (astCollPeCfg)
+  const tpn = Math.max(0, Math.min(16, Number(s.track_pe_count) || 0));
+  s.track_pe_count = tpn;
+  while ((s.track_pes || []).length < tpn) s.track_pes.push(emptySawTrackPeRow());
+  s.track_pes = (s.track_pes || []).slice(0, tpn);
+  const peHost = $('saw-track-pe-rows');
+  if (peHost) {
+    if (!tpn) {
+      peHost.innerHTML = '<div class="text-[10px] text-slate-600">No collector track PEs configured.</div>';
+    } else {
+      peHost.innerHTML = s.track_pes.map((row, i) => `
+        <div class="rounded-lg border border-slate-800 bg-[#070b12] p-2 grid grid-cols-1 md:grid-cols-3 gap-2" data-saw-tpe="${i}">
+          <div>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Track PE ${i + 1}</label>
+            <select data-saw-tpe-field="pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+          </div>
+          <div>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Pulse location</label>
+            <input data-saw-tpe-field="pls_location" type="number" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-slate-200" value="${Number(row.pls_location) || 0}">
+          </div>
+          <div>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Blocked jam preset</label>
+            <input data-saw-tpe-field="blocked_jam_pre" type="number" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-slate-200" value="${Number(row.blocked_jam_pre) || 60}">
+          </div>
+        </div>`).join('');
+      peHost.querySelectorAll('[data-saw-tpe]').forEach((rowEl) => {
+        const i = Number(rowEl.dataset.sawTpe);
+        const row = s.track_pes[i] || emptySawTrackPeRow();
+        rowEl.querySelectorAll('[data-saw-tpe-field]').forEach((el) => {
+          const field = el.dataset.sawTpeField;
+          if (field === 'pe') fillSawSelect(el, pes, row.pe || '');
+          el.addEventListener('change', () => {
+            s.track_pes[i] = { ...emptySawTrackPeRow(), ...(s.track_pes[i] || {}) };
+            if (field === 'pe') s.track_pes[i].pe = el.value || '';
+            else s.track_pes[i][field] = Number(el.value) || 0;
+            updateSawtoothSummary();
+          });
+        });
+      });
+    }
   }
   updateSawtoothSummary();
 }
@@ -3804,17 +4004,54 @@ function wireSawtoothBuildOnce() {
     autogenState.sawtooth.lane_count = n;
     renderSawtoothBuild();
   });
+  $('saw-track-pe-count')?.addEventListener('change', () => {
+    const n = Math.max(0, Math.min(16, parseInt($('saw-track-pe-count').value, 10) || 0));
+    autogenState.sawtooth.track_pe_count = n;
+    renderSawtoothBuild();
+  });
   const bind = (id, fn) => $(id)?.addEventListener('change', fn);
   bind('saw-collector-conv', () => { autogenState.sawtooth.collector_conveyor = $('saw-collector-conv').value || ''; updateSawtoothSummary(); });
   bind('saw-downstream-conv', () => { autogenState.sawtooth.downstream_conveyor = $('saw-downstream-conv').value || ''; updateSawtoothSummary(); });
+  bind('saw-collector-has-enc', () => {
+    autogenState.sawtooth.collector_has_encoder = $('saw-collector-has-enc').value === 'no' ? 'no' : 'yes';
+    if (autogenState.sawtooth.collector_has_encoder === 'no') {
+      autogenState.sawtooth.collector_encoder = '';
+    }
+    renderSawtoothBuild();
+  });
+  bind('saw-collector-enc-type', () => {
+    autogenState.sawtooth.collector_encoder_type = $('saw-collector-enc-type').value || 'Enc_RIOCard';
+    updateSawtoothSummary();
+  });
   bind('saw-collector-enc', () => { autogenState.sawtooth.collector_encoder = $('saw-collector-enc').value || ''; updateSawtoothSummary(); });
   bind('saw-clctr-speed', () => { autogenState.sawtooth.clctr_speed_fpm = Number($('saw-clctr-speed').value) || 140; });
   bind('saw-clctr-runout', () => { autogenState.sawtooth.clctr_runout_dist = Number($('saw-clctr-runout').value) || 0; });
+  bind('saw-slug-gap-adder', () => { autogenState.sawtooth.clctr_slug_gap_adder = Number($('saw-slug-gap-adder').value) || 0; });
+  bind('saw-safety-tmr', () => { autogenState.sawtooth.clctr_safety_tmr_preset = Number($('saw-safety-tmr').value) || 0; });
+  bind('saw-min-gap', () => { autogenState.sawtooth.clctr_min_gap = Number($('saw-min-gap').value) || 0; });
+  bind('saw-slot-resv-mult', () => { autogenState.sawtooth.slot_reserve_multiple = Number($('saw-slot-resv-mult').value) || 1; });
+  bind('saw-real-enc-ipp', () => { autogenState.sawtooth.real_enc_ipp = Number($('saw-real-enc-ipp').value) || 0; });
+  bind('saw-pseudo-enc-ipp', () => { autogenState.sawtooth.pseudo_enc_ipp = Number($('saw-pseudo-enc-ipp').value) || 0; });
+  bind('saw-pseudo-enc-max', () => { autogenState.sawtooth.pseudo_enc_max_cnt = Number($('saw-pseudo-enc-max').value) || 0; });
+  bind('saw-trk-array-size', () => { autogenState.sawtooth.track_array_size = Number($('saw-trk-array-size').value) || 0; });
+  bind('saw-lane-empty-opt', () => { autogenState.sawtooth.lane_empty_opt_preset = Number($('saw-lane-empty-opt').value) || 0; });
   bind('saw-use-gapstore', () => { autogenState.sawtooth.use_gapstore = !!$('saw-use-gapstore').checked; });
   bind('saw-coll-jam-pe', () => { autogenState.sawtooth.collector_jam_pe = $('saw-coll-jam-pe').value || ''; });
+  bind('saw-coll-jam-pe-b', () => { autogenState.sawtooth.collector_jam_pe_b = $('saw-coll-jam-pe-b').value || ''; });
+  bind('saw-coll-jam-pe-c', () => { autogenState.sawtooth.collector_jam_pe_c = $('saw-coll-jam-pe-c').value || ''; });
+  bind('saw-coll-jam-pe-d', () => { autogenState.sawtooth.collector_jam_pe_d = $('saw-coll-jam-pe-d').value || ''; });
   bind('saw-eow-pe', () => { autogenState.sawtooth.eow_pe = $('saw-eow-pe').value || ''; });
   bind('saw-mrg-id', () => { autogenState.sawtooth.mrg_id = $('saw-mrg-id').value || '414'; updateSawtoothSummary(); });
-  bind('saw-enable-trk', () => { autogenState.sawtooth.enable_track = !!$('saw-enable-trk').checked; });
+  bind('saw-area-name', () => { autogenState.sawtooth.area_name = $('saw-area-name').value || ''; });
+  bind('saw-enable-trk', () => {
+    autogenState.sawtooth.enable_track = !!$('saw-enable-trk').checked;
+    if (autogenState.sawtooth.enable_track && autogenState.sawtooth.collector_has_encoder === 'no') {
+      autogenState.sawtooth.collector_has_encoder = 'yes';
+      renderSawtoothBuild();
+      return;
+    }
+    updateSawtoothSummary();
+  });
   bind('saw-enable-resv', () => { autogenState.sawtooth.enable_reserve = !!$('saw-enable-resv').checked; });
   bind('saw-no-carton-check', () => { autogenState.sawtooth.no_carton_check = !!$('saw-no-carton-check').checked; });
 
@@ -3822,20 +4059,32 @@ function wireSawtoothBuildOnce() {
     const s = autogenState.sawtooth;
     s.collector_conveyor = 'P414';
     s.downstream_conveyor = 'P418';
+    s.collector_has_encoder = 'yes';
+    s.collector_encoder_type = 'Enc_RIOCard';
     s.collector_encoder = 'P414_Enc';
     s.clctr_speed_fpm = 140;
+    s.clctr_runout_dist = 0;
+    s.clctr_slug_gap_adder = 0;
+    s.clctr_safety_tmr_preset = 0;
     s.mrg_id = '414';
+    s.area_name = 'CP4_Sawtooth_Area';
     s.lane_count = 4;
     s.lanes = [
-      { conveyor: 'P412', pe: 'PE410_P', jam_pe: '', merge_pe: '' },
-      { conveyor: 'P120', pe: 'PE118_P', jam_pe: '', merge_pe: '' },
-      { conveyor: 'P218', pe: 'PE216_P', jam_pe: '', merge_pe: '' },
-      { conveyor: 'P219', pe: 'PE219_P', jam_pe: 'PE219A_J', merge_pe: '' },
+      { conveyor: 'P412', pe: 'PE410_P', jam_pe: '', merge_pe: '', has_encoder: 'no', encoder_type: 'Enc_RIOCard', encoder_tag: '' },
+      { conveyor: 'P120', pe: 'PE118_P', jam_pe: '', merge_pe: '', has_encoder: 'no', encoder_type: 'Enc_RIOCard', encoder_tag: '' },
+      { conveyor: 'P218', pe: 'PE216_P', jam_pe: '', merge_pe: '', has_encoder: 'no', encoder_type: 'Enc_RIOCard', encoder_tag: '' },
+      { conveyor: 'P219', pe: 'PE219_P', jam_pe: 'PE219A_J', merge_pe: '', has_encoder: 'no', encoder_type: 'Enc_RIOCard', encoder_tag: '' },
     ];
     s.collector_jam_pe = 'PE414_J';
+    s.collector_jam_pe_b = 'PE414A_J';
+    s.collector_jam_pe_c = 'PE414B_J';
+    s.collector_jam_pe_d = 'PE414C_J';
     s.eow_pe = '';
+    s.track_pe_count = 0;
+    s.track_pes = [];
     s.enable_track = true;
     s.enable_reserve = true;
+    s.use_gapstore = false;
     renderSawtoothBuild();
     const st = $('saw-save-status');
     if (st) { st.textContent = 'PLC4 example filled — review then Save'; st.className = 'text-[10px] text-amber-400 mono'; }
@@ -3876,11 +4125,14 @@ function wireSawtoothBuildOnce() {
   try {
     const raw = localStorage.getItem('fortna_sawtooth_build');
     if (raw && !autogenState.workbook?.sawtooth_build) {
-      autogenState.sawtooth = { ...defaultSawtoothConfig(), ...JSON.parse(raw) };
+      autogenState.sawtooth = normalizeSawtoothConfig({ ...defaultSawtoothConfig(), ...JSON.parse(raw) });
     }
   } catch (_) { /* ignore */ }
   if (autogenState.workbook?.sawtooth_build) {
-    autogenState.sawtooth = { ...defaultSawtoothConfig(), ...autogenState.workbook.sawtooth_build };
+    autogenState.sawtooth = normalizeSawtoothConfig({
+      ...defaultSawtoothConfig(),
+      ...autogenState.workbook.sawtooth_build,
+    });
   }
   renderSawtoothBuild();
 }
@@ -4623,19 +4875,27 @@ async function runAutogenGenerate(mode) {
   const noSys = !($('autogen-opt-sys')?.checked ?? true);
   // IO_MAP checkbox: checked = include RUN bank map; unchecked = omit IO_MAP from L5X
   const includeIoMap = !!($('autogen-opt-iomap')?.checked ?? true);
-  // System = gold System program (Devices_Comm_Logic) — independent of Sys constants
-  // Accept legacy Sys_Comm id if an older HTML cache is still loaded
-  const wantSystem =
-    !!($('autogen-opt-system')?.checked ?? $('autogen-opt-sys-comm')?.checked ?? true);
-  if (wantSystem) {
-    includePrograms.push('System');
+  // System program routines (independent of Sys constants pack)
+  // Device Comms checkbox includes NTP (cookie-cutter) in the same pack.
+  const wantDeviceComms =
+    !!($('autogen-opt-system')?.checked ?? $('autogen-opt-device-comms')?.checked ?? true);
+  const wantNtp = wantDeviceComms; // NTP rides with Device Comms
+  const wantSystemLogic = !!($('autogen-opt-system-logic')?.checked ?? true);
+  if (wantDeviceComms) {
+    includePrograms.push('Devices_Comm');
+    includePrograms.push('NTP');
   }
+  if (wantSystemLogic) includePrograms.push('System_Logic');
+  // Back-compat token so older exporters still emit the System program shell
+  if (wantDeviceComms || wantSystemLogic) includePrograms.push('System');
   const packBits = [];
   if (!noSys) packBits.push('Sys');
-  if (wantSystem) packBits.push('System');
+  if (wantDeviceComms) packBits.push('DeviceComms+NTP');
+  if (wantSystemLogic) packBits.push('SystemLogic');
   packBits.push(includeIoMap ? 'IO_MAP(RUN banks→RIO)' : 'IO_MAP(off)');
-  // Avoid double-listing System in includePrograms display
-  const packExtra = includePrograms.filter((p) => p !== 'System');
+  const packExtra = includePrograms.filter(
+    (p) => !['System', 'Devices_Comm', 'NTP', 'System_Logic'].includes(p)
+  );
   if (packExtra.length) packBits.push(...packExtra);
   autogenLog(`Program pack: ${packBits.join(' + ')}`, 'info');
 
@@ -5117,6 +5377,7 @@ async function clearProjectBuilds() {
     ].forEach((id) => {
       if ($(id)) $(id).checked = false;
     });
+    // Core packs stay recommended-on after a full wipe (user can uncheck)
 
     // Wipe entire Autogen workbook (conveyors / IO / areas / report) and persist empty file
     const emptyWb = {

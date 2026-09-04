@@ -1,0 +1,127 @@
+{
+  "ok": true,
+  "poc": true,
+  "generated_at": "2026-08-29T16:02:34.336258+00:00",
+  "totals": {
+    "areas": 1,
+    "nodes": 4,
+    "wires": 3,
+    "merges": 0,
+    "devices": 9,
+    "unbound_conveyors": 0,
+    "untagged_devices": 0,
+    "issues": []
+  },
+  "areas": [
+    {
+      "id": "area_vvayyr0",
+      "name": "Transport_1",
+      "conveyor_count": 4,
+      "wire_count": 3,
+      "merges": [],
+      "nodes": [
+        {
+          "id": "node_nw61xhu",
+          "kind": "conv_straight",
+          "label": "P10A",
+          "conveyorTag": "P10A",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "M7"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE522_P"
+            }
+          ]
+        },
+        {
+          "id": "node_ohl2kbd",
+          "kind": "conv_straight",
+          "label": "P11",
+          "conveyorTag": "P11",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "M8"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE13P1A_P"
+            }
+          ]
+        },
+        {
+          "id": "node_y23ng4l",
+          "kind": "conv_straight",
+          "label": "P12",
+          "conveyorTag": "P12",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "M16"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE38_P"
+            }
+          ]
+        },
+        {
+          "id": "node_kticpd0",
+          "kind": "conv_straight",
+          "label": "P18A",
+          "conveyorTag": "P18A",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "Motor_1"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE118_P_GAP"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "Photoeye_3"
+            }
+          ]
+        }
+      ],
+      "wires": [
+        {
+          "from": "node_nw61xhu",
+          "to": "node_ohl2kbd",
+          "toPort": "in"
+        },
+        {
+          "from": "node_ohl2kbd",
+          "to": "node_y23ng4l",
+          "toPort": "in"
+        },
+        {
+          "from": "node_y23ng4l",
+          "to": "node_kticpd0",
+          "toPort": "in"
+        }
+      ]
+    }
+  ],
+  "merges_2to1": [],
+  "next_steps": [
+    "Bind every conveyor node to a P### tag from the RUN.",
+    "Tag motors as M### / VFD### only; ENC* for encoders; PE*/EZPE* for eyes.",
+    "2:1 merges \u2192 Autogen merges_2to1 (PLC2 runhold). Import fragment into PLC Autogen workbook.",
+    "Keep sealed Fast_Conv / Slow_* / Merge_2to1 AOIs; only wire call sites.",
+    "Full L5X emit from this graph is Phase 2b (IO map + transport focus)."
+  ]
+}

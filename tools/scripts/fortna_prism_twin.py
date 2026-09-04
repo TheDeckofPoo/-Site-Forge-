@@ -109,7 +109,13 @@ def load_gaps(*, site: str = "", export_dir: str = "") -> dict:
     }
 
 
-def prism_search(query: str, *, limit: int = 5, system: str = "") -> dict:
+def prism_search(
+    query: str,
+    *,
+    limit: int = 5,
+    system: str = "",
+    status: str = "production",
+) -> dict:
     prism = _prism_root()
     entry = prism / "Rockwell-Vector-Database.py"
     if not entry.is_file():
@@ -122,6 +128,8 @@ def prism_search(query: str, *, limit: int = 5, system: str = "") -> dict:
         "--limit",
         str(max(1, min(limit, 20))),
         "--json",
+        "--status",
+        status or "production",
     ]
     if system:
         cmd.extend(["--system", system])

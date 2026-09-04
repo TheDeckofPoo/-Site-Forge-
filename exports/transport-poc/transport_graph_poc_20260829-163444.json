@@ -1,0 +1,219 @@
+{
+  "ok": true,
+  "poc": true,
+  "generated_at": "2026-08-29T16:34:44.655292+00:00",
+  "totals": {
+    "areas": 1,
+    "nodes": 6,
+    "wires": 5,
+    "merges": 1,
+    "devices": 12,
+    "unbound_conveyors": 0,
+    "untagged_devices": 0,
+    "issues": [
+      "Transport_1: 'Transport_1_C1' is not a P### conveyor tag",
+      "Transport_1: 'Transport_1_C2' is not a P### conveyor tag",
+      "Transport_1: 'Transport_1_C3' is not a P### conveyor tag",
+      "Transport_1: 'Transport_1_C4' is not a P### conveyor tag",
+      "Transport_1: 'Transport_1_C5' is not a P### conveyor tag",
+      "Transport_1: 'Transport_1_C6' is not a P### conveyor tag"
+    ]
+  },
+  "areas": [
+    {
+      "id": "area_cstot94",
+      "name": "Transport_1",
+      "conveyor_count": 6,
+      "wire_count": 5,
+      "merges": [
+        {
+          "id": "node_aceh35p",
+          "label": "Merge 2:1",
+          "lanes": 2,
+          "discharge": "Transport_1_C4",
+          "rotation": 0,
+          "pe_a": "EZPE2A_P",
+          "pe_b": "PE13P1A_P",
+          "pe_c": "",
+          "jam_pe": "EZPE10_F",
+          "allow_undefined_pe": false,
+          "suggested_aoi": "Merge_2to1",
+          "inbound": [
+            {
+              "port": "in1",
+              "from_tag": "Transport_1_C2"
+            },
+            {
+              "port": "in0",
+              "from_tag": "Transport_1_C3"
+            }
+          ],
+          "note": "Maps to existing fortna_autogen merges_2to1 workbook shape."
+        }
+      ],
+      "nodes": [
+        {
+          "id": "node_276rcoa",
+          "kind": "conv_straight",
+          "label": "Transport_1_C1",
+          "conveyorTag": "Transport_1_C1",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "VFD200B"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE700_F"
+            }
+          ]
+        },
+        {
+          "id": "node_9aoinnp",
+          "kind": "conv_straight",
+          "label": "Transport_1_C2",
+          "conveyorTag": "Transport_1_C2",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "VFD302"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE706_F"
+            }
+          ]
+        },
+        {
+          "id": "node_n7a10vd",
+          "kind": "conv_straight",
+          "label": "Transport_1_C3",
+          "conveyorTag": "Transport_1_C3",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "VFD208"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE522_P"
+            }
+          ]
+        },
+        {
+          "id": "node_aceh35p",
+          "kind": "conv_merge",
+          "label": "Merge 2:1",
+          "conveyorTag": "Transport_1_C4",
+          "rotation": 0,
+          "inPorts": 2,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "VFD400"
+            }
+          ]
+        },
+        {
+          "id": "node_sj1zi37",
+          "kind": "conv_straight",
+          "label": "Transport_1_C5",
+          "conveyorTag": "Transport_1_C5",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "VFD228"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE524_F"
+            },
+            {
+              "kind": "photoeye",
+              "tag": "PE400_J"
+            }
+          ]
+        },
+        {
+          "id": "node_ldumgei",
+          "kind": "conv_straight",
+          "label": "Transport_1_C6",
+          "conveyorTag": "Transport_1_C6",
+          "rotation": 0,
+          "inPorts": 1,
+          "devices": [
+            {
+              "kind": "photoeye",
+              "tag": "PE710_J"
+            },
+            {
+              "kind": "motor",
+              "tag": "VFD506"
+            }
+          ]
+        }
+      ],
+      "wires": [
+        {
+          "from": "node_276rcoa",
+          "to": "node_n7a10vd",
+          "toPort": "in"
+        },
+        {
+          "from": "node_9aoinnp",
+          "to": "node_aceh35p",
+          "toPort": "in1"
+        },
+        {
+          "from": "node_n7a10vd",
+          "to": "node_aceh35p",
+          "toPort": "in0"
+        },
+        {
+          "from": "node_aceh35p",
+          "to": "node_sj1zi37",
+          "toPort": "in"
+        },
+        {
+          "from": "node_sj1zi37",
+          "to": "node_ldumgei",
+          "toPort": "in"
+        }
+      ]
+    }
+  ],
+  "merges_2to1": [
+    {
+      "name": "Transport_1_C4",
+      "area": "Transport_1",
+      "lanes": 2,
+      "lane_a": "Transport_1_C3",
+      "lane_b": "Transport_1_C2",
+      "lane_c": "",
+      "discharge": "Transport_1_C4",
+      "pe_a": "EZPE2A_P",
+      "pe_b": "PE13P1A_P",
+      "pe_c": "",
+      "jam_pe": "",
+      "allow_undefined_pe": false,
+      "hold_mode": "runhold",
+      "source": "transport_build_graph",
+      "suggested_aoi": "Merge_2to1"
+    }
+  ],
+  "next_steps": [
+    "Bind every conveyor node to a P### tag from the RUN.",
+    "Tag motors as M### / VFD### only; ENC* for encoders; PE*/EZPE* for eyes.",
+    "2:1 merges \u2192 Autogen merges_2to1 (PLC2 runhold). Import fragment into PLC Autogen workbook.",
+    "Keep sealed Fast_Conv / Slow_* / Merge_2to1 AOIs; only wire call sites.",
+    "Full L5X emit from this graph is Phase 2b (IO map + transport focus)."
+  ]
+}

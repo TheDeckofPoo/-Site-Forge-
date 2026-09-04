@@ -2329,14 +2329,8 @@ def clone_template_for_conveyor(
                 }
             )
 
-    if not pe_tags_needed:
-        rungs.append(
-            {
-                "label": "PE",
-                "text": "NOP();",
-                "comment": f"{conv} PE",
-            }
-        )
+    # No PE roles / Exit PE on this belt → do not emit empty PE NOP rungs
+    # (Conv_PE / Conv_Full routines are omitted at area level when empty).
 
     return {
         "conveyor": conv,
@@ -2374,6 +2368,34 @@ def _load_gold_plc2_text() -> str:
     return ""
 
 
+def _system_program_library_path() -> Path:
+    return Path(__file__).resolve().parent.parent / "libraries" / "programs" / "System_Program.L5X"
+
+
+def _extract_program_routine_xml(program_body: str, routine_name: str) -> str:
+    """Return full <Routine …>…</Routine> block from a Program body, or ''."""
+    m = re.search(
+        rf'<Routine\s+Name="{re.escape(routine_name)}"[^>]*>.*?</Routine>',
+        program_body,
+        re.S,
+    )
+    return m.group(0) if m else ""
+
+
+def _cookie_cutter_site_system(text: str, *, project_name: str) -> str:
+    """Replace Greensboro System UDT tag with this site's <Project>_System."""
+    proj = _safe(project_name) or "Site"
+    dest = f"{proj}_System"
+    # Common Fortna System_UDT instance names in library exports
+    for src in (
+        "ORLY_Greensboro_NC_PLC2_System",
+        "ORLY_Greensboro_NC_PLC5_System",
+        "ORLY_Greensboro_NC_System",
+    ):
+        text = text.replace(src, dest)
+    return text
+
+
 def _build_sys_comm_program_xml(
     *,
     inp: "AutogenInput",
@@ -2382,14 +2404,33 @@ def _build_sys_comm_program_xml(
     _rung_xml,
     routine,
     seen_tag_names: set,
+    include_device_comms: bool = True,
+    include_ntp: bool = True,
+    include_system_logic: bool = True,
 ) -> str:
-    """Gold PLC2 `System` program — Devices_Comm_Logic from this site's tar.
+    """System program: Device Comms (from this site's tar) + cookie-cutter NTP / System_Logic.
 
-    Tag types must match AOI_CommDiag (see Greensboro PLC2), not DINT/BOOL stubs.
+    Tag types must match AOI_CommDiag, not DINT/BOOL stubs.
     """
     gold = _load_gold_plc2_text() or library_text
     proj = _safe(inp.project_name) or "Site"
     reset_udt = f"{proj}_System"
+
+    # Cookie-cutter routines + tags from System_Program.L5X (NTP / System_Logic)
+    sys_pack = load_program_export(_system_program_library_path())
+    sys_prog_body = ""
+    if sys_pack and sys_pack.get("program_xml"):
+        bm = re.search(r"<Program\b[^>]*>(.*?)</Program>", sys_pack["program_xml"], re.S)
+        sys_prog_body = bm.group(1) if bm else ""
+        # Merge controller/context tags needed by NTP / System_Logic (SNTP_*, Sys_AOI, …)
+        for block in sys_pack.get("tags") or []:
+            # Site-stamp System_UDT instance names inside tag XML too
+            block = _cookie_cutter_site_system(block, project_name=proj)
+            # Skip if tag name already present
+            nm = re.search(r'Tag Name="([^"]+)"', block)
+            if nm and nm.group(1) in seen_tag_names:
+                continue
+            _add_tag_block(block)
 
     devices: list[tuple[str, str | None]] = []
     for node in getattr(inp, "eip_topology", None) or []:
@@ -2526,32 +2567,9 @@ def _build_sys_comm_program_xml(
             f"</Structure></Data></Tag>"
         )
 
-    # Shared infra — exact gold types
-    _ensure_typed("DeviceInfo_Read", "BOOL")
-    if not _clone_tag("MACID_Bytes"):
-        _ensure_typed("MACID_Bytes", "SINT", dims="20")
-    if not _clone_tag("Firmware_Bytes"):
-        _ensure_typed("Firmware_Bytes", "SINT", dims="20")
-    if not _clone_tag("GET_Firmware"):
-        _add_tag_block(
-            '<Tag Name="GET_Firmware" TagType="Base" DataType="MESSAGE" ExternalAccess="Read/Write">'
-            "<Data Format=\"Message\"><MessageParameters MessageType=\"CIP Generic\" RequestedLength=\"0\" "
-            "ConnectedFlag=\"2\" CommTypeCode=\"0\" ServiceCode=\"16#000e\" ObjectType=\"16#0001\" "
-            "TargetObject=\"1\" AttributeNumber=\"16#0004\" LocalIndex=\"0\" "
-            "DestinationTag=\"Firmware_Bytes[0]\" LargePacketUsage=\"false\"/></Data></Tag>"
-        )
-    if not _clone_tag("GET_MACID"):
-        _add_tag_block(
-            '<Tag Name="GET_MACID" TagType="Base" DataType="MESSAGE" ExternalAccess="Read/Write">'
-            "<Data Format=\"Message\"><MessageParameters MessageType=\"CIP Generic\" RequestedLength=\"0\" "
-            "ConnectedFlag=\"2\" CommTypeCode=\"0\" ServiceCode=\"16#000e\" ObjectType=\"16#00f6\" "
-            "TargetObject=\"1\" AttributeNumber=\"16#0003\" LocalIndex=\"0\" "
-            "DestinationTag=\"MACID_Bytes[0]\" LargePacketUsage=\"false\"/></Data></Tag>"
-        )
-    _ensure_comm_udt("NO_CommDev")
+    # Always ensure this site's System_UDT instance (System_Logic + Device Comms Reset)
     if reset_udt not in seen_tag_names:
         if not _clone_tag("ORLY_Greensboro_NC_PLC2_System", reset_udt):
-            # System_UDT with Reset bit
             _add_tag_block(
                 f'<Tag Name="{_xml_escape(reset_udt)}" TagType="Base" DataType="System_UDT" '
                 f'Constant="false" ExternalAccess="Read/Write">'
@@ -2559,76 +2577,140 @@ def _build_sys_comm_program_xml(
             )
 
     n_groups = max(1, (len(devices) + 9) // 10) if devices else 1
-    for g in range(1, n_groups + 1):
-        imax = 10 if g < n_groups else max(1, len(devices) - (g - 1) * 10)
-        _ensure_commdiag_group(g, imax)
+    if include_device_comms:
+        # Shared infra for AOI_CommDiag
+        _ensure_typed("DeviceInfo_Read", "BOOL")
+        if not _clone_tag("MACID_Bytes"):
+            _ensure_typed("MACID_Bytes", "SINT", dims="20")
+        if not _clone_tag("Firmware_Bytes"):
+            _ensure_typed("Firmware_Bytes", "SINT", dims="20")
+        if not _clone_tag("GET_Firmware"):
+            _add_tag_block(
+                '<Tag Name="GET_Firmware" TagType="Base" DataType="MESSAGE" ExternalAccess="Read/Write">'
+                "<Data Format=\"Message\"><MessageParameters MessageType=\"CIP Generic\" RequestedLength=\"0\" "
+                "ConnectedFlag=\"2\" CommTypeCode=\"0\" ServiceCode=\"16#000e\" ObjectType=\"16#0001\" "
+                "TargetObject=\"1\" AttributeNumber=\"16#0004\" LocalIndex=\"0\" "
+                "DestinationTag=\"Firmware_Bytes[0]\" LargePacketUsage=\"false\"/></Data></Tag>"
+            )
+        if not _clone_tag("GET_MACID"):
+            _add_tag_block(
+                '<Tag Name="GET_MACID" TagType="Base" DataType="MESSAGE" ExternalAccess="Read/Write">'
+                "<Data Format=\"Message\"><MessageParameters MessageType=\"CIP Generic\" RequestedLength=\"0\" "
+                "ConnectedFlag=\"2\" CommTypeCode=\"0\" ServiceCode=\"16#000e\" ObjectType=\"16#00f6\" "
+                "TargetObject=\"1\" AttributeNumber=\"16#0003\" LocalIndex=\"0\" "
+                "DestinationTag=\"MACID_Bytes[0]\" LargePacketUsage=\"false\"/></Data></Tag>"
+            )
+        _ensure_comm_udt("NO_CommDev")
+        for g in range(1, n_groups + 1):
+            imax = 10 if g < n_groups else max(1, len(devices) - (g - 1) * 10)
+            _ensure_commdiag_group(g, imax)
 
     has_aoi = "AOI_CommDiag" in library_text or "AOI_CommDiag" in gold
     has_commdiag_udt = "CommDiag_UDT" in library_text or "CommDiag_UDT" in gold
     rungs: list[str] = []
-    rungs.append(
-        _rung_xml(
-            0,
-            "NOP();",
-            f"#############################\n{proj} / RIO Devices (System)\n"
-            f"Gold: Devices_Comm_Logic under P11_Slow_200ms\n"
-            f"Devices from this site tar: {len(devices)}\n######################################",
-        )
-    )
-    for g in range(1, n_groups + 1):
-        imax = 10 if g < n_groups else max(1, len(devices) - (g - 1) * 10)
+    if include_device_comms:
         rungs.append(
             _rung_xml(
-                len(rungs),
-                f"[EQU(CommsDiag_Group{g}.Index,CommsDiag_Group{g}.IndexMax) ,"
-                f"XIC(S:FS) MOV({imax},CommsDiag_Group{g}.IndexMax) ]"
-                f"CLR(CommsDiag_Group{g}.Index)NOP();",
-                f"Clear Count group {g}",
+                0,
+                "NOP();",
+                f"#############################\n{proj} / RIO Devices (System)\n"
+                f"Devices_Comm_Logic — devices from this site tar: {len(devices)}\n"
+                f"######################################",
             )
         )
-    rungs.append(_rung_xml(len(rungs), "NOP()OTU(DeviceInfo_Read);", "Pulse DeviceInfo_Read"))
-
-    # If types missing, emit NOP list instead of 600 Studio errors
-    safe_emit = has_aoi and has_commdiag_udt and ("Comm_UDT" in library_text or "Comm_UDT" in gold)
-
-    for i, (dev, parent) in enumerate(devices):
-        g = (i // 10) + 1
-        dsafe = _safe(dev)
-        aoi_tag = f"{dsafe}_CommLoss_AOI"
-        _ensure_comm_udt(dsafe)
-        parent_arg = _safe(parent) if parent else "NO_CommDev"
-        if parent_arg != "NO_CommDev":
-            _ensure_comm_udt(parent_arg)
-        _ensure_aoi_comm(aoi_tag)
-        info_read = "DeviceInfo_Read" if parent is None else "0"
-        reset_arg = f"{reset_udt}.Reset"
-        # Only emit live AOI call when backing AOI tag was successfully cloned
-        if safe_emit and aoi_tag in seen_tag_names and dsafe in seen_tag_names:
-            text = (
-                f"AOI_CommDiag({aoi_tag},{parent_arg},{dsafe},{dsafe},"
-                f"GET_Firmware,GET_MACID,MACID_Bytes,Firmware_Bytes,{info_read},"
-                f"{reset_arg},CommsDiag_Group{g}.Index);"
+        for g in range(1, n_groups + 1):
+            imax = 10 if g < n_groups else max(1, len(devices) - (g - 1) * 10)
+            rungs.append(
+                _rung_xml(
+                    len(rungs),
+                    f"[EQU(CommsDiag_Group{g}.Index,CommsDiag_Group{g}.IndexMax) ,"
+                    f"XIC(S:FS) MOV({imax},CommsDiag_Group{g}.IndexMax) ]"
+                    f"CLR(CommsDiag_Group{g}.Index)NOP();",
+                    f"Clear Count group {g}",
+                )
             )
-            comment = f"CommDiag {dsafe}"
-        else:
-            text = "NOP();"
-            comment = f"TODO CommDiag {dsafe} — clone AOI_CommDiag instance from gold library"
-        rungs.append(_rung_xml(len(rungs), text, comment))
+        rungs.append(_rung_xml(len(rungs), "NOP()OTU(DeviceInfo_Read);", "Pulse DeviceInfo_Read"))
 
-    main = [
-        _rung_xml(0, "JSR(Devices_Comm_Logic,0);", "Devices_Comm_Logic"),
-        _rung_xml(1, "JSR(NTP,0);", "NTP scaffold"),
-        _rung_xml(2, "JSR(System_Logic,0);", "System_Logic scaffold"),
-    ]
+        # If types missing, emit NOP list instead of 600 Studio errors
+        safe_emit = has_aoi and has_commdiag_udt and ("Comm_UDT" in library_text or "Comm_UDT" in gold)
+
+        for i, (dev, parent) in enumerate(devices):
+            g = (i // 10) + 1
+            dsafe = _safe(dev)
+            aoi_tag = f"{dsafe}_CommLoss_AOI"
+            _ensure_comm_udt(dsafe)
+            parent_arg = _safe(parent) if parent else "NO_CommDev"
+            if parent_arg != "NO_CommDev":
+                _ensure_comm_udt(parent_arg)
+            _ensure_aoi_comm(aoi_tag)
+            info_read = "DeviceInfo_Read" if parent is None else "0"
+            reset_arg = f"{reset_udt}.Reset"
+            # Only emit live AOI call when backing AOI tag was successfully cloned
+            if safe_emit and aoi_tag in seen_tag_names and dsafe in seen_tag_names:
+                text = (
+                    f"AOI_CommDiag({aoi_tag},{parent_arg},{dsafe},{dsafe},"
+                    f"GET_Firmware,GET_MACID,MACID_Bytes,Firmware_Bytes,{info_read},"
+                    f"{reset_arg},CommsDiag_Group{g}.Index);"
+                )
+                comment = f"CommDiag {dsafe}"
+            else:
+                text = "NOP();"
+                comment = f"TODO CommDiag {dsafe} — need AOI_CommDiag instance in library"
+            rungs.append(_rung_xml(len(rungs), text, comment))
+
+    # Cookie-cutter NTP + System_Logic from System_Program.L5X (site-stamped)
+    ntp_xml = ""
+    if include_ntp:
+        raw = _extract_program_routine_xml(sys_prog_body, "NTP") if sys_prog_body else ""
+        if raw:
+            ntp_xml = _cookie_cutter_site_system(raw, project_name=proj)
+        else:
+            ntp_xml = routine(
+                "NTP",
+                [_rung_xml(0, "NOP();", "NTP — System_Program.L5X missing; add AOI_SNTP_QUERY")],
+            )
+
+    logic_xml = ""
+    if include_system_logic:
+        raw = _extract_program_routine_xml(sys_prog_body, "System_Logic") if sys_prog_body else ""
+        if raw:
+            logic_xml = _cookie_cutter_site_system(raw, project_name=proj)
+        else:
+            logic_xml = routine(
+                "System_Logic",
+                [
+                    _rung_xml(
+                        0,
+                        f"Slow_Sys(Sys_AOI,{reset_udt});",
+                        f"System_Logic cookie cutter — {reset_udt}",
+                    )
+                ],
+            )
+
+    main: list[str] = []
+    if include_device_comms:
+        main.append(_rung_xml(len(main), "JSR(Devices_Comm_Logic,0);", "Devices_Comm_Logic"))
+    if include_ntp:
+        main.append(_rung_xml(len(main), "JSR(NTP,0);", "NTP"))
+    if include_system_logic:
+        main.append(_rung_xml(len(main), "JSR(System_Logic,0);", "System_Logic"))
+    if not main:
+        main.append(_rung_xml(0, "NOP();", "No System routines selected"))
+
+    routines_parts = [routine("Main_Routine", main)]
+    if include_device_comms:
+        routines_parts.append(routine("Devices_Comm_Logic", rungs))
+    if include_ntp:
+        routines_parts.append(ntp_xml)
+    if include_system_logic:
+        routines_parts.append(logic_xml)
+
     return (
         f'<Program Name="System" TestEdits="false" MainRoutineName="Main_Routine" '
         f'Disabled="false" UseAsFolder="false">'
         f"<Tags/>"
         f"<Routines>"
-        f'{routine("Main_Routine", main)}'
-        f'{routine("Devices_Comm_Logic", rungs)}'
-        f'{routine("NTP", [_rung_xml(0, "NOP();", "NTP / SNTP — enable when AOI_SNTP_QUERY wired")])}'
-        f'{routine("System_Logic", [_rung_xml(0, "NOP();", "System_Logic — site customize")])}'
+        f'{"".join(routines_parts)}'
         f"</Routines></Program>"
     )
 
@@ -3206,7 +3288,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         for x in (getattr(inp, "include_programs", None) or [])
         if str(x).strip()
     }
-    want_sys_comm = "System" in include_prog_set or "Sys_Comm" in include_prog_set
+    want_device_comms = bool(
+        include_prog_set
+        & {"System", "Sys_Comm", "Devices_Comm", "Device_Comms", "Devices_Comm_Logic"}
+    )
+    # NTP is bundled with Device Comms (cookie-cutter); still honor explicit NTP token
+    want_ntp = want_device_comms or ("NTP" in include_prog_set)
+    want_system_logic = "System_Logic" in include_prog_set
+    # Legacy: bare "System" alone meant Device Comms + NTP + System Logic
+    if "System" in include_prog_set and not (
+        include_prog_set & {"Devices_Comm", "Device_Comms", "Devices_Comm_Logic", "NTP", "System_Logic"}
+    ):
+        want_device_comms = want_ntp = want_system_logic = True
+    want_sys_comm = want_device_comms or want_ntp or want_system_logic
 
     def _nop_rung(comment: str = "") -> str:
         return _rung_xml(0, "NOP();", comment or "Site customize")
@@ -3239,21 +3333,22 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     if "PE_Logic" in r["text"] or "Full_PE" in r["text"]:
                         pe_wired_count += 1
 
+        # Filter PE rungs to real PE_Logic only (no empty NOP placeholders)
+        rungs_pe = [r for r in rungs_pe if "PE_Logic(" in r]
         # Area Slow — only emit routines Autogen fills (no empty CS / PI / Stacklight scaffolds)
         main_slow = [
             _rung_xml(0, "JSR(Conv_Flt,0);", "Conv_Flt"),
             _rung_xml(1, "JSR(Conv_Jam,0);", "Conv_Jam"),
-            _rung_xml(2, "JSR(Conv_PE,0);", "Conv_PE"),
         ]
-        # Gold ModuleB_Area_Fast Main JSR chain
+        if rungs_pe:
+            main_slow.append(_rung_xml(len(main_slow), "JSR(Conv_PE,0);", "Conv_PE"))
+        # ModuleB_Area_Fast Main JSR chain
+        # Fast main — only JSR routines that have content (no empty Merge / Full / PE)
         main_fast = [
             _rung_xml(0, "JSR(Conv_Fast,0);", "Conv_Fast"),
-            _rung_xml(1, "JSR(Conv_Full,0);", "Conv_Full"),
-            _rung_xml(2, "JSR(Conv_Merge,0);", "Conv_Merge"),
-            _rung_xml(3, "JSR(Conv_PE,0);", "Conv_PE"),
         ]
 
-        # Merges for this area (gold Conv_Merge + L2 ST). UI stores 2:1 / 3:1+;
+        # Merges for this area (Conv_Merge + L2 ST). UI stores 2:1 / 3:1+;
         # L5X emit is 2:1 only for now (3:1+ kept in workbook for later).
         rungs_merge: list[str] = []
         merge_st_lines: list[str] = []
@@ -3401,10 +3496,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 ]
             )
 
-        # Only JSR Conv_Merge when we have merge rungs (still list routine as NOP otherwise)
-        if not rungs_merge:
-            # Remove Conv_Merge JSR from Fast main when no merges for this area
-            main_fast = [r for r in main_fast if "Conv_Merge" not in r]
+        if rungs_full:
+            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Full,0);", "Conv_Full"))
+        if rungs_merge:
+            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_Merge,0);", "Conv_Merge"))
+        if rungs_pe:
+            main_fast.append(_rung_xml(len(main_fast), "JSR(Conv_PE,0);", "Conv_PE"))
 
         prog_slow = f"{area}_Slow" if area.endswith("_Area") else f"{area}_Area_Slow"
         prog_fast = f"{area}_Fast" if area.endswith("_Area") else f"{area}_Area_Fast"
@@ -3415,27 +3512,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         prog_l1 = _safe(prog_l1)[:40]
         prog_l2 = _safe(prog_l2)[:40]
 
-        # --- Slow (Flt / Jam / PE only — site CS / PI / Stacklight left for later) ---
+        # --- Slow (Flt / Jam / PE only when PE roles exist) ---
+        slow_routines = (
+            f'{routine("Main_Routine", main_slow)}'
+            f'{routine("Conv_Flt", rungs_flt)}'
+            f'{routine("Conv_Jam", rungs_jam)}'
+        )
+        if rungs_pe:
+            slow_routines += f'{routine("Conv_PE", rungs_pe)}'
         programs_xml.append(
             f'<Program Name="{prog_slow}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'
             f"<Tags/>"
             f"<Routines>"
-            f'{routine("Main_Routine", main_slow)}'
-            f'{routine("Conv_Flt", rungs_flt)}'
-            f'{routine("Conv_Jam", rungs_jam)}'
-            f'{routine("Conv_PE", rungs_pe)}'
+            f"{slow_routines}"
             f"</Routines></Program>"
         )
 
-        # --- Fast (ModuleB_Area_Fast shape) ---
+        # --- Fast: omit empty Conv_Merge / Conv_Full / Conv_PE (no placeholder routines) ---
         fast_routines = (
             f'{routine("Main_Routine", main_fast)}'
             f'{routine("Conv_Fast", rungs_fast)}'
-            f'{routine("Conv_Full", rungs_full or [_nop_rung("No Full_PE eyes on this area")])}'
-            f'{routine("Conv_Merge", rungs_merge or [_nop_rung("No 2:1 merges for this area")])}'
-            f'{routine("Conv_PE", rungs_pe)}'
         )
+        if rungs_full:
+            fast_routines += f'{routine("Conv_Full", rungs_full)}'
+        if rungs_merge:
+            fast_routines += f'{routine("Conv_Merge", rungs_merge)}'
+        if rungs_pe:
+            fast_routines += f'{routine("Conv_PE", rungs_pe)}'
         programs_xml.append(
             f'<Program Name="{prog_fast}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'
@@ -3486,29 +3590,32 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"</Routines></Program>"
         )
 
-        # --- L2 ST presets (ModuleB_Area_L2) — always for transport areas ---
+        # --- L2 ST presets — omit Merge routine when no merges in this area ---
         main_l2 = [
             _rung_xml(0, "JSR(Conv_Speed,0);", "Conv_Speed"),
             _rung_xml(1, "JSR(FullTime,0);", "FullTime"),
-            _rung_xml(2, "JSR(Merge,0);", "Merge"),
-            _rung_xml(3, "JSR(PETime,0);", "PETime"),
         ]
-        if not merge_st_lines:
-            merge_st_lines = ["// No merges in this area"]
+        if merge_st_lines:
+            main_l2.append(_rung_xml(len(main_l2), "JSR(Merge,0);", "Merge"))
+        main_l2.append(_rung_xml(len(main_l2), "JSR(PETime,0);", "PETime"))
+        l2_routines = (
+            f'{routine("Main_Routine", main_l2)}'
+            f"{st_routine('Conv_Speed', ['// Conv speed presets — site customize'])}"
+            f"{st_routine('FullTime', ['// Full PE timers — site customize'])}"
+        )
+        if merge_st_lines:
+            l2_routines += f"{st_routine('Merge', merge_st_lines)}"
+        l2_routines += f"{st_routine('PETime', ['// PE timers — site customize'])}"
         programs_xml.append(
             f'<Program Name="{prog_l2}" TestEdits="false" MainRoutineName="Main_Routine" '
             f'Disabled="false" UseAsFolder="false">'
             f"<Tags/>"
             f"<Routines>"
-            f'{routine("Main_Routine", main_l2)}'
-            f"{st_routine('Conv_Speed', ['// Conv speed presets — site customize'])}"
-            f"{st_routine('FullTime', ['// Full PE timers — site customize'])}"
-            f"{st_routine('Merge', merge_st_lines)}"
-            f"{st_routine('PETime', ['// PE timers — site customize'])}"
+            f"{l2_routines}"
             f"</Routines></Program>"
         )
 
-    # --- Sys_Comm (gold System under P11_Slow_200ms) — Devices_Comm_Logic from tar EIP/RIO ---
+    # --- System program: Device Comms (from tar) + cookie-cutter NTP / System_Logic ---
     if want_sys_comm:
         programs_xml.append(_build_sys_comm_program_xml(
             inp=inp,
@@ -3517,6 +3624,9 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             _rung_xml=_rung_xml,
             routine=routine,
             seen_tag_names=seen_tag_names,
+            include_device_comms=want_device_comms,
+            include_ntp=want_ntp,
+            include_system_logic=want_system_logic,
         ))
 
     # --- IO_MAP from RUN/tar.gz (default): Conveyor.asc Bank.Bit → AENTR:I/O.Data[slot] ---
@@ -3779,6 +3889,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     gold_io_map_used = False
     extra_aoi_chunks: list[str] = []
     extra_dt_chunks: list[str] = []
+    # Device Comms + NTP: pull AOI_SNTP_QUERY (+ types) from System_Program.L5X
+    if want_ntp:
+        sys_pack = load_program_export(_system_program_library_path())
+        if sys_pack and sys_pack.get("aois_xml"):
+            extra_aoi_chunks.append(sys_pack["aois_xml"])
+        if sys_pack and sys_pack.get("datatypes_xml"):
+            extra_dt_chunks.append(sys_pack["datatypes_xml"])
 
     def _tag_datatype(block: str) -> str:
         m = re.search(r'\bDataType="([^"]+)"', block)
@@ -4259,6 +4376,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     for _core in ("Fast_Conv", "Slow_Flt", "Slow_Jam", "PE_Logic", "Full_PE", "Merge_2to1"):
         if _core in _aoi_lib_names:
             _keep.add(_core)
+    # NTP pack — never drop AOI_SNTP_QUERY when Device Comms/NTP is on
+    if want_ntp and "AOI_SNTP_QUERY" in _aoi_lib_names:
+        _keep.add("AOI_SNTP_QUERY")
+    if "AOI_SNTP_QUERY" in _used and "AOI_SNTP_QUERY" in _aoi_lib_names:
+        _keep.add("AOI_SNTP_QUERY")
     if _keep:
         before_n = len(_aoi_lib_names)
         aoi_xml = _filter_aois_to_used(aoi_xml, _keep)

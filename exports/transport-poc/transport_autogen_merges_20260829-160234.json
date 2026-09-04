@@ -1,0 +1,7 @@
+{
+  "source": "transport_build_graph",
+  "gold_pattern": "Greensboro PLC2 Merge_2to1 + Area_L2 ST presets",
+  "generated_at": "2026-08-29T16:02:34.336258+00:00",
+  "merges_2to1": [],
+  "note": "Drop/merge this list into the Site Forge Autogen workbook (inp.merges_2to1). AOIs stay sealed \u2014 call-site wiring only."
+}
