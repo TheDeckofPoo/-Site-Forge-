@@ -1,0 +1,2124 @@
+{
+  "summary": {
+    "generated_at": "2026-09-11T21:01:54.311886+00:00",
+    "run_dir": "workspace\\active\\RUN",
+    "machine": "ORNCCP2",
+    "conveyors_discovered": 37,
+    "usable_xy": 37,
+    "usable_angle": 37,
+    "usable_length_width": 29,
+    "motors_discovered": 118,
+    "motors_linked_via_mtrchain": 34,
+    "vfd_classified": 0,
+    "contactor_classified": 34,
+    "unknown_drive": 3,
+    "multiple_motor_conveyors": 0,
+    "motors_driving_multiple_conveyors": 38,
+    "photoeyes_scoped": 44,
+    "merge_table_hints": 8,
+    "connection_candidates_total": 23,
+    "confirmed_connections": 1,
+    "high_confidence_candidates": 2,
+    "ambiguous_connections": 20,
+    "unknown_connections": 34,
+    "anchor_model_assumption": "(X,Y)=footprint center; Angle=flow direction deg CCW from +X; entry/exit at \u00b1Length/2 along angle. CURVE/TRIANG lower confidence.",
+    "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence."
+  },
+  "equipment": [
+    {
+      "conveyor": "P100",
+      "x": 54450.0,
+      "y": 69883.333,
+      "angle": 90.0,
+      "length": 5850.0,
+      "width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M100"
+      ],
+      "drives": [
+        {
+          "motor": "M100",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [],
+      "entry_anchor": {
+        "x": 54450.0,
+        "y": 66958.333
+      },
+      "exit_anchor": {
+        "x": 54450.0,
+        "y": 72808.333
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 250.0,
+      "discharge_elevation": 250.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "2.000",
+      "io_name": "P100",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1000",
+      "x": 62200.0,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M1000"
+      ],
+      "drives": [
+        {
+          "motor": "M1000",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1000_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62200.0,
+        "y": 91766.667
+      },
+      "exit_anchor": {
+        "x": 62200.0,
+        "y": 82366.667
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 575.0,
+      "discharge_elevation": 575.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "5.000",
+      "io_name": "P1000",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1002",
+      "x": 62200.0,
+      "y": 68266.66,
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M1002"
+      ],
+      "drives": [
+        {
+          "motor": "M1002",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1002_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62200.0,
+        "y": 70766.66
+      },
+      "exit_anchor": {
+        "x": 62200.0,
+        "y": 65766.66
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 500.0,
+      "discharge_elevation": 3000.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "5.000",
+      "io_name": "P1002",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1004",
+      "x": 62766.667,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M1004"
+      ],
+      "drives": [
+        {
+          "motor": "M1004",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1004_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62766.667,
+        "y": 92116.667
+      },
+      "exit_anchor": {
+        "x": 62766.667,
+        "y": 82016.667
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 1475.0,
+      "discharge_elevation": 1475.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "14.000",
+      "io_name": "P1004",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1006",
+      "x": 73700.0,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M1006"
+      ],
+      "drives": [
+        {
+          "motor": "M1006",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1006_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 73700.0,
+        "y": 91766.667
+      },
+      "exit_anchor": {
+        "x": 73700.0,
+        "y": 82366.667
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 575.0,
+      "discharge_elevation": 575.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "5.000",
+      "io_name": "P1006",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1008",
+      "x": 73700.0,
+      "y": 68266.667,
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M1008"
+      ],
+      "drives": [
+        {
+          "motor": "M1008",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1008_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 73700.0,
+        "y": 70766.667
+      },
+      "exit_anchor": {
+        "x": 73700.0,
+        "y": 65766.667
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 500.0,
+      "discharge_elevation": 3000.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "5.000",
+      "io_name": "P1008",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P101",
+      "x": 54200.0,
+      "y": 64033.333,
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "motors": [],
+      "drives": [],
+      "drive_type": "UNKNOWN",
+      "photoeyes_name_associated": [],
+      "entry_anchor": {
+        "x": 54200.0,
+        "y": 51633.333
+      },
+      "exit_anchor": {
+        "x": 54200.0,
+        "y": 76433.333
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 250.0,
+      "discharge_elevation": 250.0,
+      "part_number": "19GSR",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "2.000",
+      "io_name": "P101",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "N",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1010",
+      "x": 74266.666,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M1010"
+      ],
+      "drives": [
+        {
+          "motor": "M1010",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1010_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 74266.666,
+        "y": 92116.667
+      },
+      "exit_anchor": {
+        "x": 74266.666,
+        "y": 82016.667
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 1475.0,
+      "discharge_elevation": 1475.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "14.000",
+      "io_name": "P1010",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1014",
+      "x": 61800.0,
+      "y": 63116.666,
+      "angle": 0.0,
+      "length": 23400.0,
+      "width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M1014"
+      ],
+      "drives": [
+        {
+          "motor": "M1014",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1014_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 50100.0,
+        "y": 63116.666
+      },
+      "exit_anchor": {
+        "x": 73500.0,
+        "y": 63116.666
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2900.0,
+      "discharge_elevation": 2900.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "29.000",
+      "io_name": "P1014",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1018",
+      "x": 85391.667,
+      "y": 80866.667,
+      "angle": 90.0,
+      "length": 10700.0,
+      "width": 383.333,
+      "equipment_type": "BELT",
+      "motors": [
+        "M1018"
+      ],
+      "drives": [
+        {
+          "motor": "M1018",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1018_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 85391.667,
+        "y": 75516.667
+      },
+      "exit_anchor": {
+        "x": 85391.667,
+        "y": 86216.667
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2800.0,
+      "discharge_elevation": 1600.0,
+      "part_number": "TH",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "28.000",
+      "io_name": "P1018",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P126",
+      "x": 71258.333,
+      "y": 89700.0,
+      "angle": 90.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "motors": [
+        "M128"
+      ],
+      "drives": [
+        {
+          "motor": "M128",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE126_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": null,
+      "exit_anchor": null,
+      "anchor_assumption": null,
+      "infeed_elevation": 250.0,
+      "discharge_elevation": 250.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "2.000",
+      "io_name": "P126",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "conveyor": "P134",
+      "x": 72783.333,
+      "y": 91733.333,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "motors": [
+        "M132"
+      ],
+      "drives": [
+        {
+          "motor": "M132",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE134_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": null,
+      "exit_anchor": null,
+      "anchor_assumption": null,
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P134",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "conveyor": "P136",
+      "x": 64758.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 2025.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M136"
+      ],
+      "drives": [
+        {
+          "motor": "M136",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE136_F1",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE136_F2",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE136_P1",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE136_P2",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 65770.833,
+        "y": 91733.333
+      },
+      "exit_anchor": {
+        "x": 63745.833,
+        "y": 91733.333
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P136",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P136A",
+      "x": 72783.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 8025.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M136"
+      ],
+      "drives": [
+        {
+          "motor": "M136",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [],
+      "entry_anchor": {
+        "x": 76795.833,
+        "y": 91733.333
+      },
+      "exit_anchor": {
+        "x": 68770.833,
+        "y": 91733.333
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P136A",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P138",
+      "x": 62733.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "equipment_type": "BELT",
+      "motors": [
+        "M138"
+      ],
+      "drives": [
+        {
+          "motor": "M138",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE138_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 63033.333,
+        "y": 91733.333
+      },
+      "exit_anchor": {
+        "x": 62433.333,
+        "y": 91733.333
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P138",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P142",
+      "x": 81675.0,
+      "y": 89708.333,
+      "angle": 90.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "motors": [
+        "M144"
+      ],
+      "drives": [
+        {
+          "motor": "M144",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE142_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": null,
+      "exit_anchor": null,
+      "anchor_assumption": null,
+      "infeed_elevation": 250.0,
+      "discharge_elevation": 250.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "2.000",
+      "io_name": "P142",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "conveyor": "P148",
+      "x": 83250.0,
+      "y": 91775.0,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "motors": [
+        "M146"
+      ],
+      "drives": [
+        {
+          "motor": "M146",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE148_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": null,
+      "exit_anchor": null,
+      "anchor_assumption": null,
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P148",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "conveyor": "P150",
+      "x": 76700.0,
+      "y": 91775.0,
+      "angle": 180.0,
+      "length": 2050.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M150"
+      ],
+      "drives": [
+        {
+          "motor": "M150",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE150_F1",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE150_F2",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE150_P2",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE150_P1",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 77725.0,
+        "y": 91775.0
+      },
+      "exit_anchor": {
+        "x": 75675.0,
+        "y": 91775.0
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P150",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P150A",
+      "x": 83250.0,
+      "y": 91775.0,
+      "angle": 180.0,
+      "length": 6550.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M150"
+      ],
+      "drives": [
+        {
+          "motor": "M150",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [],
+      "entry_anchor": {
+        "x": 86525.0,
+        "y": 91775.0
+      },
+      "exit_anchor": {
+        "x": 79975.0,
+        "y": 91775.0
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P150A",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P215",
+      "x": 47434.4,
+      "y": 92627.828,
+      "angle": 180.0,
+      "length": 1000.0,
+      "width": 500.0,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M215"
+      ],
+      "drives": [
+        {
+          "motor": "M215",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE215_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 47934.4,
+        "y": 92627.828
+      },
+      "exit_anchor": {
+        "x": 46934.4,
+        "y": 92627.828
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P215",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P226",
+      "x": 67780.765,
+      "y": 92761.24,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "motors": [
+        "M229"
+      ],
+      "drives": [
+        {
+          "motor": "M229",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE226_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": null,
+      "exit_anchor": null,
+      "anchor_assumption": null,
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P226",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "conveyor": "P229",
+      "x": 67767.195,
+      "y": 92770.923,
+      "angle": 180.0,
+      "length": 13066.667,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M229"
+      ],
+      "drives": [
+        {
+          "motor": "M229",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE229_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 74300.5285,
+        "y": 92770.923
+      },
+      "exit_anchor": {
+        "x": 61233.861500000006,
+        "y": 92770.923
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P229",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P230",
+      "x": 7070.634,
+      "y": 1550.65,
+      "angle": 180.0,
+      "length": 2650.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [],
+      "drives": [],
+      "drive_type": "UNKNOWN",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE230_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE230_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 8395.634,
+        "y": 1550.6499999999999
+      },
+      "exit_anchor": {
+        "x": 5745.634,
+        "y": 1550.6500000000003
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P230",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "N",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P232",
+      "x": 4420.634,
+      "y": 1550.65,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "equipment_type": "BELT",
+      "motors": [],
+      "drives": [],
+      "drive_type": "UNKNOWN",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE232_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 4720.634,
+        "y": 1550.65
+      },
+      "exit_anchor": {
+        "x": 4120.634,
+        "y": 1550.65
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P232",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "N",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P238",
+      "x": 78850.0,
+      "y": 92075.0,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "motors": [
+        "M240"
+      ],
+      "drives": [
+        {
+          "motor": "M240",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE238_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": null,
+      "exit_anchor": null,
+      "anchor_assumption": null,
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P238",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "conveyor": "P242",
+      "x": 76650.0,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 2000.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M242"
+      ],
+      "drives": [
+        {
+          "motor": "M242",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE242_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE242_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 77650.0,
+        "y": 92075.0
+      },
+      "exit_anchor": {
+        "x": 75650.0,
+        "y": 92075.0
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P242",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P312",
+      "x": 64950.0,
+      "y": 85700.0,
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M312"
+      ],
+      "drives": [
+        {
+          "motor": "M312",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE312_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE312_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 64950.0,
+        "y": 84200.0
+      },
+      "exit_anchor": {
+        "x": 64950.0,
+        "y": 87200.0
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2050.0,
+      "discharge_elevation": 2050.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "20.000",
+      "io_name": "P312",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P314",
+      "x": 64950.0,
+      "y": 88700.0,
+      "angle": 90.0,
+      "length": 2500.0,
+      "width": 200.0,
+      "equipment_type": "BELT",
+      "motors": [
+        "M314"
+      ],
+      "drives": [
+        {
+          "motor": "M314",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE314_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 64950.0,
+        "y": 87450.0
+      },
+      "exit_anchor": {
+        "x": 64950.0,
+        "y": 89950.0
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2050.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "20.000",
+      "io_name": "P314",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P316",
+      "x": 64500.0,
+      "y": 91733.333,
+      "angle": 350.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "motors": [
+        "M314"
+      ],
+      "drives": [
+        {
+          "motor": "M314",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE316_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": null,
+      "exit_anchor": null,
+      "anchor_assumption": null,
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P316",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "conveyor": "P320",
+      "x": 76950.0,
+      "y": 85916.667,
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M320"
+      ],
+      "drives": [
+        {
+          "motor": "M320",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE320_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE320_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 76950.0,
+        "y": 84416.667
+      },
+      "exit_anchor": {
+        "x": 76950.0,
+        "y": 87416.667
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2050.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "20.000",
+      "io_name": "P320",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P322",
+      "x": 76950.0,
+      "y": 88916.667,
+      "angle": 90.0,
+      "length": 2300.0,
+      "width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M322"
+      ],
+      "drives": [
+        {
+          "motor": "M322",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE322_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 76950.0,
+        "y": 87766.667
+      },
+      "exit_anchor": {
+        "x": 76950.0,
+        "y": 90066.667
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2050.0,
+      "discharge_elevation": 2050.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "20.000",
+      "io_name": "P322",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P324",
+      "x": 76500.0,
+      "y": 91775.0,
+      "angle": 350.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "motors": [
+        "M322"
+      ],
+      "drives": [
+        {
+          "motor": "M322",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE324_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": null,
+      "exit_anchor": null,
+      "anchor_assumption": null,
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P324",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "confidence": "LOW"
+    },
+    {
+      "conveyor": "P400",
+      "x": 74650.0,
+      "y": 91925.0,
+      "angle": 180.0,
+      "length": 1216.667,
+      "width": 500.0,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M400"
+      ],
+      "drives": [
+        {
+          "motor": "M400",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE400_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 75258.3335,
+        "y": 91925.0
+      },
+      "exit_anchor": {
+        "x": 74041.6665,
+        "y": 91925.0
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P400",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P402",
+      "x": 73433.333,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 10700.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M402"
+      ],
+      "drives": [
+        {
+          "motor": "M402",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE402_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE402_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 78783.333,
+        "y": 92075.0
+      },
+      "exit_anchor": {
+        "x": 68083.333,
+        "y": 92075.0
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P402",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P404",
+      "x": 62733.333,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "equipment_type": "BELT",
+      "motors": [
+        "M404"
+      ],
+      "drives": [
+        {
+          "motor": "M404",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE404_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 63033.333,
+        "y": 92075.0
+      },
+      "exit_anchor": {
+        "x": 62433.333,
+        "y": 92075.0
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P404",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P406",
+      "x": 62114.875,
+      "y": 91933.333,
+      "angle": 180.0,
+      "length": 1500.0,
+      "width": 600.0,
+      "equipment_type": "STRAIGHT",
+      "motors": [
+        "M406"
+      ],
+      "drives": [
+        {
+          "motor": "M406",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE406_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62864.875,
+        "y": 91933.333
+      },
+      "exit_anchor": {
+        "x": 61364.875,
+        "y": 91933.333
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P406",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P408",
+      "x": 60637.915,
+      "y": 92071.609,
+      "angle": 180.0,
+      "length": 22833.333,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "motors": [
+        "M408"
+      ],
+      "drives": [
+        {
+          "motor": "M408",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE408_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 72054.5815,
+        "y": 92071.609
+      },
+      "exit_anchor": {
+        "x": 49221.2485,
+        "y": 92071.609
+      },
+      "anchor_assumption": "center_origin_flow_along_angle",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P408",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    }
+  ]
+}
