@@ -1998,8 +1998,10 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         type_map = FORTNA_TYPE_TO_AUTOGEN_VFD if is_vfd else FORTNA_TYPE_TO_AUTOGEN
         ag_type = type_map.get(typ, "Transport with MS")
 
-        # One L5X per controller → one area named for the machine (MSCRENOPACK_Area).
+        # RUN seed only — one provisional area named for the controller.
         # Do NOT invent Zone1–Zone9 from P-number prefixes.
+        # Site-specific ModuleB/Trash/… areas and ES zones come from the
+        # workbook / Transport Build overlay (apply_workbook_to_input), not RUN ASC.
         area = f"{_safe(machine)}_Area"
         if area not in areas:
             areas.append(area)

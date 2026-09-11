@@ -475,9 +475,40 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
     inp.conveyors = new_convs
     if areas:
         inp.areas = areas
-        inp.safety_zones = [
-            f"{a.replace('_Area', '')}_ESZone1" for a in areas
-        ]
+        # Preserve engineer-configured safety zones from conveyor rows.
+        # Do NOT collapse every area to "{AreaBase}_ESZone1" — that silently
+        # drops ModuleB_ESZone2 (etc.) when the workbook carries explicit zones.
+        zones: list[str] = []
+        seen_z: set[str] = set()
+
+        def _add_zone(z: str) -> None:
+            zz = (z or "").strip()
+            if not zz:
+                return
+            key = zz.upper()
+            if key in seen_z:
+                return
+            seen_z.add(key)
+            zones.append(zz)
+
+        for c in new_convs:
+            _add_zone(getattr(c, "safety_zone", "") or "")
+        # Workbook options / area rows may list additional zones
+        opts = workbook.get("options") if isinstance(workbook.get("options"), dict) else {}
+        for z in opts.get("safety_zones") or []:
+            _add_zone(str(z))
+        for a in workbook.get("areas") or []:
+            if isinstance(a, dict):
+                _add_zone(str(a.get("safety_zone") or ""))
+        # Fallback only when an area has no zone represented yet
+        for a in areas:
+            base = (a or "").replace("_Area", "").strip() or (a or "Transport")
+            if not any(
+                (z.upper().startswith(base.upper()) or base.upper() in z.upper())
+                for z in zones
+            ):
+                _add_zone(f"{base}_ESZone1")
+        inp.safety_zones = zones
     if workbook.get("project_name"):
         inp.project_name = str(workbook["project_name"])
     if workbook.get("processor"):

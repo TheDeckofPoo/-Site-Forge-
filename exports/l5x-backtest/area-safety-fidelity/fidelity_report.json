@@ -1,0 +1,163 @@
+{
+  "generated_at": "20260911-204039",
+  "before_metrics": {
+    "conveyor_coverage": {
+      "matched": 18,
+      "reference": 57,
+      "generated": 40,
+      "pct_of_reference": 31.6
+    },
+    "downstream_accuracy": {
+      "correct": 4,
+      "compared": 18,
+      "pct": 22.2
+    },
+    "area_accuracy": {
+      "correct": 0,
+      "compared": 18,
+      "pct": 0.0
+    },
+    "safety_zone_accuracy": {
+      "correct": 0,
+      "compared": 18,
+      "pct": 0.0
+    },
+    "exit_pe_accuracy": {
+      "correct": 4,
+      "compared": 18,
+      "pct": 22.2
+    },
+    "fast_conv_coverage": {
+      "generated": 40,
+      "reference": 57,
+      "matched": 18
+    },
+    "slow_flt_coverage": {
+      "generated": 40,
+      "reference": 57,
+      "matched": 18
+    },
+    "slow_jam_coverage": {
+      "generated": 40,
+      "reference": 57,
+      "matched": 18,
+      "jam_config_matches": 12
+    },
+    "full_pe_coverage": {
+      "generated": 11,
+      "reference": 7,
+      "matched_pe_tags": 0
+    },
+    "merge_2to1_coverage": {
+      "generated": 0,
+      "reference": 0,
+      "matched_keys": 0,
+      "field_matches": 0
+    }
+  },
+  "after_metrics": {
+    "conveyor_coverage": {
+      "matched": 53,
+      "reference": 57,
+      "generated": 79,
+      "pct_of_reference": 93.0
+    },
+    "downstream_accuracy": {
+      "correct": 5,
+      "compared": 53,
+      "pct": 9.4
+    },
+    "area_accuracy": {
+      "correct": 53,
+      "compared": 53,
+      "pct": 100.0
+    },
+    "safety_zone_accuracy": {
+      "correct": 53,
+      "compared": 53,
+      "pct": 100.0
+    },
+    "exit_pe_accuracy": {
+      "correct": 39,
+      "compared": 53,
+      "pct": 73.6
+    },
+    "fast_conv_coverage": {
+      "generated": 79,
+      "reference": 57,
+      "matched": 53
+    },
+    "slow_flt_coverage": {
+      "generated": 79,
+      "reference": 57,
+      "matched": 53
+    },
+    "slow_jam_coverage": {
+      "generated": 79,
+      "reference": 57,
+      "matched": 53,
+      "jam_config_matches": 41
+    },
+    "full_pe_coverage": {
+      "generated": 11,
+      "reference": 7,
+      "matched_pe_tags": 0
+    },
+    "merge_2to1_coverage": {
+      "generated": 0,
+      "reference": 0,
+      "matched_keys": 0,
+      "field_matches": 0
+    }
+  },
+  "overlap_count": 53,
+  "overlap_area_ok": 53,
+  "overlap_safety_ok": 53,
+  "example_corrected_conveyors": [
+    {
+      "conveyor": "P1000",
+      "area": "Trash_Area",
+      "safety_zone": "Trash_ESZone1",
+      "reference_area": "Trash_Area",
+      "reference_safety": "Trash_ESZone1"
+    },
+    {
+      "conveyor": "P1001",
+      "area": "Trash_Area",
+      "safety_zone": "Trash_ESZone1",
+      "reference_area": "Trash_Area",
+      "reference_safety": "Trash_ESZone1"
+    },
+    {
+      "conveyor": "P1002",
+      "area": "Trash_Area",
+      "safety_zone": "Trash_ESZone1",
+      "reference_area": "Trash_Area",
+      "reference_safety": "Trash_ESZone1"
+    },
+    {
+      "conveyor": "P1004",
+      "area": "Trash_Area",
+      "safety_zone": "Trash_ESZone1",
+      "reference_area": "Trash_Area",
+      "reference_safety": "Trash_ESZone1"
+    },
+    {
+      "conveyor": "P1005",
+      "area": "Trash_Area",
+      "safety_zone": "Trash_ESZone1",
+      "reference_area": "Trash_Area",
+      "reference_safety": "Trash_ESZone1"
+    },
+    {
+      "conveyor": "P1006",
+      "area": "Trash_Area",
+      "safety_zone": "Trash_ESZone2",
+      "reference_area": "Trash_Area",
+      "reference_safety": "Trash_ESZone2"
+    }
+  ],
+  "generated_l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\l5x-backtest\\area-safety-fidelity\\greensboro_generated\\OReillyGreensboro_ORNCCP2.L5X",
+  "workbook_overlay": "C:\\dev\\worktree\\FortnaPlus\\exports\\l5x-backtest\\area-safety-fidelity\\greensboro_workbook_area_overlay.json",
+  "root_cause": "RUN seed assigns {machine}_Area / {machine}_ESZone1. apply_workbook_to_input previously rebuilt inp.safety_zones as always '{AreaBase}_ESZone1', dropping engineer zones like ModuleB_ESZone2 from the zone list. Conveyor row main_area/safety_zone overlays were already applied to ConveyorRow; Fast_Conv uses those row fields. Fix preserves explicit conveyor safety zones in inp.safety_zones and regenerates with workbook metadata present."
+}
