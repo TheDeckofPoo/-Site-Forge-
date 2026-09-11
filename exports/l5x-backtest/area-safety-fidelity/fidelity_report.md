@@ -1,22 +1,27 @@
-# Autogen Area/Safety Fidelity — Greensboro
+# Autogen Area/Safety Fidelity — Separated Scores
 
-Before area accuracy: **0.0%** (0 / 18)
-Before safety accuracy: **0.0%**
+## REFERENCE-SEEDED FIDELITY TEST (plumbing only)
 
-After area accuracy: **100.0%** (53 / 53)
-After safety accuracy: **100.0%** (53 / 53)
+> **Not** the real Greensboro end-to-end accuracy score.
+> Workbook was temporarily populated from finished Fast_Conv area/safety args
+> to prove Autogen preserves supplied metadata.
 
-Overlap workbook fidelity: area 53/53, safety 53/53
+Plumbing fidelity:
+- Area **75 / 75**
+- Safety **75 / 75**
 
-## Example corrected conveyors
+## ACTUAL WORKFLOW BACKTEST (truthful baseline)
 
-- **P1000** area=`Trash_Area` safety=`Trash_ESZone1` (reference area=`Trash_Area` safety=`Trash_ESZone1`)
-- **P1001** area=`Trash_Area` safety=`Trash_ESZone1` (reference area=`Trash_Area` safety=`Trash_ESZone1`)
-- **P1002** area=`Trash_Area` safety=`Trash_ESZone1` (reference area=`Trash_Area` safety=`Trash_ESZone1`)
-- **P1004** area=`Trash_Area` safety=`Trash_ESZone1` (reference area=`Trash_Area` safety=`Trash_ESZone1`)
-- **P1005** area=`Trash_Area` safety=`Trash_ESZone1` (reference area=`Trash_Area` safety=`Trash_ESZone1`)
-- **P1006** area=`Trash_Area` safety=`Trash_ESZone2` (reference area=`Trash_Area` safety=`Trash_ESZone2`)
+> Uses `workspace/active/RUN` + `workspace/autogen_workbook.json` as Site Forge left them.
+> Finished Greensboro L5X is used **only** as the comparator reference.
+> The workbook is never populated or repaired from the finished L5X.
 
-## Root cause
+Actual workflow:
+- Conveyor coverage **18 / 57** (31.6%)
+- Area accuracy **0 / 18** (0.0%)
+- Safety accuracy **0 / 18** (0.0%)
+- Downstream accuracy **4 / 18** (22.2%)
 
-RUN seed assigns {machine}_Area / {machine}_ESZone1. apply_workbook_to_input previously rebuilt inp.safety_zones as always '{AreaBase}_ESZone1', dropping engineer zones like ModuleB_ESZone2 from the zone list. Conveyor row main_area/safety_zone overlays were already applied to ConveyorRow; Fast_Conv uses those row fields. Fix preserves explicit conveyor safety zones in inp.safety_zones and regenerates with workbook metadata present.
+Generated L5X: `C:\dev\worktree\FortnaPlus\exports\l5x-backtest\area-safety-fidelity\actual_workflow_generated\OReillyGreensboro_ORNCCP2.L5X`
+Workbook: `C:\dev\worktree\FortnaPlus\workspace\autogen_workbook.json`
+
