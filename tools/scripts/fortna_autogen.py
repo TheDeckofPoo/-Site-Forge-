@@ -1107,7 +1107,7 @@ def _retarget_gold_site_names(xml: str, site_name: str) -> str:
     site = _safe(site_name) or "Site"
     if not xml:
         return xml
-    return _GOLD_SITE_NAME_RE.sub(site, xml)
+    return _re_sub_literal(_GOLD_SITE_NAME_RE, site, xml)
 
 
 def _infer_rack_from_ip(ip: str, fallback: str = "CP5") -> str:
@@ -2826,6 +2826,16 @@ def _filter_aois_to_used(aoi_xml: str, keep: set[str]) -> str:
     return "<AddOnInstructionDefinitions>\n" + "\n".join(parts) + "\n</AddOnInstructionDefinitions>"
 
 
+def _re_sub_literal(pat, replacement: str, text: str, count: int = 0) -> str:
+    """Substitute with a literal replacement string.
+
+    Python 3.12+ (and especially 3.14) parses ``re.sub`` replacements as templates.
+    AOI/L5X XML often contains ``\\d``, ``\\x``, etc. which raise
+    ``re.PatternError: bad escape \\d``. A callable bypasses template parsing.
+    """
+    return pat.sub(lambda _m: replacement, text, count=count)
+
+
 def _overlay_aoi_exports(aoi_xml: str, overlay_dir: Path | None = None) -> str:
     """Replace AOI defs with matching *_AOI.L5X exports (source-key re-seals).
 
@@ -2859,7 +2869,7 @@ def _overlay_aoi_exports(aoi_xml: str, overlay_dir: Path | None = None) -> str:
                 re.S,
             )
             if pat.search(aoi_xml):
-                aoi_xml = pat.sub(block, aoi_xml, count=1)
+                aoi_xml = _re_sub_literal(pat, block, aoi_xml, count=1)
                 replaced.append(name)
             else:
                 # Insert before closing wrapper
@@ -2887,7 +2897,7 @@ def _overlay_aoi_exports(aoi_xml: str, overlay_dir: Path | None = None) -> str:
                 re.S,
             )
             if pat.search(aoi_xml):
-                aoi_xml = pat.sub(block, aoi_xml, count=1)
+                aoi_xml = _re_sub_literal(pat, block, aoi_xml, count=1)
                 replaced.append(name)
     if replaced:
         _emit_progress(f"AOI overlay: {', '.join(replaced)}", 86)

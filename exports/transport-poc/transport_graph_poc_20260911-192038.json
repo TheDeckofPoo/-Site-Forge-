@@ -1,0 +1,94 @@
+{
+  "ok": true,
+  "poc": true,
+  "generated_at": "2026-09-11T19:20:38.566150+00:00",
+  "totals": {
+    "areas": 1,
+    "nodes": 3,
+    "wires": 2,
+    "merges": 0,
+    "devices": 3,
+    "unbound_conveyors": 0,
+    "untagged_devices": 0,
+    "issues": []
+  },
+  "areas": [
+    {
+      "id": "area_1ykgl9n",
+      "name": "Transport_2",
+      "conveyor_count": 3,
+      "wire_count": 2,
+      "merges": [],
+      "nodes": [
+        {
+          "id": "node_al9beu9",
+          "kind": "conv_straight",
+          "label": "P102",
+          "conveyorTag": "P102",
+          "rotation": 0,
+          "inPorts": 1,
+          "motorCount": null,
+          "motors": [],
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "M102"
+            }
+          ]
+        },
+        {
+          "id": "node_o5lci5m",
+          "kind": "conv_straight",
+          "label": "P110",
+          "conveyorTag": "P110",
+          "rotation": 0,
+          "inPorts": 1,
+          "motorCount": null,
+          "motors": [],
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "M110"
+            }
+          ]
+        },
+        {
+          "id": "node_w6tld8d",
+          "kind": "conv_straight",
+          "label": "P106",
+          "conveyorTag": "P106",
+          "rotation": 0,
+          "inPorts": 1,
+          "motorCount": null,
+          "motors": [],
+          "devices": [
+            {
+              "kind": "motor",
+              "tag": "M106"
+            }
+          ]
+        }
+      ],
+      "wires": [
+        {
+          "from": "node_o5lci5m",
+          "to": "node_w6tld8d",
+          "toPort": "in"
+        },
+        {
+          "from": "node_al9beu9",
+          "to": "node_o5lci5m",
+          "toPort": "in"
+        }
+      ]
+    }
+  ],
+  "merges_2to1": [],
+  "next_steps": [
+    "Bind every conveyor node to a P### tag from the RUN.",
+    "Tag motors as M### / VFD### only; ENC* for encoders; PE*/EZPE* for eyes.",
+    "2:1 merges \u2192 Autogen merges_2to1 (PLC2 runhold). Import fragment into PLC Autogen workbook.",
+    "Keep sealed Fast_Conv / Slow_* / Merge_2to1 AOIs; only wire call sites.",
+    "Full L5X emit from this graph is Phase 2b (IO map + transport focus)."
+  ]
+}
