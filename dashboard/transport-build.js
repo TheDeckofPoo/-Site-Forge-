@@ -136,11 +136,22 @@
   const tb = {
     areas: [],
     activeAreaId: null,
-    selectedId: null, // conveyor node id
+    selectedId: null, // conveyor node id (primary)
+    selectedIds: [], // multi-select (includes selectedId when set)
     selectedDeviceId: null, // device id on that conveyor (inspector device mode)
     dragKind: null,
     linkFrom: null, // { nodeId, port }
     moving: null, // { id, ox, oy }
+    connectMode: false,
+    connectSourceId: null,
+    autoConnectNew: false,
+    // Pass 2
+    buildContext: { areaId: null, areaName: '', safetyZone: '' },
+    history: { past: [], future: [], max: 50 },
+    marquee: null,
+    showPorts: false,
+    continueOpen: false,
+    _moveHistoryPushed: false,
   };
 
   function $(id) {
@@ -297,7 +308,11 @@
     try {
       localStorage.setItem(
         STORE_KEY,
-        JSON.stringify({ areas: tb.areas, activeAreaId: tb.activeAreaId })
+        JSON.stringify({
+          areas: tb.areas,
+          activeAreaId: tb.activeAreaId,
+          autoConnectNew: !!tb.autoConnectNew,
+        })
       );
     } catch (_) { /* ignore */ }
   }
@@ -309,8 +324,661 @@
       const data = JSON.parse(raw);
       if (Array.isArray(data.areas)) tb.areas = data.areas;
       tb.activeAreaId = data.activeAreaId || (tb.areas[0] && tb.areas[0].id) || null;
+      if (typeof data.autoConnectNew === 'boolean') tb.autoConnectNew = data.autoConnectNew;
     } catch (_) { /* ignore */ }
   }
+
+
+  /* ===== Transport UX Pass 1 — topology-first helpers ===== */
+  function nodeLabel(n) {
+    return (n && (n.conveyorTag || n.label || n.id)) || '';
+  }
+
+  function findNodeByTag(area, tag) {
+    const u = String(tag || '').trim().toUpperCase();
+    if (!u || !area) return null;
+    return (area.nodes || []).find(
+      (n) => isConv(n.kind) && String(n.conveyorTag || '').trim().toUpperCase() === u
+    ) || null;
+  }
+
+  function outboundWire(area, fromId) {
+    return (area?.wires || []).find((w) => w.from === fromId) || null;
+  }
+
+  function inboundWires(area, toId) {
+    return (area?.wires || []).filter((w) => w.to === toId);
+  }
+
+  function syncDownstreamFromWires(area) {
+    if (!area) return;
+    const byId = Object.fromEntries((area.nodes || []).map((n) => [n.id, n]));
+    (area.nodes || []).forEach((n) => {
+      if (!isConv(n.kind)) return;
+      const w = outboundWire(area, n.id);
+      if (!w) {
+        if (!n.downstream) n.downstream = '';
+        return;
+      }
+      const dst = byId[w.to];
+      n.downstream = dst ? (dst.conveyorTag || '').trim() : (n.downstream || '');
+    });
+  }
+
+  function syncWiresFromDownstream(area) {
+    if (!area) return;
+    (area.nodes || []).forEach((n) => {
+      if (!isConv(n.kind)) return;
+      const ds = String(n.downstream || '').trim();
+      if (!ds) return;
+      const dst = findNodeByTag(area, ds);
+      if (!dst || dst.id === n.id) return;
+      if ((area.wires || []).some((w) => w.from === n.id && w.to === dst.id)) return;
+      // Migrate: create wire from canonical downstream when missing
+      const toPort = pickEntrancePort(area, dst);
+      area.wires = area.wires || [];
+      area.wires.push({ id: uid('wire'), from: n.id, to: dst.id, toPort });
+    });
+  }
+
+  function pickEntrancePort(area, dst) {
+    if (!dst) return 'in';
+    const meta = KIND_META[dst.kind] || {};
+    if (!meta.isMerge && !dst.asMerge) return 'in';
+    const lanes = Math.max(2, Number(dst.inPorts) || 2);
+    const used = new Set(
+      inboundWires(area, dst.id).map((w) => w.toPort || 'in0')
+    );
+    for (let i = 0; i < lanes; i++) {
+      const p = `in${i}`;
+      if (!used.has(p) && !(i === 0 && used.has('in'))) return p;
+    }
+    return `in${Math.min(lanes - 1, inboundWires(area, dst.id).length)}`;
+  }
+
+  function migrateGraphTopology() {
+    (tb.areas || []).forEach((area) => {
+      syncWiresFromDownstream(area);
+      syncDownstreamFromWires(area);
+      (area.nodes || []).forEach((n) => {
+        if (!isConv(n.kind)) return;
+        if (typeof n.terminal !== 'boolean') n.terminal = false;
+        if (typeof n.asMerge !== 'boolean') n.asMerge = !!n.asMerge;
+      });
+    });
+  }
+
+  function getUpstreamNodes(area, nodeId) {
+    return inboundWires(area, nodeId)
+      .map((w) => (area.nodes || []).find((n) => n.id === w.from))
+      .filter(Boolean);
+  }
+
+  function getUpstreamTags(area, nodeId) {
+    return getUpstreamNodes(area, nodeId)
+      .map((n) => (n.conveyorTag || n.label || '').trim())
+      .filter(Boolean);
+  }
+
+  function clearDownstream(fromId, { silent } = {}) {
+    const area = activeArea();
+    if (!area) return false;
+    const from = area.nodes.find((n) => n.id === fromId);
+    if (!from) return false;
+    area.wires = (area.wires || []).filter((w) => w.from !== fromId);
+    from.downstream = '';
+    if (!silent) {
+      save();
+      render();
+      status(`Cleared downstream for ${nodeLabel(from)}`);
+    }
+    return true;
+  }
+
+  async function maybeConfirmMerge(dst) {
+    // Pass 2 may replace via window.__tbHooks.maybeConfirmMerge (3:1 unsupported marking)
+    if (typeof window.__tbHooks?.maybeConfirmMerge === 'function') {
+      return window.__tbHooks.maybeConfirmMerge(dst);
+    }
+    const area = activeArea();
+    if (!area || !dst || !isConv(dst.kind)) return;
+    if (KIND_META[dst.kind]?.isMerge || dst.asMerge) return;
+    const inbound = inboundWires(area, dst.id);
+    if (inbound.length < 2) return;
+    const tag = nodeLabel(dst) || 'this conveyor';
+    const ok = await askYesNo(
+      'Configure 2:1 Merge?',
+      `${tag} has two inbound lanes. Configure as 2:1 Merge?\n\n`
+        + `This keeps hold_mode=runhold (Greensboro PLC2 pattern) unless you change it later.`
+    );
+    if (!ok) return;
+    dst.asMerge = true;
+    dst.inPorts = Math.max(2, Number(dst.inPorts) || inbound.length);
+    // Normalize ports onto in0/in1…
+    inbound.forEach((w, i) => {
+      w.toPort = `in${i}`;
+    });
+    save();
+    render();
+    status(`${tag} marked as 2:1 merge discharge (asMerge)`);
+  }
+
+  function setDownstream(fromId, toIdOrTag, { silent, skipMergePrompt } = {}) {
+    const area = activeArea();
+    if (!area) return false;
+    const from = area.nodes.find((n) => n.id === fromId);
+    if (!from || !isConv(from.kind)) return false;
+    let to = null;
+    if (toIdOrTag && typeof toIdOrTag === 'object') to = toIdOrTag;
+    else if (toIdOrTag) {
+      to = area.nodes.find((n) => n.id === toIdOrTag)
+        || findNodeByTag(area, toIdOrTag);
+    }
+    if (!toIdOrTag) {
+      return clearDownstream(fromId, { silent });
+    }
+    if (!to || !isConv(to.kind)) {
+      status('Downstream target not found in this area.');
+      return false;
+    }
+    if (to.id === from.id) {
+      status('Self-connection rejected.');
+      return false;
+    }
+    // Replace any existing outbound from source (single downstream model)
+    area.wires = (area.wires || []).filter((w) => w.from !== from.id);
+    const dup = (area.wires || []).some((w) => w.from === from.id && w.to === to.id);
+    if (dup) {
+      status('Already connected.');
+      return false;
+    }
+    const toPort = pickEntrancePort(area, to);
+    if (toPort !== 'in' && String(toPort).startsWith('in')) {
+      area.wires = area.wires.filter((w) => !(w.to === to.id && (w.toPort || 'in') === toPort));
+    }
+    area.wires.push({ id: uid('wire'), from: from.id, to: to.id, toPort });
+    from.downstream = (to.conveyorTag || '').trim();
+    from.terminal = false;
+    if (!silent) {
+      save();
+      render();
+      status(`Connected ${nodeLabel(from)} → ${nodeLabel(to)}`);
+    }
+    if (!skipMergePrompt) {
+      // Fire-and-forget confirm; caller may await separately
+      maybeConfirmMerge(to);
+    }
+    return true;
+  }
+
+  function exitConnectMode() {
+    tb.connectMode = false;
+    tb.connectSourceId = null;
+    $('tb-connect-mode')?.classList.remove('tb-mode-on');
+    $('tab-transport')?.classList.remove('tb-connect-active');
+  }
+
+  function enterConnectMode() {
+    tb.connectMode = true;
+    tb.connectSourceId = null;
+    tb.linkFrom = null;
+    $('tb-connect-mode')?.classList.add('tb-mode-on');
+    $('tab-transport')?.classList.add('tb-connect-active');
+    status('Connect Mode: click source conveyor, then destination (Esc / right-click to exit)');
+    render();
+  }
+
+  function toggleConnectMode() {
+    if (tb.connectMode) {
+      exitConnectMode();
+      status('Connect Mode off');
+      render();
+    } else {
+      enterConnectMode();
+    }
+  }
+
+  async function handleConnectModeClick(node) {
+    if (!tb.connectMode || !node || !isConv(node.kind)) return false;
+    if (!tb.connectSourceId) {
+      tb.connectSourceId = node.id;
+      tb.selectedId = node.id;
+      tb.selectedDeviceId = null;
+      status(`Connect source: ${nodeLabel(node)} — click destination`);
+      render();
+      return true;
+    }
+    if (tb.connectSourceId === node.id) {
+      status('Self-connection rejected — pick a different destination');
+      return true;
+    }
+    const src = tb.connectSourceId;
+    tb.connectSourceId = null;
+    const ok = setDownstream(src, node.id, { silent: true, skipMergePrompt: true });
+    if (ok) {
+      save();
+      render();
+      status(`Connected — still in Connect Mode (Esc to exit)`);
+      await maybeConfirmMerge(node);
+    }
+    // keep mode active
+    render();
+    return true;
+  }
+
+  function peRolesOnNode(n) {
+    const roles = new Set();
+    (n.devices || []).forEach((d) => {
+      if (d.kind !== 'photoeye') return;
+      ensurePeRoles(d).forEach((r) => roles.add(r));
+    });
+    return [...roles];
+  }
+
+  function peTagsByRole(n, role) {
+    const out = [];
+    (n.devices || []).forEach((d) => {
+      if (d.kind !== 'photoeye') return;
+      const roles = ensurePeRoles(d);
+      if (roles.includes(role)) {
+        const t = (d.tag || d.name || '').trim();
+        if (t) out.push(t);
+      }
+    });
+    return out;
+  }
+
+  function assignedConveyorTags() {
+    const used = new Set();
+    (tb.areas || []).forEach((a) => {
+      (a.nodes || []).forEach((n) => {
+        const t = (n.conveyorTag || '').trim().toUpperCase();
+        if (t) used.add(t);
+      });
+    });
+    return used;
+  }
+
+  function assignedDeviceTags() {
+    const used = new Set();
+    (tb.areas || []).forEach((a) => {
+      (a.nodes || []).forEach((n) => {
+        (n.devices || []).forEach((d) => {
+          const t = (d.tag || d.name || '').trim().toUpperCase();
+          if (t) used.add(t);
+        });
+        ['pe_a', 'pe_b', 'pe_c', 'jam_pe'].forEach((k) => {
+          const t = String(n[k] || '').trim().toUpperCase();
+          if (t) used.add(t);
+        });
+      });
+    });
+    return used;
+  }
+
+  function runInventory() {
+    const convs = conveyorOptions();
+    const cat = buildableTagCatalog();
+    const usedConv = assignedConveyorTags();
+    const usedDev = assignedDeviceTags();
+    const pe = [...(cat.photoeye || [])].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    const motors = [...(cat.motor || [])].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    const enc = [...(cat.encoder || [])].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    return {
+      conveyors: {
+        detected: convs.length,
+        assigned: convs.filter((c) => usedConv.has(c.toUpperCase())).length,
+        unassigned: convs.filter((c) => !usedConv.has(c.toUpperCase())).length,
+        list: convs,
+      },
+      photoeyes: {
+        detected: pe.length,
+        assigned: pe.filter((c) => usedDev.has(c.toUpperCase())).length,
+        unassigned: pe.filter((c) => !usedDev.has(c.toUpperCase())).length,
+        list: pe,
+      },
+      motors: { list: motors, used: usedDev },
+      encoders: { list: enc, used: usedDev },
+      usedConv,
+      usedDev,
+    };
+  }
+
+  function renderInventoryPanel() {
+    // Pass 2 replaces inventory with an active build palette when hooked
+    if (typeof window.__tbHooks?.renderInventoryPanel === 'function') {
+      window.__tbHooks.renderInventoryPanel();
+      return;
+    }
+    const sum = $('tb-inv-summary');
+    const list = $('tb-inv-list');
+    if (!sum || !list) return;
+    const inv = runInventory();
+    sum.innerHTML = `
+      <div>Conveyors <span class="text-cyan-400">${inv.conveyors.detected}</span>
+        · assigned <span class="text-emerald-400">${inv.conveyors.assigned}</span>
+        · free <span class="text-amber-400">${inv.conveyors.unassigned}</span></div>
+      <div>Photoeyes <span class="text-cyan-400">${inv.photoeyes.detected}</span>
+        · assigned <span class="text-emerald-400">${inv.photoeyes.assigned}</span>
+        · free <span class="text-amber-400">${inv.photoeyes.unassigned}</span></div>`;
+    const q = String($('tb-inv-filter')?.value || '').trim().toUpperCase();
+    const rows = [];
+    const pushGroup = (label, items, usedSet) => {
+      items.forEach((t) => {
+        if (q && !t.toUpperCase().includes(q)) return;
+        const used = usedSet.has(t.toUpperCase());
+        rows.push(
+          `<div class="tb-inv-item ${used ? 'used' : 'free'}" title="${escapeHtml(label)}">${escapeHtml(t)}${used ? ' · used' : ''}</div>`
+        );
+      });
+    };
+    pushGroup('P', inv.conveyors.list, inv.usedConv);
+    pushGroup('PE', inv.photoeyes.list, inv.usedDev);
+    pushGroup('M/VFD', inv.motors.list, inv.usedDev);
+    pushGroup('ENC', inv.encoders.list, inv.usedDev);
+    list.innerHTML = rows.slice(0, 120).join('')
+      || `<div class="text-slate-600 px-1">No RUN tags match.</div>`;
+  }
+
+  function collectValidation() {
+    const errors = [];
+    const warnings = [];
+    const byTag = new Map();
+    const peUses = new Map();
+    const buildablePe = new Set([...(buildableTagCatalog().photoeye || [])].map((x) => x.toUpperCase()));
+
+    (tb.areas || []).forEach((area) => {
+      const aname = area.name || 'Area';
+      if (!(area.name || '').trim()) {
+        warnings.push(`${aname}: area has no name`);
+      }
+      const byId = Object.fromEntries((area.nodes || []).map((n) => [n.id, n]));
+      (area.nodes || []).forEach((n) => {
+        if (!isConv(n.kind)) return;
+        const tag = (n.conveyorTag || '').trim();
+        if (!tag) {
+          errors.push(`${aname}: unbound conveyor (${n.label || n.id})`);
+        } else {
+          const key = tag.toUpperCase();
+          if (byTag.has(key)) {
+            errors.push(`Duplicate P### assignment: ${tag}`);
+          } else {
+            byTag.set(key, n);
+          }
+        }
+        const ds = String(n.downstream || '').trim();
+        const out = outboundWire(area, n.id);
+        if (out && !byId[out.to]) {
+          errors.push(`${aname}: dangling connection from ${tag || n.id}`);
+        }
+        if (out && out.to === n.id) {
+          errors.push(`${aname}: self connection on ${tag || n.id}`);
+        }
+        if (ds && !findNodeByTag(area, ds) && !byTag.has(ds.toUpperCase())) {
+          // may exist in another area — soft warn
+          const elsewhere = (tb.areas || []).some((a2) => findNodeByTag(a2, ds));
+          if (!elsewhere) warnings.push(`${tag || n.id}: downstream ${ds} missing`);
+        }
+        if (!ds && !n.terminal && !KIND_META[n.kind]?.isMerge) {
+          warnings.push(`${tag || n.label || n.id}: no downstream (mark terminal if end of run)`);
+        }
+        if (!aname || aname === 'Transport_1') {
+          /* area always exists */
+        }
+        if (!(area.name || '').trim()) {
+          errors.push(`${tag || n.id}: conveyor with no area`);
+        }
+        if (n.asMerge || KIND_META[n.kind]?.isMerge) {
+          const inbound = inboundWires(area, n.id);
+          if (inbound.length < 2) {
+            warnings.push(`${tag || n.label}: merge with <2 inbound lanes`);
+          }
+          if (!tag) warnings.push(`${n.label || n.id}: merge with no discharge tag`);
+        }
+        (n.devices || []).forEach((d) => {
+          if (d.kind !== 'photoeye') return;
+          const pt = (d.tag || '').trim();
+          if (!pt) return;
+          const pu = pt.toUpperCase();
+          peUses.set(pu, (peUses.get(pu) || 0) + 1);
+          if (buildablePe.size && !buildablePe.has(pu)) {
+            warnings.push(`PE ${pt} not found in RUN/workbook`);
+          }
+        });
+      });
+      (area.wires || []).forEach((w) => {
+        if (!byId[w.from] || !byId[w.to]) {
+          errors.push(`${aname}: dangling wire ${w.id || ''}`);
+        }
+        if (w.from === w.to) errors.push(`${aname}: self connection wire`);
+      });
+    });
+    peUses.forEach((count, pe) => {
+      if (count > 1) warnings.push(`Suspicious duplicate PE use: ${pe} (${count}×)`);
+    });
+
+    return { errors, warnings, ready: !errors.length };
+  }
+
+  function renderValidationPanel() {
+    const el = $('tb-validation');
+    if (!el) return;
+    const { errors, warnings, ready } = collectValidation();
+    const parts = [];
+    if (ready && !warnings.length) {
+      parts.push(`<div class="tb-val-ok">Ready · ${errors.length} errors · ${warnings.length} warnings</div>`);
+    } else {
+      parts.push(
+        `<div class="${errors.length ? 'tb-val-err' : 'tb-val-ok'}">Errors: ${errors.length}</div>`
+      );
+      parts.push(`<div class="tb-val-warn">Warnings: ${warnings.length}</div>`);
+      if (ready) parts.push(`<div class="tb-val-ok">Ready for Apply (warnings OK)</div>`);
+      else parts.push(`<div class="tb-val-err">Not clean — editing still allowed</div>`);
+    }
+    errors.slice(0, 12).forEach((e) => {
+      parts.push(`<div class="tb-val-err">• ${escapeHtml(e)}</div>`);
+    });
+    warnings.slice(0, 12).forEach((w) => {
+      parts.push(`<div class="tb-val-warn">• ${escapeHtml(w)}</div>`);
+    });
+    el.innerHTML = parts.join('');
+  }
+
+  function safetyForAreaName(name) {
+    const base = String(name || 'Transport').replace(/_Area$/i, '').trim() || 'Transport';
+    return `${base}_ESZone1`;
+  }
+
+  function renderTopologyTable() {
+    const body = $('tb-topo-body');
+    if (!body) return;
+    const rows = [];
+    (tb.areas || []).forEach((area) => {
+      (area.nodes || []).forEach((n) => {
+        if (!isConv(n.kind)) return;
+        const tag = (n.conveyorTag || '').trim();
+        const up = getUpstreamTags(area, n.id).join(', ') || '—';
+        const ds = String(n.downstream || '').trim();
+        const exitPe = peTagsByRole(n, 'exit').join(', ');
+        const addPe = peTagsByRole(n, 'add').join(', ');
+        const jamPe = peTagsByRole(n, 'jam').join(', ');
+        const fullPe = peTagsByRole(n, 'full').join(', ');
+        const meta = KIND_META[n.kind] || {};
+        const typ = n.asMerge ? 'Merge discharge' : (meta.title || n.kind);
+        let st = [];
+        if (!tag) st.push('unbound');
+        if (n.asMerge) st.push('merge');
+        if (n.terminal) st.push('terminal');
+        if (!ds && !n.terminal) st.push('no-ds');
+        const sel = n.id === tb.selectedId ? ' tb-topo-sel' : '';
+        const areaOpts = tb.areas
+          .map((a) => `<option value="${escapeHtml(a.id)}" ${a.id === area.id ? 'selected' : ''}>${escapeHtml(a.name)}</option>`)
+          .join('');
+        const dsOpts = [`<option value="">—</option>`]
+          .concat(
+            (area.nodes || [])
+              .filter((x) => isConv(x.kind) && x.id !== n.id && (x.conveyorTag || '').trim())
+              .map((x) => {
+                const t = x.conveyorTag.trim();
+                return `<option value="${escapeHtml(t)}" ${t === ds ? 'selected' : ''}>${escapeHtml(t)}</option>`;
+              })
+          )
+          .join('');
+        rows.push(`<tr class="${sel}" data-topo-id="${escapeHtml(n.id)}" data-topo-area="${escapeHtml(area.id)}">
+          <td class="mono text-cyan-300">${escapeHtml(tag || n.label || n.id)}</td>
+          <td><select data-topo-area-sel="${escapeHtml(n.id)}">${areaOpts}</select></td>
+          <td class="text-slate-400">${escapeHtml(up)}</td>
+          <td><select data-topo-ds="${escapeHtml(n.id)}">${dsOpts}</select></td>
+          <td>${escapeHtml(typ)}</td>
+          <td class="mono">${escapeHtml(exitPe || '—')}</td>
+          <td class="mono">${escapeHtml(addPe || '—')}</td>
+          <td class="mono">${escapeHtml(jamPe || '—')}</td>
+          <td class="mono">${escapeHtml(fullPe || '—')}</td>
+          <td class="mono text-slate-500">${escapeHtml(safetyForAreaName(area.name))}</td>
+          <td class="text-slate-500">${escapeHtml(st.join(', ') || 'ok')}</td>
+        </tr>`);
+      });
+    });
+    body.innerHTML = rows.join('') || `<tr><td colspan="11" class="text-slate-600">No conveyors yet</td></tr>`;
+
+    body.querySelectorAll('tr[data-topo-id]').forEach((tr) => {
+      tr.addEventListener('click', (ev) => {
+        if (ev.target.closest('select')) return;
+        const id = tr.getAttribute('data-topo-id');
+        const areaId = tr.getAttribute('data-topo-area');
+        if (areaId && areaId !== tb.activeAreaId) {
+          tb.activeAreaId = areaId;
+        }
+        selectNode(id);
+        const el = document.querySelector(`.tb-node[data-id="${id}"]`);
+        const canvas = $('tb-canvas');
+        if (el && canvas) {
+          const n = activeArea()?.nodes.find((x) => x.id === id);
+          if (n) {
+            canvas.scrollLeft = Math.max(0, n.x - 120);
+            canvas.scrollTop = Math.max(0, n.y - 80);
+          }
+        }
+      });
+    });
+    body.querySelectorAll('select[data-topo-ds]').forEach((sel) => {
+      sel.addEventListener('change', () => {
+        const id = sel.getAttribute('data-topo-ds');
+        // Ensure active area contains node
+        for (const a of tb.areas) {
+          if (a.nodes.some((n) => n.id === id)) {
+            tb.activeAreaId = a.id;
+            break;
+          }
+        }
+        setDownstream(id, sel.value || '', { skipMergePrompt: false });
+      });
+    });
+    body.querySelectorAll('select[data-topo-area-sel]').forEach((sel) => {
+      sel.addEventListener('change', () => {
+        const nodeId = sel.getAttribute('data-topo-area-sel');
+        const destAreaId = sel.value;
+        moveNodeToArea(nodeId, destAreaId);
+      });
+    });
+  }
+
+  /**
+   * Reassign a conveyor's Area (organization/metadata).
+   *
+   * Architecture note:
+   * - Visual wires[] are area-scoped (drawn only when both ends share an area).
+   * - Canonical topology is tag-based node.downstream (area-independent).
+   * - Apply already prefers wires then falls back to node.downstream across the whole graph.
+   * Therefore changing Area must NEVER clear downstream relationships.
+   */
+  function moveNodeToArea(nodeId, destAreaId) {
+    const dest = tb.areas.find((a) => a.id === destAreaId);
+    if (!dest) return;
+    let node = null;
+    let srcArea = null;
+    for (const a of tb.areas) {
+      const idx = (a.nodes || []).findIndex((n) => n.id === nodeId);
+      if (idx >= 0) {
+        node = a.nodes[idx];
+        srcArea = a;
+        if (a.id === destAreaId) return;
+        break;
+      }
+    }
+    if (!node || !srcArea) return;
+
+    // Snapshot tag topology from wires before removing area-local visuals
+    syncDownstreamFromWires(srcArea);
+    const keptDownstream = String(node.downstream || '').trim();
+    const myTag = String(node.conveyorTag || '').trim();
+    inboundWires(srcArea, node.id).forEach((w) => {
+      const src = (srcArea.nodes || []).find((n) => n.id === w.from);
+      if (!src) return;
+      // Keep upstream → this tag even after the visual wire is dropped
+      if (myTag) src.downstream = myTag;
+      else if (!src.downstream) {
+        /* leave as-is */
+      }
+    });
+
+    const idx = (srcArea.nodes || []).findIndex((n) => n.id === nodeId);
+    if (idx < 0) return;
+    srcArea.nodes.splice(idx, 1);
+    // Drop area-local wire visuals involving this node (cannot draw cross-area yet)
+    srcArea.wires = (srcArea.wires || []).filter((w) => w.from !== nodeId && w.to !== nodeId);
+    // CRITICAL: Area is metadata — do not destroy physical topology
+    node.downstream = keptDownstream;
+
+    dest.nodes = dest.nodes || [];
+    dest.nodes.push(node);
+
+    // Rebuild same-area visuals wherever both ends co-reside; cross-area stays tag-only
+    (tb.areas || []).forEach((a) => {
+      syncDownstreamFromWires(a);
+      syncWiresFromDownstream(a);
+    });
+
+    tb.activeAreaId = dest.id;
+    tb.selectedId = node.id;
+    if (Array.isArray(tb.selectedIds)) {
+      tb.selectedIds = tb.selectedIds.includes(node.id) ? tb.selectedIds : [node.id];
+    }
+    save();
+    render();
+    status(
+      `Moved ${nodeLabel(node)} → area ${dest.name} (topology preserved` +
+        (keptDownstream ? `; downstream ${keptDownstream}` : '') +
+        ')'
+    );
+  }
+
+  function fillDownstreamSelect(sel, node) {
+    if (!sel || !node) return;
+    const area = activeArea();
+    const cur = String(node.downstream || '').trim();
+    const opts = (area?.nodes || [])
+      .filter((n) => isConv(n.kind) && n.id !== node.id)
+      .map((n) => (n.conveyorTag || '').trim())
+      .filter(Boolean);
+    let html = `<option value="">— none / terminal —</option>`;
+    opts.forEach((t) => {
+      html += `<option value="${escapeHtml(t)}" ${t === cur ? 'selected' : ''}>${escapeHtml(t)}</option>`;
+    });
+    if (cur && !opts.includes(cur)) {
+      html += `<option value="${escapeHtml(cur)}" selected>${escapeHtml(cur)} (missing)</option>`;
+    }
+    sel.innerHTML = html;
+  }
+
+  function centerOnNode(id) {
+    const n = activeArea()?.nodes.find((x) => x.id === id);
+    const canvas = $('tb-canvas');
+    if (!n || !canvas) return;
+    canvas.scrollLeft = Math.max(0, n.x - 140);
+    canvas.scrollTop = Math.max(0, n.y - 100);
+  }
+
 
   /** True for Fortna belt tags like P100 / P208A — not SS, SSV, ENC, ES, motors. */
   function isConveyorTag(name) {
@@ -656,43 +1324,21 @@
       const rot = Number(n.rotation || 0) % 360;
       const sides = portSides(rot);
 
-      const devices = n.devices || [];
-      const chips = devices
-        .map((d) => {
-          const label = d.tag || d.name || d.kind;
-          const sel = d.id === tb.selectedDeviceId ? ' ring-1 ring-fuchsia-500' : '';
-          const roles = d.kind === 'photoeye' ? ensurePeRoles(d) : [];
-          const badges = d.kind === 'photoeye' ? peRoleBadgesHtml(roles) : '';
-          const tip = d.kind === 'photoeye'
-            ? `PE roles: ${(roles.length ? roles.join('+') : 'none')} — click to edit`
-            : 'Click to assign tag';
-          return `<span class="tb-device-chip${sel} cursor-pointer" data-dev-id="${escapeHtml(d.id)}" title="${escapeHtml(tip)}">${kindIconHtml(d.kind)}${escapeHtml(label)}${badges}</span>`;
-        })
-        .join('');
-
-      const hasWire = (() => {
-        const a = activeArea();
-        if (!a) return false;
-        return (a.wires || []).some((w) => w.from === n.id || w.to === n.id);
-      })();
-      const bind = n.conveyorTag
-        ? `<div class="mono text-cyan-400/90 truncate" title="${escapeHtml(n.conveyorTag)}">${escapeHtml(n.conveyorTag)}</div>`
-        : hasWire
-          ? `<div class="text-amber-400/90 text-[9px]">Wired — still bind P### tag</div>`
-          : `<div class="text-slate-600 italic text-[9px]">Bind P### in inspector</div>`;
-      const mergeNote = meta.isMerge
-        ? `<div class="text-orange-400/80 text-[9px] mt-0.5">${n.inPorts || 2}:1 merge</div>`
+      const areaName = activeArea()?.name || '';
+      const roleLetters = peRolesOnNode(n);
+      const roleBadges = peRoleBadgesHtml(roleLetters);
+      const tagShow = (n.conveyorTag || '').trim() || (isConv(n.kind) ? 'P???' : (n.label || meta.title));
+      const mergeNote = (meta.isMerge || n.asMerge)
+        ? `<span class="text-orange-400/90 text-[8px]">${n.inPorts || 2}:1</span>`
         : '';
       const spiralNote = meta.isSpiral
-        ? `<div class="text-teal-400/80 text-[9px] mt-0.5">${normalizeSpiralMotors(n).filter(Boolean).length}/${n.motorCount || SPIRAL_MOTOR_DEFAULT} motors</div>`
+        ? `<span class="text-teal-400/80 text-[8px]">${normalizeSpiralMotors(n).filter(Boolean).length}M</span>`
         : '';
-      const orientNote = rot
-        ? `<div class="tb-orient mt-0.5">flow ${rot}°</div>`
-        : '';
+      const orientNote = rot ? `<span class="tb-orient">${rot}°</span>` : '';
 
       let portsHtml = '';
       if (isConv(n.kind)) {
-        const inCount = meta.isMerge ? Math.max(2, Number(n.inPorts) || 2) : 1;
+        const inCount = (meta.isMerge || n.asMerge) ? Math.max(2, Number(n.inPorts) || 2) : 1;
         if (inCount === 1) {
           portsHtml += `<div class="tb-port in ${sides.inn}" data-port="in" title="Entrance"></div>`;
         } else {
@@ -707,18 +1353,21 @@
         portsHtml += `<div class="tb-port out ${sides.out}" data-port="out" title="Exit"></div>`;
       }
 
+      const connectCls = tb.connectMode && tb.connectSourceId === n.id
+        ? ' tb-connect-src'
+        : (tb.connectMode && tb.connectSourceId && n.id !== tb.connectSourceId ? ' tb-connect-dst' : '');
+      if (n.asMerge) el.classList.add('tb-as-merge');
+      el.className = `tb-node${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}`;
+
       el.innerHTML = `
         <div class="tb-content">
           <div class="tb-head">
             ${kindIconHtml(n.kind, meta.color)}
-            <span class="truncate" title="${escapeHtml(n.label || meta.title)}">${escapeHtml(n.label || meta.title)}</span>
+            <span class="tb-tag truncate" title="${escapeHtml(tagShow)}">${escapeHtml(tagShow)}</span>
           </div>
           <div class="tb-body">
-            ${isConv(n.kind) ? bind : ''}
-            ${mergeNote}
-            ${spiralNote}
-            ${orientNote}
-            <div class="mt-1 flex flex-wrap">${chips || (isConv(n.kind) ? '<span class="text-slate-700 text-[9px]">Drop devices here</span>' : '')}</div>
+            <div class="tb-area-chip truncate" title="${escapeHtml(areaName)}">${escapeHtml(areaName || '—')}</div>
+            <div class="tb-status-row">${roleBadges}${mergeNote}${spiralNote}${orientNote}</div>
           </div>
         </div>
         ${portsHtml}
@@ -726,12 +1375,10 @@
 
       el.addEventListener('mousedown', (ev) => {
         if (ev.target.classList.contains('tb-port')) return;
-        const chip = ev.target.closest?.('[data-dev-id]');
-        if (chip) {
+        if (tb.connectMode && isConv(n.kind)) {
+          ev.preventDefault();
           ev.stopPropagation();
-          tb.selectedId = n.id;
-          tb.selectedDeviceId = chip.dataset.devId;
-          render();
+          handleConnectModeClick(n);
           return;
         }
         selectNode(n.id);
@@ -760,6 +1407,21 @@
     ensureCanvasExtents(area);
     drawWires();
     renderInspector();
+    renderTopologyTable();
+    renderInventoryPanel();
+    renderValidationPanel();
+    const autoEl = $('tb-auto-connect');
+    if (autoEl) autoEl.checked = !!tb.autoConnectNew;
+    // Explicit Pass 2 (and future) update hook — prefer this over DOM MutationObserver
+    if (typeof window.__tbOnTransportRender === 'function') {
+      try {
+        window.__tbOnTransportRender();
+      } catch (err) {
+        try {
+          console.warn('[TransportBuild] __tbOnTransportRender', err);
+        } catch (_) { /* ignore */ }
+      }
+    }
   }
 
   function portCenter(nodeId, port) {
@@ -829,8 +1491,24 @@
     svg.innerHTML = html;
   }
 
-  function selectNode(id) {
-    tb.selectedId = id;
+  function selectNode(id, { additive } = {}) {
+    if (!id) {
+      tb.selectedId = null;
+      tb.selectedIds = [];
+      tb.selectedDeviceId = null;
+      render();
+      return;
+    }
+    if (additive) {
+      const set = new Set(tb.selectedIds || []);
+      if (set.has(id)) set.delete(id);
+      else set.add(id);
+      tb.selectedIds = [...set];
+      tb.selectedId = tb.selectedIds.includes(id) ? id : (tb.selectedIds[0] || null);
+    } else {
+      tb.selectedId = id;
+      tb.selectedIds = [id];
+    }
     tb.selectedDeviceId = null;
     render();
   }
@@ -903,13 +1581,22 @@
     $('tb-insp-kind').textContent = `${meta.title || n.kind} (${n.kind})`;
     if ($('tb-insp-label')) $('tb-insp-label').value = n.label || '';
     if ($('tb-insp-rotation')) $('tb-insp-rotation').textContent = `${Number(n.rotation || 0) % 360}°`;
+    const upEl = $('tb-insp-upstream');
+    if (upEl) {
+      const ups = getUpstreamTags(area, n.id);
+      upEl.textContent = ups.length ? ups.join(', ') : '—';
+    }
+    fillDownstreamSelect($('tb-insp-downstream'), n);
+    const term = $('tb-insp-terminal');
+    if (term) term.checked = !!n.terminal;
     const mergeWrap = $('tb-insp-merge-wrap');
     if (mergeWrap) {
-      mergeWrap.classList.toggle('hidden', !meta.isMerge);
+      const showMerge = !!(meta.isMerge || n.asMerge);
+      mergeWrap.classList.toggle('hidden', !showMerge);
       const laneSel = $('tb-insp-merge-lanes');
       const lanes = Math.max(2, Number(n.inPorts) || 2);
-      if (laneSel && meta.isMerge) laneSel.value = String(lanes);
-      if (meta.isMerge) {
+      if (laneSel && showMerge) laneSel.value = String(lanes);
+      if (showMerge) {
         fillTagSelect($('tb-insp-merge-pe-a'), 'photoeye', n.pe_a || '');
         fillTagSelect($('tb-insp-merge-pe-b'), 'photoeye', n.pe_b || '');
         fillTagSelect($('tb-insp-merge-jam-pe'), 'photoeye', n.jam_pe || '');
@@ -1151,6 +1838,10 @@
       devices: [],
       rotation: 0,
       inPorts,
+      downstream: '',
+      terminal: false,
+      asMerge: false,
+      safetyZone: (tb.buildContext && tb.buildContext.safetyZone) || '',
     };
     if (meta.isSpiral) {
       node.motorCount = SPIRAL_MOTOR_DEFAULT;
@@ -1170,9 +1861,28 @@
         name: '',
       });
     }
+    const prevSelectedId = tb.selectedId;
     area.nodes.push(node);
+    // Sequential Build: auto-connect previously selected conveyor → new one
+    if (
+      tb.autoConnectNew &&
+      meta.isConv &&
+      !meta.isMerge &&
+      prevSelectedId &&
+      prevSelectedId !== node.id
+    ) {
+      const prev = area.nodes.find((x) => x.id === prevSelectedId);
+      if (prev && isConv(prev.kind) && !KIND_META[prev.kind]?.isMerge) {
+        const toPort = pickEntrancePort(area, node);
+        area.wires = (area.wires || []).filter((w) => w.from !== prev.id);
+        area.wires.push({ id: uid('wire'), from: prev.id, to: node.id, toPort });
+        prev.downstream = (node.conveyorTag || '').trim();
+        prev.terminal = false;
+      }
+    }
     tb.selectedId = node.id;
     tb.selectedDeviceId = autoMotorId;
+    syncDownstreamFromWires(area);
     save();
     render();
 
@@ -1206,26 +1916,34 @@
 
   function connect(fromId, toId, toPort) {
     const area = activeArea();
-    if (!area || fromId === toId) return;
+    if (!area || fromId === toId) {
+      if (fromId === toId) status('Self-connection rejected.');
+      return;
+    }
     const from = area.nodes.find((n) => n.id === fromId);
     const to = area.nodes.find((n) => n.id === toId);
     if (!from || !to || !isConv(from.kind) || !isConv(to.kind)) {
       status('Only conveyor exit → conveyor entrance links are allowed.');
       return;
     }
-    const port = toPort || 'in';
+    const port = toPort || pickEntrancePort(area, to);
     if (area.wires.some((w) => w.from === fromId && w.to === toId && (w.toPort || 'in') === port)) {
       status('Already connected.');
       return;
     }
+    // Single outbound downstream per source (canonical model)
+    area.wires = area.wires.filter((w) => w.from !== fromId);
     // One wire per merge entrance
     if (port !== 'in') {
       area.wires = area.wires.filter((w) => !(w.to === toId && (w.toPort || 'in') === port));
     }
     area.wires.push({ id: uid('wire'), from: fromId, to: toId, toPort: port });
+    from.downstream = (to.conveyorTag || '').trim();
+    from.terminal = false;
     save();
     render();
     status(`Connected ${from.label || fromId} → ${to.label || toId} (${port})`);
+    maybeConfirmMerge(to);
   }
 
   function bindToolbar() {
@@ -1384,6 +2102,16 @@
       }
     });
 
+    $('tb-connect-mode')?.addEventListener('click', () => toggleConnectMode());
+    $('tb-auto-connect')?.addEventListener('change', (e) => {
+      tb.autoConnectNew = !!e.target.checked;
+      save();
+      status(tb.autoConnectNew
+        ? 'Auto Connect New ON — each new conveyor links from the selected one'
+        : 'Auto Connect New OFF');
+    });
+    $('tb-inv-filter')?.addEventListener('input', () => renderInventoryPanel());
+
     $('tb-apply-autogen')?.addEventListener('click', async () => {
       await applyMergesToAutogenUi();
     });
@@ -1516,7 +2244,22 @@
     }
     // Allow keyboard focus for arrows / Delete after clicking the grid
     if (!canvas.hasAttribute('tabindex')) canvas.setAttribute('tabindex', '0');
-    canvas.addEventListener('mousedown', () => { try { canvas.focus(); } catch (_) { /* ignore */ } });
+    canvas.addEventListener('mousedown', (ev) => {
+      try { canvas.focus(); } catch (_) { /* ignore */ }
+      if (ev.button === 2 && tb.connectMode) {
+        exitConnectMode();
+        status('Connect Mode cancelled');
+        render();
+      }
+    });
+    canvas.addEventListener('contextmenu', (ev) => {
+      if (tb.connectMode) {
+        ev.preventDefault();
+        exitConnectMode();
+        status('Connect Mode cancelled');
+        render();
+      }
+    });
 
     canvas.addEventListener('dragover', (ev) => {
       ev.preventDefault();
@@ -1602,21 +2345,65 @@
       render();
     });
 
-    $('tb-insp-conveyor')?.addEventListener('change', (e) => {
+    $('tb-insp-conveyor')?.addEventListener('change', async (e) => {
       const a = activeArea();
       const n = a?.nodes.find((x) => x.id === tb.selectedId);
       if (!n) return;
       const prev = (n.conveyorTag || '').trim();
-      n.conveyorTag = e.target.value;
+      const next = (e.target.value || '').trim();
+      if (next) {
+        const dup = (tb.areas || []).some((area) =>
+          (area.nodes || []).some(
+            (x) => x.id !== n.id && String(x.conveyorTag || '').trim().toUpperCase() === next.toUpperCase()
+          )
+        );
+        if (dup) {
+          const ok = await askYesNo(
+            'Duplicate P###',
+            `${next} is already assigned to another graph node. Assign anyway?`
+          );
+          if (!ok) {
+            e.target.value = prev;
+            return;
+          }
+        }
+      }
+      n.conveyorTag = next;
+      n.placeholderTag = false;
       if (n.conveyorTag && (!n.label || KIND_META[n.kind]?.title === n.label || /^Merge /i.test(n.label || ''))) {
         if (!KIND_META[n.kind]?.isMerge) n.label = n.conveyorTag;
       }
+      // Refresh downstream tags on inbound sources pointing here
+      syncDownstreamFromWires(a);
+      (a.wires || []).filter((w) => w.to === n.id).forEach((w) => {
+        const src = a.nodes.find((x) => x.id === w.from);
+        if (src) src.downstream = (n.conveyorTag || '').trim();
+      });
       save();
       render();
       if (!n.conveyorTag && prev) {
         status(`Cleared ${prev} — Apply to remove it from the Transport area L5X`);
-        toast(`Cleared ${prev}. Click Apply so the next Generate drops it from MERGE/area routines.`, 'warn');
+        showToast(`Cleared ${prev}. Click Apply so the next Generate drops it from MERGE/area routines.`);
       }
+    });
+
+    $('tb-insp-downstream')?.addEventListener('change', (e) => {
+      const a = activeArea();
+      const n = a?.nodes.find((x) => x.id === tb.selectedId);
+      if (!n) return;
+      setDownstream(n.id, e.target.value || '');
+    });
+
+    $('tb-insp-terminal')?.addEventListener('change', (e) => {
+      const a = activeArea();
+      const n = a?.nodes.find((x) => x.id === tb.selectedId);
+      if (!n) return;
+      n.terminal = !!e.target.checked;
+      if (n.terminal) {
+        // Clearing relationship is explicit via downstream dropdown; terminal only suppresses warning
+      }
+      save();
+      render();
     });
 
     $('tb-insp-rotate')?.addEventListener('click', () => {
@@ -1663,13 +2450,17 @@
       status(`Spiral set to ${n.motorCount} motor(s) — pick M### / VFD### tags`);
     });
 
+    function isMergeLike(n) {
+      return !!(n && (KIND_META[n.kind]?.isMerge || n.asMerge));
+    }
+
     $('tb-insp-merge-lanes')?.addEventListener('change', (e) => {
       const a = activeArea();
       const n = a?.nodes.find((x) => x.id === tb.selectedId);
-      if (!n || !KIND_META[n.kind]?.isMerge) return;
+      if (!isMergeLike(n)) return;
       const lanes = Math.min(4, Math.max(2, parseInt(e.target.value, 10) || 2));
       n.inPorts = lanes;
-      n.label = `Merge ${lanes}:1`;
+      if (KIND_META[n.kind]?.isMerge) n.label = `Merge ${lanes}:1`;
       if (lanes < 3) n.pe_c = '';
       // Drop wires to removed entrances
       const valid = new Set([...Array(lanes)].map((_, i) => `in${i}`));
@@ -1686,7 +2477,7 @@
       $(id)?.addEventListener('change', (e) => {
         const a = activeArea();
         const n = a?.nodes.find((x) => x.id === tb.selectedId);
-        if (!n || !KIND_META[n.kind]?.isMerge) return;
+        if (!isMergeLike(n)) return;
         n[key] = e.target.value || '';
         save();
         status(`Merge ${key} → ${n[key] || 'NO_PE'}`);
@@ -1699,7 +2490,7 @@
     $('tb-insp-merge-allow-pe')?.addEventListener('change', (e) => {
       const a = activeArea();
       const n = a?.nodes.find((x) => x.id === tb.selectedId);
-      if (!n || !KIND_META[n.kind]?.isMerge) return;
+      if (!isMergeLike(n)) return;
       n.allow_undefined_pe = !!e.target.checked;
       save();
       status(n.allow_undefined_pe ? 'Will create missing PE tags in L5X' : 'Unknown PEs → NO_PE');
@@ -1715,6 +2506,14 @@
       if (tag === 'INPUT' || tag === 'SELECT' || tag === 'TEXTAREA' || ev.target?.isContentEditable) return;
       // Also ignore when focus is inside the dialog overlay
       if (ev.target?.closest?.('#tb-dialog')) return;
+
+      if (ev.key === 'Escape' && tb.connectMode) {
+        ev.preventDefault();
+        exitConnectMode();
+        status('Connect Mode cancelled');
+        render();
+        return;
+      }
 
       const a = activeArea();
       if (!a || !tb.selectedId) return;
@@ -1733,8 +2532,10 @@
         }
         a.nodes = a.nodes.filter((x) => x.id !== tb.selectedId);
         a.wires = a.wires.filter((w) => w.from !== tb.selectedId && w.to !== tb.selectedId);
+        if (tb.connectSourceId === tb.selectedId) tb.connectSourceId = null;
         tb.selectedId = null;
         tb.selectedDeviceId = null;
+        syncDownstreamFromWires(a);
         save();
         render();
         status('Node deleted');
@@ -2029,15 +2830,24 @@
     if (!$('tab-transport')) return;
     load();
     ensureArea();
+    migrateGraphTopology();
     bindUi();
     paintPaletteIcons();
     render();
-    status('Transport Build ready — Wizard assists areas, tags, and merge PEs.');
+    status('Transport Build ready — Build Chain / Continue Run for rapid topology.');
+    try {
+      if (typeof window.__tbPass2Init === 'function') window.__tbPass2Init();
+    } catch (err) {
+      try { console.warn('[TransportBuild] Pass2 init', err); } catch (_) { /* ignore */ }
+    }
   }
 
   // Expose refresh when tab opens (conveyor dropdown)
   window.transportBuildRefresh = function () {
     render();
+    try {
+      if (typeof window.__tbPass2OnRefresh === 'function') window.__tbPass2OnRefresh();
+    } catch (_) { /* ignore */ }
   };
 
   /** Wipe all Transport Build areas (Transport1, Merge5, …) and reset PE role UI. */
@@ -2045,7 +2855,9 @@
     tb.areas = [];
     tb.activeAreaId = null;
     tb.selectedId = null;
+    tb.selectedIds = [];
     tb.selectedDeviceId = null;
+    tb.history = { past: [], future: [], max: 50 };
     try { localStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
     ensureArea();
     resetPeRoleUi();
@@ -2056,6 +2868,71 @@
     $('tb-inspector')?.classList.add('hidden');
     status('All transport areas cleared — PE roles reset');
     return true;
+  };
+
+  /** Pass 2 bridge — companion script uses these without rewriting Pass 1 core. */
+  window.__tbApi = {
+    get tb() { return tb; },
+    $,
+    uid,
+    save,
+    load,
+    render,
+    status,
+    showToast,
+    activeArea,
+    ensureArea,
+    isConv,
+    KIND_META,
+    escapeHtml,
+    canvasPointFromEvent,
+    nodeAtPoint,
+    selectNode,
+    setDownstream,
+    clearDownstream,
+    connect,
+    maybeConfirmMerge,
+    findNodeByTag,
+    getUpstreamTags,
+    getUpstreamNodes,
+    syncDownstreamFromWires,
+    syncWiresFromDownstream,
+    migrateGraphTopology,
+    outboundWire,
+    inboundWires,
+    pickEntrancePort,
+    nodeLabel,
+    conveyorOptions,
+    deviceTagOptions,
+    buildableTagCatalog,
+    runInventory,
+    assignedConveyorTags,
+    assignedDeviceTags,
+    moveNodeToArea,
+    peRolesOnNode,
+    peRoleBadgesHtml,
+    peTagsByRole,
+    inferPeRoles,
+    ensurePeRoles,
+    fillTagSelect,
+    askYesNo,
+    askText,
+    showInfo,
+    askDialog,
+    enterConnectMode,
+    exitConnectMode,
+    toggleConnectMode,
+    handleConnectModeClick,
+    drawWires,
+    ensureCanvasExtents,
+    portCenter,
+    collectValidation,
+    renderValidationPanel,
+    renderInventoryPanel,
+    renderTopologyTable,
+    renderInspector,
+    safetyForAreaName,
+    STORE_KEY,
   };
 
   if (document.readyState === 'loading') {

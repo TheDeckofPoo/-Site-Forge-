@@ -257,9 +257,19 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     created_tags: list[str] = []
     unbound = 0
     # Wire exit → entrance means destination is downstream of source (Fast_Conv IO_Downstream_Conv)
+    # Prefer wire-derived downstream; fall back to canonical node.downstream when no wire exists.
     downstream_by_tag: dict[str, str] = {}
+    tag_lookup: dict[str, str] = {}  # upper → display tag (for resolving node.downstream)
     for area in graph.get("areas") or []:
         by_id = {n.get("id"): n for n in (area.get("nodes") or []) if n.get("id")}
+        for n in area.get("nodes") or []:
+            if not str(n.get("kind") or "").startswith("conv_"):
+                continue
+            tag = (n.get("conveyorTag") or "").strip()
+            if not tag:
+                unbound += 1
+                continue
+            tag_lookup[tag.upper()] = tag
         for w in area.get("wires") or []:
             src = by_id.get(w.get("from"))
             dst = by_id.get(w.get("to"))
@@ -269,11 +279,29 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             dst_tag = (dst.get("conveyorTag") or "").strip()
             if src_tag and dst_tag:
                 downstream_by_tag[src_tag.upper()] = dst_tag
+        # Canonical node.downstream fills gaps when no wire targets that source
         for n in area.get("nodes") or []:
             if not str(n.get("kind") or "").startswith("conv_"):
                 continue
-            if not (n.get("conveyorTag") or "").strip():
-                unbound += 1
+            src_tag = (n.get("conveyorTag") or "").strip()
+            if not src_tag:
+                continue
+            src_u = src_tag.upper()
+            if src_u in downstream_by_tag:
+                continue  # wire wins
+            raw_ds = (n.get("downstream") or "").strip()
+            if not raw_ds:
+                continue
+            # Resolve to a known conveyorTag (do not invent tags)
+            ds_display = tag_lookup.get(raw_ds.upper())
+            if not ds_display:
+                # Also accept if it already looks like a P### even if unbound elsewhere
+                if _is_conveyor_tag(raw_ds):
+                    # Prefer matching conveyorTag casing from workbook/graph if present later
+                    ds_display = raw_ds
+                else:
+                    continue
+            downstream_by_tag[src_u] = ds_display
 
     def _infer_pe_roles(tag: str) -> list[str]:
         """Fortna suffix defaults: _P → exit+jam, _J → jam, _F → full."""
@@ -355,7 +383,10 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     for tag_u, aname in sorted(tag_area.items()):
         node = _node_for_tag(tag_u)
         display = ((node.get("conveyorTag") if node else "") or tag_u).strip()
-        safety = _safety_for_area(aname)
+        safety = (
+            (node.get("safetyZone") or node.get("safety_zone") or "").strip()
+            if node else ""
+        ) or _safety_for_area(aname)
         pe_fields = _pes_from_node(node or {})
         if tag_u in by_name:
             row = by_name[tag_u]
@@ -390,6 +421,7 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         else:
             stub = _stub_conveyor(display, aname)
             stub.update(pe_fields)
+            stub["safety_zone"] = safety
             if tag_u in downstream_by_tag:
                 stub["downstream"] = downstream_by_tag[tag_u]
             wb["conveyors"].append(stub)
@@ -664,11 +696,45 @@ def analyze(graph: dict) -> dict:
                     f"{area.get('name')}: dangling wire {w.get('id')}"
                 )
 
+        # Topology merges: conveyor with asMerge/mergeConfirmed + >=2 inbound wires
+        # (without requiring a conv_merge palette node). Skip if already conv_merge.
+        conv_merge_ids = {m["id"] for m in merges}
+        for n in convs:
+            if n.get("id") in conv_merge_ids:
+                continue
+            if not (n.get("asMerge") or n.get("mergeConfirmed")):
+                continue
+            tag = (n.get("conveyorTag") or "").strip()
+            inbound_preview = []
+            for w in wires:
+                if w.get("to") != n.get("id"):
+                    continue
+                src = by_id.get(w.get("from")) or {}
+                src_tag = (src.get("conveyorTag") or "").strip()
+                if not src_tag:
+                    continue
+                inbound_preview.append(src_tag)
+            if len(inbound_preview) < 2:
+                continue
+            totals["merges"] += 1
+            in_ports = int(n.get("inPorts") or 0) or len(inbound_preview)
+            merges.append({
+                "id": n.get("id"),
+                "label": n.get("label"),
+                "lanes": max(2, in_ports, len(inbound_preview)),
+                "discharge": tag or None,
+                "rotation": int(n.get("rotation") or 0),
+                "pe_a": (n.get("pe_a") or "").strip(),
+                "pe_b": (n.get("pe_b") or "").strip(),
+                "pe_c": (n.get("pe_c") or "").strip(),
+                "jam_pe": (n.get("jam_pe") or "").strip(),
+                "allow_undefined_pe": bool(n.get("allow_undefined_pe")),
+                "topology_merge": True,
+            })
+
         # Suggested merge AOI shape (gold Merge_2to1 when lanes==2)
         merge_plan = []
         for m in merges:
-            lanes = m["lanes"]
-            aoi = "Merge_2to1" if lanes == 2 else f"Merge_{lanes}to1_config"
             inbound = []
             for w in wires:
                 if w.get("to") == m["id"]:
@@ -677,8 +743,12 @@ def analyze(graph: dict) -> dict:
                         "port": w.get("toPort") or "in",
                         "from_tag": (src.get("conveyorTag") or src.get("label") or src.get("id")),
                     })
-            merge_plan.append({
+            # lanes = max(2, inbound count or node.inPorts) for topology merges
+            lanes = max(2, int(m.get("lanes") or 2), len(inbound) or 0)
+            aoi = "Merge_2to1" if lanes == 2 else f"Merge_{lanes}to1_config"
+            plan = {
                 **m,
+                "lanes": lanes,
                 "suggested_aoi": aoi,
                 "inbound": inbound,
                 "note": (
@@ -687,7 +757,11 @@ def analyze(graph: dict) -> dict:
                     if lanes >= 3
                     else "Maps to existing fortna_autogen merges_2to1 workbook shape."
                 ),
-            })
+            }
+            if lanes > 2:
+                plan["merge_generation_supported"] = False
+                plan["note"] = "CONFIGURATION REQUIRED / GENERATION NOT YET SUPPORTED"
+            merge_plan.append(plan)
 
         areas_out.append({
             "id": area.get("id"),
@@ -701,6 +775,8 @@ def analyze(graph: dict) -> dict:
                     "kind": n.get("kind"),
                     "label": n.get("label"),
                     "conveyorTag": n.get("conveyorTag") or "",
+                    "downstream": n.get("downstream") or "",
+                    "safetyZone": (n.get("safetyZone") or n.get("safety_zone") or ""),
                     "rotation": int(n.get("rotation") or 0),
                     "inPorts": n.get("inPorts"),
                     "motorCount": n.get("motorCount"),
