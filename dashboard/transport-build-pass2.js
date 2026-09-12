@@ -883,9 +883,13 @@
   }
 
   function patchNodeAppearance() {
-    // After Pass1 render, rewrite conveyor node inner content to flow style + multi-sel class
-    const { tb, activeArea, isConv, escapeHtml, peRolesOnNode, peRoleBadgesHtml, KIND_META } = A();
+    // After Pass1 render, rewrite conveyor node inner content to flow style + multi-sel class.
+    // Physical Auto Build segments keep compact schematic markup from Pass1 (LOD in render).
+    const {
+      tb, activeArea, isConv, escapeHtml, peRolesOnNode, peRoleBadgesHtml, KIND_META, isPhysicalSeg, detailLevel,
+    } = A();
     const area = activeArea();
+    const lod = typeof detailLevel === 'function' ? detailLevel() : 'mid';
     (area?.nodes || []).forEach((n) => {
       if (!isConv(n.kind)) return;
       const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
@@ -898,6 +902,30 @@
         el.classList.add('tb-curve');
       }
       if ((n.ambiguousInbound || []).length) el.classList.add('tb-ambiguous');
+
+      // Compact physical segments: do not expand back into Node-RED info cards
+      if (el.classList.contains('tb-seg') || (typeof isPhysicalSeg === 'function' && isPhysicalSeg(n))) {
+        if (lod === 'close' || n.id === tb.selectedId) {
+          const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
+          const motorLab = motors.map((m) => escapeHtml(m.tag)).join(' · ')
+            || (n.motorsMeta || []).map((m) => escapeHtml(m.motor || '')).filter(Boolean).join(' · ');
+          let detail = el.querySelector('.tb-seg-detail');
+          if (!detail) {
+            detail = document.createElement('div');
+            detail.className = 'tb-seg-detail';
+            el.appendChild(detail);
+          }
+          const ang = n.sourceAngle != null ? -Number(n.sourceAngle) : -(Number(n.rotation) || 0);
+          detail.style.transform = `rotate(${-ang}deg)`;
+          detail.innerHTML = [
+            motorLab ? `<span class="mono text-amber-300/90">${motorLab}</span>` : '',
+            n.safetyZone ? `<span class="text-slate-500">${escapeHtml(n.safetyZone)}</span>` : '',
+            (n.ambiguousInbound || []).length ? `<span class="text-amber-400">AMB×${n.ambiguousInbound.length}</span>` : '',
+          ].filter(Boolean).join(' · ') || '';
+        }
+        return;
+      }
+
       const tag = (n.conveyorTag || '').trim() || 'P???';
       const ds = n.terminal
         ? 'END'
@@ -1191,7 +1219,9 @@
 
   function patchMultiDrag() {
     window.addEventListener('mousemove', (ev) => {
-      const { tb, activeArea, canvasPointFromEvent, ensureCanvasExtents, drawWires } = A();
+      const {
+        tb, activeArea, canvasPointFromEvent, ensureCanvasExtents, drawWires, isPhysicalSeg, segSize,
+      } = A();
       if (!tb.moving?.origins || tb.moving.origins.length <= 1) return;
       const area = activeArea();
       if (!area) return;
@@ -1209,8 +1239,14 @@
         n.y = Math.max(0, o.y + dy);
         const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
         if (el) {
-          el.style.left = `${n.x}px`;
-          el.style.top = `${n.y}px`;
+          if ((typeof isPhysicalSeg === 'function' && isPhysicalSeg(n)) || el.classList.contains('tb-seg')) {
+            const { L, W } = segSize(n);
+            el.style.left = `${n.x - L / 2}px`;
+            el.style.top = `${n.y - W / 2}px`;
+          } else {
+            el.style.left = `${n.x}px`;
+            el.style.top = `${n.y}px`;
+          }
         }
       });
       ensureCanvasExtents(area);
@@ -1365,9 +1401,19 @@
     }
     migrateGraphTopology();
     ensureBuildContext();
+    // Presentation transform only — preserve RUN sourceX/Y/Angle/Length/Width
+    tb.physicalLayout = !!g.physicalLayout;
+    tb.metrics = mSafe(res.metrics || g.metrics || {});
+    if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
+    const cs = Number(tb.metrics.canvas_scale || g.canvasScale);
+    if (cs && cs > 0) tb.view.canvasScale = cs;
     save();
     render();
-    const m = res.metrics || g.metrics || {};
+    // Frame the imported CP2 equipment immediately (usable schematic overview)
+    try {
+      if (typeof A().fitSite === 'function') A().fitSite();
+    } catch (_) { /* ignore */ }
+    const m = tb.metrics || {};
     const detail = [
       `Conveyors discovered: ${m.conveyors_discovered ?? '—'}`,
       `Placed: ${m.conveyors_placed ?? '—'}`,
@@ -1379,16 +1425,27 @@
       `Ambiguous: ${m.ambiguous_connections ?? '—'}`,
       `Disconnected: ${m.disconnected_equipment ?? '—'}`,
       `Merges detected: ${m.merges_detected ?? '—'}`,
+      `Canvas scale: ${m.canvas_scale != null ? Number(m.canvas_scale).toFixed(6) : '—'} (RUN length→px; source geometry unchanged)`,
       '',
-      'Review amber-flagged conveyors, correct Area/ES Zone, then Apply to Autogen.',
+      'Compact segments show physical runs. Use Fit Site / Fit Area. Correct relationships, Area/ES Zone, then Apply to Autogen.',
     ].join('\n');
     await showInfo('Auto Build From RUN complete', res.summary || 'Layout imported.', detail);
     status(res.summary || 'Auto Build complete — review ambiguous connections');
   }
 
+  function mSafe(obj) {
+    return obj && typeof obj === 'object' ? obj : {};
+  }
+
   function bindUi() {
     $('tb-auto-build-run')?.addEventListener('click', () => {
       autoBuildFromRun().catch((err) => A().status(`Auto Build error: ${err?.message || err}`));
+    });
+    $('tb-fit-site')?.addEventListener('click', () => {
+      try { A().fitSite?.(); } catch (err) { A().status(`Fit Site: ${err?.message || err}`); }
+    });
+    $('tb-fit-area')?.addEventListener('click', () => {
+      try { A().fitArea?.(); } catch (err) { A().status(`Fit Area: ${err?.message || err}`); }
     });
     $('tb-build-chain')?.addEventListener('click', () => openChainDialog());
     $('tb-chain-cancel')?.addEventListener('click', () => closeChainDialog());
@@ -1475,6 +1532,30 @@
     canvas?.addEventListener('mousedown', onCanvasMouseDown);
     window.addEventListener('mousemove', onCanvasMouseMove);
     window.addEventListener('mouseup', onCanvasMouseUp);
+    // Presentation zoom only — does not mutate RUN source geometry
+    canvas?.addEventListener('wheel', (ev) => {
+      if (!(ev.ctrlKey || ev.metaKey)) return;
+      ev.preventDefault();
+      const { tb, render, applyViewportZoom, status } = A();
+      if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
+      const before = Math.max(0.25, Number(tb.view.zoom) || 1);
+      const factor = ev.deltaY < 0 ? 1.1 : 0.9;
+      const next = Math.max(0.25, Math.min(3, before * factor));
+      if (Math.abs(next - before) < 0.001) return;
+      const rect = canvas.getBoundingClientRect();
+      const mx = ev.clientX - rect.left + canvas.scrollLeft;
+      const my = ev.clientY - rect.top + canvas.scrollTop;
+      const cx = mx / before;
+      const cy = my / before;
+      tb.view.zoom = next;
+      if (typeof applyViewportZoom === 'function') applyViewportZoom();
+      else render();
+      canvas.scrollLeft = cx * next - (ev.clientX - rect.left);
+      canvas.scrollTop = cy * next - (ev.clientY - rect.top);
+      status(`Zoom ${Math.round(next * 100)}% (Ctrl+wheel · presentation only)`);
+      // Re-render for LOD label density
+      render();
+    }, { passive: false });
 
     // When area select changes, sync build context area id if matching
     $('tb-area-select')?.addEventListener('change', () => {

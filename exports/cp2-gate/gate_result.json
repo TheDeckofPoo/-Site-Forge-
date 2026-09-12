@@ -1,0 +1,97 @@
+{
+  "ok": true,
+  "out_dir": "exports\\cp2-gate",
+  "doc": "docs\\CP2_COMPLETION_GATE.md",
+  "generated_l5x": "exports\\cp2-gate\\generated\\OReillyGreensboro_ORNCCP2.L5X",
+  "compare_status": "OK",
+  "category_scores": [
+    {
+      "category": "IO coverage",
+      "verdict": "PARTIAL",
+      "score": {
+        "overlap": 13,
+        "reference_tags": 224,
+        "generated_tags": 34,
+        "pct_of_reference": 5.8,
+        "eip_mapped": 34,
+        "eip_unmapped": 202
+      }
+    },
+    {
+      "category": "conveyor coverage",
+      "verdict": "FAIL",
+      "score": {
+        "matched": 18,
+        "reference": 57,
+        "generated": 37,
+        "pct_of_reference": 31.6
+      }
+    },
+    {
+      "category": "area accuracy",
+      "verdict": "FAIL",
+      "score": {
+        "correct": 0,
+        "compared": 18,
+        "pct": 0.0
+      }
+    },
+    {
+      "category": "ES-zone accuracy",
+      "verdict": "FAIL",
+      "score": {
+        "correct": 0,
+        "compared": 18,
+        "pct": 0.0
+      }
+    },
+    {
+      "category": "downstream accuracy",
+      "verdict": "FAIL",
+      "score": {
+        "correct": 4,
+        "compared": 18,
+        "pct": 22.2
+      }
+    },
+    {
+      "category": "exit PE accuracy",
+      "verdict": "FAIL",
+      "score": {
+        "correct": 4,
+        "compared": 18,
+        "pct": 22.2
+      }
+    },
+    {
+      "category": "E-stop/safety coverage",
+      "verdict": "PARTIAL",
+      "score": {
+        "cp2_devices": 44,
+        "present_in_generated": 32,
+        "missing_in_generated": 12,
+        "generated_has_ES_program": false,
+        "reference_has_ES_program": true
+      }
+    },
+    {
+      "category": "program structure",
+      "verdict": "PARTIAL",
+      "score": {
+        "PROGRAM_STRUCTURE_DIFFERENCE": 24,
+        "generated_programs": 6,
+        "classification_counts": {
+          "MISSING_GENERATED": 39,
+          "EXTRA_GENERATED": 19,
+          "TOPOLOGY_MISMATCH": 14,
+          "AREA_MISMATCH": 18,
+          "SAFETY_MISMATCH": 18,
+          "PE_MISMATCH": 20,
+          "PROGRAM_STRUCTURE_DIFFERENCE": 24
+        }
+      }
+    }
+  ],
+  "layout_visualization_gate": "FAIL",
+  "blockers": []
+}

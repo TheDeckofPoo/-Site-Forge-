@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-09-12T04:58:13.407826+00:00",
+  "source_of_truth": "Site Forge workbook / Transport (NOT finished PLC for input)",
+  "areas_expected_from_workbook": [
+    {
+      "name": "ORNCCP2_Area",
+      "safety_zone": "ORNCCP2_ESZone1",
+      "conveyor_count": 37
+    }
+  ],
+  "es_zones_expected_from_workbook": [
+    "ORNCCP2_ESZone1"
+  ],
+  "conveyors_per_area": {
+    "ORNCCP2_Area": [
+      "P100",
+      "P1000",
+      "P1002",
+      "P1004",
+      "P1006",
+      "P1008",
+      "P101",
+      "P1010",
+      "P1014",
+      "P1018",
+      "P126",
+      "P134",
+      "P136",
+      "P136A",
+      "P138",
+      "P142",
+      "P148",
+      "P150",
+      "P150A",
+      "P215",
+      "P226",
+      "P229",
+      "P230",
+      "P232",
+      "P238",
+      "P242",
+      "P312",
+      "P314",
+      "P316",
+      "P320",
+      "P322",
+      "P324",
+      "P400",
+      "P402",
+      "P404",
+      "P406",
+      "P408"
+    ]
+  },
+  "conveyors_per_es_zone": {
+    "ORNCCP2_ESZone1": [
+      "P100",
+      "P1000",
+      "P1002",
+      "P1004",
+      "P1006",
+      "P1008",
+      "P101",
+      "P1010",
+      "P1014",
+      "P1018",
+      "P126",
+      "P134",
+      "P136",
+      "P136A",
+      "P138",
+      "P142",
+      "P148",
+      "P150",
+      "P150A",
+      "P215",
+      "P226",
+      "P229",
+      "P230",
+      "P232",
+      "P238",
+      "P242",
+      "P312",
+      "P314",
+      "P316",
+      "P320",
+      "P322",
+      "P324",
+      "P400",
+      "P402",
+      "P404",
+      "P406",
+      "P408"
+    ]
+  },
+  "engineer_configuration_required": [],
+  "generated_areas": [
+    "ORNCCP2_Area"
+  ],
+  "generated_es_zones": [
+    "ORNCCP2_ESZone1"
+  ],
+  "compare_vs_finished": {
+    "status": "OK",
+    "note": "Finished PLC areas (e.g. ModuleB/ModuleC/Trash) are validation-only. Workbook/input was NOT seeded from finished area names.",
+    "workbook_areas_expected": [
+      "ORNCCP2_Area"
+    ],
+    "workbook_es_zones_expected": [
+      "ORNCCP2_ESZone1"
+    ],
+    "generated_areas": [
+      "ORNCCP2_Area"
+    ],
+    "generated_es_zones": [
+      "ORNCCP2_ESZone1"
+    ],
+    "reference_areas": [
+      "ModuleB_Area",
+      "ModuleC_Area",
+      "Trash_Area"
+    ],
+    "reference_es_zones": [
+      "ModuleB_ESZone1",
+      "ModuleB_ESZone2",
+      "ModuleC_ESZone1",
+      "ModuleC_ESZone2",
+      "Trash_ESZone1",
+      "Trash_ESZone2"
+    ],
+    "area_name_overlap": [],
+    "es_zone_name_overlap": [],
+    "mismatches": {
+      "areas_in_reference_not_generated": [
+        "ModuleB_Area",
+        "ModuleC_Area",
+        "Trash_Area"
+      ],
+      "areas_in_generated_not_reference": [
+        "ORNCCP2_Area"
+      ],
+      "zones_in_reference_not_generated": [
+        "ModuleB_ESZone1",
+        "ModuleB_ESZone2",
+        "ModuleC_ESZone1",
+        "ModuleC_ESZone2",
+        "Trash_ESZone1",
+        "Trash_ESZone2"
+      ],
+      "zones_in_generated_not_reference": [
+        "ORNCCP2_ESZone1"
+      ]
+    },
+    "reference_programs_area_like": [
+      "ES",
+      "ModuleB_Area_Area_Fast",
+      "ModuleB_Area_Area_L1",
+      "ModuleB_Area_Area_L2",
+      "ModuleB_Area_Area_L3",
+      "ModuleB_Area_Area_Slow",
+      "ModuleC_Area_Area_Fast",
+      "ModuleC_Area_Area_L1",
+      "ModuleC_Area_Area_L2",
+      "ModuleC_Area_Area_L3",
+      "ModuleC_Area_Area_Slow",
+      "Trash_Area_Area_Fast",
+      "Trash_Area_Area_L1",
+      "Trash_Area_Area_L2",
+      "Trash_Area_Area_L3",
+      "Trash_Area_Area_Slow"
+    ],
+    "generated_programs": [
+      "ORNCCP2_Area_Slow",
+      "ORNCCP2_Area_Fast",
+      "ORNCCP2_Area_L1",
+      "ORNCCP2_Area_L2",
+      "Sys",
+      "IO_MAP"
+    ]
+  },
+  "verdict": "FAIL",
+  "notes": [
+    "If RUN cannot determine area/zone \u2192 ENGINEER CONFIGURATION REQUIRED.",
+    "Finished PLC area names must never be copied into workbook/input."
+  ]
+}

@@ -1,0 +1,785 @@
+{
+  "generated_at": "2026-09-12T04:57:48.714062+00:00",
+  "machine": "ORNCCP2",
+  "source_of_truth": "RUN + exports/site-model/controller_map.json + Site Forge workbook",
+  "controller_map_path": "exports\\site-model\\controller_map.json",
+  "counts": {
+    "run_conveyors_expected": 37,
+    "workbook_conveyors_represented": 37,
+    "workbook_missing_vs_run": 0,
+    "workbook_duplicates": 0,
+    "high_confidence_cp2": 31,
+    "ambiguous_may_belong_cp2": 13,
+    "unknown_may_belong_cp2": 98,
+    "motors_ms": 118,
+    "photoeyes": 44,
+    "control_stations": 21,
+    "estops": 18,
+    "conveyors_without_linked_io": 13
+  },
+  "run_conveyors_expected": [
+    "P100",
+    "P1000",
+    "P1002",
+    "P1004",
+    "P1006",
+    "P1008",
+    "P101",
+    "P1010",
+    "P1014",
+    "P1018",
+    "P126",
+    "P134",
+    "P136",
+    "P136A",
+    "P138",
+    "P142",
+    "P148",
+    "P150",
+    "P150A",
+    "P215",
+    "P226",
+    "P229",
+    "P230",
+    "P232",
+    "P238",
+    "P242",
+    "P312",
+    "P314",
+    "P316",
+    "P320",
+    "P322",
+    "P324",
+    "P400",
+    "P402",
+    "P404",
+    "P406",
+    "P408"
+  ],
+  "workbook_conveyors": [
+    "P100",
+    "P1000",
+    "P1002",
+    "P1004",
+    "P1006",
+    "P1008",
+    "P101",
+    "P1010",
+    "P1014",
+    "P1018",
+    "P126",
+    "P134",
+    "P136",
+    "P136A",
+    "P138",
+    "P142",
+    "P148",
+    "P150",
+    "P150A",
+    "P215",
+    "P226",
+    "P229",
+    "P230",
+    "P232",
+    "P238",
+    "P242",
+    "P312",
+    "P314",
+    "P316",
+    "P320",
+    "P322",
+    "P324",
+    "P400",
+    "P402",
+    "P404",
+    "P406",
+    "P408"
+  ],
+  "workbook_missing": [],
+  "workbook_duplicates": [],
+  "high_confidence_cp2": [
+    "P101",
+    "P1010",
+    "P1011",
+    "P1014",
+    "P1015",
+    "P1016",
+    "P1018",
+    "P126",
+    "P134",
+    "P136",
+    "P136A",
+    "P138",
+    "P142",
+    "P148",
+    "P150",
+    "P150A",
+    "P226",
+    "P230",
+    "P232",
+    "P238",
+    "P242",
+    "P312",
+    "P314",
+    "P316",
+    "P320",
+    "P322",
+    "P324",
+    "P400",
+    "P402",
+    "P404",
+    "P406"
+  ],
+  "ambiguous_may_belong_cp2": [
+    "P100",
+    "P1000",
+    "P1001",
+    "P1002",
+    "P1004",
+    "P1005",
+    "P1006",
+    "P1007",
+    "P1008",
+    "P100A",
+    "P215",
+    "P229",
+    "P408"
+  ],
+  "unknown_may_belong_cp2": [
+    "P103",
+    "P112",
+    "P1120",
+    "P1210",
+    "P123",
+    "P124",
+    "P125",
+    "P127",
+    "P128",
+    "P130",
+    "P132",
+    "P139",
+    "P140",
+    "P141",
+    "P143",
+    "P144",
+    "P145",
+    "P146",
+    "P201",
+    "P203",
+    "P220",
+    "P220A",
+    "P221",
+    "P222",
+    "P223",
+    "P228",
+    "P233",
+    "P234",
+    "P235",
+    "P236",
+    "P237",
+    "P240",
+    "P301",
+    "P303",
+    "P305",
+    "P309",
+    "P310",
+    "P311",
+    "P313",
+    "P317",
+    "P318",
+    "P319",
+    "P321",
+    "P416",
+    "P447",
+    "P452",
+    "P454",
+    "P458",
+    "P460",
+    "P464",
+    "P466",
+    "P532",
+    "P538",
+    "P540",
+    "P606F",
+    "P606G",
+    "P606H",
+    "P606I",
+    "P606J",
+    "P606K",
+    "P610C",
+    "P610D",
+    "P610E",
+    "P610F",
+    "P610G",
+    "P610H",
+    "P610I",
+    "P610J",
+    "P610K",
+    "P610M",
+    "P610N",
+    "P610O",
+    "P610P",
+    "P612C",
+    "P612D",
+    "P612E",
+    "P612F",
+    "P612G",
+    "P612H",
+    "P612I",
+    "P612J",
+    "P612K",
+    "P612M",
+    "P612N",
+    "P612O",
+    "P612P",
+    "P706A",
+    "P706B",
+    "P706C",
+    "P708A",
+    "P708B",
+    "P708C",
+    "P710A",
+    "P710B",
+    "P710C",
+    "P808",
+    "P816",
+    "P830"
+  ],
+  "ownership_for_run_conveyors": [
+    {
+      "conveyor_tag": "P100",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    },
+    {
+      "conveyor_tag": "P1000",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    },
+    {
+      "conveyor_tag": "P1002",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    },
+    {
+      "conveyor_tag": "P1004",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    },
+    {
+      "conveyor_tag": "P1006",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    },
+    {
+      "conveyor_tag": "P1008",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    },
+    {
+      "conveyor_tag": "P101",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P1010",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P1014",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P1018",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P126",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P134",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P136",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P136A",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P138",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P142",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P148",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P150",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P150A",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P215",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    },
+    {
+      "conveyor_tag": "P226",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P229",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    },
+    {
+      "conveyor_tag": "P230",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P232",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P238",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P242",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P312",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P314",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P316",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P320",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P322",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P324",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P400",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P402",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P404",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P406",
+      "controller_confidence": "HIGH",
+      "controller_owner": "ORNCCP2",
+      "controller_candidates": [
+        "ORNCCP2"
+      ]
+    },
+    {
+      "conveyor_tag": "P408",
+      "controller_confidence": "AMBIGUOUS",
+      "controller_owner": null,
+      "controller_candidates": [
+        "ORNCCP2",
+        "ORNCCP4"
+      ]
+    }
+  ],
+  "motors_ms": [
+    "INT229",
+    "INT402",
+    "M1000",
+    "M1000_AUX",
+    "M1001",
+    "M1001_AUX",
+    "M1002",
+    "M1002_AUX",
+    "M1004",
+    "M1004_AUX",
+    "M1005",
+    "M1005_AUX",
+    "M1006",
+    "M1006_AUX",
+    "M1007",
+    "M1007_AUX",
+    "M1008",
+    "M1008_AUX",
+    "M1010",
+    "M1010_AUX",
+    "M1011",
+    "M1011_AUX",
+    "M1014",
+    "M1014_AUX",
+    "M1015",
+    "M1015_AUX",
+    "M1016",
+    "M1016_AUX",
+    "M1018",
+    "M1018_AUX",
+    "M123",
+    "M123_AUX",
+    "M124",
+    "M124_AUX",
+    "M128",
+    "M128_AUX",
+    "M130A",
+    "M130A_AUX",
+    "M130B",
+    "M130B_AUX",
+    "M130C",
+    "M130C_AUX",
+    "M130D",
+    "M130D_AUX",
+    "M130E",
+    "M130E_AUX",
+    "M132",
+    "M132_AUX",
+    "M136",
+    "M136_AUX",
+    "M138",
+    "M138_AUX",
+    "M139",
+    "M139_AUX",
+    "M140",
+    "M140_AUX",
+    "M144",
+    "M144_AUX",
+    "M145A",
+    "M145A_AUX",
+    "M145B",
+    "M145B_AUX",
+    "M145C",
+    "M145C_AUX",
+    "M145D",
+    "M145D_AUX",
+    "M145E",
+    "M145E_AUX",
+    "M146",
+    "M146_AUX",
+    "M150",
+    "M150_AUX",
+    "M220",
+    "M220A",
+    "M220A_AUX",
+    "M220_AUX",
+    "M222",
+    "M222_AUX",
+    "M228",
+    "M228_AUX",
+    "M230",
+    "M230_AUX",
+    "M232",
+    "M232_AUX",
+    "M233",
+    "M233_AUX",
+    "M234",
+    "M234_AUX",
+    "M236",
+    "M236_AUX",
+    "M240",
+    "M240_AUX",
+    "M242",
+    "M242_AUX",
+    "M309",
+    "M309_AUX",
+    "M310",
+    "M310_AUX",
+    "M312",
+    "M312_AUX",
+    "M314",
+    "M314_AUX",
+    "M317",
+    "M317_AUX",
+    "M318",
+    "M318_AUX",
+    "M320",
+    "M320_AUX",
+    "M322",
+    "M322_AUX",
+    "M400",
+    "M400_AUX",
+    "M402",
+    "M402_AUX",
+    "M404",
+    "M404_AUX",
+    "M406",
+    "M406_AUX"
+  ],
+  "photoeyes": [
+    "EZPE136_F1",
+    "EZPE136_F2",
+    "EZPE136_P1",
+    "EZPE136_P2",
+    "EZPE150_F1",
+    "EZPE150_F2",
+    "EZPE150_P1",
+    "EZPE150_P2",
+    "EZPE229_F",
+    "EZPE230_F",
+    "EZPE230_P",
+    "EZPE242_F",
+    "EZPE242_P",
+    "EZPE312_F",
+    "EZPE312_P",
+    "EZPE320_F",
+    "EZPE320_P",
+    "EZPE402_F",
+    "EZPE402_P",
+    "EZPE408_F",
+    "PE1000_J",
+    "PE1002_J",
+    "PE1004_J",
+    "PE1006_J",
+    "PE1008_J",
+    "PE1010_J",
+    "PE1014_J",
+    "PE1018_J",
+    "PE126_JF",
+    "PE134_JF",
+    "PE138_P",
+    "PE142_JF",
+    "PE148_JF",
+    "PE215_J",
+    "PE226_JF",
+    "PE232_P",
+    "PE238_JF",
+    "PE314_P",
+    "PE316_J",
+    "PE322_P",
+    "PE324_J",
+    "PE400_J",
+    "PE404_P",
+    "PE406_J"
+  ],
+  "control_stations": [
+    "2ES",
+    "2PBSTART",
+    "2PBSTOP",
+    "3ES",
+    "3PBSTART",
+    "3PBSTOP",
+    "ES1002",
+    "ES1008",
+    "ES1014",
+    "ES1018",
+    "ES400",
+    "ES406",
+    "PB1002_JR",
+    "PB1008_JR",
+    "PB1014_JR",
+    "PB400_JR",
+    "PB406_JR",
+    "PBSTART1018",
+    "PBSTART1018_PLT",
+    "PBSTOP1018",
+    "PBSTOP1018_PLT"
+  ],
+  "estops": [
+    "2ESR1_AUX",
+    "2ESR2_AUX",
+    "2ESR3_AUX",
+    "2MCR1",
+    "2MCR1_AUX",
+    "3ESR1_AUX",
+    "3ESR2_AUX",
+    "3ESR3_AUX",
+    "3ESR4_AUX",
+    "3ESR5_AUX",
+    "3MCR1",
+    "3MCR1_AUX",
+    "ES1002",
+    "ES1008",
+    "ES1014",
+    "ES1018",
+    "ES400",
+    "ES406"
+  ],
+  "conveyors_without_linked_io": [
+    "P100",
+    "P1000",
+    "P1002",
+    "P1004",
+    "P1006",
+    "P1008",
+    "P101",
+    "P1010",
+    "P1014",
+    "P1018",
+    "P136A",
+    "P150A",
+    "P229"
+  ],
+  "notes": [
+    "Physical equipment is NOT discarded merely because one I/O mapping is missing.",
+    "AMBIGUOUS/UNKNOWN candidates that may belong to CP2 are listed for engineer review.",
+    "Do not invent controller ownership \u2014 confidence is flagged."
+  ],
+  "verdict": "PARTIAL"
+}

@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-09-12T04:58:13.052078+00:00",
+  "generated_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp2-gate\\generated\\OReillyGreensboro_ORNCCP2.L5X",
+  "reference_path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+  "metrics": {
+    "conveyor_coverage": {
+      "matched": 18,
+      "reference": 57,
+      "generated": 37,
+      "pct_of_reference": 31.6
+    },
+    "downstream_accuracy": {
+      "correct": 4,
+      "compared": 18,
+      "pct": 22.2
+    },
+    "area_accuracy": {
+      "correct": 0,
+      "compared": 18,
+      "pct": 0.0
+    },
+    "safety_zone_accuracy": {
+      "correct": 0,
+      "compared": 18,
+      "pct": 0.0
+    },
+    "exit_pe_accuracy": {
+      "correct": 4,
+      "compared": 18,
+      "pct": 22.2
+    },
+    "fast_conv_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18
+    },
+    "slow_flt_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18
+    },
+    "slow_jam_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18,
+      "jam_config_matches": 12
+    },
+    "full_pe_coverage": {
+      "generated": 11,
+      "reference": 7,
+      "matched_pe_tags": 0
+    },
+    "merge_2to1_coverage": {
+      "generated": 0,
+      "reference": 0,
+      "matched_keys": 0,
+      "field_matches": 0
+    }
+  },
+  "classification_counts": {
+    "MISSING_GENERATED": 39,
+    "EXTRA_GENERATED": 19,
+    "TOPOLOGY_MISMATCH": 14,
+    "AREA_MISMATCH": 18,
+    "SAFETY_MISMATCH": 18,
+    "PE_MISMATCH": 20,
+    "PROGRAM_STRUCTURE_DIFFERENCE": 24
+  },
+  "note": "No single overall accuracy is reported. Category metrics are independent. The reference PLC may be unfinished/manual; differences are classifications, not always errors."
+}

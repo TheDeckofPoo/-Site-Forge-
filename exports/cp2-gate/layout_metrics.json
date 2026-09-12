@@ -1,0 +1,148 @@
+{
+  "generated_at": "2026-09-12T04:57:49.009899+00:00",
+  "machine": "ORNCCP2",
+  "run_dir": "workspace\\active\\RUN",
+  "builder": "fortna_run_physical_layout.build_transport_graph",
+  "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence.",
+  "counts": {
+    "placed": 37,
+    "unplaced": 0,
+    "discovered": 37,
+    "high_confidence_connections": 3,
+    "ambiguous_connections": 20,
+    "unknown_connections": 34,
+    "disconnected_equipment": 31,
+    "manual_required": 85,
+    "merges_detected": 0
+  },
+  "geometry_summary": {
+    "generated_at": "2026-09-12T04:57:48.991918+00:00",
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+    "machine": "ORNCCP2",
+    "conveyors_discovered": 37,
+    "usable_xy": 37,
+    "usable_angle": 37,
+    "usable_length_width": 29,
+    "motors_discovered": 118,
+    "motors_linked_via_mtrchain": 34,
+    "vfd_classified": 0,
+    "contactor_classified": 34,
+    "unknown_drive": 3,
+    "multiple_motor_conveyors": 0,
+    "motors_driving_multiple_conveyors": 38,
+    "photoeyes_scoped": 44,
+    "merge_table_hints": 8,
+    "connection_candidates_total": 23,
+    "confirmed_connections": 1,
+    "high_confidence_candidates": 2,
+    "ambiguous_connections": 20,
+    "unknown_connections": 34,
+    "anchor_model_assumption": "(X,Y)=footprint center; Angle=flow direction deg CCW from +X; entry/exit at \u00b1Length/2 along angle. CURVE/TRIANG lower confidence.",
+    "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence."
+  },
+  "auto_build_metrics": {
+    "conveyors_discovered": 37,
+    "conveyors_placed": 37,
+    "conveyors_with_usable_xy": 37,
+    "conveyors_with_usable_angle": 37,
+    "conveyors_with_usable_length": 29,
+    "motors_discovered": 34,
+    "vfd_motors": 0,
+    "contactor_motors": 34,
+    "unknown_motors": 0,
+    "auto_connections": 3,
+    "ambiguous_connections": 20,
+    "disconnected_equipment": 31,
+    "merges_detected": 0,
+    "canvas_scale": 0.009208479347567838,
+    "geometry_summary": {
+      "generated_at": "2026-09-12T04:57:48.991918+00:00",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+      "machine": "ORNCCP2",
+      "conveyors_discovered": 37,
+      "usable_xy": 37,
+      "usable_angle": 37,
+      "usable_length_width": 29,
+      "motors_discovered": 118,
+      "motors_linked_via_mtrchain": 34,
+      "vfd_classified": 0,
+      "contactor_classified": 34,
+      "unknown_drive": 3,
+      "multiple_motor_conveyors": 0,
+      "motors_driving_multiple_conveyors": 38,
+      "photoeyes_scoped": 44,
+      "merge_table_hints": 8,
+      "connection_candidates_total": 23,
+      "confirmed_connections": 1,
+      "high_confidence_candidates": 2,
+      "ambiguous_connections": 20,
+      "unknown_connections": 34,
+      "anchor_model_assumption": "(X,Y)=footprint center; Angle=flow direction deg CCW from +X; entry/exit at \u00b1Length/2 along angle. CURVE/TRIANG lower confidence.",
+      "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence."
+    }
+  },
+  "visual_layout_acceptance": {
+    "source": "Curtis Auto Build acceptance (screenshot / field FAIL) + code inspection",
+    "all_cp2_equipment_visible": {
+      "verdict": "PARTIAL",
+      "detail": "Placed but bunched \u2014 equipment present, not spatially readable as plant layout"
+    },
+    "physical_runs_recognizable": {
+      "verdict": "FAIL",
+      "detail": "Node-RED style cards; physical runs not recognizable"
+    },
+    "not_excessively_overlapping": {
+      "verdict": "FAIL",
+      "detail": "Cards / labels overlap excessively"
+    },
+    "p_tags_readable": {
+      "verdict": "FAIL",
+      "detail": "P-tags unreadable when overlapped"
+    },
+    "connected_equipment_mates_visually": {
+      "verdict": "FAIL",
+      "detail": "Long bezier curves between cards \u2014 mates not visually obvious"
+    },
+    "disconnected_ambiguous_obvious": {
+      "verdict": "PARTIAL",
+      "detail": "Some ambiguous/disconnected state available in graph metrics, not obvious in card UI"
+    },
+    "layout_visualization_gate": "FAIL",
+    "pre_fix_card_ui": "FAIL",
+    "post_fix_presentation_code": "PRESENT",
+    "browser_verification": "PENDING",
+    "presentation_code_scan": {
+      "compact_segment_presentation_code_present": true,
+      "hits": [
+        "transport-build.js: .tb-seg",
+        "transport-build.js: Fit Site",
+        "transport-build-pass2.js: .tb-seg",
+        "transport-build-pass2.js: Fit Site",
+        "index.html: .tb-seg",
+        "index.html: Fit Site"
+      ],
+      "checked_paths": [
+        "C:\\dev\\worktree\\FortnaPlus\\dashboard\\transport-build.js",
+        "C:\\dev\\worktree\\FortnaPlus\\dashboard\\transport-build-pass2.js",
+        "C:\\dev\\worktree\\FortnaPlus\\dashboard\\fortna-plus.js",
+        "C:\\dev\\worktree\\FortnaPlus\\dashboard\\index.html"
+      ]
+    },
+    "note": "Underlying RUN geometry is preserved (not rearranged by P-number). Visualization gate reflects Curtis Auto Build FAIL. PRE-FIX FAIL / POST-FIX code present but browser verification pending.",
+    "presentation_shipped_this_branch": {
+      "compact_segments": true,
+      "entry_exit_mating_anchors": true,
+      "fit_site_fit_area": true,
+      "ctrl_wheel_zoom": true,
+      "zoom_dependent_detail": true,
+      "source_run_geometry_mutated": false,
+      "visual_gate_still": "FAIL until browser re-verification against Greensboro prints"
+    }
+  },
+  "artifacts": {
+    "transport_graph": "exports\\cp2-gate\\layout\\transport_graph_from_run.json",
+    "auto_build_metrics": "exports\\cp2-gate\\layout\\auto_build_metrics.json"
+  },
+  "verdict": "FAIL",
+  "geometry_inventory_verdict": "PASS"
+}

@@ -305,6 +305,91 @@
     .tb-node.tb-physical { min-width: 100px; }
     .tb-node.tb-curve { border-color: #818cf8; }
     .tb-node.tb-ambiguous { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.45); }
+    /* Compact physical conveyor segments (Auto Build schematic — not Node-RED cards) */
+    .tb-node.tb-seg {
+      min-width: 0;
+      max-width: none;
+      padding: 0;
+      border-radius: 3px;
+      border: 1.5px solid #64748b;
+      background: linear-gradient(90deg, #1e293b 0%, #334155 50%, #1e293b 100%);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.35);
+      overflow: visible;
+    }
+    .tb-node.tb-seg.tb-curve {
+      border-color: #818cf8;
+      background: linear-gradient(90deg, #1e1b4b 0%, #312e81 50%, #1e1b4b 100%);
+      border-radius: 40% / 50%;
+    }
+    .tb-node.tb-seg.tb-seg-belt {
+      border-style: dashed;
+      border-color: #94a3b8;
+    }
+    .tb-node.tb-seg.tb-seg-merge,
+    .tb-node.tb-seg.tb-merge {
+      border-color: #ea580c;
+      background: linear-gradient(90deg, #431407 0%, #7c2d12 50%, #431407 100%);
+    }
+    .tb-node.tb-seg.selected {
+      border-color: #e879f9;
+      box-shadow: 0 0 0 2px rgba(232, 121, 249, 0.45), 0 2px 10px rgba(0,0,0,0.45);
+      z-index: 5;
+    }
+    .tb-node.tb-seg.tb-ambiguous {
+      box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.55);
+    }
+    .tb-seg-body {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 4px;
+      pointer-events: none;
+      gap: 2px;
+    }
+    .tb-seg-label {
+      flex: 1;
+      text-align: center;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10px;
+      font-weight: 700;
+      color: #e2e8f0;
+      line-height: 1;
+      white-space: nowrap;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.85);
+      pointer-events: none;
+    }
+    .tb-seg-entry, .tb-seg-exit {
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1;
+      opacity: 0.9;
+      flex-shrink: 0;
+    }
+    .tb-seg-entry { color: #4ade80; }
+    .tb-seg-exit { color: #fb7185; }
+    .tb-seg-detail {
+      position: absolute;
+      left: 50%;
+      top: calc(100% + 2px);
+      transform-origin: center top;
+      font-size: 8px;
+      color: #94a3b8;
+      white-space: nowrap;
+      pointer-events: none;
+      text-shadow: 0 1px 2px #000;
+    }
+    .tb-seg-meta { color: #64748b; }
+    .tb-node.tb-seg .tb-port {
+      opacity: 0.85;
+      pointer-events: auto;
+      width: 10px;
+      height: 10px;
+    }
+    .tb-node.tb-seg:not(:hover):not(.selected) .tb-port {
+      opacity: 0.55;
+    }
     .tb-drive-badge {
       font-size: 8px; font-weight: 700; letter-spacing: 0.02em;
       padding: 0 3px; border-radius: 3px; border: 1px solid #334155;
@@ -1916,8 +2001,14 @@
             <input type="checkbox" id="tb-auto-connect" class="rounded border-slate-600 bg-slate-900">
             Auto Connect New
           </label>
-          <button type="button" id="tb-auto-layout" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Auto-layout conveyors by directed flow (presentation only)">
+          <button type="button" id="tb-auto-layout" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Auto-layout conveyors by directed flow (presentation only — avoid on physical RUN layouts)">
             <i class="fa-solid fa-grip mr-1"></i>Auto Layout
+          </button>
+          <button type="button" id="tb-fit-site" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-sky-800/60 text-sky-300" title="Fit all physical equipment into view (presentation zoom/pan only — does not alter RUN geometry)">
+            <i class="fa-solid fa-expand mr-1"></i>Fit Site
+          </button>
+          <button type="button" id="tb-fit-area" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-sky-900/50 text-sky-400/90" title="Fit the active area into view">
+            <i class="fa-solid fa-compress mr-1"></i>Fit Area
           </button>
           <button type="button" id="tb-undo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
           <button type="button" id="tb-redo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Redo (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>

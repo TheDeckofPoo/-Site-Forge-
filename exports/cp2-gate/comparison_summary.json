@@ -1,0 +1,228 @@
+{
+  "generated_at": "2026-09-12T04:58:14.438378+00:00",
+  "machine": "ORNCCP2",
+  "site": "Greensboro",
+  "policy": "No single overall accuracy score \u2014 category scores only",
+  "compare_status": "OK",
+  "compare_summary_path": "exports/cp2-gate/compare/summary.json",
+  "raw_compare_metrics": {
+    "conveyor_coverage": {
+      "matched": 18,
+      "reference": 57,
+      "generated": 37,
+      "pct_of_reference": 31.6
+    },
+    "downstream_accuracy": {
+      "correct": 4,
+      "compared": 18,
+      "pct": 22.2
+    },
+    "area_accuracy": {
+      "correct": 0,
+      "compared": 18,
+      "pct": 0.0
+    },
+    "safety_zone_accuracy": {
+      "correct": 0,
+      "compared": 18,
+      "pct": 0.0
+    },
+    "exit_pe_accuracy": {
+      "correct": 4,
+      "compared": 18,
+      "pct": 22.2
+    },
+    "fast_conv_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18
+    },
+    "slow_flt_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18
+    },
+    "slow_jam_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18,
+      "jam_config_matches": 12
+    },
+    "full_pe_coverage": {
+      "generated": 11,
+      "reference": 7,
+      "matched_pe_tags": 0
+    },
+    "merge_2to1_coverage": {
+      "generated": 0,
+      "reference": 0,
+      "matched_keys": 0,
+      "field_matches": 0
+    }
+  },
+  "classification_counts": {
+    "MISSING_GENERATED": 39,
+    "EXTRA_GENERATED": 19,
+    "TOPOLOGY_MISMATCH": 14,
+    "AREA_MISMATCH": 18,
+    "SAFETY_MISMATCH": 18,
+    "PE_MISMATCH": 20,
+    "PROGRAM_STRUCTURE_DIFFERENCE": 24
+  },
+  "category_scores": [
+    {
+      "category": "IO coverage",
+      "score": {
+        "overlap": 13,
+        "reference_tags": 224,
+        "generated_tags": 34,
+        "pct_of_reference": 5.8,
+        "eip_mapped": 34,
+        "eip_unmapped": 202
+      },
+      "detail": "Structural IO_MAP tag overlap vs finished + RUN EIP map rates",
+      "verdict": "PARTIAL"
+    },
+    {
+      "category": "conveyor coverage",
+      "score": {
+        "matched": 18,
+        "reference": 57,
+        "generated": 37,
+        "pct_of_reference": 31.6
+      },
+      "detail": "18/57 matched (31.6%)",
+      "verdict": "FAIL"
+    },
+    {
+      "category": "area accuracy",
+      "score": {
+        "correct": 0,
+        "compared": 18,
+        "pct": 0.0
+      },
+      "detail": "0/18 (0.0%) \u2014 workbook uses machine-default ORNCCP2_Area; finished uses Module*/Trash",
+      "verdict": "FAIL"
+    },
+    {
+      "category": "ES-zone accuracy",
+      "score": {
+        "correct": 0,
+        "compared": 18,
+        "pct": 0.0
+      },
+      "detail": "0/18 (0.0%)",
+      "verdict": "FAIL"
+    },
+    {
+      "category": "downstream accuracy",
+      "score": {
+        "correct": 4,
+        "compared": 18,
+        "pct": 22.2
+      },
+      "detail": "4/18 (22.2%)",
+      "verdict": "FAIL"
+    },
+    {
+      "category": "exit PE accuracy",
+      "score": {
+        "correct": 4,
+        "compared": 18,
+        "pct": 22.2
+      },
+      "detail": "4/18 (22.2%)",
+      "verdict": "FAIL"
+    },
+    {
+      "category": "E-stop/safety coverage",
+      "score": {
+        "cp2_devices": 44,
+        "present_in_generated": 32,
+        "missing_in_generated": 12,
+        "generated_has_ES_program": false,
+        "reference_has_ES_program": true
+      },
+      "detail": "Device presence vs generated; affected-equipment not invented",
+      "verdict": "PARTIAL"
+    },
+    {
+      "category": "program structure",
+      "score": {
+        "PROGRAM_STRUCTURE_DIFFERENCE": 24,
+        "generated_programs": 6,
+        "classification_counts": {
+          "MISSING_GENERATED": 39,
+          "EXTRA_GENERATED": 19,
+          "TOPOLOGY_MISMATCH": 14,
+          "AREA_MISMATCH": 18,
+          "SAFETY_MISMATCH": 18,
+          "PE_MISMATCH": 20,
+          "PROGRAM_STRUCTURE_DIFFERENCE": 24
+        }
+      },
+      "detail": "Structural program differences vs finished (validation only)",
+      "verdict": "PARTIAL"
+    }
+  ],
+  "layout_visualization_gate": {
+    "category": "layout visualization (Curtis Auto Build)",
+    "score": {
+      "source": "Curtis Auto Build acceptance (screenshot / field FAIL) + code inspection",
+      "all_cp2_equipment_visible": {
+        "verdict": "PARTIAL",
+        "detail": "Placed but bunched \u2014 equipment present, not spatially readable as plant layout"
+      },
+      "physical_runs_recognizable": {
+        "verdict": "FAIL",
+        "detail": "Node-RED style cards; physical runs not recognizable"
+      },
+      "not_excessively_overlapping": {
+        "verdict": "FAIL",
+        "detail": "Cards / labels overlap excessively"
+      },
+      "p_tags_readable": {
+        "verdict": "FAIL",
+        "detail": "P-tags unreadable when overlapped"
+      },
+      "connected_equipment_mates_visually": {
+        "verdict": "FAIL",
+        "detail": "Long bezier curves between cards \u2014 mates not visually obvious"
+      },
+      "disconnected_ambiguous_obvious": {
+        "verdict": "PARTIAL",
+        "detail": "Some ambiguous/disconnected state available in graph metrics, not obvious in card UI"
+      },
+      "layout_visualization_gate": "FAIL",
+      "pre_fix_card_ui": "FAIL",
+      "post_fix_presentation_code": "PRESENT",
+      "browser_verification": "PENDING",
+      "presentation_code_scan": {
+        "compact_segment_presentation_code_present": true,
+        "hits": [
+          "transport-build.js: .tb-seg",
+          "transport-build.js: Fit Site",
+          "transport-build-pass2.js: .tb-seg",
+          "transport-build-pass2.js: Fit Site",
+          "index.html: .tb-seg",
+          "index.html: Fit Site"
+        ],
+        "checked_paths": [
+          "C:\\dev\\worktree\\FortnaPlus\\dashboard\\transport-build.js",
+          "C:\\dev\\worktree\\FortnaPlus\\dashboard\\transport-build-pass2.js",
+          "C:\\dev\\worktree\\FortnaPlus\\dashboard\\fortna-plus.js",
+          "C:\\dev\\worktree\\FortnaPlus\\dashboard\\index.html"
+        ]
+      },
+      "note": "Underlying RUN geometry is preserved (not rearranged by P-number). Visualization gate reflects Curtis Auto Build FAIL. PRE-FIX FAIL / POST-FIX code present but browser verification pending."
+    },
+    "detail": "Underlying RUN geometry is preserved (not rearranged by P-number). Visualization gate reflects Curtis Auto Build FAIL. PRE-FIX FAIL / POST-FIX code present but browser verification pending.",
+    "verdict": "FAIL"
+  },
+  "blockers": [],
+  "notes": [
+    "Truthful baseline \u2014 accuracy gaps are reported, not repaired in this gate.",
+    "Finished PLC is validation-only.",
+    "No single overall accuracy is reported. Category metrics are independent. The reference PLC may be unfinished/manual; differences are classifications, not always errors."
+  ]
+}

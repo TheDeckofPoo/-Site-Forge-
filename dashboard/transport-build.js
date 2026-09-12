@@ -152,6 +152,14 @@
     showPorts: false,
     continueOpen: false,
     _moveHistoryPushed: false,
+    // Presentation transform (does NOT mutate RUN sourceX/Y/Angle/Length/Width)
+    view: {
+      zoom: 1,
+      canvasScale: null, // from Auto Build metrics; maps RUN length → canvas px
+      mode: 'site', // site | area
+    },
+    metrics: null,
+    physicalLayout: false,
   };
 
   function $(id) {
@@ -1268,15 +1276,65 @@
     return !!(KIND_META[kind] && KIND_META[kind].isConv);
   }
 
-  /** Canvas content coordinates (accounts for #tb-canvas scroll). */
+  /** Canvas content coordinates (accounts for #tb-canvas scroll + presentation zoom). */
   function canvasPointFromEvent(ev) {
     const canvas = $('tb-canvas');
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
+    const z = Math.max(0.05, Number(tb.view?.zoom) || 1);
     return {
-      x: ev.clientX - rect.left + canvas.scrollLeft,
-      y: ev.clientY - rect.top + canvas.scrollTop,
+      x: (ev.clientX - rect.left + canvas.scrollLeft) / z,
+      y: (ev.clientY - rect.top + canvas.scrollTop) / z,
     };
+  }
+
+  function presentationScale() {
+    const cs = Number(tb.view?.canvasScale);
+    if (cs && cs > 0) return cs;
+    const m = Number(tb.metrics?.canvas_scale);
+    if (m && m > 0) return m;
+    return 0.01;
+  }
+
+  function isPhysicalSeg(n) {
+    return !!(n && n.physical && isConv(n.kind) && (n.length != null || n.sourceX != null));
+  }
+
+  /** Screen flow angle (deg). RUN Y is flipped to canvas → negate sourceAngle (matches layout SVG). */
+  function flowAngleDeg(n) {
+    if (n.sourceAngle != null && n.sourceAngle !== '') return -Number(n.sourceAngle);
+    return -(Number(n.rotation) || 0);
+  }
+
+  function segSize(n) {
+    const s = presentationScale();
+    const Lraw = Number(n.length);
+    const Wraw = Number(n.width);
+    const L = Math.max(32, (Number.isFinite(Lraw) && Lraw > 0 ? Lraw : 2400) * s);
+    // Keep belt readable but compact — not Node-RED card sized
+    const W = Math.max(12, Math.min(22, (Number.isFinite(Wraw) && Wraw > 0 ? Wraw : 200) * s * 2.2));
+    return { L, W };
+  }
+
+  /** ENTRY / EXIT anchors in canvas space. Uses n.x/n.y as center (Auto Build convention). */
+  function physicalAnchors(n) {
+    const { L } = segSize(n);
+    const ang = (flowAngleDeg(n) * Math.PI) / 180;
+    const hl = L / 2;
+    const cx = Number(n.x) || 0;
+    const cy = Number(n.y) || 0;
+    return {
+      center: { x: cx, y: cy },
+      entry: { x: cx - Math.cos(ang) * hl, y: cy - Math.sin(ang) * hl },
+      exit: { x: cx + Math.cos(ang) * hl, y: cy + Math.sin(ang) * hl },
+    };
+  }
+
+  function detailLevel() {
+    const z = Number(tb.view?.zoom) || 1;
+    if (z < 0.85) return 'overview';
+    if (z < 1.4) return 'mid';
+    return 'close';
   }
 
   function nodeAtPoint(x, y, area) {
@@ -1285,22 +1343,29 @@
     const canvas = $('tb-canvas');
     if (!canvas) return null;
     const cr = canvas.getBoundingClientRect();
+    const z = Math.max(0.05, Number(tb.view?.zoom) || 1);
     for (let i = area.nodes.length - 1; i >= 0; i--) {
       const n = area.nodes[i];
       if (!isConv(n.kind)) continue;
+      if (isPhysicalSeg(n)) {
+        // Axis-aligned bbox around oriented segment (generous for pick)
+        const { L, W } = segSize(n);
+        const rad = Math.max(L, W) / 2 + pad;
+        if (Math.abs(x - n.x) <= rad && Math.abs(y - n.y) <= rad) return n;
+        continue;
+      }
       const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
       if (!el) {
-        // Fallback to stored position + typical node size
         if (x >= n.x - pad && x <= n.x + 160 + pad && y >= n.y - pad && y <= n.y + 72 + pad) {
           return n;
         }
         continue;
       }
       const r = el.getBoundingClientRect();
-      const left = r.left - cr.left + canvas.scrollLeft - pad;
-      const top = r.top - cr.top + canvas.scrollTop - pad;
-      const w = r.width + pad * 2;
-      const h = r.height + pad * 2;
+      const left = (r.left - cr.left + canvas.scrollLeft) / z - pad;
+      const top = (r.top - cr.top + canvas.scrollTop) / z - pad;
+      const w = r.width / z + pad * 2;
+      const h = r.height / z + pad * 2;
       if (x >= left && x <= left + w && y >= top && y <= top + h) return n;
     }
     return null;
@@ -1313,6 +1378,98 @@
     if (r === 180) return { inn: 'side-right', out: 'side-left' };
     if (r === 270) return { inn: 'side-bottom', out: 'side-top' };
     return { inn: 'side-left', out: 'side-right' };
+  }
+
+  function applyViewportZoom() {
+    const z = Math.max(0.25, Math.min(3, Number(tb.view?.zoom) || 1));
+    tb.view.zoom = z;
+    const host = $('tb-nodes');
+    const wires = $('tb-wires');
+    const bg = $('tb-canvas-bg');
+    const origin = '0 0';
+    const t = `scale(${z})`;
+    if (host) {
+      host.style.transform = t;
+      host.style.transformOrigin = origin;
+    }
+    if (wires) {
+      wires.style.transform = t;
+      wires.style.transformOrigin = origin;
+    }
+    if (bg) {
+      bg.style.transform = t;
+      bg.style.transformOrigin = origin;
+    }
+    const canvas = $('tb-canvas');
+    if (canvas) canvas.dataset.zoom = String(z);
+  }
+
+  function nodesBBox(nodes, { physicalOnly } = {}) {
+    let minX = Infinity;
+    let minY = Infinity;
+    let maxX = -Infinity;
+    let maxY = -Infinity;
+    let count = 0;
+    (nodes || []).forEach((n) => {
+      if (!isConv(n.kind)) return;
+      if (physicalOnly && !isPhysicalSeg(n)) return;
+      if (isPhysicalSeg(n)) {
+        const a = physicalAnchors(n);
+        const { W } = segSize(n);
+        const pad = W;
+        [a.entry, a.exit, a.center].forEach((p) => {
+          minX = Math.min(minX, p.x - pad);
+          minY = Math.min(minY, p.y - pad);
+          maxX = Math.max(maxX, p.x + pad);
+          maxY = Math.max(maxY, p.y + pad);
+        });
+        count += 1;
+      } else {
+        minX = Math.min(minX, (Number(n.x) || 0));
+        minY = Math.min(minY, (Number(n.y) || 0));
+        maxX = Math.max(maxX, (Number(n.x) || 0) + 130);
+        maxY = Math.max(maxY, (Number(n.y) || 0) + 70);
+        count += 1;
+      }
+    });
+    if (!count || !Number.isFinite(minX)) return null;
+    return { minX, minY, maxX, maxY, w: maxX - minX, h: maxY - minY };
+  }
+
+  function fitViewToNodes(nodes, { mode } = {}) {
+    const canvas = $('tb-canvas');
+    if (!canvas) return;
+    const bb = nodesBBox(nodes, { physicalOnly: !!(tb.physicalLayout || nodes.some(isPhysicalSeg)) });
+    if (!bb || bb.w < 1 || bb.h < 1) return;
+    const pad = 48;
+    const cw = Math.max(200, canvas.clientWidth - pad * 2);
+    const ch = Math.max(160, canvas.clientHeight - pad * 2);
+    const zoom = Math.max(0.35, Math.min(1.6, Math.min(cw / bb.w, ch / bb.h)));
+    tb.view.zoom = zoom;
+    tb.view.mode = mode || tb.view.mode || 'site';
+    applyViewportZoom();
+    // Scroll so bbox is framed (content coords × zoom = scroll space)
+    const midX = ((bb.minX + bb.maxX) / 2) * zoom;
+    const midY = ((bb.minY + bb.maxY) / 2) * zoom;
+    canvas.scrollLeft = Math.max(0, midX - canvas.clientWidth / 2);
+    canvas.scrollTop = Math.max(0, midY - canvas.clientHeight / 2);
+  }
+
+  function fitSite() {
+    const nodes = [];
+    (tb.areas || []).forEach((a) => (a.nodes || []).forEach((n) => nodes.push(n)));
+    tb.view.mode = 'site';
+    fitViewToNodes(nodes, { mode: 'site' });
+    drawWires();
+    status(`Fit Site · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`);
+  }
+
+  function fitArea() {
+    const area = activeArea();
+    tb.view.mode = 'area';
+    fitViewToNodes(area?.nodes || [], { mode: 'area' });
+    drawWires();
+    status(`Fit Area · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`);
   }
 
   function render() {
@@ -1330,17 +1487,15 @@
       empty.classList.toggle('hidden', !!(area && area.nodes.length));
     }
 
+    const lod = detailLevel();
     host.innerHTML = '';
     (area?.nodes || []).forEach((n) => {
       const meta = KIND_META[n.kind] || { icon: 'fa-cube', color: 'text-slate-300', title: n.kind };
       const el = document.createElement('div');
-      el.className = `tb-node${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge ? ' tb-merge' : ''}`;
       el.dataset.id = n.id;
-      el.style.left = `${n.x}px`;
-      el.style.top = `${n.y}px`;
-      el.style.transform = ''; // card stays upright — labels always readable
+      const useSeg = isPhysicalSeg(n);
       const rot = Number(n.rotation || 0) % 360;
-      const sides = portSides(rot);
+      const sides = portSides(useSeg ? 0 : rot); // segment ports sit on length ends
 
       const areaName = activeArea()?.name || '';
       const roleLetters = peRolesOnNode(n);
@@ -1357,39 +1512,87 @@
       let portsHtml = '';
       if (isConv(n.kind)) {
         const inCount = (meta.isMerge || n.asMerge) ? Math.max(2, Number(n.inPorts) || 2) : 1;
-        if (inCount === 1) {
-          portsHtml += `<div class="tb-port in ${sides.inn}" data-port="in" title="Entrance"></div>`;
-        } else {
-          for (let i = 0; i < inCount; i++) {
-            const pct = ((i + 1) / (inCount + 1)) * 100;
-            const along = sides.inn.includes('top') || sides.inn.includes('bottom')
-              ? `left:${pct}%;transform:translateX(-50%)`
-              : `top:${pct}%;transform:translateY(-50%)`;
-            portsHtml += `<div class="tb-port in ${sides.inn}" data-port="in${i}" style="${along}" title="Entrance ${i + 1}"></div>`;
+        if (useSeg) {
+          // Mating anchors: ENTRY ◀ left · EXIT ▶ right in local segment space
+          if (inCount === 1) {
+            portsHtml += `<div class="tb-port in side-left tb-anchor-entry" data-port="in" title="ENTRY ◀"></div>`;
+          } else {
+            for (let i = 0; i < inCount; i++) {
+              const pct = ((i + 1) / (inCount + 1)) * 100;
+              portsHtml += `<div class="tb-port in side-left tb-anchor-entry" data-port="in${i}" style="top:${pct}%;transform:translateY(-50%)" title="ENTRY ◀ ${i + 1}"></div>`;
+            }
           }
+          portsHtml += `<div class="tb-port out side-right tb-anchor-exit" data-port="out" title="EXIT ▶"></div>`;
+        } else {
+          if (inCount === 1) {
+            portsHtml += `<div class="tb-port in ${sides.inn}" data-port="in" title="Entrance"></div>`;
+          } else {
+            for (let i = 0; i < inCount; i++) {
+              const pct = ((i + 1) / (inCount + 1)) * 100;
+              const along = sides.inn.includes('top') || sides.inn.includes('bottom')
+                ? `left:${pct}%;transform:translateX(-50%)`
+                : `top:${pct}%;transform:translateY(-50%)`;
+              portsHtml += `<div class="tb-port in ${sides.inn}" data-port="in${i}" style="${along}" title="Entrance ${i + 1}"></div>`;
+            }
+          }
+          portsHtml += `<div class="tb-port out ${sides.out}" data-port="out" title="Exit"></div>`;
         }
-        portsHtml += `<div class="tb-port out ${sides.out}" data-port="out" title="Exit"></div>`;
       }
 
       const connectCls = tb.connectMode && tb.connectSourceId === n.id
         ? ' tb-connect-src'
         : (tb.connectMode && tb.connectSourceId && n.id !== tb.connectSourceId ? ' tb-connect-dst' : '');
       if (n.asMerge) el.classList.add('tb-as-merge');
-      el.className = `tb-node${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}`;
 
-      el.innerHTML = `
-        <div class="tb-content">
-          <div class="tb-head">
-            ${kindIconHtml(n.kind, meta.color)}
-            <span class="tb-tag truncate" title="${escapeHtml(tagShow)}">${escapeHtml(tagShow)}</span>
+      if (useSeg) {
+        const { L, W } = segSize(n);
+        const ang = flowAngleDeg(n);
+        const eq = String(n.equipmentType || '').toUpperCase();
+        el.className = `tb-node tb-seg${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}`;
+        if (eq === 'CURVE' || n.kind === 'conv_right' || n.kind === 'conv_left') el.classList.add('tb-curve');
+        if (eq === 'MERGE' || n.asMerge) el.classList.add('tb-seg-merge');
+        if (eq === 'BELT') el.classList.add('tb-seg-belt');
+        if ((n.ambiguousInbound || []).length) el.classList.add('tb-ambiguous');
+        el.classList.add('tb-physical');
+        el.style.left = `${(Number(n.x) || 0) - L / 2}px`;
+        el.style.top = `${(Number(n.y) || 0) - W / 2}px`;
+        el.style.width = `${L}px`;
+        el.style.height = `${W}px`;
+        el.style.transform = `rotate(${ang}deg)`;
+        const counter = -ang;
+        const showDetail = lod !== 'overview' || n.id === tb.selectedId;
+        const midBits = showDetail && lod !== 'overview'
+          ? `<span class="tb-seg-meta">${escapeHtml(eq || '')}${(n.ambiguousInbound || []).length ? ' · AMB' : ''}</span>`
+          : '';
+        el.innerHTML = `
+          <div class="tb-seg-body" title="${escapeHtml(tagShow)}">
+            <span class="tb-seg-entry" aria-hidden="true">◀</span>
+            <span class="tb-seg-label" style="transform:rotate(${counter}deg)">${escapeHtml(tagShow)}</span>
+            <span class="tb-seg-exit" aria-hidden="true">▶</span>
           </div>
-          <div class="tb-body">
-            <div class="tb-area-chip truncate" title="${escapeHtml(areaName)}">${escapeHtml(areaName || '—')}</div>
-            <div class="tb-status-row">${roleBadges}${mergeNote}${spiralNote}${orientNote}</div>
+          ${showDetail && lod === 'close' ? `<div class="tb-seg-detail" style="transform:rotate(${counter}deg)">${roleBadges}${mergeNote}</div>` : ''}
+          ${midBits && lod === 'mid' ? `<div class="tb-seg-detail" style="transform:rotate(${counter}deg)">${midBits}</div>` : ''}
+          ${portsHtml}
+        `;
+      } else {
+        el.className = `tb-node${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}`;
+        el.style.left = `${n.x}px`;
+        el.style.top = `${n.y}px`;
+        el.style.transform = ''; // card stays upright — labels always readable
+        el.innerHTML = `
+          <div class="tb-content">
+            <div class="tb-head">
+              ${kindIconHtml(n.kind, meta.color)}
+              <span class="tb-tag truncate" title="${escapeHtml(tagShow)}">${escapeHtml(tagShow)}</span>
+            </div>
+            <div class="tb-body">
+              <div class="tb-area-chip truncate" title="${escapeHtml(areaName)}">${escapeHtml(areaName || '—')}</div>
+              <div class="tb-status-row">${roleBadges}${mergeNote}${spiralNote}${orientNote}</div>
+            </div>
           </div>
-        </div>
-        ${portsHtml}
-      `;
+          ${portsHtml}
+        `;
+      }
 
       el.addEventListener('mousedown', (ev) => {
         if (ev.target.classList.contains('tb-port')) return;
@@ -1415,7 +1618,7 @@
           if (port.dataset.port !== 'out') return;
           tb.linkFrom = { nodeId: n.id, port: 'out' };
           port.classList.add('linking');
-          status(`Linking from ${n.label || n.id} exit → drop on another entrance`);
+          status(`Linking from ${n.label || n.id} EXIT ▶ → drop on ENTRY ◀`);
         });
       });
 
@@ -1423,6 +1626,7 @@
     });
 
     ensureCanvasExtents(area);
+    applyViewportZoom();
     drawWires();
     renderInspector();
     renderTopologyTable();
@@ -1443,6 +1647,14 @@
   }
 
   function portCenter(nodeId, port) {
+    const area = activeArea();
+    const node = (area?.nodes || []).find((n) => n.id === nodeId);
+    if (node && isPhysicalSeg(node)) {
+      const a = physicalAnchors(node);
+      const key = port || 'in';
+      if (key === 'out') return a.exit;
+      return a.entry;
+    }
     const el = document.querySelector(`.tb-node[data-id="${nodeId}"]`);
     if (!el) return null;
     const key = port || 'in';
@@ -1451,11 +1663,12 @@
     if (!p && String(key).startsWith('in')) p = el.querySelector(`.tb-port[data-port="${key}"]`);
     const canvas = $('tb-canvas');
     if (!p || !canvas) return null;
+    const z = Math.max(0.05, Number(tb.view?.zoom) || 1);
     const pr = p.getBoundingClientRect();
     const cr = canvas.getBoundingClientRect();
     return {
-      x: pr.left + pr.width / 2 - cr.left + canvas.scrollLeft,
-      y: pr.top + pr.height / 2 - cr.top + canvas.scrollTop,
+      x: (pr.left + pr.width / 2 - cr.left + canvas.scrollLeft) / z,
+      y: (pr.top + pr.height / 2 - cr.top + canvas.scrollTop) / z,
     };
   }
 
@@ -1467,8 +1680,16 @@
     let maxX = 1600;
     let maxY = 1000;
     (area?.nodes || []).forEach((n) => {
-      maxX = Math.max(maxX, (Number(n.x) || 0) + 280);
-      maxY = Math.max(maxY, (Number(n.y) || 0) + 180);
+      if (isPhysicalSeg(n)) {
+        const a = physicalAnchors(n);
+        const { W } = segSize(n);
+        const pad = Math.max(40, W * 2);
+        maxX = Math.max(maxX, a.entry.x + pad, a.exit.x + pad, a.center.x + pad);
+        maxY = Math.max(maxY, a.entry.y + pad, a.exit.y + pad, a.center.y + pad);
+      } else {
+        maxX = Math.max(maxX, (Number(n.x) || 0) + 280);
+        maxY = Math.max(maxY, (Number(n.y) || 0) + 180);
+      }
     });
     host.style.minWidth = `${maxX}px`;
     host.style.minHeight = `${maxY}px`;
@@ -1493,20 +1714,31 @@
     svg.style.width = `${w}px`;
     svg.style.height = `${h}px`;
     let html = '';
-    (area?.wires || []).forEach((w) => {
-      const a = portCenter(w.from, 'out');
-      const b = portCenter(w.to, w.toPort || 'in');
+    (area?.wires || []).forEach((wire) => {
+      const a = portCenter(wire.from, 'out');
+      const b = portCenter(wire.to, wire.toPort || 'in');
       if (!a || !b) return;
-      const dx = Math.max(40, Math.abs(b.x - a.x) * 0.45);
-      const d = `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
-      const conf = String(w.confidence || '').toUpperCase();
+      const dist = Math.hypot(b.x - a.x, b.y - a.y);
+      let d;
+      if (wire.physical && dist < 80) {
+        // Short mating stub — reads as physically joined EXIT▶◀ENTRY
+        d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
+      } else if (wire.physical) {
+        const mx = (a.x + b.x) / 2;
+        const my = (a.y + b.y) / 2;
+        d = `M ${a.x} ${a.y} Q ${mx} ${my}, ${b.x} ${b.y}`;
+      } else {
+        const dx = Math.max(40, Math.abs(b.x - a.x) * 0.45);
+        d = `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+      }
+      const conf = String(wire.confidence || '').toUpperCase();
       let cls = 'tb-wire';
-      if (w.physical) cls += ' tb-physical';
+      if (wire.physical) cls += ' tb-physical';
       if (conf === 'CONFIRMED') cls += ' tb-conf-confirmed';
       else if (conf.includes('HIGH')) cls += ' tb-conf-high';
       else if (conf.includes('AMBIG')) cls += ' tb-conf-ambiguous';
-      const tip = w.physical
-        ? `OUT ▶◀ IN · ${w.confidence || 'physical'}${w.distance != null ? ` · d=${w.distance}` : ''}`
+      const tip = wire.physical
+        ? `EXIT ▶◀ ENTRY · ${wire.confidence || 'physical'}${wire.distance != null ? ` · d=${wire.distance}` : ''}`
         : 'topology wire';
       html += `<path class="${cls}" d="${d}"><title>${escapeHtml(tip)}</title></path>`;
     });
@@ -2325,8 +2557,14 @@
           n.y = Math.max(0, pt.y - tb.moving.oy);
           const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
           if (el) {
-            el.style.left = `${n.x}px`;
-            el.style.top = `${n.y}px`;
+            if (isPhysicalSeg(n) || el.classList.contains('tb-seg')) {
+              const { L, W } = segSize(n);
+              el.style.left = `${n.x - L / 2}px`;
+              el.style.top = `${n.y - W / 2}px`;
+            } else {
+              el.style.left = `${n.x}px`;
+              el.style.top = `${n.y}px`;
+            }
           }
           ensureCanvasExtents(area);
           drawWires();
@@ -2960,6 +3198,17 @@
     renderInspector,
     safetyForAreaName,
     STORE_KEY,
+    isPhysicalSeg,
+    physicalAnchors,
+    segSize,
+    presentationScale,
+    flowAngleDeg,
+    detailLevel,
+    fitSite,
+    fitArea,
+    fitViewToNodes,
+    applyViewportZoom,
+    nodesBBox,
   };
 
   if (document.readyState === 'loading') {

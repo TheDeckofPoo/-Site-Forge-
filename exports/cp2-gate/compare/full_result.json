@@ -1,0 +1,3022 @@
+{
+  "generated_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp2-gate\\generated\\OReillyGreensboro_ORNCCP2.L5X",
+  "reference_path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+  "metrics": {
+    "conveyor_coverage": {
+      "matched": 18,
+      "reference": 57,
+      "generated": 37,
+      "pct_of_reference": 31.6
+    },
+    "downstream_accuracy": {
+      "correct": 4,
+      "compared": 18,
+      "pct": 22.2
+    },
+    "area_accuracy": {
+      "correct": 0,
+      "compared": 18,
+      "pct": 0.0
+    },
+    "safety_zone_accuracy": {
+      "correct": 0,
+      "compared": 18,
+      "pct": 0.0
+    },
+    "exit_pe_accuracy": {
+      "correct": 4,
+      "compared": 18,
+      "pct": 22.2
+    },
+    "fast_conv_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18
+    },
+    "slow_flt_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18
+    },
+    "slow_jam_coverage": {
+      "generated": 37,
+      "reference": 57,
+      "matched": 18,
+      "jam_config_matches": 12
+    },
+    "full_pe_coverage": {
+      "generated": 11,
+      "reference": 7,
+      "matched_pe_tags": 0
+    },
+    "merge_2to1_coverage": {
+      "generated": 0,
+      "reference": 0,
+      "matched_keys": 0,
+      "field_matches": 0
+    }
+  },
+  "classification_counts": {
+    "MISSING_GENERATED": 39,
+    "EXTRA_GENERATED": 19,
+    "TOPOLOGY_MISMATCH": 14,
+    "AREA_MISMATCH": 18,
+    "SAFETY_MISMATCH": 18,
+    "PE_MISMATCH": 20,
+    "PROGRAM_STRUCTURE_DIFFERENCE": 24
+  },
+  "conveyor": {
+    "generated_count": 37,
+    "reference_count": 57,
+    "exact_matches": 18,
+    "missing_conveyors": [
+      "P1001",
+      "P1005",
+      "P1007",
+      "P1011",
+      "P1015",
+      "P1016",
+      "P123",
+      "P124",
+      "P128",
+      "P130A",
+      "P130B",
+      "P130C",
+      "P130D",
+      "P130E",
+      "P132",
+      "P136_P1_Conv",
+      "P136_P2_Conv",
+      "P139",
+      "P140",
+      "P144",
+      "P145A",
+      "P145B",
+      "P145C",
+      "P145D",
+      "P145E",
+      "P146",
+      "P150_P1_Conv",
+      "P150_P2_Conv",
+      "P220",
+      "P220A",
+      "P222",
+      "P233",
+      "P234",
+      "P236",
+      "P240",
+      "P309",
+      "P310",
+      "P317",
+      "P318"
+    ],
+    "extra_conveyors": [
+      "P100",
+      "P101",
+      "P126",
+      "P134",
+      "P136",
+      "P136A",
+      "P142",
+      "P148",
+      "P150",
+      "P150A",
+      "P215",
+      "P226",
+      "P229",
+      "P230",
+      "P232",
+      "P238",
+      "P316",
+      "P324",
+      "P408"
+    ],
+    "diffs": [
+      {
+        "conveyor": "P1001",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P1002"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P1005",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P1002"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P1007",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P1008"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P1011",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P1008"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P1015",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P1016"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P1016",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P1018"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P123",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P124"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P124",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P128"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P128",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P130A"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P130A",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P130B"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P130B",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P130C"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P130C",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P130D"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P130D",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P130E"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P130E",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P132"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P132",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P136_P1_Conv"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P136_P1_Conv",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P136_P2_Conv"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "PE136_P1"
+          }
+        }
+      },
+      {
+        "conveyor": "P136_P2_Conv",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P138"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "PE136_P2"
+          }
+        }
+      },
+      {
+        "conveyor": "P139",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P140"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P140",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P144"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P144",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P145A"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P145A",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P145B"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P145B",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P145C"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P145C",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P145D"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P145D",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P145E"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P145E",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P146"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P146",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P150_P1_Conv"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P150_P1_Conv",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P150_P2_Conv"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "PE150_P1"
+          }
+        }
+      },
+      {
+        "conveyor": "P150_P2_Conv",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P400"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "PE150_P2"
+          }
+        }
+      },
+      {
+        "conveyor": "P220",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P222"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P220A",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P220"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P222",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_CONV"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P233",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P234"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P234",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P236"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P236",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P240"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P240",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P242"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P309",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P310"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P310",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleB_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P312"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P317",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P318"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P318",
+        "classification": "MISSING_GENERATED",
+        "fields": {
+          "area": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "ModuleC_ESZone1"
+          },
+          "downstream": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "P320"
+          },
+          "exit_pe": {
+            "status": "MISSING",
+            "generated": null,
+            "reference": "NO_PE"
+          }
+        }
+      },
+      {
+        "conveyor": "P100",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "NO_PE",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P101",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "NO_PE",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P126",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE126_JF",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P134",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE134_JF",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P136",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "EZPE136_P1",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P136A",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "NO_PE",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P142",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE142_JF",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P148",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE148_JF",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P150",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "EZPE150_P1",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P150A",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "NO_PE",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P215",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE215_J",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P226",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE226_JF",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P229",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "NO_PE",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P230",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "EZPE230_P",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P232",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE232_P",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P238",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE238_JF",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P316",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE316_J",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P324",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "PE324_J",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P408",
+        "classification": "EXTRA_GENERATED",
+        "fields": {
+          "area": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_Area",
+            "reference": null
+          },
+          "safety_zone": {
+            "status": "EXTRA",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": null
+          },
+          "downstream": {
+            "status": "EXTRA",
+            "generated": "NO_CONV",
+            "reference": null
+          },
+          "exit_pe": {
+            "status": "EXTRA",
+            "generated": "NO_PE",
+            "reference": null
+          }
+        }
+      },
+      {
+        "conveyor": "P1000",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "Trash_ESZone1"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P1001"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE1000_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "Trash_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "Trash_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P1002",
+        "classification": "AREA_MISMATCH",
+        "classifications": [
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "Trash_ESZone1"
+          },
+          "downstream": {
+            "status": "MATCH",
+            "generated": "NO_CONV",
+            "reference": "NO_CONV"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE1002_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "Trash_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "Trash_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P1004",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "Trash_ESZone1"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P1005"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE1004_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "Trash_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "Trash_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P1006",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P1007"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE1006_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "Trash_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "Trash_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P1008",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P1014"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE1008_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "Trash_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "Trash_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P1010",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P1011"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE1010_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "Trash_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "Trash_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P1014",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P1015"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE1014_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "Trash_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "Trash_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P1018",
+        "classification": "AREA_MISMATCH",
+        "classifications": [
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "Trash_ESZone2"
+          },
+          "downstream": {
+            "status": "MATCH",
+            "generated": "NO_CONV",
+            "reference": "NO_CONV"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE1018_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "Trash_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "Trash_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P138",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P406"
+          },
+          "exit_pe": {
+            "status": "MATCH",
+            "generated": "PE138_P",
+            "reference": "PE138_P"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleB_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleB_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P242",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P400"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "EZPE242_P",
+            "reference": "PE242_P"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleC_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleC_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P312",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleB_ESZone1"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P314"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "EZPE312_P",
+            "reference": "PE312_P"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleB_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleB_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P314",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P136_P2_Conv"
+          },
+          "exit_pe": {
+            "status": "MATCH",
+            "generated": "PE314_P",
+            "reference": "PE314_P"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleB_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleB_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P320",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleC_ESZone1"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P322"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "EZPE320_P",
+            "reference": "PE320_P"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleC_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleC_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P322",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P150_P2_Conv"
+          },
+          "exit_pe": {
+            "status": "MATCH",
+            "generated": "PE322_P",
+            "reference": "PE322_P"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleC_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleC_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P400",
+        "classification": "AREA_MISMATCH",
+        "classifications": [
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleC_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleC_ESZone2"
+          },
+          "downstream": {
+            "status": "MATCH",
+            "generated": "NO_CONV",
+            "reference": "NO_CONV"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE400_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleC_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleC_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P402",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P404"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "EZPE402_P",
+            "reference": "PE402_P"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleB_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleB_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P404",
+        "classification": "TOPOLOGY_MISMATCH",
+        "classifications": [
+          "TOPOLOGY_MISMATCH",
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MISMATCH",
+            "generated": "NO_CONV",
+            "reference": "P406"
+          },
+          "exit_pe": {
+            "status": "MATCH",
+            "generated": "PE404_P",
+            "reference": "PE404_P"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleB_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleB_Area_Area_Fast"
+      },
+      {
+        "conveyor": "P406",
+        "classification": "AREA_MISMATCH",
+        "classifications": [
+          "AREA_MISMATCH",
+          "SAFETY_MISMATCH",
+          "PE_MISMATCH"
+        ],
+        "fields": {
+          "area": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          },
+          "safety_zone": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_ESZone1",
+            "reference": "ModuleB_ESZone2"
+          },
+          "downstream": {
+            "status": "MATCH",
+            "generated": "NO_CONV",
+            "reference": "NO_CONV"
+          },
+          "exit_pe": {
+            "status": "MISMATCH",
+            "generated": "PE406_J",
+            "reference": "NO_PE"
+          },
+          "add_pe": {
+            "status": "MATCH",
+            "generated": "NO_PE",
+            "reference": "NO_PE"
+          },
+          "program": {
+            "status": "MISMATCH",
+            "generated": "ORNCCP2_Area_Fast",
+            "reference": "ModuleB_Area_Area_Fast"
+          }
+        },
+        "generated_program": "ORNCCP2_Area_Fast",
+        "reference_program": "ModuleB_Area_Area_Fast"
+      }
+    ]
+  },
+  "slow_flt": {
+    "generated_count": 37,
+    "reference_count": 57,
+    "matched": [
+      "P1000",
+      "P1002",
+      "P1004",
+      "P1006",
+      "P1008",
+      "P1010",
+      "P1014",
+      "P1018",
+      "P138",
+      "P242",
+      "P312",
+      "P314",
+      "P320",
+      "P322",
+      "P400",
+      "P402",
+      "P404",
+      "P406"
+    ],
+    "missing": [
+      "P1001",
+      "P1005",
+      "P1007",
+      "P1011",
+      "P1015",
+      "P1016",
+      "P123",
+      "P124",
+      "P128",
+      "P130A",
+      "P130B",
+      "P130C",
+      "P130D",
+      "P130E",
+      "P132",
+      "P136_P1_CONV",
+      "P136_P2_CONV",
+      "P139",
+      "P140",
+      "P144",
+      "P145A",
+      "P145B",
+      "P145C",
+      "P145D",
+      "P145E",
+      "P146",
+      "P150_P1_CONV",
+      "P150_P2_CONV",
+      "P220",
+      "P220A",
+      "P222",
+      "P233",
+      "P234",
+      "P236",
+      "P240",
+      "P309",
+      "P310",
+      "P317",
+      "P318"
+    ],
+    "extra": [
+      "P100",
+      "P101",
+      "P126",
+      "P134",
+      "P136",
+      "P136A",
+      "P142",
+      "P148",
+      "P150",
+      "P150A",
+      "P215",
+      "P226",
+      "P229",
+      "P230",
+      "P232",
+      "P238",
+      "P316",
+      "P324",
+      "P408"
+    ],
+    "argument_diffs": [
+      {
+        "conveyor": "P1000",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P1002",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P1004",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P1006",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P1008",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P1010",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P1014",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P1018",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "Trash_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P138",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P242",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleC_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P312",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P314",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P320",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleC_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P322",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleC_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P400",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleC_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P402",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P404",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          }
+        }
+      },
+      {
+        "conveyor": "P406",
+        "diffs": {
+          "area": {
+            "generated": "ORNCCP2_Area",
+            "reference": "ModuleB_Area"
+          }
+        }
+      }
+    ]
+  },
+  "slow_jam": {
+    "generated_count": 37,
+    "reference_count": 57,
+    "matched_conveyors": [
+      "P1000",
+      "P1002",
+      "P1004",
+      "P1006",
+      "P1008",
+      "P1010",
+      "P1014",
+      "P1018",
+      "P138",
+      "P242",
+      "P312",
+      "P314",
+      "P320",
+      "P322",
+      "P400",
+      "P402",
+      "P404",
+      "P406"
+    ],
+    "missing": [
+      "P1001",
+      "P1005",
+      "P1007",
+      "P1011",
+      "P1015",
+      "P1016",
+      "P123",
+      "P124",
+      "P128",
+      "P130A",
+      "P130B",
+      "P130C",
+      "P130D",
+      "P130E",
+      "P132",
+      "P136_P1_CONV",
+      "P136_P2_CONV",
+      "P139",
+      "P140",
+      "P144",
+      "P145A",
+      "P145B",
+      "P145C",
+      "P145D",
+      "P145E",
+      "P146",
+      "P150_P1_CONV",
+      "P150_P2_CONV",
+      "P220",
+      "P220A",
+      "P222",
+      "P233",
+      "P234",
+      "P236",
+      "P240",
+      "P309",
+      "P310",
+      "P317",
+      "P318"
+    ],
+    "extra": [
+      "P100",
+      "P101",
+      "P126",
+      "P134",
+      "P136",
+      "P136A",
+      "P142",
+      "P148",
+      "P150",
+      "P150A",
+      "P215",
+      "P226",
+      "P229",
+      "P230",
+      "P232",
+      "P238",
+      "P316",
+      "P324",
+      "P408"
+    ],
+    "jam_config_matches": 12,
+    "jam_config_mismatches": [
+      {
+        "conveyor": "P242",
+        "classification": "PE_MISMATCH",
+        "generated": [
+          "EZPE242_P"
+        ],
+        "reference": [
+          "PE242_P"
+        ]
+      },
+      {
+        "conveyor": "P312",
+        "classification": "PE_MISMATCH",
+        "generated": [
+          "EZPE312_P"
+        ],
+        "reference": [
+          "PE312_P"
+        ]
+      },
+      {
+        "conveyor": "P314",
+        "classification": "PE_MISMATCH",
+        "generated": [
+          "PE314_P"
+        ],
+        "reference": [
+          "PE314_P",
+          "PE316_J"
+        ]
+      },
+      {
+        "conveyor": "P320",
+        "classification": "PE_MISMATCH",
+        "generated": [
+          "EZPE320_P"
+        ],
+        "reference": [
+          "PE320_P"
+        ]
+      },
+      {
+        "conveyor": "P322",
+        "classification": "PE_MISMATCH",
+        "generated": [
+          "PE322_P"
+        ],
+        "reference": [
+          "PE322_P",
+          "PE324_J"
+        ]
+      },
+      {
+        "conveyor": "P402",
+        "classification": "PE_MISMATCH",
+        "generated": [
+          "EZPE402_P"
+        ],
+        "reference": [
+          "PE402_P"
+        ]
+      }
+    ]
+  },
+  "full_pe": {
+    "generated_count": 11,
+    "reference_count": 7,
+    "matched_pe_tags": [],
+    "missing_pe_tags": [
+      "PE136_F1",
+      "PE136_F2",
+      "PE150_F1",
+      "PE150_F2",
+      "PE242_F",
+      "PE312_F",
+      "PE320_F"
+    ],
+    "extra_pe_tags": [
+      "EZPE136_F1",
+      "EZPE136_F2",
+      "EZPE150_F1",
+      "EZPE150_F2",
+      "EZPE229_F",
+      "EZPE230_F",
+      "EZPE242_F",
+      "EZPE312_F",
+      "EZPE320_F",
+      "EZPE402_F",
+      "EZPE408_F"
+    ],
+    "conveyor_mismatches": []
+  },
+  "merges_2to1": {
+    "generated_count": 0,
+    "reference_count": 0,
+    "diffs": []
+  },
+  "programs": [
+    {
+      "program": "ES",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "other"
+    },
+    {
+      "program": "HMI",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "other"
+    },
+    {
+      "program": "IO_MAP",
+      "status": "MATCH",
+      "generated_class": "io_map",
+      "reference_class": "io_map"
+    },
+    {
+      "program": "MSG",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "other"
+    },
+    {
+      "program": "ModuleB_Area_Area_Fast",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_fast"
+    },
+    {
+      "program": "ModuleB_Area_Area_L1",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l1"
+    },
+    {
+      "program": "ModuleB_Area_Area_L2",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l2"
+    },
+    {
+      "program": "ModuleB_Area_Area_L3",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l3"
+    },
+    {
+      "program": "ModuleB_Area_Area_Slow",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_slow"
+    },
+    {
+      "program": "ModuleC_Area_Area_Fast",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_fast"
+    },
+    {
+      "program": "ModuleC_Area_Area_L1",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l1"
+    },
+    {
+      "program": "ModuleC_Area_Area_L2",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l2"
+    },
+    {
+      "program": "ModuleC_Area_Area_L3",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l3"
+    },
+    {
+      "program": "ModuleC_Area_Area_Slow",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_slow"
+    },
+    {
+      "program": "ORNCCP2_Area_Fast",
+      "status": "EXTRA",
+      "generated_class": "area_fast",
+      "reference_class": null
+    },
+    {
+      "program": "ORNCCP2_Area_L1",
+      "status": "EXTRA",
+      "generated_class": "area_l1",
+      "reference_class": null
+    },
+    {
+      "program": "ORNCCP2_Area_L2",
+      "status": "EXTRA",
+      "generated_class": "area_l2",
+      "reference_class": null
+    },
+    {
+      "program": "ORNCCP2_Area_Slow",
+      "status": "EXTRA",
+      "generated_class": "area_slow",
+      "reference_class": null
+    },
+    {
+      "program": "PLC_Fast",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "other"
+    },
+    {
+      "program": "Sys",
+      "status": "MATCH",
+      "generated_class": "system",
+      "reference_class": "system"
+    },
+    {
+      "program": "System",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "system"
+    },
+    {
+      "program": "Trash_Area_Area_Fast",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_fast"
+    },
+    {
+      "program": "Trash_Area_Area_L1",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l1"
+    },
+    {
+      "program": "Trash_Area_Area_L2",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l2"
+    },
+    {
+      "program": "Trash_Area_Area_L3",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_l3"
+    },
+    {
+      "program": "Trash_Area_Area_Slow",
+      "status": "MISSING",
+      "generated_class": null,
+      "reference_class": "area_slow"
+    }
+  ],
+  "note": "No single overall accuracy is reported. Category metrics are independent. The reference PLC may be unfinished/manual; differences are classifications, not always errors."
+}

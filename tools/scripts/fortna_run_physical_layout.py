@@ -282,6 +282,8 @@ def build_transport_graph(
             "machine": machine,
             "builder": "fortna_run_physical_layout",
         },
+        # Presentation hint for Transport Build (UI scale only — does not alter RUN geometry)
+        "canvasScale": scale,
         "areas": [
             {
                 "id": area_id,

@@ -1,0 +1,99 @@
+{
+  "generated_at": "2026-09-12T04:58:14.437303+00:00",
+  "required_libraries": {
+    "OReilly_Library_v3.L5X": {
+      "path": "tools\\libraries\\OReilly_Library_v3.L5X",
+      "exists": true,
+      "size": 3964136
+    },
+    "programs/IO_MAP_Program.L5X": {
+      "path": "tools\\libraries\\programs\\IO_MAP_Program.L5X",
+      "exists": true,
+      "size": 898358
+    },
+    "programs/Sys_Program.L5X": {
+      "path": "tools\\libraries\\programs\\Sys_Program.L5X",
+      "exists": true,
+      "size": 102497
+    },
+    "programs/System_Program.L5X": {
+      "path": "tools\\libraries\\programs\\System_Program.L5X",
+      "exists": true,
+      "size": 243319
+    },
+    "Slow_Flt_AOI.L5X": {
+      "path": "tools\\libraries\\Slow_Flt_AOI.L5X",
+      "exists": true,
+      "size": 88355
+    }
+  },
+  "other_cp2_templates_under_tools_libraries": [
+    "tools\\libraries\\programs\\IO_MAP_Program.L5X",
+    "tools\\libraries\\programs\\Sawtooth_Merge_Program.L5X",
+    "tools\\libraries\\programs\\ShippingSorter_Area_L3_Program.L5X",
+    "tools\\libraries\\programs\\Sorter_Track_Program.L5X",
+    "tools\\libraries\\programs\\Sys_Program.L5X",
+    "tools\\libraries\\programs\\System_Program.L5X",
+    "tools\\libraries\\programs\\WCS_Interface_TCP_IP_Program.L5X",
+    "tools\\libraries\\AOI_SNTP_QUERY_AOI.L5X",
+    "tools\\libraries\\Enc_Routine_ST.L5X",
+    "tools\\libraries\\TRK_Divert_WaveFunction_AOI.L5X"
+  ],
+  "programs": [
+    {
+      "program": "ORNCCP2_Area_Slow",
+      "source": "generated scaffold from RUN + workbook area assignment"
+    },
+    {
+      "program": "ORNCCP2_Area_Fast",
+      "source": "generated scaffold from RUN + workbook area assignment"
+    },
+    {
+      "program": "ORNCCP2_Area_L1",
+      "source": "generated scaffold from RUN + workbook area assignment"
+    },
+    {
+      "program": "ORNCCP2_Area_L2",
+      "source": "generated scaffold from RUN + workbook area assignment"
+    },
+    {
+      "program": "Sys",
+      "source": "generic library / program template (Sys_Program.L5X)"
+    },
+    {
+      "program": "IO_MAP",
+      "source": "generated scaffold from RUN banks + EIP (IO_MAP_Program.L5X optional gold)"
+    }
+  ],
+  "aoi_provenance": [
+    {
+      "aoi": "Slow_Flt",
+      "source": "tools/libraries/Slow_Flt_AOI.L5X + OReilly_Library_v3.L5X"
+    },
+    {
+      "aoi": "Fast_Conv / conveyor UDTs",
+      "source": "generic library OReilly_Library_v3.L5X"
+    }
+  ],
+  "no_logic_copied_from_finished_cp2": {
+    "policy": "Finished Greensboro CP2 PLC must not be copied into generation inputs",
+    "finished_path_allowed_for": "validation compare only",
+    "finished_path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+    "confirmed_not_used_as_generation_input": true,
+    "evidence": [
+      "Workbook built via fortna_workbook.build --run-dir (merge-existing preserves engineer edits only)",
+      "Autogen via fortna_autogen.from-run --workbook + --library OReilly_Library_v3.L5X",
+      "Finished L5X passed only to fortna_l5x_compare --reference"
+    ]
+  },
+  "autogen_report_snippet": {
+    "library": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\OReilly_Library_v3.L5X",
+    "io_map_source": "run_tar_gz_banks_eip",
+    "program_count": 6,
+    "areas_summary": {
+      "ORNCCP2_Area": 37
+    }
+  },
+  "verdict": "PASS",
+  "missing_required": []
+}
