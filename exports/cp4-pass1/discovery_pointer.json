@@ -1,0 +1,6 @@
+{
+  "discovery_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-discovery",
+  "immutable": true,
+  "note": "Generation consumes this snapshot; validation must not mutate it",
+  "loaded_at": "2026-09-12T07:15:31.904962+00:00"
+}

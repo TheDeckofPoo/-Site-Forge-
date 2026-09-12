@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-09-12T07:16:14.938692+00:00",
+  "machine": "ORNCCP4",
+  "pass": "cp4-compiler-pass1",
+  "finished_plc4_used": false,
+  "discovery_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-discovery",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+  "out_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-pass1",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-pass1\\generated\\OReillyGreensboro_ORNCCP4.L5X",
+  "counts": {
+    "conveyors_generated": 80,
+    "include_programs": [
+      "Sawtooth_Merge"
+    ],
+    "saw_lanes": 5,
+    "encoders": 2,
+    "vfd_forced": 15
+  },
+  "tracking_wcs": "GENERATION NOT YET SUPPORTED",
+  "ok": true
+}

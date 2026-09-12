@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-09-12T07:15:32.328197+00:00",
+  "policy": "Do not silently add Sorter_Track or WCS_Interface_TCP_IP",
+  "include_programs_blocked": [
+    "Sorter_Track",
+    "WCS_Interface_TCP_IP"
+  ],
+  "tables": [
+    {
+      "table": "MsgTrack",
+      "characterization": "Empty / zero-byte on this CP4 RUN \u2014 no active tracking message records.",
+      "generation": "GENERATION NOT YET SUPPORTED"
+    },
+    {
+      "table": "MsgWCS",
+      "characterization": "Active outbound WCS message queue with 1999 rows carrying Destination topics. Runtime event traffic, not static topology.",
+      "generation": "GENERATION NOT YET SUPPORTED"
+    },
+    {
+      "table": "SrtTrack",
+      "characterization": "SrtTrack named-slot counts: SrtTrack1=98, SrtTrack2=0, SrtTrack3=0, SrtTrack4=0, SrtTrack5=0. Relationships exposed when active: ScanZoneID, ConfirmScan, SorterLane.",
+      "generation": "GENERATION NOT YET SUPPORTED"
+    },
+    {
+      "table": "XfrTrack",
+      "characterization": "No named active transfer-track rows on this RUN.",
+      "generation": "GENERATION NOT YET SUPPORTED"
+    },
+    {
+      "table": "WCSEvents",
+      "characterization": "84 events with WCSEnable=Y. Exposes event\u2192topic (WCSDestination) and category/service relationships. Not conveyor topology.",
+      "generation": "GENERATION NOT YET SUPPORTED"
+    }
+  ],
+  "counts": {
+    "tables_inventoried": 9,
+    "tables_with_active_rows": 3,
+    "msgtrack_active": 0,
+    "msgwcs_active": 1999,
+    "srttrack_active_total": 98,
+    "xfrtrack_active": 0,
+    "wcs_events_enabled": 84
+  },
+  "status": "GENERATION NOT YET SUPPORTED"
+}

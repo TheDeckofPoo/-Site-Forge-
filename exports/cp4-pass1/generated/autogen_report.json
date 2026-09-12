@@ -1,0 +1,389 @@
+{
+  "project": "OReillyGreensboro_ORNCCP4",
+  "processor": "1756-L83E",
+  "revision": "35.00",
+  "library": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\OReilly_Library_v3.L5X",
+  "conveyor_count": 80,
+  "area_count": 1,
+  "tag_count": 769,
+  "program_count": 7,
+  "programs": [
+    "ORNCCP4_Area_Slow",
+    "ORNCCP4_Area_Fast",
+    "ORNCCP4_Area_L1",
+    "ORNCCP4_Area_L2",
+    "Sys",
+    "Sawtooth_Merge",
+    "IO_MAP"
+  ],
+  "areas_summary": {
+    "ORNCCP4_Area": 80
+  },
+  "conveyor_sample": [
+    "P100",
+    "P100A",
+    "P102",
+    "P104",
+    "P106",
+    "P108",
+    "P110",
+    "P112",
+    "P114",
+    "P116",
+    "P118",
+    "P120",
+    "P1200",
+    "P1202",
+    "P1206",
+    "P1208",
+    "P200",
+    "P200A",
+    "P202",
+    "P204",
+    "P206",
+    "P208",
+    "P209",
+    "P210",
+    "P211"
+  ],
+  "template_usage": {
+    "P3000_Conv": 50,
+    "P4000_Conv": 15,
+    "P1000_Conv": 15
+  },
+  "missing_excel_templates_in_library": [
+    "P7000_Conv",
+    "P8000_Conv"
+  ],
+  "io_module_count": 38,
+  "io_point_count": 258,
+  "io_tags_in_l5x": 258,
+  "pe_device_count": 55,
+  "pe_logic_rungs": 54,
+  "slow_flt_rungs": 80,
+  "conveyors_with_real_pe": 36,
+  "eip_adapter_count": 5,
+  "eip_rio_modules": [
+    "T_1794_AENT_1",
+    "T_1794_AENT_2",
+    "T_1794_AENT_3",
+    "T_1794_AENT_4",
+    "T_1794_AENT_5"
+  ],
+  "eip_child_modules": [
+    "T_1794_AENT_1_1",
+    "T_1794_AENT_1_2",
+    "T_1794_AENT_1_3",
+    "T_1794_AENT_1_4",
+    "T_1794_AENT_1_5",
+    "T_1794_AENT_1_6",
+    "T_1794_AENT_1_7",
+    "T_1794_AENT_1_8",
+    "T_1794_AENT_2_1",
+    "T_1794_AENT_2_2",
+    "T_1794_AENT_2_3",
+    "T_1794_AENT_2_4",
+    "T_1794_AENT_2_5",
+    "T_1794_AENT_2_6",
+    "T_1794_AENT_2_7",
+    "T_1794_AENT_2_8",
+    "T_1794_AENT_3_1",
+    "T_1794_AENT_3_2",
+    "T_1794_AENT_3_3",
+    "T_1794_AENT_3_4",
+    "T_1794_AENT_4_1",
+    "T_1794_AENT_4_2",
+    "T_1794_AENT_4_3",
+    "T_1794_AENT_4_4",
+    "T_1794_AENT_4_5",
+    "T_1794_AENT_5_1",
+    "T_1794_AENT_5_2",
+    "T_1794_AENT_5_3",
+    "T_1794_AENT_5_4",
+    "T_1794_AENT_5_5",
+    "T_1794_AENT_5_6",
+    "T_1794_AENT_5_7",
+    "T_1794_AENT_5_8"
+  ],
+  "eip_child_count": 33,
+  "eip_interface_ip": "192.168.1.9",
+  "io_word_map_count": 46,
+  "io_map_rungs": 247,
+  "io_map_mapped": 238,
+  "io_map_unmapped": 20,
+  "io_map_source": "run_tar_gz_banks_eip",
+  "io_map_note": "Built from RUN Conveyor.asc banks + EIP word_map \u2192 CPxRIOn modules",
+  "include_io_map": true,
+  "gold_io_map_blocked": false,
+  "eip_modules_filtered_to_word_map": [
+    "T_1794_AENT_1",
+    "T_1794_AENT_2",
+    "T_1794_AENT_3",
+    "T_1794_AENT_4",
+    "T_1794_AENT_5"
+  ],
+  "gold_programs": [
+    "Sys",
+    "Sawtooth_Merge"
+  ],
+  "sorter_build": {},
+  "equipment_plan": {
+    "inventory": {
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+      "fortna_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN\\FORTNA",
+      "machine_name": "ORNCCP4",
+      "counts": {
+        "conveyors": 5,
+        "vfds": 13,
+        "photoeyes_named": 55,
+        "motors_named": 87,
+        "beacons_in_conveyor": 22,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 335,
+        "conveyor_asc_rows_all": 6000
+      },
+      "kind_counts": {
+        "beacon": 22,
+        "estop": 14,
+        "pushbutton": 8,
+        "spare": 72,
+        "motor": 87,
+        "encoder": 2,
+        "photoeye": 55,
+        "digital_out": 17,
+        "power_supply": 18,
+        "conveyor": 5,
+        "digital_in": 2,
+        "vfd": 32,
+        "other": 1
+      },
+      "conveyors": [
+        "INT440",
+        "PB215_JR",
+        "PB422_JR",
+        "8PBSTOP_PLT",
+        "8PBSTART_PLT"
+      ],
+      "vfds": [
+        "VFD118",
+        "VFD120",
+        "VFD216",
+        "VFD218",
+        "VFD219",
+        "VFD219A",
+        "VFD410",
+        "VFD412",
+        "VFD414",
+        "VFD422",
+        "VFD424",
+        "VFD834",
+        "VFD836"
+      ],
+      "photoeyes": [
+        "EZPE116_F",
+        "EZPE116_P",
+        "EZPE209_F",
+        "EZPE209_P",
+        "EZPE212_F1",
+        "EZPE212_F2",
+        "EZPE212_P1",
+        "EZPE213_F",
+        "EZPE213_P",
+        "EZPE214_P",
+        "EZPE217_F",
+        "EZPE217_P",
+        "EZPE229_P",
+        "EZPE231A_F",
+        "EZPE231A_P",
+        "EZPE304_F",
+        "EZPE304_P",
+        "EZPE408_P",
+        "EZPE418_F",
+        "EZPE418_P",
+        "EZPE450_F",
+        "EZPE450_P",
+        "EZPE456_F",
+        "EZPE456_P",
+        "EZPE828_F",
+        "EZPE828_P",
+        "EZPE832_F",
+        "EZPE832_P",
+        "PE104_JF",
+        "PE108_JF",
+        "PE118_P",
+        "PE204_JF",
+        "PE208_JF",
+        "PE210A_JF",
+        "PE215_J",
+        "PE216_P",
+        "PE219A_J",
+        "PE219_P",
+        "PE306_P",
+        "PE308_J",
+        "PE410_P",
+        "PE414A_J",
+        "PE414B_J",
+        "PE414C_J",
+        "PE414D_J",
+        "PE414_J",
+        "PE422_P",
+        "PE424_I",
+        "PE428_JF",
+        "PE434_JF",
+        "PE438_JF",
+        "PE446_J",
+        "PE462_F",
+        "PE820_JF",
+        "PE834_P"
+      ],
+      "conveyor_types": {
+        "STRAIGHT": 5
+      },
+      "tables": {
+        "encoders": {
+          "file": "Encoders.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP4"
+        },
+        "estop": {
+          "file": "EStop.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP4"
+        },
+        "merges": {
+          "file": "Merges.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP4"
+        },
+        "sorters": {
+          "file": "Sorters.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP4"
+        },
+        "beacons": {
+          "file": "BeaconInfo.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP4"
+        },
+        "mtrchain": {
+          "file": "Mtrchain.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP4"
+        },
+        "power_supply": {
+          "file": "PowerSupply.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP4"
+        }
+      },
+      "flags": {
+        "has_srt_track": true,
+        "has_srt_device": true,
+        "has_eipcfg": true,
+        "transport_heavy": false,
+        "merge_candidate": false,
+        "sorter_candidate": false
+      }
+    },
+    "plan": {
+      "profile": "transport",
+      "features": {
+        "transport_fast_slow": true,
+        "io_map": true,
+        "pe_logic": true,
+        "full_pe": true,
+        "motor_starter_flt": true,
+        "vfd_as_motor_starter_udt": true,
+        "es_udt": false,
+        "merge_2to1": false,
+        "sorter_track_pack": false,
+        "enc_riocard": false,
+        "sys_pack": true,
+        "comm_diag": true
+      },
+      "aois": [
+        "AOI_CommDiag",
+        "Fast_Conv",
+        "Full_PE",
+        "PE_Logic",
+        "Slow_Flt",
+        "Slow_Jam"
+      ],
+      "packs": [
+        "Sys"
+      ],
+      "merge_rows_configured": 0,
+      "notes": [
+        "13 VFD* names \u2014 map to P###_VFD Motor_Starter_UDT in IO_MAP.",
+        "Sawtooth: optional Sawtooth_Merge pack available (from PLC4S pattern) \u2014 enable manually; not auto-emitted from tar yet."
+      ],
+      "inventory_counts": {
+        "conveyors": 5,
+        "vfds": 13,
+        "photoeyes_named": 55,
+        "motors_named": 87,
+        "beacons_in_conveyor": 22,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 335,
+        "conveyor_asc_rows_all": 6000
+      }
+    }
+  },
+  "optional_programs_available": [
+    "ShippingSorter_Area_L3",
+    "WCS_Interface_TCP_IP",
+    "Sorter_Track",
+    "Sawtooth_Merge"
+  ],
+  "task_schedule": {
+    "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
+    "Sys": "Task Sys @ 100ms (own task)",
+    "P10_Fast_20ms": [
+      "ORNCCP4_Area_Fast"
+    ],
+    "P11_Slow_200ms": [
+      "ORNCCP4_Area_Slow",
+      "Sawtooth_Merge"
+    ]
+  },
+  "encoded_aois_stripped": false,
+  "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
+  "note": "Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File\u2192Open L5X).",
+  "studio_tags_csv_error": "unterminated string literal (detected at line 1105) (fortna_plc_export.py, line 1105)",
+  "rio_inventory": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-pass1\\generated\\rio_inventory.json",
+  "rio_module_count": 33,
+  "rio_names": [
+    "T_1794_AENT_1",
+    "T_1794_AENT_2",
+    "T_1794_AENT_3",
+    "T_1794_AENT_4",
+    "T_1794_AENT_5"
+  ],
+  "physical_io_map_csv": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-pass1\\generated\\physical_io_map.csv",
+  "physical_io_mapped": 238,
+  "physical_io_unmapped": 20,
+  "io_map_pending_csv": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-pass1\\generated\\io_map_pending.csv"
+}
