@@ -1,0 +1,98 @@
+{
+  "generated_at": "2026-09-12T06:07:16.389498+00:00",
+  "machine": "ORNCCP4",
+  "source_of_truth": "RUN only \u2014 finished PLC4 L5X not read",
+  "source_file": "FORTNA/Encoders.asc.ORNCCP4",
+  "source_resolution": "controller_overlay",
+  "headers": [
+    "Encoder Name",
+    "Encoder I/O",
+    "Encoder Timer",
+    "Ticks Per Foot",
+    "Encoder Ticks",
+    "Calculated FPM",
+    "Target FPM",
+    "DupToMemBit",
+    "Tolerance_FPM",
+    "Delay Timer",
+    "Error",
+    "StoponError",
+    "EnableBit",
+    "Jamzone",
+    "NoSortonError",
+    "Failed",
+    "SampleSeconds",
+    "SampleTicks",
+    "Minimum_Calc_FPM",
+    "Maximum_Calc_FPM",
+    "NoSortOnSpeed",
+    "pSpeedOkay"
+  ],
+  "encoders": [
+    {
+      "encoder": "ENC414",
+      "io": "ENC414",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 150.0,
+      "calculated_fpm": 158.503,
+      "enable": "VFD414_AUX",
+      "jamzone": "SAWTOOTH MERGE",
+      "description": "SAWTOOTH MERGE",
+      "tolerance_fpm": 100.0,
+      "sample_seconds": 5.0,
+      "source_file": "FORTNA/Encoders.asc.ORNCCP4",
+      "provenance": "RUN_EXPLICIT",
+      "associations": [
+        {
+          "type": "encoder_enable_vfd",
+          "to": "VFD414_AUX",
+          "vfd_base": "VFD414",
+          "on_machine_vfd_inventory": true,
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "encoder_to_saw_merge_via_motor_io",
+          "to": "SAWTOOTH_MERGE",
+          "via": "VFD414_AUX",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "encoder_jamzone_sawtooth",
+          "to": "SAWTOOTH MERGE",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "encoder": "ENC424",
+      "io": "ENC424",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 225.0,
+      "calculated_fpm": 240.293,
+      "enable": "VFD424_AUX",
+      "jamzone": "CITY COUNTER",
+      "description": "CITY COUNTER",
+      "tolerance_fpm": 100.0,
+      "sample_seconds": 5.0,
+      "source_file": "FORTNA/Encoders.asc.ORNCCP4",
+      "provenance": "RUN_EXPLICIT",
+      "associations": [
+        {
+          "type": "encoder_enable_vfd",
+          "to": "VFD424_AUX",
+          "vfd_base": "VFD424",
+          "on_machine_vfd_inventory": true,
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    }
+  ],
+  "counts": {
+    "encoders": 2,
+    "with_vfd_enable": 2,
+    "with_sawtooth_association": 1
+  },
+  "notes": [
+    "Encoder\u2194sawtooth / Encoder\u2194VFD associations emitted only when RUN fields explicitly support them (EnableBit, Jamzone, SawMerge.MotorIO)."
+  ]
+}

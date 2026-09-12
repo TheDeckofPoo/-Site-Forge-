@@ -1,0 +1,314 @@
+{
+  "generated_at": "2026-09-12T06:07:16.311633+00:00",
+  "machine": "ORNCCP4",
+  "source_of_truth": "RUN only \u2014 finished PLC4 L5X not read",
+  "sources": {
+    "SawMerge": {
+      "path": "FORTNA/SawMerge.asc.ORNCCP4",
+      "resolution": "controller_overlay"
+    },
+    "SawLane": {
+      "path": "FORTNA/SawLane.asc.ORNCCP4",
+      "resolution": "controller_overlay"
+    },
+    "hs_and_state": {
+      "HSSawMerge.asc": {
+        "path": "FORTNA/HSSawMerge.asc",
+        "resolution": "base",
+        "row_count": 10,
+        "active_named_rows": 0,
+        "sample_names": []
+      },
+      "HSSawLane.asc": {
+        "path": "FORTNA/HSSawLane.asc",
+        "resolution": "base",
+        "row_count": 50,
+        "active_named_rows": 0,
+        "sample_names": []
+      },
+      "HSSawParm.asc": {
+        "path": "FORTNA/HSSawParm.asc",
+        "resolution": "base",
+        "row_count": 50,
+        "active_named_rows": 0,
+        "sample_names": []
+      },
+      "HSSawState.asc": {
+        "path": "FORTNA/HSSawState.asc",
+        "resolution": "base",
+        "row_count": 10,
+        "active_named_rows": 0,
+        "sample_names": []
+      },
+      "SawState.asc": {
+        "path": "FORTNA/SawState.asc",
+        "resolution": "base",
+        "row_count": 10,
+        "active_named_rows": 0,
+        "sample_names": []
+      }
+    }
+  },
+  "merges": [
+    {
+      "name": "SAWTOOTH_MERGE",
+      "motor_io": "VFD414_AUX",
+      "reservation": "SAW_RESERVATION",
+      "lane_enable_delay_tm": "tmSawMerge_DLY",
+      "slice_seconds": 18.0,
+      "lanes": [
+        "LANE_0_P219",
+        "LANE_1_P408",
+        "LANE_3_P116",
+        "LANE_4_P214",
+        "LANE_5_P832"
+      ],
+      "source_file": "FORTNA/SawMerge.asc.ORNCCP4",
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "lanes": [
+    {
+      "name": "LANE_0_P219",
+      "conveyor": "P219",
+      "conveyor_provenance": "RUN_EXPLICIT",
+      "conveyor_note": "Conveyor taken from explicit lane Name token (not LaneNdx order)",
+      "lane_index": 1,
+      "lane_index_provenance": "RUN_EXPLICIT",
+      "approach": "SAW_APP_LANE_0",
+      "collision": "SAW_COL_LANE_0",
+      "lane_input": "SAW_MERGE_IN_0",
+      "photoeye": "PE219_P",
+      "drive": "VFD219",
+      "vfd": "VFD219",
+      "slice_seconds": 3.0,
+      "reserve_seconds": 10.0,
+      "saw_merge": "SAWTOOTH_MERGE",
+      "allowed_to_run": "Y",
+      "source_file": "FORTNA/SawLane.asc.ORNCCP4",
+      "provenance": "RUN_EXPLICIT",
+      "relationships": [
+        {
+          "type": "lane_to_merge",
+          "from": "LANE_0_P219",
+          "to": "SAWTOOTH_MERGE",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_conveyor",
+          "from": "LANE_0_P219",
+          "to": "P219",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_vfd",
+          "from": "LANE_0_P219",
+          "to": "VFD219",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_photoeye",
+          "from": "LANE_0_P219",
+          "to": "PE219_P",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "name": "LANE_1_P408",
+      "conveyor": "P408",
+      "conveyor_provenance": "RUN_EXPLICIT",
+      "conveyor_note": "Conveyor taken from explicit lane Name token (not LaneNdx order)",
+      "lane_index": 2,
+      "lane_index_provenance": "RUN_EXPLICIT",
+      "approach": "SAW_APP_LANE_1",
+      "collision": "SAW_COL_LANE_1",
+      "lane_input": "SAW_MERGE_IN_1",
+      "photoeye": "PE410_P",
+      "drive": "VFD410_EN",
+      "vfd": "VFD410_EN",
+      "slice_seconds": 18.0,
+      "reserve_seconds": 20.0,
+      "saw_merge": "SAWTOOTH_MERGE",
+      "allowed_to_run": "Y",
+      "source_file": "FORTNA/SawLane.asc.ORNCCP4",
+      "provenance": "RUN_EXPLICIT",
+      "relationships": [
+        {
+          "type": "lane_to_merge",
+          "from": "LANE_1_P408",
+          "to": "SAWTOOTH_MERGE",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_conveyor",
+          "from": "LANE_1_P408",
+          "to": "P408",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_vfd",
+          "from": "LANE_1_P408",
+          "to": "VFD410_EN",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_photoeye",
+          "from": "LANE_1_P408",
+          "to": "PE410_P",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "name": "LANE_3_P116",
+      "conveyor": "P116",
+      "conveyor_provenance": "RUN_EXPLICIT",
+      "conveyor_note": "Conveyor taken from explicit lane Name token (not LaneNdx order)",
+      "lane_index": 3,
+      "lane_index_provenance": "RUN_EXPLICIT",
+      "approach": "SAW_APP_LANE_3",
+      "collision": "SAW_COL_LANE_3",
+      "lane_input": "SAW_MERGE_IN_3",
+      "photoeye": "PE118_P",
+      "drive": "VFD118_EN",
+      "vfd": "VFD118_EN",
+      "slice_seconds": 8.0,
+      "reserve_seconds": 20.0,
+      "saw_merge": "SAWTOOTH_MERGE",
+      "allowed_to_run": "Y",
+      "source_file": "FORTNA/SawLane.asc.ORNCCP4",
+      "provenance": "RUN_EXPLICIT",
+      "relationships": [
+        {
+          "type": "lane_to_merge",
+          "from": "LANE_3_P116",
+          "to": "SAWTOOTH_MERGE",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_conveyor",
+          "from": "LANE_3_P116",
+          "to": "P116",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_vfd",
+          "from": "LANE_3_P116",
+          "to": "VFD118_EN",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_photoeye",
+          "from": "LANE_3_P116",
+          "to": "PE118_P",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "name": "LANE_4_P214",
+      "conveyor": "P214",
+      "conveyor_provenance": "RUN_EXPLICIT",
+      "conveyor_note": "Conveyor taken from explicit lane Name token (not LaneNdx order)",
+      "lane_index": 4,
+      "lane_index_provenance": "RUN_EXPLICIT",
+      "approach": "SAW_APP_LANE_4",
+      "collision": "SAW_COL_LANE_4",
+      "lane_input": "SAW_MERGE_IN_4",
+      "photoeye": "PE216_P",
+      "drive": "VFD216_EN",
+      "vfd": "VFD216_EN",
+      "slice_seconds": 6.0,
+      "reserve_seconds": 15.0,
+      "saw_merge": "SAWTOOTH_MERGE",
+      "allowed_to_run": "Y",
+      "source_file": "FORTNA/SawLane.asc.ORNCCP4",
+      "provenance": "RUN_EXPLICIT",
+      "relationships": [
+        {
+          "type": "lane_to_merge",
+          "from": "LANE_4_P214",
+          "to": "SAWTOOTH_MERGE",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_conveyor",
+          "from": "LANE_4_P214",
+          "to": "P214",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_vfd",
+          "from": "LANE_4_P214",
+          "to": "VFD216_EN",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_photoeye",
+          "from": "LANE_4_P214",
+          "to": "PE216_P",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "name": "LANE_5_P832",
+      "conveyor": "P832",
+      "conveyor_provenance": "RUN_EXPLICIT",
+      "conveyor_note": "Conveyor taken from explicit lane Name token (not LaneNdx order)",
+      "lane_index": 5,
+      "lane_index_provenance": "RUN_EXPLICIT",
+      "approach": "SAW_APP_LANE_5",
+      "collision": "SAW_COL_LANE_5",
+      "lane_input": "SAW_MERGE_IN_5",
+      "photoeye": "PE834_P",
+      "drive": "VFD834_EN",
+      "vfd": "VFD834_EN",
+      "slice_seconds": 3.0,
+      "reserve_seconds": 10.0,
+      "saw_merge": "SAWTOOTH_MERGE",
+      "allowed_to_run": "Y",
+      "source_file": "FORTNA/SawLane.asc.ORNCCP4",
+      "provenance": "RUN_EXPLICIT",
+      "relationships": [
+        {
+          "type": "lane_to_merge",
+          "from": "LANE_5_P832",
+          "to": "SAWTOOTH_MERGE",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_conveyor",
+          "from": "LANE_5_P832",
+          "to": "P832",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_vfd",
+          "from": "LANE_5_P832",
+          "to": "VFD834_EN",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "lane_to_photoeye",
+          "from": "LANE_5_P832",
+          "to": "PE834_P",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    }
+  ],
+  "hs_tables_active": {},
+  "counts": {
+    "merges": 1,
+    "lanes": 5,
+    "lanes_with_conveyor_in_name": 5,
+    "lanes_missing_conveyor": 0,
+    "hs_active_tables": 0
+  },
+  "notes": [
+    "Lane conveyor identity is taken only from explicit tokens in SawLane Name (e.g. LANE_0_P219 \u2192 P219). LaneNdx / P-number order is never used as identity.",
+    "HSSaw* tables are inventoried; active configuration on this RUN lives in SawMerge.asc.ORNCCP4 / SawLane.asc.ORNCCP4."
+  ]
+}

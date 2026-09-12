@@ -1,0 +1,80 @@
+{
+  "generated_at": "2026-09-12T06:07:16.450348+00:00",
+  "machine": "ORNCCP4",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+  "source_of_truth": "RUN only \u2014 finished PLC4 L5X not read",
+  "geometry_model": "infeed_origin_v1",
+  "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence.",
+  "placed": 76,
+  "unplaced": 0,
+  "equipment_total": 76,
+  "connection_candidates": {
+    "total": 183,
+    "confirmed": 42,
+    "high_confidence": 2,
+    "ambiguous": 139
+  },
+  "saw_lanes_with_geometry": 5,
+  "saw_lanes_without_geometry": 0,
+  "saw_lane_geometry_detail": [
+    {
+      "lane": "LANE_0_P219",
+      "conveyor": "P219",
+      "conveyor_in_equipment": true,
+      "has_geometry": true,
+      "x": 38522.929,
+      "y": 92778.391,
+      "provenance": "RUN_EXPLICIT",
+      "note": "Lane can be located physically via its RUN conveyor geometry"
+    },
+    {
+      "lane": "LANE_1_P408",
+      "conveyor": "P408",
+      "conveyor_in_equipment": true,
+      "has_geometry": true,
+      "x": 60637.915,
+      "y": 92071.609,
+      "provenance": "RUN_EXPLICIT",
+      "note": "Lane can be located physically via its RUN conveyor geometry"
+    },
+    {
+      "lane": "LANE_3_P116",
+      "conveyor": "P116",
+      "conveyor_in_equipment": true,
+      "has_geometry": true,
+      "x": 56116.667,
+      "y": 91475.0,
+      "provenance": "RUN_EXPLICIT",
+      "note": "Lane can be located physically via its RUN conveyor geometry"
+    },
+    {
+      "lane": "LANE_4_P214",
+      "conveyor": "P214",
+      "conveyor_in_equipment": true,
+      "has_geometry": true,
+      "x": 44700.0,
+      "y": 91175.0,
+      "provenance": "RUN_EXPLICIT",
+      "note": "Lane can be located physically via its RUN conveyor geometry"
+    },
+    {
+      "lane": "LANE_5_P832",
+      "conveyor": "P832",
+      "conveyor_in_equipment": true,
+      "has_geometry": true,
+      "x": 38700.0,
+      "y": 90775.0,
+      "provenance": "RUN_EXPLICIT",
+      "note": "Lane can be located physically via its RUN conveyor geometry"
+    }
+  ],
+  "provenance_mix": {
+    "equipment_ownership": {
+      "RUN_EXPLICIT": 76
+    },
+    "connection_candidates": "RUN_INFERRED",
+    "saw_lane_geometry": {
+      "RUN_EXPLICIT": 5
+    }
+  }
+}

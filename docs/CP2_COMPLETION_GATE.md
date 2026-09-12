@@ -42,7 +42,7 @@
 | E-stop/safety coverage | **PARTIAL** | Device presence vs generated; affected-equipment not invented |
 | program structure | **PARTIAL** | Structural program differences vs finished (validation only) |
 
-| layout visualization (Curtis) | **CURTIS ACCEPTANCE REQUIRED** | Calibration `greensboro-infeed-v1` + physical schematic renderer shipped. Do **not** auto-PASS. Curtis must compare beside the print. |
+| layout visualization (Curtis) | **CURTIS ACCEPTANCE REQUIRED** | Fit Visible (main cluster, ~8% pad), Fit All, label collision avoidance, overlap audit shipped. Do **not** auto-PASS. |
 
 ### 1. I/O inventory: **PASS**
 
@@ -117,6 +117,34 @@ Layers prepared: Physical (full), Motors, Photoeyes, Area, Safety, Controller, T
 **Do not mark this visual gate PASS automatically.**
 
 Success means Curtis can look at Site Forge beside the Greensboro conveyor print and recognize major runs, curves, and relative arrangement — not CAD-perfect, but physically recognizable.
+
+#### Demo readiness cleanup (Fit Visible / labels / overlaps)
+
+| Control | Behavior |
+|---------|----------|
+| **Fit Visible** | Frames bounding box of **currently displayed** equipment main cluster (~8% pad). Does **not** frame the full plant coordinate system. Auto Build invokes this after import. |
+| **Fit All** | Includes spatial **OUTLIER EQUIPMENT** (reported, never auto-moved). |
+| Min useful zoom | Default floor ~0.55× so P-tags stay readable when outliers would otherwise shrink the view. |
+| Label collision | Preferred midpoint → above/below alternates → hide secondary labels if still colliding. **Never** moves conveyor geometry to fix text. |
+| Overlap audit | `exports/cp2-gate/physical_overlap_audit.json` — classifies near-identical bodies; does not spread them apart. |
+
+#### Current RUN philosophy (demo success)
+
+| Source | Role |
+|--------|------|
+| **CURRENT RUN** | Production configuration truth |
+| **FINISHED PLC** | Historical validation reference only |
+
+If RUN-supported CP2 conveyors are **59** and finished Fast_Conv is **57**, that is **not** automatically an error.
+
+Report dimensions:
+
+- **RUN-supported** — exact ownership / device evidence from current RUN  
+- **Site Forge discovered** — inventory / Auto Build placement  
+- **Site Forge automatically configured** — mates / areas / ES that generation can use without engineer fill  
+- **Engineer configuration required** — gaps that remain human decisions  
+
+Demo success = **high automation of the current RUN**, not historical byte-for-byte PLC reproduction.
 
 ### 6. Library provenance: **PASS**
 

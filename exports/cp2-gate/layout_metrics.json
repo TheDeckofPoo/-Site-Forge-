@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T05:22:05.216734+00:00",
+  "generated_at": "2026-09-12T06:04:31.346249+00:00",
   "machine": "ORNCCP2",
   "run_dir": "workspace\\active\\RUN",
   "builder": "fortna_run_physical_layout.build_transport_graph",
@@ -114,7 +114,9 @@
     "coordinate_calibration": "greensboro-infeed-v1 HIGH/MEDIUM",
     "browser_verification": "CURTIS ACCEPTANCE REQUIRED",
     "do_not_auto_pass": true,
-    "note": "Do not mark visual gate PASS automatically. Curtis must compare Site Forge beside the Greensboro print."
+    "note": "Do not mark visual gate PASS automatically. Curtis must compare Site Forge beside the Greensboro print.",
+    "fit_visible": "IMPLEMENTED",
+    "label_collision": "IMPLEMENTED"
   },
   "artifacts": {
     "transport_graph": "exports\\cp2-gate\\layout\\transport_graph_from_run.json",
@@ -128,5 +130,25 @@
     "xy_meaning": "infeed_entry_end",
     "prior_model": "footprint_center_plus_minus_L_over_2",
     "confidence": "HIGH for linear; MEDIUM for curve sweep/turn"
+  },
+  "demo_readiness": {
+    "fit_visible": true,
+    "fit_all": true,
+    "padding_frac_default": 0.08,
+    "min_zoom_visible": 0.55,
+    "outlier_classification": [
+      "MAIN CLUSTER",
+      "OUTLIER EQUIPMENT"
+    ],
+    "label_collision_avoidance": true,
+    "move_geometry_for_labels": false,
+    "physical_overlap_audit": "exports/cp2-gate/physical_overlap_audit.json",
+    "auto_build_invokes": "fitVisible",
+    "run_philosophy": "CURRENT RUN = truth; FINISHED PLC = historical validation only",
+    "visual_gate": "CURTIS ACCEPTANCE REQUIRED"
+  },
+  "physical_overlap_summary": {
+    "UNKNOWN": 12,
+    "valid_parallel": 1
   }
 }

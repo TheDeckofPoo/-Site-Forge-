@@ -2033,10 +2033,16 @@
           <button type="button" id="tb-auto-layout" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Auto-layout conveyors by directed flow (presentation only — avoid on physical RUN layouts)">
             <i class="fa-solid fa-grip mr-1"></i>Auto Layout
           </button>
-          <button type="button" id="tb-fit-site" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-sky-800/60 text-sky-300" title="Fit all physical equipment into view (presentation zoom/pan only — does not alter RUN geometry)">
+          <button type="button" id="tb-fit-visible" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit visible/main-cluster equipment with ~8% padding. Does not alter RUN geometry. Outliers reported, not moved.">
+            <i class="fa-solid fa-expand mr-1"></i>Fit Visible
+          </button>
+          <button type="button" id="tb-fit-all" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-sky-900/50 text-sky-400/90" title="Fit all displayed equipment including spatial outliers">
+            <i class="fa-solid fa-border-all mr-1"></i>Fit All
+          </button>
+          <button type="button" id="tb-fit-site" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400" title="Alias of Fit Visible for physical layouts">
             <i class="fa-solid fa-expand mr-1"></i>Fit Site
           </button>
-          <button type="button" id="tb-fit-area" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-sky-900/50 text-sky-400/90" title="Fit the active area into view">
+          <button type="button" id="tb-fit-area" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400" title="Fit the active area (main cluster)">
             <i class="fa-solid fa-compress mr-1"></i>Fit Area
           </button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>

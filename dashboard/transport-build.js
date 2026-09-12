@@ -1349,6 +1349,66 @@
     return Math.max(6, Math.min(18, px));
   }
 
+  /**
+   * Place P-tag labels with basic collision avoidance.
+   * Never moves physical conveyor geometry — only label (x,y) candidates.
+   * Preferred: body midpoint; alternate above/below; hide if still colliding
+   * (unless selected).
+   */
+  function placeSchematicLabels(labelCandidates) {
+    const placed = [];
+    const approxW = (tag) => Math.max(28, String(tag).length * 7.2);
+    const H = 14;
+    const collides = (box) => placed.some((p) => !(
+      box.x2 < p.x1 || box.x1 > p.x2 || box.y2 < p.y1 || box.y1 > p.y2
+    ));
+    const results = [];
+    // Selected first, then longer runs (prefer keeping primary labels)
+    const ordered = labelCandidates.slice().sort((a, b) => {
+      if (a.selected !== b.selected) return a.selected ? -1 : 1;
+      return (b.priority || 0) - (a.priority || 0);
+    });
+    ordered.forEach((c) => {
+      const w = approxW(c.tag);
+      const offsets = [
+        { dx: 0, dy: 0 }, // preferred — on body midpoint
+        { dx: 0, dy: -(H + 4) }, // above
+        { dx: 0, dy: (H + 4) }, // below
+        { dx: w * 0.35, dy: -(H + 2) },
+        { dx: -w * 0.35, dy: (H + 2) },
+      ];
+      let chosen = null;
+      for (let i = 0; i < offsets.length; i++) {
+        const o = offsets[i];
+        const x = c.x + o.dx;
+        const y = c.y + o.dy;
+        const box = { x1: x - w / 2, x2: x + w / 2, y1: y - H / 2, y2: y + H / 2 };
+        if (!collides(box)) {
+          chosen = { x, y, box, hidden: false, offsetIndex: i };
+          break;
+        }
+      }
+      if (!chosen) {
+        // Collision remains — hide secondary labels; keep selected visible
+        if (c.selected) {
+          chosen = {
+            x: c.x,
+            y: c.y - (H + 6),
+            box: { x1: c.x - w / 2, x2: c.x + w / 2, y1: c.y - H * 1.5, y2: c.y - H * 0.5 },
+            hidden: false,
+            offsetIndex: -1,
+            forced: true,
+          };
+        } else {
+          chosen = { x: c.x, y: c.y, box: null, hidden: true, offsetIndex: -1 };
+        }
+      }
+      if (!chosen.hidden && chosen.box) placed.push(chosen.box);
+      results.push({ ...c, ...chosen });
+    });
+    return results;
+  }
+
   function drawSchematic(area) {
     const svg = $('tb-schematic');
     if (!svg) return;
@@ -1359,6 +1419,7 @@
     const nodes = (area?.nodes || []).filter(isSchematicNode);
     const lod = detailLevel();
     let html = '';
+    const labelCandidates = [];
     nodes.forEach((n) => {
       let d = schematicPathD(n.pathCanvas);
       if (!d && n.entryCanvas && n.exitCanvas) {
@@ -1383,8 +1444,22 @@
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
       // Site overview: P-tag only. Detail/inspector hold motor/PE/Area/ES.
       if (lod === 'overview' || lod === 'mid' || sel) {
-        html += `<text class="tb-schematic-label" x="${mid.x}" y="${mid.y}">${escapeHtml(tag)}</text>`;
+        const len = Number(n.length) || (n.entryCanvas && n.exitCanvas
+          ? Math.hypot(n.exitCanvas.x - n.entryCanvas.x, n.exitCanvas.y - n.entryCanvas.y)
+          : 0);
+        labelCandidates.push({
+          id: n.id,
+          tag,
+          x: mid.x,
+          y: mid.y,
+          selected: sel,
+          priority: len,
+        });
       }
+    });
+    placeSchematicLabels(labelCandidates).forEach((lab) => {
+      if (lab.hidden) return;
+      html += `<text class="tb-schematic-label" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${escapeHtml(lab.tag)}</text>`;
     });
     // Confirmed physical mates: endpoints share location — show ▶◀ joint, not Bezier
     (area?.wires || []).forEach((w) => {
@@ -1527,6 +1602,24 @@
     if (canvas) canvas.dataset.zoom = String(z);
   }
 
+  function nodeExtentPoints(n) {
+    const pts = [];
+    if (isSchematicNode(n) && n.entryCanvas && n.exitCanvas) {
+      pts.push(n.entryCanvas, n.exitCanvas);
+      (n.pathCanvas || []).forEach((p) => {
+        if (p && p.x != null && p.y != null) pts.push({ x: p.x, y: p.y });
+      });
+      (n.arcSamplesCanvas || []).forEach((p) => pts.push(p));
+    } else if (isPhysicalSeg(n) || isSchematicNode(n)) {
+      const a = physicalAnchors(n);
+      pts.push(a.entry, a.exit, a.center);
+    } else if (isConv(n.kind)) {
+      pts.push({ x: Number(n.x) || 0, y: Number(n.y) || 0 });
+      pts.push({ x: (Number(n.x) || 0) + 130, y: (Number(n.y) || 0) + 70 });
+    }
+    return pts;
+  }
+
   function nodesBBox(nodes, { physicalOnly } = {}) {
     let minX = Infinity;
     let minY = Infinity;
@@ -1535,62 +1628,182 @@
     let count = 0;
     (nodes || []).forEach((n) => {
       if (!isConv(n.kind)) return;
-      if (physicalOnly && !isPhysicalSeg(n)) return;
-      if (isPhysicalSeg(n)) {
-        const a = physicalAnchors(n);
-        const { W } = segSize(n);
-        const pad = W;
-        [a.entry, a.exit, a.center].forEach((p) => {
-          minX = Math.min(minX, p.x - pad);
-          minY = Math.min(minY, p.y - pad);
-          maxX = Math.max(maxX, p.x + pad);
-          maxY = Math.max(maxY, p.y + pad);
-        });
-        count += 1;
-      } else {
-        minX = Math.min(minX, (Number(n.x) || 0));
-        minY = Math.min(minY, (Number(n.y) || 0));
-        maxX = Math.max(maxX, (Number(n.x) || 0) + 130);
-        maxY = Math.max(maxY, (Number(n.y) || 0) + 70);
-        count += 1;
-      }
+      if (physicalOnly && !(isPhysicalSeg(n) || isSchematicNode(n))) return;
+      const pts = nodeExtentPoints(n);
+      if (!pts.length) return;
+      const pad = isSchematicNode(n) || isPhysicalSeg(n) ? schematicStrokeWidth(n) : 8;
+      pts.forEach((p) => {
+        minX = Math.min(minX, p.x - pad);
+        minY = Math.min(minY, p.y - pad);
+        maxX = Math.max(maxX, p.x + pad);
+        maxY = Math.max(maxY, p.y + pad);
+      });
+      count += 1;
     });
     if (!count || !Number.isFinite(minX)) return null;
-    return { minX, minY, maxX, maxY, w: maxX - minX, h: maxY - minY };
+    return { minX, minY, maxX, maxY, w: maxX - minX, h: maxY - minY, count };
   }
 
-  function fitViewToNodes(nodes, { mode } = {}) {
+  /** Median of numbers (for robust cluster bounds). */
+  function _median(vals) {
+    if (!vals.length) return 0;
+    const a = vals.slice().sort((x, y) => x - y);
+    const m = Math.floor(a.length / 2);
+    return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
+  }
+
+  /**
+   * Classify visible equipment into MAIN CLUSTER vs OUTLIER EQUIPMENT.
+   * Does NOT move equipment — report only. Outliers are distant from the
+   * robust center of the currently displayed set.
+   */
+  function classifySpatialOutliers(nodes) {
+    const list = (nodes || []).filter((n) => isConv(n.kind));
+    const centers = list.map((n) => {
+      const pts = nodeExtentPoints(n);
+      if (!pts.length) return { n, x: Number(n.x) || 0, y: Number(n.y) || 0 };
+      const sx = pts.reduce((s, p) => s + p.x, 0) / pts.length;
+      const sy = pts.reduce((s, p) => s + p.y, 0) / pts.length;
+      return { n, x: sx, y: sy };
+    });
+    if (centers.length < 3) {
+      return {
+        mainCluster: list,
+        outliers: [],
+        report: centers.map((c) => ({
+          tag: c.n.conveyorTag || c.n.label || c.n.id,
+          class: 'MAIN CLUSTER',
+        })),
+      };
+    }
+    const mx = _median(centers.map((c) => c.x));
+    const my = _median(centers.map((c) => c.y));
+    const dists = centers.map((c) => Math.hypot(c.x - mx, c.y - my));
+    const medDist = _median(dists);
+    // Robust threshold: max(3× median distance, 15% of full span, 80px)
+    const bb = nodesBBox(list);
+    const span = bb ? Math.hypot(bb.w, bb.h) : 0;
+    const thresh = Math.max(medDist * 3.5, span * 0.18, 120);
+    const mainCluster = [];
+    const outliers = [];
+    const report = [];
+    centers.forEach((c, i) => {
+      const tag = c.n.conveyorTag || c.n.label || c.n.id;
+      if (dists[i] > thresh) {
+        outliers.push(c.n);
+        report.push({ tag, class: 'OUTLIER EQUIPMENT', distance_from_cluster: Math.round(dists[i]) });
+      } else {
+        mainCluster.push(c.n);
+        report.push({ tag, class: 'MAIN CLUSTER', distance_from_cluster: Math.round(dists[i]) });
+      }
+    });
+    tb.spatialOutliers = { mainCluster, outliers, report, threshold: thresh, medianDistance: medDist };
+    return tb.spatialOutliers;
+  }
+
+  function fitViewToNodes(nodes, { mode, paddingFrac, minZoom, maxZoom, excludeOutliers } = {}) {
     const canvas = $('tb-canvas');
-    if (!canvas) return;
-    const bb = nodesBBox(nodes, { physicalOnly: !!(tb.physicalLayout || nodes.some(isPhysicalSeg)) });
-    if (!bb || bb.w < 1 || bb.h < 1) return;
-    const pad = 48;
-    const cw = Math.max(200, canvas.clientWidth - pad * 2);
-    const ch = Math.max(160, canvas.clientHeight - pad * 2);
-    const zoom = Math.max(0.35, Math.min(1.6, Math.min(cw / bb.w, ch / bb.h)));
+    if (!canvas) return null;
+    let useNodes = nodes || [];
+    let outlierInfo = null;
+    if (excludeOutliers) {
+      outlierInfo = classifySpatialOutliers(useNodes);
+      if ((outlierInfo.mainCluster || []).length >= 2) {
+        useNodes = outlierInfo.mainCluster;
+      }
+    }
+    const bb = nodesBBox(useNodes, {
+      physicalOnly: !!(tb.physicalLayout || useNodes.some((n) => isPhysicalSeg(n) || isSchematicNode(n))),
+    });
+    if (!bb || bb.w < 1 || bb.h < 1) return outlierInfo;
+    // 5–10% viewport padding around visible equipment (default 8%)
+    const pf = paddingFrac != null ? paddingFrac : 0.08;
+    const padX = Math.max(24, bb.w * pf);
+    const padY = Math.max(24, bb.h * pf);
+    const frameW = bb.w + padX * 2;
+    const frameH = bb.h + padY * 2;
+    const cw = Math.max(200, canvas.clientWidth);
+    const ch = Math.max(160, canvas.clientHeight);
+    // Minimum useful scale — keep P-tags readable; do not shrink for distant outliers
+    const zMin = minZoom != null ? minZoom : 0.55;
+    const zMax = maxZoom != null ? maxZoom : 2.4;
+    const zoom = Math.max(zMin, Math.min(zMax, Math.min(cw / frameW, ch / frameH)));
     tb.view.zoom = zoom;
-    tb.view.mode = mode || tb.view.mode || 'site';
+    tb.view.mode = mode || tb.view.mode || 'visible';
     applyViewportZoom();
-    // Scroll so bbox is framed (content coords × zoom = scroll space)
     const midX = ((bb.minX + bb.maxX) / 2) * zoom;
     const midY = ((bb.minY + bb.maxY) / 2) * zoom;
     canvas.scrollLeft = Math.max(0, midX - canvas.clientWidth / 2);
     canvas.scrollTop = Math.max(0, midY - canvas.clientHeight / 2);
+    return outlierInfo;
+  }
+
+  /** Fit currently displayed / filtered equipment (main cluster by default). */
+  function fitVisible() {
+    const area = activeArea();
+    const nodes = area?.nodes || [];
+    const info = fitViewToNodes(nodes, {
+      mode: 'visible',
+      paddingFrac: 0.08,
+      minZoom: 0.55,
+      maxZoom: 2.4,
+      excludeOutliers: true,
+    });
+    drawSchematic(area);
+    drawWires();
+    const nOut = info?.outliers?.length || 0;
+    status(
+      nOut
+        ? `Fit Visible · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · ${nOut} OUTLIER EQUIPMENT (not moved — use Fit All)`
+        : `Fit Visible · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`
+    );
+    return info;
+  }
+
+  /** Fit all displayed equipment including spatial outliers. */
+  function fitAll() {
+    const area = activeArea();
+    const nodes = area?.nodes || [];
+    classifySpatialOutliers(nodes);
+    fitViewToNodes(nodes, {
+      mode: 'all',
+      paddingFrac: 0.08,
+      minZoom: 0.25,
+      maxZoom: 2.4,
+      excludeOutliers: false,
+    });
+    drawSchematic(area);
+    drawWires();
+    const nOut = (tb.spatialOutliers?.outliers || []).length;
+    status(
+      `Fit All · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`
+        + (nOut ? ` · includes ${nOut} OUTLIER EQUIPMENT` : '')
+    );
   }
 
   function fitSite() {
+    // Alias: Fit All across areas currently loaded (controller-filtered canvas)
     const nodes = [];
     (tb.areas || []).forEach((a) => (a.nodes || []).forEach((n) => nodes.push(n)));
-    tb.view.mode = 'site';
-    fitViewToNodes(nodes, { mode: 'site' });
+    // Prefer Fit Visible semantics when a single area is active with physical layout
+    if (tb.physicalLayout && activeArea()?.nodes?.length) {
+      return fitVisible();
+    }
+    fitViewToNodes(nodes, { mode: 'site', paddingFrac: 0.08, minZoom: 0.55, excludeOutliers: true });
+    drawSchematic(activeArea());
     drawWires();
     status(`Fit Site · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`);
   }
 
   function fitArea() {
     const area = activeArea();
-    tb.view.mode = 'area';
-    fitViewToNodes(area?.nodes || [], { mode: 'area' });
+    fitViewToNodes(area?.nodes || [], {
+      mode: 'area',
+      paddingFrac: 0.08,
+      minZoom: 0.55,
+      excludeOutliers: true,
+    });
+    drawSchematic(area);
     drawWires();
     status(`Fit Area · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`);
   }
@@ -3361,9 +3574,13 @@
     detailLevel,
     fitSite,
     fitArea,
+    fitVisible,
+    fitAll,
     fitViewToNodes,
     applyViewportZoom,
     nodesBBox,
+    classifySpatialOutliers,
+    placeSchematicLabels,
     drawSchematic,
     schematicPathD,
   };

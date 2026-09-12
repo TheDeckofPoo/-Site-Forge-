@@ -1429,9 +1429,10 @@
     });
     save();
     render();
-    // Frame the imported CP2 equipment immediately (usable schematic overview)
+    // Frame visible/main-cluster equipment immediately (not full plant coords)
     try {
-      if (typeof A().fitSite === 'function') A().fitSite();
+      if (typeof A().fitVisible === 'function') A().fitVisible();
+      else if (typeof A().fitSite === 'function') A().fitSite();
     } catch (_) { /* ignore */ }
     const m = tb.metrics || {};
     const detail = [
@@ -1460,6 +1461,12 @@
   function bindUi() {
     $('tb-auto-build-run')?.addEventListener('click', () => {
       autoBuildFromRun().catch((err) => A().status(`Auto Build error: ${err?.message || err}`));
+    });
+    $('tb-fit-visible')?.addEventListener('click', () => {
+      try { A().fitVisible?.(); } catch (err) { A().status(`Fit Visible: ${err?.message || err}`); }
+    });
+    $('tb-fit-all')?.addEventListener('click', () => {
+      try { A().fitAll?.(); } catch (err) { A().status(`Fit All: ${err?.message || err}`); }
     });
     $('tb-fit-site')?.addEventListener('click', () => {
       try { A().fitSite?.(); } catch (err) { A().status(`Fit Site: ${err?.message || err}`); }

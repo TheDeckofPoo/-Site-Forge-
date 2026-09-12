@@ -170,7 +170,7 @@
         "schematic_renderer": true,
         "calibration": "greensboro-infeed-v1"
       },
-      "detail": "Schematic renderer + infeed calibration shipped; Curtis print-side acceptance required (do not auto-PASS)",
+      "detail": "Fit Visible/All, label collision, overlap audit shipped; Curtis print-side acceptance required",
       "verdict": "CURTIS ACCEPTANCE REQUIRED"
     }
   ],
@@ -233,5 +233,13 @@
     "Truthful baseline \u2014 accuracy gaps are reported, not repaired in this gate.",
     "Finished PLC is validation-only.",
     "No single overall accuracy is reported. Category metrics are independent. The reference PLC may be unfinished/manual; differences are classifications, not always errors."
-  ]
+  ],
+  "run_philosophy": {
+    "current_run": "production configuration truth",
+    "finished_plc": "historical validation reference only",
+    "demo_success": "high automation of current RUN \u2014 not byte-for-byte historical reproduction",
+    "run_supported_cp2_confirmed": 59,
+    "finished_fast_conv_observation_only": 57,
+    "not_an_automatic_error_if_unequal": true
+  }
 }

@@ -1,0 +1,1780 @@
+{
+  "generated_at": "2026-09-12T06:07:16.398432+00:00",
+  "machine": "ORNCCP4",
+  "source_of_truth": "RUN only \u2014 finished PLC4 L5X not read; inventory only (not implemented)",
+  "tables": [
+    {
+      "table": "MsgTrack.asc",
+      "path": "FORTNA/MsgTrack.asc",
+      "exists": true,
+      "byte_size": 0,
+      "row_count": 0,
+      "active_rows": 0,
+      "active_on_cp4_records": false,
+      "headers": [],
+      "samples": [],
+      "relationship_samples": [],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "MsgWCS.asc",
+      "path": "FORTNA/MsgWCS.asc",
+      "exists": true,
+      "byte_size": 135514,
+      "row_count": 2000,
+      "active_rows": 1999,
+      "active_on_cp4_records": true,
+      "headers": [
+        "MsgText",
+        "Destination",
+        "TxStat",
+        "DbKey",
+        "DbTime",
+        "iDbTime"
+      ],
+      "samples": [
+        {
+          "MsgText": "",
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "MsgText": "",
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "MsgText": "",
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "MsgText": "",
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "MsgText": "",
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "MsgText": "",
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "MsgText": "",
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "MsgText": "",
+          "Destination": "/topic/WCSEVENT.FPC.FP.MISC"
+        }
+      ],
+      "relationship_samples": [
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "Destination",
+          "value": "/topic/WCSEVENT.FPC.FP.STATE",
+          "row_name": "",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack1.asc",
+      "path": "FORTNA/SrtTrack1.asc",
+      "exists": true,
+      "byte_size": 29082,
+      "row_count": 100,
+      "active_rows": 98,
+      "active_on_cp4_records": true,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus"
+      ],
+      "samples": [
+        {
+          "Name": "R1",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "HostZone": "",
+          "ConfirmScan": "00214401901118761288"
+        },
+        {
+          "Name": "R2",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "HostZone": "",
+          "ConfirmScan": "00524203501118762904"
+        },
+        {
+          "Name": "R3",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "HostZone": "",
+          "ConfirmScan": "00165602401118814097"
+        },
+        {
+          "Name": "R4",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "HostZone": "",
+          "ConfirmScan": "00213701401118815726"
+        },
+        {
+          "Name": "R5",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "HostZone": "",
+          "ConfirmScan": "00397303801118760115"
+        },
+        {
+          "Name": "R6",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "HostZone": "",
+          "ConfirmScan": "00220102701118764677"
+        },
+        {
+          "Name": "R7",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "HostZone": "",
+          "ConfirmScan": "00220102701118764684"
+        },
+        {
+          "Name": "R8",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "HostZone": "",
+          "ConfirmScan": "00242103201118817676"
+        }
+      ],
+      "relationship_samples": [
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R1",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R2",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R3",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R4",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R5",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R6",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R7",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R8",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R9",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R11",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R12",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R13",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R14",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R15",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R16",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R17",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R18",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R19",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R20",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R21",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R22",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R23",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R24",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R25",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R26",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R27",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R28",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R29",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R30",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "ScanZoneID",
+          "value": "CITY_422",
+          "row_name": "R31",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack2.asc",
+      "path": "FORTNA/SrtTrack2.asc",
+      "exists": true,
+      "byte_size": 22719,
+      "row_count": 100,
+      "active_rows": 0,
+      "active_on_cp4_records": false,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus"
+      ],
+      "samples": [],
+      "relationship_samples": [],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack3.asc",
+      "path": "FORTNA/SrtTrack3.asc",
+      "exists": true,
+      "byte_size": 22719,
+      "row_count": 100,
+      "active_rows": 0,
+      "active_on_cp4_records": false,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus"
+      ],
+      "samples": [],
+      "relationship_samples": [],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack4.asc",
+      "path": "FORTNA/SrtTrack4.asc",
+      "exists": true,
+      "byte_size": 22719,
+      "row_count": 100,
+      "active_rows": 0,
+      "active_on_cp4_records": false,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus"
+      ],
+      "samples": [],
+      "relationship_samples": [],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack5.asc",
+      "path": "FORTNA/SrtTrack5.asc",
+      "exists": true,
+      "byte_size": 22719,
+      "row_count": 100,
+      "active_rows": 0,
+      "active_on_cp4_records": false,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus"
+      ],
+      "samples": [],
+      "relationship_samples": [],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrTrack.asc",
+      "path": "FORTNA/XfrTrack.asc",
+      "exists": true,
+      "byte_size": 24051,
+      "row_count": 100,
+      "active_rows": 0,
+      "active_on_cp4_records": false,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "ConfirmTote",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus"
+      ],
+      "samples": [],
+      "relationship_samples": [],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "WCSEvents.asc",
+      "path": "FORTNA/WCSEvents.asc",
+      "exists": true,
+      "byte_size": 7250,
+      "row_count": 110,
+      "active_rows": 99,
+      "active_on_cp4_records": true,
+      "headers": [
+        "EventName",
+        "WCSEnable",
+        "WCSDestination",
+        "WCSCategory",
+        "WCSService",
+        "WCSMachProc",
+        "WCSLastTime",
+        "NMSEnable",
+        "NMSLastTime"
+      ],
+      "samples": [
+        {
+          "EventName": "Bad Gap",
+          "WCSEnable": "N",
+          "WCSDestination": "/topic/WCSEVENT.FPC.FP.SCAN",
+          "WCSCategory": "SCAN",
+          "WCSService": "FPC.SCAN",
+          "WCSMachProc": "Y"
+        },
+        {
+          "EventName": "Bad Read",
+          "WCSEnable": "N",
+          "WCSDestination": "/topic/WCSEVENT.FPC.FP.SCAN",
+          "WCSCategory": "SCAN",
+          "WCSService": "FPC.SCAN",
+          "WCSMachProc": "Y"
+        },
+        {
+          "EventName": "BARCODELENGTHERROR",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "WCSCategory": "PNA",
+          "WCSService": "FPC.PNA",
+          "WCSMachProc": "Y"
+        },
+        {
+          "EventName": "BROKEN",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+          "WCSCategory": "CHAIN",
+          "WCSService": "FPC.CHAIN",
+          "WCSMachProc": "Y"
+        },
+        {
+          "EventName": "BUSY",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "WCSCategory": "PNA",
+          "WCSService": "FPC.PNA",
+          "WCSMachProc": "Y"
+        },
+        {
+          "EventName": "BUSYWAIT",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "WCSCategory": "PNA",
+          "WCSService": "FPC.PNA",
+          "WCSMachProc": "Y"
+        },
+        {
+          "EventName": "CHANGEMENU",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.FP.MISC",
+          "WCSCategory": "FP",
+          "WCSService": "FPC.FP",
+          "WCSMachProc": "Y"
+        },
+        {
+          "EventName": "CHANGEMENU_T",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.FP.MISC",
+          "WCSCategory": "FP",
+          "WCSService": "FPC.FP",
+          "WCSMachProc": "Y"
+        }
+      ],
+      "relationship_samples": [
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.SCAN",
+          "row_name": "Bad Gap",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.SCAN",
+          "row_name": "Bad Read",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "row_name": "BARCODELENGTHERROR",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+          "row_name": "BROKEN",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "row_name": "BUSY",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "row_name": "BUSYWAIT",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "CHANGEMENU",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "CHANGEMENU_T",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "CLONEMENU_T",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "CLOSEMENU_T",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "row_name": "COMMPROCESSERROR",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "COPYCLIP_T",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "row_name": "DBUPDATEERROR",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "DELETEREC_T",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "DOPROC",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "DOSQL",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.ALARM",
+          "row_name": "ERROREVENT",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "EXITPWR",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "EXITUSER",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "FAILLOGIN",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "FAILMENUSEC",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "FAILPROCSEC",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "FILLTABLE_T",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "FORCEOFF",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "FORCEOFF_T",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "FORCEON",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "FORCEON_T",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.SCAN",
+          "row_name": "Good Scan",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "HOUSEKEEP",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "column": "WCSDestination",
+          "value": "/topic/WCSEVENT.FPC.FP.MISC",
+          "row_name": "INSERTREC_T",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "wcs_enabled_events": [
+    {
+      "event": "BARCODELENGTHERROR",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "BROKEN",
+      "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+      "category": "CHAIN",
+      "service": "FPC.CHAIN",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "BUSY",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "BUSYWAIT",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "CHANGEMENU",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "CHANGEMENU_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "CLONEMENU_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "CLOSEMENU_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "COMMPROCESSERROR",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "COPYCLIP_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "DBUPDATEERROR",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "DELETEREC_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "DOPROC",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "DOSQL",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "ERROREVENT",
+      "destination": "/topic/WCSEVENT.FPC.FP.ALARM",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "N",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "EXITPWR",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "EXITUSER",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "FAILLOGIN",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "FAILMENUSEC",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "FAILPROCSEC",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "FILLTABLE_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "FORCEOFF",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "FORCEOFF_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "FORCEON",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "FORCEON_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "HOUSEKEEP",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "INSERTREC_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "INVERT",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "JAMZONE",
+      "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "LABELRECORDEMPTY",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "LOGIN",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "LOGOUT",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "LOOSE",
+      "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+      "category": "CHAIN",
+      "service": "FPC.CHAIN",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "LRMNOLABEL",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "MACHINESTATE",
+      "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOCARTONRECORD",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOCOMMMACHINE",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOCOMMRESPONSE",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOEHPRINTER",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOHOSTMSG",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOIPADDRESS",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOLABELCOLUMN",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOLABELIMAGE",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOLABELONTAMP",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOLABELRECORD",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOLRM",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOORDERIMAGE",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOPTYPE",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOREADLABELIMAGE",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOSKU",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "NOTYPECOLUMN",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "OPENMENU",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "OPENMENU_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "PASTECLIP_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "PRINTERERROR",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SAVETABLE_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SENDERROR",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SENDREC_T",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SENDSTART",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SENDSTOP",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SIGUSR1",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SLEEP",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "STARTALLZONES",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "STARTJAMZONE",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "STARTSTOPZONE",
+      "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "STOPALLZONES",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "STOPJAMZONE",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "STOPPROC",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "TAMPNORETURN",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "TAMPNOTHOME",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "TAMPTIMEOUT",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "TEMPLATEDISABLED",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "UNDEFINED",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "UNFORCEOFF",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "UNFORCEON",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "UNINVERT",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "VERIFYMISMATCH",
+      "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+      "category": "PNA",
+      "service": "FPC.PNA",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "WAKE",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "RELEASESAWWAVE",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SAVEFAIL",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "SIGUSR2",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "CHANGESHIFTER",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "AUTOLOGOUT",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "event": "EXITOS",
+      "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+      "category": "FP",
+      "service": "FPC.FP",
+      "mach_proc": "Y",
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "wcs_enabled_count": 84,
+  "characterization": {
+    "MsgTrack": "Empty / zero-byte on this CP4 RUN \u2014 no active tracking message records.",
+    "MsgWCS": "Active outbound WCS message queue with 1999 rows carrying Destination topics. Runtime event traffic, not static topology.",
+    "SrtTrack": "SrtTrack named-slot counts: SrtTrack1=98, SrtTrack2=0, SrtTrack3=0, SrtTrack4=0, SrtTrack5=0. Relationships exposed when active: ScanZoneID, ConfirmScan, SorterLane.",
+    "XfrTrack": "No named active transfer-track rows on this RUN.",
+    "WCSEvents": "84 events with WCSEnable=Y. Exposes event\u2192topic (WCSDestination) and category/service relationships. Not conveyor topology."
+  },
+  "counts": {
+    "tables_inventoried": 9,
+    "tables_with_active_rows": 3,
+    "msgtrack_active": 0,
+    "msgwcs_active": 1999,
+    "srttrack_active_total": 98,
+    "xfrtrack_active": 0,
+    "wcs_events_enabled": 84
+  },
+  "notes": [
+    "Tracking/WCS tables are inventoried and characterized only \u2014 no generation or Autogen implementation is performed by this discovery pass.",
+    "Active-row detection requires a real Name/EventName (or MsgWCS Destination topic); numeric placeholder slots are not counted as active."
+  ]
+}

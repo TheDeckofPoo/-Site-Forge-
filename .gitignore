@@ -1,4 +1,4 @@
-# --- Dependencies / runtime ---
+﻿# --- Dependencies / runtime ---
 desktop/node_modules/
 **/node_modules/
 __pycache__/
@@ -47,6 +47,7 @@ exports/**/LATEST.*
 workspace/active/**
 workspace/active_*/
 workspace/active-meta.json
+workspace/cp4-run/**
 workspace/inbox/**
 workspace/ocr-last-result.json
 workspace/prints/**
@@ -70,3 +71,6 @@ tools/scripts/_tmp_*.py
 *.bak_*
 *.BAK*
 backup-logs/
+
+# CP4 RUN extract (local discovery input; not committed)
+

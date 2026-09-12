@@ -1,0 +1,750 @@
+{
+  "generated_at": "2026-09-12T06:07:16.384788+00:00",
+  "machine": "ORNCCP4",
+  "source_of_truth": "RUN only \u2014 finished PLC4 L5X not read",
+  "source_file": "FORTNA/Conveyor.asc",
+  "source_resolution": "base",
+  "devices": [
+    {
+      "io_name": "VFD118_AUX",
+      "vfd_base": "VFD118",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD118 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD118_EN",
+      "vfd_base": "VFD118",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD118",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD118_FLT",
+      "vfd_base": "VFD118",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD118 HAS FAULTED",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD120_AUX",
+      "vfd_base": "VFD120",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD120 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD120_EN",
+      "vfd_base": "VFD120",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD120",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD216_AUX",
+      "vfd_base": "VFD216",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD216 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD216_EN",
+      "vfd_base": "VFD216",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD216",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD216_FLT",
+      "vfd_base": "VFD216",
+      "type": "",
+      "machine_name": "ORNCCP4",
+      "description": "VFD216 HAS FAULTED",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD218_AUX",
+      "vfd_base": "VFD218",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD218 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD218_EN",
+      "vfd_base": "VFD218",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD218",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD410_AUX",
+      "vfd_base": "VFD410",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD410 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD410_EN",
+      "vfd_base": "VFD410",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD410",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD410_FLT",
+      "vfd_base": "VFD410",
+      "type": "",
+      "machine_name": "ORNCCP4",
+      "description": "VFD410 HAS FAULTED",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD412_AUX",
+      "vfd_base": "VFD412",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD412 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD412_EN",
+      "vfd_base": "VFD412",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD412",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD414_AUX",
+      "vfd_base": "VFD414",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD414 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD414_EN",
+      "vfd_base": "VFD414",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD414",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD422_AUX",
+      "vfd_base": "VFD422",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD422 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD422_EN",
+      "vfd_base": "VFD422",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD422",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD422_FLT",
+      "vfd_base": "VFD422",
+      "type": "",
+      "machine_name": "ORNCCP4",
+      "description": "VFD422 HAS FAULTED",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD424_AUX",
+      "vfd_base": "VFD424",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD424 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD424_EN",
+      "vfd_base": "VFD424",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD424",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD834_AUX",
+      "vfd_base": "VFD834",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD834 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD834_EN",
+      "vfd_base": "VFD834",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD834",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD834_FLT",
+      "vfd_base": "VFD834",
+      "type": "",
+      "machine_name": "ORNCCP4",
+      "description": "VFD834 HAS FAULTED",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD836_AUX",
+      "vfd_base": "VFD836",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD836 IS RUNNING",
+      "io_address_word": "424",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD836_EN",
+      "vfd_base": "VFD836",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD836",
+      "io_address_word": "423",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD219_AUX",
+      "vfd_base": "VFD219",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD219 IS RUNNING",
+      "io_address_word": "1006",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD219_FLT",
+      "vfd_base": "VFD219",
+      "type": "",
+      "machine_name": "ORNCCP4",
+      "description": "VFD219 HAS FAULTED",
+      "io_address_word": "1006",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD219A_AUX",
+      "vfd_base": "VFD219A",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "VFD219A IS RUNNING",
+      "io_address_word": "1006",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD219A",
+      "vfd_base": "VFD219A",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD219A",
+      "io_address_word": "1010",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "io_name": "VFD219",
+      "vfd_base": "VFD219",
+      "type": "MOTOR",
+      "machine_name": "ORNCCP4",
+      "description": "START VFD219",
+      "io_address_word": "1010",
+      "drawing_page": "0.000",
+      "source_file": "FORTNA/Conveyor.asc",
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "vfds": [
+    {
+      "vfd": "VFD118",
+      "device_points": [
+        "VFD118_AUX",
+        "VFD118_EN",
+        "VFD118_FLT"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P118"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD118_EN",
+          "conveyor": "P118",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [
+        "LANE_3_P116"
+      ],
+      "saw_lane_mapping_provenance": "RUN_EXPLICIT",
+      "saw_lane_mapping_evidence": [
+        {
+          "method": "SawLane.DisableIO",
+          "lane": "LANE_3_P116",
+          "drive": "VFD118_EN",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "vfd": "VFD120",
+      "device_points": [
+        "VFD120_AUX",
+        "VFD120_EN"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P120"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD120_EN",
+          "conveyor": "P120",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [],
+      "saw_lane_mapping_provenance": "UNKNOWN",
+      "saw_lane_mapping_evidence": []
+    },
+    {
+      "vfd": "VFD216",
+      "device_points": [
+        "VFD216_AUX",
+        "VFD216_EN",
+        "VFD216_FLT"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P216"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD216_EN",
+          "conveyor": "P216",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [
+        "LANE_4_P214"
+      ],
+      "saw_lane_mapping_provenance": "RUN_EXPLICIT",
+      "saw_lane_mapping_evidence": [
+        {
+          "method": "SawLane.DisableIO",
+          "lane": "LANE_4_P214",
+          "drive": "VFD216_EN",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "vfd": "VFD218",
+      "device_points": [
+        "VFD218_AUX",
+        "VFD218_EN"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P218"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD218_EN",
+          "conveyor": "P218",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [],
+      "saw_lane_mapping_provenance": "UNKNOWN",
+      "saw_lane_mapping_evidence": []
+    },
+    {
+      "vfd": "VFD219",
+      "device_points": [
+        "VFD219_AUX",
+        "VFD219_FLT",
+        "VFD219"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P219"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD219",
+          "conveyor": "P219",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [
+        "LANE_0_P219"
+      ],
+      "saw_lane_mapping_provenance": "RUN_EXPLICIT",
+      "saw_lane_mapping_evidence": [
+        {
+          "method": "SawLane.DisableIO",
+          "lane": "LANE_0_P219",
+          "drive": "VFD219",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "vfd": "VFD219A",
+      "device_points": [
+        "VFD219A_AUX",
+        "VFD219A"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P219A"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD219A",
+          "conveyor": "P219A",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [],
+      "saw_lane_mapping_provenance": "UNKNOWN",
+      "saw_lane_mapping_evidence": []
+    },
+    {
+      "vfd": "VFD410",
+      "device_points": [
+        "VFD410_AUX",
+        "VFD410_EN",
+        "VFD410_FLT"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P410"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD410_EN",
+          "conveyor": "P410",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [
+        "LANE_1_P408"
+      ],
+      "saw_lane_mapping_provenance": "RUN_EXPLICIT",
+      "saw_lane_mapping_evidence": [
+        {
+          "method": "SawLane.DisableIO",
+          "lane": "LANE_1_P408",
+          "drive": "VFD410_EN",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "vfd": "VFD412",
+      "device_points": [
+        "VFD412_AUX",
+        "VFD412_EN"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P412"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD412_EN",
+          "conveyor": "P412",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [],
+      "saw_lane_mapping_provenance": "UNKNOWN",
+      "saw_lane_mapping_evidence": []
+    },
+    {
+      "vfd": "VFD414",
+      "device_points": [
+        "VFD414_AUX",
+        "VFD414_EN"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P414",
+        "P416"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD414_EN",
+          "conveyor": "P414",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD414_EN",
+          "conveyor": "P416",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [],
+      "saw_lane_mapping_provenance": "UNKNOWN",
+      "saw_lane_mapping_evidence": [],
+      "merge_motor_io": [
+        "SAWTOOTH_MERGE"
+      ],
+      "merge_mapping_evidence": [
+        {
+          "method": "SawMerge.MotorIO",
+          "merge": "SAWTOOTH_MERGE",
+          "motor_io": "VFD414_AUX",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "vfd": "VFD422",
+      "device_points": [
+        "VFD422_AUX",
+        "VFD422_EN",
+        "VFD422_FLT"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P422"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD422_EN",
+          "conveyor": "P422",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [],
+      "saw_lane_mapping_provenance": "UNKNOWN",
+      "saw_lane_mapping_evidence": []
+    },
+    {
+      "vfd": "VFD424",
+      "device_points": [
+        "VFD424_AUX",
+        "VFD424_EN"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P424",
+        "P424A"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD424_EN",
+          "conveyor": "P424",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD424_EN",
+          "conveyor": "P424A",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [],
+      "saw_lane_mapping_provenance": "UNKNOWN",
+      "saw_lane_mapping_evidence": []
+    },
+    {
+      "vfd": "VFD834",
+      "device_points": [
+        "VFD834_AUX",
+        "VFD834_EN",
+        "VFD834_FLT"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P834"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD834_EN",
+          "conveyor": "P834",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [
+        "LANE_5_P832"
+      ],
+      "saw_lane_mapping_provenance": "RUN_EXPLICIT",
+      "saw_lane_mapping_evidence": [
+        {
+          "method": "SawLane.DisableIO",
+          "lane": "LANE_5_P832",
+          "drive": "VFD834_EN",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "vfd": "VFD836",
+      "device_points": [
+        "VFD836_AUX",
+        "VFD836_EN"
+      ],
+      "machine_name": "ORNCCP4",
+      "conveyors": [
+        "P836"
+      ],
+      "conveyor_mapping_provenance": "RUN_EXPLICIT",
+      "conveyor_mapping_evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD836_EN",
+          "conveyor": "P836",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "saw_lanes": [],
+      "saw_lane_mapping_provenance": "UNKNOWN",
+      "saw_lane_mapping_evidence": []
+    }
+  ],
+  "unknown_conveyor_mappings": [],
+  "counts": {
+    "device_rows": 32,
+    "unique_vfd_bases": 13,
+    "mapped_to_conveyor_explicit": 13,
+    "unknown_conveyor_mapping": 0,
+    "mapped_to_saw_lane_explicit": 5
+  },
+  "notes": [
+    "VFD\u2192conveyor mapped only via explicit RUN relationships (Mtrchain Motor_Chained*, Conveyor Motor column, SawMerge/SawLane tables).",
+    "Number-only guesses (VFD414 \u2192 P414 by digits alone without Mtrchain/saw evidence) are not emitted as mappings."
+  ]
+}
