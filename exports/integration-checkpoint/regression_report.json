@@ -145,5 +145,7 @@
   },
   "gitattributes_ags_script_fix": true,
   "safe_for_architecture_review": true,
-  "safe_for_main_merge": false
+  "safe_for_main_merge": false,
+  "integration_checkpoint_branch": "feature/integration-checkpoint-2026-09",
+  "checkpoint_sha": "4bad70bf0e322b5804ae6c961adb8694e2a24fcb"
 }

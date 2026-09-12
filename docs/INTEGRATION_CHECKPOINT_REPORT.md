@@ -3,6 +3,8 @@
 **Checkpoint label:** `feature/integration-checkpoint-2026-09`  
 **Working branch (content):** `feature/activity-classification-closure`  
 **Prior integration tip:** `feature/site-forge-integration-checkpoint` (`b7d1326`)  
+**Checkpoint SHA:** 4bad70bf0e322b5804ae6c961adb8694e2a24fcb
+
 **Do NOT merge to main** — architecture review only.
 
 ---
