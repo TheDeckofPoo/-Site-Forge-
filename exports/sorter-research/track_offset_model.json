@@ -1,0 +1,177 @@
+{
+  "machine": "ORNCCP5",
+  "encoders": [
+    {
+      "name": "ENC504",
+      "io": "ENC504",
+      "ticks_per_foot": "6.000",
+      "target_fpm": "250.000",
+      "enable_bit": "VFD504_AUX",
+      "source_table": "Encoders.asc"
+    },
+    {
+      "name": "ENC506",
+      "io": "ENC506",
+      "ticks_per_foot": "6.000",
+      "target_fpm": "280.000",
+      "enable_bit": "VFD506_AUX",
+      "source_table": "Encoders.asc"
+    },
+    {
+      "name": "ENC508",
+      "io": "ENC508",
+      "ticks_per_foot": "6.000",
+      "target_fpm": "280.000",
+      "enable_bit": "VFD508_AUX",
+      "source_table": "Encoders.asc"
+    },
+    {
+      "name": "ENC509",
+      "io": "ENC509",
+      "ticks_per_foot": "6.000",
+      "target_fpm": "280.000",
+      "enable_bit": "VFD509_AUX",
+      "source_table": "Encoders.asc"
+    },
+    {
+      "name": "ENC510",
+      "io": "ENC510",
+      "ticks_per_foot": "6.000",
+      "target_fpm": "280.000",
+      "enable_bit": "VFD510_AUX",
+      "source_table": "Encoders.asc"
+    }
+  ],
+  "track_offsets": [
+    {
+      "source": "induct",
+      "destination": "divert",
+      "sorter": "504_BELT",
+      "encoder": "ENC504",
+      "offset_counts": null,
+      "offset_distance": null,
+      "ticks_per_foot": "6.000",
+      "confidence": "LOW",
+      "provenance": "RUN_PARTIAL",
+      "evidence": [
+        {
+          "kind": "sorter_encoder_link",
+          "sorter": "504_BELT",
+          "encoder": "ENC504"
+        },
+        {
+          "kind": "encoder_scale",
+          "ticks_per_foot": "6.000",
+          "note": "Scale known; induct\u2192divert count offset not in RUN tables reviewed"
+        }
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED",
+      "note": "Offset counts not found as explicit RUN field \u2014 engineer/config required"
+    },
+    {
+      "source": "induct",
+      "destination": "divert",
+      "sorter": "506_SHIP_SORTER",
+      "encoder": "ENC506",
+      "offset_counts": null,
+      "offset_distance": null,
+      "ticks_per_foot": "6.000",
+      "confidence": "LOW",
+      "provenance": "RUN_PARTIAL",
+      "evidence": [
+        {
+          "kind": "sorter_encoder_link",
+          "sorter": "506_SHIP_SORTER",
+          "encoder": "ENC506"
+        },
+        {
+          "kind": "encoder_scale",
+          "ticks_per_foot": "6.000",
+          "note": "Scale known; induct\u2192divert count offset not in RUN tables reviewed"
+        }
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED",
+      "note": "Offset counts not found as explicit RUN field \u2014 engineer/config required"
+    },
+    {
+      "source": "induct",
+      "destination": "divert",
+      "sorter": "508_SHIP_SORTER",
+      "encoder": "ENC508",
+      "offset_counts": null,
+      "offset_distance": null,
+      "ticks_per_foot": "6.000",
+      "confidence": "LOW",
+      "provenance": "RUN_PARTIAL",
+      "evidence": [
+        {
+          "kind": "sorter_encoder_link",
+          "sorter": "508_SHIP_SORTER",
+          "encoder": "ENC508"
+        },
+        {
+          "kind": "encoder_scale",
+          "ticks_per_foot": "6.000",
+          "note": "Scale known; induct\u2192divert count offset not in RUN tables reviewed"
+        }
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED",
+      "note": "Offset counts not found as explicit RUN field \u2014 engineer/config required"
+    },
+    {
+      "source": "induct",
+      "destination": "divert",
+      "sorter": "509_SHIP_SORTER",
+      "encoder": "ENC509",
+      "offset_counts": null,
+      "offset_distance": null,
+      "ticks_per_foot": "6.000",
+      "confidence": "LOW",
+      "provenance": "RUN_PARTIAL",
+      "evidence": [
+        {
+          "kind": "sorter_encoder_link",
+          "sorter": "509_SHIP_SORTER",
+          "encoder": "ENC509"
+        },
+        {
+          "kind": "encoder_scale",
+          "ticks_per_foot": "6.000",
+          "note": "Scale known; induct\u2192divert count offset not in RUN tables reviewed"
+        }
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED",
+      "note": "Offset counts not found as explicit RUN field \u2014 engineer/config required"
+    },
+    {
+      "source": "induct",
+      "destination": "divert",
+      "sorter": "510_SHIP_SORTER",
+      "encoder": "ENC510",
+      "offset_counts": null,
+      "offset_distance": null,
+      "ticks_per_foot": "6.000",
+      "confidence": "LOW",
+      "provenance": "RUN_PARTIAL",
+      "evidence": [
+        {
+          "kind": "sorter_encoder_link",
+          "sorter": "510_SHIP_SORTER",
+          "encoder": "ENC510"
+        },
+        {
+          "kind": "encoder_scale",
+          "ticks_per_foot": "6.000",
+          "note": "Scale known; induct\u2192divert count offset not in RUN tables reviewed"
+        }
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED",
+      "note": "Offset counts not found as explicit RUN field \u2014 engineer/config required"
+    }
+  ],
+  "counts": {
+    "encoders": 5,
+    "track_offset_models": 5,
+    "offsets_with_counts": 0
+  }
+}

@@ -1,0 +1,297 @@
+{
+  "merges": 1,
+  "expected_lane_device_edges": 16,
+  "precision": 0.0,
+  "recall": 0.0,
+  "correct": 0,
+  "missing": 16,
+  "samples": {
+    "missing": [
+      {
+        "from": "P116",
+        "to": "SAWTOOTH_MERGE",
+        "class": "MEMBER_OF_MERGE"
+      },
+      {
+        "from": "P214",
+        "to": "SAWTOOTH_MERGE",
+        "class": "MEMBER_OF_MERGE"
+      },
+      {
+        "from": "P219",
+        "to": "SAWTOOTH_MERGE",
+        "class": "MEMBER_OF_MERGE"
+      },
+      {
+        "from": "P408",
+        "to": "SAWTOOTH_MERGE",
+        "class": "MEMBER_OF_MERGE"
+      },
+      {
+        "from": "P832",
+        "to": "SAWTOOTH_MERGE",
+        "class": "MEMBER_OF_MERGE"
+      },
+      {
+        "from": "PE118_P",
+        "to": "LANE_3_P116",
+        "class": "PE_OF"
+      },
+      {
+        "from": "PE216_P",
+        "to": "LANE_4_P214",
+        "class": "PE_OF"
+      },
+      {
+        "from": "PE219_P",
+        "to": "LANE_0_P219",
+        "class": "PE_OF"
+      },
+      {
+        "from": "PE410_P",
+        "to": "LANE_1_P408",
+        "class": "PE_OF"
+      },
+      {
+        "from": "PE834_P",
+        "to": "LANE_5_P832",
+        "class": "PE_OF"
+      },
+      {
+        "from": "VFD118_EN",
+        "to": "LANE_3_P116",
+        "class": "VFD_OF"
+      },
+      {
+        "from": "VFD216_EN",
+        "to": "LANE_4_P214",
+        "class": "VFD_OF"
+      },
+      {
+        "from": "VFD219",
+        "to": "LANE_0_P219",
+        "class": "VFD_OF"
+      },
+      {
+        "from": "VFD410_EN",
+        "to": "LANE_1_P408",
+        "class": "VFD_OF"
+      },
+      {
+        "from": "VFD414_AUX",
+        "to": "SAWTOOTH_MERGE",
+        "class": "MOTOR_OF"
+      },
+      {
+        "from": "VFD834_EN",
+        "to": "LANE_5_P832",
+        "class": "VFD_OF"
+      }
+    ],
+    "extra": [
+      {
+        "from": "ENC414",
+        "to": "SAWTOOTH_MERGE",
+        "class": "ENCODER_OF"
+      },
+      {
+        "from": "ENC424",
+        "to": "CITY_LANE",
+        "class": "ENCODER_OF"
+      },
+      {
+        "from": "EZPE116_F",
+        "to": "M114",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE116_F",
+        "to": "P116",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE116_P",
+        "to": "P116",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE136_F1",
+        "to": "M132",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE136_F1",
+        "to": "P136A",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE136_F2",
+        "to": "P136",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE150_F1",
+        "to": "M146",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE150_F1",
+        "to": "P150A",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE150_F2",
+        "to": "P150",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE209_F",
+        "to": "M206",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE209_F",
+        "to": "P209",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE209_P",
+        "to": "P209",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE212_F1",
+        "to": "M206",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE212_F1",
+        "to": "P212",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE212_F2",
+        "to": "M306",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE212_F2",
+        "to": "P212",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE212_F2",
+        "to": "P214",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE212_P1",
+        "to": "P212",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE213_F",
+        "to": "M211",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE213_F",
+        "to": "P213",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE213_P",
+        "to": "P213",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE214_P",
+        "to": "P214",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE217_F",
+        "to": "M215",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE217_F",
+        "to": "P217",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE217_P",
+        "to": "P217",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE229_F",
+        "to": "INT229",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE229_F",
+        "to": "P229",
+        "class": "PE_OF"
+      },
+      {
+        "from": "EZPE229_P",
+        "to": "P229",
+        "class": "PE_OF"
+      }
+    ],
+    "wrong_target": [
+      {
+        "from": "PE118_P",
+        "class": "PE_OF",
+        "actual_to": "P118",
+        "expected_to": [
+          "LANE_3_P116"
+        ]
+      },
+      {
+        "from": "PE216_P",
+        "class": "PE_OF",
+        "actual_to": "P216",
+        "expected_to": [
+          "LANE_4_P214"
+        ]
+      },
+      {
+        "from": "PE219_P",
+        "class": "PE_OF",
+        "actual_to": "P219",
+        "expected_to": [
+          "LANE_0_P219"
+        ]
+      },
+      {
+        "from": "VFD219",
+        "class": "VFD_OF",
+        "actual_to": "P219",
+        "expected_to": [
+          "LANE_0_P219"
+        ]
+      },
+      {
+        "from": "PE834_P",
+        "class": "PE_OF",
+        "actual_to": "P834",
+        "expected_to": [
+          "LANE_5_P832"
+        ]
+      },
+      {
+        "from": "PE410_P",
+        "class": "PE_OF",
+        "actual_to": "P410",
+        "expected_to": [
+          "LANE_1_P408"
+        ]
+      }
+    ]
+  },
+  "ignore_area_names": true,
+  "answer_sheet_path": null,
+  "note": "Area naming differences ignored; focus lane/PE/VFD/encoder/merge relationships"
+}

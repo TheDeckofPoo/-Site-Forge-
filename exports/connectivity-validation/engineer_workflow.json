@@ -1,0 +1,18 @@
+{
+  "AREA": {
+    "default_area_created": true,
+    "rename": "supported via fortna_area_ops.rename_area",
+    "create": "supported via fortna_area_ops.create_area",
+    "move_equipment": "supported via fortna_area_ops.move_equipment",
+    "regenerate": "supported via generate_area_l5x_snippet / Autogen main_area",
+    "auto_inference_required": false
+  },
+  "ESTOP": {
+    "devices_discovered": 90,
+    "default_zone": "EStop_Zone_1",
+    "split_zones": "engineer create/rename/move via SiteModel ops",
+    "conveyor_assignment": "engineer assigns equipment controlled by zone",
+    "regenerate": "after engineer confirms membership (safety gate)",
+    "auto_reconstruction_required": false
+  }
+}

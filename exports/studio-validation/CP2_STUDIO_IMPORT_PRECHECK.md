@@ -1,6 +1,6 @@
 # Studio Import Precheck — ORNCCP2_knowledge_driven_candidate.L5X
 
-Generated: `2026-09-12T22:05:39.503799+00:00`
+Generated: `2026-09-12T23:10:47.406399+00:00`
 
 - XML parses: **True**
 - Static ok (no ERROR): **True**

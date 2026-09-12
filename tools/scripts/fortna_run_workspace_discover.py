@@ -51,6 +51,7 @@ from fortna_site_model import (  # noqa: E402
     apply_engineer_overrides,
     change_report,
     ensure_default_area,
+    ensure_default_estop_zone,
     extract_p_from_name,
     load_json,
     make_object,
@@ -1676,9 +1677,11 @@ def discover(
         "Sorter/Configio/FORTNADT/IOCard/StartStopZones (docs=semantics, RUN=facts)"
     )
 
-    # Areas: RUN has no reliable Area table in current archives → default Area_1
+    # Areas: default Area_1 (engineer configures Areas — auto-inference not required)
     model.areas = []
     ensure_default_area(model)
+    # E-stop: devices discovered; default EStop_Zone_1 for engineer split/assign
+    ensure_default_estop_zone(model)
 
     overrides = None
     if overrides_path and overrides_path.is_file():

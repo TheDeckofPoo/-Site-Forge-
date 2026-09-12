@@ -45,13 +45,23 @@ CAPABILITY_CONTRACT: dict[str, dict[str, Any]] = {
     },
     "token_creation": {
         "aoi_or_program": [],
-        "udt": [],
-        "run_fields": ["SrtTrack* runtime (not equipment)"],
-        "equipment_relationships": [],
+        "udt": ["SorterTokenModel (generic schema)"],
+        "run_fields": ["SrtTrack* runtime (not equipment)", "Sorters.Max Cartons"],
+        "equipment_relationships": ["sorter encoder"],
         "optional_config": [],
-        "engineer_required": ["tracking slot sizing"],
-        "outputs": [],
+        "engineer_required": ["UDT approval", "tracking slot sizing"],
+        "outputs": ["token schema model"],
         "default_state": MODELED,
+    },
+    "track_offset": {
+        "aoi_or_program": [],
+        "udt": ["TrackOffsetModel"],
+        "run_fields": ["Encoders.Ticks Per Foot", "Sorters.Encoder ioName"],
+        "equipment_relationships": ["induct→encoder→divert"],
+        "optional_config": [],
+        "engineer_required": ["offset_counts between induct and divert"],
+        "outputs": ["TrackOffsetModel candidates"],
+        "default_state": CONFIGURATION_REQUIRED,
     },
     "scanner_association": {
         "aoi_or_program": [],
@@ -62,16 +72,6 @@ CAPABILITY_CONTRACT: dict[str, dict[str, Any]] = {
         "engineer_required": [],
         "outputs": ["scanner device tags", "scan zone tags"],
         "default_state": GENERATABLE,
-    },
-    "track_offset": {
-        "aoi_or_program": [],
-        "udt": [],
-        "run_fields": [],
-        "equipment_relationships": [],
-        "optional_config": [],
-        "engineer_required": ["encoder counts between induct and divert"],
-        "outputs": [],
-        "default_state": NOT_SUPPORTED,
     },
     "route_request": {
         "aoi_or_program": [],
@@ -96,11 +96,11 @@ CAPABILITY_CONTRACT: dict[str, dict[str, Any]] = {
     "divert_readiness": {
         "aoi_or_program": ["TRK_Divert_WaveFunction_AOI"],
         "udt": [],
-        "run_fields": ["SrtZoneLane", "Sorters"],
-        "equipment_relationships": ["lane PE", "lane conveyor"],
-        "optional_config": ["wave parameters"],
-        "engineer_required": ["lane→divert map"],
-        "outputs": ["divert config model"],
+        "run_fields": ["SrtZoneLane.Enabled", "FullClearTimer", "Sorters"],
+        "equipment_relationships": ["lane PE", "takeaway conveyor", "sorter at speed"],
+        "optional_config": ["wave parameters", "rate limit"],
+        "engineer_required": ["takeaway running/manual", "fault", "rate limit clear", "full divert IO"],
+        "outputs": ["divert readiness model"],
         "default_state": CONFIGURATION_REQUIRED,
     },
     "divert_trigger": {
@@ -161,6 +161,10 @@ def assess_capabilities(site: dict[str, Any]) -> dict[str, Any]:
             state = GENERATABLE
         elif cap == "reason_code" and has_sorter:
             state = GENERATABLE
+        elif cap == "token_creation" and has_sorter:
+            state = MODELED
+        elif cap == "track_offset" and (has_enc or has_sorter):
+            state = CONFIGURATION_REQUIRED
         elif cap == "divert_readiness" and has_sorter:
             state = CONFIGURATION_REQUIRED
         elif cap in {"route_request"} and has_sorter:

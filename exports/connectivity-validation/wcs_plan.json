@@ -1,0 +1,26 @@
+{
+  "order": [
+    "message_schema",
+    "route_request",
+    "route_response",
+    "confirmation_event",
+    "transport_fifo",
+    "heartbeat"
+  ],
+  "status": {
+    "message_schema": "MODELED",
+    "route_request": "CONFIGURATION_REQUIRED",
+    "route_response": "NOT_SUPPORTED",
+    "confirmation_event": "NOT_SUPPORTED",
+    "transport_fifo": "NOT_SUPPORTED",
+    "heartbeat": "NOT_SUPPORTED"
+  },
+  "sources": [
+    "Machine",
+    "MsgMap",
+    "MsgWCS",
+    "MsgTrack",
+    "WCSEvents"
+  ],
+  "note": "Do not clone finished PLC5 WCS_Interface_TCP_IP"
+}

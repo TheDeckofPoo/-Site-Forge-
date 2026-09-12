@@ -1,0 +1,497 @@
+{
+  "label": "CP4",
+  "machine": "ORNCCP4",
+  "site_vs_generated": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "endpoint_coverage": 0.0203,
+    "expected_edges": 269,
+    "actual_edges": 5,
+    "expected_nodes": 394,
+    "nodes_present_in_both": 8,
+    "correct": 0,
+    "missing": 269,
+    "extra": 5,
+    "wrong_target": 0,
+    "by_class": {
+      "DOWNSTREAM_OF": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "CONTROLLED_BY": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "MOTOR_OF": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "VFD_OF": {
+        "expected": 13,
+        "correct": 0,
+        "missing": 13,
+        "extra": 1,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "PE_OF": {
+        "expected": 216,
+        "correct": 0,
+        "missing": 216,
+        "extra": 4,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "ENCODER_OF": {
+        "expected": 2,
+        "correct": 0,
+        "missing": 2,
+        "extra": 0,
+        "precision": null,
+        "recall": 0.0
+      },
+      "MEMBER_OF_MERGE": {
+        "expected": 36,
+        "correct": 0,
+        "missing": 36,
+        "extra": 0,
+        "precision": null,
+        "recall": 0.0
+      },
+      "MEMBER_OF_SORTER": {
+        "expected": 2,
+        "correct": 0,
+        "missing": 2,
+        "extra": 0,
+        "precision": null,
+        "recall": 0.0
+      },
+      "DIVERTS_TO": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "CONFIRMED_BY": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "SCANNED_BY": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      }
+    },
+    "note": "Generated L5X edge extraction is heuristic; low edge recall does not alone mean devices were not generated. Prefer endpoint_coverage + identity checks."
+  },
+  "transport_identity": {
+    "counts": {
+      "CORRECT": 76
+    },
+    "rows": [
+      {
+        "name": "P100",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P100A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P102",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P104",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P106",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P108",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P110",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P112",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P114",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P116",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P118",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P120",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P200",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P200A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P202",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P204",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P206",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P208",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P209",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P210",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P211",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P212",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P213",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P214",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P215",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P216",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P217",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P218",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P219",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P219A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P226",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P229",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P231",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P231A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P300",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P300A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P302",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P304",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P305",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P306",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P308",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P408",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P410",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P412",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P414",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P416",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P418",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P420",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P422",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P424",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P424A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P426",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P428",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P430",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P432",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P434",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P436",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P438",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P446",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P447",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P448",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P450",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P452",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P454",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P456",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P462",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P818",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P820",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P822",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P824",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P826",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P828",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P830",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P832",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P834",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P836",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      }
+    ],
+    "total": 76
+  },
+  "answer_sheet_used_for_generation": false
+}

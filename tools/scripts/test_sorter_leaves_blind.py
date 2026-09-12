@@ -45,6 +45,11 @@ class TestSorterLeavesBlind(unittest.TestCase):
         self.assertIn("scanner_association", result["generated_capability_names"])
         self.assertIn("reason_code", result["generated_capability_names"])
         self.assertIn("divert_trigger", result["unsupported"])
+        self.assertIn("track_offset", result["capabilities"])
+        self.assertEqual(
+            result["capabilities"]["track_offset"]["state"],
+            "CONFIGURATION_REQUIRED",
+        )
         blob = json.dumps(result)
         for bad in FORBIDDEN:
             self.assertNotIn(bad, blob)

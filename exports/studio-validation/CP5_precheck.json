@@ -1,0 +1,58 @@
+{
+  "generated_at": "2026-09-12T23:10:47.454124+00:00",
+  "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\studio-validation\\ORNCCP5_candidate_v2.L5X",
+  "sha256": "27c5a003f8f5f9fb2e402057a39f7572d1e47cafc957ca9102deea86a6c9d99e",
+  "xml_parses": true,
+  "ok": true,
+  "studio_import_claimed": false,
+  "note": "Static precheck only \u2014 Curtis must import in Studio 5000",
+  "counts": {
+    "errors": 0,
+    "warnings": 6,
+    "info": 0,
+    "programs_with_main": 0,
+    "programs_missing_main": 6,
+    "tags": 727,
+    "duplicate_tags": 0,
+    "modules": 63
+  },
+  "programs_with_main": [],
+  "issues": [
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program ORNCCP5_Area_Slow has no Main routine",
+      "program": "ORNCCP5_Area_Slow"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program ORNCCP5_Area_Fast has no Main routine",
+      "program": "ORNCCP5_Area_Fast"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program ORNCCP5_Area_L1 has no Main routine",
+      "program": "ORNCCP5_Area_L1"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program ORNCCP5_Area_L2 has no Main routine",
+      "program": "ORNCCP5_Area_L2"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program Sys has no Main routine",
+      "program": "Sys"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program IO_MAP has no Main routine",
+      "program": "IO_MAP"
+    }
+  ]
+}

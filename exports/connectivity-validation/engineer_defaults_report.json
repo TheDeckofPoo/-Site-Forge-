@@ -1,0 +1,20 @@
+{
+  "CP2": {
+    "area_1": true,
+    "equipment_in_area_1": 63,
+    "estop_zone_1": true,
+    "estop_devices": 90
+  },
+  "CP4": {
+    "area_1": true,
+    "equipment_in_area_1": 76,
+    "estop_zone_1": true,
+    "estop_devices": 90
+  },
+  "CP5": {
+    "area_1": true,
+    "equipment_in_area_1": 79,
+    "estop_zone_1": true,
+    "estop_devices": 90
+  }
+}

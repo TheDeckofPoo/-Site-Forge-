@@ -1,0 +1,86 @@
+# Connectivity + Sorter Closure Report
+
+```json
+{
+  "generated_at": "2026-09-12T23:10:47.461260+00:00",
+  "AREA": {
+    "default_area_created": true,
+    "rename": "supported via fortna_area_ops.rename_area",
+    "create": "supported via fortna_area_ops.create_area",
+    "move_equipment": "supported via fortna_area_ops.move_equipment",
+    "regenerate": "supported via generate_area_l5x_snippet / Autogen main_area",
+    "auto_inference_required": false
+  },
+  "ESTOP": {
+    "devices_discovered": 90,
+    "default_zone": "EStop_Zone_1",
+    "split_zones": "engineer create/rename/move via SiteModel ops",
+    "conveyor_assignment": "engineer assigns equipment controlled by zone",
+    "regenerate": "after engineer confirms membership (safety gate)",
+    "auto_reconstruction_required": false
+  },
+  "CONNECTIVITY": {
+    "CP2": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "endpoint_coverage": 0.024
+    },
+    "CP4": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "endpoint_coverage": 0.0203
+    },
+    "CP5": {
+      "precision": 0.0976,
+      "recall": 0.0958,
+      "endpoint_coverage": 0.3964
+    }
+  },
+  "SAWTOOTH": {
+    "lane_device_relationship_precision": 0.0,
+    "lane_device_relationship_recall": 0.0,
+    "merges": 1
+  },
+  "SORTER": {
+    "encoder": "GENERATED",
+    "induct": "GENERATED",
+    "scanner": "GENERATED",
+    "token": "MODELED",
+    "track_offset": "CONFIGURATION_REQUIRED",
+    "divert_map": {
+      "divert_rows": 15,
+      "with_confirm_pe_hint": 15,
+      "with_takeaway_hint": 12,
+      "unresolved": 0,
+      "sorter_sections": 5
+    },
+    "readiness": {
+      "lanes": 15,
+      "generatable": 0,
+      "configuration_required": 15
+    },
+    "trigger": "NOT_SUPPORTED"
+  },
+  "WCS": {
+    "message_schema": "MODELED",
+    "route_request": "CONFIGURATION_REQUIRED",
+    "route_response": "NOT_SUPPORTED",
+    "confirmation_event": "NOT_SUPPORTED",
+    "transport_fifo": "NOT_SUPPORTED",
+    "heartbeat": "NOT_SUPPORTED"
+  },
+  "STUDIO_PACK": {
+    "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\studio-validation",
+    "files": [
+      "ORNCCP2_knowledge_driven_candidate.L5X",
+      "ORNCCP4_knowledge_driven_candidate.L5X",
+      "ORNCCP5_candidate_v2.L5X"
+    ],
+    "CP2_ready": true,
+    "CP4_ready": true,
+    "CP5_ready": true
+  },
+  "ready_for_architecture_review": true,
+  "ready_for_main_merge": false
+}
+```

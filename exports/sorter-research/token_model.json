@@ -1,0 +1,18 @@
+{
+  "schema": {
+    "token_id": "DINT",
+    "tracking_group": "DINT",
+    "barcode": "STRING",
+    "package_length": "DINT",
+    "destination": "DINT",
+    "reason_status": "DINT",
+    "induct_encoder_position": "DINT",
+    "current_encoder_position": "DINT",
+    "divert_target": "DINT",
+    "state": "DINT"
+  },
+  "generation_state": "MODELED",
+  "udt_proven": false,
+  "note": "Token structure modeled generically; UDT/AOI emit deferred until library contract proves UDT",
+  "sorter_count": 5
+}

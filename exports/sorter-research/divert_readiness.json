@@ -1,0 +1,335 @@
+{
+  "required_inputs": [
+    "sorter_at_speed",
+    "takeaway_running",
+    "takeaway_not_manual",
+    "lane_enabled",
+    "no_full_condition",
+    "no_fault",
+    "rate_limit_clear"
+  ],
+  "rows": [
+    {
+      "zone_lane": "ADD-ON_2_3",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "ADD-ON_4_5",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "ADD-ON_6_7",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_18_19",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_20_21",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_22_23",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_24_25",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_26_27",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_28_29",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_12_13",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_14_15",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_16_17",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "NEW_509",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "NEW_510",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "zone_lane": "SHIP_510",
+      "app_sorter": "SHIP_SORTER",
+      "inputs_known": {
+        "lane_enabled": true,
+        "no_full_condition": true,
+        "sorter_at_speed": false,
+        "takeaway_running": false,
+        "takeaway_not_manual": false,
+        "no_fault": false,
+        "rate_limit_clear": false
+      },
+      "missing_inputs": [
+        "sorter_at_speed",
+        "takeaway_running",
+        "takeaway_not_manual",
+        "no_fault",
+        "rate_limit_clear"
+      ],
+      "generation_state": "CONFIGURATION_REQUIRED"
+    }
+  ],
+  "counts": {
+    "lanes": 15,
+    "generatable": 0,
+    "configuration_required": 15
+  },
+  "trigger_state": "NOT_SUPPORTED",
+  "note": "Readiness modeled; trigger stays NOT_SUPPORTED until offset+token+IO+timing proven"
+}

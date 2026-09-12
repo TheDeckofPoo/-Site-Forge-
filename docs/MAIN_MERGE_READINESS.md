@@ -1,13 +1,13 @@
 # Main Merge Readiness
 
-**Branch:** `feature/integration-hardening` (checkpoint / hardening tip)  
+**Branch:** `feature/connectivity-sorter-closure`  
 **Question:** Can this checkpoint merge to `main` now?
 
 ## Answer: **NO**
 
-Conservative gate. Architecture review and Studio manual confirmation must land before any promote. Do **not** auto-merge.
+Conservative gate. Studio manual confirmation and remaining sorter/WCS gaps must land (or be explicitly waived) before any promote. Do **not** auto-merge.
 
-Evidence snapshot: `exports/integration-hardening/summary.json` (`ready_for_main_merge: false`). Frozen blind pack under `exports/cp5-blind/` stays immutable.
+Frozen blind pack under `exports/cp5-blind/` stays immutable.
 
 ---
 
@@ -16,12 +16,12 @@ Evidence snapshot: `exports/integration-hardening/summary.json` (`ready_for_main
 | Blocker | Why it blocks |
 |---------|----------------|
 | **Studio manual test pending** | Static precheck ≠ Studio PASS. Curtis checklist in `exports/studio-validation/validation_checklist.md` is empty until import/open is recorded. |
-| **Area still engineer-required** | No proven RUN Area membership. Suggested / provisional candidates only — finished-PLC Area names forbidden as generation rules. |
-| **Safety membership CFG** | E-stop devices inventoriable; circuit/zone membership largely engineer-required. Safety zone logic must not pretend READY. |
-| **Sorter partial** | Leaf generation only (encoder / induct / scanner / reason). Divert trigger and related leaves remain unsupported. No `Sorter_Track` monolith. |
+| **Sorter divert trigger** | Leaf generation covers encoder / induct / scanner / reason; token modeled; offset/readiness CFG. Divert **trigger** remains `NOT_SUPPORTED` until offset + token + IO + timing proven. No `Sorter_Track` monolith. |
 | **WCS unsupported** | Messaging inventoriable; PLC generation `NOT_SUPPORTED`. |
 
-Additional caution: transport relationships still need review; PE roles mix auto + engineer-required; many conveyor/motor gaps stay CONFIGURATION_REQUIRED.
+**Not blockers:** Area auto-discovery and E-stop zone auto-reconstruction are **NOT REQUIRED**. Default `Area_1` / `EStop_Zone_1` + engineer move/rename is the supported product path — do not treat missing auto-inference as an architectural merge gate.
+
+Additional caution: transport connectivity fidelity still needs review; PE roles mix auto + engineer-required; many conveyor/motor gaps stay CONFIGURATION_REQUIRED.
 
 ---
 
@@ -29,10 +29,11 @@ Additional caution: transport relationships still need review; PE roles mix auto
 
 These are acceptable long-lived gaps if labeled honestly in UI / capability matrix — they are **not** merge excuses to fake READY:
 
-- Divert trigger / confirm / rate limiting / recirculation / track offset
+- Divert trigger / confirm / rate limiting / recirculation
+- Track offset `offset_counts` (ticks known; counts CFG)
 - Full WCS interface PLC (route response, heartbeat, divert confirm to host)
 - `Sorter_Track` / shipping-sorter L3 gold-pack clones as “generation”
-- Perfect Engineering Area auto-inference from RUN alone
+- Perfect Engineering Area / ES-zone auto-inference from RUN alone
 - Behavioral / online Studio verification automation
 
 A future merge may ship with these marked `GENERATION NOT SUPPORTED` / `CONFIGURATION REQUIRED` / `PARTIAL GENERATION` — never silently upgraded.
@@ -41,8 +42,8 @@ A future merge may ship with these marked `GENERATION NOT SUPPORTED` / `CONFIGUR
 
 ## Needs engineer confirmation
 
-- Engineering Area split / rename / membership
-- E-stop (and related safety) zone membership
+- Engineering Area split / rename / membership (`Area_1` default)
+- E-stop (and related safety) zone membership (`EStop_Zone_1` default)
 - Sorter lane → divert IO map (readiness CFG; trigger still unsupported)
 - Route / destination maps where CFG
 - Any remaining PE / motor / VFD wiring marked engineer-required
@@ -65,6 +66,7 @@ Expect missing Main warnings, absent full Sorter_Track / WCS, and Safety blocked
 ## Related
 
 - `docs/PROJECT_SCORECARD.md`
+- `docs/SORTER_DIVERT_MODEL.md`
 - `docs/SORTER_LIBRARY_CONTRACT.md`
 - `docs/UI_SUBSYSTEM_STATUS.md`
 - `docs/INTEGRATION_READINESS.md`

@@ -1,0 +1,2115 @@
+{
+  "label": "CP5",
+  "machine": "ORNCCP5",
+  "site_vs_generated": {
+    "precision": 0.0976,
+    "recall": 0.0958,
+    "endpoint_coverage": 0.3964,
+    "expected_edges": 334,
+    "actual_edges": 328,
+    "expected_nodes": 449,
+    "nodes_present_in_both": 178,
+    "correct": 32,
+    "missing": 302,
+    "extra": 296,
+    "wrong_target": 99,
+    "by_class": {
+      "DOWNSTREAM_OF": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "CONTROLLED_BY": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "MOTOR_OF": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "VFD_OF": {
+        "expected": 16,
+        "correct": 0,
+        "missing": 16,
+        "extra": 31,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "PE_OF": {
+        "expected": 303,
+        "correct": 32,
+        "missing": 271,
+        "extra": 265,
+        "precision": 0.10774410774410774,
+        "recall": 0.10561056105610561
+      },
+      "ENCODER_OF": {
+        "expected": 5,
+        "correct": 0,
+        "missing": 5,
+        "extra": 0,
+        "precision": null,
+        "recall": 0.0
+      },
+      "MEMBER_OF_MERGE": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "MEMBER_OF_SORTER": {
+        "expected": 5,
+        "correct": 0,
+        "missing": 5,
+        "extra": 0,
+        "precision": null,
+        "recall": 0.0
+      },
+      "DIVERTS_TO": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "CONFIRMED_BY": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "SCANNED_BY": {
+        "expected": 5,
+        "correct": 0,
+        "missing": 5,
+        "extra": 0,
+        "precision": null,
+        "recall": 0.0
+      }
+    },
+    "note": "Generated L5X edge extraction is heuristic; low edge recall does not alone mean devices were not generated. Prefer endpoint_coverage + identity checks."
+  },
+  "transport_identity": {
+    "counts": {
+      "CORRECT": 79
+    },
+    "rows": [
+      {
+        "name": "P440",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P442",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P444",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P500",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P502",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P504",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P506",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P506A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P508",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P508A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P509",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P510",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P526",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P528",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P530",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P530A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P532",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P534",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P536",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P538",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P540",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P542",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P544",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P552",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P554",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P556",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P560",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P562",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P564",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P566",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600D",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600E",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600F",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600G",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600H",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600I",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600J",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600K",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600M",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600N",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600O",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600P",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602D",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602E",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602F",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602G",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602H",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602I",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602J",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602K",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602M",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602N",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602O",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602P",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P700A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P700B",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P700C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P702A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P702B",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P702C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P704A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P704B",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P704C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P712",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P714",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P716",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P718",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P720",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P800",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P802",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P804",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P806",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P808",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P810",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P812",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P814",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P816",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      }
+    ],
+    "total": 79
+  },
+  "answer_sheet_used_for_generation": false,
+  "answer_sheet_path": "C:\\Users\\curtiskricke\\Desktop\\Autogen\\ORLY_Greensboro_NC_PLC5.L5X",
+  "answer_vs_generated": {
+    "generated_at": "2026-09-12T23:10:47.375130+00:00",
+    "expected_edges": 213,
+    "actual_edges": 328,
+    "correctly_generated": 95,
+    "missing": 118,
+    "extra": 233,
+    "wrong_target": 157,
+    "unresolved": 0,
+    "precision": 0.2896,
+    "recall": 0.446,
+    "endpoint_coverage": 0.6142,
+    "expected_nodes": 394,
+    "actual_nodes": 598,
+    "nodes_present_in_both": 242,
+    "by_class": {
+      "DOWNSTREAM_OF": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "CONTROLLED_BY": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "MOTOR_OF": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "VFD_OF": {
+        "expected": 5,
+        "correct": 0,
+        "missing": 5,
+        "extra": 31,
+        "precision": 0.0,
+        "recall": 0.0
+      },
+      "PE_OF": {
+        "expected": 208,
+        "correct": 95,
+        "missing": 113,
+        "extra": 202,
+        "precision": 0.31986531986531985,
+        "recall": 0.4567307692307692
+      },
+      "ENCODER_OF": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "MEMBER_OF_MERGE": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "MEMBER_OF_SORTER": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "DIVERTS_TO": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "CONFIRMED_BY": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      },
+      "SCANNED_BY": {
+        "expected": 0,
+        "correct": 0,
+        "missing": 0,
+        "extra": 0,
+        "precision": null,
+        "recall": null
+      }
+    },
+    "samples": {
+      "missing": [
+        {
+          "from": "PE06SKIQBCX6VWKU",
+          "to": "P95H",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE06V2JRS",
+          "to": "P13L",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE11GL6ZTMKFQAIVJNZRXZ6QBI8QHWUC6DTUXLJRKZJXFMJEO",
+          "to": "P71Q",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE12DGUG2KULB",
+          "to": "P39X",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE16NHS9CL23IM6YVOWU",
+          "to": "P21T",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE17WMVUD6FOR",
+          "to": "P76L",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE21M",
+          "to": "P81D",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE21SHRRWRPQEQQ42IHSNPKZOY63VBB0YDONABVRSPEE49I8ZMVOLTJYOEHGAWJDZSUS",
+          "to": "P7521Y",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE24FKCJQZPNFLF8Z32MW4IIRAMNINAPK6EQIL",
+          "to": "P77T",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE26",
+          "to": "P265Q",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE261AR",
+          "to": "P27O",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE338UNKF4MA3M0GAQNQYPZPZMHL1Q2",
+          "to": "P52C",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE351EKL157MARDH",
+          "to": "P77T",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE38BJE1JNLBAVYRXZQNUR3BEB23ZSTFFGAULZ9EVMKESI9WC4S",
+          "to": "P98W",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_F",
+          "to": "P442",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_F",
+          "to": "P544",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_P",
+          "to": "P608P",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_P",
+          "to": "P804",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE444_P",
+          "to": "P440",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE444_P",
+          "to": "P602P",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE444_P",
+          "to": "P812",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE504_I",
+          "to": "P500A",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE508_I",
+          "to": "P508",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE508_J",
+          "to": "P444",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE509_I",
+          "to": "P509",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE510_I",
+          "to": "P510",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE510_J",
+          "to": "P508",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE530_F",
+          "to": "P718",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE530_P",
+          "to": "P530",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE530_P",
+          "to": "P718",
+          "class": "PE_OF"
+        }
+      ],
+      "extra": [
+        {
+          "from": "PE20WJE4I1BOQEY",
+          "to": "P85S",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE35WIZ5FT44SHK14YRK70XDHTJRTTFDKUMLP4K5JOFFRVI2YQKYW8OPTXZ7Q5HD2MBPFEDDYJLUCA6LKXPRJIHF6ZIUAEB5VGH5WU2FV5F6IDKECPBNOBWRQHUVLLNF6BGOGHHWFOKI4ZY6FX2KGSSEUR6PUPY",
+          "to": "P30W",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_F",
+          "to": "P521",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_F",
+          "to": "P814",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_P",
+          "to": "P40",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_P",
+          "to": "P500A",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_P",
+          "to": "P51A",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_P",
+          "to": "P521",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_P",
+          "to": "P713",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE442_P",
+          "to": "P810",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE444_P",
+          "to": "P442",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE444_P",
+          "to": "P444",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE500_J",
+          "to": "P444",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE504_I",
+          "to": "P500",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE504_I",
+          "to": "P502",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE504_I",
+          "to": "P59",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE506_I",
+          "to": "P504",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE506_I",
+          "to": "P59",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE508_I",
+          "to": "P131",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE508_J",
+          "to": "P506",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE508_J",
+          "to": "P506A",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE508_J_AOI",
+          "to": "P508",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE509_I",
+          "to": "P508",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE509_I",
+          "to": "P508A",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE509_I",
+          "to": "P713",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE510_I",
+          "to": "P713",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE510_J",
+          "to": "P131",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE510_J",
+          "to": "P154",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE510_J",
+          "to": "P509",
+          "class": "PE_OF"
+        },
+        {
+          "from": "PE510_J",
+          "to": "P510",
+          "class": "PE_OF"
+        }
+      ],
+      "wrong_target": [
+        {
+          "from": "PE444_P",
+          "class": "PE_OF",
+          "actual_to": "P444",
+          "expected_to": [
+            "P440",
+            "P602P",
+            "P812"
+          ]
+        },
+        {
+          "from": "PE600G_J",
+          "class": "PE_OF",
+          "actual_to": "P600F",
+          "expected_to": [
+            "P600G"
+          ]
+        },
+        {
+          "from": "PE718_P",
+          "class": "PE_OF",
+          "actual_to": "P714",
+          "expected_to": [
+            "P442",
+            "P718"
+          ]
+        },
+        {
+          "from": "PE602G_F",
+          "class": "PE_OF",
+          "actual_to": "P602F",
+          "expected_to": [
+            "P608F"
+          ]
+        },
+        {
+          "from": "PE602C_P",
+          "class": "PE_OF",
+          "actual_to": "P600P",
+          "expected_to": [
+            "P542",
+            "P602C"
+          ]
+        },
+        {
+          "from": "PE602E_P",
+          "class": "PE_OF",
+          "actual_to": "P59",
+          "expected_to": [
+            "P602D",
+            "P602E"
+          ]
+        },
+        {
+          "from": "PE602I_F",
+          "class": "PE_OF",
+          "actual_to": "P621",
+          "expected_to": [
+            "P608H"
+          ]
+        },
+        {
+          "from": "PE608P_F",
+          "class": "PE_OF",
+          "actual_to": "P155",
+          "expected_to": [
+            "P602P"
+          ]
+        },
+        {
+          "from": "PE442_P",
+          "class": "PE_OF",
+          "actual_to": "P521",
+          "expected_to": [
+            "P442",
+            "P608P",
+            "P804"
+          ]
+        },
+        {
+          "from": "PE602M_F",
+          "class": "PE_OF",
+          "actual_to": "P176",
+          "expected_to": [
+            "P564"
+          ]
+        },
+        {
+          "from": "PE566_P",
+          "class": "PE_OF",
+          "actual_to": "P622",
+          "expected_to": [
+            "P564",
+            "P602K"
+          ]
+        },
+        {
+          "from": "PE704B_F",
+          "class": "PE_OF",
+          "actual_to": "P704A",
+          "expected_to": [
+            "P500"
+          ]
+        },
+        {
+          "from": "PE810_P",
+          "class": "PE_OF",
+          "actual_to": "P40",
+          "expected_to": [
+            "P15",
+            "P440"
+          ]
+        },
+        {
+          "from": "PE602N_F",
+          "class": "PE_OF",
+          "actual_to": "P602M",
+          "expected_to": [
+            "P608M"
+          ]
+        },
+        {
+          "from": "PE602C_F",
+          "class": "PE_OF",
+          "actual_to": "P59",
+          "expected_to": [
+            "P702C"
+          ]
+        },
+        {
+          "from": "PE600M_J",
+          "class": "PE_OF",
+          "actual_to": "P154",
+          "expected_to": [
+            "P600M"
+          ]
+        },
+        {
+          "from": "PE718_P",
+          "class": "PE_OF",
+          "actual_to": "P521",
+          "expected_to": [
+            "P442",
+            "P718"
+          ]
+        },
+        {
+          "from": "PE602G_P",
+          "class": "PE_OF",
+          "actual_to": "P100",
+          "expected_to": [
+            "P602F",
+            "P602G"
+          ]
+        },
+        {
+          "from": "PE812_J",
+          "class": "PE_OF",
+          "actual_to": "P810",
+          "expected_to": [
+            "P812"
+          ]
+        },
+        {
+          "from": "PE566_P",
+          "class": "PE_OF",
+          "actual_to": "P566",
+          "expected_to": [
+            "P564",
+            "P602K"
+          ]
+        }
+      ]
+    },
+    "policy": [
+      "Ignore Area/zone naming differences by default",
+      "Finished PLC is validation-only answer sheet",
+      "Edge precision/recall from extractable L5X links may be low; endpoint_coverage is primary for current Autogen emit",
+      "High-value metric: relationship fidelity (edges when extractable) + device endpoint coverage"
+    ],
+    "note": "Generated L5X edge extraction is heuristic; low edge recall does not alone mean devices were not generated. Prefer endpoint_coverage + identity checks."
+  },
+  "transport_identity_vs_answer": {
+    "counts": {
+      "CORRECT": 79,
+      "MISSING": 345
+    },
+    "rows": [
+      {
+        "name": "P440",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P442",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P444",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P500",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P502",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P504",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P506",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P506A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P508",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P508A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P509",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P510",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P526",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P528",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P530",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P530A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P532",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P534",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P536",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P538",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P540",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P542",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P544",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P552",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P554",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P556",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P560",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P562",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P564",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P566",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600D",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600E",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600F",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600G",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600H",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600I",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600J",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600K",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600M",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600N",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600O",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P600P",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602D",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602E",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602F",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602G",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602H",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602I",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602J",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602K",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602M",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602N",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602O",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P602P",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P700A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P700B",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P700C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P702A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P702B",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P702C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P704A",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P704B",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P704C",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P712",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P714",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P716",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P718",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P720",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P800",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P802",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P804",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P806",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P808",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P810",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P812",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P814",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P816",
+        "category": "CORRECT",
+        "inclusion": "INCLUDED"
+      },
+      {
+        "name": "P01_SAFETY_20MS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P02_TRACK_10MS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P03_WCS_10MS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P04",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P10_FAST_50MS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P11_SLOW_200MS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P15_CONFIG_L1_EVENT",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P15_CONFIG_L2_EVENT",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P15_CONFIG_L3_EVENT",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P15_CONFIG_SYS_EVENT",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P24",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P440_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P440_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P442_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P442_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P444_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P444_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P500A_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P500A_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P500_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P500_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P500_CS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P502_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P502_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P504_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P504_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P506_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P506_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P506_CS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P508_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P508_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P508_CS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P509_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P509_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P509_CS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P510_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P510_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P510_CS",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P526_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P526_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P528_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P528_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P530_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P530_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P534_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P534_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P536_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P536_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P542_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P542_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P544_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P544_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P550_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P550_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P554_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P554_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P560_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P560_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P564_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P564_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P566_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P566_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600C_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600C_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600D_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600D_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600E_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600E_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600F_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600F_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600G_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600G_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600H_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600H_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600I_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600I_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600J_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600J_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600K_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600K_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600M_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600M_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600N_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600N_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600O_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600O_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600P_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P600P_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602C_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602C_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602D_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602D_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602E_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602E_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602F_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602F_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602G_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602G_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602H_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602H_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602I_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602I_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602J_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602J_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602K_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602K_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602M_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602M_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602N_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602N_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602O_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602O_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602P_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P602P_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P67",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P700A_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P700A_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P700B_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P700B_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P700C_CONV",
+        "category": "MISSING",
+        "inclusion": null
+      },
+      {
+        "name": "P700C_CONV_AOI",
+        "category": "MISSING",
+        "inclusion": null
+      }
+    ],
+    "total": 424
+  }
+}

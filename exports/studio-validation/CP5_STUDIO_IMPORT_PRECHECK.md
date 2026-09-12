@@ -1,6 +1,6 @@
 # Studio Import Precheck — ORNCCP5_candidate_v2.L5X
 
-Generated: `2026-09-12T22:05:39.549930+00:00`
+Generated: `2026-09-12T23:10:47.454124+00:00`
 
 - XML parses: **True**
 - Static ok (no ERROR): **True**

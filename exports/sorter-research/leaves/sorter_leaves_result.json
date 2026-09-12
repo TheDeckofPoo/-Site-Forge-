@@ -1,0 +1,407 @@
+{
+  "capabilities": {
+    "encoder_speed": {
+      "state": "GENERATED",
+      "contract": {
+        "aoi_or_program": [
+          "Enc_Routine_ST.L5X",
+          "encoder tags"
+        ],
+        "udt": [
+          "optional ENC_* tags"
+        ],
+        "run_fields": [
+          "Encoders.Encoder Name",
+          "Encoder I/O",
+          "Ticks Per Foot",
+          "Target FPM"
+        ],
+        "equipment_relationships": [
+          "sorter.encoder_io",
+          "Encoders.asc"
+        ],
+        "optional_config": [
+          "Calculated FPM"
+        ],
+        "engineer_required": [],
+        "outputs": [
+          "encoder controller tags",
+          "optional enable/reset stubs"
+        ]
+      }
+    },
+    "induct_detection": {
+      "state": "GENERATED",
+      "contract": {
+        "aoi_or_program": [],
+        "udt": [],
+        "run_fields": [
+          "ScnScanDevice",
+          "SrtScanBoss",
+          "Conveyor PE"
+        ],
+        "equipment_relationships": [
+          "scanner\u2192scan_zone",
+          "PE role SCAN_TRIGGER/DETECTION"
+        ],
+        "optional_config": [],
+        "engineer_required": [
+          "induct PE confirmation when ambiguous"
+        ],
+        "outputs": [
+          "induct structure tags"
+        ]
+      }
+    },
+    "token_creation": {
+      "state": "MODELED",
+      "contract": {
+        "aoi_or_program": [],
+        "udt": [
+          "SorterTokenModel (generic schema)"
+        ],
+        "run_fields": [
+          "SrtTrack* runtime (not equipment)",
+          "Sorters.Max Cartons"
+        ],
+        "equipment_relationships": [
+          "sorter encoder"
+        ],
+        "optional_config": [],
+        "engineer_required": [
+          "UDT approval",
+          "tracking slot sizing"
+        ],
+        "outputs": [
+          "token schema model"
+        ]
+      }
+    },
+    "track_offset": {
+      "state": "CONFIGURATION_REQUIRED",
+      "contract": {
+        "aoi_or_program": [],
+        "udt": [
+          "TrackOffsetModel"
+        ],
+        "run_fields": [
+          "Encoders.Ticks Per Foot",
+          "Sorters.Encoder ioName"
+        ],
+        "equipment_relationships": [
+          "induct\u2192encoder\u2192divert"
+        ],
+        "optional_config": [],
+        "engineer_required": [
+          "offset_counts between induct and divert"
+        ],
+        "outputs": [
+          "TrackOffsetModel candidates"
+        ]
+      }
+    },
+    "scanner_association": {
+      "state": "GENERATED",
+      "contract": {
+        "aoi_or_program": [],
+        "udt": [],
+        "run_fields": [
+          "ScnScanDevice.Name",
+          "ScanZone",
+          "ScanType",
+          "Machine"
+        ],
+        "equipment_relationships": [
+          "Machine serial/TCP peer"
+        ],
+        "optional_config": [],
+        "engineer_required": [],
+        "outputs": [
+          "scanner device tags",
+          "scan zone tags"
+        ]
+      }
+    },
+    "route_request": {
+      "state": "CONFIGURATION_REQUIRED",
+      "contract": {
+        "aoi_or_program": [],
+        "udt": [],
+        "run_fields": [
+          "XfRouteBoss",
+          "XfRouteTable",
+          "MsgMap"
+        ],
+        "equipment_relationships": [
+          "WCS peer"
+        ],
+        "optional_config": [],
+        "engineer_required": [
+          "destination map"
+        ],
+        "outputs": []
+      }
+    },
+    "destination_response": {
+      "state": "NOT_SUPPORTED",
+      "contract": {
+        "aoi_or_program": [],
+        "udt": [],
+        "run_fields": [
+          "MsgWCS",
+          "WCSEvents"
+        ],
+        "equipment_relationships": [],
+        "optional_config": [],
+        "engineer_required": [
+          "WCS response contract"
+        ],
+        "outputs": []
+      }
+    },
+    "divert_readiness": {
+      "state": "CONFIGURATION_REQUIRED",
+      "contract": {
+        "aoi_or_program": [
+          "TRK_Divert_WaveFunction_AOI"
+        ],
+        "udt": [],
+        "run_fields": [
+          "SrtZoneLane.Enabled",
+          "FullClearTimer",
+          "Sorters"
+        ],
+        "equipment_relationships": [
+          "lane PE",
+          "takeaway conveyor",
+          "sorter at speed"
+        ],
+        "optional_config": [
+          "wave parameters",
+          "rate limit"
+        ],
+        "engineer_required": [
+          "takeaway running/manual",
+          "fault",
+          "rate limit clear",
+          "full divert IO"
+        ],
+        "outputs": [
+          "divert readiness model"
+        ]
+      }
+    },
+    "divert_trigger": {
+      "state": "NOT_SUPPORTED",
+      "contract": {
+        "aoi_or_program": [
+          "TRK_Divert_WaveFunction_AOI"
+        ],
+        "udt": [],
+        "run_fields": [],
+        "equipment_relationships": [],
+        "optional_config": [],
+        "engineer_required": [
+          "full divert timing contract"
+        ],
+        "outputs": []
+      }
+    },
+    "divert_confirmation": {
+      "state": "NOT_SUPPORTED",
+      "contract": {
+        "run_fields": [],
+        "outputs": []
+      }
+    },
+    "divert_rate_limiting": {
+      "state": "NOT_SUPPORTED",
+      "contract": {
+        "run_fields": [],
+        "outputs": []
+      }
+    },
+    "recirculation": {
+      "state": "NOT_SUPPORTED",
+      "contract": {
+        "run_fields": [],
+        "outputs": []
+      }
+    },
+    "reason_code": {
+      "state": "GENERATED",
+      "contract": {
+        "aoi_or_program": [],
+        "udt": [
+          "reason code constants"
+        ],
+        "run_fields": [
+          "Srt* status vocab when present"
+        ],
+        "equipment_relationships": [],
+        "optional_config": [],
+        "engineer_required": [],
+        "outputs": [
+          "reason code DINT/constants tags"
+        ]
+      }
+    },
+    "wcs_event_reporting": {
+      "state": "MODELED",
+      "contract": {
+        "run_fields": [
+          "WCSEvents",
+          "MsgWCS"
+        ],
+        "outputs": []
+      }
+    }
+  },
+  "generated_leaves": {
+    "encoder_speed": {
+      "state": "GENERATED",
+      "encoders": [
+        {
+          "name": "ENC504",
+          "encoder_io": "ENC504",
+          "source": "Encoders.asc"
+        },
+        {
+          "name": "ENC506",
+          "encoder_io": "ENC506",
+          "source": "Encoders.asc"
+        },
+        {
+          "name": "ENC508",
+          "encoder_io": "ENC508",
+          "source": "Encoders.asc"
+        },
+        {
+          "name": "ENC509",
+          "encoder_io": "ENC509",
+          "source": "Encoders.asc"
+        },
+        {
+          "name": "ENC510",
+          "encoder_io": "ENC510",
+          "source": "Encoders.asc"
+        }
+      ]
+    },
+    "scanner_association": {
+      "state": "GENERATED",
+      "scanners": [
+        {
+          "scanner": "SHIP_SCAN_504",
+          "scan_zone": "SHIP_SCAN_504",
+          "scan_type": "Scan"
+        }
+      ]
+    },
+    "induct_detection": {
+      "state": "GENERATED",
+      "inducts": [
+        {
+          "name": "SHIP_SCAN_504_Induct",
+          "scanner": "SHIP_SCAN_504"
+        },
+        {
+          "name": "Ship_Sorter_Induct",
+          "scan_boss": "Ship Sorter"
+        }
+      ]
+    },
+    "reason_code": {
+      "state": "GENERATED",
+      "codes": [
+        {
+          "name": "REASON_NO_READ",
+          "value": 1
+        },
+        {
+          "name": "REASON_NO_ROUTE",
+          "value": 2
+        },
+        {
+          "name": "REASON_LANE_FULL",
+          "value": 3
+        },
+        {
+          "name": "REASON_DIVERT_FAULT",
+          "value": 4
+        },
+        {
+          "name": "REASON_RECIRC",
+          "value": 5
+        }
+      ]
+    },
+    "divert_configuration_model": {
+      "state": "CONFIGURATION_REQUIRED",
+      "sorters": [
+        {
+          "sorter": "504_BELT",
+          "encoder_io": "ENC504",
+          "status": "CONFIGURATION_REQUIRED",
+          "note": "Lane/divert map engineer-required; trigger NOT_SUPPORTED"
+        },
+        {
+          "sorter": "506_SHIP_SORTER",
+          "encoder_io": "ENC506",
+          "status": "CONFIGURATION_REQUIRED",
+          "note": "Lane/divert map engineer-required; trigger NOT_SUPPORTED"
+        },
+        {
+          "sorter": "508_SHIP_SORTER",
+          "encoder_io": "ENC508",
+          "status": "CONFIGURATION_REQUIRED",
+          "note": "Lane/divert map engineer-required; trigger NOT_SUPPORTED"
+        },
+        {
+          "sorter": "509_SHIP_SORTER",
+          "encoder_io": "ENC509",
+          "status": "CONFIGURATION_REQUIRED",
+          "note": "Lane/divert map engineer-required; trigger NOT_SUPPORTED"
+        },
+        {
+          "sorter": "510_SHIP_SORTER",
+          "encoder_io": "ENC510",
+          "status": "CONFIGURATION_REQUIRED",
+          "note": "Lane/divert map engineer-required; trigger NOT_SUPPORTED"
+        }
+      ]
+    }
+  },
+  "generated_capability_names": [
+    "encoder_speed",
+    "induct_detection",
+    "reason_code",
+    "scanner_association"
+  ],
+  "newly_generatable": [
+    "encoder_speed",
+    "induct_detection",
+    "reason_code",
+    "scanner_association"
+  ],
+  "modeled": [
+    "divert_readiness",
+    "encoder_speed",
+    "induct_detection",
+    "reason_code",
+    "route_request",
+    "scanner_association",
+    "token_creation",
+    "track_offset",
+    "wcs_event_reporting"
+  ],
+  "unsupported": [
+    "destination_response",
+    "divert_confirmation",
+    "divert_rate_limiting",
+    "divert_trigger",
+    "recirculation"
+  ],
+  "greensboro_constants": false,
+  "gold_sorter_track_cloned": false
+}

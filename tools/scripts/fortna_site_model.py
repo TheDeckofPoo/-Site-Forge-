@@ -583,43 +583,134 @@ class SiteModel:
 
 
 def ensure_default_area(model: SiteModel) -> SiteModel:
-    """If no reliable RUN area, create Area_1 (ENGINEER_CONFIGURED_REQUIRED)."""
-    reliable = [
-        a
-        for a in model.areas
-        if a.get("provenance") in {PROV_RUN_EXPLICIT, PROV_ENGINEER}
-        and a.get("normalized_name")
-        and a.get("normalized_name") != DEFAULT_AREA_ID.upper()
-    ]
-    if reliable:
-        return model
+    """Ensure Area_1 exists and INCLUDED transport equipment is assigned.
 
-    area = make_object(
-        "area",
-        DEFAULT_AREA_ID,
-        source_table="",
-        source_row=None,
-        source_scope=SCOPE_ENGINEER,
-        active_state=ACTIVE_LIKELY,
-        inclusion=INCLUDED,
-        confidence="LOW",
-        provenance=PROV_ENGINEER_REQUIRED,
-        evidence=[
-            {
-                "kind": "default_area",
-                "note": "No reliable Area table/rows from RUN; Area_1 is engineer-configured required placeholder",
-            }
-        ],
-        generation_state=GEN_CFG,
-        run_derived=False,
-        default_area=True,
-    ).to_dict()
-    model.areas = [area]
+    Product decision (Curtis): Engineering Area auto-discovery is NOT required.
+    Normal workflow is default Area_1 → engineer create/rename/split/move → regenerate.
+    Suggestions may exist elsewhere; they are never a generation gate.
+    """
+    # Prefer keeping any engineer-created areas; still ensure Area_1 exists as default bucket.
+    has_area_1 = any(
+        (a.get("normalized_name") or "").upper() == DEFAULT_AREA_ID.upper()
+        or (a.get("raw_name") or "") == DEFAULT_AREA_ID
+        for a in model.areas
+    )
+    if not has_area_1:
+        area = make_object(
+            "area",
+            DEFAULT_AREA_ID,
+            source_table="",
+            source_row=None,
+            source_scope=SCOPE_ENGINEER,
+            active_state=ACTIVE_LIKELY,
+            inclusion=INCLUDED,
+            confidence="LOW",
+            provenance=PROV_ENGINEER_REQUIRED,
+            evidence=[
+                {
+                    "kind": "default_area",
+                    "note": (
+                        "Area_1 is the default engineer workspace after RUN import. "
+                        "Area auto-inference is not required; engineer configures Areas."
+                    ),
+                }
+            ],
+            generation_state=GEN_CFG,
+            run_derived=False,
+            default_area=True,
+        ).to_dict()
+        model.areas = [area] + list(model.areas or [])
+
+    assigned = 0
     for eq in model.equipment:
         if eq.get("inclusion") == INCLUDED and not eq.get("area_id"):
             eq["area_id"] = DEFAULT_AREA_ID
+            assigned += 1
     model.notes.append(
-        "Area_1 assigned as ENGINEER_CONFIGURED_REQUIRED default — not claimed as RUN-derived"
+        f"Area_1 default workflow: {assigned} INCLUDED equipment assigned "
+        "(Area auto-discovery not required; engineer configures Areas)"
+    )
+    return model
+
+
+DEFAULT_ESTOP_ZONE_ID = "EStop_Zone_1"
+
+
+def ensure_default_estop_zone(model: SiteModel) -> SiteModel:
+    """Discover E-stop devices; place them in default EStop_Zone_1 for engineer editing.
+
+    Zone auto-reconstruction of historical membership is NOT required.
+    """
+    og = dict(model.operational_groups or {})
+    devices = list(og.get("estop_devices") or model.estop_zones or [])
+    # Normalize legacy estop_zones rows into devices if needed
+    if not og.get("estop_devices") and model.estop_zones:
+        devices = []
+        for z in model.estop_zones:
+            devices.append(
+                {
+                    **z,
+                    "kind": "EStopDevice",
+                    "name": z.get("raw_name") or z.get("normalized_name"),
+                    "estop_zone_id": DEFAULT_ESTOP_ZONE_ID,
+                }
+            )
+
+    zones = list(og.get("estop_zones_operational") or [])
+    has_default = any(
+        (z.get("normalized_name") or "").upper() == DEFAULT_ESTOP_ZONE_ID.upper()
+        or (z.get("raw_name") or z.get("name") or "") == DEFAULT_ESTOP_ZONE_ID
+        for z in zones
+    )
+    if not has_default:
+        zones.insert(
+            0,
+            make_object(
+                "estop_zone",
+                DEFAULT_ESTOP_ZONE_ID,
+                source_scope=SCOPE_ENGINEER,
+                active_state=ACTIVE_LIKELY,
+                inclusion=INCLUDED,
+                confidence="LOW",
+                provenance=PROV_ENGINEER_REQUIRED,
+                evidence=[
+                    {
+                        "kind": "default_estop_zone",
+                        "note": (
+                            "Default E-stop zone after import. Engineer creates/splits zones "
+                            "and assigns devices/equipment. Historical zone auto-reconstruction not required."
+                        ),
+                    }
+                ],
+                generation_state=GEN_CFG,
+                membership=[],
+                membership_confidence="ENGINEER_REQUIRED",
+                generation_allowed=False,
+                default_estop_zone=True,
+            ).to_dict(),
+        )
+
+    # Assign devices to default zone when unset
+    member_names = []
+    for d in devices:
+        if not d.get("estop_zone_id"):
+            d["estop_zone_id"] = DEFAULT_ESTOP_ZONE_ID
+        if (d.get("estop_zone_id") or "") == DEFAULT_ESTOP_ZONE_ID:
+            member_names.append(d.get("name") or d.get("raw_name") or d.get("normalized_name"))
+
+    for z in zones:
+        if (z.get("raw_name") or z.get("name") or "") == DEFAULT_ESTOP_ZONE_ID:
+            z["membership"] = [m for m in member_names if m]
+            z["membership_confidence"] = "ENGINEER_REQUIRED"
+            z["generation_allowed"] = False
+
+    og["estop_devices"] = devices
+    og["estop_zones_operational"] = zones
+    og["estop_zones"] = zones  # operational zones only going forward
+    model.operational_groups = og
+    model.estop_zones = zones
+    model.notes.append(
+        f"EStop_Zone_1 default: {len(member_names)} devices assigned for engineer confirmation"
     )
     return model
 
