@@ -302,14 +302,126 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                 mech_by_name[key] = r
 
     # Primary set = Autogen controller conveyors that have ASC geometry rows
-    target_tags = sorted(controller_tags & set(mech_by_name.keys()))
+    owned_tags = sorted(controller_tags & set(mech_by_name.keys()))
     # If Autogen set empty, fall back to controller-scoped mech rows
-    if not target_tags:
-        target_tags = sorted(
+    if not owned_tags:
+        owned_tags = sorted(
             k
             for k, r in mech_by_name.items()
             if _row_on_controller(r, machine, word_map)
         )
+
+    # DISPLAY CONTEXT EXPANSION (presentation only):
+    # Autogen ownership often omits intermediate CURVE/STRAIGHT segments that complete
+    # a physical run (e.g. P126→P128→P130→P132→P134 U-turn). Include geometrically
+    # mated neighbors so Auto Build can draw recognizable assemblies. These are marked
+    # display_context=True and must NOT become PLC Apply / workbook ownership.
+    def _quick_anchors(row: dict) -> tuple[dict | None, dict | None]:
+        try:
+            from fortna_physical_geometry import build_equipment_geometry
+
+            g = build_equipment_geometry(row)
+            if g.get("entry") and g.get("exit"):
+                return g["entry"], g["exit"]
+        except Exception:
+            pass
+        x, y = _f(row.get("X_cord")), _f(row.get("Y_cord"))
+        ang, length = _f(row.get("Angle")), _f(row.get("Length"))
+        if x is None or y is None or ang is None or not length or length <= 0:
+            return None, None
+        a = _anchors(x, y, length, ang)
+        return a["entry"], a["exit"]
+
+    owned_set = set(owned_tags)
+    display_extra: set[str] = set()
+    owned_ends: list[tuple[str, dict, dict]] = []
+    for tag in owned_tags:
+        en, ex = _quick_anchors(mech_by_name[tag])
+        if en and ex:
+            owned_ends.append((tag, en, ex))
+
+    # Mate thresholds in RUN units.
+    # True abutments ≈ 0; hairpin CURVE assemblies also share entry/entry or exit/exit
+    # and may leave a few hundred units of gap when IR/tangent interpretation is MEDIUM.
+    _MATE_U = 50.0
+    _ASSEMBLY_U = 600.0
+    for tag, row in mech_by_name.items():
+        if tag in owned_set:
+            continue
+        en, ex = _quick_anchors(row)
+        if not en or not ex:
+            continue
+        for _ot, oen, oex in owned_ends:
+            if (
+                _dist(oex, en) <= _MATE_U
+                or _dist(ex, oen) <= _MATE_U
+                or _dist(oen, en) <= _MATE_U
+                or _dist(oex, ex) <= _MATE_U
+            ):
+                display_extra.add(tag)
+                break
+
+    # Arc-center clustering: owned CURVE bodies pull nearby CURVE records that share
+    # the same circular/hairpin assembly (e.g. P126/P130/P134), even when endpoint
+    # mating is imperfect under the current IR model.
+    owned_arc_centers: list[tuple[float, float]] = []
+    try:
+        from fortna_physical_geometry import build_equipment_geometry as _beg
+
+        for tag in owned_tags:
+            g = _beg(mech_by_name[tag])
+            ac = g.get("arc_center") if g else None
+            if ac:
+                owned_arc_centers.append((float(ac["x"]), float(ac["y"])))
+    except Exception:
+        owned_arc_centers = []
+
+    if owned_arc_centers:
+        for tag, row in mech_by_name.items():
+            if tag in owned_set or tag in display_extra:
+                continue
+            if _clean(row.get("Type")).upper() not in {"CURVE", "TRIANG"}:
+                continue
+            try:
+                from fortna_physical_geometry import build_equipment_geometry as _beg2
+
+                g = _beg2(row)
+            except Exception:
+                continue
+            ac = g.get("arc_center") if g else None
+            if not ac:
+                continue
+            if any(
+                math.hypot(float(ac["x"]) - cx, float(ac["y"]) - cy) <= 1500.0
+                for cx, cy in owned_arc_centers
+            ):
+                display_extra.add(tag)
+
+    # One-hop + assembly-gap expansion: pull near-mates of owned/display seeds so
+    # U-turn corridors (curve–straight–curve) become continuous on the canvas.
+    if display_extra or owned_ends:
+        seed_ends = list(owned_ends)
+        for tag in list(display_extra):
+            en, ex = _quick_anchors(mech_by_name[tag])
+            if en and ex:
+                seed_ends.append((tag, en, ex))
+        for tag, row in mech_by_name.items():
+            if tag in owned_set or tag in display_extra:
+                continue
+            en, ex = _quick_anchors(row)
+            if not en or not ex:
+                continue
+            for _ot, oen, oex in seed_ends:
+                if (
+                    _dist(oex, en) <= _ASSEMBLY_U
+                    or _dist(ex, oen) <= _ASSEMBLY_U
+                    or _dist(oen, en) <= _MATE_U
+                    or _dist(oex, ex) <= _MATE_U
+                ):
+                    display_extra.add(tag)
+                    break
+
+    target_tags = sorted(owned_set | display_extra)
 
     equipment: list[dict] = []
     for tag in target_tags:
@@ -390,6 +502,7 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
             geom_conf = geom["confidence"]
         else:
             geom_conf = "HIGH" if not hard_issues else ("MEDIUM" if len(hard_issues) == 1 else "LOW")
+        is_display_ctx = tag not in owned_set
         equipment.append(
             {
                 "conveyor": name,
@@ -402,14 +515,18 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                 "infeed_tangent": in_tan,
                 "discharge_tangent": out_tan,
                 "inside_radius": inside_r,
-                "motors": motors,
-                "drives": drive_types,
+                "motors": motors if not is_display_ctx else [],
+                "drives": drive_types if not is_display_ctx else [],
                 "drive_type": (
-                    drive_types[0]["drive_type"]
-                    if len(drive_types) == 1
-                    else ("MIXED" if drive_types else "UNKNOWN")
+                    (
+                        drive_types[0]["drive_type"]
+                        if len(drive_types) == 1
+                        else ("MIXED" if drive_types else "UNKNOWN")
+                    )
+                    if not is_display_ctx
+                    else "UNKNOWN"
                 ),
-                "photoeyes_name_associated": pe_assoc,
+                "photoeyes_name_associated": pe_assoc if not is_display_ctx else [],
                 "entry_anchor": anchors["entry"] if anchors else None,
                 "exit_anchor": anchors["exit"] if anchors else None,
                 "anchor_assumption": anchors["assumption"] if anchors else None,
@@ -428,6 +545,13 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                 "machine_name": _clean(r.get("Machine_Name")),
                 "io_address_word": _clean(r.get("IO_Address_Word")),
                 "in_motor_chain": _clean(r.get("In Motor Chain")),
+                # Presentation-only neighbor included to complete physical runs.
+                # Never treat as Autogen/PLC ownership.
+                "display_context": is_display_ctx,
+                "plc_owned": not is_display_ctx,
+                "layer": _clean(r.get("Layer")),
+                "field_b": _f(r.get("b")),
+                "field_c": _f(r.get("c")),
                 "source_fields": {
                     "table": "FORTNA/Conveyor.asc",
                     "type": typ,
@@ -439,6 +563,9 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                     "inside_radius_field": "Inside_Radius",
                     "infeed_tangent_field": "Infeed_Tangent",
                     "discharge_tangent_field": "Discharge_Tangent",
+                    "b_field": "b",
+                    "c_field": "c",
+                    "layer_field": "Layer",
                     "xy_meaning": "infeed_entry_end",
                     "motor_association": "Mtrchain.asc Motor_Chained* → P-tag",
                 },

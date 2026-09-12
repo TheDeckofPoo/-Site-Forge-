@@ -255,6 +255,13 @@ def build_transport_graph(
             "motorsMeta": e.get("drives") or [],
             "geometryConfidence": e.get("confidence") or "LOW",
             "drawingPage": e.get("drawing_page") or "",
+            # display_context neighbors complete physical runs (curves/U-turns) but
+            # are NOT Autogen/PLC ownership — Apply must skip them.
+            "displayContext": bool(e.get("display_context")),
+            "plcOwned": bool(e.get("plc_owned", not e.get("display_context"))),
+            "layer": e.get("layer") or "",
+            "fieldB": e.get("field_b"),
+            "fieldC": e.get("field_c"),
         }
         nodes.append(node)
 

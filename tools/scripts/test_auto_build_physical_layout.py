@@ -60,14 +60,23 @@ def main() -> int:
     check("usable angle == discovered", m.get("conveyors_with_usable_angle") == m.get("conveyors_discovered"))
     check("graph has one area", len(graph.get("areas") or []) == 1)
     area = (graph.get("areas") or [{}])[0]
-    check("nodes == discovered", len(area.get("nodes") or []) == m.get("conveyors_discovered"))
+    nodes = area.get("nodes") or []
+    check("nodes == discovered", len(nodes) == m.get("conveyors_discovered"))
     check(
         "auto wires == auto_connections",
         len(area.get("wires") or []) == m.get("auto_connections"),
         f"{len(area.get('wires') or [])} vs {m.get('auto_connections')}",
     )
+    owned = [n for n in nodes if n.get("plcOwned") and not n.get("displayContext")]
+    ctx = [n for n in nodes if n.get("displayContext")]
+    check("plc-owned Autogen set still 35", len(owned) == 35, str(len(owned)))
+    check("display_context neighbors present", len(ctx) >= 6, str(len(ctx)))
+    # Hairpin completeness (presentation)
+    tags = {n.get("conveyorTag") for n in nodes}
+    check("west hairpin has P128/P130/P132", {"P128", "P130", "P132"} <= tags)
+    check("east hairpin has P144/P145/P146", {"P144", "P145", "P146"} <= tags)
     # Physical fields present
-    sample = (area.get("nodes") or [None])[0]
+    sample = nodes[0] if nodes else None
     check("physical flag on nodes", bool(sample and sample.get("physical")))
     check("entry/exit anchors present", bool(sample and sample.get("entryAnchor") and sample.get("exitAnchor")))
     check("no invented ModuleB area name", "ModuleB" not in (area.get("name") or ""))

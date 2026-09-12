@@ -125,6 +125,12 @@ def classify_pair(a: dict, b: dict) -> dict[str, Any]:
         ta.rstrip("ABCDEFGH") == tb.rstrip("ABCDEFGH") and ta != tb and ang_d < 20
     )
 
+    types_u = {str(a.get("type") or "").upper(), str(b.get("type") or "").upper()}
+    has_curve = bool(types_u & {"CURVE", "TRIANG", "TRIANGLE"})
+
+    # Classes (display / research):
+    # CONNECTED_SERIAL, PARALLEL_CONVEYOR, CURVE_ASSEMBLY, SAME_PHYSICAL_ASSEMBLY,
+    # PARENT_CHILD, DIFFERENT_LAYER, VALID_PHYSICAL_OVERLAP, SUSPECT_GEOMETRY, UNKNOWN
     cls = "UNKNOWN"
     if layer_diff and oa > 0:
         cls = "DIFFERENT_LAYER"
@@ -132,14 +138,16 @@ def classify_pair(a: dict, b: dict) -> dict[str, Any]:
         cls = "PARENT_CHILD"
     elif ang_d < 15 and center_d < 1.5 * wref and end_d > 0.5 * wref:
         cls = "PARALLEL_CONVEYOR"
+    elif end_d < 0.5 * wref and ang_d < 35 and has_curve:
+        cls = "CURVE_ASSEMBLY"
     elif end_d < 0.5 * wref and ang_d < 25:
-        cls = "SERIAL_OVERLAP"
+        cls = "CONNECTED_SERIAL"
     elif oa > 0 and center_d < 0.5 * wref and ang_d < 10 and len_sim > 0.85:
         cls = "SAME_PHYSICAL_ASSEMBLY"
     elif oa > 0 and center_d < wref:
         cls = "VALID_PHYSICAL_OVERLAP"
     elif oa > 0:
-        cls = "SUSPECT_RUN_GEOMETRY"
+        cls = "SUSPECT_GEOMETRY"
 
     return {
         "a": ta,
@@ -189,7 +197,8 @@ def cluster_equipment(equipment: list[dict], machine: str) -> dict[str, Any]:
             "PARALLEL_CONVEYOR",
             "SAME_PHYSICAL_ASSEMBLY",
             "PARENT_CHILD",
-            "SERIAL_OVERLAP",
+            "CONNECTED_SERIAL",
+            "CURVE_ASSEMBLY",
         }:
             union(p["a"], p["b"])
 

@@ -58,6 +58,7 @@ def test_canonical_apply_excludes_presentation() -> None:
         "sourceY",
     ):
         assert bad not in block, f"canonical Apply must not emit {bad}"
+    assert "displayContext" in block, "Apply must filter displayContext neighbors"
     print("  [PASS] canonical Apply excludes presentation/raw canvas fields")
 
 
@@ -67,7 +68,39 @@ def test_overlap_classifies_connected_serial() -> None:
     assert "PARALLEL_LANE_SEPARATION" in js
     assert "CONNECTED_RUN_MATE" in js or "CONNECTIVITY_MATE" in js
     assert "CURVE_ASSEMBLY" in js
+    assert "SAME_PHYSICAL_ASSEMBLY" in js
+    assert "PARALLEL_CONVEYOR" in js
     print("  [PASS] overlap classifier distinguishes serial vs parallel")
+
+
+def test_display_context_firewall() -> None:
+    p = ROOT / "exports/run-geometry/auto-build/transport_graph_from_run.json"
+    if not p.exists():
+        print("  [SKIP] transport graph missing")
+        return
+    g = json.loads(p.read_text(encoding="utf-8"))
+    nodes = (g["areas"][0]["nodes"] if g.get("areas") else g.get("nodes")) or []
+    owned = [n for n in nodes if n.get("plcOwned") and not n.get("displayContext")]
+    ctx = [n for n in nodes if n.get("displayContext")]
+    assert len(owned) == 35
+    assert len(ctx) >= 6
+    # Raw coords present on both; display offsets are UI-only (not in graph JSON)
+    for n in owned[:3] + ctx[:3]:
+        assert n.get("sourceX") is not None and n.get("sourceY") is not None
+        assert "display_dx" not in n
+    print(f"  [PASS] display_context firewall owned={len(owned)} ctx={len(ctx)}")
+
+
+def test_layout_pass2_artifacts() -> None:
+    for rel in (
+        "exports/layout-research/spiral_area_analysis.json",
+        "exports/layout-research/physical_runs.json",
+        "exports/layout-research/layout_before_after.md",
+        "exports/layout-research/curve_validation.json",
+        "exports/layout-research/overlap_clusters.json",
+    ):
+        assert (ROOT / rel).exists(), rel
+    print("  [PASS] layout pass2 research artifacts present")
 
 
 def test_curve_arc_in_graph() -> None:
@@ -131,6 +164,8 @@ def main() -> int:
         test_no_area_es_canvas_labels,
         test_canonical_apply_excludes_presentation,
         test_overlap_classifies_connected_serial,
+        test_display_context_firewall,
+        test_layout_pass2_artifacts,
         test_curve_arc_in_graph,
         test_curve_validation_artifacts,
         test_geometry_hybrid_b_still_safe,

@@ -427,6 +427,10 @@
     .tb-schematic-warn {
       fill: #f59e0b; stroke: #0a0f14; stroke-width: 0.75; pointer-events: none; opacity: 0.85;
     }
+    /* Display-context neighbors complete physical runs but are not PLC-owned */
+    .tb-schematic-body.tb-display-context {
+      stroke-opacity: 0.72; stroke-dasharray: 5 3;
+    }
     .tb-mate-mark { fill: #22c55e; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
     .tb-schematic-hit { fill: transparent; stroke: transparent; cursor: pointer; pointer-events: stroke; }
     .tb-node.tb-schematic-proxy {

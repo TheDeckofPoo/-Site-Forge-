@@ -1,6 +1,6 @@
 # CURVE geometry validation (RUN Conveyor.asc)
 
-Generated: 2026-09-12T12:28:53.710138+00:00
+Generated: 2026-09-12T15:18:18.913587+00:00
 
 Raw RUN coordinates were **not** modified. Finished PLC was **not** consulted.
 

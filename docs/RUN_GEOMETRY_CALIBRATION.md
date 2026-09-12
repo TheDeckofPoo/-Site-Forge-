@@ -78,3 +78,22 @@ Auto Build previously placed Node-RED cards / compact segments about a **false c
 
 Implementation: `tools/scripts/fortna_physical_geometry.py`  
 Consumers: geometry investigate, physical layout Auto Build, Transport schematic renderer.
+
+---
+
+## Pass 2 additions (display only)
+
+| Rule | Confidence | Notes |
+|------|------------|-------|
+| Field `b` as exit-bearing candidate | **MEDIUM** | Mate-scored against default 90°; never blind-bound (`curve_validation.md`) |
+| Display-context neighbors | **HIGH** | Geometrically mated / arc-cluster segments complete hairpins on canvas; `displayContext=true` excluded from Apply |
+| Hairpin / “spiral” print look | **HIGH** | Multiple CURVE + STRAIGHT/ZP assemblies (e.g. P126–P134, P142–P148); large P600/P700 curve bank is a separate multi-CURVE assembly, not a synthetic spiral glyph |
+| SAME_PHYSICAL_ASSEMBLY | **HIGH** | Shared entry (P134/P136A, P148/P150A) — do not lane-separate |
+
+Architecture remains:
+
+```
+RUN RAW GEOMETRY → PHYSICAL GEOMETRY INTERPRETER → DISPLAY GEOMETRY
+```
+
+Raw RUN coordinates are never mutated for prettier screens.

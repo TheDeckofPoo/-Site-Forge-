@@ -1541,7 +1541,22 @@
       ];
       return pairs.some(([p, q]) => Math.hypot(p.x - q.x, p.y - q.y) < 14);
     };
+    const sameEntryOrExit = (a, b) => {
+      if (!a?.entryCanvas || !b?.entryCanvas) return false;
+      const ee = Math.hypot(a.entryCanvas.x - b.entryCanvas.x, a.entryCanvas.y - b.entryCanvas.y) < 8;
+      const xx = a.exitCanvas && b.exitCanvas
+        && Math.hypot(a.exitCanvas.x - b.exitCanvas.x, a.exitCanvas.y - b.exitCanvas.y) < 8;
+      return ee || xx;
+    };
     const classifyPair = (a, b) => {
+      // Nested / split ZP segments that share an endpoint (P136 vs P136A) — do not shove apart.
+      if (sameEntryOrExit(a, b)) {
+        const la = Number(a.length) || 0;
+        const lb = Number(b.length) || 0;
+        if (angDelta(angOf(a), angOf(b)) < 12 && Math.abs(la - lb) > Math.min(la, lb) * 0.5) {
+          return 'SAME_PHYSICAL_ASSEMBLY';
+        }
+      }
       if (physicallyLinked(a, b) || endpointNear(a, b)) {
         const ra = String(a.renderKind || a.equipmentType || '').toUpperCase();
         const rb = String(b.renderKind || b.equipmentType || '').toUpperCase();
@@ -1552,8 +1567,11 @@
       const ma = midOf(a);
       const mb = midOf(b);
       const midDist = Math.hypot(ma.x - mb.x, ma.y - mb.y);
-      if (da < 18 && midDist < 36) return 'PARALLEL';
-      if (da > 50 && midDist < 40) return 'VALID_OVERLAP';
+      const layerA = String(a.layer || '');
+      const layerB = String(b.layer || '');
+      if (layerA && layerB && layerA !== layerB && midDist < 40) return 'DIFFERENT_LAYER';
+      if (da < 18 && midDist < 36) return 'PARALLEL_CONVEYOR';
+      if (da > 50 && midDist < 40) return 'VALID_PHYSICAL_OVERLAP';
       return 'UNKNOWN';
     };
     const groups = [];
@@ -1570,10 +1588,14 @@
         if (Math.hypot(mn.x - mo.x, mn.y - mo.y) >= 36) return;
         const cls = classifyPair(n, o);
         // Only cluster candidates that look like parallel stacks for separation.
-        if (cls === 'PARALLEL') {
+        if (cls === 'PARALLEL_CONVEYOR' || cls === 'PARALLEL') {
           group.push(o);
           used.add(o.id);
-        } else if (cls === 'CONNECTED_SERIAL' || cls === 'CURVE_ASSEMBLY') {
+        } else if (
+          cls === 'CONNECTED_SERIAL'
+          || cls === 'CURVE_ASSEMBLY'
+          || cls === 'SAME_PHYSICAL_ASSEMBLY'
+        ) {
           // Mark reason but do not separate — leave display_dx=0 for coherent runs.
           if (!offsets[n.id]?.reason) setOff(n, 0, 0, 0, cls, {});
           if (!offsets[o.id]?.reason) setOff(o, 0, 0, 0, cls, {});
@@ -1589,7 +1611,11 @@
       for (let i = 0; i < group.length && !serialish; i++) {
         for (let j = i + 1; j < group.length; j++) {
           const cls = classifyPair(group[i], group[j]);
-          if (cls === 'CONNECTED_SERIAL' || cls === 'CURVE_ASSEMBLY') { serialish = true; break; }
+          if (
+            cls === 'CONNECTED_SERIAL'
+            || cls === 'CURVE_ASSEMBLY'
+            || cls === 'SAME_PHYSICAL_ASSEMBLY'
+          ) { serialish = true; break; }
         }
       }
       if (serialish) {
@@ -1736,6 +1762,7 @@
       let cls = `tb-schematic-body tb-rk-${rk}`;
       if (sel) cls += ' selected';
       if (amb) cls += ' tb-ambiguous';
+      if (n.displayContext) cls += ' tb-display-context';
       const tag = (n.conveyorTag || n.label || '').trim() || 'P???';
       const mid0 = n.entryCanvas && n.exitCanvas
         ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
@@ -3176,7 +3203,10 @@
     const areas = (tb.areas || []).map((area) => ({
       id: area.id,
       name: area.name || '',
-      nodes: (area.nodes || []).map((n) => {
+      nodes: (area.nodes || [])
+        // Presentation-only displayContext neighbors never enter Autogen/workbook.
+        .filter((n) => !n.displayContext && n.plcOwned !== false)
+        .map((n) => {
         const devices = (n.devices || []).map((d) => {
           // Only RUN-explicit or engineer-confirmed PE roles go to Autogen
           let roles = [];

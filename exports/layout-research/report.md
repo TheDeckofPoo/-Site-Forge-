@@ -1,6 +1,6 @@
 # Layout overlap research
 
-Generated: 2026-09-12T12:28:20.323023+00:00
+Generated: 2026-09-12T15:21:18.762549+00:00
 
 Raw engineering coordinates were **not** modified.
 
@@ -11,7 +11,7 @@ Classifications are geometric hypotheses for display-lane separation design.
 - Equipment analyzed: 37
 - Pairs of interest: 28
 - Clusters (size≥2): 4
-- Classification counts: `{'SUSPECT_RUN_GEOMETRY': 13, 'SERIAL_OVERLAP': 13, 'UNKNOWN': 2}`
+- Classification counts: `{'SUSPECT_GEOMETRY': 13, 'CONNECTED_SERIAL': 13, 'UNKNOWN': 2}`
 
 Top clusters:
 
@@ -25,7 +25,7 @@ Top clusters:
 - Equipment analyzed: 76
 - Pairs of interest: 88
 - Clusters (size≥2): 1
-- Classification counts: `{'SERIAL_OVERLAP': 41, 'SUSPECT_RUN_GEOMETRY': 47}`
+- Classification counts: `{'CONNECTED_SERIAL': 36, 'CURVE_ASSEMBLY': 5, 'SUSPECT_GEOMETRY': 47}`
 
 Top clusters:
 
