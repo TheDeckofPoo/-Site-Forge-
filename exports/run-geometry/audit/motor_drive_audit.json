@@ -1,0 +1,368 @@
+{
+  "generated_at": "2026-09-12T04:15:00.176964+00:00",
+  "machine": "ORNCCP2",
+  "source_of_truth": "RUN Conveyor.asc + Mtrchain.asc \u2014 no reference L5X",
+  "findings": {
+    "mtrchain_meaning": "Mtrchain.asc maps Motor_Name \u2192 Motor_Chained1..N. Chained entries are often P### conveyors (and sometimes PE tags). This is a Fortna motor-chain / latch control relationship, not proven physical ownership of a single drive for every chained conveyor. A motor listing two P-tags (e.g. M114\u2192P114,P112) may be a control chain / accum group rather than one physical motor driving both belts.",
+    "vfd_identity_in_run": "Conveyor.asc contains 66 IO_Name VFD* rows plant-wide. For controller ORNCCP2, belongs_to_controller matched 0 VFD rows. If zero, Auto Build reporting VFD=0 for this controller is consistent with RUN scoping \u2014 VFDs may live on other masters (e.g. ORNCCP4/ORNCCP5) or only as print/OCR artifacts, not as this controller's Conveyor.asc VFD rows.",
+    "contactor_label_caveat": "Auto Build currently labels M### as CONTACTOR/MOTOR STARTER when the name is not VFD*. The Drive column on sampled mechanical/motor rows is often empty. Therefore contactor classification is a NAME HEURISTIC (provenance DEFAULT/GENERIC_PATTERN), not a RUN Drive-field confirmation. Prefer UNKNOWN when Drive is empty if stricter policy is required later."
+  },
+  "counts": {
+    "motor_rows_scoped": 118,
+    "vfd_rows_plantwide": 66,
+    "vfd_rows_controller_scoped": 0,
+    "mtrchain_conveyors_with_motors": 207,
+    "mtrchain_links": 207,
+    "motors_driving_multiple_p_tags": 38,
+    "auto_build_linked_pairs": 207,
+    "auto_build_vfd_labels": 32,
+    "auto_build_contactor_heuristic_labels": 174
+  },
+  "vfd_rows_controller_scoped": [],
+  "motors_with_multiple_chained_conveyors_sample": [
+    {
+      "motor": "M206",
+      "conveyors": [
+        "P206",
+        "P208"
+      ]
+    },
+    {
+      "motor": "M202",
+      "conveyors": [
+        "P202",
+        "P204"
+      ]
+    },
+    {
+      "motor": "M114",
+      "conveyors": [
+        "P112",
+        "P114"
+      ]
+    },
+    {
+      "motor": "M106",
+      "conveyors": [
+        "P106",
+        "P108"
+      ]
+    },
+    {
+      "motor": "M102",
+      "conveyors": [
+        "P102",
+        "P104"
+      ]
+    },
+    {
+      "motor": "M306",
+      "conveyors": [
+        "P306",
+        "P308"
+      ]
+    },
+    {
+      "motor": "VFD414_EN",
+      "conveyors": [
+        "P414",
+        "P416"
+      ]
+    },
+    {
+      "motor": "M832",
+      "conveyors": [
+        "P830",
+        "P832"
+      ]
+    },
+    {
+      "motor": "M456",
+      "conveyors": [
+        "P454",
+        "P456"
+      ]
+    },
+    {
+      "motor": "M450",
+      "conveyors": [
+        "P450",
+        "P452"
+      ]
+    },
+    {
+      "motor": "M436",
+      "conveyors": [
+        "P434",
+        "P436",
+        "P438"
+      ]
+    },
+    {
+      "motor": "M430",
+      "conveyors": [
+        "P428",
+        "P430"
+      ]
+    },
+    {
+      "motor": "M448",
+      "conveyors": [
+        "P447",
+        "P448"
+      ]
+    },
+    {
+      "motor": "VFD424_EN",
+      "conveyors": [
+        "P424",
+        "P424A"
+      ]
+    },
+    {
+      "motor": "M822",
+      "conveyors": [
+        "P820",
+        "P822"
+      ]
+    },
+    {
+      "motor": "M136",
+      "conveyors": [
+        "P136",
+        "P136A"
+      ]
+    },
+    {
+      "motor": "M132",
+      "conveyors": [
+        "P132",
+        "P134"
+      ]
+    },
+    {
+      "motor": "M128",
+      "conveyors": [
+        "P126",
+        "P128"
+      ]
+    },
+    {
+      "motor": "M314",
+      "conveyors": [
+        "P314",
+        "P316"
+      ]
+    },
+    {
+      "motor": "M240",
+      "conveyors": [
+        "P238",
+        "P240"
+      ]
+    }
+  ],
+  "linked_pairs_sample": [
+    {
+      "conveyor": "P100",
+      "motor": "M100",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1000",
+      "motor": "M1000",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1001",
+      "motor": "M1001",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1002",
+      "motor": "M1002",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1004",
+      "motor": "M1004",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1005",
+      "motor": "M1005",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1006",
+      "motor": "M1006",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1007",
+      "motor": "M1007",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1008",
+      "motor": "M1008",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P100A",
+      "motor": "M100A",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1010",
+      "motor": "M1010",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1011",
+      "motor": "M1011",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1014",
+      "motor": "M1014",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1015",
+      "motor": "M1015",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1016",
+      "motor": "M1016",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P1018",
+      "motor": "M1018",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P102",
+      "motor": "M102",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P104",
+      "motor": "M102",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P106",
+      "motor": "M106",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P108",
+      "motor": "M106",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P110",
+      "motor": "M110",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P112",
+      "motor": "M114",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P114",
+      "motor": "M114",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P116",
+      "motor": "M116",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P118",
+      "motor": "VFD118_EN",
+      "auto_build_label": "VFD"
+    },
+    {
+      "conveyor": "P120",
+      "motor": "VFD120_EN",
+      "auto_build_label": "VFD"
+    },
+    {
+      "conveyor": "P123",
+      "motor": "M123",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P124",
+      "motor": "M124",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P126",
+      "motor": "M128",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P128",
+      "motor": "M128",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P130",
+      "motor": "M130A",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P132",
+      "motor": "M132",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P134",
+      "motor": "M132",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P136",
+      "motor": "M136",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P136A",
+      "motor": "M136",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P138",
+      "motor": "M138",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P139",
+      "motor": "M139",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P140",
+      "motor": "M140",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P142",
+      "motor": "M144",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    },
+    {
+      "conveyor": "P144",
+      "motor": "M144",
+      "auto_build_label": "CONTACTOR / MOTOR STARTER (name-heuristic \u2014 NOT proven by Drive field)"
+    }
+  ],
+  "drive_field_populated_on_scoped_motors": 0
+}

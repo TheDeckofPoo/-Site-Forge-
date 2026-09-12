@@ -1,0 +1,940 @@
+{
+  "generated_at": "2026-09-12T04:15:00.184263+00:00",
+  "machine": "ORNCCP2",
+  "source_of_truth": "RUN Merge*.asc tables only \u2014 no reference L5X",
+  "tables": [
+    {
+      "file": "MergeInputs.asc.ORNCCP2",
+      "headers": [
+        "Name",
+        "MergeBoss",
+        "Valid",
+        "MyTurn",
+        "Index",
+        "CalcPriority",
+        "MergeRoute",
+        "IsClear",
+        "RanEnough",
+        "Presense",
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "ReleaseIO",
+        "DontFireRelease",
+        "Priority",
+        "FullClearTimerName",
+        "ClrTimerName",
+        "ClrTimerPreset",
+        "RunTimerName",
+        "RunTimerPreset",
+        "LnClrTimerName",
+        "LnClrTimerPreset",
+        "RlsDelayTimerName",
+        "RlsDelayTimerPreset",
+        "LaneLatch",
+        "InputDisabled",
+        "InvertDisable",
+        "LnClear",
+        "LatchOffTimer",
+        "RunOffTimerFlag",
+        "PitchTimerName",
+        "PitchFlag",
+        "RouteDisable",
+        "pLastRunSec",
+        "pLastRunMSec"
+      ],
+      "row_count": 15,
+      "usable_rows": [
+        {
+          "name": "LANE1_P404",
+          "valid": "Y",
+          "merge_boss": "MERGE_406_3-1",
+          "merge_route": "LANE1_P404",
+          "presence": "PE404_P",
+          "p_tags_mentioned": [
+            "P404"
+          ],
+          "pe_tags_mentioned": [
+            "EZPE402_F",
+            "EZPE402_PCLR",
+            "EZPE402_PLNCLR",
+            "EZPE402_PRUN",
+            "PE404_P"
+          ],
+          "fields_nonempty": {
+            "Name": "LANE1_P404",
+            "MergeBoss": "MERGE_406_3-1",
+            "Valid": "Y",
+            "MyTurn": "Waiting Route",
+            "MergeRoute": "LANE1_P404",
+            "IsClear": "1",
+            "Presense": "PE404_P",
+            "ReleaseIO": "M404",
+            "FullClearTimerName": "tmfcEZPE402_F",
+            "ClrTimerName": "tmEZPE402_PCLR",
+            "ClrTimerPreset": "5.000",
+            "RunTimerName": "tmSSVEZPE402_PRUN",
+            "RunTimerPreset": "23.000",
+            "LnClrTimerName": "tmEZPE402_PLNCLR",
+            "LnClrTimerPreset": "5.000",
+            "LaneLatch": "1",
+            "pLastRunSec": "20225101",
+            "pLastRunMSec": "843896026"
+          }
+        },
+        {
+          "name": "LANE2_P138",
+          "valid": "Y",
+          "merge_boss": "MERGE_406_3-1",
+          "merge_route": "LANE2_P138",
+          "presence": "PE138_P",
+          "p_tags_mentioned": [
+            "P138",
+            "P2C",
+            "P2L",
+            "P2R"
+          ],
+          "pe_tags_mentioned": [
+            "EZPE136_F2",
+            "EZPE136_P2CLR",
+            "EZPE136_P2LNCLR",
+            "EZPE136_P2RUN",
+            "PE138_P"
+          ],
+          "fields_nonempty": {
+            "Name": "LANE2_P138",
+            "MergeBoss": "MERGE_406_3-1",
+            "Valid": "Y",
+            "MyTurn": "Waiting Clear Tm",
+            "Index": "1",
+            "CalcPriority": "101",
+            "MergeRoute": "LANE2_P138",
+            "RanEnough": "1",
+            "Presense": "PE138_P",
+            "ReleaseIO": "M138",
+            "FullClearTimerName": "tmfcEZPE136_F2",
+            "ClrTimerName": "tmEZPE136_P2CLR",
+            "ClrTimerPreset": "6.000",
+            "RunTimerName": "tmSSVEZPE136_P2RUN",
+            "RunTimerPreset": "20.000",
+            "LnClrTimerName": "tmEZPE136_P2LNCLR",
+            "LnClrTimerPreset": "5.000",
+            "LaneLatch": "1",
+            "pLastRunSec": "20225238",
+            "pLastRunMSec": "733948643"
+          }
+        },
+        {
+          "name": "LANE1_P136",
+          "valid": "Y",
+          "merge_boss": "MERGE_316_SPUR",
+          "merge_route": "LANE1_P136",
+          "presence": "EZPE136_P1",
+          "p_tags_mentioned": [
+            "P1",
+            "P136",
+            "P1C",
+            "P1L",
+            "P1R"
+          ],
+          "pe_tags_mentioned": [
+            "EZPE136_F1",
+            "EZPE136_P1",
+            "EZPE136_P1CLR",
+            "EZPE136_P1LNCLR",
+            "EZPE136_P1RUN"
+          ],
+          "fields_nonempty": {
+            "Name": "LANE1_P136",
+            "MergeBoss": "MERGE_316_SPUR",
+            "Valid": "Y",
+            "MyTurn": "Running",
+            "CalcPriority": "101",
+            "MergeRoute": "LANE1_P136",
+            "Presense": "EZPE136_P1",
+            "ReleaseIO": "SSVEZPE136_P1",
+            "FullClearTimerName": "tmfcEZPE136_F1",
+            "ClrTimerName": "tmEZPE136_P1CLR",
+            "ClrTimerPreset": "5.000",
+            "RunTimerName": "tmSSVEZPE136_P1RUN",
+            "RunTimerPreset": "20.000",
+            "LnClrTimerName": "tmEZPE136_P1LNCLR",
+            "LnClrTimerPreset": "5.000",
+            "pLastRunSec": "20225277",
+            "pLastRunMSec": "434026625"
+          }
+        },
+        {
+          "name": "LANE2_P312",
+          "valid": "Y",
+          "merge_boss": "MERGE_316_SPUR",
+          "merge_route": "",
+          "presence": "PE314_P",
+          "p_tags_mentioned": [
+            "P312"
+          ],
+          "pe_tags_mentioned": [
+            "EZPE312_F",
+            "EZPE312_PCLR",
+            "EZPE312_PLNCLR",
+            "EZPE312_PRUN",
+            "PE314_P"
+          ],
+          "fields_nonempty": {
+            "Name": "LANE2_P312",
+            "MergeBoss": "MERGE_316_SPUR",
+            "Valid": "Y",
+            "MyTurn": "Stopped",
+            "Index": "1",
+            "CalcPriority": "1100",
+            "IsClear": "1",
+            "Presense": "PE314_P",
+            "ReleaseIO": "M314",
+            "FullClearTimerName": "tmfcEZPE312_F",
+            "ClrTimerName": "tmEZPE312_PCLR",
+            "ClrTimerPreset": "5.000",
+            "RunTimerName": "tmSSVEZPE312_PRUN",
+            "RunTimerPreset": "20.000",
+            "LnClrTimerName": "tmEZPE312_PLNCLR",
+            "LnClrTimerPreset": "5.000",
+            "LnClear": "1",
+            "pLastRunSec": "20225274",
+            "pLastRunMSec": "23548508"
+          }
+        },
+        {
+          "name": "LANE1_P242",
+          "valid": "Y",
+          "merge_boss": "MERGE_400_2-1",
+          "merge_route": "LANE1_P242",
+          "presence": "EZPE242_P",
+          "p_tags_mentioned": [
+            "P242"
+          ],
+          "pe_tags_mentioned": [
+            "EZPE242_F",
+            "EZPE242_P",
+            "EZPE242_PCLR",
+            "EZPE242_PLNCLR",
+            "EZPE242_PRUN"
+          ],
+          "fields_nonempty": {
+            "Name": "LANE1_P242",
+            "MergeBoss": "MERGE_400_2-1",
+            "Valid": "Y",
+            "MyTurn": "Running",
+            "CalcPriority": "1101",
+            "MergeRoute": "LANE1_P242",
+            "IsClear": "1",
+            "Presense": "EZPE242_P",
+            "ReleaseIO": "SSVEZPE242_P",
+            "FullClearTimerName": "tmfcEZPE242_F",
+            "ClrTimerName": "tmEZPE242_PCLR",
+            "ClrTimerPreset": "5.000",
+            "RunTimerName": "tmSSVEZPE242_PRUN",
+            "RunTimerPreset": "20.000",
+            "LnClrTimerName": "tmEZPE242_PLNCLR",
+            "LnClrTimerPreset": "5.000",
+            "LnClear": "1",
+            "pLastRunSec": "20225223",
+            "pLastRunMSec": "233320602"
+          }
+        },
+        {
+          "name": "LANE2_P150_2-1",
+          "valid": "Y",
+          "merge_boss": "MERGE_400_2-1",
+          "merge_route": "",
+          "presence": "EZPE150_P2",
+          "p_tags_mentioned": [
+            "P150",
+            "P2",
+            "P2C",
+            "P2L",
+            "P2R"
+          ],
+          "pe_tags_mentioned": [
+            "EZPE150_F2",
+            "EZPE150_P2",
+            "EZPE150_P2CLR",
+            "EZPE150_P2LNCLR",
+            "EZPE150_P2RUN"
+          ],
+          "fields_nonempty": {
+            "Name": "LANE2_P150_2-1",
+            "MergeBoss": "MERGE_400_2-1",
+            "Valid": "Y",
+            "MyTurn": "Stopped",
+            "Index": "1",
+            "CalcPriority": "1100",
+            "IsClear": "1",
+            "Presense": "EZPE150_P2",
+            "ReleaseIO": "SSVEZPE150_P2",
+            "FullClearTimerName": "tmfcEZPE150_F2",
+            "ClrTimerName": "tmEZPE150_P2CLR",
+            "ClrTimerPreset": "5.000",
+            "RunTimerName": "tmSSVEZPE150_P2RUN",
+            "RunTimerPreset": "20.000",
+            "LnClrTimerName": "tmEZPE150_P2LNCLR",
+            "LnClrTimerPreset": "5.000",
+            "LnClear": "1",
+            "pLastRunSec": "20225214",
+            "pLastRunMSec": "353679395"
+          }
+        },
+        {
+          "name": "LANE1_P150_SPUR",
+          "valid": "Y",
+          "merge_boss": "MERGE_324_SPUR",
+          "merge_route": "LANE1_P150_SPUR",
+          "presence": "EZPE150_P1",
+          "p_tags_mentioned": [
+            "P1",
+            "P150",
+            "P1C",
+            "P1L",
+            "P1R"
+          ],
+          "pe_tags_mentioned": [
+            "EZPE150_F1",
+            "EZPE150_P1",
+            "EZPE150_P1CLR",
+            "EZPE150_P1LNCLR",
+            "EZPE150_P1RUN"
+          ],
+          "fields_nonempty": {
+            "Name": "LANE1_P150_SPUR",
+            "MergeBoss": "MERGE_324_SPUR",
+            "Valid": "Y",
+            "MyTurn": "Running",
+            "CalcPriority": "1101",
+            "MergeRoute": "LANE1_P150_SPUR",
+            "IsClear": "1",
+            "RanEnough": "1",
+            "Presense": "EZPE150_P1",
+            "ReleaseIO": "SSVEZPE150_P1",
+            "FullClearTimerName": "tmfcEZPE150_F1",
+            "ClrTimerName": "tmEZPE150_P1CLR",
+            "ClrTimerPreset": "5.000",
+            "RunTimerName": "tmSSVEZPE150_P1RUN",
+            "RunTimerPreset": "20.000",
+            "LnClrTimerName": "tmEZPE150_P1LNCLR",
+            "LnClrTimerPreset": "5.000",
+            "LnClear": "1",
+            "pLastRunSec": "20225277",
+            "pLastRunMSec": "434026625"
+          }
+        },
+        {
+          "name": "LANE2_P320",
+          "valid": "Y",
+          "merge_boss": "MERGE_324_SPUR",
+          "merge_route": "",
+          "presence": "PE322_P",
+          "p_tags_mentioned": [
+            "P320"
+          ],
+          "pe_tags_mentioned": [
+            "EZPE320_F",
+            "EZPE320_PCLR",
+            "EZPE320_PLNCLR",
+            "EZPE320_PRUN",
+            "PE322_P"
+          ],
+          "fields_nonempty": {
+            "Name": "LANE2_P320",
+            "MergeBoss": "MERGE_324_SPUR",
+            "Valid": "Y",
+            "MyTurn": "Stopped",
+            "Index": "1",
+            "CalcPriority": "1100",
+            "IsClear": "1",
+            "Presense": "PE322_P",
+            "ReleaseIO": "M322",
+            "FullClearTimerName": "tmfcEZPE320_F",
+            "ClrTimerName": "tmEZPE320_PCLR",
+            "ClrTimerPreset": "5.000",
+            "RunTimerName": "tmSSVEZPE320_PRUN",
+            "RunTimerPreset": "20.000",
+            "LnClrTimerName": "tmEZPE320_PLNCLR",
+            "LnClrTimerPreset": "5.000",
+            "LnClear": "1",
+            "pLastRunSec": "20225125",
+            "pLastRunMSec": "63342907"
+          }
+        }
+      ],
+      "usable_count": 8
+    },
+    {
+      "file": "MergeInputs.asc",
+      "headers": [
+        "Name",
+        "MergeBoss",
+        "Valid",
+        "MyTurn",
+        "Index",
+        "CalcPriority",
+        "MergeRoute",
+        "IsClear",
+        "RanEnough",
+        "Presense",
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "ReleaseIO",
+        "DontFireRelease",
+        "Priority",
+        "FullClearTimerName",
+        "ClrTimerName",
+        "ClrTimerPreset",
+        "RunTimerName",
+        "RunTimerPreset",
+        "LnClrTimerName",
+        "LnClrTimerPreset",
+        "RlsDelayTimerName",
+        "RlsDelayTimerPreset",
+        "LaneLatch",
+        "InputDisabled",
+        "InvertDisable",
+        "LnClear",
+        "LatchOffTimer",
+        "RunOffTimerFlag",
+        "PitchTimerName",
+        "PitchFlag",
+        "RouteDisable",
+        "pLastRunSec",
+        "pLastRunMSec"
+      ],
+      "row_count": 15,
+      "usable_rows": [],
+      "usable_count": 0
+    },
+    {
+      "file": "MergeBoss.asc.ORNCCP2",
+      "headers": [
+        "Name",
+        "Process",
+        "Owner",
+        "CurrInput",
+        "NumInputs",
+        "OperableInput",
+        "Valid",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "IsSwitchDelay",
+        "pStatus"
+      ],
+      "row_count": 10,
+      "usable_rows": [
+        {
+          "name": "MERGE_406_3-1",
+          "valid": "Y",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P2"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "MERGE_406_3-1",
+            "Process": "CTRL",
+            "Owner": "ORNCCP2",
+            "CurrInput": "1",
+            "NumInputs": "2",
+            "OperableInput": "M406_AUX",
+            "Valid": "Y",
+            "pStatus": "Init Okay"
+          }
+        },
+        {
+          "name": "MERGE_316_SPUR",
+          "valid": "Y",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P2"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "MERGE_316_SPUR",
+            "Process": "CTRL",
+            "Owner": "ORNCCP2",
+            "CurrInput": "4",
+            "NumInputs": "2",
+            "OperableInput": "ENABLE_MERGEBOSS_316",
+            "Valid": "Y",
+            "pStatus": "Init Okay"
+          }
+        },
+        {
+          "name": "MERGE_400_2-1",
+          "valid": "Y",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P2"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "MERGE_400_2-1",
+            "Process": "CTRL",
+            "Owner": "ORNCCP2",
+            "CurrInput": "6",
+            "NumInputs": "2",
+            "OperableInput": "M400_AUX",
+            "Valid": "Y",
+            "pStatus": "Init Okay"
+          }
+        },
+        {
+          "name": "MERGE_324_SPUR",
+          "valid": "Y",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P2"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "MERGE_324_SPUR",
+            "Process": "CTRL",
+            "Owner": "ORNCCP2",
+            "CurrInput": "8",
+            "NumInputs": "2",
+            "OperableInput": "ENABLE_MERGEBOSS_324",
+            "Valid": "Y",
+            "pStatus": "Init Okay"
+          }
+        }
+      ],
+      "usable_count": 4
+    },
+    {
+      "file": "MergeBoss.asc",
+      "headers": [
+        "Name",
+        "Process",
+        "Owner",
+        "CurrInput",
+        "NumInputs",
+        "OperableInput",
+        "Valid",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "IsSwitchDelay",
+        "pStatus"
+      ],
+      "row_count": 10,
+      "usable_rows": [],
+      "usable_count": 0
+    },
+    {
+      "file": "Merges.asc",
+      "headers": [
+        "Merge Table Name",
+        "Valid",
+        "Number of Inducts",
+        "Operable Input",
+        "Procnum",
+        "Presense_Eye1",
+        "Release_IO1",
+        "Myturn1",
+        "Priority1",
+        "Full_Timer_Name1",
+        "Clr_Timer_Name1",
+        "Clr_Timer_Preset1",
+        "Run_Timer_Name1",
+        "Run_Timer_Preset1",
+        "Prs_Timer_Name1",
+        "Prs_Timer_Preset1",
+        "Presense_Eye2",
+        "Release_IO2",
+        "Myturn2",
+        "Priority2",
+        "Full_Timer_Name2",
+        "Clr_Timer_Name2",
+        "Clr_Timer_Preset2",
+        "Run_Timer_Name2",
+        "Run_Timer_Preset2",
+        "Prs_Timer_Name2",
+        "Prs_Timer_Preset2",
+        "Presense_Eye3",
+        "Release_IO3",
+        "Myturn3",
+        "Priority3",
+        "Full_Timer_Name3",
+        "Clr_Timer_Name3",
+        "Clr_Timer_Preset3",
+        "Run_Timer_Name3",
+        "Run_Timer_Preset3",
+        "Prs_Timer_Name3",
+        "Prs_Timer_Preset3",
+        "Presense_Eye4",
+        "Release_IO4",
+        "Myturn4",
+        "Priority4",
+        "Full_Timer_Name4",
+        "Clr_Timer_Name4",
+        "Clr_Timer_Preset4",
+        "Run_Timer_Name4",
+        "Run_Timer_Preset4",
+        "Prs_Timer_Name4",
+        "Prs_Timer_Preset4",
+        "Presense_Eye5",
+        "Release_IO5",
+        "Myturn5",
+        "Priority5",
+        "Full_Timer_Name5",
+        "Clr_Timer_Name5",
+        "Clr_Timer_Preset5",
+        "Run_Timer_Name5",
+        "Run_Timer_Preset5",
+        "Prs_Timer_Name5",
+        "Prs_Timer_Preset5"
+      ],
+      "row_count": 10,
+      "usable_rows": [],
+      "usable_count": 0
+    },
+    {
+      "file": "MergeRoute.asc.ORNCCP2",
+      "headers": [
+        "Name",
+        "MergeInputs",
+        "MergeOutputs",
+        "RouteBusy",
+        "RouteRequested",
+        "Priority",
+        "OutDisabled",
+        "InvertOutDisable"
+      ],
+      "row_count": 15,
+      "usable_rows": [
+        {
+          "name": "LANE1_P404",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P404"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "LANE1_P404",
+            "MergeInputs": "LANE1_P404",
+            "Priority": "101"
+          }
+        },
+        {
+          "name": "LANE2_P138",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P138"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "LANE2_P138",
+            "MergeInputs": "LANE2_P138",
+            "RouteBusy": "1",
+            "RouteRequested": "1",
+            "Priority": "1100"
+          }
+        },
+        {
+          "name": "LANE1_P136",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P136"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "LANE1_P136",
+            "MergeInputs": "LANE1_P136",
+            "RouteBusy": "1",
+            "Priority": "1100"
+          }
+        },
+        {
+          "name": "LANE2_P312",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P312"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "LANE2_P312",
+            "MergeInputs": "LANE2_P312",
+            "Priority": "1101"
+          }
+        },
+        {
+          "name": "LANE1_P242",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P242"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "LANE1_P242",
+            "MergeInputs": "LANE1_P242",
+            "RouteBusy": "1",
+            "Priority": "1100"
+          }
+        },
+        {
+          "name": "LANE2_P150_2-1",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P150"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "LANE2_P150_2-1",
+            "MergeInputs": "LANE2_P150_2-1",
+            "Priority": "1"
+          }
+        },
+        {
+          "name": "LANE1_P150_SPUR",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P150"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "LANE1_P150_SPUR",
+            "MergeInputs": "LANE1_P150_SPUR",
+            "RouteBusy": "1",
+            "Priority": "1100"
+          }
+        },
+        {
+          "name": "LANE2_P320",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [
+            "P320"
+          ],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "LANE2_P320",
+            "MergeInputs": "LANE2_P320",
+            "Priority": "101"
+          }
+        }
+      ],
+      "usable_count": 8
+    },
+    {
+      "file": "MergeRoute.asc",
+      "headers": [
+        "Name",
+        "MergeInputs",
+        "MergeOutputs",
+        "RouteBusy",
+        "RouteRequested",
+        "Priority",
+        "OutDisabled",
+        "InvertOutDisable"
+      ],
+      "row_count": 15,
+      "usable_rows": [],
+      "usable_count": 0
+    },
+    {
+      "file": "ZipperMerge.asc.ORNCCP2",
+      "headers": [
+        "Name",
+        "CreateResrvFlag",
+        "pStatus",
+        "MergeType",
+        "LogLevel",
+        "MergeInduct",
+        "MergeMtr",
+        "MergeMtrAction",
+        "MtrBit",
+        "ControlMachine",
+        "MergeSpdFtPerMin",
+        "ErrorSignal",
+        "MergeTicksPerInch",
+        "GapType",
+        "MergeRunIO",
+        "LaneMergeDlyTM",
+        "MergeJamUpdate",
+        "pLastEncCnt",
+        "pTotalTurns",
+        "pCurrentCycle",
+        "pCurrResrvLane",
+        "pCurrResrvLen",
+        "pLastLaneAssgn",
+        "pMergeJamState"
+      ],
+      "row_count": 20,
+      "usable_rows": [
+        {
+          "name": "===(add to batches)===",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "===(add to batches)===",
+            "LogLevel": "Level 0"
+          }
+        }
+      ],
+      "usable_count": 1
+    },
+    {
+      "file": "ZipperMerge.asc",
+      "headers": [
+        "Name",
+        "CreateResrvFlag",
+        "pStatus",
+        "MergeType",
+        "LogLevel",
+        "MergeInduct",
+        "MergeMtr",
+        "MergeMtrAction",
+        "MtrBit",
+        "ControlMachine",
+        "MergeSpdFtPerMin",
+        "ErrorSignal",
+        "MergeTicksPerInch",
+        "GapType",
+        "MergeRunIO",
+        "LaneMergeDlyTM",
+        "MergeJamUpdate",
+        "pLastEncCnt",
+        "pTotalTurns",
+        "pCurrentCycle",
+        "pCurrResrvLane",
+        "pCurrResrvLen",
+        "pLastLaneAssgn",
+        "pMergeJamState"
+      ],
+      "row_count": 20,
+      "usable_rows": [
+        {
+          "name": "===(add to batches)===",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "===(add to batches)===",
+            "LogLevel": "Level 0"
+          }
+        }
+      ],
+      "usable_count": 1
+    },
+    {
+      "file": "SawMerge.asc.ORNCCP2",
+      "headers": [
+        "Name",
+        "pStatus",
+        "MotorIO",
+        "ReserveIN",
+        "LogMe",
+        "LaneEnableDelayTM",
+        "EOW_RelAllPB",
+        "EOW_FndAllLt",
+        "EOW_AutoRel",
+        "pSliceSeconds",
+        "pSliceStartTime",
+        "pTotalTimeSlice",
+        "pTotalSlicesRemaining",
+        "pCurrentLane"
+      ],
+      "row_count": 10,
+      "usable_rows": [
+        {
+          "name": "===(add to batches)===",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "===(add to batches)==="
+          }
+        }
+      ],
+      "usable_count": 1
+    },
+    {
+      "file": "SawMerge.asc",
+      "headers": [
+        "Name",
+        "pStatus",
+        "MotorIO",
+        "ReserveIN",
+        "LogMe",
+        "LaneEnableDelayTM",
+        "EOW_RelAllPB",
+        "EOW_FndAllLt",
+        "EOW_AutoRel",
+        "pSliceSeconds",
+        "pSliceStartTime",
+        "pTotalTimeSlice",
+        "pTotalSlicesRemaining",
+        "pCurrentLane"
+      ],
+      "row_count": 10,
+      "usable_rows": [
+        {
+          "name": "===(add to batches)===",
+          "valid": "",
+          "merge_boss": "",
+          "merge_route": "",
+          "presence": "",
+          "p_tags_mentioned": [],
+          "pe_tags_mentioned": [],
+          "fields_nonempty": {
+            "Name": "===(add to batches)==="
+          }
+        }
+      ],
+      "usable_count": 1
+    }
+  ],
+  "interpretation": {
+    "lanes": "Often encoded in Name / MergeRoute strings (e.g. LANE1_P404, LANE2_P138) \u2014 not geometry.",
+    "common_discharge": "Sometimes implied by MergeBoss name (e.g. MERGE_406_3-1) \u2014 heuristic string parse only; not a reliable discharge conveyor field.",
+    "presence_eyes": "Presense / Presense_Eye* fields when populated.",
+    "merge_boss": "MergeBoss / Merge Table Name identify logical merge objects.",
+    "timing_only": "Many Merges.asc rows are placeholders (Valid=N, INVALID eyes, zero timers) \u2014 timing/config shells rather than physical topology.",
+    "why_auto_build_merges_zero": "Auto Build currently detects merges only from geometric inbound count (\u22652 HIGH/CONFIRMED exit\u2192entry mates to same discharge). Merge ASC hints are exported for audit but not yet consumed to create asMerge. With few auto-connections and many AMBIGUOUS mates, geometric merge count stays 0."
+  },
+  "auto_build_merges_detected": 0
+}

@@ -1,0 +1,4465 @@
+{
+  "generated_at": "2026-09-12T04:14:59.589753+00:00",
+  "run_dir": "workspace\\active\\RUN",
+  "machine": "ORNCCP2",
+  "source_of_truth": "RUN/FORTNA/Conveyor.asc only \u2014 no reference L5X",
+  "all_mechanical_p_tags": 284,
+  "unique_mechanical_p_tags": 284,
+  "controller_scoped_conveyors": 37,
+  "rejected_conveyors": 448,
+  "rejection_reason_counts": {
+    "missing_io_link_to_controller": 247,
+    "non_p_tag_mechanical_row": 201
+  },
+  "scoped_tags_missing_mech_row": [],
+  "accepted": [
+    {
+      "conveyor": "P100",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 54450.0,
+      "y": 69883.333,
+      "angle": 90.0,
+      "length": 5850.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 54450.0,
+        "y": 66958.333
+      },
+      "computed_exit_anchor": {
+        "x": 54450.0,
+        "y": 72808.333
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P101",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 54200.0,
+      "y": 64033.333,
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 54200.0,
+        "y": 51633.333
+      },
+      "computed_exit_anchor": {
+        "x": 54200.0,
+        "y": 76433.333
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P126",
+      "type": "CURVE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 71258.333,
+      "y": 89700.0,
+      "angle": 90.0,
+      "length": -1.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW"
+    },
+    {
+      "conveyor": "P134",
+      "type": "CURVE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 72783.333,
+      "y": 91733.333,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW"
+    },
+    {
+      "conveyor": "P136",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 64758.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 2025.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 65770.833,
+        "y": 91733.333
+      },
+      "computed_exit_anchor": {
+        "x": 63745.833,
+        "y": 91733.333
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P136A",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 72783.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 8025.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 76795.833,
+        "y": 91733.333
+      },
+      "computed_exit_anchor": {
+        "x": 68770.833,
+        "y": 91733.333
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P138",
+      "type": "BELT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 62733.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 63033.333,
+        "y": 91733.333
+      },
+      "computed_exit_anchor": {
+        "x": 62433.333,
+        "y": 91733.333
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P142",
+      "type": "CURVE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 81675.0,
+      "y": 89708.333,
+      "angle": 90.0,
+      "length": -1.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW"
+    },
+    {
+      "conveyor": "P148",
+      "type": "CURVE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 83250.0,
+      "y": 91775.0,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW"
+    },
+    {
+      "conveyor": "P150A",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 83250.0,
+      "y": 91775.0,
+      "angle": 180.0,
+      "length": 6550.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 86525.0,
+        "y": 91775.0
+      },
+      "computed_exit_anchor": {
+        "x": 79975.0,
+        "y": 91775.0
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P150",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 76700.0,
+      "y": 91775.0,
+      "angle": 180.0,
+      "length": 2050.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 77725.0,
+        "y": 91775.0
+      },
+      "computed_exit_anchor": {
+        "x": 75675.0,
+        "y": 91775.0
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P242",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 76650.0,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 2000.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 77650.0,
+        "y": 92075.0
+      },
+      "computed_exit_anchor": {
+        "x": 75650.0,
+        "y": 92075.0
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P312",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 64950.0,
+      "y": 85700.0,
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 64950.0,
+        "y": 84200.0
+      },
+      "computed_exit_anchor": {
+        "x": 64950.0,
+        "y": 87200.0
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P314",
+      "type": "BELT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 64950.0,
+      "y": 88700.0,
+      "angle": 90.0,
+      "length": 2500.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 64950.0,
+        "y": 87450.0
+      },
+      "computed_exit_anchor": {
+        "x": 64950.0,
+        "y": 89950.0
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P316",
+      "type": "CURVE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 64500.0,
+      "y": 91733.333,
+      "angle": 350.0,
+      "length": -1.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW"
+    },
+    {
+      "conveyor": "P322",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 76950.0,
+      "y": 88916.667,
+      "angle": 90.0,
+      "length": 2300.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 76950.0,
+        "y": 87766.667
+      },
+      "computed_exit_anchor": {
+        "x": 76950.0,
+        "y": 90066.667
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P320",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 76950.0,
+      "y": 85916.667,
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 76950.0,
+        "y": 84416.667
+      },
+      "computed_exit_anchor": {
+        "x": 76950.0,
+        "y": 87416.667
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P324",
+      "type": "CURVE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 76500.0,
+      "y": 91775.0,
+      "angle": 350.0,
+      "length": -1.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW"
+    },
+    {
+      "conveyor": "P400",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 74650.0,
+      "y": 91925.0,
+      "angle": 180.0,
+      "length": 1216.667,
+      "width": 500.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 75258.3335,
+        "y": 91925.0
+      },
+      "computed_exit_anchor": {
+        "x": 74041.6665,
+        "y": 91925.0
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P402",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 73433.333,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 10700.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 78783.333,
+        "y": 92075.0
+      },
+      "computed_exit_anchor": {
+        "x": 68083.333,
+        "y": 92075.0
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P404",
+      "type": "BELT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 62733.333,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 63033.333,
+        "y": 92075.0
+      },
+      "computed_exit_anchor": {
+        "x": 62433.333,
+        "y": 92075.0
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P406",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 62114.875,
+      "y": 91933.333,
+      "angle": 180.0,
+      "length": 1500.0,
+      "width": 600.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 62864.875,
+        "y": 91933.333
+      },
+      "computed_exit_anchor": {
+        "x": 61364.875,
+        "y": 91933.333
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P408",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 60637.915,
+      "y": 92071.609,
+      "angle": 180.0,
+      "length": 22833.333,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 72054.5815,
+        "y": 92071.609
+      },
+      "computed_exit_anchor": {
+        "x": 49221.2485,
+        "y": 92071.609
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1000",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 62200.0,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 62200.0,
+        "y": 91766.667
+      },
+      "computed_exit_anchor": {
+        "x": 62200.0,
+        "y": 82366.667
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1002",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 62200.0,
+      "y": 68266.66,
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 333.333,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 62200.0,
+        "y": 70766.66
+      },
+      "computed_exit_anchor": {
+        "x": 62200.0,
+        "y": 65766.66
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1004",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 62766.667,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 62766.667,
+        "y": 92116.667
+      },
+      "computed_exit_anchor": {
+        "x": 62766.667,
+        "y": 82016.667
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1006",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 73700.0,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 73700.0,
+        "y": 91766.667
+      },
+      "computed_exit_anchor": {
+        "x": 73700.0,
+        "y": 82366.667
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1008",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 73700.0,
+      "y": 68266.667,
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 333.333,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 73700.0,
+        "y": 70766.667
+      },
+      "computed_exit_anchor": {
+        "x": 73700.0,
+        "y": 65766.667
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1010",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 74266.666,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 74266.666,
+        "y": 92116.667
+      },
+      "computed_exit_anchor": {
+        "x": 74266.666,
+        "y": 82016.667
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1014",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 61800.0,
+      "y": 63116.666,
+      "angle": 0.0,
+      "length": 23400.0,
+      "width": 333.333,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 50100.0,
+        "y": 63116.666
+      },
+      "computed_exit_anchor": {
+        "x": 73500.0,
+        "y": 63116.666
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1018",
+      "type": "BELT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 85391.667,
+      "y": 80866.667,
+      "angle": 90.0,
+      "length": 10700.0,
+      "width": 383.333,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 85391.667,
+        "y": 75516.667
+      },
+      "computed_exit_anchor": {
+        "x": 85391.667,
+        "y": 86216.667
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P238",
+      "type": "CURVE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 78850.0,
+      "y": 92075.0,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW"
+    },
+    {
+      "conveyor": "P226",
+      "type": "CURVE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 67780.765,
+      "y": 92761.24,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW"
+    },
+    {
+      "conveyor": "P215",
+      "type": "STRAIGHT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 47434.4,
+      "y": 92627.828,
+      "angle": 180.0,
+      "length": 1000.0,
+      "width": 500.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 47934.4,
+        "y": 92627.828
+      },
+      "computed_exit_anchor": {
+        "x": 46934.4,
+        "y": 92627.828
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P229",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 67767.195,
+      "y": 92770.923,
+      "angle": 180.0,
+      "length": 13066.667,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 74300.5285,
+        "y": 92770.923
+      },
+      "computed_exit_anchor": {
+        "x": 61233.861500000006,
+        "y": 92770.923
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P230",
+      "type": "ZEROPRESSURE",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 7070.634,
+      "y": 1550.65,
+      "angle": 180.0,
+      "length": 2650.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 8395.634,
+        "y": 1550.6499999999999
+      },
+      "computed_exit_anchor": {
+        "x": 5745.634,
+        "y": 1550.6500000000003
+      },
+      "geometry_confidence": "HIGH"
+    },
+    {
+      "conveyor": "P232",
+      "type": "BELT",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "x": 4420.634,
+      "y": 1550.65,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      },
+      "scope_reason": "controller_scoped_via_autogen_io_link",
+      "computed_entry_anchor": {
+        "x": 4720.634,
+        "y": 1550.65
+      },
+      "computed_exit_anchor": {
+        "x": 4120.634,
+        "y": 1550.65
+      },
+      "geometry_confidence": "HIGH"
+    }
+  ],
+  "rejected": [
+    {
+      "io_name": "P102",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P104",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P106",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P108",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P110",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P112",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P114",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P116",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P118",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P120",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P103",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P124",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P128",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P132",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P125",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P127",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P140",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P144",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P146",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P141",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P143",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P200",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P202",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P201",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P206",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P203",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P208",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P210",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P212",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P214",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P216",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P218",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P220",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P221",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P223",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P234",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P236",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P240",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P235",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P237",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P300",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P302",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P304",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P306",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P308",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P301",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P303",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P310",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P311",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P313",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P321",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P318",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P319",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P410",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P412",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P416",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P418",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P447",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P422",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P424",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P426",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P428",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P430",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P432",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P434",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P436",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P438",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P440",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P442",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P444",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P446",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P448",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P450",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P452",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P454",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P456",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P458",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P460",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P462",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P464",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P466",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P500",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P504",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P526",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P528",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P530A",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P530",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P534",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P536",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P542",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P544",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600F",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608F",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G604F",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P606F",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602F",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610F",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612F",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600G",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608G",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G604G",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P606G",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602G",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610G",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612G",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600H",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608H",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G604H",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P606H",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602H",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610H",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612H",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600I",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608I",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G604I",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P606I",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602I",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610I",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612I",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600J",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608J",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G604J",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P606J",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602J",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610J",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612J",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600K",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608K",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G604K",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P606K",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602K",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610K",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612K",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P700B",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P702B",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P704B",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P706B",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P708B",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P710B",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P700C",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P702C",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P704C",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P706C",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P708C",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P710C",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P712",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P714",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P716",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P718",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P720",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P800",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P802",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P804",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P806",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P808",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P812",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P810",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P814",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P816",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P818",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P820",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P822",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P824",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P826",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P828",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P830",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P832",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P834",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P836",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1016",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1120",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1020",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1200",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1202",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1206",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1208",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1210",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P538",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P540",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P532",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P502",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P420",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P145",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P219A",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P414",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P130",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P204",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P506",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P508",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "ENC414",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "ENC424",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "ENC504",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "ENC506",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "ENC508",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE116_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE212_P1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE214_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE304_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE408_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE418_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE442_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE450_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE456_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE530_P1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE530_P2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE536_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE542_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602F_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602G_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602H_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602I_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602J_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602K_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE718_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE810_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE828_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE832_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS116",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS212",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS214",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS304",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS408",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS418",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS442",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS450",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS456",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS530",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS536",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS542",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602F",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602G",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602H",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602I",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602J",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602K",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS718",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS810",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS828",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS832",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "INT440",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "PB422_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "PB500_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "PB506A_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "PB508A_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "PB812_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "PS506",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "PS304",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "PS414",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "PWS305",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSV424A1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSV424A2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSV506A1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506A2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506B1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506B2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506C1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506C2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506D1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506D2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506E1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506E2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506F1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506F2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506G1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506G2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506H1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV506H2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508A1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508A2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508B1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508B2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508C1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508C2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508D1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508D2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508E1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508E2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508F1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV508F2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "P305",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "PS508",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "2MCR1_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "2ESR1_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "2ESR2_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "2ESR3_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "EZPWS136",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "EZPWS230",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "EZPWS312",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "EZPWS402",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PB406_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PB1002_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PS312",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "SSVEZPE136_P1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "SSVEZPE136_P2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "SSVEZPE312_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "SSVEZPE402_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PBSTART1018_PLT",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PBSTOP1018_PLT",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "SSVEZPE150_P1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PB400_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PB1008_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PB1014_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "PS320",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "EZPWS150",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "EZPWS242",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "EZPWS320",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "3MCR1_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "3ESR1_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "3ESR2_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "3ESR3_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "3ESR4_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "3ESR5_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "SSVEZPE150_P2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "SSVEZPE242_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "SSVEZPE320_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "P424A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P506A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P508A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608C",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P610C",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612C",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G604C",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P600C",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602C",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610D",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608D",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P612D",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G604D",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P602D",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600D",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "SSVEZPE602C_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602D_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602C",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602D",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "P600E",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602E",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G604E",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G608E",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P612E",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610E",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "SSVEZPE602E_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602E",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "P708A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P704A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P702A",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P700A",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P706A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P710A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P222",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P219",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P217",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P231A",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P213",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P211",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P209",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P231",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600M",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600N",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P509",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P510",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P566",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P564",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P552",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P554",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P556",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P560",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P562",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G608M",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G608N",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G604M",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G604N",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P602M",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602N",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610M",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610N",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612M",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612N",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "7PBSTART",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "7PBSTOP",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "7PS1",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "PB509A_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "PB510A_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS564_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS566_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602M_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602N_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "7PBSTART_PLT",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "7PBSTOP_PLT",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "ENC509",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "ENC510",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE566_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602M_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSVEZPE602N_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV509L1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV509L2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV509M1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV509M2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV510N1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV510N2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV510O1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV510O2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV510P1",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "SSV510P2",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS209_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS213_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS217_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS229_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "EZPWS231A_AUX",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "PB215_JR",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "8PBSTART_PLT",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "8PBSTOP_PLT",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE209_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE213_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE217_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE229_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "SSVEZPE231A_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP4"
+    },
+    {
+      "io_name": "P228",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "SSVEZPE230_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP2"
+    },
+    {
+      "io_name": "P1001",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1005",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1007",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1011",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P1015",
+      "type": "BELT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P300A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P200A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P100A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P309",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P220A",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P123",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P317",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P233",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P139",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P600O",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602O",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "SSVEZPE602O_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "G608O",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P610O",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P612O",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G604O",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "EZPWS602O",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "P600P",
+      "type": "CURVE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P602P",
+      "type": "ZEROPRESSURE",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "G604P",
+      "type": "CURVE",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "G608P",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": ""
+    },
+    {
+      "io_name": "P612P",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "P610P",
+      "type": "STRAIGHT",
+      "reason": "missing_io_link_to_controller",
+      "detail": "Machine_Name empty/N/A and no PE/VFD/IO on this controller links to this P-tag (same rule as Autogen load_from_run)",
+      "machine_name": "N/A",
+      "has_xy": true
+    },
+    {
+      "io_name": "SSVEZPE602P_P",
+      "type": "TRIANG",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    },
+    {
+      "io_name": "EZPWS602P",
+      "type": "STRAIGHT",
+      "reason": "non_p_tag_mechanical_row",
+      "detail": "Row Type is in mechanical set (STRAIGHT/CURVE/\u2026) but IO_Name is not a P### conveyor identity (e.g. TRIANG device / other)",
+      "machine_name": "ORNCCP5"
+    }
+  ],
+  "note": "Controller scoping matches Autogen: explicit Machine_Name match OR untagged row linked via this controller's PE/VFD/IO. Plant-wide ASC often leaves conveyors as Machine_Name=N/A."
+}

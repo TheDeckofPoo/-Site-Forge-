@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 """Structural L5X comparison / Autogen backtest harness.
 
+SOURCE-OF-TRUTH (see docs/SOURCE_OF_TRUTH_POLICY.md):
+  This tool lives BELOW the validation barrier.
+  The reference/finished L5X is a POST-GENERATION VALIDATION ORACLE only.
+  Comparator outputs must never be fed back to populate workbook, Transport,
+  or Autogen inputs.
+
 Compares meaningful PLC engineering structures between a Site Forge
 *generated* L5X and an engineered *reference* L5X.
 

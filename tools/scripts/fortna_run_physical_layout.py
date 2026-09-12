@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """Build a Transport Build graph from RUN physical geometry (Auto Build From RUN).
 
+SOURCE-OF-TRUTH (see docs/SOURCE_OF_TRUTH_POLICY.md):
+  INPUT SIDE only — RUN tables + engineer config later.
+  Must NEVER read a finished/reference L5X to populate conveyors, areas,
+  safety zones, downstream, PEs, motors, or merges.
+
 Uses the same geometry/connection logic as fortna_run_geometry_investigate.py.
 Does not invent area/ES zone names from P-tags. Does not use P-number order.
 

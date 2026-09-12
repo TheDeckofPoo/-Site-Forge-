@@ -1,0 +1,1033 @@
+{
+  "generated_at": "2026-09-12T04:14:59.867070+00:00",
+  "machine": "ORNCCP2",
+  "anchor_assumption": {
+    "model": "X/Y = footprint center; Angle = flow direction deg CCW from +X; entry/exit = center \u00b1 Length/2 along angle",
+    "status": "ASSUMPTION",
+    "supported_by_run": false,
+    "evidence": [
+      "Conveyor.asc provides X_cord, Y_cord, Angle, Length, Width numeric fields.",
+      "Conveyor.asc does NOT document whether X/Y is center, infeed corner, or discharge.",
+      "Infeed_Tangent / Discharge_Tangent / NoseOver exist but are not used by Auto Build today.",
+      "No RUN field named entry_anchor/exit_anchor \u2014 anchors are INFERRED_GEOMETRY."
+    ],
+    "provenance_for_anchors": "INFERRED_GEOMETRY",
+    "provenance_for_source_xy": "RUN"
+  },
+  "imported_conveyor_count": 37,
+  "conveyors": [
+    {
+      "conveyor": "P100",
+      "source_x": 54450.0,
+      "source_y": 69883.333,
+      "source_angle": 90.0,
+      "source_length": 5850.0,
+      "source_width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 54450.0,
+        "y": 66958.333
+      },
+      "computed_exit_anchor": {
+        "x": 54450.0,
+        "y": 72808.333
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P1000",
+      "source_x": 62200.0,
+      "source_y": 87066.667,
+      "source_angle": 270.0,
+      "source_length": 9400.0,
+      "source_width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 62200.0,
+        "y": 91766.667
+      },
+      "computed_exit_anchor": {
+        "x": 62200.0,
+        "y": 82366.667
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P1002",
+      "source_x": 62200.0,
+      "source_y": 68266.66,
+      "source_angle": 270.0,
+      "source_length": 5000.0,
+      "source_width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 62200.0,
+        "y": 70766.66
+      },
+      "computed_exit_anchor": {
+        "x": 62200.0,
+        "y": 65766.66
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P1004",
+      "source_x": 62766.667,
+      "source_y": 87066.667,
+      "source_angle": 270.0,
+      "source_length": 10100.0,
+      "source_width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 62766.667,
+        "y": 92116.667
+      },
+      "computed_exit_anchor": {
+        "x": 62766.667,
+        "y": 82016.667
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P1006",
+      "source_x": 73700.0,
+      "source_y": 87066.667,
+      "source_angle": 270.0,
+      "source_length": 9400.0,
+      "source_width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 73700.0,
+        "y": 91766.667
+      },
+      "computed_exit_anchor": {
+        "x": 73700.0,
+        "y": 82366.667
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P1008",
+      "source_x": 73700.0,
+      "source_y": 68266.667,
+      "source_angle": 270.0,
+      "source_length": 5000.0,
+      "source_width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 73700.0,
+        "y": 70766.667
+      },
+      "computed_exit_anchor": {
+        "x": 73700.0,
+        "y": 65766.667
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P101",
+      "source_x": 54200.0,
+      "source_y": 64033.333,
+      "source_angle": 90.0,
+      "source_length": 24800.0,
+      "source_width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 54200.0,
+        "y": 51633.333
+      },
+      "computed_exit_anchor": {
+        "x": 54200.0,
+        "y": 76433.333
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P1010",
+      "source_x": 74266.666,
+      "source_y": 87066.667,
+      "source_angle": 270.0,
+      "source_length": 10100.0,
+      "source_width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 74266.666,
+        "y": 92116.667
+      },
+      "computed_exit_anchor": {
+        "x": 74266.666,
+        "y": 82016.667
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P1014",
+      "source_x": 61800.0,
+      "source_y": 63116.666,
+      "source_angle": 0.0,
+      "source_length": 23400.0,
+      "source_width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 50100.0,
+        "y": 63116.666
+      },
+      "computed_exit_anchor": {
+        "x": 73500.0,
+        "y": 63116.666
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P1018",
+      "source_x": 85391.667,
+      "source_y": 80866.667,
+      "source_angle": 90.0,
+      "source_length": 10700.0,
+      "source_width": 383.333,
+      "equipment_type": "BELT",
+      "computed_entry_anchor": {
+        "x": 85391.667,
+        "y": 75516.667
+      },
+      "computed_exit_anchor": {
+        "x": 85391.667,
+        "y": 86216.667
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P126",
+      "source_x": 71258.333,
+      "source_y": 89700.0,
+      "source_angle": 90.0,
+      "source_length": -1.0,
+      "source_width": 200.0,
+      "equipment_type": "CURVE",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW",
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P134",
+      "source_x": 72783.333,
+      "source_y": 91733.333,
+      "source_angle": 0.0,
+      "source_length": -1.0,
+      "source_width": 200.0,
+      "equipment_type": "CURVE",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW",
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P136",
+      "source_x": 64758.333,
+      "source_y": 91733.333,
+      "source_angle": 180.0,
+      "source_length": 2025.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 65770.833,
+        "y": 91733.333
+      },
+      "computed_exit_anchor": {
+        "x": 63745.833,
+        "y": 91733.333
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P136A",
+      "source_x": 72783.333,
+      "source_y": 91733.333,
+      "source_angle": 180.0,
+      "source_length": 8025.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 76795.833,
+        "y": 91733.333
+      },
+      "computed_exit_anchor": {
+        "x": 68770.833,
+        "y": 91733.333
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P138",
+      "source_x": 62733.333,
+      "source_y": 91733.333,
+      "source_angle": 180.0,
+      "source_length": 600.0,
+      "source_width": 200.0,
+      "equipment_type": "BELT",
+      "computed_entry_anchor": {
+        "x": 63033.333,
+        "y": 91733.333
+      },
+      "computed_exit_anchor": {
+        "x": 62433.333,
+        "y": 91733.333
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P142",
+      "source_x": 81675.0,
+      "source_y": 89708.333,
+      "source_angle": 90.0,
+      "source_length": -1.0,
+      "source_width": 200.0,
+      "equipment_type": "CURVE",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW",
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P148",
+      "source_x": 83250.0,
+      "source_y": 91775.0,
+      "source_angle": 0.0,
+      "source_length": -1.0,
+      "source_width": 200.0,
+      "equipment_type": "CURVE",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW",
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P150",
+      "source_x": 76700.0,
+      "source_y": 91775.0,
+      "source_angle": 180.0,
+      "source_length": 2050.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 77725.0,
+        "y": 91775.0
+      },
+      "computed_exit_anchor": {
+        "x": 75675.0,
+        "y": 91775.0
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P150A",
+      "source_x": 83250.0,
+      "source_y": 91775.0,
+      "source_angle": 180.0,
+      "source_length": 6550.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 86525.0,
+        "y": 91775.0
+      },
+      "computed_exit_anchor": {
+        "x": 79975.0,
+        "y": 91775.0
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P215",
+      "source_x": 47434.4,
+      "source_y": 92627.828,
+      "source_angle": 180.0,
+      "source_length": 1000.0,
+      "source_width": 500.0,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 47934.4,
+        "y": 92627.828
+      },
+      "computed_exit_anchor": {
+        "x": 46934.4,
+        "y": 92627.828
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P226",
+      "source_x": 67780.765,
+      "source_y": 92761.24,
+      "source_angle": 0.0,
+      "source_length": -1.0,
+      "source_width": 200.0,
+      "equipment_type": "CURVE",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW",
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P229",
+      "source_x": 67767.195,
+      "source_y": 92770.923,
+      "source_angle": 180.0,
+      "source_length": 13066.667,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 74300.5285,
+        "y": 92770.923
+      },
+      "computed_exit_anchor": {
+        "x": 61233.861500000006,
+        "y": 92770.923
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P230",
+      "source_x": 7070.634,
+      "source_y": 1550.65,
+      "source_angle": 180.0,
+      "source_length": 2650.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 8395.634,
+        "y": 1550.6499999999999
+      },
+      "computed_exit_anchor": {
+        "x": 5745.634,
+        "y": 1550.6500000000003
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P232",
+      "source_x": 4420.634,
+      "source_y": 1550.65,
+      "source_angle": 180.0,
+      "source_length": 600.0,
+      "source_width": 200.0,
+      "equipment_type": "BELT",
+      "computed_entry_anchor": {
+        "x": 4720.634,
+        "y": 1550.65
+      },
+      "computed_exit_anchor": {
+        "x": 4120.634,
+        "y": 1550.65
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P238",
+      "source_x": 78850.0,
+      "source_y": 92075.0,
+      "source_angle": 0.0,
+      "source_length": -1.0,
+      "source_width": 200.0,
+      "equipment_type": "CURVE",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW",
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P242",
+      "source_x": 76650.0,
+      "source_y": 92075.0,
+      "source_angle": 180.0,
+      "source_length": 2000.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 77650.0,
+        "y": 92075.0
+      },
+      "computed_exit_anchor": {
+        "x": 75650.0,
+        "y": 92075.0
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P312",
+      "source_x": 64950.0,
+      "source_y": 85700.0,
+      "source_angle": 90.0,
+      "source_length": 3000.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 64950.0,
+        "y": 84200.0
+      },
+      "computed_exit_anchor": {
+        "x": 64950.0,
+        "y": 87200.0
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P314",
+      "source_x": 64950.0,
+      "source_y": 88700.0,
+      "source_angle": 90.0,
+      "source_length": 2500.0,
+      "source_width": 200.0,
+      "equipment_type": "BELT",
+      "computed_entry_anchor": {
+        "x": 64950.0,
+        "y": 87450.0
+      },
+      "computed_exit_anchor": {
+        "x": 64950.0,
+        "y": 89950.0
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P316",
+      "source_x": 64500.0,
+      "source_y": 91733.333,
+      "source_angle": 350.0,
+      "source_length": -1.0,
+      "source_width": 200.0,
+      "equipment_type": "CURVE",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW",
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P320",
+      "source_x": 76950.0,
+      "source_y": 85916.667,
+      "source_angle": 90.0,
+      "source_length": 3000.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 76950.0,
+        "y": 84416.667
+      },
+      "computed_exit_anchor": {
+        "x": 76950.0,
+        "y": 87416.667
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P322",
+      "source_x": 76950.0,
+      "source_y": 88916.667,
+      "source_angle": 90.0,
+      "source_length": 2300.0,
+      "source_width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 76950.0,
+        "y": 87766.667
+      },
+      "computed_exit_anchor": {
+        "x": 76950.0,
+        "y": 90066.667
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P324",
+      "source_x": 76500.0,
+      "source_y": 91775.0,
+      "source_angle": 350.0,
+      "source_length": -1.0,
+      "source_width": 200.0,
+      "equipment_type": "CURVE",
+      "computed_entry_anchor": null,
+      "computed_exit_anchor": null,
+      "geometry_confidence": "LOW",
+      "geometry_issues": [
+        "missing_length",
+        "non_straight_geometry"
+      ],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P400",
+      "source_x": 74650.0,
+      "source_y": 91925.0,
+      "source_angle": 180.0,
+      "source_length": 1216.667,
+      "source_width": 500.0,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 75258.3335,
+        "y": 91925.0
+      },
+      "computed_exit_anchor": {
+        "x": 74041.6665,
+        "y": 91925.0
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P402",
+      "source_x": 73433.333,
+      "source_y": 92075.0,
+      "source_angle": 180.0,
+      "source_length": 10700.0,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 78783.333,
+        "y": 92075.0
+      },
+      "computed_exit_anchor": {
+        "x": 68083.333,
+        "y": 92075.0
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P404",
+      "source_x": 62733.333,
+      "source_y": 92075.0,
+      "source_angle": 180.0,
+      "source_length": 600.0,
+      "source_width": 200.0,
+      "equipment_type": "BELT",
+      "computed_entry_anchor": {
+        "x": 63033.333,
+        "y": 92075.0
+      },
+      "computed_exit_anchor": {
+        "x": 62433.333,
+        "y": 92075.0
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P406",
+      "source_x": 62114.875,
+      "source_y": 91933.333,
+      "source_angle": 180.0,
+      "source_length": 1500.0,
+      "source_width": 600.0,
+      "equipment_type": "STRAIGHT",
+      "computed_entry_anchor": {
+        "x": 62864.875,
+        "y": 91933.333
+      },
+      "computed_exit_anchor": {
+        "x": 61364.875,
+        "y": 91933.333
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    },
+    {
+      "conveyor": "P408",
+      "source_x": 60637.915,
+      "source_y": 92071.609,
+      "source_angle": 180.0,
+      "source_length": 22833.333,
+      "source_width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "computed_entry_anchor": {
+        "x": 72054.5815,
+        "y": 92071.609
+      },
+      "computed_exit_anchor": {
+        "x": 49221.2485,
+        "y": 92071.609
+      },
+      "geometry_confidence": "HIGH",
+      "geometry_issues": [],
+      "provenance": {
+        "x": "RUN",
+        "y": "RUN",
+        "angle": "RUN",
+        "length": "RUN",
+        "width": "RUN",
+        "entry_anchor": "INFERRED_GEOMETRY",
+        "exit_anchor": "INFERRED_GEOMETRY"
+      }
+    }
+  ],
+  "source_of_truth": "RUN geometry fields only \u2014 anchors are labeled ASSUMPTION/INFERRED_GEOMETRY"
+}

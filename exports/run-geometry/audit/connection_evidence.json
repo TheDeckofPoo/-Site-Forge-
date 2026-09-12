@@ -1,0 +1,408 @@
+{
+  "generated_at": "2026-09-12T04:15:00.135750+00:00",
+  "machine": "ORNCCP2",
+  "source_of_truth": "RUN geometry only",
+  "candidate_count": 23,
+  "auto_connect_threshold": "CONFIRMED + HIGH-CONFIDENCE CANDIDATE",
+  "would_auto_connect": 3,
+  "ambiguous": 20,
+  "candidates": [
+    {
+      "from": "P138",
+      "to": "P1000",
+      "exit_to_entry_distance": 235.702,
+      "angle_compatibility_deg": 90.0,
+      "from_equipment_type": "BELT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P400",
+      "to": "P1010",
+      "exit_to_entry_distance": 295.569,
+      "angle_compatibility_deg": 90.0,
+      "from_equipment_type": "STRAIGHT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P404",
+      "to": "P1004",
+      "exit_to_entry_distance": 335.928,
+      "angle_compatibility_deg": 90.0,
+      "from_equipment_type": "BELT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P400",
+      "to": "P1006",
+      "exit_to_entry_distance": 376.57,
+      "angle_compatibility_deg": 90.0,
+      "from_equipment_type": "STRAIGHT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P404",
+      "to": "P1000",
+      "exit_to_entry_distance": 386.67,
+      "angle_compatibility_deg": 90.0,
+      "from_equipment_type": "BELT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P242",
+      "to": "P400",
+      "exit_to_entry_distance": 419.407,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted",
+        "ambiguity: 2 inbound geometric candidates"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P150",
+      "to": "P400",
+      "exit_to_entry_distance": 442.844,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted",
+        "ambiguity: 2 inbound geometric candidates"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P404",
+      "to": "P406",
+      "exit_to_entry_distance": 454.2,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "BELT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted",
+        "ambiguity: 2 inbound geometric candidates"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P138",
+      "to": "P406",
+      "exit_to_entry_distance": 475.635,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "BELT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted",
+        "ambiguity: 2 inbound geometric candidates"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P138",
+      "to": "P1004",
+      "exit_to_entry_distance": 507.993,
+      "angle_compatibility_deg": 90.0,
+      "from_equipment_type": "BELT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P404",
+      "to": "P138",
+      "exit_to_entry_distance": 690.461,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "BELT",
+      "to_equipment_type": "BELT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted",
+        "ambiguity: 2 inbound geometric candidates"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P136",
+      "to": "P138",
+      "exit_to_entry_distance": 712.5,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "BELT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted",
+        "ambiguity: 2 inbound geometric candidates"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P136",
+      "to": "P404",
+      "exit_to_entry_distance": 790.185,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "BELT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P406",
+      "to": "P1000",
+      "exit_to_entry_distance": 851.593,
+      "angle_compatibility_deg": 90.0,
+      "from_equipment_type": "STRAIGHT",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P400",
+      "to": "P229",
+      "exit_to_entry_distance": 884.644,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "STRAIGHT",
+      "to_equipment_type": "ZEROPRESSURE",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P136",
+      "to": "P406",
+      "exit_to_entry_distance": 903.375,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P230",
+      "to": "P232",
+      "exit_to_entry_distance": 1025.0,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "BELT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P136",
+      "to": "P1004",
+      "exit_to_entry_distance": 1051.528,
+      "angle_compatibility_deg": 90.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P150",
+      "to": "P136A",
+      "exit_to_entry_distance": 1121.607,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "ZEROPRESSURE",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P242",
+      "to": "P136A",
+      "exit_to_entry_distance": 1195.688,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "ZEROPRESSURE",
+      "confidence": "AMBIGUOUS",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P312",
+      "to": "P314",
+      "exit_to_entry_distance": 250.0,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "BELT",
+      "confidence": "CONFIRMED",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P320",
+      "to": "P322",
+      "exit_to_entry_distance": 350.0,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "ZEROPRESSURE",
+      "to_equipment_type": "STRAIGHT",
+      "confidence": "HIGH-CONFIDENCE CANDIDATE",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    },
+    {
+      "from": "P138",
+      "to": "P404",
+      "exit_to_entry_distance": 690.461,
+      "angle_compatibility_deg": 0.0,
+      "from_equipment_type": "BELT",
+      "to_equipment_type": "BELT",
+      "confidence": "HIGH-CONFIDENCE CANDIDATE",
+      "reason": [
+        "mate scored by exit\u2192entry Euclidean distance in RUN drawing units",
+        "angle compatibility = |angle_from - angle_to| wrapped to [0,180]",
+        "P-tag numerical order NOT used",
+        "reference PLC downstream NOT consulted"
+      ],
+      "method": "geometry_exit_to_entry",
+      "provenance": "INFERRED_GEOMETRY"
+    }
+  ]
+}
