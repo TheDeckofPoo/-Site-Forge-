@@ -1,0 +1,534 @@
+{
+  "parameter_map": {
+    "generated_at": "2026-09-12T07:31:33.053008+00:00",
+    "collector_digits": "414",
+    "merge_name": "SAWTOOTH_MERGE",
+    "motor_io": "VFD414_AUX",
+    "reservation": "SAW_RESERVATION",
+    "slice_seconds_merge": 18.0,
+    "symbol_renames": {
+      "MRG414_": "MRG414_",
+      "P219_Conv": "P219_Conv",
+      "PE219_P": "PE219_P",
+      "P408_Conv": "P408_Conv",
+      "PE410_P": "PE410_P",
+      "P116_Conv": "P116_Conv",
+      "PE118_P": "PE118_P",
+      "P214_Conv": "P214_Conv",
+      "PE216_P": "PE216_P",
+      "P832_Conv": "P832_Conv",
+      "PE834_P": "PE834_P"
+    },
+    "lane_bindings": [
+      {
+        "lane_name": "LANE_0_P219",
+        "lane_index": 1,
+        "conveyor": "P219",
+        "approach": "SAW_APP_LANE_0",
+        "collision": "SAW_COL_LANE_0",
+        "lane_input": "SAW_MERGE_IN_0",
+        "photoeye": "PE219_P",
+        "drive": "VFD219",
+        "slice_seconds": 3.0,
+        "reserve_seconds": 10.0,
+        "provenance": "RUN_EXPLICIT",
+        "pack_bindings": [
+          {
+            "pack_symbol_pattern": "P219_Conv",
+            "site_value": "P219_Conv",
+            "role": "lane_conveyor_udt"
+          },
+          {
+            "pack_symbol_pattern": "PE219_P",
+            "site_value": "PE219_P",
+            "role": "lane_pe"
+          }
+        ]
+      },
+      {
+        "lane_name": "LANE_1_P408",
+        "lane_index": 2,
+        "conveyor": "P408",
+        "approach": "SAW_APP_LANE_1",
+        "collision": "SAW_COL_LANE_1",
+        "lane_input": "SAW_MERGE_IN_1",
+        "photoeye": "PE410_P",
+        "drive": "VFD410_EN",
+        "slice_seconds": 18.0,
+        "reserve_seconds": 20.0,
+        "provenance": "RUN_EXPLICIT",
+        "pack_bindings": [
+          {
+            "pack_symbol_pattern": "P408_Conv",
+            "site_value": "P408_Conv",
+            "role": "lane_conveyor_udt"
+          },
+          {
+            "pack_symbol_pattern": "PE410_P",
+            "site_value": "PE410_P",
+            "role": "lane_pe"
+          }
+        ]
+      },
+      {
+        "lane_name": "LANE_3_P116",
+        "lane_index": 3,
+        "conveyor": "P116",
+        "approach": "SAW_APP_LANE_3",
+        "collision": "SAW_COL_LANE_3",
+        "lane_input": "SAW_MERGE_IN_3",
+        "photoeye": "PE118_P",
+        "drive": "VFD118_EN",
+        "slice_seconds": 8.0,
+        "reserve_seconds": 20.0,
+        "provenance": "RUN_EXPLICIT",
+        "pack_bindings": [
+          {
+            "pack_symbol_pattern": "P116_Conv",
+            "site_value": "P116_Conv",
+            "role": "lane_conveyor_udt"
+          },
+          {
+            "pack_symbol_pattern": "PE118_P",
+            "site_value": "PE118_P",
+            "role": "lane_pe"
+          }
+        ]
+      },
+      {
+        "lane_name": "LANE_4_P214",
+        "lane_index": 4,
+        "conveyor": "P214",
+        "approach": "SAW_APP_LANE_4",
+        "collision": "SAW_COL_LANE_4",
+        "lane_input": "SAW_MERGE_IN_4",
+        "photoeye": "PE216_P",
+        "drive": "VFD216_EN",
+        "slice_seconds": 6.0,
+        "reserve_seconds": 15.0,
+        "provenance": "RUN_EXPLICIT",
+        "pack_bindings": [
+          {
+            "pack_symbol_pattern": "P214_Conv",
+            "site_value": "P214_Conv",
+            "role": "lane_conveyor_udt"
+          },
+          {
+            "pack_symbol_pattern": "PE216_P",
+            "site_value": "PE216_P",
+            "role": "lane_pe"
+          }
+        ]
+      },
+      {
+        "lane_name": "LANE_5_P832",
+        "lane_index": 5,
+        "conveyor": "P832",
+        "approach": "SAW_APP_LANE_5",
+        "collision": "SAW_COL_LANE_5",
+        "lane_input": "SAW_MERGE_IN_5",
+        "photoeye": "PE834_P",
+        "drive": "VFD834_EN",
+        "slice_seconds": 3.0,
+        "reserve_seconds": 10.0,
+        "provenance": "RUN_EXPLICIT",
+        "pack_bindings": [
+          {
+            "pack_symbol_pattern": "P832_Conv",
+            "site_value": "P832_Conv",
+            "role": "lane_conveyor_udt"
+          },
+          {
+            "pack_symbol_pattern": "PE834_P",
+            "site_value": "PE834_P",
+            "role": "lane_pe"
+          }
+        ]
+      }
+    ],
+    "unmapped_pack_symbols": [
+      {
+        "symbol": "EZPE116_F",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "EZPE127_F",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "EZPE212_F2",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "EZPE408_F",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "EZPE832_F",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_aoUNL_PT_CnvDeltaDist",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astCollPeTrackCal",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astLaneClctrSlotResvCntrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astLanePeTrackCal",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astUNL_BFR_CnvCtrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astUNL_GPR_CnvCtrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astUNL_PT_CnvCtrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astUNL_Q1_CnvCtrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astUNL_Q2_CnvCtrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_astUNL_SlugBldCtrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_diHMI_LaneIdx",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_diNoCartonGap",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_rFastTaskDeltaMilliSecs",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_stLaneClctrSlotResvCntrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_stUNL_Q2_CnvCtrl",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_stUNL_SlugBldCfgTmp1",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_xCollTrackPE_OffsetCaptureArm",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_xLaneClctrPeCalibrate",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG422_xLane_OffsetCaptureArm",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG500_adiCollTrkArray_Freeze",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG500_astCollPeTrackCal",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG500_astLaneClctrSlotResvCntrl_Freeze",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG500_stCollLaneMrgCapture",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG500_xCollTrackPE_OffsetCaptureArm",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "MRG500_xLaneClctrPeCalibrate",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P118_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P120_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P1491_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P1492_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P216_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P218_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P219A_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P219_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P2426_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P2501_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P3451_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P3452_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P410_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P412_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P4131_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P4132_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P414_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P414_Enc",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P414_SawMerge_HMI",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P418_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P422_SawMerge_HMI",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P834_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "P836_Conv",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE118_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE1491_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE1491_P",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE1492_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE219A_J",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE2426_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE3451_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE3451_P",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE3452_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE410_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE4131_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE4131_P",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE4132_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE414A_J",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE414B_J",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE414C_J",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE414D_J",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE414_J",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE418_I",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      },
+      {
+        "symbol": "PE418_P",
+        "classification": "CONFIGURATION REQUIRED",
+        "reason": "Site-like pack symbol without explicit RUN bind in this map"
+      }
+    ],
+    "notes": [
+      "Lane PE/drive/conveyor taken from RUN SawLane \u2014 never normalized by equal digits",
+      "Example preserved: LANE_3_P116 conveyor=P116 PE=PE118_P drive=VFD118_EN"
+    ],
+    "method": "explicit_parameter_map",
+    "arbitrary_text_replace": false,
+    "finished_plc4_used": false
+  },
+  "apply_report_preview": {
+    "generated_at": "2026-09-12T07:31:33.052974+00:00",
+    "renames_applied": [],
+    "method": "explicit_symbol_renames_longest_first",
+    "arbitrary_global_digit_replace": false
+  },
+  "lane_count": 5,
+  "rename_count": 0,
+  "method": "explicit_parameter_map",
+  "arbitrary_text_replace": false
+}

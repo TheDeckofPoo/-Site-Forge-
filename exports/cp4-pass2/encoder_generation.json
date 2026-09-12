@@ -1,0 +1,63 @@
+{
+  "generated_at": "2026-09-12T07:32:48.939449+00:00",
+  "encoders": [
+    {
+      "encoder": "ENC414",
+      "io": "ENC414",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 150.0,
+      "enable": "VFD414_AUX",
+      "jamzone": "SAWTOOTH MERGE",
+      "description": "SAWTOOTH MERGE",
+      "associations": [
+        {
+          "type": "encoder_enable_vfd",
+          "to": "VFD414_AUX",
+          "vfd_base": "VFD414",
+          "on_machine_vfd_inventory": true,
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "encoder_to_saw_merge_via_motor_io",
+          "to": "SAWTOOTH_MERGE",
+          "via": "VFD414_AUX",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "encoder_jamzone_sawtooth",
+          "to": "SAWTOOTH MERGE",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "provenance": "RUN_EXPLICIT",
+      "library_pattern": "Enc_Routine_ST.L5X / Enc_UDT (library) \u2014 Pass 1 preserves params in report; sawtooth ENC414 association recorded; full routine emit is scaffolded via Sawtooth pack tags",
+      "generation_status": "PARAMETERS_PRESERVED"
+    },
+    {
+      "encoder": "ENC424",
+      "io": "ENC424",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 225.0,
+      "enable": "VFD424_AUX",
+      "jamzone": "CITY COUNTER",
+      "description": "CITY COUNTER",
+      "associations": [
+        {
+          "type": "encoder_enable_vfd",
+          "to": "VFD424_AUX",
+          "vfd_base": "VFD424",
+          "on_machine_vfd_inventory": true,
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "provenance": "RUN_EXPLICIT",
+      "library_pattern": "Enc_Routine_ST.L5X / Enc_UDT (library) \u2014 Pass 1 preserves params in report; sawtooth ENC414 association recorded; full routine emit is scaffolded via Sawtooth pack tags",
+      "generation_status": "PARAMETERS_PRESERVED"
+    }
+  ],
+  "count": 2,
+  "library_candidates": [
+    "tools\\libraries\\Enc_Routine_ST.L5X",
+    "OReilly_Library_v3.L5X Enc_* AOIs"
+  ]
+}

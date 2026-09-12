@@ -1968,17 +1968,13 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
             if not row_machine_matches(row_mach, machine):
                 continue
         else:
-            # Untagged: only if PE/VFD on this controller linked to this belt
-            # also allow base P### match for P600C-style PE linking to P600
-            base_m = re.match(r"^(P\d{2,4})", name_u)
-            base = base_m.group(1) if base_m else name_u
-            if name_u not in linked_conveyors and base not in linked_conveyors:
-                # any linked name starts with this conveyor (P600 ← P600C PE)
-                if not any(
-                    lc == name_u or lc.startswith(name_u) or name_u.startswith(lc)
-                    for lc in linked_conveyors
-                ):
-                    continue
+            # Untagged: only if PE/VFD on this controller linked to this belt.
+            # Exact identity / same numeric base+letter family only (P424↔P424A).
+            # NEVER string-prefix (P120 must not pull P1200).
+            from fortna_identity import linked_owns_conveyor
+
+            if not linked_owns_conveyor(name_u, linked_conveyors):
+                continue
 
         desc = (row.get("General_Description") or "").strip()
         drive = (row.get("Drive") or "").strip()

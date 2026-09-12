@@ -1,0 +1,1705 @@
+{
+  "generated_at": "2026-09-12T07:32:48.940459+00:00",
+  "count": 76,
+  "conveyors": [
+    {
+      "conveyor": "P100",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P100A",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P102",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P104",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE104_JF",
+        "add": "",
+        "jam": [
+          "PE104_JF"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P106",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P108",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE108_JF",
+        "add": "",
+        "jam": [
+          "PE108_JF"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P110",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P112",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P114",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P116",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE116_P",
+        "add": "",
+        "jam": [
+          "EZPE116_P"
+        ],
+        "full": [
+          "EZPE116_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P118",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD118",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE118_P",
+        "add": "",
+        "jam": [
+          "PE118_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P120",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD120",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P200",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P200A",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P202",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P204",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE204_JF",
+        "add": "",
+        "jam": [
+          "PE204_JF"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P206",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P208",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE208_JF",
+        "add": "",
+        "jam": [
+          "PE208_JF"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P209",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE209_P",
+        "add": "",
+        "jam": [
+          "EZPE209_P"
+        ],
+        "full": [
+          "EZPE209_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P210",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P211",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P212",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE212_P1",
+        "add": "",
+        "jam": [
+          "EZPE212_P1"
+        ],
+        "full": [
+          "EZPE212_F1",
+          "EZPE212_F2"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P213",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE213_P",
+        "add": "",
+        "jam": [
+          "EZPE213_P"
+        ],
+        "full": [
+          "EZPE213_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P214",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE214_P",
+        "add": "",
+        "jam": [
+          "EZPE214_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P215",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE215_J",
+        "add": "",
+        "jam": [
+          "PE215_J"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P216",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD216",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE216_P",
+        "add": "",
+        "jam": [
+          "PE216_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P217",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE217_P",
+        "add": "",
+        "jam": [
+          "EZPE217_P"
+        ],
+        "full": [
+          "EZPE217_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P218",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD218",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P219",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD219",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE219_P",
+        "add": "",
+        "jam": [
+          "PE219_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P219A",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD219A",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE219A_J",
+        "add": "",
+        "jam": [
+          "PE219A_J"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P226",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P229",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE229_P",
+        "add": "",
+        "jam": [
+          "EZPE229_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P231",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P231A",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE231A_P",
+        "add": "",
+        "jam": [
+          "EZPE231A_P"
+        ],
+        "full": [
+          "EZPE231A_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P300",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P300A",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P302",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P304",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE304_P",
+        "add": "",
+        "jam": [
+          "EZPE304_P"
+        ],
+        "full": [
+          "EZPE304_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P305",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P306",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE306_P",
+        "add": "",
+        "jam": [
+          "PE306_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P308",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE308_J",
+        "add": "",
+        "jam": [
+          "PE308_J"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P408",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE408_P",
+        "add": "",
+        "jam": [
+          "EZPE408_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P410",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD410",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE410_P",
+        "add": "",
+        "jam": [
+          "PE410_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P412",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD412",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P414",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD414",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE414A_J",
+        "add": "",
+        "jam": [
+          "PE414A_J",
+          "PE414B_J",
+          "PE414C_J",
+          "PE414D_J",
+          "PE414_J"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P416",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD414",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P418",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE418_P",
+        "add": "",
+        "jam": [
+          "EZPE418_P"
+        ],
+        "full": [
+          "EZPE418_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P420",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P422",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD422",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE422_P",
+        "add": "",
+        "jam": [
+          "PE422_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P424",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD424",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE424_I",
+        "add": "",
+        "jam": [
+          "PE424_I"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P424A",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD424",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P426",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P428",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE428_JF",
+        "add": "",
+        "jam": [
+          "PE428_JF"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P430",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P432",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P434",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE434_JF",
+        "add": "",
+        "jam": [
+          "PE434_JF"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P436",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P438",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE438_JF",
+        "add": "",
+        "jam": [
+          "PE438_JF"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P446",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE446_J",
+        "add": "",
+        "jam": [
+          "PE446_J"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P447",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P448",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P450",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE450_P",
+        "add": "",
+        "jam": [
+          "EZPE450_P"
+        ],
+        "full": [
+          "EZPE450_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P452",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P454",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P456",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE456_P",
+        "add": "",
+        "jam": [
+          "EZPE456_P"
+        ],
+        "full": [
+          "EZPE456_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P462",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [
+          "PE462_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P818",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P820",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "PE820_JF",
+        "add": "",
+        "jam": [
+          "PE820_JF"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P822",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P824",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P826",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P828",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE828_P",
+        "add": "",
+        "jam": [
+          "EZPE828_P"
+        ],
+        "full": [
+          "EZPE828_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P830",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Transport with MS",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P832",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "MOTOR_STARTER",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": null,
+      "autogen_type": "Accumulation with MS",
+      "pe_roles": {
+        "exit": "EZPE832_P",
+        "add": "",
+        "jam": [
+          "EZPE832_P"
+        ],
+        "full": [
+          "EZPE832_F"
+        ],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P834",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD834",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "PE834_P",
+        "add": "",
+        "jam": [
+          "PE834_P"
+        ],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "conveyor": "P836",
+      "identity_provenance": "RUN_EXPLICIT",
+      "motor_type": "VFD",
+      "drive_provenance": "RUN_EXPLICIT",
+      "vfd_base": "VFD836",
+      "autogen_type": "Transport with VFD",
+      "pe_roles": {
+        "exit": "",
+        "add": "",
+        "jam": [],
+        "full": [],
+        "note": "PE tags from RUN suffix classification in load_from_run; engineer confirm still required where uncertain"
+      },
+      "downstream": "",
+      "downstream_status": "CONFIGURATION REQUIRED",
+      "area": "ORNCCP4_Area",
+      "area_status": "CONFIGURATION REQUIRED",
+      "es_zone": "ORNCCP4_ESZone1",
+      "es_zone_status": "CONFIGURATION REQUIRED"
+    }
+  ]
+}

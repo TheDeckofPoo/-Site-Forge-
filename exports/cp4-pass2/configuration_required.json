@@ -1,0 +1,1161 @@
+{
+  "generated_at": "2026-09-12T07:32:48.940568+00:00",
+  "counts": {
+    "total": 230,
+    "area": 76,
+    "es_zone": 76,
+    "downstream": 76
+  },
+  "items": [
+    {
+      "kind": "area",
+      "conveyor": "P100",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P100",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P100",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P100A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P100A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P100A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P102",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P102",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P102",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P104",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P104",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P104",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P106",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P106",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P106",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P108",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P108",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P108",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P110",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P110",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P110",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P112",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P112",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P112",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P114",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P114",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P114",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P116",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P116",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P116",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P118",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P118",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P118",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P120",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P120",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P120",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P200",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P200",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P200",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P200A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P200A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P200A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P202",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P202",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P202",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P204",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P204",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P204",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P206",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P206",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P206",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P208",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P208",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P208",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P209",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P209",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P209",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P210",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P210",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P210",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P211",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P211",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P211",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P212",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P212",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P212",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P213",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P213",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P213",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P214",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P214",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P214",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P215",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P215",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P215",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P216",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P216",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P216",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P217",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P217",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P217",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P218",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P218",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P218",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P219",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P219",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P219",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P219A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P219A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P219A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P226",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P226",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P226",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P229",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P229",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P229",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P231",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P231",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P231",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P231A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P231A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P231A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P300",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P300",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P300",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P300A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P300A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P300A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P302",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P302",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P302",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P304",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P304",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P304",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P305",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P305",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P305",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P306",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P306",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P306",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P308",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P308",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P308",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P408",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P408",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P408",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P410",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P410",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P410",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P412",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P412",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P412",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P414",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P414",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P414",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P416",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P416",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P416",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P418",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P418",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P418",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P420",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P420",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P420",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P422",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P422",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P422",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P424",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P424",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P424",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P424A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P424A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P424A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P426",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P426",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P426",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P428",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P428",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P428",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P430",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P430",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P430",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P432",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P432",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P432",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P434",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P434",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P434",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P436",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P436",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P436",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P438",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P438",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P438",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P446",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P446",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P446",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P447",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P447",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P447",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P448",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P448",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P448",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P450",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P450",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P450",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P452",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P452",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P452",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P454",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P454",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P454",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P456",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P456",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P456",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P462",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P462",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P462",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P818",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P818",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P818",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P820",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P820",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P820",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P822",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P822",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P822",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P824",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P824",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P824",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P826",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P826",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P826",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P828",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P828",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P828",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P830",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P830",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P830",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P832",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P832",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P832",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P834",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P834",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P834",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P836",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P836",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P836",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "sawtooth_parameterization",
+      "detail": "Sawtooth_Merge pack included; MRG/lane PE retarget map still CONFIGURATION REQUIRED",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "tracking_wcs",
+      "detail": "SrtTrack/MsgWCS/WCSEvents/XfrTrack inventory only",
+      "status": "GENERATION NOT YET SUPPORTED"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "generated_at": "2026-09-12T07:32:48.940869+00:00",
+  "machine": "ORNCCP4",
+  "pass": "cp4-compiler-pass2",
+  "finished_plc4_used": false,
+  "discovery_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-discovery",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-pass2\\generated\\OReillyGreensboro_ORNCCP4.L5X",
+  "counts": {
+    "conveyors_generated": 76,
+    "discovery_mechanical": 76,
+    "removed_prefix_pollution": [],
+    "saw_lanes": 5,
+    "encoders": 2,
+    "vfd_forced": 15
+  },
+  "realization_acceptance": "ACCEPTED",
+  "tracking_wcs": "GENERATION NOT YET SUPPORTED",
+  "ui_note": "No new top-level Transport buttons \u2014 compiler responsibilities stay off the engineer toolbar",
+  "ok": true
+}
