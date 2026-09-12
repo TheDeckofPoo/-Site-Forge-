@@ -1437,6 +1437,83 @@ function createWindow() {
     }
   });
 
+  /** Auto Build physical Transport layout from imported RUN geometry. */
+  ipcMain.handle('transport-auto-build-from-run', async (_event, data) => {
+    try {
+      const script = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_run_physical_layout.py');
+      if (!fs.existsSync(script)) {
+        return { ok: false, success: false, error: `Missing ${script}` };
+      }
+      const runDir = resolveActiveRunDir(data?.runDir || data?.run_dir || null);
+      if (!runDir) {
+        return {
+          ok: false,
+          success: false,
+          error: 'No imported RUN found — import a RUN .tar.gz first (Workspace / I/O & Prints).',
+        };
+      }
+      const outDir = path.join(REPO_ROOT, 'exports', 'run-geometry', 'auto-build');
+      fs.mkdirSync(outDir, { recursive: true });
+      const args = [script, '--run-dir', runDir, '--out', outDir, '--stdout-graph'];
+      if (data?.machine) args.push('--machine', String(data.machine));
+      if (data?.connectThreshold) args.push('--connect-threshold', String(data.connectThreshold));
+      const result = await runPythonAsync(args, REPO_ROOT);
+      if (result.error && !result.stdout) {
+        return { ok: false, success: false, error: result.error || result.stderr || 'python failed' };
+      }
+      const raw = (result.stdout || '').trim();
+      // Prefer full graph JSON line (stdout-graph prints the graph object)
+      let graph = null;
+      let metrics = null;
+      const lines = raw.split(/\r?\n/).filter(Boolean);
+      for (let i = lines.length - 1; i >= 0; i--) {
+        const line = lines[i];
+        if (!line.startsWith('{')) continue;
+        try {
+          const parsed = JSON.parse(line);
+          if (parsed && Array.isArray(parsed.areas)) {
+            graph = parsed;
+            metrics = parsed.metrics || null;
+            break;
+          }
+          if (parsed && parsed.ok && parsed.metrics) {
+            metrics = parsed.metrics;
+          }
+        } catch (_) { /* keep scanning */ }
+      }
+      // Fallback: read written graph file
+      const graphPath = path.join(outDir, 'transport_graph_from_run.json');
+      if (!graph && fs.existsSync(graphPath)) {
+        try {
+          graph = JSON.parse(fs.readFileSync(graphPath, 'utf8'));
+          metrics = graph.metrics || metrics;
+        } catch (_) { /* ignore */ }
+      }
+      if (!graph || !Array.isArray(graph.areas)) {
+        return {
+          ok: false,
+          success: false,
+          error: result.stderr || raw.slice(-500) || 'Auto Build produced no graph',
+          exports_dir: outDir,
+        };
+      }
+      return {
+        ok: true,
+        success: true,
+        graph,
+        metrics: metrics || graph.metrics || {},
+        exports_dir: outDir,
+        run_dir: runDir,
+        summary:
+          `Auto Build: ${(metrics && metrics.conveyors_placed) || 0} placed, ` +
+          `${(metrics && metrics.auto_connections) || 0} auto connections, ` +
+          `${(metrics && metrics.ambiguous_connections) || 0} ambiguous`,
+      };
+    } catch (e) {
+      return { ok: false, success: false, error: e.message || String(e) };
+    }
+  });
+
   /** Pack Perspective components for Designer/gateway import (no full build required). */
   ipcMain.handle('ignition-pack-perspective', async (_event, data) => {
     try {

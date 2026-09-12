@@ -298,6 +298,20 @@
     .tb-wire { fill: none; stroke: #64748b; stroke-width: 2.5; }
     .tb-wire.active { stroke: #e879f9; }
     .tb-wire-temp { stroke: #f472b6; stroke-dasharray: 6 4; }
+    .tb-wire.tb-physical { stroke: #38bdf8; stroke-width: 3; }
+    .tb-wire.tb-conf-confirmed { stroke: #22c55e; }
+    .tb-wire.tb-conf-high { stroke: #38bdf8; }
+    .tb-wire.tb-conf-ambiguous { stroke: #f59e0b; stroke-dasharray: 5 4; }
+    .tb-node.tb-physical { min-width: 100px; }
+    .tb-node.tb-curve { border-color: #818cf8; }
+    .tb-node.tb-ambiguous { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.45); }
+    .tb-drive-badge {
+      font-size: 8px; font-weight: 700; letter-spacing: 0.02em;
+      padding: 0 3px; border-radius: 3px; border: 1px solid #334155;
+    }
+    .tb-drive-vfd { color: #67e8f9; background: #083344; border-color: #155e75; }
+    .tb-drive-ms { color: #fcd34d; background: #451a03; border-color: #b45309; }
+    .tb-drive-unk { color: #94a3b8; background: #0f172a; }
     #remote-prints-details > summary { list-style: none; }
     #remote-prints-details > summary::-webkit-details-marker { display: none; }
     #remote-prints-details[open] > summary .fa-chevron-down { transform: rotate(180deg); }
@@ -1886,6 +1900,9 @@
             <i class="fa-solid fa-trash"></i>
           </button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
+          <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-600/70 text-emerald-200 font-semibold" title="Create first-pass physical layout from imported RUN geometry (X/Y/Angle/Length)">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Auto Build From RUN
+          </button>
           <button type="button" id="tb-build-chain" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-700/70 text-fuchsia-200 font-semibold" title="Paste a conveyor run: P102 P106 P108 or P102 → P106 → P108">
             <i class="fa-solid fa-route mr-1"></i>Build Chain
           </button>

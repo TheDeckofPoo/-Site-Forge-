@@ -404,6 +404,24 @@
         if (!isConv(n.kind)) return;
         if (typeof n.terminal !== 'boolean') n.terminal = false;
         if (typeof n.asMerge !== 'boolean') n.asMerge = !!n.asMerge;
+        // Physical layout fields (Auto Build From RUN) — defaults for legacy graphs
+        if (typeof n.physical !== 'boolean') n.physical = false;
+        if (n.length == null) n.length = null;
+        if (n.width == null) n.width = null;
+        if (!n.equipmentType) n.equipmentType = '';
+        if (!n.entryAnchor) n.entryAnchor = null;
+        if (!n.exitAnchor) n.exitAnchor = null;
+        if (!n.provenance || typeof n.provenance !== 'object') {
+          n.provenance = { geometry: n.physical ? 'IMPORTED' : 'MANUAL', area: 'MANUAL', safetyZone: 'MANUAL' };
+        }
+        if (!Array.isArray(n.motorsMeta)) n.motorsMeta = [];
+        if (!Array.isArray(n.ambiguousInbound)) n.ambiguousInbound = [];
+      });
+      (area.wires || []).forEach((w) => {
+        if (typeof w.physical !== 'boolean') w.physical = false;
+        if (!w.confidence) w.confidence = w.physical ? 'HIGH_CONFIDENCE' : '';
+        if (!w.fromAnchor) w.fromAnchor = 'exit';
+        if (!w.toAnchor) w.toAnchor = 'entry';
       });
     });
   }
@@ -1481,7 +1499,16 @@
       if (!a || !b) return;
       const dx = Math.max(40, Math.abs(b.x - a.x) * 0.45);
       const d = `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
-      html += `<path class="tb-wire" d="${d}" />`;
+      const conf = String(w.confidence || '').toUpperCase();
+      let cls = 'tb-wire';
+      if (w.physical) cls += ' tb-physical';
+      if (conf === 'CONFIRMED') cls += ' tb-conf-confirmed';
+      else if (conf.includes('HIGH')) cls += ' tb-conf-high';
+      else if (conf.includes('AMBIG')) cls += ' tb-conf-ambiguous';
+      const tip = w.physical
+        ? `OUT ▶◀ IN · ${w.confidence || 'physical'}${w.distance != null ? ` · d=${w.distance}` : ''}`
+        : 'topology wire';
+      html += `<path class="${cls}" d="${d}"><title>${escapeHtml(tip)}</title></path>`;
     });
     if (temp && temp.from && temp.to) {
       const dx = Math.max(40, Math.abs(temp.to.x - temp.from.x) * 0.45);

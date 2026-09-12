@@ -33,6 +33,7 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   transportBuildPoc: (data) => ipcRenderer.invoke('transport-build-poc', data || {}),
   transportLatestMerges: (data) => ipcRenderer.invoke('transport-latest-merges', data || {}),
   transportApplyAutogen: (data) => ipcRenderer.invoke('transport-apply-autogen', data || {}),
+  transportAutoBuildFromRun: (data) => ipcRenderer.invoke('transport-auto-build-from-run', data || {}),
   twinGapsLoad: (data) => ipcRenderer.invoke('twin-gaps-load', data || {}),
   twinPrismSearch: (data) => ipcRenderer.invoke('twin-prism-search', data || {}),
   twinPropose: (data) => ipcRenderer.invoke('twin-propose', data || {}),

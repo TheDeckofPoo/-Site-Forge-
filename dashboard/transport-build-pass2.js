@@ -872,6 +872,16 @@
   }
 
   /* ---------- Compact flow node patch ---------- */
+  function driveBadge(driveType) {
+    const d = String(driveType || 'UNKNOWN').toUpperCase();
+    if (d.includes('VFD')) return '<span class="tb-drive-badge tb-drive-vfd">VFD</span>';
+    if (d.includes('CONTACTOR') || d.includes('STARTER')) {
+      return '<span class="tb-drive-badge tb-drive-ms">CONTACTOR</span>';
+    }
+    if (!driveType) return '';
+    return '<span class="tb-drive-badge tb-drive-unk">UNKNOWN</span>';
+  }
+
   function patchNodeAppearance() {
     // After Pass1 render, rewrite conveyor node inner content to flow style + multi-sel class
     const { tb, activeArea, isConv, escapeHtml, peRolesOnNode, peRoleBadgesHtml, KIND_META } = A();
@@ -883,19 +893,38 @@
       if ((tb.selectedIds || []).includes(n.id) && tb.selectedIds.length > 1) {
         el.classList.add('tb-multi-sel');
       }
+      if (n.physical) el.classList.add('tb-physical');
+      if (String(n.equipmentType || '').toUpperCase() === 'CURVE' || n.kind === 'conv_right' || n.kind === 'conv_left') {
+        el.classList.add('tb-curve');
+      }
+      if ((n.ambiguousInbound || []).length) el.classList.add('tb-ambiguous');
       const tag = (n.conveyorTag || '').trim() || 'P???';
       const ds = n.terminal
         ? 'END'
         : String(n.downstream || '').trim() || '—';
       const dsCls = n.terminal ? 'tb-end' : 'tb-ds';
       const roles = peRoleBadgesHtml(peRolesOnNode(n));
-      const motor = (n.devices || []).find((d) => d.kind === 'motor' && (d.tag || '').trim());
-      const motorLab = motor ? escapeHtml(motor.tag) : '';
+      const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
+      const motorLab = motors.map((m) => escapeHtml(m.tag)).join(' · ')
+        || (n.motorsMeta || []).map((m) => escapeHtml(m.motor || '')).filter(Boolean).join(' · ');
+      const driveTypes = [
+        ...motors.map((m) => m.driveType).filter(Boolean),
+        ...(n.motorsMeta || []).map((m) => m.drive_type || m.driveType).filter(Boolean),
+      ];
+      const driveHtml = driveTypes.length
+        ? driveTypes.map(driveBadge).join(' ')
+        : (motorLab ? driveBadge('CONTACTOR / MOTOR STARTER') : '');
       const meta = KIND_META[n.kind] || {};
       const flags = [];
-      if (n.asMerge || meta.isMerge) flags.push('<span class="text-orange-400 text-[8px]">merge</span>');
+      if (n.asMerge || meta.isMerge || n.mergeDetected) {
+        flags.push('<span class="text-orange-400 text-[8px]">merge</span>');
+      }
       if (n.mergeGenSupported === false) flags.push('<span class="text-amber-400 text-[8px]">CFG</span>');
       if (n.terminal) flags.push('<span class="text-amber-300 text-[8px]">term</span>');
+      if ((n.ambiguousInbound || []).length) {
+        flags.push(`<span class="text-amber-400 text-[8px]" title="Ambiguous inbound mates">AMB×${n.ambiguousInbound.length}</span>`);
+      }
+      if (n.physical) flags.push('<span class="text-sky-400/80 text-[8px]">PHYS</span>');
       const head = el.querySelector('.tb-head');
       const body = el.querySelector('.tb-body');
       if (head) {
@@ -904,10 +933,11 @@
       if (body) {
         body.innerHTML = `<div class="flex items-center gap-1 flex-wrap text-[9px]">
           ${motorLab ? `<span class="mono text-amber-300/90">${motorLab}</span>` : '<span class="text-slate-700">—</span>'}
+          ${driveHtml}
           <span class="tb-status-row">${roles}</span>
           ${flags.join(' ')}
         </div>
-        <div class="tb-area-chip truncate text-[8px] text-slate-600">${escapeHtml(n.safetyZone || area?.name || '')}</div>`;
+        <div class="tb-area-chip truncate text-[8px] text-slate-600">${escapeHtml(n.safetyZone || area?.name || '')}${n.equipmentType ? ` · ${escapeHtml(n.equipmentType)}` : ''}</div>`;
       }
     });
   }
@@ -1286,7 +1316,80 @@
     }
   }
 
+  async function autoBuildFromRun() {
+    const { tb, save, render, status, askYesNo, showInfo, migrateGraphTopology } = A();
+    const api = window.fortnaAPI || window.api;
+    if (!api?.transportAutoBuildFromRun) {
+      await showInfo(
+        'Auto Build From RUN',
+        'Needs the desktop Site Forge app (Electron IPC).\nImport a RUN, then try again.'
+      );
+      return;
+    }
+    const ok = await askYesNo(
+      'Auto Build From RUN',
+      'Replace the current Transport canvas with a first-pass physical layout from the imported RUN?\n\n'
+        + '• Places conveyors from RUN X/Y/Angle/Length\n'
+        + '• Auto-connects only high-confidence OUT→IN mates\n'
+        + '• Ambiguous mates are flagged for review\n'
+        + '• Does not invent Area/ES Zone names\n\n'
+        + 'Existing canvas content will be replaced (undo available).'
+    );
+    if (!ok) return;
+    pushHistory('Auto Build From RUN');
+    status('Auto Build From RUN…');
+    let res;
+    try {
+      res = await api.transportAutoBuildFromRun({});
+    } catch (err) {
+      await showInfo('Auto Build failed', String(err?.message || err));
+      status(`Auto Build error: ${err?.message || err}`);
+      return;
+    }
+    if (!res?.ok || !res.graph) {
+      await showInfo('Auto Build failed', res?.error || 'No graph returned');
+      status(`Auto Build failed: ${res?.error || 'unknown'}`);
+      return;
+    }
+    const g = res.graph;
+    tb.areas = Array.isArray(g.areas) ? g.areas : [];
+    tb.activeAreaId = g.activeAreaId || tb.areas[0]?.id || null;
+    tb.selectedId = null;
+    tb.selectedIds = [];
+    tb.selectedDeviceId = null;
+    if (tb.areas[0]) {
+      tb.buildContext.areaId = tb.areas[0].id;
+      tb.buildContext.areaName = tb.areas[0].name || '';
+      // Do not invent ES zone from RUN
+      tb.buildContext.safetyZone = tb.buildContext.safetyZone || '';
+    }
+    migrateGraphTopology();
+    ensureBuildContext();
+    save();
+    render();
+    const m = res.metrics || g.metrics || {};
+    const detail = [
+      `Conveyors discovered: ${m.conveyors_discovered ?? '—'}`,
+      `Placed: ${m.conveyors_placed ?? '—'}`,
+      `Usable X/Y: ${m.conveyors_with_usable_xy ?? '—'}`,
+      `Usable angle: ${m.conveyors_with_usable_angle ?? '—'}`,
+      `Usable length/width: ${m.conveyors_with_usable_length ?? '—'}`,
+      `Motors: ${m.motors_discovered ?? '—'} (VFD ${m.vfd_motors ?? 0} · contactor ${m.contactor_motors ?? 0} · unknown ${m.unknown_motors ?? 0})`,
+      `Auto connections: ${m.auto_connections ?? '—'}`,
+      `Ambiguous: ${m.ambiguous_connections ?? '—'}`,
+      `Disconnected: ${m.disconnected_equipment ?? '—'}`,
+      `Merges detected: ${m.merges_detected ?? '—'}`,
+      '',
+      'Review amber-flagged conveyors, correct Area/ES Zone, then Apply to Autogen.',
+    ].join('\n');
+    await showInfo('Auto Build From RUN complete', res.summary || 'Layout imported.', detail);
+    status(res.summary || 'Auto Build complete — review ambiguous connections');
+  }
+
   function bindUi() {
+    $('tb-auto-build-run')?.addEventListener('click', () => {
+      autoBuildFromRun().catch((err) => A().status(`Auto Build error: ${err?.message || err}`));
+    });
     $('tb-build-chain')?.addEventListener('click', () => openChainDialog());
     $('tb-chain-cancel')?.addEventListener('click', () => closeChainDialog());
     $('tb-chain-input')?.addEventListener('input', () => updateChainPreview());
@@ -1394,14 +1497,20 @@
   function appendPass2Validation() {
     const el = $('tb-validation');
     if (!el) return;
-    const { tb, isConv } = A();
+    const { tb, isConv, escapeHtml } = A();
     const extra = [];
     (tb.areas || []).forEach((area) => {
       (area.nodes || []).forEach((n) => {
         if (!isConv(n.kind)) return;
         if (n.mergeGenSupported === false) {
           extra.push(
-            `<div class="tb-val-warn">• ${A().escapeHtml(n.conveyorTag || n.label)}: CONFIGURATION REQUIRED / GENERATION NOT YET SUPPORTED (3:1+)</div>`
+            `<div class="tb-val-warn">• ${escapeHtml(n.conveyorTag || n.label)}: CONFIGURATION REQUIRED / GENERATION NOT YET SUPPORTED (3:1+)</div>`
+          );
+        }
+        if ((n.ambiguousInbound || []).length) {
+          const froms = n.ambiguousInbound.map((x) => x.from).filter(Boolean).join(', ');
+          extra.push(
+            `<div class="tb-val-warn">• ${escapeHtml(n.conveyorTag || n.label)}: ambiguous inbound (${escapeHtml(froms)}) — confirm OUT→IN</div>`
           );
         }
       });
