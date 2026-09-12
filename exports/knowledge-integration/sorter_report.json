@@ -1,0 +1,211 @@
+{
+  "generated_at": "2026-09-12T19:26:55.039342+00:00",
+  "ORNCCP4": {
+    "editor": "sorter_v2",
+    "detected": true,
+    "sorters": [
+      {
+        "canonical_id": "sorter:SAWTOOTH_MERGE",
+        "kind": "sorter",
+        "source_table": "Sorters.asc",
+        "source_row": 2,
+        "source_scope": "controller_overlay",
+        "raw_name": "SAWTOOTH_MERGE",
+        "normalized_name": "SAWTOOTH_MERGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "INCLUDED",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "sorter_table"
+          },
+          {
+            "kind": "source",
+            "scope": "controller_overlay",
+            "path": "Sorters.asc.ORNCCP4",
+            "row": 2
+          },
+          {
+            "kind": "encoder_link",
+            "detail": "ENC414"
+          },
+          {
+            "kind": "sorter_research_integrate"
+          },
+          {
+            "kind": "saw_merge"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_0_P219"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_1_P408"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_3_P116"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_4_P214"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_5_P832"
+          },
+          {
+            "kind": "sorter_static",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "sorter_table",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "sorter_static",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "activity_strong_link",
+            "score": 12,
+            "matched": [
+              "encoder_link",
+              "saw_merge",
+              "sorter_research_integrate",
+              "sorter_static",
+              "sorter_table"
+            ]
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "encoder_io": "ENC414",
+        "machine_name": "ORNCCP4",
+        "discovery_only": true,
+        "research_ref": "exports/sorter-research/subsystem_model.json",
+        "generation_boundary": "sorter_track_plc_generation NOT_SUPPORTED",
+        "sorter_table_class": "static_config",
+        "activity_score": 12,
+        "activity_score_breakdown": {
+          "encoder_link": 2,
+          "sorter_static": 2,
+          "sorter_table": 2,
+          "saw_merge": 3,
+          "sorter_research_integrate": 1,
+          "related_graph": 2
+        },
+        "inclusion_why": {
+          "inclusion": "INCLUDED",
+          "active_state": "ACTIVE_CONFIRMED",
+          "positive_evidence": [
+            "activity_strong_link",
+            "encoder_link",
+            "saw_merge",
+            "sorter_research_integrate",
+            "sorter_static",
+            "sorter_table"
+          ],
+          "missing": [],
+          "notes": [
+            "sufficient positive evidence for generation"
+          ]
+        }
+      },
+      {
+        "canonical_id": "sorter:CITY_LANE",
+        "kind": "sorter",
+        "source_table": "Sorters.asc",
+        "source_row": "CITY_LANE",
+        "source_scope": "controller_overlay",
+        "raw_name": "CITY_LANE",
+        "normalized_name": "CITY_LANE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "INCLUDED",
+        "confidence": "HIGH",
+        "provenance": "RUN_DERIVED",
+        "evidence": [
+          {
+            "kind": "sorter_research_integrate"
+          },
+          {
+            "kind": "sorter_static",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "activity_strong_link",
+            "score": 3
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "encoder_io": "ENC424",
+        "machine_name": "ORNCCP4",
+        "discovery_only": true,
+        "research_ref": "exports/sorter-research/subsystem_model.json",
+        "generation_boundary": "sorter_track_plc_generation NOT_SUPPORTED",
+        "sorter_table_class": "static_config",
+        "activity_score": 3,
+        "activity_score_breakdown": {
+          "sorter_research_integrate": 1,
+          "sorter_static": 2
+        },
+        "inclusion_why": {
+          "inclusion": "INCLUDED",
+          "active_state": "ACTIVE_CONFIRMED",
+          "positive_evidence": [
+            "activity_strong_link",
+            "sorter_research_integrate",
+            "sorter_static"
+          ],
+          "missing": [],
+          "notes": [
+            "sufficient positive evidence for generation"
+          ]
+        }
+      }
+    ],
+    "layers": {
+      "STATIC_CONFIG": [
+        "SAWTOOTH_MERGE",
+        "CITY_LANE"
+      ],
+      "RUNTIME_STATE": [],
+      "COMMUNICATION_CONFIG": [],
+      "ENGINEER_REQUIRED": [
+        "divert_map",
+        "conveyor_tracking_chain",
+        "divert_map",
+        "conveyor_tracking_chain"
+      ]
+    },
+    "generation_leaves": {
+      "encoder_infrastructure": "GENERATABLE",
+      "scanner_device_structures": "CONFIGURATION_REQUIRED",
+      "scan_zone_configuration": "MODELED",
+      "sorter_entity_tags": "MODELED",
+      "wcs_message_config_tags": "GENERATION_NOT_SUPPORTED",
+      "route_destination_configuration": "CONFIGURATION_REQUIRED",
+      "divert_aoi_instances": "GENERATION_NOT_SUPPORTED",
+      "transfer_tracking_support": "GENERATION_NOT_SUPPORTED"
+    },
+    "note": "No Sorter_Track clone; only proven leaves may generate. Gold L5X is reference-only."
+  },
+  "generation_leaves": {
+    "encoder_infrastructure": "GENERATABLE",
+    "scanner_device_structures": "CONFIGURATION_REQUIRED",
+    "scan_zone_configuration": "MODELED",
+    "sorter_entity_tags": "MODELED",
+    "wcs_message_config_tags": "GENERATION_NOT_SUPPORTED",
+    "route_destination_configuration": "CONFIGURATION_REQUIRED",
+    "divert_aoi_instances": "GENERATION_NOT_SUPPORTED",
+    "transfer_tracking_support": "GENERATION_NOT_SUPPORTED"
+  },
+  "gold_l5x_used_as_template": false
+}

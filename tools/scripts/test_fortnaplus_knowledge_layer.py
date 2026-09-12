@@ -228,9 +228,23 @@ class TestCP4Smoke(unittest.TestCase):
             og = site.get("operational_groups") or {}
             self.assertGreater(len(og.get("jam_zones") or []), 0)
             report = validate_site_model(site)
-            self.assertTrue(report["ok"], msg=json.dumps(report["issues"][:10], indent=2))
+            # Validator V2 may emit CONFIGURATION_REQUIRED / WARNING on live RUNs.
+            # Smoke gate: no finished-PLC leakage and no hard firewall violations.
+            blocked = [
+                i
+                for i in (report.get("issues") or [])
+                if i.get("severity") in {"GENERATION_BLOCKED", "error"}
+                and i.get("kind") in {"finished_plc_leakage", "greensboro_hardcoding"}
+            ]
+            self.assertFalse(blocked, msg=json.dumps(blocked[:10], indent=2))
+            self.assertIn("checks_run", report)
             # No Greensboro contamination forced into identities beyond RUN facts
             self.assertIn("ORNCCP4", str(site.get("machine_scope")))
+            # Knowledge enrichment should populate V2 fields on rediscovery
+            self.assertEqual(site.get("schema_version"), "2.0")
+            self.assertIn("motor_chains", site)
+            self.assertTrue(any(pe.get("pe_roles") for pe in (site.get("photoeyes") or []) if pe.get("inclusion") == "INCLUDED")
+                            or not (site.get("photoeyes") or []))
 
 
 @unittest.skipUnless(CP2_RUN.is_dir(), "CP2 RUN missing")

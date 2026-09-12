@@ -12,6 +12,31 @@
         "controller:REST_LISTEN",
         "controller:REST_RDWR",
         "controller:WCS_IN_QUEUE",
+        "equipment:P1000",
+        "equipment:P1006",
+        "equipment:P1014",
+        "equipment:P1018",
+        "equipment:P126",
+        "equipment:P134",
+        "equipment:P136",
+        "equipment:P136A",
+        "equipment:P142",
+        "equipment:P148",
+        "equipment:P150",
+        "equipment:P150A",
+        "equipment:P215",
+        "equipment:P226",
+        "equipment:P229",
+        "equipment:P238",
+        "equipment:P242",
+        "equipment:P312",
+        "equipment:P316",
+        "equipment:P320",
+        "equipment:P324",
+        "equipment:P400",
+        "equipment:P402",
+        "equipment:P406",
+        "equipment:P408",
         "motor:M1000",
         "motor:M1000_AUX",
         "motor:M1001",
@@ -259,69 +284,44 @@
       ],
       "ACTIVE_LIKELY": [
         "area:AREA_1",
-        "equipment:P1000",
         "equipment:P1001",
         "equipment:P1002",
         "equipment:P1004",
         "equipment:P1005",
-        "equipment:P1006",
         "equipment:P1007",
         "equipment:P1008",
         "equipment:P1010",
         "equipment:P1011",
-        "equipment:P1014",
         "equipment:P1015",
         "equipment:P1016",
-        "equipment:P1018",
         "equipment:P123",
         "equipment:P124",
-        "equipment:P126",
         "equipment:P128",
         "equipment:P130",
         "equipment:P132",
-        "equipment:P134",
-        "equipment:P136",
-        "equipment:P136A",
         "equipment:P138",
         "equipment:P139",
         "equipment:P140",
-        "equipment:P142",
         "equipment:P144",
         "equipment:P145",
         "equipment:P146",
-        "equipment:P148",
-        "equipment:P150",
-        "equipment:P150A",
-        "equipment:P215",
         "equipment:P220",
         "equipment:P220A",
         "equipment:P222",
-        "equipment:P226",
         "equipment:P228",
-        "equipment:P229",
         "equipment:P230",
         "equipment:P232",
         "equipment:P233",
         "equipment:P234",
         "equipment:P236",
-        "equipment:P238",
         "equipment:P240",
-        "equipment:P242",
         "equipment:P309",
         "equipment:P310",
-        "equipment:P312",
         "equipment:P314",
-        "equipment:P316",
         "equipment:P317",
         "equipment:P318",
-        "equipment:P320",
         "equipment:P322",
-        "equipment:P324",
-        "equipment:P400",
-        "equipment:P402",
         "equipment:P404",
-        "equipment:P406",
-        "equipment:P408",
         "estop_zone:2ES",
         "estop_zone:3ES",
         "estop_zone:4ES",
@@ -422,7 +422,6 @@
     },
     "by_inclusion": {
       "AVAILABLE": [
-        "area:AREA_1",
         "estop_zone:2ES",
         "estop_zone:3ES",
         "estop_zone:4ES",
@@ -605,6 +604,7 @@
         "controller:WCS_OUTBOUND"
       ],
       "INCLUDED": [
+        "area:AREA_1",
         "controller:CP2",
         "controller:NMS_OUTBOUND",
         "controller:ORNCCOMM",
@@ -842,20 +842,225 @@
   },
   "counts": {
     "by_active_state": {
-      "ACTIVE_CONFIRMED": 253,
-      "ACTIVE_LIKELY": 156,
+      "ACTIVE_CONFIRMED": 278,
+      "ACTIVE_LIKELY": 131,
       "INACTIVE_CONFIRMED": 2
     },
     "by_inclusion": {
-      "AVAILABLE": 177,
+      "AVAILABLE": 176,
       "EXCLUDED": 2,
-      "INCLUDED": 232
+      "INCLUDED": 233
     }
+  },
+  "scoring": {
+    "weights": {
+      "mtrchain": 3,
+      "mtrchain_aux": 2,
+      "mtrchain_stop_zone": 2,
+      "jam_link": 3,
+      "jamzone_link": 3,
+      "jamcheck_link": 3,
+      "full_link": 2,
+      "fullline_link": 2,
+      "fulljam_link": 2,
+      "startstop_link": 2,
+      "path_link": 2,
+      "convpath_link": 2,
+      "saw_lane": 3,
+      "saw_merge": 3,
+      "hssaw_link": 3,
+      "hssaw_lane": 3,
+      "hssaw_merge": 3,
+      "sorter_table": 2,
+      "sorter_static": 2,
+      "sorter_runtime": 1,
+      "sorter_research_integrate": 1,
+      "controller_io": 3,
+      "io_assignment": 3,
+      "configio_link": 2,
+      "fortnadt_link": 1,
+      "iocard_link": 2,
+      "pe_assignment": 2,
+      "motor_link": 2,
+      "vfd_link": 2,
+      "encoder_link": 2,
+      "ownership": 2,
+      "explicit_machine_name": 2,
+      "controller_overlay": 1,
+      "merge_link": 2,
+      "geometry_candidate": 1,
+      "numbering_hint": 0,
+      "source": 0
+    },
+    "thresholds": {
+      "ACTIVE_CONFIRMED": 5,
+      "ACTIVE_LIKELY": 3,
+      "CANDIDATE": 1
+    },
+    "doc_refs": [
+      "FPC-Fulls-Jams-Fulljams",
+      "FPC-Motor-Startup-Chains",
+      "FPC-StartStopZones"
+    ],
+    "top_scores": [
+      {
+        "canonical_id": "motor:M132",
+        "score": 14,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M146",
+        "score": 14,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE1000_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE1006_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE1014_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE1018_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE215_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE316_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE324_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE400_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "photoeye:PE406_J",
+        "score": 13,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M1001_AUX",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M1007_AUX",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M1016_AUX",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M1018_AUX",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M124",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M140",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M222",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M236",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M240",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M310",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M318",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M400",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M406",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      },
+      {
+        "canonical_id": "motor:M406_AUX",
+        "score": 12,
+        "inclusion": "INCLUDED",
+        "active_state": "ACTIVE_CONFIRMED"
+      }
+    ]
   },
   "rules": [
     "Explicit RUN relationships beat numbering",
     "Row order is supporting evidence only",
     "INACTIVE_CONFIRMED / HISTORICAL_OR_STALE never INCLUDED",
-    "Engineer override wins when present"
+    "Engineer override wins when present",
+    "Cross-table participation (Mtrchain/Jam*/Full*/Saw*/Sorter/Configio) raises activity_score",
+    "Stale rows are never deleted \u2014 only INCLUDED/AVAILABLE/EXCLUDED"
   ]
 }

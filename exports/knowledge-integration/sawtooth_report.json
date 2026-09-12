@@ -1,0 +1,174 @@
+{
+  "generated_at": "2026-09-12T19:26:55.038552+00:00",
+  "ORNCCP4": {
+    "editor": "sawtooth_v2",
+    "detected": true,
+    "merges": [
+      {
+        "merge_identity": "SAWTOOTH_MERGE",
+        "merge_type": "SawMerge",
+        "lane_count": 5,
+        "lanes": [
+          {
+            "lane_identity": "LANE_0_P219",
+            "lane_conveyor": "P219",
+            "lane_pe": "PE219_P",
+            "full_eye": null,
+            "reserve_eye": null,
+            "motor": "VFD414_AUX",
+            "drive": "VFD219",
+            "encoder": null,
+            "collector": null,
+            "slice_time": null,
+            "reserve_time": null,
+            "enable_delay": null,
+            "reservation_mode": null,
+            "shifter_config": null,
+            "opportunistic_feed": null,
+            "zones": {
+              "engineering_area": null,
+              "estop_zone": null,
+              "startstop_zone": null,
+              "jam_zone": null
+            },
+            "configuration_required": [
+              "encoder"
+            ]
+          },
+          {
+            "lane_identity": "LANE_1_P408",
+            "lane_conveyor": "P408",
+            "lane_pe": "PE410_P",
+            "full_eye": null,
+            "reserve_eye": null,
+            "motor": "VFD414_AUX",
+            "drive": "VFD410_EN",
+            "encoder": null,
+            "collector": null,
+            "slice_time": null,
+            "reserve_time": null,
+            "enable_delay": null,
+            "reservation_mode": null,
+            "shifter_config": null,
+            "opportunistic_feed": null,
+            "zones": {
+              "engineering_area": null,
+              "estop_zone": null,
+              "startstop_zone": null,
+              "jam_zone": null
+            },
+            "configuration_required": [
+              "encoder"
+            ]
+          },
+          {
+            "lane_identity": "LANE_3_P116",
+            "lane_conveyor": "P116",
+            "lane_pe": "PE118_P",
+            "full_eye": null,
+            "reserve_eye": null,
+            "motor": "VFD414_AUX",
+            "drive": "VFD118_EN",
+            "encoder": null,
+            "collector": null,
+            "slice_time": null,
+            "reserve_time": null,
+            "enable_delay": null,
+            "reservation_mode": null,
+            "shifter_config": null,
+            "opportunistic_feed": null,
+            "zones": {
+              "engineering_area": null,
+              "estop_zone": null,
+              "startstop_zone": null,
+              "jam_zone": null
+            },
+            "configuration_required": [
+              "encoder"
+            ]
+          },
+          {
+            "lane_identity": "LANE_4_P214",
+            "lane_conveyor": "P214",
+            "lane_pe": "PE216_P",
+            "full_eye": null,
+            "reserve_eye": null,
+            "motor": "VFD414_AUX",
+            "drive": "VFD216_EN",
+            "encoder": null,
+            "collector": null,
+            "slice_time": null,
+            "reserve_time": null,
+            "enable_delay": null,
+            "reservation_mode": null,
+            "shifter_config": null,
+            "opportunistic_feed": null,
+            "zones": {
+              "engineering_area": null,
+              "estop_zone": null,
+              "startstop_zone": null,
+              "jam_zone": null
+            },
+            "configuration_required": [
+              "encoder"
+            ]
+          },
+          {
+            "lane_identity": "LANE_5_P832",
+            "lane_conveyor": "P832",
+            "lane_pe": "PE834_P",
+            "full_eye": null,
+            "reserve_eye": null,
+            "motor": "VFD414_AUX",
+            "drive": "VFD834_EN",
+            "encoder": null,
+            "collector": null,
+            "slice_time": null,
+            "reserve_time": null,
+            "enable_delay": null,
+            "reservation_mode": null,
+            "shifter_config": null,
+            "opportunistic_feed": null,
+            "zones": {
+              "engineering_area": null,
+              "estop_zone": null,
+              "startstop_zone": null,
+              "jam_zone": null
+            },
+            "configuration_required": [
+              "encoder"
+            ]
+          }
+        ],
+        "motor": "VFD414_AUX",
+        "encoder": null,
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "config_required": []
+      }
+    ],
+    "capability_matrix": {
+      "lane_identity": "VALIDATED",
+      "lane_pe": "VALIDATED",
+      "lane_vfd": "VALIDATED",
+      "slice_timing": "GENERATABLE",
+      "reservation_semantics": "MODELED",
+      "collector_tracking": "MODELED",
+      "encoder_enable_reset": "GENERATABLE",
+      "full_generation": "GENERATABLE"
+    },
+    "configuration_resolved_pct": 75.0,
+    "engineer_decisions": 5,
+    "note": "Unknowns stay CONFIGURATION REQUIRED; collector tracking remains modeled"
+  },
+  "capability_matrix": {
+    "lane_identity": "VALIDATED",
+    "lane_pe": "VALIDATED",
+    "lane_vfd": "VALIDATED",
+    "slice_timing": "GENERATABLE",
+    "reservation_semantics": "MODELED",
+    "collector_tracking": "MODELED",
+    "encoder_enable_reset": "GENERATABLE",
+    "full_generation": "GENERATABLE"
+  }
+}

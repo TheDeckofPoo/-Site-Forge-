@@ -917,19 +917,41 @@ def _add_rel(
     kind: str,
     table: str,
     provenance: str = PROV_RUN_EXPLICIT,
+    confidence: str = "HIGH",
+    evidence: list[dict[str, Any]] | None = None,
 ) -> None:
     frm_n, to_n = _clean(frm), _clean(to)
     if not frm_n or not to_n:
         return
-    rels.append(
-        {
-            "from": frm_n,
-            "to": to_n,
-            "kind": kind,
-            "source_table": table,
-            "provenance": provenance,
-        }
-    )
+    try:
+        from fortna_site_model import make_relationship
+
+        rels.append(
+            make_relationship(
+                source=frm_n,
+                target=to_n,
+                kind=kind,
+                provenance=provenance,
+                confidence=confidence,
+                evidence=evidence or [{"kind": kind, "table": table}],
+                source_table=table,
+            )
+        )
+    except Exception:
+        rels.append(
+            {
+                "from": frm_n,
+                "to": to_n,
+                "source": frm_n,
+                "target": to_n,
+                "kind": kind,
+                "source_table": table,
+                "provenance": provenance,
+                "confidence": confidence,
+                "evidence": evidence or [{"kind": kind, "table": table}],
+                "engineer_override": None,
+            }
+        )
 
 
 def _tag_evidence(
@@ -1661,6 +1683,16 @@ def discover(
     site_dict = model.to_dict()
     site_dict["sorter_table_classes"] = harvest.get("sorter_table_classes") or {}
     activity = classify_site_model(site_dict, machine)
+    # Knowledge-driven enrichment (PE roles, motor chains, zones, editors, inclusion why).
+    # Docs = semantics via fortna_knowledge; RUN facts already on the model.
+    try:
+        from fortna_knowledge_enrich import enrich_site_model  # noqa: WPS433
+        from fortna_supersession import evaluate_supersession  # noqa: WPS433
+
+        enrich_site_model(site_dict)
+        evaluate_supersession(site_dict)
+    except Exception as exc:  # noqa: BLE001
+        site_dict.setdefault("notes", []).append(f"knowledge enrichment skipped: {exc}")
     # sync classified buckets back onto model dict (classify mutates lists in site_dict)
     subsystems = build_subsystems(
         SiteModel(
@@ -1688,7 +1720,7 @@ def discover(
         "jam_zones": len((site_dict.get("operational_groups") or {}).get("jam_zones") or []),
     }
     subsystems["sorter_table_classes"] = harvest.get("sorter_table_classes") or {}
-    # Refresh counts after classification
+    # Refresh counts after classification + knowledge enrichment (SiteModel V2 fields).
     site_dict["counts"] = SiteModel(
         machine_scope=machine,
         run_dir=str(run_dir),
@@ -1708,7 +1740,15 @@ def discover(
         operational_groups=site_dict.get("operational_groups") or {},
         relationships=site_dict.get("relationships") or [],
         unresolved=site_dict.get("unresolved") or [],
+        motor_chains=site_dict.get("motor_chains") or [],
+        communications=site_dict.get("communications") or [],
+        drives=site_dict.get("drives") or site_dict.get("vfds") or [],
+        tracking=site_dict.get("tracking") or site_dict.get("tracking_systems") or [],
+        superseded_candidates=site_dict.get("superseded_candidates") or [],
+        decision_traces=site_dict.get("decision_traces") or [],
+        schema_version=str(site_dict.get("schema_version") or "2.0"),
     ).counts()
+    site_dict["schema_version"] = site_dict.get("schema_version") or "2.0"
 
     prev = load_json(out_dir / "site_model.json")
     report = change_report(prev, site_dict)

@@ -1,0 +1,349 @@
+{
+  "generated_at": "2026-09-12T19:26:54.967750+00:00",
+  "ambiguity_reduced": true,
+  "before": {
+    "equipment_classification": {
+      "INCLUDED": 76,
+      "AVAILABLE": 0,
+      "EXCLUDED": 0,
+      "total": 76
+    },
+    "pe_roles": {},
+    "pe_known": 0,
+    "pe_configuration_required": 55,
+    "motor_chains": 0,
+    "startstop_zones": 8,
+    "jam_zones": 27,
+    "full_groups": 0,
+    "estop_zones": 90,
+    "engineering_areas": 1,
+    "drive_relationships": 13,
+    "path_evidence": 0,
+    "sawtooth_relationships": 38,
+    "sorter_relationships": 0,
+    "communication_relationships": 0,
+    "full_jam_relationships": 202,
+    "configuration_required_counts": {
+      "pe_roles": 55,
+      "sawtooth": 0,
+      "unresolved": 0
+    },
+    "counts": {
+      "controllers": 18,
+      "areas": 1,
+      "equipment": 76,
+      "equipment_included": 76,
+      "motors": 86,
+      "vfds": 13,
+      "photoeyes": 55,
+      "encoders": 2,
+      "estop_zones": 90,
+      "sawtooth_merges": 1,
+      "sawtooth_lanes": 5,
+      "sorters": 2,
+      "tracking_systems": 3,
+      "wcs_interfaces": 84,
+      "startstop_zones": 8,
+      "jam_zones": 27,
+      "relationships": 1057,
+      "unresolved": 0,
+      "transport_nodes": 72,
+      "transport_edges": 40
+    }
+  },
+  "after": {
+    "equipment_classification": {
+      "INCLUDED": 76,
+      "AVAILABLE": 0,
+      "EXCLUDED": 0,
+      "total": 76
+    },
+    "pe_roles": {
+      "FULL": 23,
+      "RESERVE": 14,
+      "DETECTION": 23,
+      "FULL_JAM": 9,
+      "JAM": 9
+    },
+    "pe_known": 55,
+    "pe_configuration_required": 0,
+    "motor_chains": 176,
+    "startstop_zones": 8,
+    "jam_zones": 27,
+    "full_groups": 79,
+    "estop_zones": 90,
+    "engineering_areas": 1,
+    "drive_relationships": 13,
+    "path_evidence": 0,
+    "sawtooth_relationships": 38,
+    "sorter_relationships": 0,
+    "communication_relationships": 87,
+    "full_jam_relationships": 202,
+    "configuration_required_counts": {
+      "pe_roles": 0,
+      "sawtooth": 5,
+      "unresolved": 0
+    },
+    "counts": {
+      "controllers": 18,
+      "areas": 1,
+      "equipment": 76,
+      "equipment_included": 76,
+      "motors": 86,
+      "vfds": 13,
+      "drives": 13,
+      "photoeyes": 55,
+      "encoders": 2,
+      "estop_zones": 90,
+      "sawtooth_merges": 1,
+      "sawtooth_lanes": 5,
+      "sorters": 2,
+      "tracking_systems": 3,
+      "tracking": 3,
+      "wcs_interfaces": 84,
+      "io_points": 0,
+      "motor_chains": 0,
+      "transport_paths": 0,
+      "merges": 0,
+      "scanners": 0,
+      "communications": 0,
+      "decision_traces": 0,
+      "superseded_candidates": 0,
+      "inclusion_reasons": 0,
+      "startstop_zones": 8,
+      "jam_zones": 27,
+      "engineering_areas": 0,
+      "full_groups": 0,
+      "sorter_zones": 0,
+      "og_estop_zones": 0,
+      "relationships": 1057,
+      "unresolved": 0,
+      "transport_nodes": 72,
+      "transport_edges": 40
+    }
+  },
+  "delta": {
+    "communication_relationships": {
+      "before": 0,
+      "after": 87,
+      "delta": 87
+    },
+    "configuration_required_counts": {
+      "before": {
+        "pe_roles": 55,
+        "sawtooth": 0,
+        "unresolved": 0
+      },
+      "after": {
+        "pe_roles": 0,
+        "sawtooth": 5,
+        "unresolved": 0
+      },
+      "delta": {
+        "pe_roles": -55,
+        "sawtooth": 5,
+        "unresolved": 0
+      }
+    },
+    "counts": {
+      "before": {
+        "controllers": 18,
+        "areas": 1,
+        "equipment": 76,
+        "equipment_included": 76,
+        "motors": 86,
+        "vfds": 13,
+        "photoeyes": 55,
+        "encoders": 2,
+        "estop_zones": 90,
+        "sawtooth_merges": 1,
+        "sawtooth_lanes": 5,
+        "sorters": 2,
+        "tracking_systems": 3,
+        "wcs_interfaces": 84,
+        "startstop_zones": 8,
+        "jam_zones": 27,
+        "relationships": 1057,
+        "unresolved": 0,
+        "transport_nodes": 72,
+        "transport_edges": 40
+      },
+      "after": {
+        "controllers": 18,
+        "areas": 1,
+        "equipment": 76,
+        "equipment_included": 76,
+        "motors": 86,
+        "vfds": 13,
+        "drives": 13,
+        "photoeyes": 55,
+        "encoders": 2,
+        "estop_zones": 90,
+        "sawtooth_merges": 1,
+        "sawtooth_lanes": 5,
+        "sorters": 2,
+        "tracking_systems": 3,
+        "tracking": 3,
+        "wcs_interfaces": 84,
+        "io_points": 0,
+        "motor_chains": 0,
+        "transport_paths": 0,
+        "merges": 0,
+        "scanners": 0,
+        "communications": 0,
+        "decision_traces": 0,
+        "superseded_candidates": 0,
+        "inclusion_reasons": 0,
+        "startstop_zones": 8,
+        "jam_zones": 27,
+        "engineering_areas": 0,
+        "full_groups": 0,
+        "sorter_zones": 0,
+        "og_estop_zones": 0,
+        "relationships": 1057,
+        "unresolved": 0,
+        "transport_nodes": 72,
+        "transport_edges": 40
+      },
+      "delta": {
+        "areas": 0,
+        "communications": 0,
+        "controllers": 0,
+        "decision_traces": 0,
+        "drives": 13,
+        "encoders": 0,
+        "engineering_areas": 0,
+        "equipment": 0,
+        "equipment_included": 0,
+        "estop_zones": 0,
+        "full_groups": 0,
+        "inclusion_reasons": 0,
+        "io_points": 0,
+        "jam_zones": 0,
+        "merges": 0,
+        "motor_chains": 0,
+        "motors": 0,
+        "og_estop_zones": 0,
+        "photoeyes": 0,
+        "relationships": 0,
+        "sawtooth_lanes": 0,
+        "sawtooth_merges": 0,
+        "scanners": 0,
+        "sorter_zones": 0,
+        "sorters": 0,
+        "startstop_zones": 0,
+        "superseded_candidates": 0,
+        "tracking": 3,
+        "tracking_systems": 0,
+        "transport_edges": 0,
+        "transport_nodes": 0,
+        "transport_paths": 0,
+        "unresolved": 0,
+        "vfds": 0,
+        "wcs_interfaces": 0
+      }
+    },
+    "drive_relationships": {
+      "before": 13,
+      "after": 13,
+      "delta": 0
+    },
+    "engineering_areas": {
+      "before": 1,
+      "after": 1,
+      "delta": 0
+    },
+    "equipment_classification": {
+      "before": {
+        "INCLUDED": 76,
+        "AVAILABLE": 0,
+        "EXCLUDED": 0,
+        "total": 76
+      },
+      "after": {
+        "INCLUDED": 76,
+        "AVAILABLE": 0,
+        "EXCLUDED": 0,
+        "total": 76
+      },
+      "delta": {
+        "AVAILABLE": 0,
+        "EXCLUDED": 0,
+        "INCLUDED": 0,
+        "total": 0
+      }
+    },
+    "estop_zones": {
+      "before": 90,
+      "after": 90,
+      "delta": 0
+    },
+    "full_groups": {
+      "before": 0,
+      "after": 79,
+      "delta": 79
+    },
+    "full_jam_relationships": {
+      "before": 202,
+      "after": 202,
+      "delta": 0
+    },
+    "jam_zones": {
+      "before": 27,
+      "after": 27,
+      "delta": 0
+    },
+    "motor_chains": {
+      "before": 0,
+      "after": 176,
+      "delta": 176
+    },
+    "path_evidence": {
+      "before": 0,
+      "after": 0,
+      "delta": 0
+    },
+    "pe_configuration_required": {
+      "before": 55,
+      "after": 0,
+      "delta": -55
+    },
+    "pe_known": {
+      "before": 0,
+      "after": 55,
+      "delta": 55
+    },
+    "pe_roles": {
+      "before": {},
+      "after": {
+        "FULL": 23,
+        "RESERVE": 14,
+        "DETECTION": 23,
+        "FULL_JAM": 9,
+        "JAM": 9
+      },
+      "delta": {
+        "DETECTION": 23,
+        "FULL": 23,
+        "FULL_JAM": 9,
+        "JAM": 9,
+        "RESERVE": 14
+      }
+    },
+    "sawtooth_relationships": {
+      "before": 38,
+      "after": 38,
+      "delta": 0
+    },
+    "sorter_relationships": {
+      "before": 0,
+      "after": 0,
+      "delta": 0
+    },
+    "startstop_zones": {
+      "before": 8,
+      "after": 8,
+      "delta": 0
+    }
+  }
+}

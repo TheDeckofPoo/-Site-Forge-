@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T19:06:48.648778+00:00",
+  "generated_at": "2026-09-12T19:26:54.896733+00:00",
   "machine": "ORNCCP4",
   "transport": {
     "present": true,
@@ -7,7 +7,7 @@
     "edge_count": 40,
     "visual_freeze": true,
     "metrics": {
-      "generated_at": "2026-09-12T19:06:48.283058+00:00",
+      "generated_at": "2026-09-12T19:26:54.520582+00:00",
       "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
       "machine": "ORNCCP4",
       "conveyors_discovered": 171,
@@ -164,8 +164,8 @@
         "activity_score_breakdown": {
           "vfd_link": 2,
           "sorter_static": 2,
-          "saw_merge": 3,
           "sorter_table": 2,
+          "saw_merge": 3,
           "related_graph": 2
         }
       }
@@ -385,9 +385,9 @@
         "activity_score_breakdown": {
           "encoder_link": 2,
           "sorter_static": 2,
-          "sorter_research_integrate": 1,
-          "saw_merge": 3,
           "sorter_table": 2,
+          "saw_merge": 3,
+          "sorter_research_integrate": 1,
           "related_graph": 2
         }
       },
@@ -428,8 +428,8 @@
         "sorter_table_class": "static_config",
         "activity_score": 3,
         "activity_score_breakdown": {
-          "sorter_static": 2,
-          "sorter_research_integrate": 1
+          "sorter_research_integrate": 1,
+          "sorter_static": 2
         }
       }
     ],

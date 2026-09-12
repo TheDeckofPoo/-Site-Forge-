@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T17:05:31.235643+00:00",
+  "generated_at": "2026-09-12T19:26:53.800741+00:00",
   "machine": "ORNCCP2",
   "transport": {
     "present": true,
@@ -7,7 +7,7 @@
     "edge_count": 28,
     "visual_freeze": true,
     "metrics": {
-      "generated_at": "2026-09-12T17:05:30.868908+00:00",
+      "generated_at": "2026-09-12T19:26:53.445529+00:00",
       "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
       "machine": "ORNCCP2",
       "conveyors_discovered": 161,
@@ -80,7 +80,9 @@
         "area_id": null,
         "es_zone_id": null,
         "active_rows": 1999,
-        "path": "FORTNA/MsgWCS.asc"
+        "path": "FORTNA/MsgWCS.asc",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "tracking:WCSEVENTS.ASC",
@@ -105,7 +107,9 @@
         "area_id": null,
         "es_zone_id": null,
         "active_rows": 99,
-        "path": "FORTNA/WCSEvents.asc"
+        "path": "FORTNA/WCSEvents.asc",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       }
     ],
     "wcs_interfaces": [
@@ -139,7 +143,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:BROKEN",
@@ -171,7 +177,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
-        "category": "CHAIN"
+        "category": "CHAIN",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:BUSY",
@@ -203,7 +211,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:BUSYWAIT",
@@ -235,7 +245,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:CHANGEMENU",
@@ -267,7 +279,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:CHANGEMENU_T",
@@ -299,7 +313,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:CLONEMENU_T",
@@ -331,7 +347,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:CLOSEMENU_T",
@@ -363,7 +381,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:COMMPROCESSERROR",
@@ -395,7 +415,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:COPYCLIP_T",
@@ -427,7 +449,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:DBUPDATEERROR",
@@ -459,7 +483,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:DELETEREC_T",
@@ -491,7 +517,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:DOPROC",
@@ -523,7 +551,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:DOSQL",
@@ -555,7 +585,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:ERROREVENT",
@@ -587,7 +619,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.ALARM",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:EXITPWR",
@@ -619,7 +653,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:EXITUSER",
@@ -651,7 +687,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:FAILLOGIN",
@@ -683,7 +721,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:FAILMENUSEC",
@@ -715,7 +755,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:FAILPROCSEC",
@@ -747,7 +789,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:FILLTABLE_T",
@@ -779,7 +823,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:FORCEOFF",
@@ -811,7 +857,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:FORCEOFF_T",
@@ -843,7 +891,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:FORCEON",
@@ -875,7 +925,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:FORCEON_T",
@@ -907,7 +959,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:HOUSEKEEP",
@@ -939,7 +993,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:INSERTREC_T",
@@ -971,7 +1027,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:INVERT",
@@ -1003,7 +1061,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:JAMZONE",
@@ -1035,7 +1095,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.STATE",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:LABELRECORDEMPTY",
@@ -1067,7 +1129,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:LOGIN",
@@ -1099,7 +1163,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:LOGOUT",
@@ -1131,7 +1197,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:LOOSE",
@@ -1163,7 +1231,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
-        "category": "CHAIN"
+        "category": "CHAIN",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:LRMNOLABEL",
@@ -1195,7 +1265,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:MACHINESTATE",
@@ -1227,7 +1299,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.STATE",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOCARTONRECORD",
@@ -1259,7 +1333,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOCOMMMACHINE",
@@ -1291,7 +1367,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOCOMMRESPONSE",
@@ -1323,7 +1401,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOEHPRINTER",
@@ -1355,7 +1435,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOHOSTMSG",
@@ -1387,7 +1469,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOIPADDRESS",
@@ -1419,7 +1503,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOLABELCOLUMN",
@@ -1451,7 +1537,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOLABELIMAGE",
@@ -1483,7 +1571,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOLABELONTAMP",
@@ -1515,7 +1605,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOLABELRECORD",
@@ -1547,7 +1639,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOLRM",
@@ -1579,7 +1673,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOORDERIMAGE",
@@ -1611,7 +1707,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOPTYPE",
@@ -1643,7 +1741,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOREADLABELIMAGE",
@@ -1675,7 +1775,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOSKU",
@@ -1707,7 +1809,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:NOTYPECOLUMN",
@@ -1739,7 +1843,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:OPENMENU",
@@ -1771,7 +1877,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:OPENMENU_T",
@@ -1803,7 +1911,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:PASTECLIP_T",
@@ -1835,7 +1945,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:PRINTERERROR",
@@ -1867,7 +1979,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SAVETABLE_T",
@@ -1899,7 +2013,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SENDERROR",
@@ -1931,7 +2047,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SENDREC_T",
@@ -1963,7 +2081,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SENDSTART",
@@ -1995,7 +2115,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SENDSTOP",
@@ -2027,7 +2149,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SIGUSR1",
@@ -2059,7 +2183,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SLEEP",
@@ -2091,7 +2217,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:STARTALLZONES",
@@ -2123,7 +2251,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:STARTJAMZONE",
@@ -2155,7 +2285,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:STARTSTOPZONE",
@@ -2187,7 +2319,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.STATE",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:STOPALLZONES",
@@ -2219,7 +2353,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:STOPJAMZONE",
@@ -2251,7 +2387,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:STOPPROC",
@@ -2283,7 +2421,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:TAMPNORETURN",
@@ -2315,7 +2455,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:TAMPNOTHOME",
@@ -2347,7 +2489,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:TAMPTIMEOUT",
@@ -2379,7 +2523,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:TEMPLATEDISABLED",
@@ -2411,7 +2557,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:UNDEFINED",
@@ -2443,7 +2591,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:UNFORCEOFF",
@@ -2475,7 +2625,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:UNFORCEON",
@@ -2507,7 +2659,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:UNINVERT",
@@ -2539,7 +2693,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:VERIFYMISMATCH",
@@ -2571,7 +2727,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
-        "category": "PNA"
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:WAKE",
@@ -2603,7 +2761,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:RELEASESAWWAVE",
@@ -2635,7 +2795,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SAVEFAIL",
@@ -2667,7 +2829,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:SIGUSR2",
@@ -2699,7 +2863,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:CHANGESHIFTER",
@@ -2731,7 +2897,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:AUTOLOGOUT",
@@ -2763,7 +2931,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       },
       {
         "canonical_id": "wcs:EXITOS",
@@ -2795,7 +2965,9 @@
         "area_id": null,
         "es_zone_id": null,
         "destination": "/topic/WCSEVENT.FPC.FP.MISC",
-        "category": "FP"
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {}
       }
     ],
     "generation_state": "NOT_SUPPORTED"
@@ -2804,5 +2976,35 @@
     "count": 0,
     "bases": [],
     "raw_counts": {}
+  },
+  "operational_groups": {
+    "startstop_zones": 8,
+    "jam_zones": 27
+  },
+  "sorter_table_classes": {
+    "static_active_rows": 0,
+    "runtime_active_rows": 0,
+    "static_tables": [
+      "Sorters.asc",
+      "SrtAppControl.asc",
+      "SrtBadGapCnfg.asc",
+      "SrtCommMsgMatch.asc",
+      "SrtHrtBeat.asc",
+      "SrtLaneNotAvail.asc",
+      "SrtRndRobin.asc",
+      "SrtScanBoss.asc",
+      "SrtSimConfig.asc",
+      "SrtZoneLane.asc"
+    ],
+    "runtime_tables": [
+      "MsgTrack.asc",
+      "SrtScanSts.asc",
+      "SrtTrack1.asc",
+      "SrtTrack2.asc",
+      "SrtTrack3.asc",
+      "SrtTrack4.asc",
+      "SrtTrack5.asc",
+      "XfrTrack.asc"
+    ]
   }
 }

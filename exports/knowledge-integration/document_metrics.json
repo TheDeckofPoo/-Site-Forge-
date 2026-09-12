@@ -1,0 +1,836 @@
+{
+  "total": 101,
+  "by_classification": {
+    "FPC Docs 2": 6,
+    "FPC Docs 3": 27,
+    "FPC Documents 1": 31,
+    "Print & Apply": 16,
+    "Training": 3,
+    "checklist": 1,
+    "ddd": 1,
+    "howto": 4,
+    "module_ref": 11,
+    "procedure": 1
+  },
+  "by_relevance": {
+    "CRITICAL": 7,
+    "HIGH": 11,
+    "UNKNOWN": 83
+  },
+  "deep_review": {
+    "true": 18,
+    "false": 83
+  },
+  "documents": [
+    {
+      "document_id": "fpc-scanner-control-configuration",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+      "classification": "module_ref",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-Scanner-Control-Configuration"
+    },
+    {
+      "document_id": "fpc-scanner-stats-history-module",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Scanner-Stats-History-Module.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Scanner-Stats-History-Module"
+    },
+    {
+      "document_id": "fpc-security-upgrade-procedure",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Security-Upgrade-Procedure.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Security-Upgrade-Procedure"
+    },
+    {
+      "document_id": "fpc-servogapoptimizer",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-ServoGapOptimizer.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-ServoGapOptimizer"
+    },
+    {
+      "document_id": "fpc-settingsecurityaccessroles",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-SettingSecurityAccessRoles.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-SettingSecurityAccessRoles"
+    },
+    {
+      "document_id": "fpc-shifter-and-sorter-configuration",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+      "classification": "howto",
+      "relevance": "CRITICAL",
+      "deep_review": true,
+      "title": "FPC-Shifter-And-Sorter-Configuration"
+    },
+    {
+      "document_id": "fpc-sorter-control-module",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Sorter-Control-Module.docx",
+      "classification": "module_ref",
+      "relevance": "CRITICAL",
+      "deep_review": true,
+      "title": "FPC-Sorter-Control-Module"
+    },
+    {
+      "document_id": "fpc-sorter-test-setup",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Sorter-Test-Setup.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Sorter-Test-Setup"
+    },
+    {
+      "document_id": "fpc-sorterconfigurationchecklist",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-SorterConfigurationChecklist.docx",
+      "classification": "checklist",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-SorterConfigurationChecklist"
+    },
+    {
+      "document_id": "fpc-specialflags",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-SpecialFlags.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-SpecialFlags"
+    },
+    {
+      "document_id": "fpc-startech-serial-port-configuration",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-StarTech-Serial-Port-Configuration.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-StarTech-Serial-Port-Configuration"
+    },
+    {
+      "document_id": "fpc-startstopzones",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-StartStopZones.docx",
+      "classification": "module_ref",
+      "relevance": "CRITICAL",
+      "deep_review": true,
+      "title": "FPC-StartStopZones"
+    },
+    {
+      "document_id": "fpc-the-viewio-screen-and-fortnadt-table",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx",
+      "classification": "howto",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-The-ViewIO-Screen-and-FORTNADT-Table"
+    },
+    {
+      "document_id": "fpc-timers",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Timers.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Timers"
+    },
+    {
+      "document_id": "fpc-transfer-configuration-example",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Transfer-Configuration-Example.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Transfer-Configuration-Example"
+    },
+    {
+      "document_id": "fpc-transfer-scan-simulation",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Transfer-Scan-Simulation.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Transfer-Scan-Simulation"
+    },
+    {
+      "document_id": "fpc-transfer-test-examples",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Transfer-Test-Examples.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Transfer-Test-Examples"
+    },
+    {
+      "document_id": "fpc-translationmanagement",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-TranslationManagement.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-TranslationManagement"
+    },
+    {
+      "document_id": "fpc-trigger-configuration",
+      "canonical_path": "docs/training/FPC Docs 3/FPC-Trigger-Configuration.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Trigger-Configuration"
+    },
+    {
+      "document_id": "high-speed-pusher-configuration",
+      "canonical_path": "docs/training/FPC Docs 3/High Speed Pusher Configuration.doc",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "High Speed Pusher Configuration"
+    },
+    {
+      "document_id": "log-search-module",
+      "canonical_path": "docs/training/FPC Docs 3/Log Search Module.doc",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Log Search Module"
+    },
+    {
+      "document_id": "pc-to-pc-communications",
+      "canonical_path": "docs/training/FPC Docs 3/PC to PC Communications.doc",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "PC to PC Communications"
+    },
+    {
+      "document_id": "pick-to-light-configuration",
+      "canonical_path": "docs/training/FPC Docs 3/Pick to Light Configuration.doc",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Pick to Light Configuration"
+    },
+    {
+      "document_id": "power-roll-accumulation-rel8-6m",
+      "canonical_path": "docs/training/FPC Docs 3/Power_Roll_Accumulation_-_Rel8.6M.doc",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Power_Roll_Accumulation_-_Rel8.6M"
+    },
+    {
+      "document_id": "preventive-maintenance-summary-module",
+      "canonical_path": "docs/training/FPC Docs 3/Preventive Maintenance Summary Module.doc",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Preventive Maintenance Summary Module"
+    },
+    {
+      "document_id": "rel-10-modules-module-list",
+      "canonical_path": "docs/training/FPC Docs 3/Rel 10 Modules (Module List).docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Rel 10 Modules (Module List)"
+    },
+    {
+      "document_id": "scan-testplan-v1-0",
+      "canonical_path": "docs/training/FPC Docs 3/Scan_TestPlan V1.0.doc",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Scan_TestPlan V1.0"
+    },
+    {
+      "document_id": "sendconvimage",
+      "canonical_path": "docs/training/FPC Docs 3/SendConvImage.txt",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "SendConvImage"
+    },
+    {
+      "document_id": "setting-up-scanner-statistics-in-fpc-display",
+      "canonical_path": "docs/training/FPC Docs 3/Setting_up_Scanner_Statistics_in_FPC_-_Display.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Setting_up_Scanner_Statistics_in_FPC_-_Display"
+    },
+    {
+      "document_id": "sorter-design-example-20150908",
+      "canonical_path": "docs/training/FPC Docs 3/Sorter Design Example 20150908.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Sorter Design Example 20150908"
+    },
+    {
+      "document_id": "sorter-scan-simulation-v1-2",
+      "canonical_path": "docs/training/FPC Docs 3/Sorter Scan Simulation V1.2.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Sorter Scan Simulation V1.2"
+    },
+    {
+      "document_id": "unit-sorter-control-software-v1-rev24-ddd",
+      "canonical_path": "docs/training/FPC Docs 3/Unit Sorter Control Software V1 rev24 DDD.doc",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Unit Sorter Control Software V1 rev24 DDD"
+    },
+    {
+      "document_id": "unit-sorter-control-software-v1-rev25-ddd",
+      "canonical_path": "docs/training/FPC Docs 3/Unit Sorter Control Software V1 rev25 DDD.doc",
+      "classification": "ddd",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "Unit Sorter Control Software V1 rev25 DDD"
+    },
+    {
+      "document_id": "c-transfer-configuration-example",
+      "canonical_path": "docs/training/FPC Docs 3/~$C-Transfer-Configuration-Example.docx",
+      "classification": "FPC Docs 3",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "~$C-Transfer-Configuration-Example"
+    },
+    {
+      "document_id": "fpc-docs-3",
+      "canonical_path": "docs/training/FPC Docs 3.zip",
+      "classification": "Training",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC Docs 3"
+    },
+    {
+      "document_id": "analogcardmodule",
+      "canonical_path": "docs/training/FPC Documents 1/AnalogCardModule.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "AnalogCardModule"
+    },
+    {
+      "document_id": "automationcontrollerhousekeeping",
+      "canonical_path": "docs/training/FPC Documents 1/AutomationControllerHousekeeping.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "AutomationControllerHousekeeping"
+    },
+    {
+      "document_id": "beaconconfiguration",
+      "canonical_path": "docs/training/FPC Documents 1/BeaconConfiguration.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "BeaconConfiguration"
+    },
+    {
+      "document_id": "carouseldetaildesign-v1-0-bcc",
+      "canonical_path": "docs/training/FPC Documents 1/CarouselDetailDesign V1.0 (BCC).doc",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "CarouselDetailDesign V1.0 (BCC)"
+    },
+    {
+      "document_id": "chainstretchmodule",
+      "canonical_path": "docs/training/FPC Documents 1/ChainStretchModule.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "ChainStretchModule"
+    },
+    {
+      "document_id": "combinedjamzones",
+      "canonical_path": "docs/training/FPC Documents 1/CombinedJamZones.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "CombinedJamZones"
+    },
+    {
+      "document_id": "convphs2png-setup",
+      "canonical_path": "docs/training/FPC Documents 1/ConvPhs2Png_Setup.txt",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "ConvPhs2Png_Setup"
+    },
+    {
+      "document_id": "counterconfiguration",
+      "canonical_path": "docs/training/FPC Documents 1/CounterConfiguration.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "CounterConfiguration"
+    },
+    {
+      "document_id": "ethernetip-hms-support-20140626",
+      "canonical_path": "docs/training/FPC Documents 1/EthernetIP_HMS_Support_20140626.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "EthernetIP_HMS_Support_20140626"
+    },
+    {
+      "document_id": "fpc-advanced-search-feature",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Advanced-Search-Feature.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Advanced-Search-Feature"
+    },
+    {
+      "document_id": "fpc-conveyorpartsmanagement",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-ConveyorPartsManagement.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-ConveyorPartsManagement"
+    },
+    {
+      "document_id": "fpc-ctrl-f4-table-distribution",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+      "classification": "procedure",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-Ctrl-F4-Table-Distribution"
+    },
+    {
+      "document_id": "fpc-data-export-module",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Data-Export-Module.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Data-Export-Module"
+    },
+    {
+      "document_id": "fpc-disable-bits",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Disable-Bits.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Disable-Bits"
+    },
+    {
+      "document_id": "fpc-endofwavemodule",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-EndOfWaveModule.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-EndOfWaveModule"
+    },
+    {
+      "document_id": "fpc-energymanagement",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-EnergyManagement.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-EnergyManagement"
+    },
+    {
+      "document_id": "fpc-errors-configuration",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Errors-Configuration.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Errors-Configuration"
+    },
+    {
+      "document_id": "fpc-ev10-connections",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-EV10-Connections.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-EV10-Connections"
+    },
+    {
+      "document_id": "fpc-fastio-configuration",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-FastIO-Configuration.docx",
+      "classification": "howto",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-FastIO-Configuration"
+    },
+    {
+      "document_id": "fpc-fulls-jams-fulljams",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+      "classification": "module_ref",
+      "relevance": "CRITICAL",
+      "deep_review": true,
+      "title": "FPC-Fulls-Jams-Fulljams"
+    },
+    {
+      "document_id": "fpc-gapping-modules",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Gapping-Modules.docx",
+      "classification": "module_ref",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-Gapping-Modules"
+    },
+    {
+      "document_id": "fpc-highspeedsawtoothmerge",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+      "classification": "module_ref",
+      "relevance": "CRITICAL",
+      "deep_review": true,
+      "title": "FPC-HighSpeedSawtoothMerge"
+    },
+    {
+      "document_id": "fpc-horncontrolmodule",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-HornControlModule.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-HornControlModule"
+    },
+    {
+      "document_id": "fpc-inchstoremodule",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-InchStoreModule.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-InchStoreModule"
+    },
+    {
+      "document_id": "fpc-initerrors-autogeneration-for-jam-full-estop-fulljam",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam"
+    },
+    {
+      "document_id": "fpc-installsystemfiles",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-InstallSystemFiles.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-InstallSystemFiles"
+    },
+    {
+      "document_id": "fpc-iocard-interfaces",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-IOCard-Interfaces.docx",
+      "classification": "module_ref",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-IOCard-Interfaces"
+    },
+    {
+      "document_id": "fpc-machine-msgmap-configuraton",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+      "classification": "howto",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-Machine-MsgMap-Configuraton"
+    },
+    {
+      "document_id": "fpc-menupad",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-MenuPad.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-MenuPad"
+    },
+    {
+      "document_id": "fpc-merge-modules",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+      "classification": "module_ref",
+      "relevance": "CRITICAL",
+      "deep_review": true,
+      "title": "FPC-Merge-Modules"
+    },
+    {
+      "document_id": "fpc-missing-pin-detection",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Missing-Pin-Detection.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Missing-Pin-Detection"
+    },
+    {
+      "document_id": "fpc-motor-speed-control",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Motor-Speed-Control.docx",
+      "classification": "module_ref",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-Motor-Speed-Control"
+    },
+    {
+      "document_id": "fpc-motor-startup-chains",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Motor-Startup-Chains.docx",
+      "classification": "module_ref",
+      "relevance": "CRITICAL",
+      "deep_review": true,
+      "title": "FPC-Motor-Startup-Chains"
+    },
+    {
+      "document_id": "fpc-mysql-database-information",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-MySQL-Database-Information.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-MySQL-Database-Information"
+    },
+    {
+      "document_id": "fpc-new-transfers",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-New-Transfers.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-New-Transfers"
+    },
+    {
+      "document_id": "fpc-old-transfers",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-Old-Transfers.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Old-Transfers"
+    },
+    {
+      "document_id": "fpc-onscreenbuttons",
+      "canonical_path": "docs/training/FPC Documents 1/FPC-OnScreenButtons.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-OnScreenButtons"
+    },
+    {
+      "document_id": "fpcmsg-dsm-destinationstatusmessage",
+      "canonical_path": "docs/training/FPC Documents 1/FPCMSG-DSM-DestinationStatusMessage.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPCMSG-DSM-DestinationStatusMessage"
+    },
+    {
+      "document_id": "fpcmsg-dsr-destinationstatusrequest",
+      "canonical_path": "docs/training/FPC Documents 1/FPCMSG-DSR-DestinationStatusRequest.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPCMSG-DSR-DestinationStatusRequest"
+    },
+    {
+      "document_id": "fpcmsg-rhs-requesthoststatus",
+      "canonical_path": "docs/training/FPC Documents 1/FPCMSG-RHS-RequestHostStatus.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPCMSG-RHS-RequestHostStatus"
+    },
+    {
+      "document_id": "c-installsystemfiles",
+      "canonical_path": "docs/training/FPC Documents 1/~$C-InstallSystemFiles.docx",
+      "classification": "FPC Documents 1",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "~$C-InstallSystemFiles"
+    },
+    {
+      "document_id": "fpc-documents-1",
+      "canonical_path": "docs/training/FPC Documents 1.zip",
+      "classification": "Training",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC Documents 1"
+    },
+    {
+      "document_id": "fpc-opennms-configuration",
+      "canonical_path": "docs/training/FPC-Docs 2/FPC-OpenNMS-Configuration.docx",
+      "classification": "FPC Docs 2",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-OpenNMS-Configuration"
+    },
+    {
+      "document_id": "fpc-packlift-module",
+      "canonical_path": "docs/training/FPC-Docs 2/FPC-PackLift-Module.docx",
+      "classification": "FPC Docs 2",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PackLift-Module"
+    },
+    {
+      "document_id": "fpc-photoeye-status-reporting",
+      "canonical_path": "docs/training/FPC-Docs 2/FPC-Photoeye-Status-Reporting.docx",
+      "classification": "module_ref",
+      "relevance": "HIGH",
+      "deep_review": true,
+      "title": "FPC-Photoeye-Status-Reporting"
+    },
+    {
+      "document_id": "fpc-powerfailupsconfiguration",
+      "canonical_path": "docs/training/FPC-Docs 2/FPC-PowerFailUPSConfiguration.docx",
+      "classification": "FPC Docs 2",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PowerFailUPSConfiguration"
+    },
+    {
+      "document_id": "fpc-ratepoints",
+      "canonical_path": "docs/training/FPC-Docs 2/FPC-RatePoints.docx",
+      "classification": "FPC Docs 2",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-RatePoints"
+    },
+    {
+      "document_id": "fpc-remoteauthorization",
+      "canonical_path": "docs/training/FPC-Docs 2/FPC-RemoteAuthorization.docx",
+      "classification": "FPC Docs 2",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-RemoteAuthorization"
+    },
+    {
+      "document_id": "fpc-rest-api",
+      "canonical_path": "docs/training/FPC-Docs 2/FPC-REST-API.docx",
+      "classification": "FPC Docs 2",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-REST-API"
+    },
+    {
+      "document_id": "fpc-docs-2",
+      "canonical_path": "docs/training/FPC-Docs 2.zip",
+      "classification": "Training",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-Docs 2"
+    },
+    {
+      "document_id": "block-diagram",
+      "canonical_path": "docs/training/P&A Documents/Block Diagram.doc",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Block Diagram"
+    },
+    {
+      "document_id": "fpc-pna-configurationchecklist",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-ConfigurationChecklist.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-ConfigurationChecklist"
+    },
+    {
+      "document_id": "fpc-pna-operators-screen",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-Operators-Screen.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-Operators-Screen"
+    },
+    {
+      "document_id": "fpc-pna-print-apply-configuration",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-Print-Apply-Configuration.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-Print-Apply-Configuration"
+    },
+    {
+      "document_id": "fpc-pna-printapplyfallback",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-PrintApplyFallback.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-PrintApplyFallback"
+    },
+    {
+      "document_id": "fpc-pna-printapplysimulation",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-PrintApplySimulation.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-PrintApplySimulation"
+    },
+    {
+      "document_id": "fpc-pna-testplan-sorter",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-TestPlan-Sorter.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-TestPlan-Sorter"
+    },
+    {
+      "document_id": "fpc-pna-transfer-printandapply",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-Transfer-PrintAndApply.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-Transfer-PrintAndApply"
+    },
+    {
+      "document_id": "fpc-pna-zebraprintengineautomaticdisconnect",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-ZebraPrintEngineAutomaticDisconnect.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-ZebraPrintEngineAutomaticDisconnect"
+    },
+    {
+      "document_id": "fpc-pna-zebraprinterconfiguration",
+      "canonical_path": "docs/training/P&A Documents/FPC-PNA-ZebraPrinterConfiguration.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FPC-PNA-ZebraPrinterConfiguration"
+    },
+    {
+      "document_id": "frd-printapplyfallback20110518",
+      "canonical_path": "docs/training/P&A Documents/FRD_PrintApplyFallback20110518.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "FRD_PrintApplyFallback20110518"
+    },
+    {
+      "document_id": "inkjet-idd20121217",
+      "canonical_path": "docs/training/P&A Documents/InkJet_IDD20121217.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "InkJet_IDD20121217"
+    },
+    {
+      "document_id": "print-apply-mckesson-issues-20140605",
+      "canonical_path": "docs/training/P&A Documents/Print Apply McKesson Issues 20140605.docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Print Apply McKesson Issues 20140605"
+    },
+    {
+      "document_id": "printapplydesign-conv-design-layout",
+      "canonical_path": "docs/training/P&A Documents/PrintApplyDesign (Conv Design Layout).docx",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "PrintApplyDesign (Conv Design Layout)"
+    },
+    {
+      "document_id": "scanner-box-dimensions-configuration",
+      "canonical_path": "docs/training/P&A Documents/Scanner Box Dimensions Configuration.doc",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "Scanner Box Dimensions Configuration"
+    },
+    {
+      "document_id": "p-a-documents",
+      "canonical_path": "docs/training/P&A Documents.zip",
+      "classification": "Print & Apply",
+      "relevance": "UNKNOWN",
+      "deep_review": false,
+      "title": "P&A Documents"
+    }
+  ],
+  "deep_review_true": 18,
+  "deep_review_false": 83
+}

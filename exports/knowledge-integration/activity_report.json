@@ -1,0 +1,71 @@
+{
+  "generated_at": "2026-09-12T19:26:55.016864+00:00",
+  "ORNCCP2": {
+    "equipment": {
+      "INCLUDED": 63,
+      "AVAILABLE": 0,
+      "EXCLUDED": 0,
+      "total": 63
+    },
+    "ui": {
+      "TRANSPORT": {
+        "Included": 63,
+        "Available": 0,
+        "Excluded": 0,
+        "relationships_need_review": 220
+      },
+      "SAWTOOTH": {
+        "detected": 0,
+        "lanes": 0,
+        "configuration_resolved_pct": 0.0,
+        "engineer_decisions": 0
+      },
+      "SORTER": {
+        "detected": 0,
+        "configuration_modeled": false,
+        "encoder_resolved": false,
+        "scan_zones_resolved": false,
+        "divert_map_required": true,
+        "generation": "none"
+      },
+      "PE": {
+        "auto_resolved": 22,
+        "engineer_required": 22
+      }
+    }
+  },
+  "ORNCCP4": {
+    "equipment": {
+      "INCLUDED": 76,
+      "AVAILABLE": 0,
+      "EXCLUDED": 0,
+      "total": 76
+    },
+    "ui": {
+      "TRANSPORT": {
+        "Included": 76,
+        "Available": 0,
+        "Excluded": 0,
+        "relationships_need_review": 253
+      },
+      "SAWTOOTH": {
+        "detected": 1,
+        "lanes": 5,
+        "configuration_resolved_pct": 75.0,
+        "engineer_decisions": 5
+      },
+      "SORTER": {
+        "detected": 1,
+        "configuration_modeled": true,
+        "encoder_resolved": true,
+        "scan_zones_resolved": true,
+        "divert_map_required": true,
+        "generation": "partial"
+      },
+      "PE": {
+        "auto_resolved": 32,
+        "engineer_required": 23
+      }
+    }
+  }
+}

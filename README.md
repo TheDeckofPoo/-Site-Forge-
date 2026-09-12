@@ -60,11 +60,24 @@ Finished / gold PLCs are **validation oracles only** — never generation input 
 
 | Subsystem | On import |
 |-----------|-----------|
-| **Transport** | Auto-populated from RUN geometry + relationships |
-| **Sawtooth** | Auto-detected from SawLane/SawMerge (etc.); editor filled from evidence |
-| **Sorter** | Auto-detected when tables/evidence exist; generation only where supported — see `docs/SORTER_COMPILER_MODEL.md` |
+| **Transport** | Auto-populated from RUN geometry + relationships; PE roles + motor chains from knowledge |
+| **Sawtooth** | Auto-detected from SawLane/SawMerge (etc.); editor V2 filled from evidence |
+| **Sorter** | Auto-detected when tables/evidence exist; **proven leaves only** — see `docs/SORTER_COMPILER_MODEL.md` |
 
-Unsupported behaviors stay marked **GENERATION NOT YET SUPPORTED** (e.g. full Tracking/WCS until the support matrix says otherwise).
+Unsupported behaviors stay marked **GENERATION NOT YET SUPPORTED** / **CONFIGURATION_REQUIRED** (e.g. full Tracking/WCS, divert maps, gold `Sorter_Track` clones).
+
+### Knowledge-executable discovery (SiteModel V2)
+
+On import / Auto Build, Site Forge loads FortnaPlus table semantics (docs = meaning, RUN = facts) and enriches a **SiteModel V2**:
+
+- Distinct operational groups (Engineering Area ≠ Jam ≠ EStop ≠ StartStop)
+- Area rename propagates to equipment / Autogen L5X tags — **not** to jam / ES / SS zones
+- PE roles from Jamcheck / Fullline / Fulljam / SawLane evidence
+- Motor chains ordered from `Mtrchain` relationships
+- Editors V2 auto-populate Transport / Sawtooth / Sorter from the same model
+- Inclusion reasons + supersession signals for Review
+
+See `docs/SITEMODEL_V2.md` and `docs/INTEGRATION_READINESS.md`.
 
 ---
 
@@ -111,6 +124,8 @@ docs/             Policy + engineering models
 | `docs/SOURCE_OF_TRUTH_POLICY.md` | Generation vs validation firewall |
 | `docs/UX_PRINCIPLES.md` | Simple by default |
 | `docs/RUN_DISCOVERY_MODEL.md` | Canonical discovery model |
+| `docs/SITEMODEL_V2.md` | SiteModel V2 shape (zones, PE roles, chains, editors) |
+| `docs/INTEGRATION_READINESS.md` | Knowledge-compiler promote-or-not status |
 | `docs/RUN_TABLE_PRECEDENCE.md` | Base vs controller ASC overlays |
 | `docs/FPC_TRAINING_DOCUMENT_INDEX.md` | FortnaPlus training corpus index |
 | `docs/FORTNAPLUS_TABLE_REFERENCE.md` | ASC table semantics knowledge base |
@@ -118,6 +133,7 @@ docs/             Policy + engineering models
 | `docs/SAWTOOTH_CONTROL_MODEL.md` | Sawtooth semantics |
 | `docs/SORTER_COMPILER_MODEL.md` | Sorter discovery / support boundary |
 | `docs/SORTER_GENERATION_ROADMAP.md` | What is / is not generatable for sorter |
+| `docs/UI_STATUS_SUMMARY.md` | `ui_status_summary` JSON for status cards |
 
 Training documents under `docs/training/` inform **generic** FortnaPlus table semantics. They do **not** replace the current RUN as site truth, and finished PLCs remain validation-only.
 

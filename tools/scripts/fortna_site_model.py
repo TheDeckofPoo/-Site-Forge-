@@ -370,6 +370,76 @@ def make_object(
     )
 
 
+# Zone-membership / PE fields accepted by apply_engineer_overrides.
+ZONE_MEMBERSHIP_FIELDS = (
+    "area_id",
+    "es_zone_id",
+    "jam_zone_id",
+    "startstop_zone_id",
+    "full_group_id",
+    "sorter_zone_id",
+    "engineering_area_id",
+)
+OVERRIDE_SCALAR_FIELDS = (
+    "inclusion",
+    "active_state",
+    "generation_state",
+    "pe_roles",
+) + ZONE_MEMBERSHIP_FIELDS
+
+# Attr keys that indicate I/O / geometry / activity changes in change_report.
+_IO_ATTR_KEYS = (
+    "io_address_word",
+    "IO_Address_Word",
+    "io_points",
+    "io_module",
+    "io_slot",
+    "linked_conveyor",
+    "motor_io",
+    "vfd_io",
+)
+_GEOMETRY_ATTR_KEYS = (
+    "x",
+    "y",
+    "angle",
+    "length",
+    "width",
+    "entry_anchor",
+    "exit_anchor",
+    "has_geometry",
+    "placed",
+)
+_ACTIVITY_ATTR_KEYS = ("active_state", "inclusion", "generation_state", "confidence")
+
+
+def make_relationship(
+    *,
+    source: Any,
+    target: Any,
+    kind: str,
+    provenance: str,
+    confidence: str,
+    evidence: list[dict[str, Any]] | None = None,
+    engineer_override: dict[str, Any] | None = None,
+    source_table: str = "",
+) -> dict[str, Any]:
+    """Build a SiteModel relationship edge (source/target + from/to compat)."""
+    evid = list(evidence or [])
+    return {
+        "source": source,
+        "target": target,
+        # Backward-compatible aliases used by discovery / classifiers.
+        "from": source,
+        "to": target,
+        "kind": kind,
+        "provenance": provenance,
+        "confidence": confidence,
+        "evidence": evid,
+        "engineer_override": engineer_override,
+        "source_table": source_table or "",
+    }
+
+
 @dataclass
 class SiteModel:
     machine_scope: str
@@ -378,28 +448,63 @@ class SiteModel:
     source_of_truth: str = (
         "RUN + engineer overrides only — finished PLC not read; sorter/WCS generation not faked"
     )
+    # V2 schema marker — older consumers ignore unknown keys via to_dict extras.
+    schema_version: str = "2.0"
     controllers: list[dict[str, Any]] = field(default_factory=list)
     areas: list[dict[str, Any]] = field(default_factory=list)
     equipment: list[dict[str, Any]] = field(default_factory=list)
     transport: dict[str, Any] = field(default_factory=dict)
     motors: list[dict[str, Any]] = field(default_factory=list)
     vfds: list[dict[str, Any]] = field(default_factory=list)
+    # Alias / sync bucket for VFD-class drives (see to_dict sync).
+    drives: list[dict[str, Any]] = field(default_factory=list)
     photoeyes: list[dict[str, Any]] = field(default_factory=list)
     encoders: list[dict[str, Any]] = field(default_factory=list)
     estop_zones: list[dict[str, Any]] = field(default_factory=list)
     sawtooth_merges: list[dict[str, Any]] = field(default_factory=list)
     sorters: list[dict[str, Any]] = field(default_factory=list)
     tracking_systems: list[dict[str, Any]] = field(default_factory=list)
+    # Alias / sync bucket for tracking_systems (see to_dict sync).
+    tracking: list[dict[str, Any]] = field(default_factory=list)
     wcs_interfaces: list[dict[str, Any]] = field(default_factory=list)
-    # Optional operational groups from StartStopZones / Jamzones (FPC-StartStopZones).
-    # Empty by default; discovery may populate without breaking older consumers.
+    # V2 discovery buckets (empty until harvest fills them).
+    io_points: list[dict[str, Any]] = field(default_factory=list)
+    motor_chains: list[dict[str, Any]] = field(default_factory=list)
+    transport_paths: list[dict[str, Any]] = field(default_factory=list)
+    merges: list[dict[str, Any]] = field(default_factory=list)
+    scanners: list[dict[str, Any]] = field(default_factory=list)
+    communications: list[dict[str, Any]] = field(default_factory=list)
+    decision_traces: list[dict[str, Any]] = field(default_factory=list)
+    inclusion_reasons: dict[str, Any] = field(default_factory=dict)
+    superseded_candidates: list[dict[str, Any]] = field(default_factory=list)
+    # Optional operational groups. Discovery may fill; do NOT convert one zone
+    # type into another. Expected shape keys (each a list unless noted):
+    #   engineering_areas[]  # mirror of areas as an operational group type
+    #   estop_zones[]
+    #   startstop_zones[]
+    #   jam_zones[]
+    #   full_groups[]
+    #   sorter_zones[]
+    # Plus optional doc_refs / metadata. Empty by default for older consumers.
     operational_groups: dict[str, Any] = field(default_factory=dict)
     relationships: list[dict[str, Any]] = field(default_factory=list)
     unresolved: list[dict[str, Any]] = field(default_factory=list)
     table_resolutions: dict[str, Any] = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)
 
+    def sync_aliases(self) -> None:
+        """Keep drives↔vfds and tracking↔tracking_systems aligned when one side is empty."""
+        if not self.drives and self.vfds:
+            self.drives = list(self.vfds)
+        elif not self.vfds and self.drives:
+            self.vfds = list(self.drives)
+        if not self.tracking and self.tracking_systems:
+            self.tracking = list(self.tracking_systems)
+        elif not self.tracking_systems and self.tracking:
+            self.tracking_systems = list(self.tracking)
+
     def counts(self) -> dict[str, int]:
+        self.sync_aliases()
         og = self.operational_groups or {}
         return {
             "controllers": len(self.controllers),
@@ -408,6 +513,7 @@ class SiteModel:
             "equipment_included": sum(1 for e in self.equipment if e.get("inclusion") == INCLUDED),
             "motors": len(self.motors),
             "vfds": len(self.vfds),
+            "drives": len(self.drives),
             "photoeyes": len(self.photoeyes),
             "encoders": len(self.encoders),
             "estop_zones": len(self.estop_zones),
@@ -415,9 +521,23 @@ class SiteModel:
             "sawtooth_lanes": sum(len(m.get("lanes") or []) for m in self.sawtooth_merges),
             "sorters": len(self.sorters),
             "tracking_systems": len(self.tracking_systems),
+            "tracking": len(self.tracking),
             "wcs_interfaces": len(self.wcs_interfaces),
+            "io_points": len(self.io_points),
+            "motor_chains": len(self.motor_chains),
+            "transport_paths": len(self.transport_paths),
+            "merges": len(self.merges),
+            "scanners": len(self.scanners),
+            "communications": len(self.communications),
+            "decision_traces": len(self.decision_traces),
+            "superseded_candidates": len(self.superseded_candidates),
+            "inclusion_reasons": len(self.inclusion_reasons or {}),
             "startstop_zones": len(og.get("startstop_zones") or []),
             "jam_zones": len(og.get("jam_zones") or []),
+            "engineering_areas": len(og.get("engineering_areas") or []),
+            "full_groups": len(og.get("full_groups") or []),
+            "sorter_zones": len(og.get("sorter_zones") or []),
+            "og_estop_zones": len(og.get("estop_zones") or []),
             "relationships": len(self.relationships),
             "unresolved": len(self.unresolved),
             "transport_nodes": len((self.transport or {}).get("nodes") or []),
@@ -425,6 +545,8 @@ class SiteModel:
         }
 
     def to_dict(self) -> dict[str, Any]:
+        """Serialize model; keep V1 keys and add V2 buckets (backward compatible)."""
+        self.sync_aliases()
         d = asdict(self)
         d["counts"] = self.counts()
         return d
@@ -476,7 +598,12 @@ def apply_engineer_overrides(
     model: SiteModel,
     overrides: list[dict[str, Any]] | None,
 ) -> SiteModel:
-    """Re-apply engineer overrides by canonical_id or normalized_name."""
+    """Re-apply engineer overrides by canonical_id or normalized_name.
+
+    Supports pe_roles and zone membership fields (area_id, es_zone_id,
+    jam_zone_id, startstop_zone_id, full_group_id, sorter_zone_id,
+    engineering_area_id). Nested ``zone_membership`` dicts are flattened.
+    """
     if not overrides:
         return model
     index: dict[str, dict[str, Any]] = {}
@@ -484,11 +611,15 @@ def apply_engineer_overrides(
         model.equipment,
         model.motors,
         model.vfds,
+        model.drives,
         model.photoeyes,
         model.encoders,
         model.sawtooth_merges,
         model.sorters,
         model.areas,
+        model.io_points,
+        model.scanners,
+        model.merges,
     ]
     for bucket in buckets:
         for obj in bucket:
@@ -512,19 +643,59 @@ def apply_engineer_overrides(
             )
             continue
         target["engineer_override"] = ov
-        for field_name in ("inclusion", "active_state", "area_id", "es_zone_id", "generation_state"):
+        applied: list[str] = []
+        for field_name in OVERRIDE_SCALAR_FIELDS:
             if field_name in ov and ov[field_name] is not None:
                 target[field_name] = ov[field_name]
+                applied.append(field_name)
+        zm = ov.get("zone_membership")
+        if isinstance(zm, dict):
+            for field_name in ZONE_MEMBERSHIP_FIELDS:
+                if field_name in zm and zm[field_name] is not None:
+                    target[field_name] = zm[field_name]
+                    applied.append(field_name)
         target.setdefault("evidence", []).append(
-            {"kind": "engineer_override", "fields": sorted(ov.keys())}
+            {
+                "kind": "engineer_override",
+                "fields": sorted(set(list(ov.keys()) + applied)),
+            }
         )
         if target.get("provenance") not in {PROV_ENGINEER}:
             target["provenance"] = PROV_ENGINEER
     return model
 
 
+def _rel_key(rel: dict[str, Any]) -> str:
+    src = rel.get("source") if rel.get("source") is not None else rel.get("from")
+    tgt = rel.get("target") if rel.get("target") is not None else rel.get("to")
+    return f"{src}|{tgt}|{rel.get('kind') or ''}"
+
+
+def _attr_changed(prev: dict[str, Any], cur: dict[str, Any], keys: tuple[str, ...]) -> list[str]:
+    changed: list[str] = []
+    for k in keys:
+        if prev.get(k) != cur.get(k):
+            # Only report when at least one side had a value (avoid noise on missing keys).
+            if prev.get(k) is not None or cur.get(k) is not None:
+                changed.append(k)
+    return changed
+
+
 def change_report(previous: dict[str, Any] | None, current: dict[str, Any]) -> dict[str, Any]:
-    """Diff previous site_model.json vs current."""
+    """Diff previous site_model.json vs current.
+
+    Emits legacy added/removed/changed_inclusion plus V2 event buckets:
+    NEW, REMOVED_FROM_RUN, CHANGED_IO, CHANGED_RELATIONSHIP, CHANGED_ACTIVITY,
+    CHANGED_GEOMETRY when detectable from object attrs.
+    """
+    empty_events: dict[str, list] = {
+        "NEW": [],
+        "REMOVED_FROM_RUN": [],
+        "CHANGED_IO": [],
+        "CHANGED_RELATIONSHIP": [],
+        "CHANGED_ACTIVITY": [],
+        "CHANGED_GEOMETRY": [],
+    }
     if not previous:
         return {
             "generated_at": _ts(),
@@ -533,6 +704,13 @@ def change_report(previous: dict[str, Any] | None, current: dict[str, Any]) -> d
             "added": [],
             "removed": [],
             "changed_inclusion": [],
+            "new": [],
+            "removed_from_run": [],
+            "changed_io": [],
+            "changed_relationship": [],
+            "changed_activity": [],
+            "changed_geometry": [],
+            "events": empty_events,
             "count_delta": {},
         }
 
@@ -543,19 +721,44 @@ def change_report(previous: dict[str, Any] | None, current: dict[str, Any]) -> d
             if (o.get("canonical_id") or o.get("normalized_name"))
         }
 
-    keys = ("equipment", "sawtooth_merges", "sorters", "vfds", "encoders", "areas")
+    keys = (
+        "equipment",
+        "sawtooth_merges",
+        "sorters",
+        "vfds",
+        "drives",
+        "encoders",
+        "areas",
+        "motors",
+        "photoeyes",
+        "io_points",
+        "scanners",
+        "merges",
+        "motor_chains",
+    )
     added: list[dict[str, str]] = []
     removed: list[dict[str, str]] = []
     changed: list[dict[str, Any]] = []
+    new_events: list[dict[str, Any]] = []
+    removed_events: list[dict[str, Any]] = []
+    changed_io: list[dict[str, Any]] = []
+    changed_activity: list[dict[str, Any]] = []
+    changed_geometry: list[dict[str, Any]] = []
+
     for key in keys:
         prev_ids = _ids(previous, key)
         cur_ids = _ids(current, key)
         for cid in sorted(set(cur_ids) - set(prev_ids)):
-            added.append({"bucket": key, "canonical_id": cid})
+            entry = {"bucket": key, "canonical_id": cid}
+            added.append(entry)
+            new_events.append({**entry, "type": "NEW"})
         for cid in sorted(set(prev_ids) - set(cur_ids)):
-            removed.append({"bucket": key, "canonical_id": cid})
+            entry = {"bucket": key, "canonical_id": cid}
+            removed.append(entry)
+            removed_events.append({**entry, "type": "REMOVED_FROM_RUN"})
         for cid in sorted(set(prev_ids) & set(cur_ids)):
-            pi, ci = prev_ids[cid].get("inclusion"), cur_ids[cid].get("inclusion")
+            po, co = prev_ids[cid], cur_ids[cid]
+            pi, ci = po.get("inclusion"), co.get("inclusion")
             if pi != ci:
                 changed.append(
                     {
@@ -565,12 +768,83 @@ def change_report(previous: dict[str, Any] | None, current: dict[str, Any]) -> d
                         "to": ci,
                     }
                 )
+            act_fields = _attr_changed(po, co, _ACTIVITY_ATTR_KEYS)
+            if act_fields:
+                changed_activity.append(
+                    {
+                        "type": "CHANGED_ACTIVITY",
+                        "bucket": key,
+                        "canonical_id": cid,
+                        "fields": act_fields,
+                    }
+                )
+            io_fields = _attr_changed(po, co, _IO_ATTR_KEYS)
+            if io_fields:
+                changed_io.append(
+                    {
+                        "type": "CHANGED_IO",
+                        "bucket": key,
+                        "canonical_id": cid,
+                        "fields": io_fields,
+                    }
+                )
+            geo_fields = _attr_changed(po, co, _GEOMETRY_ATTR_KEYS)
+            if geo_fields:
+                changed_geometry.append(
+                    {
+                        "type": "CHANGED_GEOMETRY",
+                        "bucket": key,
+                        "canonical_id": cid,
+                        "fields": geo_fields,
+                    }
+                )
+
+    prev_rels = {_rel_key(r): r for r in (previous.get("relationships") or [])}
+    cur_rels = {_rel_key(r): r for r in (current.get("relationships") or [])}
+    changed_relationship: list[dict[str, Any]] = []
+    for rk in sorted(set(cur_rels) - set(prev_rels)):
+        changed_relationship.append(
+            {"type": "CHANGED_RELATIONSHIP", "action": "added", "key": rk, "relationship": cur_rels[rk]}
+        )
+    for rk in sorted(set(prev_rels) - set(cur_rels)):
+        changed_relationship.append(
+            {
+                "type": "CHANGED_RELATIONSHIP",
+                "action": "removed",
+                "key": rk,
+                "relationship": prev_rels[rk],
+            }
+        )
+    for rk in sorted(set(prev_rels) & set(cur_rels)):
+        pr, cr = prev_rels[rk], cur_rels[rk]
+        if (
+            pr.get("provenance") != cr.get("provenance")
+            or pr.get("confidence") != cr.get("confidence")
+            or pr.get("engineer_override") != cr.get("engineer_override")
+        ):
+            changed_relationship.append(
+                {
+                    "type": "CHANGED_RELATIONSHIP",
+                    "action": "modified",
+                    "key": rk,
+                    "from": pr,
+                    "to": cr,
+                }
+            )
 
     prev_counts = previous.get("counts") or {}
     cur_counts = current.get("counts") or {}
     delta = {
         k: int(cur_counts.get(k, 0)) - int(prev_counts.get(k, 0))
         for k in sorted(set(prev_counts) | set(cur_counts))
+    }
+    events = {
+        "NEW": new_events,
+        "REMOVED_FROM_RUN": removed_events,
+        "CHANGED_IO": changed_io,
+        "CHANGED_RELATIONSHIP": changed_relationship,
+        "CHANGED_ACTIVITY": changed_activity,
+        "CHANGED_GEOMETRY": changed_geometry,
     }
     return {
         "generated_at": _ts(),
@@ -579,6 +853,13 @@ def change_report(previous: dict[str, Any] | None, current: dict[str, Any]) -> d
         "added": added,
         "removed": removed,
         "changed_inclusion": changed,
+        "new": new_events,
+        "removed_from_run": removed_events,
+        "changed_io": changed_io,
+        "changed_relationship": changed_relationship,
+        "changed_activity": changed_activity,
+        "changed_geometry": changed_geometry,
+        "events": events,
         "count_delta": delta,
     }
 

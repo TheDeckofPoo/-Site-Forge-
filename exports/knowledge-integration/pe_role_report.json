@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-09-12T19:26:55.017742+00:00",
+  "ORNCCP2": {
+    "role_counts": {
+      "FULL": 17,
+      "FULL_JAM": 6,
+      "DETECTION": 14,
+      "JAM": 13,
+      "RESERVE": 10
+    },
+    "known": 44,
+    "configuration_required": 0,
+    "auto_resolved": 22,
+    "engineer_required": 22,
+    "previously_configuration_required_resolved": 22
+  },
+  "ORNCCP4": {
+    "role_counts": {
+      "FULL": 23,
+      "RESERVE": 14,
+      "DETECTION": 23,
+      "FULL_JAM": 9,
+      "JAM": 9
+    },
+    "known": 55,
+    "configuration_required": 0,
+    "auto_resolved": 32,
+    "engineer_required": 23,
+    "previously_configuration_required_resolved": 32
+  }
+}

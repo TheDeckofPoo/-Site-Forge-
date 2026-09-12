@@ -1,0 +1,623 @@
+{
+  "generated_at": "2026-09-12T19:26:55.037531+00:00",
+  "ORNCCP2": {
+    "count": 176,
+    "sample": [
+      {
+        "head": "CR305",
+        "members": [
+          "CR305",
+          "P305"
+        ],
+        "order": [
+          "CR305",
+          "P305"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M302_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M100",
+        "members": [
+          "M100",
+          "P100"
+        ],
+        "order": [
+          "M100",
+          "P100"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M102_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1000",
+        "members": [
+          "M1000",
+          "P1000"
+        ],
+        "order": [
+          "M1000",
+          "P1000"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1001_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1001",
+        "members": [
+          "M1001",
+          "P1001"
+        ],
+        "order": [
+          "M1001",
+          "P1001"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1002_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1002",
+        "members": [
+          "M1002",
+          "P1002"
+        ],
+        "order": [
+          "M1002",
+          "P1002"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "LATCH_2CR3_1002_TRASH",
+        "stop_zone": null
+      },
+      {
+        "head": "M1004",
+        "members": [
+          "M1004",
+          "P1004"
+        ],
+        "order": [
+          "M1004",
+          "P1004"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1005_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1005",
+        "members": [
+          "M1005",
+          "P1005"
+        ],
+        "order": [
+          "M1005",
+          "P1005"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1002_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1006",
+        "members": [
+          "M1006",
+          "P1006"
+        ],
+        "order": [
+          "M1006",
+          "P1006"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1007_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1007",
+        "members": [
+          "M1007",
+          "P1007"
+        ],
+        "order": [
+          "M1007",
+          "P1007"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1008_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1008",
+        "members": [
+          "M1008",
+          "P1008"
+        ],
+        "order": [
+          "M1008",
+          "P1008"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "LATCH_3CR3_1008_TRASH",
+        "stop_zone": null
+      },
+      {
+        "head": "M100A",
+        "members": [
+          "M100A",
+          "P100A"
+        ],
+        "order": [
+          "M100A",
+          "P100A"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M100_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1010",
+        "members": [
+          "M1010",
+          "P1010"
+        ],
+        "order": [
+          "M1010",
+          "P1010"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1011_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1011",
+        "members": [
+          "M1011",
+          "P1011"
+        ],
+        "order": [
+          "M1011",
+          "P1011"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1008_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1014",
+        "members": [
+          "M1014",
+          "P1014"
+        ],
+        "order": [
+          "M1014",
+          "P1014"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "LATCH_3CR3_1014_TRASH",
+        "stop_zone": null
+      },
+      {
+        "head": "M1015",
+        "members": [
+          "M1015",
+          "P1015"
+        ],
+        "order": [
+          "M1015",
+          "P1015"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1016_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1016",
+        "members": [
+          "M1016",
+          "P1016"
+        ],
+        "order": [
+          "M1016",
+          "P1016"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1018_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1018",
+        "members": [
+          "M1018",
+          "P1018"
+        ],
+        "order": [
+          "M1018",
+          "P1018"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "LATCH_3CR3_1018_TRASH",
+        "stop_zone": null
+      },
+      {
+        "head": "M102",
+        "members": [
+          "M102",
+          "P102",
+          "P104"
+        ],
+        "order": [
+          "M102",
+          "P102",
+          "P104"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M106_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M106",
+        "members": [
+          "M106",
+          "P106",
+          "P108"
+        ],
+        "order": [
+          "M106",
+          "P106",
+          "P108"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M110_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M110",
+        "members": [
+          "M110",
+          "P110"
+        ],
+        "order": [
+          "M110",
+          "P110"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M114_AUX",
+        "stop_zone": null
+      }
+    ],
+    "note": "Motor-chain is control evidence, not physical conveyor topology"
+  },
+  "ORNCCP4": {
+    "count": 176,
+    "sample": [
+      {
+        "head": "CR305",
+        "members": [
+          "CR305",
+          "P305"
+        ],
+        "order": [
+          "CR305",
+          "P305"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M302_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M100",
+        "members": [
+          "M100",
+          "P100"
+        ],
+        "order": [
+          "M100",
+          "P100"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M102_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1000",
+        "members": [
+          "M1000",
+          "P1000"
+        ],
+        "order": [
+          "M1000",
+          "P1000"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1001_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1001",
+        "members": [
+          "M1001",
+          "P1001"
+        ],
+        "order": [
+          "M1001",
+          "P1001"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1002_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1002",
+        "members": [
+          "M1002",
+          "P1002"
+        ],
+        "order": [
+          "M1002",
+          "P1002"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "LATCH_2CR3_1002_TRASH",
+        "stop_zone": null
+      },
+      {
+        "head": "M1004",
+        "members": [
+          "M1004",
+          "P1004"
+        ],
+        "order": [
+          "M1004",
+          "P1004"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1005_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1005",
+        "members": [
+          "M1005",
+          "P1005"
+        ],
+        "order": [
+          "M1005",
+          "P1005"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1002_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1006",
+        "members": [
+          "M1006",
+          "P1006"
+        ],
+        "order": [
+          "M1006",
+          "P1006"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1007_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1007",
+        "members": [
+          "M1007",
+          "P1007"
+        ],
+        "order": [
+          "M1007",
+          "P1007"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1008_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1008",
+        "members": [
+          "M1008",
+          "P1008"
+        ],
+        "order": [
+          "M1008",
+          "P1008"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "LATCH_3CR3_1008_TRASH",
+        "stop_zone": null
+      },
+      {
+        "head": "M100A",
+        "members": [
+          "M100A",
+          "P100A"
+        ],
+        "order": [
+          "M100A",
+          "P100A"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M100_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1010",
+        "members": [
+          "M1010",
+          "P1010"
+        ],
+        "order": [
+          "M1010",
+          "P1010"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1011_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1011",
+        "members": [
+          "M1011",
+          "P1011"
+        ],
+        "order": [
+          "M1011",
+          "P1011"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1008_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1014",
+        "members": [
+          "M1014",
+          "P1014"
+        ],
+        "order": [
+          "M1014",
+          "P1014"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "LATCH_3CR3_1014_TRASH",
+        "stop_zone": null
+      },
+      {
+        "head": "M1015",
+        "members": [
+          "M1015",
+          "P1015"
+        ],
+        "order": [
+          "M1015",
+          "P1015"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1016_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1016",
+        "members": [
+          "M1016",
+          "P1016"
+        ],
+        "order": [
+          "M1016",
+          "P1016"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M1018_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M1018",
+        "members": [
+          "M1018",
+          "P1018"
+        ],
+        "order": [
+          "M1018",
+          "P1018"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "LATCH_3CR3_1018_TRASH",
+        "stop_zone": null
+      },
+      {
+        "head": "M102",
+        "members": [
+          "M102",
+          "P102",
+          "P104"
+        ],
+        "order": [
+          "M102",
+          "P102",
+          "P104"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M106_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M106",
+        "members": [
+          "M106",
+          "P106",
+          "P108"
+        ],
+        "order": [
+          "M106",
+          "P106",
+          "P108"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M110_AUX",
+        "stop_zone": null
+      },
+      {
+        "head": "M110",
+        "members": [
+          "M110",
+          "P110"
+        ],
+        "order": [
+          "M110",
+          "P110"
+        ],
+        "source": "Mtrchain.asc",
+        "confidence": "HIGH",
+        "aux": "M114_AUX",
+        "stop_zone": null
+      }
+    ],
+    "note": "Motor-chain is control evidence, not physical conveyor topology"
+  }
+}

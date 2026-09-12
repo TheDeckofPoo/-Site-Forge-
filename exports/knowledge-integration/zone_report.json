@@ -1,0 +1,21 @@
+{
+  "generated_at": "2026-09-12T19:26:55.036481+00:00",
+  "ORNCCP2": {
+    "engineering_areas": 1,
+    "estop_zones": 90,
+    "startstop_zones": 8,
+    "jam_zones": 27,
+    "full_groups": 79,
+    "sorter_zones": 0,
+    "note": "Area rename must not silently rename Jam/EStop/StartStop zones"
+  },
+  "ORNCCP4": {
+    "engineering_areas": 1,
+    "estop_zones": 90,
+    "startstop_zones": 8,
+    "jam_zones": 27,
+    "full_groups": 79,
+    "sorter_zones": 2,
+    "note": "Area rename must not silently rename Jam/EStop/StartStop zones"
+  }
+}
