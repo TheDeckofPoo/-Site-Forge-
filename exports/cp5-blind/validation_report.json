@@ -1,0 +1,3366 @@
+{
+  "generated_at": "2026-09-12T19:46:08.743080+00:00",
+  "machine": "ORNCCP5",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN",
+  "ok": true,
+  "issue_counts": {
+    "CONFIGURATION_REQUIRED": 80,
+    "WARNING": 267
+  },
+  "issues": [
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P440",
+      "canonical_id": "equipment:P440"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P442",
+      "canonical_id": "equipment:P442"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P444",
+      "canonical_id": "equipment:P444"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P500",
+      "canonical_id": "equipment:P500"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P502",
+      "canonical_id": "equipment:P502"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P504",
+      "canonical_id": "equipment:P504"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P506",
+      "canonical_id": "equipment:P506"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P506A",
+      "canonical_id": "equipment:P506A"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P508",
+      "canonical_id": "equipment:P508"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P508A",
+      "canonical_id": "equipment:P508A"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P509",
+      "canonical_id": "equipment:P509"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P510",
+      "canonical_id": "equipment:P510"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P526",
+      "canonical_id": "equipment:P526"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P528",
+      "canonical_id": "equipment:P528"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P530",
+      "canonical_id": "equipment:P530"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P530A",
+      "canonical_id": "equipment:P530A"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P532",
+      "canonical_id": "equipment:P532"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P534",
+      "canonical_id": "equipment:P534"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P536",
+      "canonical_id": "equipment:P536"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P538",
+      "canonical_id": "equipment:P538"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P540",
+      "canonical_id": "equipment:P540"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P542",
+      "canonical_id": "equipment:P542"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P544",
+      "canonical_id": "equipment:P544"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P552",
+      "canonical_id": "equipment:P552"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P554",
+      "canonical_id": "equipment:P554"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P556",
+      "canonical_id": "equipment:P556"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P560",
+      "canonical_id": "equipment:P560"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P562",
+      "canonical_id": "equipment:P562"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P564",
+      "canonical_id": "equipment:P564"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P566",
+      "canonical_id": "equipment:P566"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600C",
+      "canonical_id": "equipment:P600C"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600D",
+      "canonical_id": "equipment:P600D"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600E",
+      "canonical_id": "equipment:P600E"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600F",
+      "canonical_id": "equipment:P600F"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600G",
+      "canonical_id": "equipment:P600G"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600H",
+      "canonical_id": "equipment:P600H"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600I",
+      "canonical_id": "equipment:P600I"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600J",
+      "canonical_id": "equipment:P600J"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600K",
+      "canonical_id": "equipment:P600K"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600M",
+      "canonical_id": "equipment:P600M"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600N",
+      "canonical_id": "equipment:P600N"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600O",
+      "canonical_id": "equipment:P600O"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P600P",
+      "canonical_id": "equipment:P600P"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602C",
+      "canonical_id": "equipment:P602C"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602D",
+      "canonical_id": "equipment:P602D"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602E",
+      "canonical_id": "equipment:P602E"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602F",
+      "canonical_id": "equipment:P602F"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602G",
+      "canonical_id": "equipment:P602G"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602H",
+      "canonical_id": "equipment:P602H"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602I",
+      "canonical_id": "equipment:P602I"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602J",
+      "canonical_id": "equipment:P602J"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602K",
+      "canonical_id": "equipment:P602K"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602M",
+      "canonical_id": "equipment:P602M"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602N",
+      "canonical_id": "equipment:P602N"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602O",
+      "canonical_id": "equipment:P602O"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P602P",
+      "canonical_id": "equipment:P602P"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P700A",
+      "canonical_id": "equipment:P700A"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P700B",
+      "canonical_id": "equipment:P700B"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P700C",
+      "canonical_id": "equipment:P700C"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P702A",
+      "canonical_id": "equipment:P702A"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P702B",
+      "canonical_id": "equipment:P702B"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P702C",
+      "canonical_id": "equipment:P702C"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P704A",
+      "canonical_id": "equipment:P704A"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P704B",
+      "canonical_id": "equipment:P704B"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P704C",
+      "canonical_id": "equipment:P704C"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P712",
+      "canonical_id": "equipment:P712"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P714",
+      "canonical_id": "equipment:P714"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P716",
+      "canonical_id": "equipment:P716"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P718",
+      "canonical_id": "equipment:P718"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P720",
+      "canonical_id": "equipment:P720"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P800",
+      "canonical_id": "equipment:P800"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P802",
+      "canonical_id": "equipment:P802"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P804",
+      "canonical_id": "equipment:P804"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P806",
+      "canonical_id": "equipment:P806"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P808",
+      "canonical_id": "equipment:P808"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P810",
+      "canonical_id": "equipment:P810"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P812",
+      "canonical_id": "equipment:P812"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P814",
+      "canonical_id": "equipment:P814"
+    },
+    {
+      "kind": "active_conveyor_missing_motor",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "INCLUDED equipment missing motor: P816",
+      "canonical_id": "equipment:P816"
+    },
+    {
+      "kind": "pe_role_unknown",
+      "severity": "CONFIGURATION_REQUIRED",
+      "message": "PE role UNKNOWN: PE814_FDD",
+      "canonical_id": "photoeye:PE814_FDD"
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P308 (to)",
+      "relationship": {
+        "source": "PE308_J",
+        "target": "P308",
+        "from": "PE308_J",
+        "to": "P308",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P416 (to)",
+      "relationship": {
+        "source": "PE414_J",
+        "target": "P416",
+        "from": "PE414_J",
+        "to": "P416",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P412 (to)",
+      "relationship": {
+        "source": "PE414A_J",
+        "target": "P412",
+        "from": "PE414A_J",
+        "to": "P412",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P120 (to)",
+      "relationship": {
+        "source": "PE414B_J",
+        "target": "P120",
+        "from": "PE414B_J",
+        "to": "P120",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P218 (to)",
+      "relationship": {
+        "source": "PE414C_J",
+        "target": "P218",
+        "from": "PE414C_J",
+        "to": "P218",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P836 (to)",
+      "relationship": {
+        "source": "PE414D_J",
+        "target": "P836",
+        "from": "PE414D_J",
+        "to": "P836",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P446 (to)",
+      "relationship": {
+        "source": "PE446_J",
+        "target": "P446",
+        "from": "PE446_J",
+        "to": "P446",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P316 (to)",
+      "relationship": {
+        "source": "PE316_J",
+        "target": "P316",
+        "from": "PE316_J",
+        "to": "P316",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P406 (to)",
+      "relationship": {
+        "source": "PE406_J",
+        "target": "P406",
+        "from": "PE406_J",
+        "to": "P406",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P1000 (to)",
+      "relationship": {
+        "source": "PE1000_J",
+        "target": "P1000",
+        "from": "PE1000_J",
+        "to": "P1000",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P1002 (to)",
+      "relationship": {
+        "source": "PE1002_J",
+        "target": "P1002",
+        "from": "PE1002_J",
+        "to": "P1002",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P1004 (to)",
+      "relationship": {
+        "source": "PE1004_J",
+        "target": "P1004",
+        "from": "PE1004_J",
+        "to": "P1004",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P324 (to)",
+      "relationship": {
+        "source": "PE324_J",
+        "target": "P324",
+        "from": "PE324_J",
+        "to": "P324",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P400 (to)",
+      "relationship": {
+        "source": "PE400_J",
+        "target": "P400",
+        "from": "PE400_J",
+        "to": "P400",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P1006 (to)",
+      "relationship": {
+        "source": "PE1006_J",
+        "target": "P1006",
+        "from": "PE1006_J",
+        "to": "P1006",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P1008 (to)",
+      "relationship": {
+        "source": "PE1008_J",
+        "target": "P1008",
+        "from": "PE1008_J",
+        "to": "P1008",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P1010 (to)",
+      "relationship": {
+        "source": "PE1010_J",
+        "target": "P1010",
+        "from": "PE1010_J",
+        "to": "P1010",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P1014 (to)",
+      "relationship": {
+        "source": "PE1014_J",
+        "target": "P1014",
+        "from": "PE1014_J",
+        "to": "P1014",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P1018 (to)",
+      "relationship": {
+        "source": "PE1018_J",
+        "target": "P1018",
+        "from": "PE1018_J",
+        "to": "P1018",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P424 (to)",
+      "relationship": {
+        "source": "PE424_I",
+        "target": "P424",
+        "from": "PE424_I",
+        "to": "P424",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P424A (to)",
+      "relationship": {
+        "source": "PRS424",
+        "target": "P424A",
+        "from": "PRS424",
+        "to": "P424A",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P215 (to)",
+      "relationship": {
+        "source": "PE215_J",
+        "target": "P215",
+        "from": "PE215_J",
+        "to": "P215",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "jam_link references missing equipment P219A (to)",
+      "relationship": {
+        "source": "PE219A_J",
+        "target": "P219A",
+        "from": "PE219A_J",
+        "to": "P219A",
+        "kind": "jam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "jam_link",
+            "table": "Jamcheck.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Jamcheck.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P116 (to)",
+      "relationship": {
+        "source": "EZPE116_F",
+        "target": "P116",
+        "from": "EZPE116_F",
+        "to": "P116",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P212 (to)",
+      "relationship": {
+        "source": "EZPE212_F1",
+        "target": "P212",
+        "from": "EZPE212_F1",
+        "to": "P212",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P214 (to)",
+      "relationship": {
+        "source": "EZPE212_F2",
+        "target": "P214",
+        "from": "EZPE212_F2",
+        "to": "P214",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P304 (to)",
+      "relationship": {
+        "source": "EZPE304_F",
+        "target": "P304",
+        "from": "EZPE304_F",
+        "to": "P304",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P418 (to)",
+      "relationship": {
+        "source": "EZPE418_F",
+        "target": "P418",
+        "from": "EZPE418_F",
+        "to": "P418",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P450 (to)",
+      "relationship": {
+        "source": "EZPE450_F",
+        "target": "P450",
+        "from": "EZPE450_F",
+        "to": "P450",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P456 (to)",
+      "relationship": {
+        "source": "EZPE456_F",
+        "target": "P456",
+        "from": "EZPE456_F",
+        "to": "P456",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P828 (to)",
+      "relationship": {
+        "source": "EZPE828_F",
+        "target": "P828",
+        "from": "EZPE828_F",
+        "to": "P828",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P832 (to)",
+      "relationship": {
+        "source": "EZPE832_F",
+        "target": "P832",
+        "from": "EZPE832_F",
+        "to": "P832",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P462 (to)",
+      "relationship": {
+        "source": "PE462_F",
+        "target": "P462",
+        "from": "PE462_F",
+        "to": "P462",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P136A (to)",
+      "relationship": {
+        "source": "EZPE136_F1",
+        "target": "P136A",
+        "from": "EZPE136_F1",
+        "to": "P136A",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P136 (to)",
+      "relationship": {
+        "source": "EZPE136_F2",
+        "target": "P136",
+        "from": "EZPE136_F2",
+        "to": "P136",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P312 (to)",
+      "relationship": {
+        "source": "EZPE312_F",
+        "target": "P312",
+        "from": "EZPE312_F",
+        "to": "P312",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P408 (to)",
+      "relationship": {
+        "source": "EZPE408_F",
+        "target": "P408",
+        "from": "EZPE408_F",
+        "to": "P408",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P150A (to)",
+      "relationship": {
+        "source": "EZPE150_F1",
+        "target": "P150A",
+        "from": "EZPE150_F1",
+        "to": "P150A",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P150 (to)",
+      "relationship": {
+        "source": "EZPE150_F2",
+        "target": "P150",
+        "from": "EZPE150_F2",
+        "to": "P150",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P242 (to)",
+      "relationship": {
+        "source": "EZPE242_F",
+        "target": "P242",
+        "from": "EZPE242_F",
+        "to": "P242",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P320 (to)",
+      "relationship": {
+        "source": "EZPE320_F",
+        "target": "P320",
+        "from": "EZPE320_F",
+        "to": "P320",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P402 (to)",
+      "relationship": {
+        "source": "EZPE402_F",
+        "target": "P402",
+        "from": "EZPE402_F",
+        "to": "P402",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P209 (to)",
+      "relationship": {
+        "source": "EZPE209_F",
+        "target": "P209",
+        "from": "EZPE209_F",
+        "to": "P209",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P213 (to)",
+      "relationship": {
+        "source": "EZPE213_F",
+        "target": "P213",
+        "from": "EZPE213_F",
+        "to": "P213",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P217 (to)",
+      "relationship": {
+        "source": "EZPE217_F",
+        "target": "P217",
+        "from": "EZPE217_F",
+        "to": "P217",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P231A (to)",
+      "relationship": {
+        "source": "EZPE231A_F",
+        "target": "P231A",
+        "from": "EZPE231A_F",
+        "to": "P231A",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "full_missing_conveyor",
+      "severity": "WARNING",
+      "message": "full_link references missing equipment P229 (to)",
+      "relationship": {
+        "source": "EZPE229_F",
+        "target": "P229",
+        "from": "EZPE229_F",
+        "to": "P229",
+        "kind": "full_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "full_link",
+            "table": "Fullline.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fullline.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P438 (to)",
+      "relationship": {
+        "source": "PE438_JF",
+        "target": "P438",
+        "from": "PE438_JF",
+        "to": "P438",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P434 (to)",
+      "relationship": {
+        "source": "PE434_JF",
+        "target": "P434",
+        "from": "PE434_JF",
+        "to": "P434",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P820 (to)",
+      "relationship": {
+        "source": "PE820_JF",
+        "target": "P820",
+        "from": "PE820_JF",
+        "to": "P820",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P428 (to)",
+      "relationship": {
+        "source": "PE428_JF",
+        "target": "P428",
+        "from": "PE428_JF",
+        "to": "P428",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P208 (to)",
+      "relationship": {
+        "source": "PE208_JF",
+        "target": "P208",
+        "from": "PE208_JF",
+        "to": "P208",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P204 (to)",
+      "relationship": {
+        "source": "PE204_JF",
+        "target": "P204",
+        "from": "PE204_JF",
+        "to": "P204",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P108 (to)",
+      "relationship": {
+        "source": "PE108_JF",
+        "target": "P108",
+        "from": "PE108_JF",
+        "to": "P108",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P104 (to)",
+      "relationship": {
+        "source": "PE104_JF",
+        "target": "P104",
+        "from": "PE104_JF",
+        "to": "P104",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P226 (to)",
+      "relationship": {
+        "source": "JF_MEM_PE226",
+        "target": "P226",
+        "from": "JF_MEM_PE226",
+        "to": "P226",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P134 (to)",
+      "relationship": {
+        "source": "JF_MEM_PE134",
+        "target": "P134",
+        "from": "JF_MEM_PE134",
+        "to": "P134",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P126 (to)",
+      "relationship": {
+        "source": "PE126_JF",
+        "target": "P126",
+        "from": "PE126_JF",
+        "to": "P126",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P238 (to)",
+      "relationship": {
+        "source": "PE238_JF",
+        "target": "P238",
+        "from": "PE238_JF",
+        "to": "P238",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P148 (to)",
+      "relationship": {
+        "source": "JF_MEM_PE148",
+        "target": "P148",
+        "from": "JF_MEM_PE148",
+        "to": "P148",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P142 (to)",
+      "relationship": {
+        "source": "PE142_JF",
+        "target": "P142",
+        "from": "PE142_JF",
+        "to": "P142",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "jamcheck_missing_conveyor",
+      "severity": "WARNING",
+      "message": "fulljam_link references missing equipment P210 (to)",
+      "relationship": {
+        "source": "PE210A_JF",
+        "target": "P210",
+        "from": "PE210A_JF",
+        "to": "P210",
+        "kind": "fulljam_link",
+        "provenance": "RUN_EXPLICIT",
+        "confidence": "HIGH",
+        "evidence": [
+          {
+            "kind": "fulljam_link",
+            "table": "Fulljam.asc"
+          }
+        ],
+        "engineer_override": null,
+        "source_table": "Fulljam.asc"
+      }
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 502 without bit: ['M440', 'M442', 'M530', 'M534', 'M536', 'M542', 'M702B', 'M702C']",
+      "io_key": "502",
+      "names": [
+        "M440",
+        "M442",
+        "M530",
+        "M534",
+        "M536",
+        "M542",
+        "M702B",
+        "M702C"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 505 without bit: ['M440_AUX', 'M442_AUX', 'M530_AUX', 'M534_AUX', 'M536_AUX', 'M542_AUX', 'M702B_AUX', 'M702C_AUX', 'M712_AUX', 'M716_AUX', 'M718_AUX', 'M800_AUX']",
+      "io_key": "505",
+      "names": [
+        "M440_AUX",
+        "M442_AUX",
+        "M530_AUX",
+        "M534_AUX",
+        "M536_AUX",
+        "M542_AUX",
+        "M702B_AUX",
+        "M702C_AUX",
+        "M712_AUX",
+        "M716_AUX",
+        "M718_AUX",
+        "M800_AUX",
+        "M802_AUX",
+        "M804_AUX",
+        "M810_AUX",
+        "M812_AUX"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 602 without bit: ['M526', 'M528', 'M602F', 'M602G', 'M602H']",
+      "io_key": "602",
+      "names": [
+        "M526",
+        "M528",
+        "M602F",
+        "M602G",
+        "M602H"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 605 without bit: ['M526_AUX', 'M528_AUX', 'M600F_AUX', 'M600G_AUX', 'M602F_AUX', 'M602G_AUX', 'M602H_AUX', 'M602I_AUX', 'M602J_AUX', 'M602K_AUX']",
+      "io_key": "605",
+      "names": [
+        "M526_AUX",
+        "M528_AUX",
+        "M600F_AUX",
+        "M600G_AUX",
+        "M602F_AUX",
+        "M602G_AUX",
+        "M602H_AUX",
+        "M602I_AUX",
+        "M602J_AUX",
+        "M602K_AUX"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 604 without bit: ['M600F', 'M600G', 'M602I', 'M602J', 'M602K']",
+      "io_key": "604",
+      "names": [
+        "M600F",
+        "M600G",
+        "M602I",
+        "M602J",
+        "M602K"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 606 without bit: ['M600H', 'M600I', 'M600J', 'M600K']",
+      "io_key": "606",
+      "names": [
+        "M600H",
+        "M600I",
+        "M600J",
+        "M600K"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 607 without bit: ['M600H_AUX', 'M600I_AUX', 'M600J_AUX', 'M600K_AUX']",
+      "io_key": "607",
+      "names": [
+        "M600H_AUX",
+        "M600I_AUX",
+        "M600J_AUX",
+        "M600K_AUX"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 511 without bit: ['M600C', 'M600D', 'M600E', 'M700B', 'M700C']",
+      "io_key": "511",
+      "names": [
+        "M600C",
+        "M600D",
+        "M600E",
+        "M700B",
+        "M700C"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 507 without bit: ['M600C_AUX', 'M600D_AUX', 'M600E_AUX', 'M602C_AUX', 'M602D_AUX', 'M602E_AUX', 'M700B_AUX', 'M700C_AUX', 'M702A_AUX', 'M814_AUX']",
+      "io_key": "507",
+      "names": [
+        "M600C_AUX",
+        "M600D_AUX",
+        "M600E_AUX",
+        "M602C_AUX",
+        "M602D_AUX",
+        "M602E_AUX",
+        "M700B_AUX",
+        "M700C_AUX",
+        "M702A_AUX",
+        "M814_AUX"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 504 without bit: ['M712', 'M716', 'M718', 'M800', 'M802', 'M804', 'M810', 'M812']",
+      "io_key": "504",
+      "names": [
+        "M712",
+        "M716",
+        "M718",
+        "M800",
+        "M802",
+        "M804",
+        "M810",
+        "M812"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 506 without bit: ['M602C', 'M602D', 'M602E', 'M702A', 'M814']",
+      "io_key": "506",
+      "names": [
+        "M602C",
+        "M602D",
+        "M602E",
+        "M702A",
+        "M814"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 703 without bit: ['M554_AUX', 'M560_AUX', 'M564_AUX', 'M566_AUX', 'M602M_AUX', 'M602N_AUX', 'M602O_AUX', 'M602P_AUX']",
+      "io_key": "703",
+      "names": [
+        "M554_AUX",
+        "M560_AUX",
+        "M564_AUX",
+        "M566_AUX",
+        "M602M_AUX",
+        "M602N_AUX",
+        "M602O_AUX",
+        "M602P_AUX"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 710 without bit: ['M554', 'M560', 'M564', 'M566', 'M602M', 'M602N', 'M602O', 'M602P']",
+      "io_key": "710",
+      "names": [
+        "M554",
+        "M560",
+        "M564",
+        "M566",
+        "M602M",
+        "M602N",
+        "M602O",
+        "M602P"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 525 without bit: ['VFD444', 'VFD500', 'VFD500A', 'VFD502', 'VFD504', 'VFD506', 'VFD544']",
+      "io_key": "525",
+      "names": [
+        "VFD444",
+        "VFD500",
+        "VFD500A",
+        "VFD502",
+        "VFD504",
+        "VFD506",
+        "VFD544"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 623 without bit: ['PE508_I', 'VFD508']",
+      "io_key": "623",
+      "names": [
+        "PE508_I",
+        "VFD508"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 713 without bit: ['PE509_I', 'PE510_I', 'VFD509', 'VFD510', 'VFD550', 'VFD600N']",
+      "io_key": "713",
+      "names": [
+        "PE509_I",
+        "PE510_I",
+        "VFD509",
+        "VFD510",
+        "VFD550",
+        "VFD600N"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 716 without bit: ['VFD600M', 'VFD600O', 'VFD600P']",
+      "io_key": "716",
+      "names": [
+        "VFD600M",
+        "VFD600O",
+        "VFD600P"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 521 without bit: ['EZPE442_F', 'EZPE442_P', 'EZPE530_F1', 'EZPE530_F2', 'EZPE530_P1', 'EZPE530_P2', 'EZPE536_F', 'EZPE536_P', 'EZPE542_F', 'EZPE542_P', 'EZPE718_F', 'EZPE718_P']",
+      "io_key": "521",
+      "names": [
+        "EZPE442_F",
+        "EZPE442_P",
+        "EZPE530_F1",
+        "EZPE530_F2",
+        "EZPE530_P1",
+        "EZPE530_P2",
+        "EZPE536_F",
+        "EZPE536_P",
+        "EZPE542_F",
+        "EZPE542_P",
+        "EZPE718_F",
+        "EZPE718_P",
+        "EZPE810_F",
+        "EZPE810_P"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 621 without bit: ['EZPE602F_F', 'EZPE602F_P', 'EZPE602G_F', 'EZPE602G_P', 'EZPE602H_F', 'EZPE602H_P', 'EZPE602I_F', 'EZPE602I_P', 'EZPE602J_F', 'EZPE602J_P', 'EZPE602K_F', 'EZPE602K_P']",
+      "io_key": "621",
+      "names": [
+        "EZPE602F_F",
+        "EZPE602F_P",
+        "EZPE602G_F",
+        "EZPE602G_P",
+        "EZPE602H_F",
+        "EZPE602H_P",
+        "EZPE602I_F",
+        "EZPE602I_P",
+        "EZPE602J_F",
+        "EZPE602J_P",
+        "EZPE602K_F",
+        "EZPE602K_P"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 510 without bit: ['PE444_P', 'PE500_J', 'PE544_P', 'PE600C_J', 'PE700A_J', 'PE700B_J', 'PE700C_J', 'PE714_JF', 'PE720_J', 'PE802_P', 'PE806_JF', 'PE812_J']",
+      "io_key": "510",
+      "names": [
+        "PE444_P",
+        "PE500_J",
+        "PE544_P",
+        "PE600C_J",
+        "PE700A_J",
+        "PE700B_J",
+        "PE700C_J",
+        "PE714_JF",
+        "PE720_J",
+        "PE802_P",
+        "PE806_JF",
+        "PE812_J",
+        "PE814_FDD",
+        "PE814_FDJ"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 523 without bit: ['EZPE602C_F', 'EZPE602C_P', 'EZPE602D_F', 'EZPE602D_P', 'EZPE602E_F', 'EZPE602E_P', 'PE504_I', 'PE506_I']",
+      "io_key": "523",
+      "names": [
+        "EZPE602C_F",
+        "EZPE602C_P",
+        "EZPE602D_F",
+        "EZPE602D_P",
+        "EZPE602E_F",
+        "EZPE602E_P",
+        "PE504_I",
+        "PE506_I"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 610 without bit: ['PE508_J', 'PE600F_J', 'PE600G_J', 'PE600H_J', 'PE600I_J', 'PE600J_J', 'PE600K_J']",
+      "io_key": "610",
+      "names": [
+        "PE508_J",
+        "PE600F_J",
+        "PE600G_J",
+        "PE600H_J",
+        "PE600I_J",
+        "PE600J_J",
+        "PE600K_J"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 612 without bit: ['PE608F_F', 'PE608G_F', 'PE608H_F', 'PE608I_F', 'PE608J_F', 'PE608K_F']",
+      "io_key": "612",
+      "names": [
+        "PE608F_F",
+        "PE608G_F",
+        "PE608H_F",
+        "PE608I_F",
+        "PE608J_F",
+        "PE608K_F"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 514 without bit: ['PE608C_F', 'PE608D_F', 'PE608E_F', 'PE704A_F', 'PE704B_F', 'PE704C_F']",
+      "io_key": "514",
+      "names": [
+        "PE608C_F",
+        "PE608D_F",
+        "PE608E_F",
+        "PE704A_F",
+        "PE704B_F",
+        "PE704C_F"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 512 without bit: ['PE600D_J', 'PE600E_J']",
+      "io_key": "512",
+      "names": [
+        "PE600D_J",
+        "PE600E_J"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 704 without bit: ['PE510_J', 'PE552_JF', 'PE556_JF', 'PE562_JF', 'PE600M_J', 'PE600N_J', 'PE600O_J', 'PE600P_J', 'PE608M_F', 'PE608N_F', 'PE608O_F', 'PE608P_F']",
+      "io_key": "704",
+      "names": [
+        "PE510_J",
+        "PE552_JF",
+        "PE556_JF",
+        "PE562_JF",
+        "PE600M_J",
+        "PE600N_J",
+        "PE600O_J",
+        "PE600P_J",
+        "PE608M_F",
+        "PE608N_F",
+        "PE608O_F",
+        "PE608P_F"
+      ]
+    },
+    {
+      "kind": "duplicate_io_word_missing_bit",
+      "severity": "WARNING",
+      "message": "Multiple active objects share IO word 714 without bit: ['EZPE564_F', 'EZPE566_P', 'EZPE602M_F', 'EZPE602M_P', 'EZPE602N_F', 'EZPE602N_P', 'EZPE602O_F', 'EZPE602O_P', 'EZPE602P_F', 'EZPE602P_P']",
+      "io_key": "714",
+      "names": [
+        "EZPE564_F",
+        "EZPE566_P",
+        "EZPE602M_F",
+        "EZPE602M_P",
+        "EZPE602N_F",
+        "EZPE602N_P",
+        "EZPE602O_F",
+        "EZPE602O_P",
+        "EZPE602P_F",
+        "EZPE602P_P"
+      ]
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M442",
+      "canonical_id": "motor:M442"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M442_AUX",
+      "canonical_id": "motor:M442_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M528",
+      "canonical_id": "motor:M528"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M528_AUX",
+      "canonical_id": "motor:M528_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M530",
+      "canonical_id": "motor:M530"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M530_AUX",
+      "canonical_id": "motor:M530_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M534",
+      "canonical_id": "motor:M534"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M534_AUX",
+      "canonical_id": "motor:M534_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M536",
+      "canonical_id": "motor:M536"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M536_AUX",
+      "canonical_id": "motor:M536_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M542",
+      "canonical_id": "motor:M542"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M542_AUX",
+      "canonical_id": "motor:M542_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600F_AUX",
+      "canonical_id": "motor:M600F_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600G",
+      "canonical_id": "motor:M600G"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600G_AUX",
+      "canonical_id": "motor:M600G_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600I",
+      "canonical_id": "motor:M600I"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600I_AUX",
+      "canonical_id": "motor:M600I_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600J",
+      "canonical_id": "motor:M600J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600J_AUX",
+      "canonical_id": "motor:M600J_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600K",
+      "canonical_id": "motor:M600K"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600K_AUX",
+      "canonical_id": "motor:M600K_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602F",
+      "canonical_id": "motor:M602F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602F_AUX",
+      "canonical_id": "motor:M602F_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602G",
+      "canonical_id": "motor:M602G"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602G_AUX",
+      "canonical_id": "motor:M602G_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602H",
+      "canonical_id": "motor:M602H"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602H_AUX",
+      "canonical_id": "motor:M602H_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602I",
+      "canonical_id": "motor:M602I"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602I_AUX",
+      "canonical_id": "motor:M602I_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602J",
+      "canonical_id": "motor:M602J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602J_AUX",
+      "canonical_id": "motor:M602J_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602K",
+      "canonical_id": "motor:M602K"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602K_AUX",
+      "canonical_id": "motor:M602K_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M700C",
+      "canonical_id": "motor:M700C"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M700C_AUX",
+      "canonical_id": "motor:M700C_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M702B",
+      "canonical_id": "motor:M702B"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M702B_AUX",
+      "canonical_id": "motor:M702B_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M702C",
+      "canonical_id": "motor:M702C"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M702C_AUX",
+      "canonical_id": "motor:M702C_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M712_AUX",
+      "canonical_id": "motor:M712_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M716",
+      "canonical_id": "motor:M716"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M716_AUX",
+      "canonical_id": "motor:M716_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M718",
+      "canonical_id": "motor:M718"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M718_AUX",
+      "canonical_id": "motor:M718_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M800",
+      "canonical_id": "motor:M800"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M800_AUX",
+      "canonical_id": "motor:M800_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M802",
+      "canonical_id": "motor:M802"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M802_AUX",
+      "canonical_id": "motor:M802_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M804",
+      "canonical_id": "motor:M804"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M804_AUX",
+      "canonical_id": "motor:M804_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M810",
+      "canonical_id": "motor:M810"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M810_AUX",
+      "canonical_id": "motor:M810_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M812",
+      "canonical_id": "motor:M812"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M812_AUX",
+      "canonical_id": "motor:M812_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M814_AUX",
+      "canonical_id": "motor:M814_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600C",
+      "canonical_id": "motor:M600C"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600D",
+      "canonical_id": "motor:M600D"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600C_AUX",
+      "canonical_id": "motor:M600C_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600D_AUX",
+      "canonical_id": "motor:M600D_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602C",
+      "canonical_id": "motor:M602C"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602C_AUX",
+      "canonical_id": "motor:M602C_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602D_AUX",
+      "canonical_id": "motor:M602D_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602D",
+      "canonical_id": "motor:M602D"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602E",
+      "canonical_id": "motor:M602E"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602E_AUX",
+      "canonical_id": "motor:M602E_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600E_AUX",
+      "canonical_id": "motor:M600E_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M600E",
+      "canonical_id": "motor:M600E"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M702A",
+      "canonical_id": "motor:M702A"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M702A_AUX",
+      "canonical_id": "motor:M702A_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M560_AUX",
+      "canonical_id": "motor:M560_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M564_AUX",
+      "canonical_id": "motor:M564_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M566_AUX",
+      "canonical_id": "motor:M566_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602M_AUX",
+      "canonical_id": "motor:M602M_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602N_AUX",
+      "canonical_id": "motor:M602N_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M560",
+      "canonical_id": "motor:M560"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M564",
+      "canonical_id": "motor:M564"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M566",
+      "canonical_id": "motor:M566"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602M",
+      "canonical_id": "motor:M602M"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602N",
+      "canonical_id": "motor:M602N"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602O",
+      "canonical_id": "motor:M602O"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602O_AUX",
+      "canonical_id": "motor:M602O_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602P",
+      "canonical_id": "motor:M602P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: M602P_AUX",
+      "canonical_id": "motor:M602P_AUX"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD500",
+      "canonical_id": "vfd:VFD500"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD500A",
+      "canonical_id": "vfd:VFD500A"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD502",
+      "canonical_id": "vfd:VFD502"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD504",
+      "canonical_id": "vfd:VFD504"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD506",
+      "canonical_id": "vfd:VFD506"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD544",
+      "canonical_id": "vfd:VFD544"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD510",
+      "canonical_id": "vfd:VFD510"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD550",
+      "canonical_id": "vfd:VFD550"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD600N",
+      "canonical_id": "vfd:VFD600N"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD600O",
+      "canonical_id": "vfd:VFD600O"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: VFD600P",
+      "canonical_id": "vfd:VFD600P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE442_P",
+      "canonical_id": "photoeye:EZPE442_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE530_F1",
+      "canonical_id": "photoeye:EZPE530_F1"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE530_F2",
+      "canonical_id": "photoeye:EZPE530_F2"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE530_P1",
+      "canonical_id": "photoeye:EZPE530_P1"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE530_P2",
+      "canonical_id": "photoeye:EZPE530_P2"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE536_F",
+      "canonical_id": "photoeye:EZPE536_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE536_P",
+      "canonical_id": "photoeye:EZPE536_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE542_F",
+      "canonical_id": "photoeye:EZPE542_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE542_P",
+      "canonical_id": "photoeye:EZPE542_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602F_P",
+      "canonical_id": "photoeye:EZPE602F_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602G_F",
+      "canonical_id": "photoeye:EZPE602G_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602G_P",
+      "canonical_id": "photoeye:EZPE602G_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602H_F",
+      "canonical_id": "photoeye:EZPE602H_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602H_P",
+      "canonical_id": "photoeye:EZPE602H_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602I_F",
+      "canonical_id": "photoeye:EZPE602I_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602I_P",
+      "canonical_id": "photoeye:EZPE602I_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602J_F",
+      "canonical_id": "photoeye:EZPE602J_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602J_P",
+      "canonical_id": "photoeye:EZPE602J_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602K_F",
+      "canonical_id": "photoeye:EZPE602K_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602K_P",
+      "canonical_id": "photoeye:EZPE602K_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE718_F",
+      "canonical_id": "photoeye:EZPE718_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE718_P",
+      "canonical_id": "photoeye:EZPE718_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE810_F",
+      "canonical_id": "photoeye:EZPE810_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE810_P",
+      "canonical_id": "photoeye:EZPE810_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE500_J",
+      "canonical_id": "photoeye:PE500_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE506_I",
+      "canonical_id": "photoeye:PE506_I"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE508_I",
+      "canonical_id": "photoeye:PE508_I"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE544_P",
+      "canonical_id": "photoeye:PE544_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600F_J",
+      "canonical_id": "photoeye:PE600F_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600G_J",
+      "canonical_id": "photoeye:PE600G_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600H_J",
+      "canonical_id": "photoeye:PE600H_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600I_J",
+      "canonical_id": "photoeye:PE600I_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600J_J",
+      "canonical_id": "photoeye:PE600J_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600K_J",
+      "canonical_id": "photoeye:PE600K_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608G_F",
+      "canonical_id": "photoeye:PE608G_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608H_F",
+      "canonical_id": "photoeye:PE608H_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608I_F",
+      "canonical_id": "photoeye:PE608I_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608J_F",
+      "canonical_id": "photoeye:PE608J_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608K_F",
+      "canonical_id": "photoeye:PE608K_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE700B_J",
+      "canonical_id": "photoeye:PE700B_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE700C_J",
+      "canonical_id": "photoeye:PE700C_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE704C_F",
+      "canonical_id": "photoeye:PE704C_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE714_JF",
+      "canonical_id": "photoeye:PE714_JF"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE720_J",
+      "canonical_id": "photoeye:PE720_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE802_P",
+      "canonical_id": "photoeye:PE802_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE806_JF",
+      "canonical_id": "photoeye:PE806_JF"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE812_J",
+      "canonical_id": "photoeye:PE812_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE814_FDD",
+      "canonical_id": "photoeye:PE814_FDD"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE814_FDJ",
+      "canonical_id": "photoeye:PE814_FDJ"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600C_J",
+      "canonical_id": "photoeye:PE600C_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602C_F",
+      "canonical_id": "photoeye:EZPE602C_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602C_P",
+      "canonical_id": "photoeye:EZPE602C_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608C_F",
+      "canonical_id": "photoeye:PE608C_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602D_F",
+      "canonical_id": "photoeye:EZPE602D_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602D_P",
+      "canonical_id": "photoeye:EZPE602D_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608D_F",
+      "canonical_id": "photoeye:PE608D_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608E_F",
+      "canonical_id": "photoeye:PE608E_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602E_P",
+      "canonical_id": "photoeye:EZPE602E_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602E_F",
+      "canonical_id": "photoeye:EZPE602E_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600E_J",
+      "canonical_id": "photoeye:PE600E_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE700A_J",
+      "canonical_id": "photoeye:PE700A_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE704A_F",
+      "canonical_id": "photoeye:PE704A_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE552_JF",
+      "canonical_id": "photoeye:PE552_JF"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE556_JF",
+      "canonical_id": "photoeye:PE556_JF"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE562_JF",
+      "canonical_id": "photoeye:PE562_JF"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600M_J",
+      "canonical_id": "photoeye:PE600M_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600N_J",
+      "canonical_id": "photoeye:PE600N_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608M_F",
+      "canonical_id": "photoeye:PE608M_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608N_F",
+      "canonical_id": "photoeye:PE608N_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE509_I",
+      "canonical_id": "photoeye:PE509_I"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE510_I",
+      "canonical_id": "photoeye:PE510_I"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE566_P",
+      "canonical_id": "photoeye:EZPE566_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602M_F",
+      "canonical_id": "photoeye:EZPE602M_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602M_P",
+      "canonical_id": "photoeye:EZPE602M_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602N_F",
+      "canonical_id": "photoeye:EZPE602N_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602N_P",
+      "canonical_id": "photoeye:EZPE602N_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602O_F",
+      "canonical_id": "photoeye:EZPE602O_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602O_P",
+      "canonical_id": "photoeye:EZPE602O_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608O_F",
+      "canonical_id": "photoeye:PE608O_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600O_J",
+      "canonical_id": "photoeye:PE600O_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE600P_J",
+      "canonical_id": "photoeye:PE600P_J"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602P_F",
+      "canonical_id": "photoeye:EZPE602P_F"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: EZPE602P_P",
+      "canonical_id": "photoeye:EZPE602P_P"
+    },
+    {
+      "kind": "active_superseded_conflict",
+      "severity": "WARNING",
+      "message": "INCLUDED object is SUPERSEDED_CANDIDATE: PE608P_F",
+      "canonical_id": "photoeye:PE608P_F"
+    }
+  ],
+  "checks_run": [
+    "pe_missing_io",
+    "motor_inactive_included",
+    "inactive_included",
+    "active_conveyor_missing_motor",
+    "active_vfd_no_owner",
+    "vfd_multi_drive",
+    "pe_role_unknown",
+    "jamcheck_missing_conveyor",
+    "fulljam_stale_equipment",
+    "motor_chain_inactive_member",
+    "lane_unknown_conveyor",
+    "saw_lane_unavailable_equipment",
+    "sorter_missing_encoder",
+    "msgmap_missing_machine",
+    "controller_scope_conflict",
+    "duplicate_active_io",
+    "active_superseded_conflict",
+    "finished_plc_leakage",
+    "greensboro_hardcoding"
+  ]
+}

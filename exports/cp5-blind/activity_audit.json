@@ -1,0 +1,3836 @@
+{
+  "generated_at": "2026-09-12T19:46:08.686020+00:00",
+  "rule": "FOUND != ACTIVE != INCLUDED != GENERATED",
+  "counts": {
+    "INCLUDED": 295,
+    "AVAILABLE": 0,
+    "EXCLUDED": 0,
+    "superseded_candidates": 178,
+    "historical_table_stems": 31
+  },
+  "historical_tables": [
+    {
+      "table": "BeaconInfo",
+      "files": [
+        "BeaconInfo.asc",
+        "old.BeaconInfo.asc"
+      ]
+    },
+    {
+      "table": "BeaconTrigger",
+      "files": [
+        "BeaconTrigger.asc",
+        "old.BeaconTrigger.asc"
+      ]
+    },
+    {
+      "table": "Configio",
+      "files": [
+        "Configio.asc",
+        "Configio.asc.ORNCCP5",
+        "old.Configio.asc",
+        "old.Configio.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "Conveyor",
+      "files": [
+        "Conveyor.asc",
+        "old.Conveyor.asc"
+      ]
+    },
+    {
+      "table": "EStop",
+      "files": [
+        "EStop.asc",
+        "old.EStop.asc"
+      ]
+    },
+    {
+      "table": "Encoders",
+      "files": [
+        "Encoders.asc",
+        "Encoders.asc.ORNCCP5",
+        "old.Encoders.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "Errors",
+      "files": [
+        "Errors.asc",
+        "old.Errors.asc"
+      ]
+    },
+    {
+      "table": "FastIO",
+      "files": [
+        "FastIO.asc",
+        "old.FastIO.asc"
+      ]
+    },
+    {
+      "table": "Fulljam",
+      "files": [
+        "Fulljam.asc",
+        "old.Fulljam.asc"
+      ]
+    },
+    {
+      "table": "Fullline",
+      "files": [
+        "Fullline.asc",
+        "old.Fullline.asc"
+      ]
+    },
+    {
+      "table": "Inpoints",
+      "files": [
+        "Inpoints.asc",
+        "Inpoints.asc.ORNCCP5",
+        "old.Inpoints.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "Jamcheck",
+      "files": [
+        "Jamcheck.asc",
+        "old.Jamcheck.asc"
+      ]
+    },
+    {
+      "table": "Jamzones",
+      "files": [
+        "Jamzones.asc",
+        "old.Jamzones.asc"
+      ]
+    },
+    {
+      "table": "Machine",
+      "files": [
+        "Machine.asc",
+        "Machine.asc.ORNCCP5",
+        "old.Machine.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "MergeBoss",
+      "files": [
+        "MergeBoss.asc",
+        "MergeBoss.asc.ORNCCP5",
+        "old.MergeBoss.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "MergeInputs",
+      "files": [
+        "MergeInputs.asc",
+        "MergeInputs.asc.ORNCCP5",
+        "old.MergeInputs.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "MergeRoute",
+      "files": [
+        "MergeRoute.asc",
+        "MergeRoute.asc.ORNCCP5",
+        "old.MergeRoute.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "Mtrchain",
+      "files": [
+        "Mtrchain.asc",
+        "old.Mtrchain.asc"
+      ]
+    },
+    {
+      "table": "NewGapper",
+      "files": [
+        "NewGapper.asc",
+        "old.NewGapper.asc"
+      ]
+    },
+    {
+      "table": "Outpoints",
+      "files": [
+        "old.Outpoints.asc.ORNCCP5",
+        "Outpoints.asc",
+        "Outpoints.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "PowerSupply",
+      "files": [
+        "old.PowerSupply.asc",
+        "PowerSupply.asc"
+      ]
+    },
+    {
+      "table": "RateCount",
+      "files": [
+        "old.RateCount.asc",
+        "RateCount.asc"
+      ]
+    },
+    {
+      "table": "ScnScanDevice",
+      "files": [
+        "old.ScnScanDevice.asc.ORNCCP5",
+        "ScnScanDevice.asc",
+        "ScnScanDevice.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "ScnScanZone",
+      "files": [
+        "old.ScnScanZone.asc.ORNCCP5",
+        "ScnScanZone.asc",
+        "ScnScanZone.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "Sorters",
+      "files": [
+        "old.Sorters.asc.ORNCCP5",
+        "Sorters.asc",
+        "Sorters.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "SrtAppControl",
+      "files": [
+        "old.SrtAppControl.asc.ORNCCP5",
+        "SrtAppControl.asc",
+        "SrtAppControl.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "SrtScanBoss",
+      "files": [
+        "old.SrtScanBoss.asc.ORNCCP5",
+        "SrtScanBoss.asc",
+        "SrtScanBoss.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "StartStopZones",
+      "files": [
+        "old.StartStopZones.asc",
+        "StartStopZones.asc"
+      ]
+    },
+    {
+      "table": "Updates",
+      "files": [
+        "old.Updates.asc.ORNCCP5",
+        "Updates.asc",
+        "Updates.asc.ORNCCP5"
+      ]
+    },
+    {
+      "table": "flagmenu",
+      "files": [
+        "flagmenu.asc",
+        "old.flagmenu.asc"
+      ]
+    },
+    {
+      "table": "fortna.arrays",
+      "files": [
+        "fortna.arrays.ORNCCP5",
+        "old.fortna.arrays.ORNCCP5"
+      ]
+    }
+  ],
+  "superseded_candidates": [
+    {
+      "canonical_id": "motor:M442",
+      "normalized_name": "M442",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P442"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "502:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M530",
+      "normalized_name": "M530",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P530"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "502:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M534",
+      "normalized_name": "M534",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P534"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "full_link",
+          "detail": "EZPE536_F"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 12,
+          "matched": [
+            "controller_io",
+            "full_link",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "502:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M536",
+      "normalized_name": "M536",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P536"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "502:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M542",
+      "normalized_name": "M542",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P542"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "502:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M702B",
+      "normalized_name": "M702B",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P702B"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "502:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M702C",
+      "normalized_name": "M702C",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P702C"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "502:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M442_AUX",
+      "normalized_name": "M442_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P442"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M440"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M530_AUX",
+      "normalized_name": "M530_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P530"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M528"
+        },
+        {
+          "kind": "jam_link",
+          "detail": "PE720_J"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 12,
+          "matched": [
+            "controller_io",
+            "jam_link",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M534_AUX",
+      "normalized_name": "M534_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P534"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M536_AUX",
+      "normalized_name": "M536_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P536"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M534"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M542_AUX",
+      "normalized_name": "M542_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P542"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M702B_AUX",
+      "normalized_name": "M702B_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P702B"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M702C_AUX",
+      "normalized_name": "M702C_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P702C"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M712_AUX",
+      "normalized_name": "M712_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P712"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M716_AUX",
+      "normalized_name": "M716_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P716"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M712"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M718_AUX",
+      "normalized_name": "M718_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P718"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M716"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M800_AUX",
+      "normalized_name": "M800_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P800"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M802_AUX",
+      "normalized_name": "M802_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P802"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M800"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M804_AUX",
+      "normalized_name": "M804_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P804"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M810_AUX",
+      "normalized_name": "M810_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P810"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M804"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M812_AUX",
+      "normalized_name": "M812_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P812"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M802"
+        },
+        {
+          "kind": "jam_link",
+          "detail": "PE812_J"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 12,
+          "matched": [
+            "controller_io",
+            "jam_link",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "505:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M528",
+      "normalized_name": "M528",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P528"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "full_link",
+          "detail": "EZPE530_F1"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 12,
+          "matched": [
+            "controller_io",
+            "full_link",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "602:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602F",
+      "normalized_name": "M602F",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602F"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "602:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602G",
+      "normalized_name": "M602G",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602G"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "602:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602H",
+      "normalized_name": "M602H",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602H"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "602:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M528_AUX",
+      "normalized_name": "M528_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P528"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M526"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600F_AUX",
+      "normalized_name": "M600F_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600F"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600G_AUX",
+      "normalized_name": "M600G_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600G"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602F_AUX",
+      "normalized_name": "M602F_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602F"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602G_AUX",
+      "normalized_name": "M602G_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602G"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602H_AUX",
+      "normalized_name": "M602H_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602H"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602I_AUX",
+      "normalized_name": "M602I_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602I"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602J_AUX",
+      "normalized_name": "M602J_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602J"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602K_AUX",
+      "normalized_name": "M602K_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602K"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "605:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600G",
+      "normalized_name": "M600G",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600G"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "604:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602I",
+      "normalized_name": "M602I",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602I"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "604:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602J",
+      "normalized_name": "M602J",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602J"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "604:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602K",
+      "normalized_name": "M602K",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602K"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "604:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600I",
+      "normalized_name": "M600I",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600I"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "606:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600J",
+      "normalized_name": "M600J",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600J"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "606:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600K",
+      "normalized_name": "M600K",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600K"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "606:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600I_AUX",
+      "normalized_name": "M600I_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600I"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "607:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600J_AUX",
+      "normalized_name": "M600J_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600J"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "607:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600K_AUX",
+      "normalized_name": "M600K_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600K"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "607:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M700C",
+      "normalized_name": "M700C",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io",
+        "newer_variant"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P700C"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "511:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600C",
+      "normalized_name": "M600C",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600C"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "511:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600D",
+      "normalized_name": "M600D",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io",
+        "newer_variant"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600D"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "511:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600E",
+      "normalized_name": "M600E",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io",
+        "newer_variant"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600E"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "511:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M700C_AUX",
+      "normalized_name": "M700C_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P700C"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M814_AUX",
+      "normalized_name": "M814_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P814"
+        },
+        {
+          "kind": "jam_link",
+          "detail": "PE814_FDJ"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "jam_link",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600C_AUX",
+      "normalized_name": "M600C_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600C"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600D_AUX",
+      "normalized_name": "M600D_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600D"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602C_AUX",
+      "normalized_name": "M602C_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602C"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602D_AUX",
+      "normalized_name": "M602D_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602D"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602E_AUX",
+      "normalized_name": "M602E_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602E"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M600E_AUX",
+      "normalized_name": "M600E_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P600E"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M702A_AUX",
+      "normalized_name": "M702A_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P702A"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "507:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M716",
+      "normalized_name": "M716",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P716"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "full_link",
+          "detail": "EZPE718_F"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 12,
+          "matched": [
+            "controller_io",
+            "full_link",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "504:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M718",
+      "normalized_name": "M718",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P718"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "504:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M800",
+      "normalized_name": "M800",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P800"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "504:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M802",
+      "normalized_name": "M802",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P802"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "504:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M804",
+      "normalized_name": "M804",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P804"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "full_link",
+          "detail": "EZPE810_F"
+        },
+        {
+          "kind": "fulljam_link",
+          "detail": "PE806_JF"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 14,
+          "matched": [
+            "controller_io",
+            "full_link",
+            "fulljam_link",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "504:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M810",
+      "normalized_name": "M810",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P810"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "504:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M812",
+      "normalized_name": "M812",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P812"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "504:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602C",
+      "normalized_name": "M602C",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602C"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "506:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602D",
+      "normalized_name": "M602D",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io",
+        "newer_variant"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602D"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "506:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602E",
+      "normalized_name": "M602E",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io",
+        "newer_variant"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602E"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "506:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M702A",
+      "normalized_name": "M702A",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P702A"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "506:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M560_AUX",
+      "normalized_name": "M560_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P560"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M554"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "703:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M564_AUX",
+      "normalized_name": "M564_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P564"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M560"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "703:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M566_AUX",
+      "normalized_name": "M566_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P566"
+        },
+        {
+          "kind": "mtrchain_aux",
+          "detail": "M564"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 9,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain_aux"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "703:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602M_AUX",
+      "normalized_name": "M602M_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602M"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "703:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602N_AUX",
+      "normalized_name": "M602N_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602N"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "703:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602O_AUX",
+      "normalized_name": "M602O_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602O"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "703:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602P_AUX",
+      "normalized_name": "M602P_AUX",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602P"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "motor_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "703:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M560",
+      "normalized_name": "M560",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P560"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "full_link",
+          "detail": "EZPE564_F"
+        },
+        {
+          "kind": "fulljam_link",
+          "detail": "JF_MEM_PE562"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 14,
+          "matched": [
+            "controller_io",
+            "full_link",
+            "fulljam_link",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "710:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M564",
+      "normalized_name": "M564",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P564"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "710:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M566",
+      "normalized_name": "M566",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P566"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "710:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602M",
+      "normalized_name": "M602M",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602M"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "710:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602N",
+      "normalized_name": "M602N",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602N"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "710:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602O",
+      "normalized_name": "M602O",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602O"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "710:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "motor:M602P",
+      "normalized_name": "M602P",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "motor_link",
+          "detail": "P602P"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "motor_link",
+            "mtrchain"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "710:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD500",
+      "normalized_name": "VFD500",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P500"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "525:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD500A",
+      "normalized_name": "VFD500A",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io",
+        "newer_variant"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P500A"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "525:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD502",
+      "normalized_name": "VFD502",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P502"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "525:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD504",
+      "normalized_name": "VFD504",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P504"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "525:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD506",
+      "normalized_name": "VFD506",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P506"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "525:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD544",
+      "normalized_name": "VFD544",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P544"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "525:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "photoeye:PE508_I",
+      "normalized_name": "PE508_I",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "pe_assignment",
+          "detail": "P508"
+        },
+        {
+          "kind": "jamcheck_link"
+        },
+        {
+          "kind": "jam_link"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 13,
+          "matched": [
+            "controller_io",
+            "jam_link",
+            "jamcheck_link",
+            "pe_assignment"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "623:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD510",
+      "normalized_name": "VFD510",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P510"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "mtrchain",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "713:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD550",
+      "normalized_name": "VFD550",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P550"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "mtrchain",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "713:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD600N",
+      "normalized_name": "VFD600N",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P600N"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "mtrchain",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "713:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "photoeye:PE509_I",
+      "normalized_name": "PE509_I",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "pe_assignment",
+          "detail": "P509"
+        },
+        {
+          "kind": "jamcheck_link"
+        },
+        {
+          "kind": "jam_link"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 13,
+          "matched": [
+            "controller_io",
+            "jam_link",
+            "jamcheck_link",
+            "pe_assignment"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "713:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "photoeye:PE510_I",
+      "normalized_name": "PE510_I",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "pe_assignment",
+          "detail": "P510"
+        },
+        {
+          "kind": "jamcheck_link"
+        },
+        {
+          "kind": "jam_link"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 13,
+          "matched": [
+            "controller_io",
+            "jam_link",
+            "jamcheck_link",
+            "pe_assignment"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "713:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD600O",
+      "normalized_name": "VFD600O",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io",
+        "newer_variant"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P600O"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "mtrchain",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "716:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "vfd:VFD600P",
+      "normalized_name": "VFD600P",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io",
+        "newer_variant"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "vfd_link",
+          "detail": "P600P"
+        },
+        {
+          "kind": "mtrchain",
+          "detail": "Motor_Name"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 10,
+          "matched": [
+            "controller_io",
+            "mtrchain",
+            "vfd_link"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "716:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "photoeye:EZPE442_P",
+      "normalized_name": "EZPE442_P",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "pe_assignment",
+          "detail": "P442"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 7,
+          "matched": [
+            "controller_io",
+            "pe_assignment"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "521:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "photoeye:EZPE530_F1",
+      "normalized_name": "EZPE530_F1",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "pe_assignment",
+          "detail": "P530"
+        },
+        {
+          "kind": "fullline_link"
+        },
+        {
+          "kind": "full_link"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 11,
+          "matched": [
+            "controller_io",
+            "full_link",
+            "fullline_link",
+            "pe_assignment"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "521:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    },
+    {
+      "canonical_id": "photoeye:EZPE530_F2",
+      "normalized_name": "EZPE530_F2",
+      "bucket": "equipment",
+      "reasons": [
+        "duplicate_io"
+      ],
+      "confidence": "MEDIUM",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "controller_io"
+        },
+        {
+          "kind": "pe_assignment",
+          "detail": "P530"
+        },
+        {
+          "kind": "fullline_link"
+        },
+        {
+          "kind": "full_link"
+        },
+        {
+          "kind": "activity_strong_link",
+          "score": 11,
+          "matched": [
+            "controller_io",
+            "full_link",
+            "fullline_link",
+            "pe_assignment"
+          ]
+        }
+      ],
+      "engineer_override": null,
+      "io_key": "521:0",
+      "state": "SUPERSEDED_CANDIDATE",
+      "auto_deleted": false,
+      "engineer_confirmed": false
+    }
+  ],
+  "excluded_sample": [],
+  "available_sample": [],
+  "notes": [
+    "Historical old.* files retained for review",
+    "Superseded candidates never auto-deleted"
+  ]
+}

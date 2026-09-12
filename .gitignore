@@ -48,6 +48,7 @@ workspace/active/**
 workspace/active_*/
 workspace/active-meta.json
 workspace/cp4-run/**
+workspace/cp5-run/**
 workspace/inbox/**
 workspace/ocr-last-result.json
 workspace/prints/**

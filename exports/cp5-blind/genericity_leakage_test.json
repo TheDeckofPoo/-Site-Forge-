@@ -1,0 +1,26 @@
+{
+  "generated_at": "2026-09-12T19:46:11.105463+00:00",
+  "identical": true,
+  "candidate_sha256_stable": "3ab918538805f13f387f28a926d9a0a158983805ee5f2b313d6d23fa091c4b08",
+  "variants": {
+    "present": {
+      "sha256": "638b24387fc20a39d48e59a126ea8b6036447567eae13a716a88be65ac839fc3",
+      "sha256_stable": "3ab918538805f13f387f28a926d9a0a158983805ee5f2b313d6d23fa091c4b08",
+      "generated": true,
+      "note": ""
+    },
+    "renamed": {
+      "sha256": "638b24387fc20a39d48e59a126ea8b6036447567eae13a716a88be65ac839fc3",
+      "sha256_stable": "3ab918538805f13f387f28a926d9a0a158983805ee5f2b313d6d23fa091c4b08",
+      "generated": true,
+      "note": ""
+    },
+    "absent": {
+      "sha256": "94fc2caca8413bc43c74afb16ab78fa1ae7132b29117b89367fd28d88d1e6546",
+      "sha256_stable": "3ab918538805f13f387f28a926d9a0a158983805ee5f2b313d6d23fa091c4b08",
+      "generated": true,
+      "note": ""
+    }
+  },
+  "note": "Decoy finished PLC5 never read as generation input; presence must not change stable output hash (ExportDate normalized)"
+}

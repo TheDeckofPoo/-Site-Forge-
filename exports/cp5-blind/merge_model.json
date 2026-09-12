@@ -1,0 +1,33 @@
+{
+  "detected": true,
+  "count": 3,
+  "merges": [
+    {
+      "name": "MERGE_812_2-1",
+      "process": "CTRL",
+      "owner": "ORNCCP5",
+      "num_inputs": "2",
+      "provenance": "RUN_EXPLICIT",
+      "source_scope": "controller_overlay",
+      "confidence": "HIGH"
+    },
+    {
+      "name": "MERGE_500_2-1",
+      "process": "CTRL",
+      "owner": "ORNCCP5",
+      "num_inputs": "2",
+      "provenance": "RUN_EXPLICIT",
+      "source_scope": "controller_overlay",
+      "confidence": "HIGH"
+    },
+    {
+      "name": "MERGE_720_SPUR",
+      "process": "CTRL",
+      "owner": "ORNCCP5",
+      "num_inputs": "2",
+      "provenance": "RUN_EXPLICIT",
+      "source_scope": "controller_overlay",
+      "confidence": "HIGH"
+    }
+  ]
+}

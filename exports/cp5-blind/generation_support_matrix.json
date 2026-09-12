@@ -1,0 +1,306 @@
+{
+  "generated_at": "2026-09-12T19:46:08.687574+00:00",
+  "machine": "ORNCCP5",
+  "capabilities": {
+    "controller_skeleton": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "GENERATABLE"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": true,
+      "validated": false,
+      "reason": "generic library Autogen"
+    },
+    "io_map": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "GENERATABLE"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": true,
+      "validated": false,
+      "reason": "RUN Conveyor banks + EIP when present"
+    },
+    "safety_zones": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "MODELED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "estop"
+    },
+    "area_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "GENERATABLE"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": true,
+      "validated": false,
+      "reason": "default/engineer Area \u2192 Autogen programs"
+    },
+    "conveyor_fast_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "GENERATABLE"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": true,
+      "validated": false,
+      "reason": "generic Fast_Conv AOI path"
+    },
+    "conveyor_slow_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "GENERATABLE"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": true,
+      "validated": false,
+      "reason": "generic Slow_* AOI path"
+    },
+    "pe_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "GENERATABLE"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": true,
+      "validated": false,
+      "reason": "PE roles from knowledge+RUN; wiring when linked"
+    },
+    "jam_full_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "CONFIGURATION_REQUIRED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "jam/full relationships modeled; dedicated jam AOI pack incomplete"
+    },
+    "vfd_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "MODELED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "VFD discovered; Slow_Flt partial only"
+    },
+    "encoder_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "GENERATABLE"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": true,
+      "validated": false,
+      "reason": "encoder tags generatable when present"
+    },
+    "scanner_structures": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "MODELED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "scanner"
+    },
+    "induct_tracking": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "CONFIGURATION_REQUIRED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "sorter"
+    },
+    "sorter_tracking": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "CONFIGURATION_REQUIRED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "sorter runtime \u2260 generation"
+    },
+    "divert_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": false,
+      "generatable": false,
+      "validated": false,
+      "reason": "sorter divert NOT_SUPPORTED"
+    },
+    "routing_logic": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "CONFIGURATION_REQUIRED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "sorter route tables CFG"
+    },
+    "wcs_interface": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "CONFIGURATION_REQUIRED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "wcs NOT_SUPPORTED"
+    },
+    "diagnostics_hmi": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": false,
+      "generatable": false,
+      "validated": false,
+      "reason": "not in generic compiler path"
+    },
+    "simple_merge": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "MODELED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "merge CFG"
+    },
+    "sawtooth": {
+      "states": [
+        "NOT_DISCOVERED"
+      ],
+      "discovered": false,
+      "understood": false,
+      "modeled": false,
+      "generatable": false,
+      "validated": false,
+      "reason": "no active sawtooth in PLC5 RUN"
+    },
+    "startstop_zones": {
+      "states": [
+        "DISCOVERED",
+        "UNDERSTOOD",
+        "MODELED",
+        "MODELED"
+      ],
+      "discovered": true,
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "validated": false,
+      "reason": "zone membership CFG"
+    }
+  },
+  "generatable": [
+    "area_logic",
+    "controller_skeleton",
+    "conveyor_fast_logic",
+    "conveyor_slow_logic",
+    "encoder_logic",
+    "io_map",
+    "pe_logic"
+  ],
+  "configuration_required": [
+    "diagnostics_hmi",
+    "induct_tracking",
+    "jam_full_logic",
+    "routing_logic",
+    "safety_zones",
+    "scanner_structures",
+    "simple_merge",
+    "sorter_tracking",
+    "startstop_zones",
+    "vfd_logic"
+  ],
+  "unsupported": [
+    "divert_logic",
+    "sorter_tracking",
+    "wcs_interface"
+  ],
+  "policy": "Do not mark generatable unless a complete generic path exists"
+}

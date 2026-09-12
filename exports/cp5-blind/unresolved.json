@@ -1,0 +1,1642 @@
+{
+  "generated_at": "2026-09-12T19:46:08.691410+00:00",
+  "count": 113,
+  "items": [
+    {
+      "field": "engineering_area",
+      "subsystem": "transport",
+      "why_unresolved": "No reliable Area table/rows from RUN; default Area_1 is engineer-required",
+      "evidence_present": [
+        "default Area_1 placeholder"
+      ],
+      "evidence_missing": [
+        "RUN Area membership table"
+      ],
+      "expected_engineer_action": "Rename/create Areas and assign equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED \u2014 programs use effective Area name after rename"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE442_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE530_P1",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE530_P2",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE536_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE542_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602F_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602G_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602H_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602I_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602J_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602K_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE718_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE810_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "PE444_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "PE544_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "PE802_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "PE814_FDD",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602C_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602D_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602E_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "PE552_JF",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "PE556_JF",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "PE562_JF",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE566_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602M_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602N_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602O_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "pe_roles",
+      "subsystem": "transport",
+      "object": "EZPE602P_P",
+      "why_unresolved": "Insufficient Jamcheck/Fullline/Fulljam/Saw/Scanner evidence for HIGH-confidence role",
+      "evidence_present": [
+        "controller_io",
+        "pe_assignment",
+        "activity_strong_link"
+      ],
+      "evidence_missing": [
+        "explicit safety-table Sensor_Name link or engineer override"
+      ],
+      "expected_engineer_action": "Confirm PE role in Transport editor",
+      "generation_impact": "CONFIGURATION_REQUIRED for PE wiring slots"
+    },
+    {
+      "field": "divert_mapping",
+      "subsystem": "sorter",
+      "why_unresolved": "Divert AOI generation path not generically supported",
+      "evidence_present": [
+        "Sorters.asc",
+        "Srt* static tables"
+      ],
+      "evidence_missing": [
+        "generic divert compiler + confirmed lane/divert map"
+      ],
+      "expected_engineer_action": "Provide divert map / wait for supported sorter leaf",
+      "generation_impact": "GENERATION_NOT_SUPPORTED"
+    },
+    {
+      "field": "wcs_interface",
+      "subsystem": "communication",
+      "why_unresolved": "WCS/TCP generation not supported; runtime queues must not become static PLC defs",
+      "evidence_present": [
+        "Machine WCS_* peers",
+        "MsgMap/WCSEvents when present"
+      ],
+      "evidence_missing": [
+        "generic WCS compiler inputs"
+      ],
+      "expected_engineer_action": "Configure externally or wait for supported leaf",
+      "generation_impact": "GENERATION_NOT_SUPPORTED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P440",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P442",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P444",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P500",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P502",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P504",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P506",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P506A",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P508",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P508A",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P509",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P510",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P526",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P528",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P530",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P530A",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P532",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P534",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P536",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P538",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P540",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P542",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P544",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P552",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P554",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P556",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P560",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P562",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P564",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P566",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600C",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600D",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600E",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600F",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600G",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600H",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600I",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600J",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600K",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600M",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600N",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600O",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P600P",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602C",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602D",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602E",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602F",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602G",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602H",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602I",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602J",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602K",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602M",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602N",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602O",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P602P",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P700A",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P700B",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P700C",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P702A",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P702B",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P702C",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P704A",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P704B",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P704C",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P712",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P714",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P716",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P718",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P720",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P800",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P802",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P804",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P806",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P808",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P810",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P812",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P814",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "motor",
+      "subsystem": "transport",
+      "object": "P816",
+      "why_unresolved": "INCLUDED conveyor lacks explicit Motor field / motor_link relationship",
+      "evidence_present": [
+        "Conveyor geometry/ownership"
+      ],
+      "evidence_missing": [
+        "Motor column or motor_link evidence"
+      ],
+      "expected_engineer_action": "Confirm motor or exclude equipment",
+      "generation_impact": "CONFIGURATION_REQUIRED"
+    },
+    {
+      "field": "divert_logic",
+      "subsystem": "compiler",
+      "why_unresolved": "Capability 'divert_logic' discovered/modeled but no complete generic generation path",
+      "evidence_present": [
+        "RUN evidence per generation_support_matrix"
+      ],
+      "evidence_missing": [
+        "complete generic compiler leaf"
+      ],
+      "expected_engineer_action": "Leave unsupported; do not invent logic",
+      "generation_impact": "GENERATION_NOT_SUPPORTED"
+    },
+    {
+      "field": "sorter_tracking",
+      "subsystem": "compiler",
+      "why_unresolved": "Capability 'sorter_tracking' discovered/modeled but no complete generic generation path",
+      "evidence_present": [
+        "RUN evidence per generation_support_matrix"
+      ],
+      "evidence_missing": [
+        "complete generic compiler leaf"
+      ],
+      "expected_engineer_action": "Leave unsupported; do not invent logic",
+      "generation_impact": "GENERATION_NOT_SUPPORTED"
+    },
+    {
+      "field": "wcs_interface",
+      "subsystem": "compiler",
+      "why_unresolved": "Capability 'wcs_interface' discovered/modeled but no complete generic generation path",
+      "evidence_present": [
+        "RUN evidence per generation_support_matrix"
+      ],
+      "evidence_missing": [
+        "complete generic compiler leaf"
+      ],
+      "expected_engineer_action": "Leave unsupported; do not invent logic",
+      "generation_impact": "GENERATION_NOT_SUPPORTED"
+    }
+  ],
+  "truncated": false,
+  "total_before_truncate": 113
+}

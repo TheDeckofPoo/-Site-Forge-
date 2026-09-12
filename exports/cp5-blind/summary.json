@@ -1,0 +1,31 @@
+{
+  "ok": true,
+  "machine": "ORNCCP5",
+  "equipment": {
+    "INCLUDED": 79,
+    "AVAILABLE": 0,
+    "EXCLUDED": 0,
+    "total": 79
+  },
+  "activity_all_buckets": {
+    "INCLUDED": 295,
+    "AVAILABLE": 0,
+    "EXCLUDED": 0,
+    "superseded_candidates": 178,
+    "historical_table_stems": 31
+  },
+  "tables": {
+    "unique": 439,
+    "known_high": 35,
+    "known_partial": 4,
+    "unknown": 400
+  },
+  "sorters": 5,
+  "merges": 3,
+  "sawtooth": 0,
+  "l5x_sha256": "22c68474f6239f8c24464d4de52134f3fb4a96f2ae8bf1b4d0f3ba7533ac052b",
+  "l5x_sha256_stable": "3ab918538805f13f387f28a926d9a0a158983805ee5f2b313d6d23fa091c4b08",
+  "site_model_sha256": "afd8fa9feee98546e8f3a521dfff1da1789039214b8a391be77858fd9a7a11c6",
+  "genericity_identical": true,
+  "out": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp5-blind"
+}

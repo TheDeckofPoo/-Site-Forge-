@@ -694,7 +694,12 @@ def _build_sawtooth(
     return merges_out, rels, saw, semantics
 
 
-def _discover_sorters(run_dir: Path, machine: str) -> list[dict[str, Any]]:
+def _discover_sorters(
+    run_dir: Path,
+    machine: str,
+    *,
+    integrate_research: bool = True,
+) -> list[dict[str, Any]]:
     fortna = run_dir / "FORTNA"
     merged = merge_table_rows(fortna, "Sorters.asc", machine)
     sorters: list[dict[str, Any]] = []
@@ -731,9 +736,10 @@ def _discover_sorters(run_dir: Path, machine: str) -> list[dict[str, Any]]:
             ).to_dict()
         )
 
-    # Integrate parallel sorter-research exports when present (discovery fields only)
+    # Integrate parallel sorter-research exports when present (discovery fields only).
+    # Blind builds must skip this — prior-site research is not a PLC5 RUN fact.
     research_path = ROOT / "exports" / "sorter-research" / "subsystem_model.json"
-    research = load_json(research_path)
+    research = load_json(research_path) if integrate_research else None
     if research:
         by_name = {normalize_name(s["normalized_name"]): s for s in sorters}
         for rs in research.get("sorters") or []:
@@ -1477,6 +1483,7 @@ def discover(
     out_dir: Path,
     *,
     overrides_path: Path | None = None,
+    blind: bool = False,
 ) -> dict[str, Any]:
     run_dir = run_dir.resolve()
     out_dir = out_dir.resolve()
@@ -1657,7 +1664,7 @@ def discover(
         ]
         model.transport["source"] = "site_model_equipment"
         model.transport.setdefault("metrics", {})["scoped_nodes"] = len(model.transport["nodes"])
-    model.sorters = _discover_sorters(run_dir, machine)
+    model.sorters = _discover_sorters(run_dir, machine, integrate_research=not blind)
     tracking, wcs = _tracking_wcs(run_dir, machine)
     model.tracking_systems = tracking
     model.wcs_interfaces = wcs
@@ -1797,12 +1804,23 @@ def main(argv: list[str] | None = None) -> int:
     )
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--overrides", type=Path, default=None, help="Optional engineer overrides JSON")
+    ap.add_argument(
+        "--blind",
+        action="store_true",
+        help="Blind discovery: skip prior-site sorter research / answer-sheet integration",
+    )
     args = ap.parse_args(argv)
     machine = (args.machine or "").strip() or infer_machine_from_run(args.run_dir)
     if not machine:
         print(json.dumps({"ok": False, "error": "machine required (pass --machine or set MACHINENAME in project.cfg)"}))
         return 2
-    result = discover(args.run_dir, machine, args.out, overrides_path=args.overrides)
+    result = discover(
+        args.run_dir,
+        machine,
+        args.out,
+        overrides_path=args.overrides,
+        blind=bool(args.blind),
+    )
     print(json.dumps(result, indent=2))
     return 0
 

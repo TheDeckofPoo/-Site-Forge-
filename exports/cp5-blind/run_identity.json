@@ -1,0 +1,205 @@
+{
+  "generated_at": "2026-09-12T19:46:06.289356+00:00",
+  "source_of_truth": "PLC5 RUN only \u2014 finished PLC ignored",
+  "archive": {
+    "path": "workspace\\cp5-run\\_archive\\20251016-0933-OReillyGreensboro-ORNCCP5-RUN.tar.gz",
+    "name": "20251016-0933-OReillyGreensboro-ORNCCP5-RUN.tar.gz",
+    "sha256": "35be2761b1ee1fdefc226c3f0f21d22d043faa14141b113a677a709dffb6dab3",
+    "size": 22061673
+  },
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN",
+  "machine_name": "ORNCCP5",
+  "project_name": "OReillyGreensboro",
+  "machine_type": "3",
+  "identity_cfg_present": true,
+  "info_cfg_present": true,
+  "controller_overlays": [
+    "Batches.asc.ORNCCP5",
+    "CombinedEnableBits.asc.ORNCCP5",
+    "CombinedJamZones.asc.ORNCCP5",
+    "Combos.asc.ORNCCP5",
+    "Configio.asc.ORNCCP5",
+    "Encoders.asc.ORNCCP5",
+    "HistBoss.asc.ORNCCP5",
+    "HistConfig.asc.ORNCCP5",
+    "HistData.asc.ORNCCP5",
+    "IOCard.asc.ORNCCP5",
+    "Inpoints.asc.ORNCCP5",
+    "Machine.asc.ORNCCP5",
+    "MergeBoss.asc.ORNCCP5",
+    "MergeInputs.asc.ORNCCP5",
+    "MergeNotBusy.asc.ORNCCP5",
+    "MergeRoute.asc.ORNCCP5",
+    "MergeRunOutputs.asc.ORNCCP5",
+    "MergeStopOutputs.asc.ORNCCP5",
+    "MsgMap.asc.ORNCCP5",
+    "Outpoints.asc.ORNCCP5",
+    "SawLane.asc.ORNCCP5",
+    "SawMerge.asc.ORNCCP5",
+    "ScnDeviceErrIO.asc.ORNCCP5",
+    "ScnScanDevice.asc.ORNCCP5",
+    "ScnScanZone.asc.ORNCCP5",
+    "ScnZoneErrIO.asc.ORNCCP5",
+    "Sorters.asc.ORNCCP5",
+    "SrtAppControl.asc.ORNCCP5",
+    "SrtBadGapCnfg.asc.ORNCCP5",
+    "SrtHrtBeat.asc.ORNCCP5",
+    "SrtLaneNotAvail.asc.ORNCCP5",
+    "SrtRndRobin.asc.ORNCCP5",
+    "SrtScanBoss.asc.ORNCCP5",
+    "SrtSimConfig.asc.ORNCCP5",
+    "SrtZoneLane.asc.ORNCCP5",
+    "Trigrset.asc.ORNCCP5",
+    "Updates.asc.ORNCCP5",
+    "XfRouteBoss.asc.ORNCCP5",
+    "XfRouteTable.asc.ORNCCP5",
+    "XferBoss.asc.ORNCCP5",
+    "XferCfg.asc.ORNCCP5",
+    "XferCheckSet.asc.ORNCCP5",
+    "XferGoSet.asc.ORNCCP5",
+    "XferTree.asc.ORNCCP5",
+    "ZipperLane.asc.ORNCCP5",
+    "ZipperMerge.asc.ORNCCP5",
+    "ZprGapperZone.asc.ORNCCP5",
+    "ZprSimConfig.asc.ORNCCP5",
+    "ZprTickGapper.asc.ORNCCP5",
+    "old.Configio.asc.ORNCCP5",
+    "old.Encoders.asc.ORNCCP5",
+    "old.Inpoints.asc.ORNCCP5",
+    "old.Machine.asc.ORNCCP5",
+    "old.MergeBoss.asc.ORNCCP5",
+    "old.MergeInputs.asc.ORNCCP5",
+    "old.MergeRoute.asc.ORNCCP5",
+    "old.Outpoints.asc.ORNCCP5",
+    "old.ScnScanDevice.asc.ORNCCP5",
+    "old.ScnScanZone.asc.ORNCCP5",
+    "old.Sorters.asc.ORNCCP5",
+    "old.SrtAppControl.asc.ORNCCP5",
+    "old.SrtScanBoss.asc.ORNCCP5",
+    "old.Updates.asc.ORNCCP5",
+    "scanstat.asc.ORNCCP5"
+  ],
+  "controller_overlay_count": 64,
+  "communication_peers": [
+    {
+      "name": "ORNCCP2",
+      "connection_type": "CONNECT_UDP",
+      "protocol": "HOST_SORTPLUS",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "ORNCCP4",
+      "connection_type": "CONNECT_UDP",
+      "protocol": "HOST_SORTPLUS",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "ORNCCP5",
+      "connection_type": "CONNECT_UDP",
+      "protocol": "HOST_SORTPLUS",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "ORNCCOMM",
+      "connection_type": "CONNECT_UDP",
+      "protocol": "HOST_SORTPLUS",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "SHIP_SCAN_504",
+      "connection_type": "CONNECT_SERIAL",
+      "protocol": "AlphaNum",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "WCS_OUTBOUND",
+      "connection_type": "WCS_TALK",
+      "protocol": "WCS",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "WCS_IN_TOPIC",
+      "connection_type": "WCS_LISTEN",
+      "protocol": "WCS",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "WCS_IN_QUEUE",
+      "connection_type": "WCS_LISTEN",
+      "protocol": "WCS",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "NMS_OUTBOUND",
+      "connection_type": "CONNECT_TCPCLIENT",
+      "protocol": "WCS",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "CP5SORT_CRR",
+      "connection_type": "CONNECT_TCPCLIENT",
+      "protocol": "SrtComm",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "CRR_LISTEN",
+      "connection_type": "TCPSERV_LISTEN",
+      "protocol": "SrtFPLite",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "CRR_RDWR",
+      "connection_type": "TCPSERV_RDWR",
+      "protocol": "SrtFPLite",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "CP5SORT_DCM",
+      "connection_type": "CONNECT_TCPCLIENT",
+      "protocol": "SrtComm",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "DCM_LISTEN",
+      "connection_type": "TCPSERV_LISTEN",
+      "protocol": "SrtFPLite",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "DCM_RDWR",
+      "connection_type": "TCPSERV_RDWR",
+      "protocol": "SrtFPLite",
+      "source_scope": "controller_overlay"
+    },
+    {
+      "name": "CP2",
+      "connection_type": "CONNECT_QNX",
+      "protocol": "HOST_SORTPLUS",
+      "source_scope": "base_fallback"
+    },
+    {
+      "name": "REST_Listen",
+      "connection_type": "TCPSERV_LISTEN",
+      "protocol": "HOST_REST",
+      "source_scope": "base_fallback"
+    },
+    {
+      "name": "REST_RdWr",
+      "connection_type": "TCPSERV_RDWR",
+      "protocol": "HOST_REST",
+      "source_scope": "base_fallback"
+    }
+  ],
+  "subsystem_file_presence": {
+    "sorter": true,
+    "sawtooth": true,
+    "merge": true,
+    "scanner": true,
+    "wcs": true,
+    "tracking": true
+  },
+  "notes": [
+    "Controller scope taken from project.cfg MACHINENAME",
+    "Peers listed from Machine.asc merge; not invented"
+  ]
+}

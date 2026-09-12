@@ -1,0 +1,17 @@
+{
+  "workflow": [
+    "Import RUN",
+    "Discover",
+    "populated editors",
+    "Review/Correct",
+    "Build PLC"
+  ],
+  "cp5_specific_buttons_required": false,
+  "auto_populate_tabs": {
+    "transport": true,
+    "sawtooth": false,
+    "sorter": true,
+    "merge": true
+  },
+  "note": "Normal Site Forge import path; no CP5-only scripts required"
+}

@@ -1,0 +1,333 @@
+{
+  "detected": true,
+  "sorter_count": 5,
+  "sorters": [
+    {
+      "name": "504_BELT",
+      "encoder_io": "ENC504",
+      "inclusion": "INCLUDED",
+      "generation_state": "NOT_SUPPORTED"
+    },
+    {
+      "name": "506_SHIP_SORTER",
+      "encoder_io": "ENC506",
+      "inclusion": "INCLUDED",
+      "generation_state": "NOT_SUPPORTED"
+    },
+    {
+      "name": "508_SHIP_SORTER",
+      "encoder_io": "ENC508",
+      "inclusion": "INCLUDED",
+      "generation_state": "NOT_SUPPORTED"
+    },
+    {
+      "name": "509_SHIP_SORTER",
+      "encoder_io": "ENC509",
+      "inclusion": "INCLUDED",
+      "generation_state": "NOT_SUPPORTED"
+    },
+    {
+      "name": "510_SHIP_SORTER",
+      "encoder_io": "ENC510",
+      "inclusion": "INCLUDED",
+      "generation_state": "NOT_SUPPORTED"
+    }
+  ],
+  "layers": {
+    "STATIC_CONFIGURATION": [
+      "Encoders",
+      "Sorters",
+      "SrtAppControl",
+      "SrtBadGapCnfg",
+      "SrtCommMsgMatch",
+      "SrtHrtBeat",
+      "SrtLaneNotAvail",
+      "SrtRndRobin",
+      "SrtScanBoss",
+      "SrtSimConfig",
+      "SrtZoneLane",
+      "XfrDevice"
+    ],
+    "EQUIPMENT_CONFIGURATION": [
+      "ScnDeviceErrIO",
+      "ScnFieldType",
+      "ScnScanAlg",
+      "ScnScanDevice",
+      "ScnScanTypes",
+      "ScnScanZone",
+      "ScnZoneErrIO"
+    ],
+    "ROUTING_CONFIGURATION": [
+      "XfRouteBoss",
+      "XfRouteTable"
+    ],
+    "COMMUNICATION_CONFIGURATION": [],
+    "RUNTIME_STATE": [
+      "SrtTrack1",
+      "SrtTrack2",
+      "SrtTrack3",
+      "SrtTrack4",
+      "SrtTrack5",
+      "XfrSimScans1",
+      "XfrSimScans2",
+      "XfrSimScans3",
+      "XfrSimScans4",
+      "XfrSimScans5",
+      "XfrTrack"
+    ],
+    "DIAGNOSTIC_HISTORY": []
+  },
+  "static_tables": {
+    "Encoders": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "ScnDeviceErrIO": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 6
+    },
+    "ScnFieldType": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "ScnScanAlg": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "ScnScanDevice": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 1
+    },
+    "ScnScanTypes": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "ScnScanZone": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 1
+    },
+    "ScnZoneErrIO": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "Sorters": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 5
+    },
+    "SrtAppControl": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 1
+    },
+    "SrtBadGapCnfg": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "SrtCommMsgMatch": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "SrtHrtBeat": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "SrtLaneNotAvail": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "SrtRndRobin": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "SrtScanBoss": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 1
+    },
+    "SrtSimConfig": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "SrtZoneLane": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 15
+    },
+    "XfRouteBoss": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "XfRouteTable": {
+      "resolution": "merged_overlay_over_base",
+      "active_rows": 0
+    },
+    "XfrDevice": {
+      "resolution": "base_only",
+      "active_rows": 0
+    }
+  },
+  "runtime_tables": {
+    "SrtTrack1": {
+      "resolution": "base_only",
+      "active_rows": 98
+    },
+    "SrtTrack2": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "SrtTrack3": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "SrtTrack4": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "SrtTrack5": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "XfrTrack": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "XfrSimScans1": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "XfrSimScans2": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "XfrSimScans3": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "XfrSimScans4": {
+      "resolution": "base_only",
+      "active_rows": 0
+    },
+    "XfrSimScans5": {
+      "resolution": "base_only",
+      "active_rows": 0
+    }
+  },
+  "process_model": {
+    "induct": {
+      "discovered": true,
+      "state": "MODELED",
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "configuration_required": false,
+      "not_supported": false,
+      "note": ""
+    },
+    "detect_package": {
+      "discovered": true,
+      "state": "MODELED",
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "configuration_required": false,
+      "not_supported": false,
+      "note": ""
+    },
+    "scan": {
+      "discovered": true,
+      "state": "CONFIGURATION_REQUIRED",
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "configuration_required": true,
+      "not_supported": false,
+      "note": ""
+    },
+    "tracking_record": {
+      "discovered": true,
+      "state": "MODELED",
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "configuration_required": false,
+      "not_supported": false,
+      "note": "runtime slots \u2260 equipment"
+    },
+    "route_destination_request": {
+      "discovered": true,
+      "state": "CONFIGURATION_REQUIRED",
+      "understood": true,
+      "modeled": false,
+      "generatable": false,
+      "configuration_required": true,
+      "not_supported": false,
+      "note": ""
+    },
+    "destination_assignment": {
+      "discovered": true,
+      "state": "CONFIGURATION_REQUIRED",
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "configuration_required": true,
+      "not_supported": false,
+      "note": ""
+    },
+    "encoder_tracking": {
+      "discovered": true,
+      "state": "GENERATABLE",
+      "understood": true,
+      "modeled": true,
+      "generatable": true,
+      "configuration_required": false,
+      "not_supported": false,
+      "note": ""
+    },
+    "divert": {
+      "discovered": true,
+      "state": "NOT_SUPPORTED",
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "configuration_required": false,
+      "not_supported": true,
+      "note": ""
+    },
+    "divert_confirmation": {
+      "discovered": true,
+      "state": "NOT_SUPPORTED",
+      "understood": true,
+      "modeled": false,
+      "generatable": false,
+      "configuration_required": false,
+      "not_supported": true,
+      "note": ""
+    },
+    "wcs_event_reporting": {
+      "discovered": true,
+      "state": "NOT_SUPPORTED",
+      "understood": true,
+      "modeled": true,
+      "generatable": false,
+      "configuration_required": false,
+      "not_supported": true,
+      "note": ""
+    }
+  },
+  "scanners": [
+    {
+      "name": "SHIP_SCAN_504",
+      "scan_zone": "SHIP_SCAN_504",
+      "scan_type": "Scan",
+      "provenance": "RUN_EXPLICIT",
+      "confidence": "HIGH",
+      "source_table": "ScnScanDevice.asc"
+    }
+  ],
+  "scan_bosses": [
+    {
+      "name": "Ship Sorter",
+      "app_sorter": "SHIP_SORTER",
+      "scan_zone": "SHIP_SCAN_504",
+      "provenance": "RUN_EXPLICIT",
+      "confidence": "HIGH"
+    }
+  ]
+}

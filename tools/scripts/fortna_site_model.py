@@ -93,19 +93,49 @@ def resolve_table_paths(fortna: Path, basename: str, machine: str) -> dict[str, 
 
 
 def row_identity_key(row: dict[str, str], headers: list[str] | None = None) -> str | None:
-    for col in NAME_COLUMNS:
+    """Stable row identity for table merge.
+
+    Prefer explicit identity columns (Sorter Name, Sensor_Name, IO_Name, …)
+    before generic NAME_COLUMNS. Relationship fields such as Machine /
+    Destination / Source / Zone / Area are NOT row identities — using them
+    collapses distinct sorter/device rows that share a controller name.
+    """
+    # Explicit identity columns first (order matters).
+    for col in (
+        "Sorter Name",
+        "Encoder Name",
+        "Sensor_Name",
+        "IO_Name",
+        "Name",
+        "Desc",
+        "EventName",
+        "Message_Name",
+        "Zone Name",
+        "ProductIO",
+        "Beacon",
+        "Conveyor",
+        "Motor",
+        "Scanner",
+        "Printer",
+    ):
         val = _clean(row.get(col))
         if val:
             return normalize_name(val)
-    # Common sorter header
-    for col in ("Sorter Name", "Encoder Name", "Sensor_Name", "Desc", "EventName"):
+    # Generic NAME_COLUMNS, excluding relationship/ownership fields.
+    skip = {"Machine", "Destination", "Source", "Zone", "Area"}
+    for col in NAME_COLUMNS:
+        if col in skip:
+            continue
         val = _clean(row.get(col))
         if val:
             return normalize_name(val)
     if headers:
-        val = _clean(row.get(headers[0]))
-        if val:
-            return normalize_name(val)
+        # Prefer first header unless it is a known relationship field.
+        h0 = headers[0]
+        if h0 not in skip:
+            val = _clean(row.get(h0))
+            if val:
+                return normalize_name(val)
     return None
 
 
