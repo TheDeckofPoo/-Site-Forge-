@@ -1,0 +1,21 @@
+<Tags>
+<Tag Name="ENC504" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Sorter encoder leaf from RUN Encoders.asc]]></Description></Tag>
+<Tag Name="ENC504" TagType="Base" DataType="BOOL" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Encoder I/O pulse bit (structure only)]]></Description></Tag>
+<Tag Name="ENC506" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Sorter encoder leaf from RUN Encoders.asc]]></Description></Tag>
+<Tag Name="ENC506" TagType="Base" DataType="BOOL" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Encoder I/O pulse bit (structure only)]]></Description></Tag>
+<Tag Name="ENC508" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Sorter encoder leaf from RUN Encoders.asc]]></Description></Tag>
+<Tag Name="ENC508" TagType="Base" DataType="BOOL" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Encoder I/O pulse bit (structure only)]]></Description></Tag>
+<Tag Name="ENC509" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Sorter encoder leaf from RUN Encoders.asc]]></Description></Tag>
+<Tag Name="ENC509" TagType="Base" DataType="BOOL" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Encoder I/O pulse bit (structure only)]]></Description></Tag>
+<Tag Name="ENC510" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Sorter encoder leaf from RUN Encoders.asc]]></Description></Tag>
+<Tag Name="ENC510" TagType="Base" DataType="BOOL" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Encoder I/O pulse bit (structure only)]]></Description></Tag>
+<Tag Name="SHIP_SCAN_504" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Scanner device structure from ScnScanDevice]]></Description></Tag>
+<Tag Name="SHIP_SCAN_504" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Scan zone configuration tag]]></Description></Tag>
+<Tag Name="SHIP_SCAN_504_Induct" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Induct structure associated to scanner]]></Description></Tag>
+<Tag Name="Ship_Sorter_Induct" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Induct structure from SrtScanBoss]]></Description></Tag>
+<Tag Name="REASON_NO_READ" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="1"/></Data></Tag>
+<Tag Name="REASON_NO_ROUTE" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="2"/></Data></Tag>
+<Tag Name="REASON_LANE_FULL" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="3"/></Data></Tag>
+<Tag Name="REASON_DIVERT_FAULT" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="4"/></Data></Tag>
+<Tag Name="REASON_RECIRC" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="5"/></Data></Tag>
+</Tags>

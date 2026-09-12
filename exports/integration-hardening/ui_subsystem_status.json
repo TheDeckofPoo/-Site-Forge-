@@ -1,0 +1,9 @@
+{
+  "ORNCCP5": {
+    "Transport": "READY",
+    "Safety": "CONFIGURATION REQUIRED",
+    "Sawtooth": "N/A",
+    "Sorter": "PARTIAL GENERATION",
+    "WCS": "GENERATION NOT SUPPORTED"
+  }
+}

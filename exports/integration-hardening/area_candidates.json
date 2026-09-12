@@ -1,0 +1,481 @@
+{
+  "machine": "ORNCCP5",
+  "policy": [
+    "Do not copy finished-PLC Area names into generation",
+    "Never silently turn a weak candidate into an Area",
+    "Prefer Suggested Areas for engineer review",
+    "N/A alone is not Area evidence"
+  ],
+  "counts": {
+    "CONFIRMED": 0,
+    "HIGH_CONFIDENCE": 0,
+    "CANDIDATE": 16,
+    "ENGINEER_REQUIRED": 1,
+    "suggested": 17
+  },
+  "candidates": [
+    {
+      "id": "area_candidate:ORNCCP5_Area",
+      "proposed_name": "ORNCCP5_Area",
+      "confidence": "ENGINEER_REQUIRED",
+      "proposed_membership": [
+        "P440",
+        "P442",
+        "P444",
+        "P500",
+        "P502",
+        "P504",
+        "P506",
+        "P506A",
+        "P508",
+        "P508A",
+        "P509",
+        "P510",
+        "P526",
+        "P528",
+        "P530",
+        "P530A",
+        "P532",
+        "P534",
+        "P536",
+        "P538",
+        "P540",
+        "P542",
+        "P544",
+        "P552",
+        "P554",
+        "P556",
+        "P560",
+        "P562",
+        "P564",
+        "P566",
+        "P600C",
+        "P600D",
+        "P600E",
+        "P600F",
+        "P600G",
+        "P600H",
+        "P600I",
+        "P600J",
+        "P600K",
+        "P600M",
+        "P600N",
+        "P600O",
+        "P600P",
+        "P602C",
+        "P602D",
+        "P602E",
+        "P602F",
+        "P602G",
+        "P602H",
+        "P602I",
+        "P602J",
+        "P602K",
+        "P602M",
+        "P602N",
+        "P602O",
+        "P602P",
+        "P700A",
+        "P700B",
+        "P700C",
+        "P702A",
+        "P702B",
+        "P702C",
+        "P704A",
+        "P704B",
+        "P704C",
+        "P712",
+        "P714",
+        "P716",
+        "P718",
+        "P720",
+        "P800",
+        "P802",
+        "P804",
+        "P806",
+        "P808",
+        "P810",
+        "P812",
+        "P814",
+        "P816"
+      ],
+      "evidence": [
+        {
+          "kind": "controller_scope_provisional",
+          "detail": "MACHINENAME=ORNCCP5; not a plant Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "note": "Prefer Suggested Areas UI; engineer must rename/split"
+    },
+    {
+      "id": "area_hint:startstop:BIN MODULE A",
+      "proposed_name": "BIN MODULE A",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "startstop_zone_hint",
+          "table": "StartStopZones.asc",
+          "detail": "Start/Stop zone \u2260 Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [
+        "must_not_auto_promote_zone_to_area"
+      ],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "StartStopZone"
+    },
+    {
+      "id": "area_hint:startstop:CARTON FLOW MODULE B",
+      "proposed_name": "CARTON FLOW MODULE B",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "startstop_zone_hint",
+          "table": "StartStopZones.asc",
+          "detail": "Start/Stop zone \u2260 Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [
+        "must_not_auto_promote_zone_to_area"
+      ],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "StartStopZone"
+    },
+    {
+      "id": "area_hint:startstop:CARTON FLOW MODULE C",
+      "proposed_name": "CARTON FLOW MODULE C",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "startstop_zone_hint",
+          "table": "StartStopZones.asc",
+          "detail": "Start/Stop zone \u2260 Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [
+        "must_not_auto_promote_zone_to_area"
+      ],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "StartStopZone"
+    },
+    {
+      "id": "area_hint:startstop:SAWTOOTH, CITY, DANCE",
+      "proposed_name": "SAWTOOTH, CITY, DANCE",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "startstop_zone_hint",
+          "table": "StartStopZones.asc",
+          "detail": "Start/Stop zone \u2260 Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [
+        "must_not_auto_promote_zone_to_area"
+      ],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "StartStopZone"
+    },
+    {
+      "id": "area_hint:startstop:RED ROOM",
+      "proposed_name": "RED ROOM",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "startstop_zone_hint",
+          "table": "StartStopZones.asc",
+          "detail": "Start/Stop zone \u2260 Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [
+        "must_not_auto_promote_zone_to_area"
+      ],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "StartStopZone"
+    },
+    {
+      "id": "area_hint:startstop:SHIPPING AREA",
+      "proposed_name": "SHIPPING AREA",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "startstop_zone_hint",
+          "table": "StartStopZones.asc",
+          "detail": "Start/Stop zone \u2260 Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [
+        "must_not_auto_promote_zone_to_area"
+      ],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "StartStopZone"
+    },
+    {
+      "id": "area_hint:startstop:TRASH",
+      "proposed_name": "TRASH",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "startstop_zone_hint",
+          "table": "StartStopZones.asc",
+          "detail": "Start/Stop zone \u2260 Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [
+        "must_not_auto_promote_zone_to_area"
+      ],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "StartStopZone"
+    },
+    {
+      "id": "area_hint:startstop:NEW CAR-BIN MERGE",
+      "proposed_name": "NEW CAR-BIN MERGE",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "startstop_zone_hint",
+          "table": "StartStopZones.asc",
+          "detail": "Start/Stop zone \u2260 Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [
+        "must_not_auto_promote_zone_to_area"
+      ],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "StartStopZone"
+    },
+    {
+      "id": "area_hint:jam_owner:ORNCCP2",
+      "proposed_name": "ORNCCP2",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "jamzone_owner_hint",
+          "table": "Jamzones.asc",
+          "zones": [
+            "3-1 MERGE",
+            "MERGE 316",
+            "2-1 MERGE",
+            "MERGE 324",
+            "TRASH 1018",
+            "CP2 ACCUM",
+            "CP2 LANES",
+            "CP3 ACCUM",
+            "CP3 LANES",
+            "TRASH 1014",
+            "TRASH 1008",
+            "TRASH 1002"
+          ],
+          "count": 12,
+          "detail": "May indicate process ownership, not Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "ProcessOwnerHint"
+    },
+    {
+      "id": "area_hint:jam_owner:ORNCCP4",
+      "proposed_name": "ORNCCP4",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "jamzone_owner_hint",
+          "table": "Jamzones.asc",
+          "zones": [
+            "CP4 TAKEAWAY",
+            "CITY COUNTER",
+            "CP1 ACCUM",
+            "SAWTOOTH MERGE",
+            "CP4 ACCUM",
+            "BIN MERGE",
+            "BIN MODULE",
+            "2 - 1 MERGE CB"
+          ],
+          "count": 8,
+          "detail": "May indicate process ownership, not Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "ProcessOwnerHint"
+    },
+    {
+      "id": "area_hint:jam_owner:ORNCCP5",
+      "proposed_name": "ORNCCP5",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "jamzone_owner_hint",
+          "table": "Jamzones.asc",
+          "zones": [
+            "REDROOM_ACCUM",
+            "FIRE DOOR 814",
+            "2-1_MERGE_RDRM",
+            "SHIP ACCUM",
+            "MERGE 720",
+            "SHIP SORTER",
+            "2-1 MERGE SHIP"
+          ],
+          "count": 7,
+          "detail": "May indicate process ownership, not Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "ProcessOwnerHint"
+    },
+    {
+      "id": "area_hint:sorter:504_BELT",
+      "proposed_name": "SorterGroup_504_BELT",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "sorter_grouping_hint",
+          "table": "Sorters.asc",
+          "sorter": "504_BELT",
+          "detail": "Sorter entity is not an Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "SorterHint"
+    },
+    {
+      "id": "area_hint:sorter:506_SHIP_SORTER",
+      "proposed_name": "SorterGroup_506_SHIP_SORTER",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "sorter_grouping_hint",
+          "table": "Sorters.asc",
+          "sorter": "506_SHIP_SORTER",
+          "detail": "Sorter entity is not an Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "SorterHint"
+    },
+    {
+      "id": "area_hint:sorter:508_SHIP_SORTER",
+      "proposed_name": "SorterGroup_508_SHIP_SORTER",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "sorter_grouping_hint",
+          "table": "Sorters.asc",
+          "sorter": "508_SHIP_SORTER",
+          "detail": "Sorter entity is not an Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "SorterHint"
+    },
+    {
+      "id": "area_hint:sorter:509_SHIP_SORTER",
+      "proposed_name": "SorterGroup_509_SHIP_SORTER",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "sorter_grouping_hint",
+          "table": "Sorters.asc",
+          "sorter": "509_SHIP_SORTER",
+          "detail": "Sorter entity is not an Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "SorterHint"
+    },
+    {
+      "id": "area_hint:sorter:510_SHIP_SORTER",
+      "proposed_name": "SorterGroup_510_SHIP_SORTER",
+      "confidence": "CANDIDATE",
+      "proposed_membership": [],
+      "evidence": [
+        {
+          "kind": "sorter_grouping_hint",
+          "table": "Sorters.asc",
+          "sorter": "510_SHIP_SORTER",
+          "detail": "Sorter entity is not an Engineering Area",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "conflicts": [],
+      "engineer_required": true,
+      "suggested": true,
+      "auto_apply": false,
+      "group_type": "SorterHint"
+    }
+  ],
+  "conflicts": [],
+  "inferred_high_confidence": 0,
+  "suggested": 17,
+  "engineer_required": 1
+}

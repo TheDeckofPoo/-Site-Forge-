@@ -1,13 +1,36 @@
 # Task / Program Architecture (Generic)
 
-**Branch:** `feature/cp5-gap-closure`  
+**Branch:** `feature/integration-hardening`  
 **Rule:** Model **classes** of tasks and programs. Do **not** hardcode finished PLC5 (or any site) period names, rates, or priorities as generation truth.
+
+**PLC5 periods are not universal.** Exact finished-site task periods / priorities (e.g. harvested `P10_Fast_50ms`-style constants) are **post-generation oracles only** — never platform-wide generation rules.
+
+Artifact mirror: `exports/integration-hardening/task_classes.json`.
+
+---
+
+## TaskClass list
+
+Canonical `TaskClass` identifiers (portable; not Studio schedule literals):
+
+| TaskClass | Role |
+|-----------|------|
+| `safety` | E-stop / safety enable paths |
+| `tracking` | High-speed pulse / track / IO scan |
+| `wcs` | Warehouse / host messaging |
+| `fast_equipment` | Per-area fast conveyor / motion |
+| `slow_equipment` | Per-area jam / fault / slow equipment |
+| `config_l1` | L1 config / init |
+| `config_l2` | L2 config / init |
+| `config_l3` | L3 config — only when a generic pack exists |
+| `system` | NTP, device comms, System_UDT |
+| `hmi` | Diagnostics / faceplate — usually CONFIGURATION_REQUIRED |
 
 ---
 
 ## Program classes
 
-Logical classes the compiler and SiteModel reason about:
+Logical classes the compiler and SiteModel reason about (aligned to TaskClass above):
 
 | Class | Role | Typical program shape |
 |-------|------|------------------------|

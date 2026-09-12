@@ -1,0 +1,1671 @@
+{
+  "machine": "ORNCCP5",
+  "devices": [
+    {
+      "kind": "EStopDevice",
+      "name": "4ES",
+      "normalized_name": "4ES",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "5ES",
+      "normalized_name": "5ES",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "6ES",
+      "normalized_name": "6ES",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES422",
+      "normalized_name": "ES422",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES500",
+      "normalized_name": "ES500",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610F",
+      "normalized_name": "ES610F",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610G",
+      "normalized_name": "ES610G",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610H",
+      "normalized_name": "ES610H",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610I",
+      "normalized_name": "ES610I",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610J",
+      "normalized_name": "ES610J",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610K",
+      "normalized_name": "ES610K",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612F",
+      "normalized_name": "ES612F",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612G",
+      "normalized_name": "ES612G",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612H",
+      "normalized_name": "ES612H",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612I",
+      "normalized_name": "ES612I",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612J",
+      "normalized_name": "ES612J",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612K",
+      "normalized_name": "ES612K",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES708B",
+      "normalized_name": "ES708B",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES708C",
+      "normalized_name": "ES708C",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES710B",
+      "normalized_name": "ES710B",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES710C",
+      "normalized_name": "ES710C",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES812",
+      "normalized_name": "ES812",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS101",
+      "normalized_name": "ESLS101",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS103",
+      "normalized_name": "ESLS103",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS201",
+      "normalized_name": "ESLS201",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS203",
+      "normalized_name": "ESLS203",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS301",
+      "normalized_name": "ESLS301",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS301A",
+      "normalized_name": "ESLS301A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS303",
+      "normalized_name": "ESLS303",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS303A",
+      "normalized_name": "ESLS303A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS414",
+      "normalized_name": "ESLS414",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS418",
+      "normalized_name": "ESLS418",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS464",
+      "normalized_name": "ESLS464",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS466",
+      "normalized_name": "ESLS466",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS506",
+      "normalized_name": "ESLS506",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS508",
+      "normalized_name": "ESLS508",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS801",
+      "normalized_name": "ESLS801",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS805",
+      "normalized_name": "ESLS805",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "2ES",
+      "normalized_name": "2ES",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES406",
+      "normalized_name": "ES406",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES1002",
+      "normalized_name": "ES1002",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS125",
+      "normalized_name": "ESLS125",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS127",
+      "normalized_name": "ESLS127",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS221",
+      "normalized_name": "ESLS221",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS223",
+      "normalized_name": "ESLS223",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS311",
+      "normalized_name": "ESLS311",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS313",
+      "normalized_name": "ESLS313",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS237",
+      "normalized_name": "ESLS237",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS319",
+      "normalized_name": "ESLS319",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS321",
+      "normalized_name": "ESLS321",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "3ES",
+      "normalized_name": "3ES",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES400",
+      "normalized_name": "ES400",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES1008",
+      "normalized_name": "ES1008",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES1014",
+      "normalized_name": "ES1014",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES1018",
+      "normalized_name": "ES1018",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS143",
+      "normalized_name": "ESLS143",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS235",
+      "normalized_name": "ESLS235",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS141",
+      "normalized_name": "ESLS141",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610C",
+      "normalized_name": "ES610C",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612C",
+      "normalized_name": "ES612C",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610D",
+      "normalized_name": "ES610D",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612D",
+      "normalized_name": "ES612D",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612E",
+      "normalized_name": "ES612E",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610E",
+      "normalized_name": "ES610E",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES708A",
+      "normalized_name": "ES708A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES710A",
+      "normalized_name": "ES710A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "8ES",
+      "normalized_name": "8ES",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES215",
+      "normalized_name": "ES215",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "7ES",
+      "normalized_name": "7ES",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610M",
+      "normalized_name": "ES610M",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610N",
+      "normalized_name": "ES610N",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612M",
+      "normalized_name": "ES612M",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612N",
+      "normalized_name": "ES612N",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS509",
+      "normalized_name": "ESLS509",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS319A",
+      "normalized_name": "ESLS319A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS321A",
+      "normalized_name": "ESLS321A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS235A",
+      "normalized_name": "ESLS235A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS237A",
+      "normalized_name": "ESLS237A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS141A",
+      "normalized_name": "ESLS141A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS143A",
+      "normalized_name": "ESLS143A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS125A",
+      "normalized_name": "ESLS125A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS127A",
+      "normalized_name": "ESLS127A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS221A",
+      "normalized_name": "ESLS221A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS223A",
+      "normalized_name": "ESLS223A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS311A",
+      "normalized_name": "ESLS311A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ESLS313A",
+      "normalized_name": "ESLS313A",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610O",
+      "normalized_name": "ES610O",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612O",
+      "normalized_name": "ES612O",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES610P",
+      "normalized_name": "ES610P",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    },
+    {
+      "kind": "EStopDevice",
+      "name": "ES612P",
+      "normalized_name": "ES612P",
+      "controller": "ORNCCP5",
+      "confidence": "HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "engineer_override": null
+    }
+  ],
+  "circuits": [],
+  "zones": [
+    {
+      "kind": "EStopZone",
+      "name": "ORNCCP5_ESZone1",
+      "normalized_name": "ORNCCP5_ESZONE1",
+      "controller": "ORNCCP5",
+      "confidence": "ENGINEER_REQUIRED",
+      "membership": [],
+      "membership_confidence": "ENGINEER_REQUIRED",
+      "evidence": [
+        {
+          "kind": "default_safety_placeholder",
+          "detail": "No operational E-stop zone proven from RUN; engineer must confirm"
+        }
+      ],
+      "engineer_override": null,
+      "generation_allowed": false
+    }
+  ],
+  "memberships": [],
+  "counts": {
+    "devices": 90,
+    "circuits": 0,
+    "zones": 1,
+    "memberships_proven": 0,
+    "memberships_engineer_required": 1
+  },
+  "safety_generation_gate": {
+    "allowed": false,
+    "reason": "Blocked until engineer confirms zone membership",
+    "blocks": [
+      "safety_zone_logic"
+    ],
+    "does_not_block": [
+      "transport",
+      "sorter_partial",
+      "io_map",
+      "pe_logic"
+    ]
+  },
+  "policy": [
+    "Do not group E-stop devices by shared digits in names",
+    "Safety uncertainty blocks safety generation only",
+    "EStopDevice != EStopCircuit != EStopZone"
+  ]
+}

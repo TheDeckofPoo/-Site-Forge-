@@ -1,0 +1,23 @@
+{
+  "generated_at": "2026-09-12T22:08:06.778830+00:00",
+  "baseline": null,
+  "status": "NO_PREVIOUS",
+  "added": [],
+  "removed": [],
+  "changed_inclusion": [],
+  "new": [],
+  "removed_from_run": [],
+  "changed_io": [],
+  "changed_relationship": [],
+  "changed_activity": [],
+  "changed_geometry": [],
+  "events": {
+    "NEW": [],
+    "REMOVED_FROM_RUN": [],
+    "CHANGED_IO": [],
+    "CHANGED_RELATIONSHIP": [],
+    "CHANGED_ACTIVITY": [],
+    "CHANGED_GEOMETRY": []
+  },
+  "count_delta": {}
+}

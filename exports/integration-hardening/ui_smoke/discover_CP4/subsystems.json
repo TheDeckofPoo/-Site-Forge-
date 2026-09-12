@@ -1,0 +1,4769 @@
+{
+  "generated_at": "2026-09-12T22:08:06.778765+00:00",
+  "machine": "ORNCCP4",
+  "transport": {
+    "present": true,
+    "node_count": 72,
+    "edge_count": 40,
+    "visual_freeze": true,
+    "metrics": {
+      "generated_at": "2026-09-12T22:08:06.370826+00:00",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+      "machine": "ORNCCP4",
+      "conveyors_discovered": 171,
+      "usable_xy": 171,
+      "usable_angle": 171,
+      "usable_length_width": 120,
+      "motors_discovered": 121,
+      "motors_linked_via_mtrchain": 43,
+      "vfd_classified": 14,
+      "contactor_classified": 29,
+      "unknown_drive": 128,
+      "multiple_motor_conveyors": 0,
+      "motors_driving_multiple_conveyors": 38,
+      "photoeyes_scoped": 55,
+      "merge_table_hints": 4,
+      "connection_candidates_total": 314,
+      "confirmed_connections": 65,
+      "high_confidence_candidates": 5,
+      "ambiguous_connections": 244,
+      "unknown_connections": 103,
+      "anchor_model_assumption": "(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; exit=XY+Length\u00b7\u00fb. CURVE uses Inside_Radius+tangents+90\u00b0 arc (MEDIUM).",
+      "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence.",
+      "scoped_nodes": 72,
+      "scoped_edges": 40
+    }
+  },
+  "sawtooth": {
+    "present": true,
+    "merges": [
+      {
+        "canonical_id": "sawtooth_merge:SAWTOOTH_MERGE",
+        "kind": "sawtooth_merge",
+        "source_table": "SawMerge.asc",
+        "source_row": "SAWTOOTH_MERGE",
+        "source_scope": "controller_overlay",
+        "raw_name": "SAWTOOTH_MERGE",
+        "normalized_name": "SAWTOOTH_MERGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "INCLUDED",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "saw_merge",
+            "detail": "SAWTOOTH_MERGE"
+          },
+          {
+            "kind": "source",
+            "scope": "controller_overlay",
+            "path": "FORTNA/SawMerge.asc.ORNCCP4"
+          },
+          {
+            "kind": "vfd_link",
+            "detail": "VFD414_AUX"
+          },
+          {
+            "kind": "saw_merge"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_0_P219"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_1_P408"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_3_P116"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_4_P214"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_5_P832"
+          },
+          {
+            "kind": "sorter_static",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "sorter_table",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "activity_strong_link",
+            "score": 11,
+            "matched": [
+              "saw_merge",
+              "sorter_static",
+              "sorter_table",
+              "vfd_link"
+            ]
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "CONFIGURATION_REQUIRED",
+        "area_id": null,
+        "es_zone_id": null,
+        "motor_io": "VFD414_AUX",
+        "reservation": "SAW_RESERVATION",
+        "slice_seconds": 18.0,
+        "lanes": [
+          {
+            "name": "LANE_0_P219",
+            "conveyor": "P219",
+            "photoeye": "PE219_P",
+            "drive": "VFD219",
+            "lane_index": 1,
+            "provenance": "RUN_EXPLICIT",
+            "conveyor_provenance": "RUN_EXPLICIT"
+          },
+          {
+            "name": "LANE_1_P408",
+            "conveyor": "P408",
+            "photoeye": "PE410_P",
+            "drive": "VFD410_EN",
+            "lane_index": 2,
+            "provenance": "RUN_EXPLICIT",
+            "conveyor_provenance": "RUN_EXPLICIT"
+          },
+          {
+            "name": "LANE_3_P116",
+            "conveyor": "P116",
+            "photoeye": "PE118_P",
+            "drive": "VFD118_EN",
+            "lane_index": 3,
+            "provenance": "RUN_EXPLICIT",
+            "conveyor_provenance": "RUN_EXPLICIT"
+          },
+          {
+            "name": "LANE_4_P214",
+            "conveyor": "P214",
+            "photoeye": "PE216_P",
+            "drive": "VFD216_EN",
+            "lane_index": 4,
+            "provenance": "RUN_EXPLICIT",
+            "conveyor_provenance": "RUN_EXPLICIT"
+          },
+          {
+            "name": "LANE_5_P832",
+            "conveyor": "P832",
+            "photoeye": "PE834_P",
+            "drive": "VFD834_EN",
+            "lane_index": 5,
+            "provenance": "RUN_EXPLICIT",
+            "conveyor_provenance": "RUN_EXPLICIT"
+          }
+        ],
+        "config_required": [],
+        "activity_score": 11,
+        "activity_score_breakdown": {
+          "saw_merge": 3,
+          "vfd_link": 2,
+          "sorter_static": 2,
+          "sorter_table": 2,
+          "related_graph": 2
+        },
+        "evidence_for": [
+          "cross_table:saw_merge",
+          "cross_table:sorter_static",
+          "cross_table:sorter_table",
+          "cross_table:vfd_link",
+          "controller_overlay_or_scope",
+          "strong_cross_table_or_relationship_link",
+          "relationship_graph_member"
+        ],
+        "evidence_against": [],
+        "source_tables": [
+          "SawMerge.asc",
+          "Sorters.asc"
+        ],
+        "generation_reason": "ACTIVE_IN_SCOPE",
+        "engineer_override_applied": false,
+        "inclusion_why": {
+          "inclusion": "INCLUDED",
+          "active_state": "ACTIVE_CONFIRMED",
+          "positive_evidence": [
+            "activity_strong_link",
+            "ambiguous_ownership",
+            "saw_merge",
+            "sorter_static",
+            "sorter_table",
+            "vfd_link"
+          ],
+          "missing": [],
+          "notes": [
+            "sufficient positive evidence for generation"
+          ]
+        }
+      }
+    ],
+    "counts": {
+      "merges": 1,
+      "lanes": 5
+    },
+    "config_required": [],
+    "sources": {
+      "SawMerge": {
+        "path": "FORTNA/SawMerge.asc.ORNCCP4",
+        "resolution": "controller_overlay"
+      },
+      "SawLane": {
+        "path": "FORTNA/SawLane.asc.ORNCCP4",
+        "resolution": "controller_overlay"
+      },
+      "hs_and_state": {
+        "HSSawMerge.asc": {
+          "path": "FORTNA/HSSawMerge.asc",
+          "resolution": "base",
+          "row_count": 10,
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "HSSawLane.asc": {
+          "path": "FORTNA/HSSawLane.asc",
+          "resolution": "base",
+          "row_count": 50,
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "HSSawParm.asc": {
+          "path": "FORTNA/HSSawParm.asc",
+          "resolution": "base",
+          "row_count": 50,
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "HSSawState.asc": {
+          "path": "FORTNA/HSSawState.asc",
+          "resolution": "base",
+          "row_count": 10,
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "SawState.asc": {
+          "path": "FORTNA/SawState.asc",
+          "resolution": "base",
+          "row_count": 10,
+          "active_named_rows": 0,
+          "sample_names": []
+        }
+      }
+    },
+    "semantics": {
+      "note": "fortna_sawtooth_semantics available for deeper slice"
+    },
+    "lanes": [
+      {
+        "name": "LANE_0_P219",
+        "conveyor": "P219",
+        "photoeye": "PE219_P",
+        "drive": "VFD219",
+        "lane_index": 1,
+        "provenance": "RUN_EXPLICIT",
+        "conveyor_provenance": "RUN_EXPLICIT"
+      },
+      {
+        "name": "LANE_1_P408",
+        "conveyor": "P408",
+        "photoeye": "PE410_P",
+        "drive": "VFD410_EN",
+        "lane_index": 2,
+        "provenance": "RUN_EXPLICIT",
+        "conveyor_provenance": "RUN_EXPLICIT"
+      },
+      {
+        "name": "LANE_3_P116",
+        "conveyor": "P116",
+        "photoeye": "PE118_P",
+        "drive": "VFD118_EN",
+        "lane_index": 3,
+        "provenance": "RUN_EXPLICIT",
+        "conveyor_provenance": "RUN_EXPLICIT"
+      },
+      {
+        "name": "LANE_4_P214",
+        "conveyor": "P214",
+        "photoeye": "PE216_P",
+        "drive": "VFD216_EN",
+        "lane_index": 4,
+        "provenance": "RUN_EXPLICIT",
+        "conveyor_provenance": "RUN_EXPLICIT"
+      },
+      {
+        "name": "LANE_5_P832",
+        "conveyor": "P832",
+        "photoeye": "PE834_P",
+        "drive": "VFD834_EN",
+        "lane_index": 5,
+        "provenance": "RUN_EXPLICIT",
+        "conveyor_provenance": "RUN_EXPLICIT"
+      }
+    ],
+    "vfds": [
+      "VFD118_EN",
+      "VFD216_EN",
+      "VFD219",
+      "VFD410_EN",
+      "VFD414_AUX",
+      "VFD834_EN"
+    ],
+    "photoeyes": [
+      "PE118_P",
+      "PE216_P",
+      "PE219_P",
+      "PE410_P",
+      "PE834_P"
+    ],
+    "encoders": [
+      "ENC414",
+      "ENC424"
+    ]
+  },
+  "sorter": {
+    "present": true,
+    "sorters": [
+      {
+        "canonical_id": "sorter:SAWTOOTH_MERGE",
+        "kind": "sorter",
+        "source_table": "Sorters.asc",
+        "source_row": 2,
+        "source_scope": "controller_overlay",
+        "raw_name": "SAWTOOTH_MERGE",
+        "normalized_name": "SAWTOOTH_MERGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "INCLUDED",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "sorter_table"
+          },
+          {
+            "kind": "source",
+            "scope": "controller_overlay",
+            "path": "Sorters.asc.ORNCCP4",
+            "row": 2
+          },
+          {
+            "kind": "encoder_link",
+            "detail": "ENC414"
+          },
+          {
+            "kind": "saw_merge"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_0_P219"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_1_P408"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_3_P116"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_4_P214"
+          },
+          {
+            "kind": "saw_merge",
+            "detail": "LANE_5_P832"
+          },
+          {
+            "kind": "sorter_static",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "sorter_table",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "sorter_static",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "activity_strong_link",
+            "score": 11,
+            "matched": [
+              "encoder_link",
+              "saw_merge",
+              "sorter_static",
+              "sorter_table"
+            ]
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "encoder_io": "ENC414",
+        "machine_name": "ORNCCP4",
+        "discovery_only": true,
+        "sorter_table_class": "static_config",
+        "activity_score": 11,
+        "activity_score_breakdown": {
+          "encoder_link": 2,
+          "saw_merge": 3,
+          "sorter_static": 2,
+          "sorter_table": 2,
+          "related_graph": 2
+        },
+        "evidence_for": [
+          "cross_table:encoder_link",
+          "cross_table:saw_merge",
+          "cross_table:sorter_static",
+          "cross_table:sorter_table",
+          "controller_overlay_or_scope",
+          "strong_cross_table_or_relationship_link",
+          "relationship_graph_member",
+          "machine_ownership=ORNCCP4"
+        ],
+        "evidence_against": [],
+        "source_tables": [
+          "Sorters.asc"
+        ],
+        "generation_reason": "ACTIVE_IN_SCOPE",
+        "engineer_override_applied": false,
+        "inclusion_why": {
+          "inclusion": "INCLUDED",
+          "active_state": "ACTIVE_CONFIRMED",
+          "positive_evidence": [
+            "activity_strong_link",
+            "encoder_link",
+            "saw_merge",
+            "sorter_static",
+            "sorter_table"
+          ],
+          "missing": [],
+          "notes": [
+            "sufficient positive evidence for generation"
+          ]
+        }
+      },
+      {
+        "canonical_id": "sorter:CITY_LANE",
+        "kind": "sorter",
+        "source_table": "Sorters.asc",
+        "source_row": 3,
+        "source_scope": "controller_overlay",
+        "raw_name": "CITY_LANE",
+        "normalized_name": "CITY_LANE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "INCLUDED",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "sorter_table"
+          },
+          {
+            "kind": "source",
+            "scope": "controller_overlay",
+            "path": "Sorters.asc.ORNCCP4",
+            "row": 3
+          },
+          {
+            "kind": "encoder_link",
+            "detail": "ENC424"
+          },
+          {
+            "kind": "sorter_static",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "sorter_table",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "sorter_static",
+            "table": "Sorters.asc"
+          },
+          {
+            "kind": "activity_strong_link",
+            "score": 6,
+            "matched": [
+              "encoder_link",
+              "sorter_static",
+              "sorter_table"
+            ]
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "encoder_io": "ENC424",
+        "machine_name": "ORNCCP4",
+        "discovery_only": true,
+        "sorter_table_class": "static_config",
+        "activity_score": 6,
+        "activity_score_breakdown": {
+          "encoder_link": 2,
+          "sorter_table": 2,
+          "sorter_static": 2
+        },
+        "evidence_for": [
+          "cross_table:encoder_link",
+          "cross_table:sorter_static",
+          "cross_table:sorter_table",
+          "controller_overlay_or_scope",
+          "strong_cross_table_or_relationship_link",
+          "machine_ownership=ORNCCP4"
+        ],
+        "evidence_against": [],
+        "source_tables": [
+          "Sorters.asc"
+        ],
+        "generation_reason": "ACTIVE_IN_SCOPE",
+        "engineer_override_applied": false,
+        "inclusion_why": {
+          "inclusion": "INCLUDED",
+          "active_state": "ACTIVE_CONFIRMED",
+          "positive_evidence": [
+            "activity_strong_link",
+            "encoder_link",
+            "sorter_static",
+            "sorter_table"
+          ],
+          "missing": [],
+          "notes": [
+            "sufficient positive evidence for generation"
+          ]
+        }
+      }
+    ],
+    "generation_state": "NOT_SUPPORTED",
+    "note": "Discovery stub only \u2014 no sorter PLC generation"
+  },
+  "tracking_wcs": {
+    "tracking_systems": [
+      {
+        "canonical_id": "tracking:MSGWCS.ASC",
+        "kind": "tracking",
+        "source_table": "MsgWCS.asc",
+        "source_row": null,
+        "source_scope": "base_only",
+        "raw_name": "MsgWCS.asc",
+        "normalized_name": "MSGWCS.ASC",
+        "active_state": "ACTIVE_LIKELY",
+        "inclusion": "AVAILABLE",
+        "confidence": "MEDIUM",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "tracking_table",
+            "active_rows": 1999
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "active_rows": 1999,
+        "path": "FORTNA/MsgWCS.asc",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "MsgWCS.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "tracking:SRTTRACK1.ASC",
+        "kind": "tracking",
+        "source_table": "SrtTrack1.asc",
+        "source_row": null,
+        "source_scope": "base_only",
+        "raw_name": "SrtTrack1.asc",
+        "normalized_name": "SRTTRACK1.ASC",
+        "active_state": "ACTIVE_LIKELY",
+        "inclusion": "AVAILABLE",
+        "confidence": "MEDIUM",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "tracking_table",
+            "active_rows": 98
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "active_rows": 98,
+        "path": "FORTNA/SrtTrack1.asc",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "SrtTrack1.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "tracking:WCSEVENTS.ASC",
+        "kind": "tracking",
+        "source_table": "WCSEvents.asc",
+        "source_row": null,
+        "source_scope": "base_only",
+        "raw_name": "WCSEvents.asc",
+        "normalized_name": "WCSEVENTS.ASC",
+        "active_state": "ACTIVE_LIKELY",
+        "inclusion": "AVAILABLE",
+        "confidence": "MEDIUM",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "tracking_table",
+            "active_rows": 99
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "active_rows": 99,
+        "path": "FORTNA/WCSEvents.asc",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      }
+    ],
+    "wcs_interfaces": [
+      {
+        "canonical_id": "wcs:BARCODELENGTHERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "BARCODELENGTHERROR",
+        "source_scope": "base_only",
+        "raw_name": "BARCODELENGTHERROR",
+        "normalized_name": "BARCODELENGTHERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "BARCODELENGTHERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:BROKEN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "BROKEN",
+        "source_scope": "base_only",
+        "raw_name": "BROKEN",
+        "normalized_name": "BROKEN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "BROKEN",
+              "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+              "category": "CHAIN",
+              "service": "FPC.CHAIN",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+        "category": "CHAIN",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:BUSY",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "BUSY",
+        "source_scope": "base_only",
+        "raw_name": "BUSY",
+        "normalized_name": "BUSY",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "BUSY",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:BUSYWAIT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "BUSYWAIT",
+        "source_scope": "base_only",
+        "raw_name": "BUSYWAIT",
+        "normalized_name": "BUSYWAIT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "BUSYWAIT",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:CHANGEMENU",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CHANGEMENU",
+        "source_scope": "base_only",
+        "raw_name": "CHANGEMENU",
+        "normalized_name": "CHANGEMENU",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CHANGEMENU",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:CHANGEMENU_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CHANGEMENU_T",
+        "source_scope": "base_only",
+        "raw_name": "CHANGEMENU_T",
+        "normalized_name": "CHANGEMENU_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CHANGEMENU_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:CLONEMENU_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CLONEMENU_T",
+        "source_scope": "base_only",
+        "raw_name": "CLONEMENU_T",
+        "normalized_name": "CLONEMENU_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CLONEMENU_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:CLOSEMENU_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CLOSEMENU_T",
+        "source_scope": "base_only",
+        "raw_name": "CLOSEMENU_T",
+        "normalized_name": "CLOSEMENU_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CLOSEMENU_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:COMMPROCESSERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "COMMPROCESSERROR",
+        "source_scope": "base_only",
+        "raw_name": "COMMPROCESSERROR",
+        "normalized_name": "COMMPROCESSERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "COMMPROCESSERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:COPYCLIP_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "COPYCLIP_T",
+        "source_scope": "base_only",
+        "raw_name": "COPYCLIP_T",
+        "normalized_name": "COPYCLIP_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "COPYCLIP_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:DBUPDATEERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "DBUPDATEERROR",
+        "source_scope": "base_only",
+        "raw_name": "DBUPDATEERROR",
+        "normalized_name": "DBUPDATEERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "DBUPDATEERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:DELETEREC_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "DELETEREC_T",
+        "source_scope": "base_only",
+        "raw_name": "DELETEREC_T",
+        "normalized_name": "DELETEREC_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "DELETEREC_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:DOPROC",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "DOPROC",
+        "source_scope": "base_only",
+        "raw_name": "DOPROC",
+        "normalized_name": "DOPROC",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "DOPROC",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:DOSQL",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "DOSQL",
+        "source_scope": "base_only",
+        "raw_name": "DOSQL",
+        "normalized_name": "DOSQL",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "DOSQL",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:ERROREVENT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "ERROREVENT",
+        "source_scope": "base_only",
+        "raw_name": "ERROREVENT",
+        "normalized_name": "ERROREVENT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "ERROREVENT",
+              "destination": "/topic/WCSEVENT.FPC.FP.ALARM",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "N",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.ALARM",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:EXITPWR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "EXITPWR",
+        "source_scope": "base_only",
+        "raw_name": "EXITPWR",
+        "normalized_name": "EXITPWR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "EXITPWR",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:EXITUSER",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "EXITUSER",
+        "source_scope": "base_only",
+        "raw_name": "EXITUSER",
+        "normalized_name": "EXITUSER",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "EXITUSER",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:FAILLOGIN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FAILLOGIN",
+        "source_scope": "base_only",
+        "raw_name": "FAILLOGIN",
+        "normalized_name": "FAILLOGIN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FAILLOGIN",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:FAILMENUSEC",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FAILMENUSEC",
+        "source_scope": "base_only",
+        "raw_name": "FAILMENUSEC",
+        "normalized_name": "FAILMENUSEC",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FAILMENUSEC",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:FAILPROCSEC",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FAILPROCSEC",
+        "source_scope": "base_only",
+        "raw_name": "FAILPROCSEC",
+        "normalized_name": "FAILPROCSEC",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FAILPROCSEC",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:FILLTABLE_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FILLTABLE_T",
+        "source_scope": "base_only",
+        "raw_name": "FILLTABLE_T",
+        "normalized_name": "FILLTABLE_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FILLTABLE_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:FORCEOFF",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FORCEOFF",
+        "source_scope": "base_only",
+        "raw_name": "FORCEOFF",
+        "normalized_name": "FORCEOFF",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FORCEOFF",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:FORCEOFF_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FORCEOFF_T",
+        "source_scope": "base_only",
+        "raw_name": "FORCEOFF_T",
+        "normalized_name": "FORCEOFF_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FORCEOFF_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:FORCEON",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FORCEON",
+        "source_scope": "base_only",
+        "raw_name": "FORCEON",
+        "normalized_name": "FORCEON",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FORCEON",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:FORCEON_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FORCEON_T",
+        "source_scope": "base_only",
+        "raw_name": "FORCEON_T",
+        "normalized_name": "FORCEON_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FORCEON_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:HOUSEKEEP",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "HOUSEKEEP",
+        "source_scope": "base_only",
+        "raw_name": "HOUSEKEEP",
+        "normalized_name": "HOUSEKEEP",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "HOUSEKEEP",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:INSERTREC_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "INSERTREC_T",
+        "source_scope": "base_only",
+        "raw_name": "INSERTREC_T",
+        "normalized_name": "INSERTREC_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "INSERTREC_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:INVERT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "INVERT",
+        "source_scope": "base_only",
+        "raw_name": "INVERT",
+        "normalized_name": "INVERT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "INVERT",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:JAMZONE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "JAMZONE",
+        "source_scope": "base_only",
+        "raw_name": "JAMZONE",
+        "normalized_name": "JAMZONE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "JAMZONE",
+              "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:LABELRECORDEMPTY",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LABELRECORDEMPTY",
+        "source_scope": "base_only",
+        "raw_name": "LABELRECORDEMPTY",
+        "normalized_name": "LABELRECORDEMPTY",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LABELRECORDEMPTY",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:LOGIN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LOGIN",
+        "source_scope": "base_only",
+        "raw_name": "LOGIN",
+        "normalized_name": "LOGIN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LOGIN",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:LOGOUT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LOGOUT",
+        "source_scope": "base_only",
+        "raw_name": "LOGOUT",
+        "normalized_name": "LOGOUT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LOGOUT",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:LOOSE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LOOSE",
+        "source_scope": "base_only",
+        "raw_name": "LOOSE",
+        "normalized_name": "LOOSE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LOOSE",
+              "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+              "category": "CHAIN",
+              "service": "FPC.CHAIN",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+        "category": "CHAIN",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:LRMNOLABEL",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LRMNOLABEL",
+        "source_scope": "base_only",
+        "raw_name": "LRMNOLABEL",
+        "normalized_name": "LRMNOLABEL",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LRMNOLABEL",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:MACHINESTATE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "MACHINESTATE",
+        "source_scope": "base_only",
+        "raw_name": "MACHINESTATE",
+        "normalized_name": "MACHINESTATE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "MACHINESTATE",
+              "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOCARTONRECORD",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOCARTONRECORD",
+        "source_scope": "base_only",
+        "raw_name": "NOCARTONRECORD",
+        "normalized_name": "NOCARTONRECORD",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOCARTONRECORD",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOCOMMMACHINE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOCOMMMACHINE",
+        "source_scope": "base_only",
+        "raw_name": "NOCOMMMACHINE",
+        "normalized_name": "NOCOMMMACHINE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOCOMMMACHINE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOCOMMRESPONSE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOCOMMRESPONSE",
+        "source_scope": "base_only",
+        "raw_name": "NOCOMMRESPONSE",
+        "normalized_name": "NOCOMMRESPONSE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOCOMMRESPONSE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOEHPRINTER",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOEHPRINTER",
+        "source_scope": "base_only",
+        "raw_name": "NOEHPRINTER",
+        "normalized_name": "NOEHPRINTER",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOEHPRINTER",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOHOSTMSG",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOHOSTMSG",
+        "source_scope": "base_only",
+        "raw_name": "NOHOSTMSG",
+        "normalized_name": "NOHOSTMSG",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOHOSTMSG",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOIPADDRESS",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOIPADDRESS",
+        "source_scope": "base_only",
+        "raw_name": "NOIPADDRESS",
+        "normalized_name": "NOIPADDRESS",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOIPADDRESS",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOLABELCOLUMN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLABELCOLUMN",
+        "source_scope": "base_only",
+        "raw_name": "NOLABELCOLUMN",
+        "normalized_name": "NOLABELCOLUMN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLABELCOLUMN",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOLABELIMAGE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLABELIMAGE",
+        "source_scope": "base_only",
+        "raw_name": "NOLABELIMAGE",
+        "normalized_name": "NOLABELIMAGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLABELIMAGE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOLABELONTAMP",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLABELONTAMP",
+        "source_scope": "base_only",
+        "raw_name": "NOLABELONTAMP",
+        "normalized_name": "NOLABELONTAMP",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLABELONTAMP",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOLABELRECORD",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLABELRECORD",
+        "source_scope": "base_only",
+        "raw_name": "NOLABELRECORD",
+        "normalized_name": "NOLABELRECORD",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLABELRECORD",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOLRM",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLRM",
+        "source_scope": "base_only",
+        "raw_name": "NOLRM",
+        "normalized_name": "NOLRM",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLRM",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOORDERIMAGE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOORDERIMAGE",
+        "source_scope": "base_only",
+        "raw_name": "NOORDERIMAGE",
+        "normalized_name": "NOORDERIMAGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOORDERIMAGE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOPTYPE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOPTYPE",
+        "source_scope": "base_only",
+        "raw_name": "NOPTYPE",
+        "normalized_name": "NOPTYPE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOPTYPE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOREADLABELIMAGE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOREADLABELIMAGE",
+        "source_scope": "base_only",
+        "raw_name": "NOREADLABELIMAGE",
+        "normalized_name": "NOREADLABELIMAGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOREADLABELIMAGE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOSKU",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOSKU",
+        "source_scope": "base_only",
+        "raw_name": "NOSKU",
+        "normalized_name": "NOSKU",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOSKU",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:NOTYPECOLUMN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOTYPECOLUMN",
+        "source_scope": "base_only",
+        "raw_name": "NOTYPECOLUMN",
+        "normalized_name": "NOTYPECOLUMN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOTYPECOLUMN",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:OPENMENU",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "OPENMENU",
+        "source_scope": "base_only",
+        "raw_name": "OPENMENU",
+        "normalized_name": "OPENMENU",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "OPENMENU",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:OPENMENU_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "OPENMENU_T",
+        "source_scope": "base_only",
+        "raw_name": "OPENMENU_T",
+        "normalized_name": "OPENMENU_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "OPENMENU_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:PASTECLIP_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "PASTECLIP_T",
+        "source_scope": "base_only",
+        "raw_name": "PASTECLIP_T",
+        "normalized_name": "PASTECLIP_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "PASTECLIP_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:PRINTERERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "PRINTERERROR",
+        "source_scope": "base_only",
+        "raw_name": "PRINTERERROR",
+        "normalized_name": "PRINTERERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "PRINTERERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SAVETABLE_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SAVETABLE_T",
+        "source_scope": "base_only",
+        "raw_name": "SAVETABLE_T",
+        "normalized_name": "SAVETABLE_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SAVETABLE_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SENDERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SENDERROR",
+        "source_scope": "base_only",
+        "raw_name": "SENDERROR",
+        "normalized_name": "SENDERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SENDERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SENDREC_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SENDREC_T",
+        "source_scope": "base_only",
+        "raw_name": "SENDREC_T",
+        "normalized_name": "SENDREC_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SENDREC_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SENDSTART",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SENDSTART",
+        "source_scope": "base_only",
+        "raw_name": "SENDSTART",
+        "normalized_name": "SENDSTART",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SENDSTART",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SENDSTOP",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SENDSTOP",
+        "source_scope": "base_only",
+        "raw_name": "SENDSTOP",
+        "normalized_name": "SENDSTOP",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SENDSTOP",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SIGUSR1",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SIGUSR1",
+        "source_scope": "base_only",
+        "raw_name": "SIGUSR1",
+        "normalized_name": "SIGUSR1",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SIGUSR1",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SLEEP",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SLEEP",
+        "source_scope": "base_only",
+        "raw_name": "SLEEP",
+        "normalized_name": "SLEEP",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SLEEP",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:STARTALLZONES",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STARTALLZONES",
+        "source_scope": "base_only",
+        "raw_name": "STARTALLZONES",
+        "normalized_name": "STARTALLZONES",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STARTALLZONES",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:STARTJAMZONE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STARTJAMZONE",
+        "source_scope": "base_only",
+        "raw_name": "STARTJAMZONE",
+        "normalized_name": "STARTJAMZONE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STARTJAMZONE",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:STARTSTOPZONE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STARTSTOPZONE",
+        "source_scope": "base_only",
+        "raw_name": "STARTSTOPZONE",
+        "normalized_name": "STARTSTOPZONE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STARTSTOPZONE",
+              "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:STOPALLZONES",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STOPALLZONES",
+        "source_scope": "base_only",
+        "raw_name": "STOPALLZONES",
+        "normalized_name": "STOPALLZONES",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STOPALLZONES",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:STOPJAMZONE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STOPJAMZONE",
+        "source_scope": "base_only",
+        "raw_name": "STOPJAMZONE",
+        "normalized_name": "STOPJAMZONE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STOPJAMZONE",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:STOPPROC",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STOPPROC",
+        "source_scope": "base_only",
+        "raw_name": "STOPPROC",
+        "normalized_name": "STOPPROC",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STOPPROC",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:TAMPNORETURN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "TAMPNORETURN",
+        "source_scope": "base_only",
+        "raw_name": "TAMPNORETURN",
+        "normalized_name": "TAMPNORETURN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "TAMPNORETURN",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:TAMPNOTHOME",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "TAMPNOTHOME",
+        "source_scope": "base_only",
+        "raw_name": "TAMPNOTHOME",
+        "normalized_name": "TAMPNOTHOME",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "TAMPNOTHOME",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:TAMPTIMEOUT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "TAMPTIMEOUT",
+        "source_scope": "base_only",
+        "raw_name": "TAMPTIMEOUT",
+        "normalized_name": "TAMPTIMEOUT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "TAMPTIMEOUT",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:TEMPLATEDISABLED",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "TEMPLATEDISABLED",
+        "source_scope": "base_only",
+        "raw_name": "TEMPLATEDISABLED",
+        "normalized_name": "TEMPLATEDISABLED",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "TEMPLATEDISABLED",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:UNDEFINED",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "UNDEFINED",
+        "source_scope": "base_only",
+        "raw_name": "UNDEFINED",
+        "normalized_name": "UNDEFINED",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "UNDEFINED",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:UNFORCEOFF",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "UNFORCEOFF",
+        "source_scope": "base_only",
+        "raw_name": "UNFORCEOFF",
+        "normalized_name": "UNFORCEOFF",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "UNFORCEOFF",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:UNFORCEON",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "UNFORCEON",
+        "source_scope": "base_only",
+        "raw_name": "UNFORCEON",
+        "normalized_name": "UNFORCEON",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "UNFORCEON",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:UNINVERT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "UNINVERT",
+        "source_scope": "base_only",
+        "raw_name": "UNINVERT",
+        "normalized_name": "UNINVERT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "UNINVERT",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:VERIFYMISMATCH",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "VERIFYMISMATCH",
+        "source_scope": "base_only",
+        "raw_name": "VERIFYMISMATCH",
+        "normalized_name": "VERIFYMISMATCH",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "VERIFYMISMATCH",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:WAKE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "WAKE",
+        "source_scope": "base_only",
+        "raw_name": "WAKE",
+        "normalized_name": "WAKE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "WAKE",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:RELEASESAWWAVE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "RELEASESAWWAVE",
+        "source_scope": "base_only",
+        "raw_name": "RELEASESAWWAVE",
+        "normalized_name": "RELEASESAWWAVE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "RELEASESAWWAVE",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SAVEFAIL",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SAVEFAIL",
+        "source_scope": "base_only",
+        "raw_name": "SAVEFAIL",
+        "normalized_name": "SAVEFAIL",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SAVEFAIL",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:SIGUSR2",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SIGUSR2",
+        "source_scope": "base_only",
+        "raw_name": "SIGUSR2",
+        "normalized_name": "SIGUSR2",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SIGUSR2",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:CHANGESHIFTER",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CHANGESHIFTER",
+        "source_scope": "base_only",
+        "raw_name": "CHANGESHIFTER",
+        "normalized_name": "CHANGESHIFTER",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CHANGESHIFTER",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:AUTOLOGOUT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "AUTOLOGOUT",
+        "source_scope": "base_only",
+        "raw_name": "AUTOLOGOUT",
+        "normalized_name": "AUTOLOGOUT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "AUTOLOGOUT",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      },
+      {
+        "canonical_id": "wcs:EXITOS",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "EXITOS",
+        "source_scope": "base_only",
+        "raw_name": "EXITOS",
+        "normalized_name": "EXITOS",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "EXITOS",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          },
+          {
+            "kind": "ambiguous_ownership",
+            "field": "Machine_Name",
+            "raw_value": "(blank)",
+            "interpretation": "ambiguous_ownership_evidence",
+            "automatic_activity_weight": 0
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP",
+        "activity_score": 0,
+        "activity_score_breakdown": {},
+        "evidence_for": [],
+        "evidence_against": [],
+        "source_tables": [
+          "WCSEvents.asc"
+        ],
+        "generation_reason": "AVAILABLE_DEFAULT",
+        "engineer_override_applied": false
+      }
+    ],
+    "generation_state": "NOT_SUPPORTED"
+  },
+  "vfd_summary": {
+    "count": 13,
+    "bases": [
+      "VFD118",
+      "VFD120",
+      "VFD216",
+      "VFD218",
+      "VFD410",
+      "VFD412",
+      "VFD414",
+      "VFD422",
+      "VFD424",
+      "VFD834",
+      "VFD836",
+      "VFD219",
+      "VFD219A"
+    ],
+    "raw_counts": {
+      "device_rows": 32,
+      "unique_vfd_bases": 13,
+      "mapped_to_conveyor_explicit": 13,
+      "unknown_conveyor_mapping": 0,
+      "mapped_to_saw_lane_explicit": 5
+    }
+  },
+  "operational_groups": {
+    "startstop_zones": 8,
+    "jam_zones": 27
+  },
+  "sorter_table_classes": {
+    "static_active_rows": 6,
+    "runtime_active_rows": 98,
+    "static_tables": [
+      "Sorters.asc",
+      "SrtAppControl.asc",
+      "SrtBadGapCnfg.asc",
+      "SrtCommMsgMatch.asc",
+      "SrtHrtBeat.asc",
+      "SrtLaneNotAvail.asc",
+      "SrtRndRobin.asc",
+      "SrtScanBoss.asc",
+      "SrtSimConfig.asc",
+      "SrtZoneLane.asc"
+    ],
+    "runtime_tables": [
+      "MsgTrack.asc",
+      "SrtScanSts.asc",
+      "SrtTrack1.asc",
+      "SrtTrack2.asc",
+      "SrtTrack3.asc",
+      "SrtTrack4.asc",
+      "SrtTrack5.asc",
+      "XfrTrack.asc"
+    ]
+  }
+}

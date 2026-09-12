@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-09-12T22:05:39.494697+00:00",
+  "carried_forward": true,
+  "policy": "Further resolution only via RUN/docs/knowledge \u2014 not N/A alone, not finished PLC",
+  "previous_buckets": {
+    "proven_active": 1,
+    "likely_active": 18,
+    "historical_candidates": 0,
+    "engineer_required": 19,
+    "compiler_bugs": 0
+  },
+  "previous_reason_counts": {
+    "MISSING_IO_PROOF": 19
+  },
+  "updates": [],
+  "note": "No new automatic resolutions this pass without stronger documented disable/enable fields"
+}

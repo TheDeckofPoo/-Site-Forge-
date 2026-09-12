@@ -1,0 +1,222 @@
+{
+  "generated_at": "2026-09-12T22:08:07.842234+00:00",
+  "electron_ui_automated": false,
+  "api_workflow_smoke": true,
+  "note": "Same engines as Electron Import\u2192Discover\u2192Build; Electron click-path not automated",
+  "results": [
+    {
+      "label": "CP2",
+      "machine": "ORNCCP2",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+      "ok": true,
+      "steps": [
+        {
+          "step": "Import RUN",
+          "ok": true
+        },
+        {
+          "step": "Discover",
+          "ok": true,
+          "counts": {
+            "controllers": 11,
+            "areas": 1,
+            "equipment": 63,
+            "equipment_included": 63,
+            "motors": 116,
+            "vfds": 0,
+            "drives": 0,
+            "photoeyes": 44,
+            "encoders": 0,
+            "estop_zones": 90,
+            "sawtooth_merges": 0,
+            "sawtooth_lanes": 0,
+            "sorters": 0,
+            "tracking_systems": 2,
+            "tracking": 2,
+            "wcs_interfaces": 84,
+            "io_points": 0,
+            "motor_chains": 176,
+            "transport_paths": 0,
+            "merges": 0,
+            "scanners": 0,
+            "communications": 86,
+            "decision_traces": 44,
+            "superseded_candidates": 141,
+            "inclusion_reasons": 0,
+            "startstop_zones": 8,
+            "jam_zones": 27,
+            "engineering_areas": 1,
+            "full_groups": 79,
+            "sorter_zones": 0,
+            "og_estop_zones": 90,
+            "relationships": 1099,
+            "unresolved": 0,
+            "transport_nodes": 59,
+            "transport_edges": 28
+          },
+          "has_sawtooth": false
+        },
+        {
+          "step": "Populate editors",
+          "ok": true,
+          "transport": true,
+          "sawtooth": false,
+          "sorter": false
+        },
+        {
+          "step": "Review/Correct (API)",
+          "ok": true,
+          "detail": "Area/safety remain engineer-confirmable via area_ops / estop model"
+        },
+        {
+          "step": "Build PLC",
+          "ok": true,
+          "detail": "Use existing candidates / load_from_run bridge; not re-emitted here"
+        }
+      ]
+    },
+    {
+      "label": "CP4",
+      "machine": "ORNCCP4",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+      "ok": true,
+      "steps": [
+        {
+          "step": "Import RUN",
+          "ok": true
+        },
+        {
+          "step": "Discover",
+          "ok": true,
+          "counts": {
+            "controllers": 18,
+            "areas": 1,
+            "equipment": 76,
+            "equipment_included": 76,
+            "motors": 86,
+            "vfds": 13,
+            "drives": 13,
+            "photoeyes": 55,
+            "encoders": 2,
+            "estop_zones": 90,
+            "sawtooth_merges": 1,
+            "sawtooth_lanes": 5,
+            "sorters": 2,
+            "tracking_systems": 3,
+            "tracking": 3,
+            "wcs_interfaces": 84,
+            "io_points": 0,
+            "motor_chains": 176,
+            "transport_paths": 0,
+            "merges": 0,
+            "scanners": 0,
+            "communications": 87,
+            "decision_traces": 55,
+            "superseded_candidates": 134,
+            "inclusion_reasons": 0,
+            "startstop_zones": 8,
+            "jam_zones": 27,
+            "engineering_areas": 1,
+            "full_groups": 79,
+            "sorter_zones": 2,
+            "og_estop_zones": 90,
+            "relationships": 1168,
+            "unresolved": 0,
+            "transport_nodes": 72,
+            "transport_edges": 40
+          },
+          "has_sawtooth": true
+        },
+        {
+          "step": "Populate editors",
+          "ok": true,
+          "transport": true,
+          "sawtooth": true,
+          "sorter": true
+        },
+        {
+          "step": "Review/Correct (API)",
+          "ok": true,
+          "detail": "Area/safety remain engineer-confirmable via area_ops / estop model"
+        },
+        {
+          "step": "Build PLC",
+          "ok": true,
+          "detail": "Use existing candidates / load_from_run bridge; not re-emitted here"
+        }
+      ]
+    },
+    {
+      "label": "CP5",
+      "machine": "ORNCCP5",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN",
+      "ok": true,
+      "steps": [
+        {
+          "step": "Import RUN",
+          "ok": true
+        },
+        {
+          "step": "Discover",
+          "ok": true,
+          "counts": {
+            "controllers": 18,
+            "areas": 1,
+            "equipment": 79,
+            "equipment_included": 79,
+            "motors": 96,
+            "vfds": 16,
+            "drives": 16,
+            "photoeyes": 94,
+            "encoders": 0,
+            "estop_zones": 90,
+            "sawtooth_merges": 0,
+            "sawtooth_lanes": 0,
+            "sorters": 5,
+            "tracking_systems": 3,
+            "tracking": 3,
+            "wcs_interfaces": 84,
+            "io_points": 0,
+            "motor_chains": 176,
+            "transport_paths": 0,
+            "merges": 0,
+            "scanners": 0,
+            "communications": 87,
+            "decision_traces": 94,
+            "superseded_candidates": 178,
+            "inclusion_reasons": 0,
+            "startstop_zones": 8,
+            "jam_zones": 27,
+            "engineering_areas": 1,
+            "full_groups": 79,
+            "sorter_zones": 5,
+            "og_estop_zones": 90,
+            "relationships": 1163,
+            "unresolved": 0,
+            "transport_nodes": 79,
+            "transport_edges": 42
+          },
+          "has_sawtooth": false
+        },
+        {
+          "step": "Populate editors",
+          "ok": true,
+          "transport": true,
+          "sawtooth": false,
+          "sorter": true
+        },
+        {
+          "step": "Review/Correct (API)",
+          "ok": true,
+          "detail": "Area/safety remain engineer-confirmable via area_ops / estop model"
+        },
+        {
+          "step": "Build PLC",
+          "ok": true,
+          "detail": "Use existing candidates / load_from_run bridge; not re-emitted here"
+        }
+      ]
+    }
+  ],
+  "ok": true
+}

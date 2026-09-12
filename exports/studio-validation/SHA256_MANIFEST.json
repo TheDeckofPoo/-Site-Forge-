@@ -1,0 +1,37 @@
+{
+  "generated_at": "2026-09-12T22:05:39.555259+00:00",
+  "files": {
+    "ORNCCP2_knowledge_driven_candidate.L5X": {
+      "sha256": "c809fec9665c3bb51963f072480e3b5397a7402e39da977b159029b9767e2359",
+      "bytes": 691887,
+      "label": "CP2"
+    },
+    "CP2_STUDIO_IMPORT_PRECHECK.md": {
+      "sha256": "3546127f0604a3373d22c1248412ab2e6a0e58f6beaf8ed90e8166a05c57a8d3",
+      "bytes": 1179
+    },
+    "ORNCCP4_knowledge_driven_candidate.L5X": {
+      "sha256": "65c2bd4f80b5cec3b5a04d3043127d8da8368eabadef2f4559054447f7cc3893",
+      "bytes": 691747,
+      "label": "CP4"
+    },
+    "CP4_STUDIO_IMPORT_PRECHECK.md": {
+      "sha256": "ba66c0b9aab9d85f5b245b167f5e04f07fa3c3c369ee89e4091e2fdd3129f7c9",
+      "bytes": 1179
+    },
+    "ORNCCP5_candidate_v2.L5X": {
+      "sha256": "27c5a003f8f5f9fb2e402057a39f7572d1e47cafc957ca9102deea86a6c9d99e",
+      "bytes": 1956491,
+      "label": "CP5"
+    },
+    "CP5_STUDIO_IMPORT_PRECHECK.md": {
+      "sha256": "7aef42bb13edcf36f99ae97b7ae3aa4af77dc6ce58372db88bfe592f4267f4d5",
+      "bytes": 1171
+    },
+    "validation_checklist.md": {
+      "sha256": "39e634ce02d39118397478c16d71338ac91f2f686f720e87811a171d13fc01f4",
+      "bytes": 996
+    }
+  },
+  "studio_import_claimed": false
+}

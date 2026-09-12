@@ -1,0 +1,26 @@
+{
+  "capabilities": {
+    "connection_transport": "MODELED",
+    "inbound_parsing": "MODELED",
+    "outbound_fifo": "MODELED",
+    "route_request": "CONFIGURATION_REQUIRED",
+    "route_response": "NOT_SUPPORTED",
+    "divert_confirmation": "NOT_SUPPORTED",
+    "heartbeat": "NOT_SUPPORTED",
+    "event_reporting": "MODELED"
+  },
+  "modeled": [
+    "connection_transport",
+    "event_reporting",
+    "inbound_parsing",
+    "outbound_fifo",
+    "route_request"
+  ],
+  "generatable": [],
+  "unsupported": [
+    "divert_confirmation",
+    "heartbeat",
+    "route_response"
+  ],
+  "note": "Do not clone finished WCS program; runtime queues \u2260 static PLC defs"
+}

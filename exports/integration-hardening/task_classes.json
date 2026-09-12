@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-09-12T22:05:39.570215+00:00",
+  "classes": [
+    "safety",
+    "tracking",
+    "wcs",
+    "fast_equipment",
+    "slow_equipment",
+    "config_l1",
+    "config_l2",
+    "config_l3",
+    "system",
+    "hmi"
+  ],
+  "policy": "Do not hard-code PLC5 task periods as universal Fortna standards",
+  "defaults_source": "generic library / platform standards / engineer override",
+  "doc": "docs/TASK_PROGRAM_ARCHITECTURE.md"
+}

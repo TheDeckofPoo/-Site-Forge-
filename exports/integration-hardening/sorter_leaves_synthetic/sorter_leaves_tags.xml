@@ -1,0 +1,15 @@
+<Tags>
+<Tag Name="ENC9001" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Sorter encoder leaf from RUN Encoders.asc]]></Description></Tag>
+<Tag Name="ENC9001_PULSE" TagType="Base" DataType="BOOL" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Encoder I/O pulse bit (structure only)]]></Description></Tag>
+<Tag Name="ENC9002" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Sorter encoder leaf from RUN Encoders.asc]]></Description></Tag>
+<Tag Name="ENC9002_PULSE" TagType="Base" DataType="BOOL" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Encoder I/O pulse bit (structure only)]]></Description></Tag>
+<Tag Name="ALPHA_SCAN_NORTH" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Scanner device structure from ScnScanDevice]]></Description></Tag>
+<Tag Name="ZONE_NORTH" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Scan zone configuration tag]]></Description></Tag>
+<Tag Name="ALPHA_SCAN_NORTH_Induct" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Induct structure associated to scanner]]></Description></Tag>
+<Tag Name="Alpha_Scan_Boss_Induct" TagType="Base" DataType="DINT" Constant="false" ExternalAccess="Read/Write"><Description><![CDATA[Induct structure from SrtScanBoss]]></Description></Tag>
+<Tag Name="REASON_NO_READ" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="1"/></Data></Tag>
+<Tag Name="REASON_NO_ROUTE" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="2"/></Data></Tag>
+<Tag Name="REASON_LANE_FULL" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="3"/></Data></Tag>
+<Tag Name="REASON_DIVERT_FAULT" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="4"/></Data></Tag>
+<Tag Name="REASON_RECIRC" TagType="Base" DataType="DINT" Constant="true" ExternalAccess="Read"><Description><![CDATA[Generic sorter reason code]]></Description><Data Format="Dec"><DataValue Member="0" Value="5"/></Data></Tag>
+</Tags>
