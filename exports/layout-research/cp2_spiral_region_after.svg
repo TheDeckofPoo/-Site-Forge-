@@ -1,0 +1,173 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="402.59 337.21 622.65 145.87" width="1400" height="400">
+<rect x="100%" y="100%" width="0" height="0"/>
+<rect x="402.59" y="337.21" width="622.6500000000001" height="145.87" fill="#0b1220"/>
+<text x="414.59" y="355.21" fill="#94a3b8" font-size="12" font-family="monospace">CP2 spiral/curve-bank region (display-context)</text>
+<path d="M 542.04 443.05 L 442.59 443.05" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P530</title></path>
+<text x="492.31" y="443.05" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P530</text>
+<path d="M 452.89 440.01 L 446.59 443.05 L 452.89 446.09" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 985.24 430.0 L 985.24 430.39 A 3.3 3.3 0 0 0 981.94 433.68 L 980.1 433.68" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P552</title></path>
+<text x="982.67" y="431.84" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P552</text>
+<path d="M 986.70 425.21 L 983.35 431.35 L 990.25 430.16" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 985.24 430.0 L 985.24 405.29" fill="none" stroke="#67e8f9" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P554</title></path>
+<text x="985.24" y="417.64" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P554</text>
+<path d="M 988.28 415.59 L 985.24 409.29 L 982.20 415.59" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 978.41 439.52 L 978.41 439.67 A 3.41 3.41 0 0 0 974.99 443.08 L 974.84 443.08" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P562</title></path>
+<text x="976.62" y="441.30" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P562</text>
+<path d="M 979.99 433.65 L 977.67 440.26 L 984.29 437.96" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 535.59 427.85 L 535.59 430.15 A 3.3 3.3 0 0 1 538.89 433.45 L 540.27 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600C</title></path>
+<text x="537.93" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600C</text>
+<path d="M 531.33 427.50 L 537.70 430.38 L 536.00 423.59" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 557.69 427.85 L 557.69 430.15 A 3.3 3.3 0 0 0 554.39 433.45 L 553.01 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600D</title></path>
+<text x="555.35" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600D</text>
+<path d="M 557.28 423.59 L 555.58 430.38 L 561.95 427.50" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 579.79 427.85 L 579.79 430.15 A 3.3 3.3 0 0 0 576.49 433.45 L 575.11 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600E</title></path>
+<text x="577.45" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600E</text>
+<path d="M 579.38 423.59 L 577.68 430.38 L 584.05 427.50" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 617.54 427.85 L 617.54 430.15 A 3.3 3.3 0 0 1 620.84 433.45 L 622.22 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600F</title></path>
+<text x="619.88" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600F</text>
+<path d="M 613.28 427.50 L 619.65 430.38 L 617.95 423.59" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 647.93 427.85 L 647.93 430.15 A 3.3 3.3 0 0 0 644.63 433.45 L 643.25 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600G</title></path>
+<text x="645.59" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600G</text>
+<path d="M 647.52 423.59 L 645.82 430.38 L 652.19 427.50" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 678.31 427.85 L 678.31 430.15 A 3.3 3.3 0 0 0 675.01 433.45 L 673.63 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600H</title></path>
+<text x="675.97" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600H</text>
+<path d="M 677.90 423.59 L 676.20 430.38 L 682.57 427.50" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 710.54 427.85 L 710.54 430.15 A 3.3 3.3 0 0 1 713.84 433.45 L 715.22 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600I</title></path>
+<text x="712.88" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600I</text>
+<path d="M 706.28 427.50 L 712.65 430.38 L 710.95 423.59" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 740.92 427.85 L 740.92 430.15 A 3.3 3.3 0 0 0 737.63 433.45 L 736.24 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600J</title></path>
+<text x="738.58" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600J</text>
+<path d="M 740.51 423.59 L 738.81 430.38 L 745.18 427.50" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 771.31 427.85 L 771.31 430.15 A 3.3 3.3 0 0 0 768.01 433.45 L 766.63 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600K</title></path>
+<text x="768.97" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600K</text>
+<path d="M 770.90 423.59 L 769.20 430.38 L 775.57 427.50" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 862.47 427.85 L 862.47 430.15 A 3.3 3.3 0 0 1 865.77 433.45 L 867.15 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600M</title></path>
+<text x="864.81" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600M</text>
+<path d="M 858.21 427.50 L 864.58 430.38 L 862.88 423.59" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 892.85 427.85 L 892.85 430.15 A 3.3 3.3 0 0 0 889.55 433.45 L 888.17 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600N</title></path>
+<text x="890.51" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600N</text>
+<path d="M 892.44 423.59 L 890.74 430.38 L 897.11 427.50" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 923.05 426.17 L 923.05 428.47 A 3.3 3.3 0 0 0 919.75 431.77 L 918.37 431.77" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600O</title></path>
+<text x="920.71" y="428.97" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600O</text>
+<path d="M 922.64 421.91 L 920.94 428.70 L 927.31 425.82" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 953.44 426.17 L 953.44 428.47 A 3.3 3.3 0 0 1 956.74 431.77 L 958.12 431.77" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P600P</title></path>
+<text x="955.78" y="428.97" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P600P</text>
+<path d="M 949.18 425.82 L 955.55 428.70 L 953.85 421.91" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 535.59 383.66 L 535.59 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602C</title></path>
+<text x="535.59" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602C</text>
+<path d="M 532.55 417.55 L 535.59 423.85 L 538.63 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 557.69 383.66 L 557.69 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602D</title></path>
+<text x="557.69" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602D</text>
+<path d="M 554.65 417.55 L 557.69 423.85 L 560.73 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 579.79 383.66 L 579.79 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602E</title></path>
+<text x="579.79" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602E</text>
+<path d="M 576.75 417.55 L 579.79 423.85 L 582.83 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 617.54 383.66 L 617.54 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602F</title></path>
+<text x="617.54" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602F</text>
+<path d="M 614.50 417.55 L 617.54 423.85 L 620.58 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 647.93 383.66 L 647.93 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602G</title></path>
+<text x="647.93" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602G</text>
+<path d="M 644.89 417.55 L 647.93 423.85 L 650.97 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 678.31 383.66 L 678.31 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602H</title></path>
+<text x="678.31" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602H</text>
+<path d="M 675.27 417.55 L 678.31 423.85 L 681.35 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 710.54 383.66 L 710.54 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602I</title></path>
+<text x="710.54" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602I</text>
+<path d="M 707.50 417.55 L 710.54 423.85 L 713.58 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 740.92 383.66 L 740.92 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602J</title></path>
+<text x="740.92" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602J</text>
+<path d="M 737.88 417.55 L 740.92 423.85 L 743.96 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 771.31 383.66 L 771.31 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602K</title></path>
+<text x="771.31" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602K</text>
+<path d="M 768.27 417.55 L 771.31 423.85 L 774.35 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 862.47 383.66 L 862.47 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602M</title></path>
+<text x="862.47" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602M</text>
+<path d="M 859.43 417.55 L 862.47 423.85 L 865.51 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 892.85 383.66 L 892.85 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602N</title></path>
+<text x="892.85" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602N</text>
+<path d="M 889.81 417.55 L 892.85 423.85 L 895.89 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 923.24 383.66 L 923.24 427.85" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602O</title></path>
+<text x="923.24" y="405.75" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602O</text>
+<path d="M 920.20 417.55 L 923.24 423.85 L 926.28 417.55" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 953.41 381.97 L 953.41 426.17" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P602P</title></path>
+<text x="953.41" y="404.07" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P602P</text>
+<path d="M 950.37 415.87 L 953.41 422.17 L 956.45 415.87" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 530.53 388.26 L 530.53 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612C</title></path>
+<text x="530.53" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612C</text>
+<path d="M 527.49 416.63 L 530.53 422.93 L 533.57 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 552.63 388.26 L 552.63 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612D</title></path>
+<text x="552.63" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612D</text>
+<path d="M 549.59 416.63 L 552.63 422.93 L 555.67 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 574.73 388.26 L 574.73 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612E</title></path>
+<text x="574.73" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612E</text>
+<path d="M 571.69 416.63 L 574.73 422.93 L 577.77 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 612.48 388.26 L 612.48 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612F</title></path>
+<text x="612.48" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612F</text>
+<path d="M 609.44 416.63 L 612.48 422.93 L 615.52 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 642.86 388.26 L 642.86 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612G</title></path>
+<text x="642.86" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612G</text>
+<path d="M 639.82 416.63 L 642.86 422.93 L 645.90 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 673.25 388.26 L 673.25 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612H</title></path>
+<text x="673.25" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612H</text>
+<path d="M 670.21 416.63 L 673.25 422.93 L 676.29 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 705.47 388.26 L 705.47 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612I</title></path>
+<text x="705.47" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612I</text>
+<path d="M 702.43 416.63 L 705.47 422.93 L 708.51 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 735.86 388.26 L 735.86 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612J</title></path>
+<text x="735.86" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612J</text>
+<path d="M 732.82 416.63 L 735.86 422.93 L 738.90 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 766.25 388.26 L 766.25 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612K</title></path>
+<text x="766.25" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612K</text>
+<path d="M 763.21 416.63 L 766.25 422.93 L 769.29 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 857.4 388.26 L 857.4 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612M</title></path>
+<text x="857.40" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612M</text>
+<path d="M 854.36 416.63 L 857.40 422.93 L 860.44 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 887.79 388.26 L 887.79 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612N</title></path>
+<text x="887.79" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612N</text>
+<path d="M 884.75 416.63 L 887.79 422.93 L 890.83 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 918.17 388.26 L 918.17 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612O</title></path>
+<text x="918.17" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612O</text>
+<path d="M 915.13 416.63 L 918.17 422.93 L 921.21 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 948.56 388.26 L 948.56 426.93" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P612P</title></path>
+<text x="948.56" y="407.60" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P612P</text>
+<path d="M 945.52 416.63 L 948.56 422.93 L 951.60 416.63" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 484.95 427.85 L 484.95 430.15 A 3.3 3.3 0 0 1 488.25 433.45 L 489.63 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P700A</title></path>
+<text x="487.29" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P700A</text>
+<path d="M 480.69 427.50 L 487.06 430.38 L 485.36 423.59" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 503.37 427.85 L 503.37 430.15 A 3.3 3.3 0 0 1 506.66 433.45 L 508.05 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P700B</title></path>
+<text x="505.71" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P700B</text>
+<path d="M 499.11 427.50 L 505.48 430.38 L 503.78 423.59" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 519.94 427.85 L 519.94 430.15 A 3.3 3.3 0 0 1 523.24 433.45 L 524.62 433.45" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P700C</title></path>
+<text x="522.28" y="430.65" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P700C</text>
+<path d="M 515.68 427.50 L 522.05 430.38 L 520.35 423.59" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 484.95 427.85 L 484.95 408.52" fill="none" stroke="#67e8f9" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P702A</title></path>
+<text x="484.95" y="418.19" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P702A</text>
+<path d="M 487.99 418.82 L 484.95 412.52 L 481.91 418.82" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 503.37 427.85 L 503.37 408.52" fill="none" stroke="#67e8f9" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P702B</title></path>
+<text x="503.37" y="418.19" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P702B</text>
+<path d="M 506.41 418.82 L 503.37 412.52 L 500.33 418.82" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 519.94 427.85 L 519.94 408.52" fill="none" stroke="#67e8f9" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P702C</title></path>
+<text x="519.94" y="418.19" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P702C</text>
+<path d="M 522.98 418.82 L 519.94 412.52 L 516.90 418.82" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 482.65 377.21 L 482.65 423.25" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P708A</title></path>
+<text x="482.65" y="400.23" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P708A</text>
+<path d="M 479.61 412.95 L 482.65 419.25 L 485.69 412.95" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 501.06 377.21 L 501.06 423.25" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P708B</title></path>
+<text x="501.06" y="400.23" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P708B</text>
+<path d="M 498.02 412.95 L 501.06 419.25 L 504.10 412.95" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 517.64 377.21 L 517.64 423.25" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P708C</title></path>
+<text x="517.64" y="400.23" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P708C</text>
+<path d="M 514.60 412.95 L 517.64 419.25 L 520.68 412.95" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 487.25 377.21 L 487.25 423.25" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P710A</title></path>
+<text x="487.25" y="400.23" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P710A</text>
+<path d="M 484.21 412.95 L 487.25 419.25 L 490.29 412.95" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 505.67 377.21 L 505.67 423.25" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P710B</title></path>
+<text x="505.67" y="400.23" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P710B</text>
+<path d="M 502.63 412.95 L 505.67 419.25 L 508.71 412.95" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 522.24 377.21 L 522.24 423.25" fill="none" stroke="#38bdf8" stroke-width="4.00" stroke-linecap="round" stroke-linejoin="round"><title>P710C</title></path>
+<text x="522.24" y="400.23" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P710C</text>
+<path d="M 519.20 412.95 L 522.24 419.25 L 525.28 412.95" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 540.35 437.21 L 540.35 439.59 A 3.3 3.3 0 0 1 543.65 442.89 L 545.03 442.89" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P720</title></path>
+<text x="542.69" y="440.05" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P720</text>
+<path d="M 536.13 436.87 L 542.49 439.80 L 540.83 433.00" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+</svg>

@@ -1,0 +1,1601 @@
+{
+  "generated_at": "2026-09-12T15:48:57.507471+00:00",
+  "counts": {
+    "total": 302,
+    "configuration_required": 301,
+    "generation_not_yet_supported": 1
+  },
+  "items": [
+    {
+      "kind": "area",
+      "conveyor": "P100",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P100",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P100",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P100A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P100A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P100A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P102",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P102",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P102",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P104",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P104",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P104",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P106",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P106",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P106",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P108",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P108",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P108",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P110",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P110",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P110",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P112",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P112",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P112",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P114",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P114",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P114",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P116",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P116",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P116",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P118",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P118",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P118",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P120",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P120",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P120",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P200",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P200",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P200",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P200A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P200A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P200A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P202",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P202",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P202",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P204",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P204",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P204",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P206",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P206",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P206",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P208",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P208",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P208",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P209",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P209",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P209",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P210",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P210",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P210",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P211",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P211",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P211",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P212",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P212",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P212",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P213",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P213",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P213",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P214",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P214",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P214",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P215",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P215",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P215",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P216",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P216",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P216",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P217",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P217",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P217",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P218",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P218",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P218",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P219",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P219",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P219",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P219A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P219A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P219A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P226",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P226",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P226",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P229",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P229",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P229",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P231",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P231",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P231",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P231A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P231A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P231A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P300",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P300",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P300",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P300A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P300A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P300A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P302",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P302",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P302",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P304",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P304",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P304",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P305",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P305",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P305",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P306",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P306",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P306",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P308",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P308",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P308",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P408",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P408",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P408",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P410",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P410",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P410",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P412",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P412",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P412",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P414",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P414",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P414",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P416",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P416",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P416",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P418",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P418",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P418",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P420",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P420",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P420",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P422",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P422",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P422",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P424",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P424",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P424",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P424A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P424A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P424A",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P426",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P426",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P426",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P428",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P428",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P428",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P430",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P430",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P430",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P432",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P432",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P432",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P434",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P434",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P434",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P436",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P436",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P436",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P438",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P438",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P438",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P446",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P446",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P446",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P447",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P447",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P447",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P448",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P448",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P448",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P450",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P450",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P450",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P452",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P452",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P452",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P454",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P454",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P454",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P456",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P456",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P456",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P462",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P462",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P462",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P818",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P818",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P818",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P820",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P820",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P820",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P822",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P822",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P822",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P824",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P824",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P824",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P826",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P826",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P826",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P828",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P828",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P828",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P830",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P830",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P830",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P832",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P832",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P832",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P834",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P834",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P834",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "area",
+      "conveyor": "P836",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "es_zone",
+      "conveyor": "P836",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "downstream",
+      "conveyor": "P836",
+      "status": "CONFIGURATION REQUIRED"
+    },
+    {
+      "kind": "sawtooth_site_parameter",
+      "name": "LANE_0_P219.full_eye_ezpe",
+      "role": "full_eye_ezpe",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "SawLane.ReserveTM"
+    },
+    {
+      "kind": "sawtooth_derived_confirm",
+      "name": "LANE_4_P214.full_eye_ezpe",
+      "role": "full_eye_ezpe",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "RUN_DERIVED value=EZPE212_F2 \u2014 engineer confirm"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "EZPE127_F",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "Enable_Merge1_Reserv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "Enable_Merge2_Trk",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "Enable_hold",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_aoUNL_PT_CnvDeltaDist",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astCollPeTrackCal",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astLaneClctrSlotResvCntrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astLanePeTrackCal",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astUNL_BFR_CnvCtrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astUNL_GPR_CnvCtrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astUNL_PT_CnvCtrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astUNL_Q1_CnvCtrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astUNL_Q2_CnvCtrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_astUNL_SlugBldCtrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_diHMI_LaneIdx",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_diNoCartonGap",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_rFastTaskDeltaMilliSecs",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_stLaneClctrSlotResvCntrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_stUNL_Q2_CnvCtrl",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_stUNL_SlugBldCfgTmp1",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_xCollTrackPE_OffsetCaptureArm",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_xLaneClctrPeCalibrate",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG422_xLane_OffsetCaptureArm",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG500_adiCollTrkArray_Freeze",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG500_astCollPeTrackCal",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG500_astLaneClctrSlotResvCntrl_Freeze",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG500_stCollLaneMrgCapture",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG500_xCollTrackPE_OffsetCaptureArm",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "MRG500_xLaneClctrPeCalibrate",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P118_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P120_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P1491_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P1492_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P216_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P218_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P219A_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P2426_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P2501_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P3451_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P3452_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P410_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P412_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P4131_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P4132_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P418_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P422_SawMerge_HMI",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P834_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "P836_Conv",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE118_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE1491_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE1491_P",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE1492_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE219A_J",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE2426_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE3451_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE3451_P",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE3452_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE410_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE4131_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE4131_P",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE4132_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE414A_J",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE414B_J",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE414C_J",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE414D_J",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE414_J",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE418_I",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "PE418_P",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "kind": "unmapped_pack_symbol",
+      "symbol": "Use_GapStore_Belts",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "kind": "lane_full_eye",
+      "lane": "LANE_0_P219",
+      "full_eye_ezpe": "EZPE217_F",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "ReserveTM=tmfcEZPE217_F has no pack EZPE counterpart"
+    },
+    {
+      "kind": "lane_full_eye",
+      "lane": "LANE_4_P214",
+      "full_eye_ezpe": "EZPE212_F2",
+      "status": "CONFIGURATION REQUIRED",
+      "detail": "ReserveTM=tmfcEZPE212_F1 \u2192 EZPE212_F1; pack has EZPE212_F2 (suffix variance \u2014 confirm)"
+    },
+    {
+      "kind": "tracking_wcs",
+      "status": "GENERATION NOT YET SUPPORTED",
+      "detail": "SrtTrack / MsgTrack / MsgWCS / WCSEvents / XfrTrack inventory only",
+      "blocked_programs": [
+        "Sorter_Track",
+        "WCS_Interface_TCP_IP"
+      ]
+    }
+  ]
+}

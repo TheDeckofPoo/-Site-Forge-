@@ -15,3 +15,8 @@ Yes — tables under `RUN/FORTNA/`:
 - Menu modules: `SawMerge`, `HSSawMerge` (compiled C on the QNX side; not source in this repo)
 
 Site Forge **Sawtooth Merge** tab designs Logix pack inputs; Asc import for live site params is a later step.
+
+## CP4 fidelity generation
+
+See [`docs/CP4_SAWTOOTH_FIDELITY.md`](CP4_SAWTOOTH_FIDELITY.md) and `exports/cp4-sawtooth-pass/`.
+Generation inputs are CP4 RUN + frozen discovery + generic `Sawtooth_Merge_Program.L5X` only — finished PLC4 is never read.

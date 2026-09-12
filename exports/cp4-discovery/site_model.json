@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T07:04:45.982097+00:00",
+  "generated_at": "2026-09-12T15:48:28.328709+00:00",
   "machine": "ORNCCP4",
   "source_of_truth": "CP4 RUN only \u2014 finished PLC4 L5X not read; no sawtooth PLC generation",
   "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
@@ -1594,8 +1594,8 @@
           "y": 82600.0
         },
         "exit": {
-          "x": 38251.03994545071,
-          "y": 81985.54740061754
+          "x": 38283.978065805124,
+          "y": 82045.36583902314
         }
       },
       "has_geometry": true,
@@ -2318,7 +2318,7 @@
     ]
   },
   "vfds": {
-    "generated_at": "2026-09-12T07:04:45.908128+00:00",
+    "generated_at": "2026-09-12T15:48:28.261059+00:00",
     "machine": "ORNCCP4",
     "source_of_truth": "RUN only \u2014 finished PLC4 L5X not read",
     "source_file": "FORTNA/Conveyor.asc",

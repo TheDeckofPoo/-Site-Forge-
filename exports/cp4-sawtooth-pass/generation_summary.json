@@ -1,0 +1,31 @@
+{
+  "generated_at": "2026-09-12T15:48:57.507560+00:00",
+  "machine": "ORNCCP4",
+  "pass": "cp4-sawtooth-fidelity",
+  "finished_plc4_used": false,
+  "discovery_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-discovery",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-sawtooth-pass\\generated\\OReillyGreensboro_ORNCCP4.L5X",
+  "parameterized_program": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-sawtooth-pass\\generated\\Sawtooth_Merge_Parameterized.L5X",
+  "content_digest": "17f3f00f1ad52f39f4943872e9f127af4b021fa06822b59d3a4da397df1825a1",
+  "counts": {
+    "conveyors_generated": 76,
+    "discovery_mechanical": 76,
+    "removed_prefix_pollution": [],
+    "saw_lanes": 5,
+    "encoders": 2,
+    "vfd_bases": 13,
+    "vfd_forced": 15,
+    "configuration_required": 301,
+    "generation_not_yet_supported": 1
+  },
+  "preserved_pass2": {
+    "vfd_bases": 13,
+    "shared_vfd_relationships": true,
+    "encoders": 2,
+    "sawtooth_lanes": 5,
+    "no_finished_plc4_input": true
+  },
+  "tracking_wcs": "GENERATION NOT YET SUPPORTED",
+  "ui_note": "No new Transport toolbar buttons",
+  "ok": true
+}

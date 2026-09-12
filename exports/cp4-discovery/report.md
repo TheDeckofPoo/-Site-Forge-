@@ -1,6 +1,6 @@
 # CP4 Discovery Report — ORNCCP4
 
-Generated: 2026-09-12T07:04:45.981970+00:00
+Generated: 2026-09-12T15:48:28.328594+00:00
 RUN dir: `C:\dev\worktree\FortnaPlus\workspace\cp4-run\RUN`
 Output: `C:\dev\worktree\FortnaPlus\exports\cp4-discovery`
 Tar provenance (extract source only): `C:\Users\curtiskricke\Desktop\ORielly Green\Greensboro Tar.gz\20251016-0933-OReillyGreensboro-ORNCCP4-RUN.tar.gz`

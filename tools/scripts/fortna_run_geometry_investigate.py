@@ -421,6 +421,95 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                     display_extra.add(tag)
                     break
 
+    # Same-IO-word dense CURVE banks (presentation only):
+    # Autogen may omit large multi-CURVE assemblies that share IO_Address_Word with
+    # owned equipment (e.g. plant spiral/curve banks). Cluster CURVE arc centers on
+    # shared words; if a cluster is large and mostly outside Autogen ownership, pull
+    # it (+ endpoint mates) as display_context. Never invents PLC ownership.
+    owned_words = {
+        _clean(mech_by_name[t].get("IO_Address_Word"))
+        for t in owned_tags
+        if _clean(mech_by_name[t].get("IO_Address_Word"))
+    }
+    if owned_words:
+        try:
+            from fortna_physical_geometry import build_equipment_geometry as _beg3
+
+            word_curves: list[dict] = []
+            for tag, row in mech_by_name.items():
+                if _clean(row.get("Type")).upper() not in {"CURVE", "TRIANG"}:
+                    continue
+                if _clean(row.get("IO_Address_Word")) not in owned_words:
+                    continue
+                g = _beg3(row)
+                ac = g.get("arc_center") if g else None
+                if not ac:
+                    continue
+                word_curves.append({"tag": tag, "row": row, "geom": g, "ac": ac})
+
+            used_c: set[str] = set()
+            dense_clusters: list[list[dict]] = []
+            for e in word_curves:
+                if e["tag"] in used_c:
+                    continue
+                cl = [e]
+                used_c.add(e["tag"])
+                changed = True
+                while changed:
+                    changed = False
+                    for o in word_curves:
+                        if o["tag"] in used_c:
+                            continue
+                        if any(
+                            math.hypot(
+                                float(o["ac"]["x"]) - float(x["ac"]["x"]),
+                                float(o["ac"]["y"]) - float(x["ac"]["y"]),
+                            )
+                            <= 5000.0
+                            for x in cl
+                        ):
+                            cl.append(o)
+                            used_c.add(o["tag"])
+                            changed = True
+                # Dense multi-curve banks (print spirals / curve fields) often have
+                # 5–20 CURVEs spanning several thousand RUN units.
+                if len(cl) >= 5:
+                    dense_clusters.append(cl)
+
+            for cl in dense_clusters:
+                owned_in = sum(1 for e in cl if e["tag"] in owned_set)
+                # Only pull banks that Autogen largely missed (print spiral case).
+                if owned_in > max(2, len(cl) // 4):
+                    continue
+                for e in cl:
+                    display_extra.add(e["tag"])
+                # One-hop mates of the bank (tangents / collectors)
+                bank_ends: list[tuple[dict, dict]] = []
+                for e in cl:
+                    en = e["geom"].get("entry")
+                    ex = e["geom"].get("exit")
+                    if en and ex:
+                        bank_ends.append((en, ex))
+                for tag, row in mech_by_name.items():
+                    if tag in owned_set or tag in display_extra:
+                        continue
+                    if _clean(row.get("IO_Address_Word")) not in owned_words:
+                        continue
+                    en, ex = _quick_anchors(row)
+                    if not en or not ex:
+                        continue
+                    for ben, bex in bank_ends:
+                        if (
+                            _dist(bex, en) <= _ASSEMBLY_U
+                            or _dist(ex, ben) <= _ASSEMBLY_U
+                            or _dist(ben, en) <= _MATE_U
+                            or _dist(bex, ex) <= _MATE_U
+                        ):
+                            display_extra.add(tag)
+                            break
+        except Exception:
+            pass
+
     target_tags = sorted(owned_set | display_extra)
 
     equipment: list[dict] = []

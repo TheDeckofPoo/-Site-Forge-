@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T07:04:45.976254+00:00",
+  "generated_at": "2026-09-12T15:48:28.324297+00:00",
   "machine": "ORNCCP4",
   "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
   "source_of_truth": "RUN only \u2014 finished PLC4 L5X not read",
@@ -10,8 +10,8 @@
   "equipment_total": 76,
   "connection_candidates": {
     "total": 183,
-    "confirmed": 42,
-    "high_confidence": 2,
+    "confirmed": 43,
+    "high_confidence": 1,
     "ambiguous": 139
   },
   "saw_lanes_with_geometry": 5,

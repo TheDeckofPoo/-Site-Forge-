@@ -1,0 +1,123 @@
+{
+  "generated_at": "2026-09-12T16:00:00Z",
+  "branch": "feature/cp4-sawtooth-fidelity",
+  "print_reference": {
+    "path": "exports/layout-research/cp2_print_reference.png",
+    "role": "HUMAN_VISUAL_VALIDATION_ONLY",
+    "not_used_as": [
+      "source_truth",
+      "geometry_input",
+      "topology_input",
+      "coordinate_input",
+      "hardcoded_greensboro_data"
+    ],
+    "engineering_source": "workspace/active/RUN (ORNCCP2 Conveyor.asc + Autogen ownership)"
+  },
+  "site_forge_evidence": {
+    "schematic_after_pass2": "exports/layout-research/cp2_schematic_after_pass2.svg",
+    "graph": "exports/run-geometry/auto-build/transport_graph_from_run.json",
+    "nodes_placed": 65,
+    "plc_owned": 35,
+    "display_context": 30
+  },
+  "overall": {
+    "verdict": "RECOGNIZABLE_BUT_IMPERFECT",
+    "demo_usable_for_cp2_autogen_scope": true,
+    "print_red_box_spiral_in_cp2_autogen_view": true,
+    "summary": "CP2 Autogen-scoped Site Forge layout recognizably matches hairpins, long straights, parallel lanes, and curve continuity. The red-boxed concentric spiral maps to the P600/P700 curve bank (same IO word as Autogen, not PE/VFD-linked). A generic same-IO-word dense CURVE-bank display-context expansion now places that bank on the canvas without changing PLC ownership (35 owned)."
+  },
+  "post_acceptance_graph": {
+    "nodes_placed": 161,
+    "plc_owned": 35,
+    "display_context": 126,
+    "spiral_family_tags_approx": 53,
+    "curve_bodies": 44
+  },
+  "regions": [
+    {
+      "id": "red_box_spiral",
+      "print_feature": "Red-boxed concentric circular/spiral conveyor assembly (multi-loop curves with radial feeders)",
+      "classification": "RECOGNIZABLE_BUT_IMPERFECT",
+      "confidence": "HIGH",
+      "reason": "Spiral-area analysis maps this assembly to P600/P602/P610/P612/P700/… families. Initially missing from Autogen graph (not PE/VFD-linked) despite sharing IO_Address_Word=6000. Generic same-IO-word dense CURVE-bank display-context expansion now places the bank (~53 spiral-family tags, dashed displayContext). Arrangement is recognizable as a multi-CURVE field; print sheet framing/spacing remain schematic.",
+      "run_equipment": {
+        "families": ["P600", "P602", "P610", "P612", "P700", "P702", "P704", "P706", "P708", "P710", "P720", "P508", "P530", "P552", "P554", "P562"],
+        "in_cp2_graph_after_fix": 53,
+        "in_cp2_owned": 0,
+        "evidence": "exports/layout-research/spiral_area_analysis.json"
+      },
+      "generic_bug": true,
+      "fix_applied": "Same-IO-word dense CURVE arc-center cluster (≥5, radius 5000u) + endpoint mates as display_context when mostly outside Autogen ownership."
+    },
+    {
+      "id": "west_hairpin_P126_P134",
+      "print_feature": "U-turn / hairpin corridor near mid-right of main conveyor band (paired with east hairpin)",
+      "classification": "MATCHES_WELL",
+      "confidence": "HIGH",
+      "reason": "Pass2 display-context completed P126→P128→P130→P132→P134 with SVG arcs; P136/P136A share entry with P134 (SAME_PHYSICAL_ASSEMBLY). Curve continuity and L/J shape are recognizable vs print hairpin vocabulary.",
+      "run_equipment": ["P126", "P128", "P130", "P132", "P134", "P136", "P136A", "P138"]
+    },
+    {
+      "id": "east_hairpin_P142_P148",
+      "print_feature": "Second hairpin / return curve pair on parallel corridor",
+      "classification": "MATCHES_WELL",
+      "confidence": "HIGH",
+      "reason": "P142→P144→P145→P146→P148 complete with arcs; P150/P150A shared-entry ZP. Recognizable as twin of west hairpin.",
+      "run_equipment": ["P142", "P144", "P145", "P146", "P148", "P150", "P150A"]
+    },
+    {
+      "id": "long_straight_runs",
+      "print_feature": "Long horizontal and vertical conveyor runs across the print",
+      "classification": "RECOGNIZABLE_BUT_IMPERFECT",
+      "confidence": "MEDIUM",
+      "reason": "Infeed-origin straights render with correct direction and relative length scaling. Absolute plant framing differs from print sheet crop/rotation; some long plant runs (e.g. distant P230/P232 cluster) appear as outliers on the canvas because Autogen scope is sparse there.",
+      "run_equipment_examples": ["P136A", "P150A", "P229", "P140", "P217", "P312", "P314"]
+    },
+    {
+      "id": "parallel_lanes",
+      "print_feature": "Closely spaced parallel conveyors",
+      "classification": "RECOGNIZABLE_BUT_IMPERFECT",
+      "confidence": "MEDIUM",
+      "reason": "PARALLEL_CONVEYOR classification applies presentation lane separation only to true parallels; serial/same-assembly stay joined. Parallel banks (e.g. P1000-series verticals) are readable as separate lanes but spacing is schematic, not print-scaled.",
+      "run_equipment_examples": ["P1000", "P1004", "P1006", "P1010"]
+    },
+    {
+      "id": "curve_continuity",
+      "print_feature": "CURVE bodies as arcs rather than rectangles",
+      "classification": "MATCHES_WELL",
+      "confidence": "HIGH",
+      "reason": "CURVE equipment uses Inside_Radius + tangents + SVG A arcs; stroke scaled for readability. Field b remains mate-scored hypothesis (MEDIUM), not blind truth.",
+      "run_equipment_examples": ["P126", "P134", "P142", "P148", "P226", "P238", "P316", "P324"]
+    },
+    {
+      "id": "merge_approaches",
+      "print_feature": "2:1 / angled merge approaches on print",
+      "classification": "UNKNOWN",
+      "confidence": "LOW",
+      "reason": "ORNCCP2 Autogen Auto Build reports merges_detected=0 for the scoped set. Merge fan presentation exists in UI when asMerge + inbound wires are present; not exercised by current CP2 Autogen geometric graph. Not scored as WRONG_GEOMETRY.",
+      "run_equipment": []
+    },
+    {
+      "id": "labels_and_clutter",
+      "print_feature": "Readable equipment IDs without Area/ES wallpaper",
+      "classification": "MATCHES_WELL",
+      "confidence": "HIGH",
+      "reason": "Canvas defaults to P-tag only; Area/ES remain inspector-only; missing config is a small warn dot. Meets acceptance for demo readability.",
+      "run_equipment": []
+    }
+  ],
+  "clear_generic_bugs_found": [
+    "Dense multi-CURVE banks sharing Autogen IO word omitted from canvas because Autogen PE/VFD identity set excludes them"
+  ],
+  "fixes_applied_this_pass": [
+    "Generic same-IO-word dense CURVE-bank display-context expansion in fortna_run_geometry_investigate.py"
+  ],
+  "remaining_limitations": [
+    "Spiral bank is display_context only (not PLC-owned); Apply still excludes it",
+    "Canvas framing is schematic vs full-print sheet alignment/rotation",
+    "Merge approach geometry not validated on CP2 Autogen set (no merges_detected)",
+    "Field b exit-bearing remains MEDIUM hypothesis",
+    "CAD-perfect spacing / print pixel match intentionally out of scope",
+    "Large display-context set (~126) can increase canvas density — Fit Visible required"
+  ]
+}

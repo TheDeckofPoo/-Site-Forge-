@@ -75,6 +75,17 @@ def main() -> int:
     tags = {n.get("conveyorTag") for n in nodes}
     check("west hairpin has P128/P130/P132", {"P128", "P130", "P132"} <= tags)
     check("east hairpin has P144/P145/P146", {"P144", "P145", "P146"} <= tags)
+    # Same-IO-word dense CURVE bank (print spiral) as display_context
+    spiral = {t for t in tags if t.startswith(("P600", "P700", "P602", "P612"))}
+    check("spiral/curve-bank display_context present", len(spiral) >= 10, str(len(spiral)))
+    check(
+        "spiral tags are display_context not plc-owned",
+        all(
+            (n.get("displayContext") and not n.get("plcOwned"))
+            for n in nodes
+            if (n.get("conveyorTag") or "").startswith(("P600", "P700"))
+        ),
+    )
     # Physical fields present
     sample = nodes[0] if nodes else None
     check("physical flag on nodes", bool(sample and sample.get("physical")))
