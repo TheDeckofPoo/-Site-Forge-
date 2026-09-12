@@ -21,11 +21,12 @@ hypothesis to visually confirm — not to invent topology.
 | Length == -1 on CURVE | Sentinel — linear length unused; use Inside_Radius + tangents | HIGH |
 | Inside_Radius | Inner radius of CURVE | HIGH |
 | Infeed_Tangent, Discharge_Tangent | Tangent **stub lengths** (drawing units), not topology FKs | HIGH |
-| CURVE sweep | Default **90°** when not otherwise encoded | MEDIUM |
-| CURVE turn | Prefer CW when it mates a neighbor; else CW default | MEDIUM |
+| CURVE sweep | Default **90°**; prefer RUN `b` exit bearing when mate-consistent | MEDIUM |
+| CURVE turn | Prefer turn/sweep whose exit mates a neighbor; else CW default | MEDIUM |
+| CURVE field `b` | Absolute exit bearing deg (mod 360; 450→90); mate-validated | MEDIUM |
 | Screen Y | Canvas normalizer flips Y for display | MEDIUM |
 
-Provenance codes: RUN | INFERRED_GEOMETRY | ASSUMPTION | UNKNOWN
+Provenance codes: RUN | RUN_EXPLICIT | INFERRED_GEOMETRY | ASSUMPTION | UNKNOWN
 """
 from __future__ import annotations
 
@@ -33,6 +34,7 @@ import math
 from typing import Any
 
 PROVENANCE_RUN = "RUN"
+PROVENANCE_RUN_EXPLICIT = "RUN_EXPLICIT"
 PROVENANCE_INFERRED = "INFERRED_GEOMETRY"
 PROVENANCE_ASSUMPTION = "ASSUMPTION"
 PROVENANCE_UNKNOWN = "UNKNOWN"
@@ -51,13 +53,17 @@ CALIBRATION = {
     "curve_sweep_confidence": "MEDIUM",
     "curve_turn_default": "CW",
     "curve_turn_confidence": "MEDIUM",
+    "curve_b_meaning": "absolute_exit_bearing_deg_mod_360",
+    "curve_b_confidence": "MEDIUM",
+    "curve_b_rule": "shortest_delta(Angle,b%360) as mate-scored candidate; else 90+mate",
     "centerline_radius": "Inside_Radius + Width/2",
     "tangents_meaning": "stub_lengths_drawing_units",
     "prior_incorrect_model": "footprint_center_plus_minus_length_over_2",
     "notes": [
         "Prior Auto Build treated XY as footprint center; that produced scattered cards and false mate gaps.",
         "Infeed model yields exit→entry distance 0 for true abutments (P312→P314, P136→P138, …).",
-        "CURVE Length=-1; body from Inside_Radius + Infeed_Tangent/Discharge_Tangent stubs + 90° arc.",
+        "CURVE Length=-1; body from Inside_Radius + Infeed_Tangent/Discharge_Tangent stubs + arc.",
+        "Field b is absolute exit bearing when mate-consistent; blind b without mate check is unsafe.",
     ],
 }
 
@@ -81,6 +87,15 @@ def _clean(v: Any) -> str:
 def _unit(angle_deg: float) -> tuple[float, float]:
     r = math.radians(angle_deg)
     return (math.cos(r), math.sin(r))
+
+
+def _norm360(angle_deg: float) -> float:
+    return float(angle_deg) % 360.0
+
+
+def _shortest_delta_deg(angle_in: float, exit_bearing: float) -> float:
+    """Signed shortest turn from angle_in to exit_bearing, degrees in (-180, 180]."""
+    return (_norm360(exit_bearing) - float(angle_in) + 180.0) % 360.0 - 180.0
 
 
 def _norm_type(t: str) -> str:
@@ -232,6 +247,23 @@ def _arc_path(
     }
 
 
+def _mate_score(
+    body: dict[str, Any],
+    mate_points: list[tuple[float, float]] | None,
+    *,
+    default_prefer: bool,
+) -> float:
+    if mate_points:
+        ex = body["exit"]
+        best = min(math.hypot(ex["x"] - mx, ex["y"] - my) for mx, my in mate_points)
+        if best < 5.0:
+            return 1000.0 - best
+        if best < 50.0:
+            return 100.0 - best
+        return -best
+    return 1.0 if default_prefer else 0.0
+
+
 def curve_body(
     x: float,
     y: float,
@@ -244,14 +276,23 @@ def curve_body(
     sweep_deg: float = 90.0,
     prefer_turn: str | None = None,
     mate_points: list[tuple[float, float]] | None = None,
+    exit_bearing: float | None = None,
 ) -> dict[str, Any]:
-    """Build CURVE body. XY = RUN infeed; choose CW/CCW by neighbor mating when possible."""
-    candidates = []
+    """Build CURVE body. XY = RUN infeed.
+
+    Candidates:
+      - default sweep_deg (90°) CW and CCW
+      - if exit_bearing (RUN field b) is present and yields a non-zero shortest
+        sweep to b%360, that explicit sweep is also mate-scored
+    Winner is chosen by neighbor entry mating when mate_points are provided.
+    """
+    candidates: list[tuple[float, str, dict[str, Any], str]] = []
     turns = [("CW", False), ("CCW", True)]
     if prefer_turn:
         pref = prefer_turn.upper()
         turns = sorted(turns, key=lambda t: 0 if t[0] == pref else 1)
 
+    default_pref_name = (prefer_turn or "CW").upper()
     for name, ccw in turns:
         body = _arc_path(
             (x, y),
@@ -263,24 +304,42 @@ def curve_body(
             sweep_deg=sweep_deg,
             turn_ccw=ccw,
         )
-        score = 0.0
-        if mate_points:
-            ex = body["exit"]
-            best = min(math.hypot(ex["x"] - mx, ex["y"] - my) for mx, my in mate_points)
-            # Prefer exits that land on another equipment endpoint
-            if best < 5.0:
-                score = 1000.0 - best
-            elif best < 50.0:
-                score = 100.0 - best
-            else:
-                score = -best
-        else:
-            score = 1.0 if name == (prefer_turn or "CW").upper() else 0.0
-        candidates.append((score, name, body))
+        score = _mate_score(body, mate_points, default_prefer=(name == default_pref_name))
+        candidates.append((score, name, body, "default_90"))
+
+    # RUN b = absolute exit bearing candidate (mod 360; shortest signed sweep)
+    if exit_bearing is not None:
+        signed = _shortest_delta_deg(angle, exit_bearing)
+        if abs(signed) >= 1e-6:
+            ccw = signed > 0
+            name = "CCW" if ccw else "CW"
+            body = _arc_path(
+                (x, y),
+                angle,
+                inside_radius=inside_radius,
+                width=width,
+                infeed_tangent=float(infeed_tangent or 0.0),
+                discharge_tangent=float(discharge_tangent or 0.0),
+                sweep_deg=abs(signed),
+                turn_ccw=ccw,
+            )
+            # Slight preference for RUN-explicit when mate scores tie
+            score = _mate_score(body, mate_points, default_prefer=True) + 0.05
+            body = dict(body)
+            body["provenance"] = dict(body.get("provenance") or {})
+            body["provenance"]["sweep"] = PROVENANCE_RUN_EXPLICIT
+            body["provenance"]["turn"] = PROVENANCE_RUN_EXPLICIT
+            body["exit_bearing"] = _norm360(exit_bearing)
+            body["b_signed_sweep"] = signed
+            candidates.append((score, name, body, "b_exit_bearing"))
 
     candidates.sort(key=lambda c: c[0], reverse=True)
-    best_score, best_name, best = candidates[0]
-    if mate_points and best_score >= 50:
+    best_score, best_name, best, best_src = candidates[0]
+    if best_src == "b_exit_bearing":
+        best["confidence"] = "HIGH" if mate_points and best_score >= 50 else "MEDIUM"
+        best["provenance"]["sweep"] = PROVENANCE_RUN_EXPLICIT
+        best["provenance"]["turn"] = PROVENANCE_RUN_EXPLICIT
+    elif mate_points and best_score >= 50:
         best["confidence"] = "HIGH"
         best["provenance"]["turn"] = PROVENANCE_INFERRED
     elif mate_points and best_score > 0:
@@ -290,6 +349,7 @@ def curve_body(
         best["provenance"]["turn"] = PROVENANCE_ASSUMPTION
     best["turn_selected"] = best_name
     best["turn_score"] = best_score
+    best["sweep_source"] = best_src
     return best
 
 
@@ -304,6 +364,7 @@ def build_equipment_geometry(row: dict[str, Any], *, mate_entries: list[tuple[fl
     ir = _f(row.get("Inside_Radius", row.get("inside_radius", row.get("insideRadius"))))
     in_t = _f(row.get("Infeed_Tangent", row.get("infeed_tangent", row.get("infeedTangent"))))
     out_t = _f(row.get("Discharge_Tangent", row.get("discharge_tangent", row.get("dischargeTangent"))))
+    b_exit = _f(row.get("b", row.get("exit_bearing", row.get("exitBearing"))))
 
     base = {
         "equipment_type": typ,
@@ -316,6 +377,7 @@ def build_equipment_geometry(row: dict[str, Any], *, mate_entries: list[tuple[fl
             "Inside_Radius": ir,
             "Infeed_Tangent": in_t,
             "Discharge_Tangent": out_t,
+            "b": b_exit,
             "Type": typ,
         },
         "calibration": CALIBRATION["version"],
@@ -354,6 +416,7 @@ def build_equipment_geometry(row: dict[str, Any], *, mate_entries: list[tuple[fl
             infeed_tangent=in_t or 0.0,
             discharge_tangent=out_t or 0.0,
             mate_points=mate_entries,
+            exit_bearing=b_exit,
         )
         return {**base, **body}
 

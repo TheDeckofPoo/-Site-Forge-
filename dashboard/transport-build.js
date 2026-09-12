@@ -1387,7 +1387,18 @@
     const s = presentationScale();
     const w = Number(n.width);
     const px = (Number.isFinite(w) && w > 0 ? w : 200) * s;
-    return Math.max(6, Math.min(18, px));
+    const isCurve = String(n.renderKind || n.equipmentType || '').toLowerCase().includes('curve');
+    if (isCurve) {
+      // Keep curve stroke ≤ ~0.55× centerline radius so the arc shape stays readable
+      // (site-scale canvas often yields radius of only a few px).
+      let rPx = 0;
+      const arc = (n.pathCanvas || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
+      if (arc && arc.radius != null) rPx = Number(arc.radius) || 0;
+      else if (n.insideRadius != null) rPx = Number(n.insideRadius) * s + px / 2;
+      const maxCurve = rPx > 0 ? Math.max(2.5, rPx * 0.55) : 8;
+      return Math.max(2.5, Math.min(maxCurve, px > 0 ? px : 4));
+    }
+    return Math.max(4, Math.min(16, px > 0 ? Math.max(px, 4) : 8));
   }
 
   /**
@@ -1509,38 +1520,95 @@
       n.display_reason = out.reason;
     };
 
-    // --- Pass 1: overlapping body stacks → perpendicular lane separation ---
+    // --- Pass 1: classify overlaps; separate PARALLEL only ---
+    // CONNECTED_SERIAL / CURVE_ASSEMBLY must stay visually joined — do not shove them apart.
+    const wiresEarly = (area && area.wires) || [];
+    const physicallyLinked = (a, b) => {
+      return wiresEarly.some((w) => {
+        if (!w.physical) return false;
+        const conf = String(w.confidence || '').toUpperCase();
+        if (!(conf === 'CONFIRMED' || conf.includes('HIGH'))) return false;
+        return (w.from === a.id && w.to === b.id) || (w.from === b.id && w.to === a.id);
+      });
+    };
+    const endpointNear = (a, b) => {
+      if (!a?.exitCanvas || !a?.entryCanvas || !b?.exitCanvas || !b?.entryCanvas) return false;
+      const pairs = [
+        [a.exitCanvas, b.entryCanvas],
+        [b.exitCanvas, a.entryCanvas],
+        [a.entryCanvas, b.entryCanvas],
+        [a.exitCanvas, b.exitCanvas],
+      ];
+      return pairs.some(([p, q]) => Math.hypot(p.x - q.x, p.y - q.y) < 14);
+    };
+    const classifyPair = (a, b) => {
+      if (physicallyLinked(a, b) || endpointNear(a, b)) {
+        const ra = String(a.renderKind || a.equipmentType || '').toUpperCase();
+        const rb = String(b.renderKind || b.equipmentType || '').toUpperCase();
+        if (ra.includes('CURVE') || rb.includes('CURVE')) return 'CURVE_ASSEMBLY';
+        return 'CONNECTED_SERIAL';
+      }
+      const da = angDelta(angOf(a), angOf(b));
+      const ma = midOf(a);
+      const mb = midOf(b);
+      const midDist = Math.hypot(ma.x - mb.x, ma.y - mb.y);
+      if (da < 18 && midDist < 36) return 'PARALLEL';
+      if (da > 50 && midDist < 40) return 'VALID_OVERLAP';
+      return 'UNKNOWN';
+    };
     const groups = [];
     const used = new Set();
     const sorted = list.slice().sort((a, b) => String(a.conveyorTag || a.id).localeCompare(String(b.conveyorTag || b.id)));
     sorted.forEach((n) => {
       if (used.has(n.id)) return;
       const mn = midOf(n);
-      const an = angOf(n);
       const group = [n];
       used.add(n.id);
       sorted.forEach((o) => {
         if (used.has(o.id)) return;
         const mo = midOf(o);
-        if (Math.hypot(mn.x - mo.x, mn.y - mo.y) < 28 && angDelta(an, angOf(o)) < 20) {
+        if (Math.hypot(mn.x - mo.x, mn.y - mo.y) >= 36) return;
+        const cls = classifyPair(n, o);
+        // Only cluster candidates that look like parallel stacks for separation.
+        if (cls === 'PARALLEL') {
           group.push(o);
           used.add(o.id);
+        } else if (cls === 'CONNECTED_SERIAL' || cls === 'CURVE_ASSEMBLY') {
+          // Mark reason but do not separate — leave display_dx=0 for coherent runs.
+          if (!offsets[n.id]?.reason) setOff(n, 0, 0, 0, cls, {});
+          if (!offsets[o.id]?.reason) setOff(o, 0, 0, 0, cls, {});
         }
       });
       if (group.length > 1) groups.push(group);
     });
-    const laneGap = 16;
+    const laneGap = 18;
     groups.forEach((group) => {
       group.sort((a, b) => String(a.conveyorTag || '').localeCompare(String(b.conveyorTag || '')));
+      // Re-check: if any pair in the group is actually serial-connected, skip separation.
+      let serialish = false;
+      for (let i = 0; i < group.length && !serialish; i++) {
+        for (let j = i + 1; j < group.length; j++) {
+          const cls = classifyPair(group[i], group[j]);
+          if (cls === 'CONNECTED_SERIAL' || cls === 'CURVE_ASSEMBLY') { serialish = true; break; }
+        }
+      }
+      if (serialish) {
+        group.forEach((n) => setOff(n, 0, 0, 0, 'CONNECTED_SERIAL', { stackSize: group.length }));
+        return;
+      }
       const reason = group.some((g) => g.asMerge || String(g.equipmentType || '').toUpperCase() === 'MERGE')
         ? 'MERGE_LANE_SEPARATION'
-        : (group.length >= 3 ? 'PARALLEL_LANE_SEPARATION' : 'STACK_SEPARATION');
+        : 'PARALLEL_LANE_SEPARATION';
       group.forEach((n, i) => {
         const ang = (angOf(n) * Math.PI) / 180;
         const nx = -Math.sin(ang);
         const ny = Math.cos(ang);
         const shift = (i - (group.length - 1) / 2) * laneGap;
-        setOff(n, nx * shift, -ny * shift, i, reason, { stackIndex: i, stackSize: group.length });
+        setOff(n, nx * shift, -ny * shift, i, reason, {
+          stackIndex: i,
+          stackSize: group.length,
+          overlapClass: 'PARALLEL',
+        });
       });
     });
 
@@ -1594,15 +1662,17 @@
       const bx = b.entryCanvas.x + (ob.dx || 0);
       const by = b.entryCanvas.y + (ob.dy || 0);
       const gap = Math.hypot(ax - bx, ay - by);
-      // Only normalize small presentation gaps (noise / prior lane shift).
-      if (gap < 0.5 || gap > 18) return;
-      // If downstream already has a strong merge/stack reason with large offset, skip.
+      // Connected-run display assembly: allow a slightly larger presentation gap
+      // so STRAIGHT→CURVE→STRAIGHT reads as one coherent run. Never invents topology.
+      if (gap < 0.5 || gap > 28) return;
+      // If downstream already has a strong parallel-lane offset, skip (keep lanes apart).
       if (ob.reason && String(ob.reason).includes('PARALLEL') && Math.hypot(ob.dx || 0, ob.dy || 0) > 8) return;
       const ndx = (ob.dx || 0) + (ax - bx);
       const ndy = (ob.dy || 0) + (ay - by);
-      setOff(b, ndx, ndy, ob.lane || 0, ob.reason ? `${ob.reason}+MATE_NUDGE` : 'CONNECTIVITY_MATE_NUDGE', {
+      setOff(b, ndx, ndy, ob.lane || 0, ob.reason ? `${ob.reason}+MATE_NUDGE` : 'CONNECTED_RUN_MATE', {
         matedFrom: a.conveyorTag || a.id,
         mateGapBefore: gap,
+        overlapClass: 'CONNECTED_SERIAL',
       });
     });
 
@@ -1673,25 +1743,51 @@
       const mid = applyPresOffset(mid0, off);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tag)}</title></path>`;
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
-      // Progressive labels: overview = P-tag; mid = AREA?/ES?; close/selected = drive/PE/VFD/encoder
-      if (lod === 'overview' || lod === 'mid' || sel || lod === 'close') {
+      // Canvas labels: P-tag only by default. Area/ES stay in the inspector — never
+      // paint missing-config words or zone names across the drawing. Small warn dot if needed.
+      const needsCfg = !!(n.areaRequired || n.esZoneRequired);
+      if (needsCfg) {
+        html += `<circle class="tb-schematic-warn" data-id="${escapeHtml(n.id)}" cx="${mid.x}" cy="${mid.y - sw / 2 - 4}" r="2.5"><title>Missing Area/ES — edit in inspector</title></circle>`;
+      }
+      // Flow tick at exit (overview+) so direction is readable without device clutter
+      if (n.exitCanvas && n.entryCanvas) {
+        const ex = applyPresOffset(n.exitCanvas, off);
+        const en = applyPresOffset(n.entryCanvas, off);
+        const ang = Math.atan2(ex.y - en.y, ex.x - en.x);
+        const fx = ex.x - Math.cos(ang) * 4;
+        const fy = ex.y - Math.sin(ang) * 4;
+        const ax = fx - Math.cos(ang - 0.45) * 7;
+        const ay = fy - Math.sin(ang - 0.45) * 7;
+        const bx = fx - Math.cos(ang + 0.45) * 7;
+        const by = fy - Math.sin(ang + 0.45) * 7;
+        html += `<path class="tb-schematic-flow" data-id="${escapeHtml(n.id)}" d="M ${ax} ${ay} L ${fx} ${fy} L ${bx} ${by}" />`;
+      }
+      // Progressive disclosure: overview/mid = P-tag; close OR selected = optional motor/VFD line
+      // PE / encoder / Area / ES names never appear on the canvas (inspector + evidence only).
+      if (lod === 'overview' || lod === 'mid' || lod === 'close' || sel) {
         const len = Number(n.length) || (n.entryCanvas && n.exitCanvas
           ? Math.hypot(n.exitCanvas.x - n.entryCanvas.x, n.exitCanvas.y - n.entryCanvas.y)
           : 0);
-        let labelTag = tag;
-        if (lod !== 'overview' || sel) {
-          if (n.areaRequired) labelTag += ' · AREA?';
-          if (n.esZoneRequired) labelTag += ' · ES?';
+        let secondary = '';
+        if ((lod === 'close' || sel) && !debug) {
+          if (Array.isArray(n.motorsMeta) && n.motorsMeta[0]) {
+            const m = n.motorsMeta[0].motor || n.motorsMeta[0].tag;
+            if (m) secondary = String(m);
+          } else if (n.vfdTag) {
+            secondary = String(n.vfdTag);
+          }
         }
-        if ((lod === 'close' || sel) && Array.isArray(n.motorsMeta) && n.motorsMeta[0]) {
-          const m = n.motorsMeta[0].motor || n.motorsMeta[0].tag;
-          if (m) labelTag += ` · ${m}`;
+        if (debug && (lod === 'close' || sel)) {
+          // Evidence/debug may reveal more — still no Area/ES text on canvas
+          const bits = [];
+          if (n.vfdTag) bits.push(n.vfdTag);
+          if (n.encoderTag) bits.push(n.encoderTag);
+          if (bits.length) secondary = bits.join(' · ');
         }
-        if ((lod === 'close' || sel) && n.vfdTag) labelTag += ` · ${n.vfdTag}`;
-        if ((lod === 'close' || sel) && n.encoderTag) labelTag += ` · ${n.encoderTag}`;
         labelCandidates.push({
           id: n.id,
-          tag: labelTag,
+          tag,
+          secondary,
           x: mid.x,
           y: mid.y,
           anchorX: mid.x,
@@ -1710,6 +1806,9 @@
         html += `<line class="tb-schematic-leader" data-id="${escapeHtml(lab.id)}" x1="${ax}" y1="${ay}" x2="${lab.x}" y2="${lab.y}" />`;
       }
       html += `<text class="tb-schematic-label" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${escapeHtml(lab.tag)}</text>`;
+      if (lab.secondary) {
+        html += `<text class="tb-schematic-label-sec" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y + 11}">${escapeHtml(lab.secondary)}</text>`;
+      }
     });
     // Confirmed physical mates: endpoints share location — show ▶◀ joint, not Bezier
     (area?.wires || []).forEach((w) => {

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T07:57:46.661784+00:00",
+  "generated_at": "2026-09-12T12:28:20.323023+00:00",
   "sites": {
     "ORNCCP2": {
       "machine": "ORNCCP2",
@@ -137,7 +137,7 @@
           "a": "P136",
           "b": "P316",
           "bbox_overlap_area": 91666.6,
-          "centerline_distance": 1009.11,
+          "centerline_distance": 1015.68,
           "angle_delta_deg": 170.0,
           "endpoint_distance": 258.33,
           "length_similarity": 0.0,
@@ -154,8 +154,8 @@
         {
           "a": "P136A",
           "b": "P316",
-          "bbox_overlap_area": 72153.28,
-          "centerline_distance": 4072.29,
+          "bbox_overlap_area": 78476.82,
+          "centerline_distance": 4054.38,
           "angle_delta_deg": 170.0,
           "endpoint_distance": 258.33,
           "length_similarity": 0.0,
@@ -244,8 +244,8 @@
         {
           "a": "P150A",
           "b": "P324",
-          "bbox_overlap_area": 82951.64,
-          "centerline_distance": 3282.44,
+          "bbox_overlap_area": 90143.42,
+          "centerline_distance": 3261.77,
           "angle_delta_deg": 170.0,
           "endpoint_distance": 200.0,
           "length_similarity": 0.0,
@@ -299,7 +299,7 @@
           "a": "P150",
           "b": "P324",
           "bbox_overlap_area": 80000.0,
-          "centerline_distance": 1078.37,
+          "centerline_distance": 1087.32,
           "angle_delta_deg": 170.0,
           "endpoint_distance": 200.0,
           "length_similarity": 0.0,
@@ -370,10 +370,10 @@
         {
           "a": "P314",
           "b": "P316",
-          "bbox_overlap_area": 44845.66,
-          "centerline_distance": 1503.42,
+          "bbox_overlap_area": 40762.15,
+          "centerline_distance": 1531.33,
           "angle_delta_deg": 100.0,
-          "endpoint_distance": 72.15,
+          "endpoint_distance": 3.88,
           "length_similarity": 0.0,
           "types": [
             "BELT",
@@ -406,10 +406,10 @@
         {
           "a": "P322",
           "b": "P324",
-          "bbox_overlap_area": 43631.78,
-          "centerline_distance": 1417.67,
+          "bbox_overlap_area": 40762.15,
+          "centerline_distance": 1444.83,
           "angle_delta_deg": 100.0,
-          "endpoint_distance": 73.78,
+          "endpoint_distance": 3.88,
           "length_similarity": 0.0,
           "types": [
             "STRAIGHT",
@@ -1112,8 +1112,8 @@
         {
           "a": "P212",
           "b": "P308",
-          "bbox_overlap_area": 120346.91,
-          "centerline_distance": 2870.37,
+          "bbox_overlap_area": 130143.42,
+          "centerline_distance": 2842.55,
           "angle_delta_deg": 170.0,
           "endpoint_distance": 950.0,
           "length_similarity": 0.0,
@@ -1310,10 +1310,10 @@
         {
           "a": "P306",
           "b": "P308",
-          "bbox_overlap_area": 38745.38,
-          "centerline_distance": 1072.5,
+          "bbox_overlap_area": 39095.35,
+          "centerline_distance": 1096.36,
           "angle_delta_deg": 100.0,
-          "endpoint_distance": 73.44,
+          "endpoint_distance": 4.58,
           "length_similarity": 0.0,
           "types": [
             "BELT",
@@ -1419,7 +1419,7 @@
           "a": "P416",
           "b": "P418",
           "bbox_overlap_area": 45000.0,
-          "centerline_distance": 3699.18,
+          "centerline_distance": 3721.45,
           "angle_delta_deg": 180.0,
           "endpoint_distance": 8.33,
           "length_similarity": 0.0,
@@ -1436,10 +1436,10 @@
         {
           "a": "P416",
           "b": "P414",
-          "bbox_overlap_area": 121013.34,
-          "centerline_distance": 2121.57,
+          "bbox_overlap_area": 67303.53,
+          "centerline_distance": 2207.8,
           "angle_delta_deg": 135.0,
-          "endpoint_distance": 362.82,
+          "endpoint_distance": 15.8,
           "length_similarity": 0.0,
           "types": [
             "CURVE",
@@ -1472,10 +1472,10 @@
         {
           "a": "P447",
           "b": "P446",
-          "bbox_overlap_area": 44350.54,
-          "centerline_distance": 658.59,
+          "bbox_overlap_area": 40926.83,
+          "centerline_distance": 678.9,
           "angle_delta_deg": 80.0,
-          "endpoint_distance": 72.09,
+          "endpoint_distance": 4.68,
           "length_similarity": 0.0,
           "types": [
             "STRAIGHT",
@@ -1544,10 +1544,10 @@
         {
           "a": "P424",
           "b": "P446",
-          "bbox_overlap_area": 141874.59,
-          "centerline_distance": 947.54,
+          "bbox_overlap_area": 148462.21,
+          "centerline_distance": 954.02,
           "angle_delta_deg": 10.0,
-          "endpoint_distance": 558.33,
+          "endpoint_distance": 554.87,
           "length_similarity": 0.0,
           "types": [
             "STRAIGHT",
@@ -1742,10 +1742,10 @@
         {
           "a": "P446",
           "b": "P424A",
-          "bbox_overlap_area": 30207.99,
-          "centerline_distance": 527.38,
+          "bbox_overlap_area": 36795.61,
+          "centerline_distance": 496.78,
           "angle_delta_deg": 10.0,
-          "endpoint_distance": 558.33,
+          "endpoint_distance": 554.87,
           "length_similarity": 0.0,
           "types": [
             "CURVE",

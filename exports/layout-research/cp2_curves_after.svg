@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="655.47 45.03 194.27 103.25" width="1400" height="744">
+<rect x="100%" y="100%" width="0" height="0"/>
+<rect x="655.47" y="45.03" width="194.26999999999998" height="103.25" fill="#0b1220"/>
+<text x="667.47" y="63.03" fill="#94a3b8" font-size="12" font-family="monospace">CP2 representative curves</text>
+<path d="M 695.47 108.28 L 695.47 107.66 A 3.38 3.38 0 0 0 698.85 104.29 L 699.31 104.29" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P126</title></path>
+<text x="697.39" y="106.28" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P126</text>
+<path d="M 694.36 113.82 L 696.54 107.17 L 689.97 109.60" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 709.52 89.55 L 710.0 89.55 A 3.38 3.38 0 0 1 713.37 86.18 L 713.37 85.03" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P134</title></path>
+<text x="711.44" y="87.29" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P134</text>
+<path d="M 709.01 94.85 L 710.78 88.08 L 704.37 90.90" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 791.4 108.2 L 791.4 107.74 A 3.38 3.38 0 0 0 794.77 104.36 L 795.23 104.36" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P142</title></path>
+<text x="793.32" y="106.28" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P142</text>
+<path d="M 790.11 113.81 L 792.41 107.19 L 785.80 109.50" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+<path d="M 805.9 89.17 L 806.36 89.17 A 3.38 3.38 0 0 0 809.74 92.55 L 809.74 94.39" fill="none" stroke="#c4b5fd" stroke-width="2.50" stroke-linecap="round" stroke-linejoin="round"><title>P148</title></path>
+<text x="807.82" y="91.78" fill="#e2e8f0" font-size="10" font-family="monospace" text-anchor="middle" dominant-baseline="middle" stroke="#0a0f14" stroke-width="3" paint-order="stroke">P148</text>
+<path d="M 801.18 87.89 L 807.37 91.17 L 806.09 84.29" fill="none" stroke="#94a3b8" stroke-width="1.2"/>
+</svg>

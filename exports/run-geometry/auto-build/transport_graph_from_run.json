@@ -1,0 +1,4358 @@
+{
+  "version": 2,
+  "physicalLayout": true,
+  "exportedAt": "2026-09-12T12:28:20.926108+00:00",
+  "source": {
+    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+    "machine": "ORNCCP2",
+    "builder": "fortna_run_physical_layout"
+  },
+  "canvasScale": 0.009208479347567838,
+  "areas": [
+    {
+      "id": "area_017de056",
+      "name": "ORNCCP2_Imported",
+      "provenance": "SUGGESTED",
+      "nodes": [
+        {
+          "id": "node_542353fb",
+          "kind": "conv_straight",
+          "label": "P1000",
+          "conveyorTag": "P1000",
+          "x": 612.06,
+          "y": 175.81,
+          "rotation": 270,
+          "sourceX": 62200.0,
+          "sourceY": 87066.667,
+          "sourceAngle": 270.0,
+          "length": 9400.0,
+          "width": 266.667,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 62200.0,
+            "y": 87066.667
+          },
+          "exitAnchor": {
+            "x": 62200.0,
+            "y": 77666.667
+          },
+          "entryCanvas": {
+            "x": 612.06,
+            "y": 132.53
+          },
+          "exitCanvas": {
+            "x": 612.06,
+            "y": 219.09
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 612.06,
+              "y": 132.53
+            },
+            {
+              "cmd": "line",
+              "x": 612.06,
+              "y": 219.09
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 270.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_10b3ae27",
+              "kind": "motor",
+              "tag": "M1000",
+              "name": "M1000",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_fd1328e0",
+              "kind": "photoeye",
+              "tag": "PE1000_J",
+              "name": "PE1000_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M1000",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "5.000"
+        },
+        {
+          "id": "node_cf858d03",
+          "kind": "conv_straight",
+          "label": "P1002",
+          "conveyorTag": "P1002",
+          "x": 612.06,
+          "y": 328.67,
+          "rotation": 270,
+          "sourceX": 62200.0,
+          "sourceY": 68266.66,
+          "sourceAngle": 270.0,
+          "length": 5000.0,
+          "width": 333.333,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 62200.0,
+            "y": 68266.66
+          },
+          "exitAnchor": {
+            "x": 62200.0,
+            "y": 63266.66
+          },
+          "entryCanvas": {
+            "x": 612.06,
+            "y": 305.65
+          },
+          "exitCanvas": {
+            "x": 612.06,
+            "y": 351.69
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 612.06,
+              "y": 305.65
+            },
+            {
+              "cmd": "line",
+              "x": 612.06,
+              "y": 351.69
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 270.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_975ef1a5",
+              "kind": "motor",
+              "tag": "M1002",
+              "name": "M1002",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_1ba9cc23",
+              "kind": "photoeye",
+              "tag": "PE1002_J",
+              "name": "PE1002_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M1002",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "5.000"
+        },
+        {
+          "id": "node_f95ef604",
+          "kind": "conv_straight",
+          "label": "P1004",
+          "conveyorTag": "P1004",
+          "x": 617.28,
+          "y": 179.03,
+          "rotation": 270,
+          "sourceX": 62766.667,
+          "sourceY": 87066.667,
+          "sourceAngle": 270.0,
+          "length": 10100.0,
+          "width": 266.667,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 62766.667,
+            "y": 87066.667
+          },
+          "exitAnchor": {
+            "x": 62766.667,
+            "y": 76966.667
+          },
+          "entryCanvas": {
+            "x": 617.28,
+            "y": 132.53
+          },
+          "exitCanvas": {
+            "x": 617.28,
+            "y": 225.53
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 617.28,
+              "y": 132.53
+            },
+            {
+              "cmd": "line",
+              "x": 617.28,
+              "y": 225.53
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 270.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_89c5d779",
+              "kind": "motor",
+              "tag": "M1004",
+              "name": "M1004",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_c93069db",
+              "kind": "photoeye",
+              "tag": "PE1004_J",
+              "name": "PE1004_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M1004",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "14.000"
+        },
+        {
+          "id": "node_e367b821",
+          "kind": "conv_straight",
+          "label": "P1006",
+          "conveyorTag": "P1006",
+          "x": 717.96,
+          "y": 175.81,
+          "rotation": 270,
+          "sourceX": 73700.0,
+          "sourceY": 87066.667,
+          "sourceAngle": 270.0,
+          "length": 9400.0,
+          "width": 266.667,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 73700.0,
+            "y": 87066.667
+          },
+          "exitAnchor": {
+            "x": 73700.0,
+            "y": 77666.667
+          },
+          "entryCanvas": {
+            "x": 717.96,
+            "y": 132.53
+          },
+          "exitCanvas": {
+            "x": 717.96,
+            "y": 219.09
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 717.96,
+              "y": 132.53
+            },
+            {
+              "cmd": "line",
+              "x": 717.96,
+              "y": 219.09
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 270.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_f332c7a0",
+              "kind": "motor",
+              "tag": "M1006",
+              "name": "M1006",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_23684092",
+              "kind": "photoeye",
+              "tag": "PE1006_J",
+              "name": "PE1006_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M1006",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "5.000"
+        },
+        {
+          "id": "node_15e0b617",
+          "kind": "conv_straight",
+          "label": "P1008",
+          "conveyorTag": "P1008",
+          "x": 717.96,
+          "y": 328.67,
+          "rotation": 270,
+          "sourceX": 73700.0,
+          "sourceY": 68266.667,
+          "sourceAngle": 270.0,
+          "length": 5000.0,
+          "width": 333.333,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 73700.0,
+            "y": 68266.667
+          },
+          "exitAnchor": {
+            "x": 73700.0,
+            "y": 63266.667
+          },
+          "entryCanvas": {
+            "x": 717.96,
+            "y": 305.65
+          },
+          "exitCanvas": {
+            "x": 717.96,
+            "y": 351.69
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 717.96,
+              "y": 305.65
+            },
+            {
+              "cmd": "line",
+              "x": 717.96,
+              "y": 351.69
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 270.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_96a0a4c3",
+              "kind": "motor",
+              "tag": "M1008",
+              "name": "M1008",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_8e14f00d",
+              "kind": "photoeye",
+              "tag": "PE1008_J",
+              "name": "PE1008_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M1008",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "5.000"
+        },
+        {
+          "id": "node_f51cd92d",
+          "kind": "conv_straight",
+          "label": "P1010",
+          "conveyorTag": "P1010",
+          "x": 723.18,
+          "y": 179.03,
+          "rotation": 270,
+          "sourceX": 74266.666,
+          "sourceY": 87066.667,
+          "sourceAngle": 270.0,
+          "length": 10100.0,
+          "width": 266.667,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 74266.666,
+            "y": 87066.667
+          },
+          "exitAnchor": {
+            "x": 74266.666,
+            "y": 76966.667
+          },
+          "entryCanvas": {
+            "x": 723.18,
+            "y": 132.53
+          },
+          "exitCanvas": {
+            "x": 723.18,
+            "y": 225.53
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 723.18,
+              "y": 132.53
+            },
+            {
+              "cmd": "line",
+              "x": 723.18,
+              "y": 225.53
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 270.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_02f1533c",
+              "kind": "motor",
+              "tag": "M1010",
+              "name": "M1010",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_e2b7d6b6",
+              "kind": "photoeye",
+              "tag": "PE1010_J",
+              "name": "PE1010_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M1010",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "14.000"
+        },
+        {
+          "id": "node_dd94a775",
+          "kind": "conv_straight",
+          "label": "P1014",
+          "conveyorTag": "P1014",
+          "x": 716.12,
+          "y": 353.07,
+          "rotation": 0,
+          "sourceX": 61800.0,
+          "sourceY": 63116.666,
+          "sourceAngle": 0.0,
+          "length": 23400.0,
+          "width": 333.333,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 61800.0,
+            "y": 63116.666
+          },
+          "exitAnchor": {
+            "x": 85200.0,
+            "y": 63116.666
+          },
+          "entryCanvas": {
+            "x": 608.38,
+            "y": 353.07
+          },
+          "exitCanvas": {
+            "x": 823.86,
+            "y": 353.07
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 608.38,
+              "y": 353.07
+            },
+            {
+              "cmd": "line",
+              "x": 823.86,
+              "y": 353.07
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 0.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_893cc6eb",
+              "kind": "motor",
+              "tag": "M1014",
+              "name": "M1014",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_b4f67e97",
+              "kind": "photoeye",
+              "tag": "PE1014_J",
+              "name": "PE1014_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M1014",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "29.000",
+          "ambiguousInbound": [
+            {
+              "from": "P1002",
+              "distance": 427.198,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_a3f29da1",
+          "kind": "conv_straight",
+          "label": "P1018",
+          "conveyorTag": "P1018",
+          "x": 825.62,
+          "y": 140.35,
+          "rotation": 90,
+          "sourceX": 85391.667,
+          "sourceY": 80866.667,
+          "sourceAngle": 90.0,
+          "length": 10700.0,
+          "width": 383.333,
+          "equipmentType": "BELT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 85391.667,
+            "y": 80866.667
+          },
+          "exitAnchor": {
+            "x": 85391.667,
+            "y": 91566.667
+          },
+          "entryCanvas": {
+            "x": 825.62,
+            "y": 189.62
+          },
+          "exitCanvas": {
+            "x": 825.62,
+            "y": 91.09
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 825.62,
+              "y": 189.62
+            },
+            {
+              "cmd": "line",
+              "x": 825.62,
+              "y": 91.09
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "belt",
+          "angleOut": 90.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_4574a66f",
+              "kind": "motor",
+              "tag": "M1018",
+              "name": "M1018",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_f2d8c052",
+              "kind": "photoeye",
+              "tag": "PE1018_J",
+              "name": "PE1018_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M1018",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "28.000"
+        },
+        {
+          "id": "node_6f1fd07a",
+          "kind": "conv_right",
+          "label": "P126",
+          "conveyorTag": "P126",
+          "x": 697.39,
+          "y": 106.28,
+          "rotation": 90,
+          "sourceX": 71258.333,
+          "sourceY": 89700.0,
+          "sourceAngle": 90.0,
+          "length": -1.0,
+          "width": 200.0,
+          "equipmentType": "CURVE",
+          "infeedTangent": 66.667,
+          "dischargeTangent": 50.0,
+          "insideRadius": 266.667,
+          "entryAnchor": {
+            "x": 71258.333,
+            "y": 89700.0
+          },
+          "exitAnchor": {
+            "x": 71675.0,
+            "y": 90133.334
+          },
+          "entryCanvas": {
+            "x": 695.47,
+            "y": 108.28
+          },
+          "exitCanvas": {
+            "x": 699.31,
+            "y": 104.29
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 695.47,
+              "y": 108.28
+            },
+            {
+              "cmd": "line",
+              "x": 695.47,
+              "y": 107.66
+            },
+            {
+              "cmd": "arc",
+              "x": 698.85,
+              "y": 104.29,
+              "radius": 3.38,
+              "sweep_deg": -90.0,
+              "sweep_flag": 0,
+              "center": {
+                "x": 698.85,
+                "y": 107.66
+              }
+            },
+            {
+              "cmd": "line",
+              "x": 699.31,
+              "y": 104.29
+            }
+          ],
+          "arcSamplesCanvas": [
+            {
+              "x": 695.47,
+              "y": 107.66
+            },
+            {
+              "x": 695.49,
+              "y": 107.37
+            },
+            {
+              "x": 695.52,
+              "y": 107.08
+            },
+            {
+              "x": 695.59,
+              "y": 106.79
+            },
+            {
+              "x": 695.68,
+              "y": 106.51
+            },
+            {
+              "x": 695.79,
+              "y": 106.24
+            },
+            {
+              "x": 695.93,
+              "y": 105.98
+            },
+            {
+              "x": 696.08,
+              "y": 105.73
+            },
+            {
+              "x": 696.26,
+              "y": 105.49
+            },
+            {
+              "x": 696.46,
+              "y": 105.28
+            },
+            {
+              "x": 696.68,
+              "y": 105.08
+            },
+            {
+              "x": 696.91,
+              "y": 104.9
+            },
+            {
+              "x": 697.16,
+              "y": 104.74
+            },
+            {
+              "x": 697.42,
+              "y": 104.6
+            },
+            {
+              "x": 697.7,
+              "y": 104.49
+            },
+            {
+              "x": 697.98,
+              "y": 104.4
+            },
+            {
+              "x": 698.26,
+              "y": 104.34
+            },
+            {
+              "x": 698.56,
+              "y": 104.3
+            },
+            {
+              "x": 698.85,
+              "y": 104.29
+            }
+          ],
+          "renderKind": "curve",
+          "angleOut": 0.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_ee81e906",
+              "kind": "motor",
+              "tag": "M128",
+              "name": "M128",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_b325f7f8",
+              "kind": "photoeye",
+              "tag": "PE126_JF",
+              "name": "PE126_JF",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M128",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "MEDIUM",
+          "drawingPage": "2.000"
+        },
+        {
+          "id": "node_983531a9",
+          "kind": "conv_right",
+          "label": "P134",
+          "conveyorTag": "P134",
+          "x": 711.44,
+          "y": 87.29,
+          "rotation": 0,
+          "sourceX": 72783.333,
+          "sourceY": 91733.333,
+          "sourceAngle": 0.0,
+          "length": -1.0,
+          "width": 200.0,
+          "equipmentType": "CURVE",
+          "infeedTangent": 52.083,
+          "dischargeTangent": 125.0,
+          "insideRadius": 266.667,
+          "entryAnchor": {
+            "x": 72783.333,
+            "y": 91733.333
+          },
+          "exitAnchor": {
+            "x": 73202.083,
+            "y": 92225.0
+          },
+          "entryCanvas": {
+            "x": 709.52,
+            "y": 89.55
+          },
+          "exitCanvas": {
+            "x": 713.37,
+            "y": 85.03
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 709.52,
+              "y": 89.55
+            },
+            {
+              "cmd": "line",
+              "x": 710.0,
+              "y": 89.55
+            },
+            {
+              "cmd": "arc",
+              "x": 713.37,
+              "y": 86.18,
+              "radius": 3.38,
+              "sweep_deg": 90.0,
+              "sweep_flag": 1,
+              "center": {
+                "x": 710.0,
+                "y": 86.18
+              }
+            },
+            {
+              "cmd": "line",
+              "x": 713.37,
+              "y": 85.03
+            }
+          ],
+          "arcSamplesCanvas": [
+            {
+              "x": 710.0,
+              "y": 89.55
+            },
+            {
+              "x": 710.29,
+              "y": 89.54
+            },
+            {
+              "x": 710.58,
+              "y": 89.5
+            },
+            {
+              "x": 710.87,
+              "y": 89.44
+            },
+            {
+              "x": 711.15,
+              "y": 89.35
+            },
+            {
+              "x": 711.42,
+              "y": 89.24
+            },
+            {
+              "x": 711.68,
+              "y": 89.1
+            },
+            {
+              "x": 711.93,
+              "y": 88.94
+            },
+            {
+              "x": 712.17,
+              "y": 88.76
+            },
+            {
+              "x": 712.38,
+              "y": 88.57
+            },
+            {
+              "x": 712.58,
+              "y": 88.35
+            },
+            {
+              "x": 712.76,
+              "y": 88.11
+            },
+            {
+              "x": 712.92,
+              "y": 87.87
+            },
+            {
+              "x": 713.06,
+              "y": 87.61
+            },
+            {
+              "x": 713.17,
+              "y": 87.33
+            },
+            {
+              "x": 713.26,
+              "y": 87.05
+            },
+            {
+              "x": 713.32,
+              "y": 86.76
+            },
+            {
+              "x": 713.36,
+              "y": 86.47
+            },
+            {
+              "x": 713.37,
+              "y": 86.18
+            }
+          ],
+          "renderKind": "curve",
+          "angleOut": 90.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_136ab711",
+              "kind": "motor",
+              "tag": "M132",
+              "name": "M132",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_b8793f99",
+              "kind": "photoeye",
+              "tag": "PE134_JF",
+              "name": "PE134_JF",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M132",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "MEDIUM",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P400",
+              "distance": 677.67,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_2606d459",
+          "kind": "conv_straight",
+          "label": "P136",
+          "conveyorTag": "P136",
+          "x": 626.29,
+          "y": 89.55,
+          "rotation": 180,
+          "sourceX": 64758.333,
+          "sourceY": 91733.333,
+          "sourceAngle": 180.0,
+          "length": 2025.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 64758.333,
+            "y": 91733.333
+          },
+          "exitAnchor": {
+            "x": 62733.333,
+            "y": 91733.333
+          },
+          "entryCanvas": {
+            "x": 635.62,
+            "y": 89.55
+          },
+          "exitCanvas": {
+            "x": 616.97,
+            "y": 89.55
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 635.62,
+              "y": 89.55
+            },
+            {
+              "cmd": "line",
+              "x": 616.97,
+              "y": 89.55
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P138",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_e54158b7",
+              "kind": "motor",
+              "tag": "M136",
+              "name": "M136",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_833bd349",
+              "kind": "photoeye",
+              "tag": "EZPE136_F1",
+              "name": "EZPE136_F1",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_0c3aa1f3",
+              "kind": "photoeye",
+              "tag": "EZPE136_F2",
+              "name": "EZPE136_F2",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_baf61a82",
+              "kind": "photoeye",
+              "tag": "EZPE136_P1",
+              "name": "EZPE136_P1",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_2d767c30",
+              "kind": "photoeye",
+              "tag": "EZPE136_P2",
+              "name": "EZPE136_P2",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M136",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P316",
+              "distance": 539.798,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P314",
+              "distance": 566.728,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_2853bac5",
+          "kind": "conv_straight",
+          "label": "P136A",
+          "conveyorTag": "P136A",
+          "x": 672.57,
+          "y": 89.55,
+          "rotation": 180,
+          "sourceX": 72783.333,
+          "sourceY": 91733.333,
+          "sourceAngle": 180.0,
+          "length": 8025.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 72783.333,
+            "y": 91733.333
+          },
+          "exitAnchor": {
+            "x": 64758.333,
+            "y": 91733.333
+          },
+          "entryCanvas": {
+            "x": 709.52,
+            "y": 89.55
+          },
+          "exitCanvas": {
+            "x": 635.62,
+            "y": 89.55
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 709.52,
+              "y": 89.55
+            },
+            {
+              "cmd": "line",
+              "x": 635.62,
+              "y": 89.55
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P136",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_00454f80",
+              "kind": "motor",
+              "tag": "M136",
+              "name": "M136",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M136",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P134",
+              "distance": 645.824,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P400",
+              "distance": 677.67,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_b7332436",
+          "kind": "conv_straight",
+          "label": "P138",
+          "conveyorTag": "P138",
+          "x": 614.21,
+          "y": 89.55,
+          "rotation": 180,
+          "sourceX": 62733.333,
+          "sourceY": 91733.333,
+          "sourceAngle": 180.0,
+          "length": 600.0,
+          "width": 200.0,
+          "equipmentType": "BELT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 62733.333,
+            "y": 91733.333
+          },
+          "exitAnchor": {
+            "x": 62133.333,
+            "y": 91733.333
+          },
+          "entryCanvas": {
+            "x": 616.97,
+            "y": 89.55
+          },
+          "exitCanvas": {
+            "x": 611.45,
+            "y": 89.55
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 616.97,
+              "y": 89.55
+            },
+            {
+              "cmd": "line",
+              "x": 611.45,
+              "y": 89.55
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "belt",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_0e243379",
+              "kind": "motor",
+              "tag": "M138",
+              "name": "M138",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_4beb49ba",
+              "kind": "photoeye",
+              "tag": "PE138_P",
+              "name": "PE138_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M138",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P402",
+              "distance": 341.667,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P404",
+              "distance": 690.461,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_cd692816",
+          "kind": "conv_right",
+          "label": "P142",
+          "conveyorTag": "P142",
+          "x": 793.31,
+          "y": 106.28,
+          "rotation": 90,
+          "sourceX": 81675.0,
+          "sourceY": 89708.333,
+          "sourceAngle": 90.0,
+          "length": -1.0,
+          "width": 200.0,
+          "equipmentType": "CURVE",
+          "infeedTangent": 50.0,
+          "dischargeTangent": 50.0,
+          "insideRadius": 266.667,
+          "entryAnchor": {
+            "x": 81675.0,
+            "y": 89708.333
+          },
+          "exitAnchor": {
+            "x": 82091.667,
+            "y": 90125.0
+          },
+          "entryCanvas": {
+            "x": 791.4,
+            "y": 108.2
+          },
+          "exitCanvas": {
+            "x": 795.23,
+            "y": 104.36
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 791.4,
+              "y": 108.2
+            },
+            {
+              "cmd": "line",
+              "x": 791.4,
+              "y": 107.74
+            },
+            {
+              "cmd": "arc",
+              "x": 794.77,
+              "y": 104.36,
+              "radius": 3.38,
+              "sweep_deg": -90.0,
+              "sweep_flag": 0,
+              "center": {
+                "x": 794.77,
+                "y": 107.74
+              }
+            },
+            {
+              "cmd": "line",
+              "x": 795.23,
+              "y": 104.36
+            }
+          ],
+          "arcSamplesCanvas": [
+            {
+              "x": 791.4,
+              "y": 107.74
+            },
+            {
+              "x": 791.41,
+              "y": 107.45
+            },
+            {
+              "x": 791.45,
+              "y": 107.16
+            },
+            {
+              "x": 791.51,
+              "y": 106.87
+            },
+            {
+              "x": 791.6,
+              "y": 106.59
+            },
+            {
+              "x": 791.71,
+              "y": 106.31
+            },
+            {
+              "x": 791.85,
+              "y": 106.05
+            },
+            {
+              "x": 792.01,
+              "y": 105.8
+            },
+            {
+              "x": 792.19,
+              "y": 105.57
+            },
+            {
+              "x": 792.38,
+              "y": 105.35
+            },
+            {
+              "x": 792.6,
+              "y": 105.15
+            },
+            {
+              "x": 792.84,
+              "y": 104.98
+            },
+            {
+              "x": 793.08,
+              "y": 104.82
+            },
+            {
+              "x": 793.34,
+              "y": 104.68
+            },
+            {
+              "x": 793.62,
+              "y": 104.57
+            },
+            {
+              "x": 793.9,
+              "y": 104.48
+            },
+            {
+              "x": 794.19,
+              "y": 104.42
+            },
+            {
+              "x": 794.48,
+              "y": 104.38
+            },
+            {
+              "x": 794.77,
+              "y": 104.36
+            }
+          ],
+          "renderKind": "curve",
+          "angleOut": 0.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_36d604ac",
+              "kind": "motor",
+              "tag": "M144",
+              "name": "M144",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_29982036",
+              "kind": "photoeye",
+              "tag": "PE142_JF",
+              "name": "PE142_JF",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M144",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "MEDIUM",
+          "drawingPage": "2.000"
+        },
+        {
+          "id": "node_b51da8e8",
+          "kind": "conv_right",
+          "label": "P148",
+          "conveyorTag": "P148",
+          "x": 807.82,
+          "y": 91.78,
+          "rotation": 0,
+          "sourceX": 83250.0,
+          "sourceY": 91775.0,
+          "sourceAngle": 0.0,
+          "length": -1.0,
+          "width": 200.0,
+          "equipmentType": "CURVE",
+          "infeedTangent": 50.0,
+          "dischargeTangent": 200.0,
+          "insideRadius": 266.667,
+          "entryAnchor": {
+            "x": 83250.0,
+            "y": 91775.0
+          },
+          "exitAnchor": {
+            "x": 83666.667,
+            "y": 91208.333
+          },
+          "entryCanvas": {
+            "x": 805.9,
+            "y": 89.17
+          },
+          "exitCanvas": {
+            "x": 809.74,
+            "y": 94.39
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 805.9,
+              "y": 89.17
+            },
+            {
+              "cmd": "line",
+              "x": 806.36,
+              "y": 89.17
+            },
+            {
+              "cmd": "arc",
+              "x": 809.74,
+              "y": 92.55,
+              "radius": 3.38,
+              "sweep_deg": -90.0,
+              "sweep_flag": 0,
+              "center": {
+                "x": 806.36,
+                "y": 92.55
+              }
+            },
+            {
+              "cmd": "line",
+              "x": 809.74,
+              "y": 94.39
+            }
+          ],
+          "arcSamplesCanvas": [
+            {
+              "x": 806.36,
+              "y": 89.17
+            },
+            {
+              "x": 806.65,
+              "y": 89.18
+            },
+            {
+              "x": 806.95,
+              "y": 89.22
+            },
+            {
+              "x": 807.23,
+              "y": 89.29
+            },
+            {
+              "x": 807.51,
+              "y": 89.37
+            },
+            {
+              "x": 807.79,
+              "y": 89.49
+            },
+            {
+              "x": 808.05,
+              "y": 89.62
+            },
+            {
+              "x": 808.3,
+              "y": 89.78
+            },
+            {
+              "x": 808.53,
+              "y": 89.96
+            },
+            {
+              "x": 808.75,
+              "y": 90.16
+            },
+            {
+              "x": 808.95,
+              "y": 90.38
+            },
+            {
+              "x": 809.12,
+              "y": 90.61
+            },
+            {
+              "x": 809.28,
+              "y": 90.86
+            },
+            {
+              "x": 809.42,
+              "y": 91.12
+            },
+            {
+              "x": 809.53,
+              "y": 91.39
+            },
+            {
+              "x": 809.62,
+              "y": 91.67
+            },
+            {
+              "x": 809.68,
+              "y": 91.96
+            },
+            {
+              "x": 809.72,
+              "y": 92.25
+            },
+            {
+              "x": 809.74,
+              "y": 92.55
+            }
+          ],
+          "renderKind": "curve",
+          "angleOut": 270.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_f1e3b3f4",
+              "kind": "motor",
+              "tag": "M146",
+              "name": "M146",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_8006c56d",
+              "kind": "photoeye",
+              "tag": "PE148_JF",
+              "name": "PE148_JF",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M146",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "MEDIUM",
+          "drawingPage": "27.000"
+        },
+        {
+          "id": "node_2345cc2c",
+          "kind": "conv_straight",
+          "label": "P150",
+          "conveyorTag": "P150",
+          "x": 736.14,
+          "y": 89.17,
+          "rotation": 180,
+          "sourceX": 76700.0,
+          "sourceY": 91775.0,
+          "sourceAngle": 180.0,
+          "length": 2050.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 76700.0,
+            "y": 91775.0
+          },
+          "exitAnchor": {
+            "x": 74650.0,
+            "y": 91775.0
+          },
+          "entryCanvas": {
+            "x": 745.58,
+            "y": 89.17
+          },
+          "exitCanvas": {
+            "x": 726.71,
+            "y": 89.17
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 745.58,
+              "y": 89.17
+            },
+            {
+              "cmd": "line",
+              "x": 726.71,
+              "y": 89.17
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_abf6c3f8",
+              "kind": "motor",
+              "tag": "M150",
+              "name": "M150",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_bb538338",
+              "kind": "photoeye",
+              "tag": "EZPE150_F1",
+              "name": "EZPE150_F1",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_3dc40bac",
+              "kind": "photoeye",
+              "tag": "EZPE150_F2",
+              "name": "EZPE150_F2",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_febdf959",
+              "kind": "photoeye",
+              "tag": "EZPE150_P2",
+              "name": "EZPE150_P2",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_fb44b083",
+              "kind": "photoeye",
+              "tag": "EZPE150_P1",
+              "name": "EZPE150_P1",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M150",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P324",
+              "distance": 599.331,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P322",
+              "distance": 611.748,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_95eff307",
+          "kind": "conv_straight",
+          "label": "P150A",
+          "conveyorTag": "P150A",
+          "x": 775.74,
+          "y": 89.17,
+          "rotation": 180,
+          "sourceX": 83250.0,
+          "sourceY": 91775.0,
+          "sourceAngle": 180.0,
+          "length": 6550.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 83250.0,
+            "y": 91775.0
+          },
+          "exitAnchor": {
+            "x": 76700.0,
+            "y": 91775.0
+          },
+          "entryCanvas": {
+            "x": 805.9,
+            "y": 89.17
+          },
+          "exitCanvas": {
+            "x": 745.58,
+            "y": 89.17
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 805.9,
+              "y": 89.17
+            },
+            {
+              "cmd": "line",
+              "x": 745.58,
+              "y": 89.17
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P150",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_6a5d8303",
+              "kind": "motor",
+              "tag": "M150",
+              "name": "M150",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M150",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P148",
+              "distance": 703.365,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_16e51659",
+          "kind": "conv_straight",
+          "label": "P215",
+          "conveyorTag": "P215",
+          "x": 471.49,
+          "y": 81.32,
+          "rotation": 180,
+          "sourceX": 47434.4,
+          "sourceY": 92627.828,
+          "sourceAngle": 180.0,
+          "length": 1000.0,
+          "width": 500.0,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 47434.4,
+            "y": 92627.828
+          },
+          "exitAnchor": {
+            "x": 46434.4,
+            "y": 92627.828
+          },
+          "entryCanvas": {
+            "x": 476.09,
+            "y": 81.32
+          },
+          "exitCanvas": {
+            "x": 466.88,
+            "y": 81.32
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 476.09,
+              "y": 81.32
+            },
+            {
+              "cmd": "line",
+              "x": 466.88,
+              "y": 81.32
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_510288a2",
+              "kind": "motor",
+              "tag": "M215",
+              "name": "M215",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_16adcc26",
+              "kind": "photoeye",
+              "tag": "PE215_J",
+              "name": "PE215_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M215",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000"
+        },
+        {
+          "id": "node_b9055627",
+          "kind": "conv_right",
+          "label": "P226",
+          "conveyorTag": "P226",
+          "x": 665.14,
+          "y": 78.4,
+          "rotation": 0,
+          "sourceX": 67780.765,
+          "sourceY": 92761.24,
+          "sourceAngle": 0.0,
+          "length": -1.0,
+          "width": 200.0,
+          "equipmentType": "CURVE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 266.667,
+          "entryAnchor": {
+            "x": 67780.765,
+            "y": 92761.24
+          },
+          "exitAnchor": {
+            "x": 68147.432,
+            "y": 93127.907
+          },
+          "entryCanvas": {
+            "x": 663.45,
+            "y": 80.09
+          },
+          "exitCanvas": {
+            "x": 666.83,
+            "y": 76.71
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 663.45,
+              "y": 80.09
+            },
+            {
+              "cmd": "arc",
+              "x": 666.83,
+              "y": 76.71,
+              "radius": 3.38,
+              "sweep_deg": 90.0,
+              "sweep_flag": 1,
+              "center": {
+                "x": 663.45,
+                "y": 76.71
+              }
+            }
+          ],
+          "arcSamplesCanvas": [
+            {
+              "x": 663.45,
+              "y": 80.09
+            },
+            {
+              "x": 663.74,
+              "y": 80.08
+            },
+            {
+              "x": 664.04,
+              "y": 80.04
+            },
+            {
+              "x": 664.32,
+              "y": 79.97
+            },
+            {
+              "x": 664.61,
+              "y": 79.89
+            },
+            {
+              "x": 664.88,
+              "y": 79.77
+            },
+            {
+              "x": 665.14,
+              "y": 79.64
+            },
+            {
+              "x": 665.39,
+              "y": 79.48
+            },
+            {
+              "x": 665.62,
+              "y": 79.3
+            },
+            {
+              "x": 665.84,
+              "y": 79.1
+            },
+            {
+              "x": 666.04,
+              "y": 78.88
+            },
+            {
+              "x": 666.22,
+              "y": 78.65
+            },
+            {
+              "x": 666.37,
+              "y": 78.4
+            },
+            {
+              "x": 666.51,
+              "y": 78.14
+            },
+            {
+              "x": 666.62,
+              "y": 77.87
+            },
+            {
+              "x": 666.71,
+              "y": 77.59
+            },
+            {
+              "x": 666.78,
+              "y": 77.3
+            },
+            {
+              "x": 666.81,
+              "y": 77.01
+            },
+            {
+              "x": 666.83,
+              "y": 76.71
+            }
+          ],
+          "renderKind": "curve",
+          "angleOut": 90.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_6a823566",
+              "kind": "motor",
+              "tag": "M229",
+              "name": "M229",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_be47383a",
+              "kind": "photoeye",
+              "tag": "PE226_JF",
+              "name": "PE226_JF",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M229",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "MEDIUM",
+          "drawingPage": "27.000"
+        },
+        {
+          "id": "node_e9a67991",
+          "kind": "conv_straight",
+          "label": "P229",
+          "conveyorTag": "P229",
+          "x": 603.16,
+          "y": 80.0,
+          "rotation": 180,
+          "sourceX": 67767.195,
+          "sourceY": 92770.923,
+          "sourceAngle": 180.0,
+          "length": 13066.667,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 67767.195,
+            "y": 92770.923
+          },
+          "exitAnchor": {
+            "x": 54700.528000000006,
+            "y": 92770.923
+          },
+          "entryCanvas": {
+            "x": 663.33,
+            "y": 80.0
+          },
+          "exitCanvas": {
+            "x": 543.0,
+            "y": 80.0
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 663.33,
+              "y": 80.0
+            },
+            {
+              "cmd": "line",
+              "x": 543.0,
+              "y": 80.0
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_0aadb34f",
+              "kind": "motor",
+              "tag": "M229",
+              "name": "M229",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_1b71984a",
+              "kind": "photoeye",
+              "tag": "EZPE229_F",
+              "name": "EZPE229_F",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M229",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P226",
+              "distance": 521.553,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_eb4fe65a",
+          "kind": "conv_straight",
+          "label": "P230",
+          "conveyorTag": "P230",
+          "x": 92.2,
+          "y": 920.0,
+          "rotation": 180,
+          "sourceX": 7070.634,
+          "sourceY": 1550.65,
+          "sourceAngle": 180.0,
+          "length": 2650.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 7070.634,
+            "y": 1550.65
+          },
+          "exitAnchor": {
+            "x": 4420.634,
+            "y": 1550.6500000000003
+          },
+          "entryCanvas": {
+            "x": 104.4,
+            "y": 920.0
+          },
+          "exitCanvas": {
+            "x": 80.0,
+            "y": 920.0
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 104.4,
+              "y": 920.0
+            },
+            {
+              "cmd": "line",
+              "x": 80.0,
+              "y": 920.0
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P232",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_a8b55cc5",
+              "kind": "photoeye",
+              "tag": "EZPE230_P",
+              "name": "EZPE230_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_95014afc",
+              "kind": "photoeye",
+              "tag": "EZPE230_F",
+              "name": "EZPE230_F",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000"
+        },
+        {
+          "id": "node_0db320e6",
+          "kind": "conv_straight",
+          "label": "P232",
+          "conveyorTag": "P232",
+          "x": 77.24,
+          "y": 920.0,
+          "rotation": 180,
+          "sourceX": 4420.634,
+          "sourceY": 1550.65,
+          "sourceAngle": 180.0,
+          "length": 600.0,
+          "width": 200.0,
+          "equipmentType": "BELT",
+          "infeedTangent": 150.0,
+          "dischargeTangent": 150.0,
+          "insideRadius": 150.0,
+          "entryAnchor": {
+            "x": 4420.634,
+            "y": 1550.65
+          },
+          "exitAnchor": {
+            "x": 3820.634,
+            "y": 1550.65
+          },
+          "entryCanvas": {
+            "x": 80.0,
+            "y": 920.0
+          },
+          "exitCanvas": {
+            "x": 74.47,
+            "y": 920.0
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 80.0,
+              "y": 920.0
+            },
+            {
+              "cmd": "line",
+              "x": 74.47,
+              "y": 920.0
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "belt",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_7f7ebd73",
+              "kind": "photoeye",
+              "tag": "PE232_P",
+              "name": "PE232_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000"
+        },
+        {
+          "id": "node_bdcd117c",
+          "kind": "conv_right",
+          "label": "P238",
+          "conveyorTag": "P238",
+          "x": 767.3,
+          "y": 88.33,
+          "rotation": 0,
+          "sourceX": 78850.0,
+          "sourceY": 92075.0,
+          "sourceAngle": 0.0,
+          "length": -1.0,
+          "width": 200.0,
+          "equipmentType": "CURVE",
+          "infeedTangent": 50.0,
+          "dischargeTangent": 50.0,
+          "insideRadius": 266.667,
+          "entryAnchor": {
+            "x": 78850.0,
+            "y": 92075.0
+          },
+          "exitAnchor": {
+            "x": 79266.667,
+            "y": 91658.333
+          },
+          "entryCanvas": {
+            "x": 765.38,
+            "y": 86.41
+          },
+          "exitCanvas": {
+            "x": 769.22,
+            "y": 90.25
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 765.38,
+              "y": 86.41
+            },
+            {
+              "cmd": "line",
+              "x": 765.84,
+              "y": 86.41
+            },
+            {
+              "cmd": "arc",
+              "x": 769.22,
+              "y": 89.78,
+              "radius": 3.38,
+              "sweep_deg": -90.0,
+              "sweep_flag": 0,
+              "center": {
+                "x": 765.84,
+                "y": 89.78
+              }
+            },
+            {
+              "cmd": "line",
+              "x": 769.22,
+              "y": 90.25
+            }
+          ],
+          "arcSamplesCanvas": [
+            {
+              "x": 765.84,
+              "y": 86.41
+            },
+            {
+              "x": 766.14,
+              "y": 86.42
+            },
+            {
+              "x": 766.43,
+              "y": 86.46
+            },
+            {
+              "x": 766.72,
+              "y": 86.52
+            },
+            {
+              "x": 767.0,
+              "y": 86.61
+            },
+            {
+              "x": 767.27,
+              "y": 86.72
+            },
+            {
+              "x": 767.53,
+              "y": 86.86
+            },
+            {
+              "x": 767.78,
+              "y": 87.02
+            },
+            {
+              "x": 768.01,
+              "y": 87.2
+            },
+            {
+              "x": 768.23,
+              "y": 87.4
+            },
+            {
+              "x": 768.43,
+              "y": 87.61
+            },
+            {
+              "x": 768.61,
+              "y": 87.85
+            },
+            {
+              "x": 768.77,
+              "y": 88.1
+            },
+            {
+              "x": 768.9,
+              "y": 88.36
+            },
+            {
+              "x": 769.01,
+              "y": 88.63
+            },
+            {
+              "x": 769.1,
+              "y": 88.91
+            },
+            {
+              "x": 769.17,
+              "y": 89.2
+            },
+            {
+              "x": 769.21,
+              "y": 89.49
+            },
+            {
+              "x": 769.22,
+              "y": 89.78
+            }
+          ],
+          "renderKind": "curve",
+          "angleOut": 270.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_d84d000c",
+              "kind": "motor",
+              "tag": "M240",
+              "name": "M240",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_ffe4cda2",
+              "kind": "photoeye",
+              "tag": "PE238_JF",
+              "name": "PE238_JF",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M240",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "MEDIUM",
+          "drawingPage": "27.000"
+        },
+        {
+          "id": "node_fec4d508",
+          "kind": "conv_straight",
+          "label": "P242",
+          "conveyorTag": "P242",
+          "x": 735.91,
+          "y": 86.41,
+          "rotation": 180,
+          "sourceX": 76650.0,
+          "sourceY": 92075.0,
+          "sourceAngle": 180.0,
+          "length": 2000.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 76650.0,
+            "y": 92075.0
+          },
+          "exitAnchor": {
+            "x": 74650.0,
+            "y": 92075.0
+          },
+          "entryCanvas": {
+            "x": 745.12,
+            "y": 86.41
+          },
+          "exitCanvas": {
+            "x": 726.71,
+            "y": 86.41
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 745.12,
+              "y": 86.41
+            },
+            {
+              "cmd": "line",
+              "x": 726.71,
+              "y": 86.41
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_4fd30142",
+              "kind": "motor",
+              "tag": "M242",
+              "name": "M242",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_0077b1cb",
+              "kind": "photoeye",
+              "tag": "EZPE242_F",
+              "name": "EZPE242_F",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_92becbe4",
+              "kind": "photoeye",
+              "tag": "EZPE242_P",
+              "name": "EZPE242_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M242",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P150A",
+              "distance": 304.138,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P324",
+              "distance": 475.135,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P322",
+              "distance": 909.25,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_a4a65096",
+          "kind": "conv_straight",
+          "label": "P312",
+          "conveyorTag": "P312",
+          "x": 637.38,
+          "y": 131.3,
+          "rotation": 90,
+          "sourceX": 64950.0,
+          "sourceY": 85700.0,
+          "sourceAngle": 90.0,
+          "length": 3000.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 64950.0,
+            "y": 85700.0
+          },
+          "exitAnchor": {
+            "x": 64950.0,
+            "y": 88700.0
+          },
+          "entryCanvas": {
+            "x": 637.38,
+            "y": 145.11
+          },
+          "exitCanvas": {
+            "x": 637.38,
+            "y": 117.49
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 637.38,
+              "y": 145.11
+            },
+            {
+              "cmd": "line",
+              "x": 637.38,
+              "y": 117.49
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 90.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P314",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_ca761688",
+              "kind": "motor",
+              "tag": "M312",
+              "name": "M312",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_9f6c3770",
+              "kind": "photoeye",
+              "tag": "EZPE312_F",
+              "name": "EZPE312_F",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_34b62080",
+              "kind": "photoeye",
+              "tag": "EZPE312_P",
+              "name": "EZPE312_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M312",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "20.000"
+        },
+        {
+          "id": "node_34438262",
+          "kind": "conv_straight",
+          "label": "P314",
+          "conveyorTag": "P314",
+          "x": 637.38,
+          "y": 105.98,
+          "rotation": 90,
+          "sourceX": 64950.0,
+          "sourceY": 88700.0,
+          "sourceAngle": 90.0,
+          "length": 2500.0,
+          "width": 200.0,
+          "equipmentType": "BELT",
+          "infeedTangent": 7.5,
+          "dischargeTangent": 7.5,
+          "insideRadius": 7.5,
+          "entryAnchor": {
+            "x": 64950.0,
+            "y": 88700.0
+          },
+          "exitAnchor": {
+            "x": 64950.0,
+            "y": 91200.0
+          },
+          "entryCanvas": {
+            "x": 637.38,
+            "y": 117.49
+          },
+          "exitCanvas": {
+            "x": 637.38,
+            "y": 94.47
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 637.38,
+              "y": 117.49
+            },
+            {
+              "cmd": "line",
+              "x": 637.38,
+              "y": 94.47
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "belt",
+          "angleOut": 90.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_6151bf58",
+              "kind": "motor",
+              "tag": "M314",
+              "name": "M314",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_10646c2b",
+              "kind": "photoeye",
+              "tag": "PE314_P",
+              "name": "PE314_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M314",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "20.000"
+        },
+        {
+          "id": "node_8cad465b",
+          "kind": "conv_right",
+          "label": "P316",
+          "conveyorTag": "P316",
+          "x": 636.0,
+          "y": 87.62,
+          "rotation": 0,
+          "sourceX": 64500.0,
+          "sourceY": 91733.333,
+          "sourceAngle": 350.0,
+          "length": -1.0,
+          "width": 200.0,
+          "equipmentType": "CURVE",
+          "infeedTangent": 150.0,
+          "dischargeTangent": 150.0,
+          "insideRadius": 266.667,
+          "entryAnchor": {
+            "x": 64500.0,
+            "y": 91733.333
+          },
+          "exitAnchor": {
+            "x": 65098.53595033619,
+            "y": 92152.4323843149
+          },
+          "entryCanvas": {
+            "x": 633.24,
+            "y": 89.55
+          },
+          "exitCanvas": {
+            "x": 638.75,
+            "y": 85.7
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 633.24,
+              "y": 89.55
+            },
+            {
+              "cmd": "line",
+              "x": 634.6,
+              "y": 89.79
+            },
+            {
+              "cmd": "arc",
+              "x": 638.51,
+              "y": 87.06,
+              "radius": 3.38,
+              "sweep_deg": 90.0,
+              "sweep_flag": 1,
+              "center": {
+                "x": 635.19,
+                "y": 86.47
+              }
+            },
+            {
+              "cmd": "line",
+              "x": 638.75,
+              "y": 85.7
+            }
+          ],
+          "arcSamplesCanvas": [
+            {
+              "x": 634.6,
+              "y": 89.79
+            },
+            {
+              "x": 634.89,
+              "y": 89.83
+            },
+            {
+              "x": 635.19,
+              "y": 89.85
+            },
+            {
+              "x": 635.48,
+              "y": 89.83
+            },
+            {
+              "x": 635.77,
+              "y": 89.79
+            },
+            {
+              "x": 636.06,
+              "y": 89.73
+            },
+            {
+              "x": 636.34,
+              "y": 89.64
+            },
+            {
+              "x": 636.61,
+              "y": 89.53
+            },
+            {
+              "x": 636.87,
+              "y": 89.39
+            },
+            {
+              "x": 637.12,
+              "y": 89.24
+            },
+            {
+              "x": 637.36,
+              "y": 89.06
+            },
+            {
+              "x": 637.57,
+              "y": 88.86
+            },
+            {
+              "x": 637.77,
+              "y": 88.64
+            },
+            {
+              "x": 637.95,
+              "y": 88.41
+            },
+            {
+              "x": 638.11,
+              "y": 88.16
+            },
+            {
+              "x": 638.25,
+              "y": 87.9
+            },
+            {
+              "x": 638.36,
+              "y": 87.62
+            },
+            {
+              "x": 638.45,
+              "y": 87.34
+            },
+            {
+              "x": 638.51,
+              "y": 87.06
+            }
+          ],
+          "renderKind": "curve",
+          "angleOut": 80.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_c903f678",
+              "kind": "motor",
+              "tag": "M314",
+              "name": "M314",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_e8e46d8b",
+              "kind": "photoeye",
+              "tag": "PE316_J",
+              "name": "PE316_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M314",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "MEDIUM",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P136A",
+              "distance": 258.333,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P314",
+              "distance": 697.814,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_f8b00be1",
+          "kind": "conv_straight",
+          "label": "P320",
+          "conveyorTag": "P320",
+          "x": 747.89,
+          "y": 129.3,
+          "rotation": 90,
+          "sourceX": 76950.0,
+          "sourceY": 85916.667,
+          "sourceAngle": 90.0,
+          "length": 3000.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 7.5,
+          "dischargeTangent": 7.5,
+          "insideRadius": 7.5,
+          "entryAnchor": {
+            "x": 76950.0,
+            "y": 85916.667
+          },
+          "exitAnchor": {
+            "x": 76950.0,
+            "y": 88916.667
+          },
+          "entryCanvas": {
+            "x": 747.89,
+            "y": 143.12
+          },
+          "exitCanvas": {
+            "x": 747.89,
+            "y": 115.49
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 747.89,
+              "y": 143.12
+            },
+            {
+              "cmd": "line",
+              "x": 747.89,
+              "y": 115.49
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 90.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P322",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_4ab7b9c9",
+              "kind": "motor",
+              "tag": "M320",
+              "name": "M320",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_7556db6b",
+              "kind": "photoeye",
+              "tag": "EZPE320_F",
+              "name": "EZPE320_F",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_8a32ade2",
+              "kind": "photoeye",
+              "tag": "EZPE320_P",
+              "name": "EZPE320_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M320",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "20.000"
+        },
+        {
+          "id": "node_18f51c94",
+          "kind": "conv_straight",
+          "label": "P322",
+          "conveyorTag": "P322",
+          "x": 747.89,
+          "y": 104.9,
+          "rotation": 90,
+          "sourceX": 76950.0,
+          "sourceY": 88916.667,
+          "sourceAngle": 90.0,
+          "length": 2300.0,
+          "width": 200.0,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 76950.0,
+            "y": 88916.667
+          },
+          "exitAnchor": {
+            "x": 76950.0,
+            "y": 91216.667
+          },
+          "entryCanvas": {
+            "x": 747.89,
+            "y": 115.49
+          },
+          "exitCanvas": {
+            "x": 747.89,
+            "y": 94.31
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 747.89,
+              "y": 115.49
+            },
+            {
+              "cmd": "line",
+              "x": 747.89,
+              "y": 94.31
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 90.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_7ab0b4bb",
+              "kind": "motor",
+              "tag": "M322",
+              "name": "M322",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_ef2e83f0",
+              "kind": "photoeye",
+              "tag": "PE322_P",
+              "name": "PE322_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M322",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "20.000"
+        },
+        {
+          "id": "node_78636d55",
+          "kind": "conv_right",
+          "label": "P324",
+          "conveyorTag": "P324",
+          "x": 746.52,
+          "y": 87.13,
+          "rotation": 0,
+          "sourceX": 76500.0,
+          "sourceY": 91775.0,
+          "sourceAngle": 350.0,
+          "length": -1.0,
+          "width": 200.0,
+          "equipmentType": "CURVE",
+          "infeedTangent": 150.0,
+          "dischargeTangent": 175.0,
+          "insideRadius": 266.667,
+          "entryAnchor": {
+            "x": 76500.0,
+            "y": 91775.0
+          },
+          "exitAnchor": {
+            "x": 77102.87715477786,
+            "y": 92218.71957814021
+          },
+          "entryCanvas": {
+            "x": 743.74,
+            "y": 89.17
+          },
+          "exitCanvas": {
+            "x": 749.29,
+            "y": 85.08
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 743.74,
+              "y": 89.17
+            },
+            {
+              "cmd": "line",
+              "x": 745.1,
+              "y": 89.41
+            },
+            {
+              "cmd": "arc",
+              "x": 749.01,
+              "y": 86.67,
+              "radius": 3.38,
+              "sweep_deg": 90.0,
+              "sweep_flag": 1,
+              "center": {
+                "x": 745.69,
+                "y": 86.09
+              }
+            },
+            {
+              "cmd": "line",
+              "x": 749.29,
+              "y": 85.08
+            }
+          ],
+          "arcSamplesCanvas": [
+            {
+              "x": 745.1,
+              "y": 89.41
+            },
+            {
+              "x": 745.39,
+              "y": 89.45
+            },
+            {
+              "x": 745.69,
+              "y": 89.46
+            },
+            {
+              "x": 745.98,
+              "y": 89.45
+            },
+            {
+              "x": 746.27,
+              "y": 89.41
+            },
+            {
+              "x": 746.56,
+              "y": 89.35
+            },
+            {
+              "x": 746.84,
+              "y": 89.26
+            },
+            {
+              "x": 747.11,
+              "y": 89.15
+            },
+            {
+              "x": 747.38,
+              "y": 89.01
+            },
+            {
+              "x": 747.62,
+              "y": 88.85
+            },
+            {
+              "x": 747.86,
+              "y": 88.67
+            },
+            {
+              "x": 748.08,
+              "y": 88.47
+            },
+            {
+              "x": 748.27,
+              "y": 88.26
+            },
+            {
+              "x": 748.45,
+              "y": 88.02
+            },
+            {
+              "x": 748.61,
+              "y": 87.77
+            },
+            {
+              "x": 748.75,
+              "y": 87.51
+            },
+            {
+              "x": 748.86,
+              "y": 87.24
+            },
+            {
+              "x": 748.95,
+              "y": 86.96
+            },
+            {
+              "x": 749.01,
+              "y": 86.67
+            }
+          ],
+          "renderKind": "curve",
+          "angleOut": 80.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_7d8abd11",
+              "kind": "motor",
+              "tag": "M322",
+              "name": "M322",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_1a206e20",
+              "kind": "photoeye",
+              "tag": "PE324_J",
+              "name": "PE324_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M322",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "MEDIUM",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P150A",
+              "distance": 200.0,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P322",
+              "distance": 717.102,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_478c21b9",
+          "kind": "conv_straight",
+          "label": "P400",
+          "conveyorTag": "P400",
+          "x": 721.1,
+          "y": 87.79,
+          "rotation": 180,
+          "sourceX": 74650.0,
+          "sourceY": 91925.0,
+          "sourceAngle": 180.0,
+          "length": 1216.667,
+          "width": 500.0,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 74650.0,
+            "y": 91925.0
+          },
+          "exitAnchor": {
+            "x": 73433.333,
+            "y": 91925.0
+          },
+          "entryCanvas": {
+            "x": 726.71,
+            "y": 87.79
+          },
+          "exitCanvas": {
+            "x": 715.5,
+            "y": 87.79
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 726.71,
+              "y": 87.79
+            },
+            {
+              "cmd": "line",
+              "x": 715.5,
+              "y": 87.79
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P402",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_97cb921e",
+              "kind": "motor",
+              "tag": "M400",
+              "name": "M400",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_714b784c",
+              "kind": "photoeye",
+              "tag": "PE400_J",
+              "name": "PE400_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M400",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P150",
+              "distance": 150.0,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P242",
+              "distance": 150.0,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_539a0915",
+          "kind": "conv_straight",
+          "label": "P402",
+          "conveyorTag": "P402",
+          "x": 666.24,
+          "y": 86.41,
+          "rotation": 180,
+          "sourceX": 73433.333,
+          "sourceY": 92075.0,
+          "sourceAngle": 180.0,
+          "length": 10700.0,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 73433.333,
+            "y": 92075.0
+          },
+          "exitAnchor": {
+            "x": 62733.333,
+            "y": 92075.0
+          },
+          "entryCanvas": {
+            "x": 715.5,
+            "y": 86.41
+          },
+          "exitCanvas": {
+            "x": 616.97,
+            "y": 86.41
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 715.5,
+              "y": 86.41
+            },
+            {
+              "cmd": "line",
+              "x": 616.97,
+              "y": 86.41
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P404",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_ea7a40e6",
+              "kind": "motor",
+              "tag": "M402",
+              "name": "M402",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_40e12634",
+              "kind": "photoeye",
+              "tag": "EZPE402_P",
+              "name": "EZPE402_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            },
+            {
+              "id": "dev_427069ea",
+              "kind": "photoeye",
+              "tag": "EZPE402_F",
+              "name": "EZPE402_F",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M402",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P134",
+              "distance": 275.638,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_b33f1864",
+          "kind": "conv_straight",
+          "label": "P404",
+          "conveyorTag": "P404",
+          "x": 614.21,
+          "y": 86.41,
+          "rotation": 180,
+          "sourceX": 62733.333,
+          "sourceY": 92075.0,
+          "sourceAngle": 180.0,
+          "length": 600.0,
+          "width": 200.0,
+          "equipmentType": "BELT",
+          "infeedTangent": 150.0,
+          "dischargeTangent": 150.0,
+          "insideRadius": 150.0,
+          "entryAnchor": {
+            "x": 62733.333,
+            "y": 92075.0
+          },
+          "exitAnchor": {
+            "x": 62133.333,
+            "y": 92075.0
+          },
+          "entryCanvas": {
+            "x": 616.97,
+            "y": 86.41
+          },
+          "exitCanvas": {
+            "x": 611.45,
+            "y": 86.41
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 616.97,
+              "y": 86.41
+            },
+            {
+              "cmd": "line",
+              "x": 611.45,
+              "y": 86.41
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "belt",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_c2d4bbed",
+              "kind": "motor",
+              "tag": "M404",
+              "name": "M404",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_65e93f4d",
+              "kind": "photoeye",
+              "tag": "PE404_P",
+              "name": "PE404_P",
+              "roles": [
+                "exit",
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M404",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P136",
+              "distance": 341.667,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P138",
+              "distance": 690.461,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_a969c8e7",
+          "kind": "conv_straight",
+          "label": "P406",
+          "conveyorTag": "P406",
+          "x": 604.37,
+          "y": 87.71,
+          "rotation": 180,
+          "sourceX": 62114.875,
+          "sourceY": 91933.333,
+          "sourceAngle": 180.0,
+          "length": 1500.0,
+          "width": 600.0,
+          "equipmentType": "STRAIGHT",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 62114.875,
+            "y": 91933.333
+          },
+          "exitAnchor": {
+            "x": 60614.875,
+            "y": 91933.333
+          },
+          "entryCanvas": {
+            "x": 611.28,
+            "y": 87.71
+          },
+          "exitCanvas": {
+            "x": 597.46,
+            "y": 87.71
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 611.28,
+              "y": 87.71
+            },
+            {
+              "cmd": "line",
+              "x": 597.46,
+              "y": 87.71
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "P408",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_712460f4",
+              "kind": "motor",
+              "tag": "M406",
+              "name": "M406",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_553171b7",
+              "kind": "photoeye",
+              "tag": "PE406_J",
+              "name": "PE406_J",
+              "roles": [
+                "jam"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M406",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000",
+          "ambiguousInbound": [
+            {
+              "from": "P404",
+              "distance": 142.864,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P138",
+              "distance": 200.85,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P402",
+              "distance": 634.476,
+              "classification": "AMBIGUOUS"
+            },
+            {
+              "from": "P136",
+              "distance": 649.993,
+              "classification": "AMBIGUOUS"
+            }
+          ]
+        },
+        {
+          "id": "node_c7cb88a7",
+          "kind": "conv_straight",
+          "label": "P408",
+          "conveyorTag": "P408",
+          "x": 492.55,
+          "y": 86.44,
+          "rotation": 180,
+          "sourceX": 60637.915,
+          "sourceY": 92071.609,
+          "sourceAngle": 180.0,
+          "length": 22833.333,
+          "width": 200.0,
+          "equipmentType": "ZEROPRESSURE",
+          "infeedTangent": 0.0,
+          "dischargeTangent": 0.0,
+          "insideRadius": 0.0,
+          "entryAnchor": {
+            "x": 60637.915,
+            "y": 92071.609
+          },
+          "exitAnchor": {
+            "x": 37804.582,
+            "y": 92071.609
+          },
+          "entryCanvas": {
+            "x": 597.68,
+            "y": 86.44
+          },
+          "exitCanvas": {
+            "x": 387.42,
+            "y": 86.44
+          },
+          "pathCanvas": [
+            {
+              "cmd": "move",
+              "x": 597.68,
+              "y": 86.44
+            },
+            {
+              "cmd": "line",
+              "x": 387.42,
+              "y": 86.44
+            }
+          ],
+          "arcSamplesCanvas": [],
+          "renderKind": "linear",
+          "angleOut": 180.0,
+          "physical": true,
+          "schematic": true,
+          "provenance": {
+            "geometry": "IMPORTED",
+            "xy_meaning": "infeed_entry_end",
+            "calibration": "greensboro-infeed-v1",
+            "area": "SUGGESTED",
+            "safetyZone": "UNKNOWN",
+            "source": "RUN/Conveyor.asc+Mtrchain"
+          },
+          "safetyZone": "",
+          "downstream": "",
+          "terminal": false,
+          "asMerge": false,
+          "devices": [
+            {
+              "id": "dev_9a90063a",
+              "kind": "motor",
+              "tag": "M408",
+              "name": "M408",
+              "driveType": "CONTACTOR / MOTOR STARTER"
+            },
+            {
+              "id": "dev_7c863ca6",
+              "kind": "photoeye",
+              "tag": "EZPE408_F",
+              "name": "EZPE408_F",
+              "roles": [
+                "full"
+              ],
+              "rolesManual": false,
+              "association": "name_suffix_match"
+            }
+          ],
+          "motorsMeta": [
+            {
+              "motor": "M408",
+              "drive_type": "CONTACTOR / MOTOR STARTER"
+            }
+          ],
+          "geometryConfidence": "HIGH",
+          "drawingPage": "27.000"
+        }
+      ],
+      "wires": [
+        {
+          "id": "wire_8e4e3825",
+          "from": "node_2606d459",
+          "to": "node_b7332436",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "CONFIRMED",
+          "distance": 0.0,
+          "angleDelta": 0.0
+        },
+        {
+          "id": "wire_39902b24",
+          "from": "node_2853bac5",
+          "to": "node_2606d459",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "CONFIRMED",
+          "distance": 0.0,
+          "angleDelta": 0.0
+        },
+        {
+          "id": "wire_bc7505b9",
+          "from": "node_95eff307",
+          "to": "node_2345cc2c",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "CONFIRMED",
+          "distance": 0.0,
+          "angleDelta": 0.0
+        },
+        {
+          "id": "wire_d8359f99",
+          "from": "node_eb4fe65a",
+          "to": "node_0db320e6",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "CONFIRMED",
+          "distance": 0.0,
+          "angleDelta": 0.0
+        },
+        {
+          "id": "wire_e4df83ee",
+          "from": "node_a4a65096",
+          "to": "node_34438262",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "CONFIRMED",
+          "distance": 0.0,
+          "angleDelta": 0.0
+        },
+        {
+          "id": "wire_3f13d714",
+          "from": "node_f8b00be1",
+          "to": "node_18f51c94",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "CONFIRMED",
+          "distance": 0.0,
+          "angleDelta": 0.0
+        },
+        {
+          "id": "wire_3096e5d1",
+          "from": "node_539a0915",
+          "to": "node_b33f1864",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "CONFIRMED",
+          "distance": 0.0,
+          "angleDelta": 0.0
+        },
+        {
+          "id": "wire_27fb5bbb",
+          "from": "node_a969c8e7",
+          "to": "node_c7cb88a7",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "HIGH_CONFIDENCE",
+          "distance": 140.182,
+          "angleDelta": 0.0
+        },
+        {
+          "id": "wire_e20b3f30",
+          "from": "node_478c21b9",
+          "to": "node_539a0915",
+          "toPort": "in",
+          "physical": true,
+          "fromAnchor": "exit",
+          "toAnchor": "entry",
+          "confidence": "HIGH_CONFIDENCE",
+          "distance": 150.0,
+          "angleDelta": 0.0
+        }
+      ]
+    }
+  ],
+  "activeAreaId": "area_017de056",
+  "metrics": {
+    "conveyors_discovered": 35,
+    "conveyors_placed": 35,
+    "conveyors_with_usable_xy": 35,
+    "conveyors_with_usable_angle": 35,
+    "conveyors_with_usable_length": 27,
+    "motors_discovered": 33,
+    "vfd_motors": 0,
+    "contactor_motors": 33,
+    "unknown_motors": 0,
+    "auto_connections": 9,
+    "ambiguous_connections": 28,
+    "disconnected_equipment": 19,
+    "merges_detected": 0,
+    "canvas_scale": 0.009208479347567838,
+    "geometry_summary": {
+      "generated_at": "2026-09-12T12:28:20.915209+00:00",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+      "machine": "ORNCCP2",
+      "conveyors_discovered": 35,
+      "usable_xy": 35,
+      "usable_angle": 35,
+      "usable_length_width": 27,
+      "motors_discovered": 118,
+      "motors_linked_via_mtrchain": 33,
+      "vfd_classified": 0,
+      "contactor_classified": 33,
+      "unknown_drive": 2,
+      "multiple_motor_conveyors": 0,
+      "motors_driving_multiple_conveyors": 38,
+      "photoeyes_scoped": 44,
+      "merge_table_hints": 8,
+      "connection_candidates_total": 37,
+      "confirmed_connections": 7,
+      "high_confidence_candidates": 2,
+      "ambiguous_connections": 28,
+      "unknown_connections": 26,
+      "anchor_model_assumption": "(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; exit=XY+Length\u00b7\u00fb. CURVE uses Inside_Radius+tangents+90\u00b0 arc (MEDIUM).",
+      "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence."
+    }
+  }
+}
