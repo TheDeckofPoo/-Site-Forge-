@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-09-12T20:14:48.732229+00:00",
+  "estop": {
+    "legacy_count_labeled_zones": 90,
+    "estop_devices": 90,
+    "estop_circuits_or_aliases": 0,
+    "estop_zones_operational": 0,
+    "note": "EStop.asc rows were previously counted as 'E-stop zones'. Correct taxonomy: mostly ES devices/circuits; operational zones require explicit zone membership.",
+    "device_samples": [
+      "4ES",
+      "5ES",
+      "6ES",
+      "ES422",
+      "ES500",
+      "ES610F",
+      "ES610G",
+      "ES610H",
+      "ES610I",
+      "ES610J",
+      "ES610K",
+      "ES612F",
+      "ES612G",
+      "ES612H",
+      "ES612I",
+      "ES612J",
+      "ES612K",
+      "ES708B",
+      "ES708C",
+      "ES710B"
+    ],
+    "zone_samples": []
+  },
+  "full_fulljam": {
+    "legacy_full_groups_count": 79,
+    "full_pe_detectors": 59,
+    "fulljam_detectors": 20,
+    "jamcheck_relationships": 162,
+    "note": "Prior 'Full groups' counted Full/FullJam PE relationship heads, not operational conveyor groups. Do not treat every conveyor as a Full group."
+  },
+  "jam_zones": {
+    "count": 27,
+    "source": "Jamzones.asc"
+  },
+  "startstop_zones": {
+    "count": 8,
+    "source": "StartStopZones.asc"
+  }
+}

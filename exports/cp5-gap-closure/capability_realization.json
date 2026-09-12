@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-09-12T20:14:48.825611+00:00",
+  "policy": "Must not report GENERATED unless L5X contains implementation",
+  "capabilities": {
+    "controller_skeleton": {
+      "states": [
+        "DISCOVERED",
+        "MODELED",
+        "GENERATABLE",
+        "REQUESTED_FOR_GENERATION",
+        "GENERATED",
+        "STRUCTURALLY_VALIDATED"
+      ]
+    },
+    "conveyor_fast_logic": {
+      "states": [
+        "DISCOVERED",
+        "MODELED",
+        "GENERATABLE",
+        "REQUESTED_FOR_GENERATION",
+        "GENERATED",
+        "STRUCTURALLY_VALIDATED"
+      ],
+      "generated_count": 60
+    },
+    "pe_logic": {
+      "states": [
+        "DISCOVERED",
+        "MODELED",
+        "GENERATABLE",
+        "REQUESTED_FOR_GENERATION",
+        "GENERATED",
+        "STRUCTURALLY_VALIDATED"
+      ],
+      "generated_pe_devices": 94,
+      "generated_pe_logic_rungs": 81,
+      "blind_v1_defect": "claimed generatable but generated 0"
+    },
+    "io_map": {
+      "states": [
+        "DISCOVERED",
+        "MODELED",
+        "GENERATABLE",
+        "REQUESTED_FOR_GENERATION",
+        "GENERATED",
+        "STRUCTURALLY_VALIDATED"
+      ],
+      "generated_io_map_rungs": 368,
+      "blind_v1_defect": "claimed generatable but generated 0"
+    },
+    "encoder_logic": {
+      "states": [
+        "DISCOVERED",
+        "MODELED",
+        "GENERATABLE",
+        "REQUESTED_FOR_GENERATION",
+        "GENERATED",
+        "STRUCTURALLY_VALIDATED"
+      ],
+      "in_l5x": true
+    },
+    "area_logic": {
+      "states": [
+        "DISCOVERED",
+        "MODELED",
+        "GENERATABLE",
+        "REQUESTED_FOR_GENERATION",
+        "GENERATED",
+        "STRUCTURALLY_VALIDATED"
+      ],
+      "areas": {
+        "ORNCCP5_Area": 60
+      }
+    }
+  }
+}

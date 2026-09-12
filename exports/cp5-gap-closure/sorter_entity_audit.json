@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-09-12T20:14:48.777512+00:00",
+  "sorter_asc_active_rows": 5,
+  "sitemodel_sorters": 5,
+  "entities": [
+    {
+      "name": "504_BELT",
+      "encoder_io": "ENC504",
+      "machine": "ORNCCP5",
+      "max_cartons": "100",
+      "source_scope": "controller_overlay",
+      "interpretation": "logical_sorter_record_or_segment \u2014 encoder-linked sorter entity; not proven as independent physical sorter machine"
+    },
+    {
+      "name": "506_SHIP_SORTER",
+      "encoder_io": "ENC506",
+      "machine": "ORNCCP5",
+      "max_cartons": "100",
+      "source_scope": "controller_overlay",
+      "interpretation": "logical_sorter_record_or_segment \u2014 encoder-linked sorter entity; not proven as independent physical sorter machine"
+    },
+    {
+      "name": "508_SHIP_SORTER",
+      "encoder_io": "ENC508",
+      "machine": "ORNCCP5",
+      "max_cartons": "100",
+      "source_scope": "controller_overlay",
+      "interpretation": "logical_sorter_record_or_segment \u2014 encoder-linked sorter entity; not proven as independent physical sorter machine"
+    },
+    {
+      "name": "509_SHIP_SORTER",
+      "encoder_io": "ENC509",
+      "machine": "ORNCCP5",
+      "max_cartons": "100",
+      "source_scope": "controller_overlay",
+      "interpretation": "logical_sorter_record_or_segment \u2014 encoder-linked sorter entity; not proven as independent physical sorter machine"
+    },
+    {
+      "name": "510_SHIP_SORTER",
+      "encoder_io": "ENC510",
+      "machine": "ORNCCP5",
+      "max_cartons": "100",
+      "source_scope": "controller_overlay",
+      "interpretation": "logical_sorter_record_or_segment \u2014 encoder-linked sorter entity; not proven as independent physical sorter machine"
+    }
+  ],
+  "warning": "Do not assume N Sorters.asc rows = N independent physical sorters"
+}

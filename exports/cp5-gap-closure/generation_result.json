@@ -1,0 +1,3724 @@
+{
+  "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp5-gap-closure\\generated\\ORNCCP5_candidate_v2.L5X",
+  "sha256": "27c5a003f8f5f9fb2e402057a39f7572d1e47cafc957ca9102deea86a6c9d99e",
+  "bridge": {
+    "source": "load_from_run",
+    "conveyors_from_run": 60,
+    "pe_devices_from_run": 94,
+    "io_points_from_run": 395,
+    "modules_from_run": 61,
+    "enrichments": [
+      {
+        "kind": "pe_roles",
+        "count": 5
+      }
+    ],
+    "site_model_encoders": [
+      "ENC504",
+      "ENC506",
+      "ENC508",
+      "ENC509",
+      "ENC510"
+    ],
+    "site_model_equipment_included": 79
+  },
+  "meta": {
+    "project": "OReillyGreensboro_ORNCCP5",
+    "processor": "1756-L83E",
+    "revision": "35.00",
+    "library": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\OReilly_Library_v3.L5X",
+    "conveyor_count": 60,
+    "area_count": 1,
+    "tag_count": 727,
+    "program_count": 6,
+    "programs": [
+      "ORNCCP5_Area_Slow",
+      "ORNCCP5_Area_Fast",
+      "ORNCCP5_Area_L1",
+      "ORNCCP5_Area_L2",
+      "Sys",
+      "IO_MAP"
+    ],
+    "areas_summary": {
+      "ORNCCP5_Area": 60
+    },
+    "conveyor_sample": [
+      "P442",
+      "P444",
+      "P500",
+      "P502",
+      "P504",
+      "P506",
+      "P506A",
+      "P508",
+      "P508A",
+      "P509",
+      "P510",
+      "P530",
+      "P530A",
+      "P536",
+      "P542",
+      "P544",
+      "P552",
+      "P556",
+      "P564",
+      "P566",
+      "P600C",
+      "P600D",
+      "P600E",
+      "P600F",
+      "P600G"
+    ],
+    "template_usage": {
+      "P4000_Conv": 22,
+      "P1000_Conv": 27,
+      "P3000_Conv": 11
+    },
+    "missing_excel_templates_in_library": [
+      "P7000_Conv",
+      "P8000_Conv"
+    ],
+    "io_module_count": 61,
+    "io_point_count": 395,
+    "io_tags_in_l5x": 395,
+    "pe_device_count": 94,
+    "pe_logic_rungs": 81,
+    "slow_flt_rungs": 60,
+    "conveyors_with_real_pe": 52,
+    "eip_adapter_count": 8,
+    "eip_rio_modules": [
+      "T_1794_AENT_1",
+      "T_1794_AENT_2",
+      "T_1794_AENT_3",
+      "T_1794_AENT_4",
+      "T_1794_AENT_5",
+      "T_1794_AENT_6",
+      "T_1794_AENT_7",
+      "T_1794_AENT_8"
+    ],
+    "eip_child_modules": [
+      "T_1794_AENT_1_1",
+      "T_1794_AENT_1_2",
+      "T_1794_AENT_1_3",
+      "T_1794_AENT_1_4",
+      "T_1794_AENT_1_5",
+      "T_1794_AENT_1_6",
+      "T_1794_AENT_1_7",
+      "T_1794_AENT_1_8",
+      "T_1794_AENT_2_1",
+      "T_1794_AENT_2_2",
+      "T_1794_AENT_2_3",
+      "T_1794_AENT_2_4",
+      "T_1794_AENT_2_5",
+      "T_1794_AENT_2_6",
+      "T_1794_AENT_2_7",
+      "T_1794_AENT_3_1",
+      "T_1794_AENT_3_2",
+      "T_1794_AENT_3_3",
+      "T_1794_AENT_3_4",
+      "T_1794_AENT_3_5",
+      "T_1794_AENT_3_6",
+      "T_1794_AENT_4_1",
+      "T_1794_AENT_4_2",
+      "T_1794_AENT_4_3",
+      "T_1794_AENT_4_4",
+      "T_1794_AENT_4_5",
+      "T_1794_AENT_4_6",
+      "T_1794_AENT_4_7",
+      "T_1794_AENT_4_8",
+      "T_1794_AENT_5_1",
+      "T_1794_AENT_5_2",
+      "T_1794_AENT_5_3",
+      "T_1794_AENT_5_4",
+      "T_1794_AENT_5_5",
+      "T_1794_AENT_6_1",
+      "T_1794_AENT_6_2",
+      "T_1794_AENT_6_3",
+      "T_1794_AENT_6_4",
+      "T_1794_AENT_6_5",
+      "T_1794_AENT_7_1",
+      "T_1794_AENT_7_2",
+      "T_1794_AENT_7_3",
+      "T_1794_AENT_7_4",
+      "T_1794_AENT_7_5",
+      "T_1794_AENT_7_6",
+      "T_1794_AENT_7_7",
+      "T_1794_AENT_7_8",
+      "T_1794_AENT_8_1",
+      "T_1794_AENT_8_2",
+      "T_1794_AENT_8_3",
+      "T_1794_AENT_8_4",
+      "T_1794_AENT_8_5",
+      "T_1794_AENT_8_6"
+    ],
+    "eip_child_count": 53,
+    "eip_interface_ip": "192.168.1.9",
+    "io_word_map_count": 67,
+    "io_map_rungs": 368,
+    "io_map_mapped": 353,
+    "io_map_unmapped": 42,
+    "io_map_source": "run_tar_gz_banks_eip",
+    "io_map_note": "Built from RUN Conveyor.asc banks + EIP word_map \u2192 CPxRIOn modules",
+    "include_io_map": true,
+    "gold_io_map_blocked": false,
+    "eip_modules_filtered_to_word_map": [
+      "T_1794_AENT_1",
+      "T_1794_AENT_2",
+      "T_1794_AENT_3",
+      "T_1794_AENT_4",
+      "T_1794_AENT_5",
+      "T_1794_AENT_6",
+      "T_1794_AENT_7",
+      "T_1794_AENT_8"
+    ],
+    "gold_programs": [
+      "Sys"
+    ],
+    "sorter_build": {},
+    "equipment_plan": {
+      "inventory": {
+        "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN",
+        "fortna_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA",
+        "machine_name": "ORNCCP5",
+        "counts": {
+          "conveyors": 11,
+          "vfds": 16,
+          "photoeyes_named": 94,
+          "motors_named": 96,
+          "beacons_in_conveyor": 30,
+          "encoders_table_usable": 0,
+          "estop_table_usable": 0,
+          "merges_table_usable": 0,
+          "sorters_table_usable": 0,
+          "beacons_usable": 0,
+          "motor_chains_usable": 0,
+          "power_supplies_usable": 0,
+          "eip_adapters": 50,
+          "eip_modules": 500,
+          "conveyor_asc_rows": 475,
+          "conveyor_asc_rows_all": 6000
+        },
+        "kind_counts": {
+          "beacon": 30,
+          "estop": 46,
+          "pushbutton": 4,
+          "spare": 69,
+          "encoder": 5,
+          "photoeye": 94,
+          "digital_out": 59,
+          "power_supply": 23,
+          "motor": 96,
+          "conveyor": 11,
+          "digital_in": 4,
+          "vfd": 34
+        },
+        "conveyors": [
+          "7PS1",
+          "7PBSTOP",
+          "7PBSTART",
+          "PB500_JR",
+          "PB812_JR",
+          "PB506A_JR",
+          "PB508A_JR",
+          "PB509A_JR",
+          "PB510A_JR",
+          "7PBSTOP_PLT",
+          "7PBSTART_PLT"
+        ],
+        "vfds": [
+          "VFD444",
+          "VFD500",
+          "VFD500A",
+          "VFD502",
+          "VFD504",
+          "VFD506",
+          "VFD508",
+          "VFD509",
+          "VFD510",
+          "VFD544",
+          "VFD550",
+          "VFD600M",
+          "VFD600N",
+          "VFD600O",
+          "VFD600P",
+          "VFD700A"
+        ],
+        "photoeyes": [
+          "EZPE442_F",
+          "EZPE442_P",
+          "EZPE530_F1",
+          "EZPE530_F2",
+          "EZPE530_P1",
+          "EZPE530_P2",
+          "EZPE536_F",
+          "EZPE536_P",
+          "EZPE542_F",
+          "EZPE542_P",
+          "EZPE564_F",
+          "EZPE566_P",
+          "EZPE602C_F",
+          "EZPE602C_P",
+          "EZPE602D_F",
+          "EZPE602D_P",
+          "EZPE602E_F",
+          "EZPE602E_P",
+          "EZPE602F_F",
+          "EZPE602F_P",
+          "EZPE602G_F",
+          "EZPE602G_P",
+          "EZPE602H_F",
+          "EZPE602H_P",
+          "EZPE602I_F",
+          "EZPE602I_P",
+          "EZPE602J_F",
+          "EZPE602J_P",
+          "EZPE602K_F",
+          "EZPE602K_P",
+          "EZPE602M_F",
+          "EZPE602M_P",
+          "EZPE602N_F",
+          "EZPE602N_P",
+          "EZPE602O_F",
+          "EZPE602O_P",
+          "EZPE602P_F",
+          "EZPE602P_P",
+          "EZPE718_F",
+          "EZPE718_P",
+          "EZPE810_F",
+          "EZPE810_P",
+          "PE444_P",
+          "PE500_J",
+          "PE504_I",
+          "PE506_I",
+          "PE508_I",
+          "PE508_J",
+          "PE509_I",
+          "PE510_I",
+          "PE510_J",
+          "PE544_P",
+          "PE552_JF",
+          "PE556_JF",
+          "PE562_JF",
+          "PE600C_J",
+          "PE600D_J",
+          "PE600E_J",
+          "PE600F_J",
+          "PE600G_J",
+          "PE600H_J",
+          "PE600I_J",
+          "PE600J_J",
+          "PE600K_J",
+          "PE600M_J",
+          "PE600N_J",
+          "PE600O_J",
+          "PE600P_J",
+          "PE608C_F",
+          "PE608D_F",
+          "PE608E_F",
+          "PE608F_F",
+          "PE608G_F",
+          "PE608H_F",
+          "PE608I_F",
+          "PE608J_F",
+          "PE608K_F",
+          "PE608M_F",
+          "PE608N_F",
+          "PE608O_F",
+          "PE608P_F",
+          "PE700A_J",
+          "PE700B_J",
+          "PE700C_J",
+          "PE704A_F",
+          "PE704B_F",
+          "PE704C_F",
+          "PE714_JF",
+          "PE720_J",
+          "PE802_P",
+          "PE806_JF",
+          "PE812_J",
+          "PE814_FDD",
+          "PE814_FDJ"
+        ],
+        "conveyor_types": {
+          "STRAIGHT": 11
+        },
+        "tables": {
+          "encoders": {
+            "file": "Encoders.asc",
+            "rows": 0,
+            "usable": 0,
+            "scoped_to": "ORNCCP5"
+          },
+          "estop": {
+            "file": "EStop.asc",
+            "rows": 0,
+            "usable": 0,
+            "scoped_to": "ORNCCP5"
+          },
+          "merges": {
+            "file": "Merges.asc",
+            "rows": 0,
+            "usable": 0,
+            "scoped_to": "ORNCCP5"
+          },
+          "sorters": {
+            "file": "Sorters.asc",
+            "rows": 0,
+            "usable": 0,
+            "scoped_to": "ORNCCP5"
+          },
+          "beacons": {
+            "file": "BeaconInfo.asc",
+            "rows": 0,
+            "usable": 0,
+            "scoped_to": "ORNCCP5"
+          },
+          "mtrchain": {
+            "file": "Mtrchain.asc",
+            "rows": 0,
+            "usable": 0,
+            "scoped_to": "ORNCCP5"
+          },
+          "power_supply": {
+            "file": "PowerSupply.asc",
+            "rows": 0,
+            "usable": 0,
+            "scoped_to": "ORNCCP5"
+          }
+        },
+        "flags": {
+          "has_srt_track": true,
+          "has_srt_device": true,
+          "has_eipcfg": true,
+          "transport_heavy": false,
+          "merge_candidate": false,
+          "sorter_candidate": false
+        }
+      },
+      "plan": {
+        "profile": "transport",
+        "features": {
+          "transport_fast_slow": true,
+          "io_map": true,
+          "pe_logic": true,
+          "full_pe": true,
+          "motor_starter_flt": true,
+          "vfd_as_motor_starter_udt": true,
+          "es_udt": false,
+          "merge_2to1": false,
+          "sorter_track_pack": false,
+          "enc_riocard": false,
+          "sys_pack": true,
+          "comm_diag": true
+        },
+        "aois": [
+          "AOI_CommDiag",
+          "Fast_Conv",
+          "Full_PE",
+          "PE_Logic",
+          "Slow_Flt",
+          "Slow_Jam"
+        ],
+        "packs": [
+          "Sys"
+        ],
+        "merge_rows_configured": 0,
+        "notes": [
+          "16 VFD* names \u2014 map to P###_VFD Motor_Starter_UDT in IO_MAP.",
+          "Sawtooth: optional Sawtooth_Merge pack available (from PLC4S pattern) \u2014 enable manually; not auto-emitted from tar yet."
+        ],
+        "inventory_counts": {
+          "conveyors": 11,
+          "vfds": 16,
+          "photoeyes_named": 94,
+          "motors_named": 96,
+          "beacons_in_conveyor": 30,
+          "encoders_table_usable": 0,
+          "estop_table_usable": 0,
+          "merges_table_usable": 0,
+          "sorters_table_usable": 0,
+          "beacons_usable": 0,
+          "motor_chains_usable": 0,
+          "power_supplies_usable": 0,
+          "eip_adapters": 50,
+          "eip_modules": 500,
+          "conveyor_asc_rows": 475,
+          "conveyor_asc_rows_all": 6000
+        }
+      }
+    },
+    "optional_programs_available": [
+      "ShippingSorter_Area_L3",
+      "WCS_Interface_TCP_IP",
+      "Sorter_Track",
+      "Sawtooth_Merge"
+    ],
+    "task_schedule": {
+      "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
+      "Sys": "Task Sys @ 100ms (own task)",
+      "P10_Fast_20ms": [
+        "ORNCCP5_Area_Fast"
+      ],
+      "P11_Slow_200ms": [
+        "ORNCCP5_Area_Slow"
+      ]
+    },
+    "encoded_aois_stripped": false,
+    "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
+    "note": "Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File\u2192Open L5X).",
+    "io_tag_rows": [
+      {
+        "tag": "EZPE602C_F",
+        "fortna_name": "EZPE602C_F",
+        "fortna_address": "Bank523.2",
+        "description": "FULL EYE DETECTION ON P602C",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602C_P",
+        "fortna_name": "EZPE602C_P",
+        "fortna_address": "Bank523.3",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602C",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602D_F",
+        "fortna_name": "EZPE602D_F",
+        "fortna_address": "Bank523.4",
+        "description": "FULL EYE DETECTION ON P602D",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602D_P",
+        "fortna_name": "EZPE602D_P",
+        "fortna_address": "Bank523.5",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602D",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602E_F",
+        "fortna_name": "EZPE602E_F",
+        "fortna_address": "Bank523.6",
+        "description": "FULL EYE DETECTION ON P602E",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602E_P",
+        "fortna_name": "EZPE602E_P",
+        "fortna_address": "Bank523.7",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602E",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602F_F",
+        "fortna_name": "EZPE602F_F",
+        "fortna_address": "Bank621.0",
+        "description": "FULL EYE DETECTION ON P602F",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602F_P",
+        "fortna_name": "EZPE602F_P",
+        "fortna_address": "Bank621.6",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602F",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602G_F",
+        "fortna_name": "EZPE602G_F",
+        "fortna_address": "Bank621.1",
+        "description": "FULL EYE DETECTION ON P602G",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602G_P",
+        "fortna_name": "EZPE602G_P",
+        "fortna_address": "Bank621.7",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602G",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602H_F",
+        "fortna_name": "EZPE602H_F",
+        "fortna_address": "Bank621.2",
+        "description": "FULL EYE DETECTION ON P602H",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602H_P",
+        "fortna_name": "EZPE602H_P",
+        "fortna_address": "Bank621.10",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602H",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602I_F",
+        "fortna_name": "EZPE602I_F",
+        "fortna_address": "Bank621.3",
+        "description": "FULL EYE DETECTION ON P602I",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602I_P",
+        "fortna_name": "EZPE602I_P",
+        "fortna_address": "Bank621.11",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602I",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602J_F",
+        "fortna_name": "EZPE602J_F",
+        "fortna_address": "Bank621.4",
+        "description": "FULL EYE DETECTION ON P602J",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602J_P",
+        "fortna_name": "EZPE602J_P",
+        "fortna_address": "Bank621.12",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602J",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602K_F",
+        "fortna_name": "EZPE602K_F",
+        "fortna_address": "Bank621.5",
+        "description": "FULL EYE DETECTION ON P602K",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602K_P",
+        "fortna_name": "EZPE602K_P",
+        "fortna_address": "Bank621.13",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602K",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602M_F",
+        "fortna_name": "EZPE602M_F",
+        "fortna_address": "Bank714.4",
+        "description": "FULL EYE ON P602M",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602M_P",
+        "fortna_name": "EZPE602M_P",
+        "fortna_address": "Bank714.5",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602M",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602N_F",
+        "fortna_name": "EZPE602N_F",
+        "fortna_address": "Bank714.6",
+        "description": "FULL EYE ON P602N",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602N_P",
+        "fortna_name": "EZPE602N_P",
+        "fortna_address": "Bank714.7",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602N",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602O_F",
+        "fortna_name": "EZPE602O_F",
+        "fortna_address": "Bank714.10",
+        "description": "FULL EYE ON P602O",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602O_P",
+        "fortna_name": "EZPE602O_P",
+        "fortna_address": "Bank714.11",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602O",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602P_F",
+        "fortna_name": "EZPE602P_F",
+        "fortna_address": "Bank714.12",
+        "description": "FULL EYE ON P602P",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE602P_P",
+        "fortna_name": "EZPE602P_P",
+        "fortna_address": "Bank714.13",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P602P",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "T_5ESR1_AUX",
+        "fortna_name": "5ESR1_AUX",
+        "fortna_address": "Bank501.3",
+        "description": "Fortna 5ESR1_AUX (estop) I",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_5ESR2_AUX",
+        "fortna_name": "5ESR2_AUX",
+        "fortna_address": "Bank501.4",
+        "description": "Fortna 5ESR2_AUX (estop) I",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_5ESR3_AUX",
+        "fortna_name": "5ESR3_AUX",
+        "fortna_address": "Bank501.5",
+        "description": "Fortna 5ESR3_AUX (estop) I",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_5MCR1",
+        "fortna_name": "5MCR1",
+        "fortna_address": "Bank500.2",
+        "description": "Fortna 5MCR1 (estop) I",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_5MCR1_AUX",
+        "fortna_name": "5MCR1_AUX",
+        "fortna_address": "Bank501.2",
+        "description": "Fortna 5MCR1_AUX (estop) I",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_5PBSTART",
+        "fortna_name": "5PBSTART",
+        "fortna_address": "Bank501.0",
+        "description": "Fortna 5PBSTART (pushbutton) I",
+        "type": "BOOL",
+        "device_class": "pushbutton"
+      },
+      {
+        "tag": "T_5PBSTOP",
+        "fortna_name": "5PBSTOP",
+        "fortna_address": "Bank501.1",
+        "description": "Fortna 5PBSTOP (pushbutton) I",
+        "type": "BOOL",
+        "device_class": "pushbutton"
+      },
+      {
+        "tag": "T_6ESR1_AUX",
+        "fortna_name": "6ESR1_AUX",
+        "fortna_address": "Bank601.3",
+        "description": "Fortna 6ESR1_AUX (estop) I",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_6MCR1",
+        "fortna_name": "6MCR1",
+        "fortna_address": "Bank600.2",
+        "description": "Fortna 6MCR1 (estop) I",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_6MCR1_AUX",
+        "fortna_name": "6MCR1_AUX",
+        "fortna_address": "Bank601.2",
+        "description": "Fortna 6MCR1_AUX (estop) I",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_6PBSTART",
+        "fortna_name": "6PBSTART",
+        "fortna_address": "Bank601.0",
+        "description": "Fortna 6PBSTART (pushbutton) I",
+        "type": "BOOL",
+        "device_class": "pushbutton"
+      },
+      {
+        "tag": "T_6PBSTOP",
+        "fortna_name": "6PBSTOP",
+        "fortna_address": "Bank601.1",
+        "description": "Fortna 6PBSTOP (pushbutton) I",
+        "type": "BOOL",
+        "device_class": "pushbutton"
+      },
+      {
+        "tag": "P444_VFD",
+        "fortna_name": "VFD444_FLT",
+        "fortna_address": "Bank525.1",
+        "description": "VFD discrete \u2192 P444_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P544_VFD",
+        "fortna_name": "VFD544_FLT",
+        "fortna_address": "Bank525.10",
+        "description": "VFD discrete \u2192 P544_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "ES500",
+        "fortna_name": "ES500",
+        "fortna_address": "Bank501.10",
+        "description": "Fortna ES500 (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610C",
+        "fortna_name": "ES610C",
+        "fortna_address": "Bank503.7",
+        "description": "Fortna ES610C (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610D",
+        "fortna_name": "ES610D",
+        "fortna_address": "Bank503.11",
+        "description": "Fortna ES610D (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610E",
+        "fortna_name": "ES610E",
+        "fortna_address": "Bank503.13",
+        "description": "Fortna ES610E (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610F",
+        "fortna_name": "ES610F",
+        "fortna_address": "Bank601.10",
+        "description": "Fortna ES610F (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610G",
+        "fortna_name": "ES610G",
+        "fortna_address": "Bank601.11",
+        "description": "Fortna ES610G (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610H",
+        "fortna_name": "ES610H",
+        "fortna_address": "Bank601.12",
+        "description": "Fortna ES610H (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610I",
+        "fortna_name": "ES610I",
+        "fortna_address": "Bank601.13",
+        "description": "Fortna ES610I (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610J",
+        "fortna_name": "ES610J",
+        "fortna_address": "Bank601.14",
+        "description": "Fortna ES610J (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610K",
+        "fortna_name": "ES610K",
+        "fortna_address": "Bank601.15",
+        "description": "Fortna ES610K (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610M",
+        "fortna_name": "ES610M",
+        "fortna_address": "Bank701.10",
+        "description": "Fortna ES610M (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610N",
+        "fortna_name": "ES610N",
+        "fortna_address": "Bank701.11",
+        "description": "Fortna ES610N (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610O",
+        "fortna_name": "ES610O",
+        "fortna_address": "Bank701.17",
+        "description": "Fortna ES610O (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES610P",
+        "fortna_name": "ES610P",
+        "fortna_address": "Bank702.1",
+        "description": "Fortna ES610P (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612C",
+        "fortna_name": "ES612C",
+        "fortna_address": "Bank503.10",
+        "description": "Fortna ES612C (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612D",
+        "fortna_name": "ES612D",
+        "fortna_address": "Bank503.12",
+        "description": "Fortna ES612D (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612E",
+        "fortna_name": "ES612E",
+        "fortna_address": "Bank503.14",
+        "description": "Fortna ES612E (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612F",
+        "fortna_name": "ES612F",
+        "fortna_address": "Bank601.16",
+        "description": "Fortna ES612F (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612G",
+        "fortna_name": "ES612G",
+        "fortna_address": "Bank601.17",
+        "description": "Fortna ES612G (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612H",
+        "fortna_name": "ES612H",
+        "fortna_address": "Bank603.0",
+        "description": "Fortna ES612H (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612I",
+        "fortna_name": "ES612I",
+        "fortna_address": "Bank603.1",
+        "description": "Fortna ES612I (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612J",
+        "fortna_name": "ES612J",
+        "fortna_address": "Bank603.2",
+        "description": "Fortna ES612J (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612K",
+        "fortna_name": "ES612K",
+        "fortna_address": "Bank603.3",
+        "description": "Fortna ES612K (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612M",
+        "fortna_name": "ES612M",
+        "fortna_address": "Bank701.12",
+        "description": "Fortna ES612M (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612N",
+        "fortna_name": "ES612N",
+        "fortna_address": "Bank701.13",
+        "description": "Fortna ES612N (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612O",
+        "fortna_name": "ES612O",
+        "fortna_address": "Bank702.0",
+        "description": "Fortna ES612O (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES612P",
+        "fortna_name": "ES612P",
+        "fortna_address": "Bank702.2",
+        "description": "Fortna ES612P (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES708A",
+        "fortna_name": "ES708A",
+        "fortna_address": "Bank503.3",
+        "description": "Fortna ES708A (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES708B",
+        "fortna_name": "ES708B",
+        "fortna_address": "Bank501.11",
+        "description": "Fortna ES708B (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES708C",
+        "fortna_name": "ES708C",
+        "fortna_address": "Bank501.12",
+        "description": "Fortna ES708C (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES710A",
+        "fortna_name": "ES710A",
+        "fortna_address": "Bank503.4",
+        "description": "Fortna ES710A (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES710B",
+        "fortna_name": "ES710B",
+        "fortna_address": "Bank501.13",
+        "description": "Fortna ES710B (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES710C",
+        "fortna_name": "ES710C",
+        "fortna_address": "Bank501.14",
+        "description": "Fortna ES710C (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ES812",
+        "fortna_name": "ES812",
+        "fortna_address": "Bank501.15",
+        "description": "Fortna ES812 (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "ESLS506",
+        "fortna_name": "ESLS506",
+        "fortna_address": "Bank501.16",
+        "description": "Fortna ESLS506 (beacon) O",
+        "type": "ES_UDT",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "ESLS508",
+        "fortna_name": "ESLS508",
+        "fortna_address": "Bank603.4",
+        "description": "Fortna ESLS508 (beacon) O",
+        "type": "ES_UDT",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "ESLS509",
+        "fortna_name": "ESLS509",
+        "fortna_address": "Bank701.14",
+        "description": "Fortna ESLS509 (beacon) O",
+        "type": "ES_UDT",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "ESLS801",
+        "fortna_name": "ESLS801",
+        "fortna_address": "Bank501.17",
+        "description": "Fortna ESLS801 (beacon) O",
+        "type": "ES_UDT",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "ESLS805",
+        "fortna_name": "ESLS805",
+        "fortna_address": "Bank503.0",
+        "description": "Fortna ESLS805 (beacon) O",
+        "type": "ES_UDT",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "EZPWS602C",
+        "fortna_name": "EZPWS602C",
+        "fortna_address": "Bank516.10",
+        "description": "Fortna EZPWS602C (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602D",
+        "fortna_name": "EZPWS602D",
+        "fortna_address": "Bank516.11",
+        "description": "Fortna EZPWS602D (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602E",
+        "fortna_name": "EZPWS602E",
+        "fortna_address": "Bank516.12",
+        "description": "Fortna EZPWS602E (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602F",
+        "fortna_name": "EZPWS602F",
+        "fortna_address": "Bank614.0",
+        "description": "Fortna EZPWS602F (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602G",
+        "fortna_name": "EZPWS602G",
+        "fortna_address": "Bank614.1",
+        "description": "Fortna EZPWS602G (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602H",
+        "fortna_name": "EZPWS602H",
+        "fortna_address": "Bank614.2",
+        "description": "Fortna EZPWS602H (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602I",
+        "fortna_name": "EZPWS602I",
+        "fortna_address": "Bank614.3",
+        "description": "Fortna EZPWS602I (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602J",
+        "fortna_name": "EZPWS602J",
+        "fortna_address": "Bank614.4",
+        "description": "Fortna EZPWS602J (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602K",
+        "fortna_name": "EZPWS602K",
+        "fortna_address": "Bank614.5",
+        "description": "Fortna EZPWS602K (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602M_AUX",
+        "fortna_name": "EZPWS602M_AUX",
+        "fortna_address": "Bank705.3",
+        "description": "Fortna EZPWS602M_AUX (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602N_AUX",
+        "fortna_name": "EZPWS602N_AUX",
+        "fortna_address": "Bank705.4",
+        "description": "Fortna EZPWS602N_AUX (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602O",
+        "fortna_name": "EZPWS602O",
+        "fortna_address": "Bank705.5",
+        "description": "Fortna EZPWS602O (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS602P",
+        "fortna_name": "EZPWS602P",
+        "fortna_address": "Bank705.6",
+        "description": "Fortna EZPWS602P (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "T_5ES",
+        "fortna_name": "5ES",
+        "fortna_address": "Bank501.7",
+        "description": "Fortna 5ES (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "T_5WH",
+        "fortna_name": "5WH",
+        "fortna_address": "Bank500.3",
+        "description": "Fortna 5WH (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "T_6ES",
+        "fortna_name": "6ES",
+        "fortna_address": "Bank601.7",
+        "description": "Fortna 6ES (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "T_6WH",
+        "fortna_name": "6WH",
+        "fortna_address": "Bank600.3",
+        "description": "Fortna 6WH (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "T_7ES",
+        "fortna_name": "7ES",
+        "fortna_address": "Bank701.7",
+        "description": "Fortna 7ES (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "T_7ESR1_AUX",
+        "fortna_name": "7ESR1_AUX",
+        "fortna_address": "Bank701.3",
+        "description": "Fortna 7ESR1_AUX (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_7ESR2_AUX",
+        "fortna_name": "7ESR2_AUX",
+        "fortna_address": "Bank701.4",
+        "description": "Fortna 7ESR2_AUX (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_7MCR1",
+        "fortna_name": "7MCR1",
+        "fortna_address": "Bank706.2",
+        "description": "Fortna 7MCR1 (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_7MCR1_AUX",
+        "fortna_name": "7MCR1_AUX",
+        "fortna_address": "Bank701.2",
+        "description": "Fortna 7MCR1_AUX (estop) O",
+        "type": "ES_UDT",
+        "device_class": "estop"
+      },
+      {
+        "tag": "T_7WH1",
+        "fortna_name": "7WH1",
+        "fortna_address": "Bank706.3",
+        "description": "Fortna 7WH1 (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "M440",
+        "fortna_name": "M440",
+        "fortna_address": "Bank502.0",
+        "description": "Fortna M440 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M440_AUX",
+        "fortna_name": "M440_AUX",
+        "fortna_address": "Bank505.0",
+        "description": "Fortna M440_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M442",
+        "fortna_name": "M442",
+        "fortna_address": "Bank502.1",
+        "description": "Fortna M442 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M442_AUX",
+        "fortna_name": "M442_AUX",
+        "fortna_address": "Bank505.1",
+        "description": "Fortna M442_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M526",
+        "fortna_name": "M526",
+        "fortna_address": "Bank602.3",
+        "description": "Fortna M526 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M526_AUX",
+        "fortna_name": "M526_AUX",
+        "fortna_address": "Bank605.3",
+        "description": "Fortna M526_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M528",
+        "fortna_name": "M528",
+        "fortna_address": "Bank602.4",
+        "description": "Fortna M528 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M528_AUX",
+        "fortna_name": "M528_AUX",
+        "fortna_address": "Bank605.4",
+        "description": "Fortna M528_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M530",
+        "fortna_name": "M530",
+        "fortna_address": "Bank502.2",
+        "description": "Fortna M530 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M530_AUX",
+        "fortna_name": "M530_AUX",
+        "fortna_address": "Bank505.2",
+        "description": "Fortna M530_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M534",
+        "fortna_name": "M534",
+        "fortna_address": "Bank502.3",
+        "description": "Fortna M534 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M534_AUX",
+        "fortna_name": "M534_AUX",
+        "fortna_address": "Bank505.3",
+        "description": "Fortna M534_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M536",
+        "fortna_name": "M536",
+        "fortna_address": "Bank502.4",
+        "description": "Fortna M536 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M536_AUX",
+        "fortna_name": "M536_AUX",
+        "fortna_address": "Bank505.4",
+        "description": "Fortna M536_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M542",
+        "fortna_name": "M542",
+        "fortna_address": "Bank502.5",
+        "description": "Fortna M542 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M542_AUX",
+        "fortna_name": "M542_AUX",
+        "fortna_address": "Bank505.5",
+        "description": "Fortna M542_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M554",
+        "fortna_name": "M554",
+        "fortna_address": "Bank710.0",
+        "description": "Fortna M554 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M554_AUX",
+        "fortna_name": "M554_AUX",
+        "fortna_address": "Bank703.0",
+        "description": "Fortna M554_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M560",
+        "fortna_name": "M560",
+        "fortna_address": "Bank710.1",
+        "description": "Fortna M560 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M560_AUX",
+        "fortna_name": "M560_AUX",
+        "fortna_address": "Bank703.1",
+        "description": "Fortna M560_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M564",
+        "fortna_name": "M564",
+        "fortna_address": "Bank710.2",
+        "description": "Fortna M564 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M564_AUX",
+        "fortna_name": "M564_AUX",
+        "fortna_address": "Bank703.2",
+        "description": "Fortna M564_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M566",
+        "fortna_name": "M566",
+        "fortna_address": "Bank710.3",
+        "description": "Fortna M566 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M566_AUX",
+        "fortna_name": "M566_AUX",
+        "fortna_address": "Bank703.3",
+        "description": "Fortna M566_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600C",
+        "fortna_name": "M600C",
+        "fortna_address": "Bank511.2",
+        "description": "Fortna M600C (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600C_AUX",
+        "fortna_name": "M600C_AUX",
+        "fortna_address": "Bank507.11",
+        "description": "Fortna M600C_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600D",
+        "fortna_name": "M600D",
+        "fortna_address": "Bank511.3",
+        "description": "Fortna M600D (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600D_AUX",
+        "fortna_name": "M600D_AUX",
+        "fortna_address": "Bank507.12",
+        "description": "Fortna M600D_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600E",
+        "fortna_name": "M600E",
+        "fortna_address": "Bank511.4",
+        "description": "Fortna M600E (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600E_AUX",
+        "fortna_name": "M600E_AUX",
+        "fortna_address": "Bank507.13",
+        "description": "Fortna M600E_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600F",
+        "fortna_name": "M600F",
+        "fortna_address": "Bank604.6",
+        "description": "Fortna M600F (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600F_AUX",
+        "fortna_name": "M600F_AUX",
+        "fortna_address": "Bank605.16",
+        "description": "Fortna M600F_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600G",
+        "fortna_name": "M600G",
+        "fortna_address": "Bank604.7",
+        "description": "Fortna M600G (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600G_AUX",
+        "fortna_name": "M600G_AUX",
+        "fortna_address": "Bank605.17",
+        "description": "Fortna M600G_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600H",
+        "fortna_name": "M600H",
+        "fortna_address": "Bank606.0",
+        "description": "Fortna M600H (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600H_AUX",
+        "fortna_name": "M600H_AUX",
+        "fortna_address": "Bank607.0",
+        "description": "Fortna M600H_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600I",
+        "fortna_name": "M600I",
+        "fortna_address": "Bank606.1",
+        "description": "Fortna M600I (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600I_AUX",
+        "fortna_name": "M600I_AUX",
+        "fortna_address": "Bank607.1",
+        "description": "Fortna M600I_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600J",
+        "fortna_name": "M600J",
+        "fortna_address": "Bank606.2",
+        "description": "Fortna M600J (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600J_AUX",
+        "fortna_name": "M600J_AUX",
+        "fortna_address": "Bank607.2",
+        "description": "Fortna M600J_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600K",
+        "fortna_name": "M600K",
+        "fortna_address": "Bank606.3",
+        "description": "Fortna M600K (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M600K_AUX",
+        "fortna_name": "M600K_AUX",
+        "fortna_address": "Bank607.3",
+        "description": "Fortna M600K_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602C",
+        "fortna_name": "M602C",
+        "fortna_address": "Bank506.1",
+        "description": "Fortna M602C (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602C_AUX",
+        "fortna_name": "M602C_AUX",
+        "fortna_address": "Bank507.1",
+        "description": "Fortna M602C_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602D",
+        "fortna_name": "M602D",
+        "fortna_address": "Bank506.2",
+        "description": "Fortna M602D (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602D_AUX",
+        "fortna_name": "M602D_AUX",
+        "fortna_address": "Bank507.2",
+        "description": "Fortna M602D_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602E",
+        "fortna_name": "M602E",
+        "fortna_address": "Bank506.4",
+        "description": "Fortna M602E (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602E_AUX",
+        "fortna_name": "M602E_AUX",
+        "fortna_address": "Bank507.3",
+        "description": "Fortna M602E_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602F",
+        "fortna_name": "M602F",
+        "fortna_address": "Bank602.5",
+        "description": "Fortna M602F (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602F_AUX",
+        "fortna_name": "M602F_AUX",
+        "fortna_address": "Bank605.5",
+        "description": "Fortna M602F_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602G",
+        "fortna_name": "M602G",
+        "fortna_address": "Bank602.6",
+        "description": "Fortna M602G (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602G_AUX",
+        "fortna_name": "M602G_AUX",
+        "fortna_address": "Bank605.6",
+        "description": "Fortna M602G_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602H",
+        "fortna_name": "M602H",
+        "fortna_address": "Bank602.7",
+        "description": "Fortna M602H (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602H_AUX",
+        "fortna_name": "M602H_AUX",
+        "fortna_address": "Bank605.7",
+        "description": "Fortna M602H_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602I",
+        "fortna_name": "M602I",
+        "fortna_address": "Bank604.0",
+        "description": "Fortna M602I (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602I_AUX",
+        "fortna_name": "M602I_AUX",
+        "fortna_address": "Bank605.10",
+        "description": "Fortna M602I_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602J",
+        "fortna_name": "M602J",
+        "fortna_address": "Bank604.1",
+        "description": "Fortna M602J (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602J_AUX",
+        "fortna_name": "M602J_AUX",
+        "fortna_address": "Bank605.11",
+        "description": "Fortna M602J_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602K",
+        "fortna_name": "M602K",
+        "fortna_address": "Bank604.2",
+        "description": "Fortna M602K (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602K_AUX",
+        "fortna_name": "M602K_AUX",
+        "fortna_address": "Bank605.12",
+        "description": "Fortna M602K_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602M",
+        "fortna_name": "M602M",
+        "fortna_address": "Bank710.4",
+        "description": "Fortna M602M (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602M_AUX",
+        "fortna_name": "M602M_AUX",
+        "fortna_address": "Bank703.4",
+        "description": "Fortna M602M_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602N",
+        "fortna_name": "M602N",
+        "fortna_address": "Bank710.5",
+        "description": "Fortna M602N (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602N_AUX",
+        "fortna_name": "M602N_AUX",
+        "fortna_address": "Bank703.5",
+        "description": "Fortna M602N_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602O",
+        "fortna_name": "M602O",
+        "fortna_address": "Bank710.6",
+        "description": "Fortna M602O (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602O_AUX",
+        "fortna_name": "M602O_AUX",
+        "fortna_address": "Bank703.6",
+        "description": "Fortna M602O_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602P",
+        "fortna_name": "M602P",
+        "fortna_address": "Bank710.7",
+        "description": "Fortna M602P (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M602P_AUX",
+        "fortna_name": "M602P_AUX",
+        "fortna_address": "Bank703.7",
+        "description": "Fortna M602P_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M700B",
+        "fortna_name": "M700B",
+        "fortna_address": "Bank511.0",
+        "description": "Fortna M700B (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M700B_AUX",
+        "fortna_name": "M700B_AUX",
+        "fortna_address": "Bank507.7",
+        "description": "Fortna M700B_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M700C",
+        "fortna_name": "M700C",
+        "fortna_address": "Bank511.1",
+        "description": "Fortna M700C (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M700C_AUX",
+        "fortna_name": "M700C_AUX",
+        "fortna_address": "Bank507.10",
+        "description": "Fortna M700C_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M702A",
+        "fortna_name": "M702A",
+        "fortna_address": "Bank506.5",
+        "description": "Fortna M702A (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M702A_AUX",
+        "fortna_name": "M702A_AUX",
+        "fortna_address": "Bank507.4",
+        "description": "Fortna M702A_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M702B",
+        "fortna_name": "M702B",
+        "fortna_address": "Bank502.6",
+        "description": "Fortna M702B (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M702B_AUX",
+        "fortna_name": "M702B_AUX",
+        "fortna_address": "Bank505.6",
+        "description": "Fortna M702B_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M702C",
+        "fortna_name": "M702C",
+        "fortna_address": "Bank502.7",
+        "description": "Fortna M702C (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M702C_AUX",
+        "fortna_name": "M702C_AUX",
+        "fortna_address": "Bank505.7",
+        "description": "Fortna M702C_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M712",
+        "fortna_name": "M712",
+        "fortna_address": "Bank504.0",
+        "description": "Fortna M712 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M712_AUX",
+        "fortna_name": "M712_AUX",
+        "fortna_address": "Bank505.10",
+        "description": "Fortna M712_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M716",
+        "fortna_name": "M716",
+        "fortna_address": "Bank504.1",
+        "description": "Fortna M716 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M716_AUX",
+        "fortna_name": "M716_AUX",
+        "fortna_address": "Bank505.11",
+        "description": "Fortna M716_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M718",
+        "fortna_name": "M718",
+        "fortna_address": "Bank504.2",
+        "description": "Fortna M718 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M718_AUX",
+        "fortna_name": "M718_AUX",
+        "fortna_address": "Bank505.12",
+        "description": "Fortna M718_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M800",
+        "fortna_name": "M800",
+        "fortna_address": "Bank504.3",
+        "description": "Fortna M800 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M800_AUX",
+        "fortna_name": "M800_AUX",
+        "fortna_address": "Bank505.13",
+        "description": "Fortna M800_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M802",
+        "fortna_name": "M802",
+        "fortna_address": "Bank504.4",
+        "description": "Fortna M802 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M802_AUX",
+        "fortna_name": "M802_AUX",
+        "fortna_address": "Bank505.14",
+        "description": "Fortna M802_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M804",
+        "fortna_name": "M804",
+        "fortna_address": "Bank504.5",
+        "description": "Fortna M804 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M804_AUX",
+        "fortna_name": "M804_AUX",
+        "fortna_address": "Bank505.15",
+        "description": "Fortna M804_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M810",
+        "fortna_name": "M810",
+        "fortna_address": "Bank504.6",
+        "description": "Fortna M810 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M810_AUX",
+        "fortna_name": "M810_AUX",
+        "fortna_address": "Bank505.16",
+        "description": "Fortna M810_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M812",
+        "fortna_name": "M812",
+        "fortna_address": "Bank504.7",
+        "description": "Fortna M812 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M812_AUX",
+        "fortna_name": "M812_AUX",
+        "fortna_address": "Bank505.17",
+        "description": "Fortna M812_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M814",
+        "fortna_name": "M814",
+        "fortna_address": "Bank506.0",
+        "description": "Fortna M814 (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "M814_AUX",
+        "fortna_name": "M814_AUX",
+        "fortna_address": "Bank507.0",
+        "description": "Fortna M814_AUX (motor) O",
+        "type": "BOOL",
+        "device_class": "motor"
+      },
+      {
+        "tag": "PS506",
+        "fortna_name": "PS506",
+        "fortna_address": "Bank514.13",
+        "description": "Fortna PS506 (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "PS508",
+        "fortna_name": "PS508",
+        "fortna_address": "Bank612.12",
+        "description": "Fortna PS508 (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "SSV506A1",
+        "fortna_name": "SSV506A1",
+        "fortna_address": "Bank522.0",
+        "description": "Fortna SSV506A1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506A2",
+        "fortna_name": "SSV506A2",
+        "fortna_address": "Bank522.1",
+        "description": "Fortna SSV506A2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506B1",
+        "fortna_name": "SSV506B1",
+        "fortna_address": "Bank522.2",
+        "description": "Fortna SSV506B1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506B2",
+        "fortna_name": "SSV506B2",
+        "fortna_address": "Bank522.3",
+        "description": "Fortna SSV506B2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506C1",
+        "fortna_name": "SSV506C1",
+        "fortna_address": "Bank522.4",
+        "description": "Fortna SSV506C1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506C2",
+        "fortna_name": "SSV506C2",
+        "fortna_address": "Bank522.5",
+        "description": "Fortna SSV506C2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506D1",
+        "fortna_name": "SSV506D1",
+        "fortna_address": "Bank522.6",
+        "description": "Fortna SSV506D1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506D2",
+        "fortna_name": "SSV506D2",
+        "fortna_address": "Bank522.7",
+        "description": "Fortna SSV506D2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506E1",
+        "fortna_name": "SSV506E1",
+        "fortna_address": "Bank522.10",
+        "description": "Fortna SSV506E1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506E2",
+        "fortna_name": "SSV506E2",
+        "fortna_address": "Bank522.11",
+        "description": "Fortna SSV506E2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506F1",
+        "fortna_name": "SSV506F1",
+        "fortna_address": "Bank522.12",
+        "description": "Fortna SSV506F1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506F2",
+        "fortna_name": "SSV506F2",
+        "fortna_address": "Bank522.13",
+        "description": "Fortna SSV506F2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506G1",
+        "fortna_name": "SSV506G1",
+        "fortna_address": "Bank522.14",
+        "description": "Fortna SSV506G1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506G2",
+        "fortna_name": "SSV506G2",
+        "fortna_address": "Bank522.15",
+        "description": "Fortna SSV506G2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506H1",
+        "fortna_name": "SSV506H1",
+        "fortna_address": "Bank522.16",
+        "description": "Fortna SSV506H1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV506H2",
+        "fortna_name": "SSV506H2",
+        "fortna_address": "Bank522.17",
+        "description": "Fortna SSV506H2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508A1",
+        "fortna_name": "SSV508A1",
+        "fortna_address": "Bank622.0",
+        "description": "Fortna SSV508A1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508A2",
+        "fortna_name": "SSV508A2",
+        "fortna_address": "Bank622.1",
+        "description": "Fortna SSV508A2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508B1",
+        "fortna_name": "SSV508B1",
+        "fortna_address": "Bank622.2",
+        "description": "Fortna SSV508B1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508B2",
+        "fortna_name": "SSV508B2",
+        "fortna_address": "Bank622.3",
+        "description": "Fortna SSV508B2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508C1",
+        "fortna_name": "SSV508C1",
+        "fortna_address": "Bank622.4",
+        "description": "Fortna SSV508C1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508C2",
+        "fortna_name": "SSV508C2",
+        "fortna_address": "Bank622.5",
+        "description": "Fortna SSV508C2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508D1",
+        "fortna_name": "SSV508D1",
+        "fortna_address": "Bank622.6",
+        "description": "Fortna SSV508D1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508D2",
+        "fortna_name": "SSV508D2",
+        "fortna_address": "Bank622.7",
+        "description": "Fortna SSV508D2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508E1",
+        "fortna_name": "SSV508E1",
+        "fortna_address": "Bank622.10",
+        "description": "Fortna SSV508E1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508E2",
+        "fortna_name": "SSV508E2",
+        "fortna_address": "Bank622.11",
+        "description": "Fortna SSV508E2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508F1",
+        "fortna_name": "SSV508F1",
+        "fortna_address": "Bank622.12",
+        "description": "Fortna SSV508F1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV508F2",
+        "fortna_name": "SSV508F2",
+        "fortna_address": "Bank622.13",
+        "description": "Fortna SSV508F2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV509L1",
+        "fortna_name": "SSV509L1",
+        "fortna_address": "Bank717.0",
+        "description": "Fortna SSV509L1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV509L2",
+        "fortna_name": "SSV509L2",
+        "fortna_address": "Bank717.1",
+        "description": "Fortna SSV509L2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV509M1",
+        "fortna_name": "SSV509M1",
+        "fortna_address": "Bank717.2",
+        "description": "Fortna SSV509M1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV509M2",
+        "fortna_name": "SSV509M2",
+        "fortna_address": "Bank717.3",
+        "description": "Fortna SSV509M2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV510N1",
+        "fortna_name": "SSV510N1",
+        "fortna_address": "Bank717.4",
+        "description": "Fortna SSV510N1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV510N2",
+        "fortna_name": "SSV510N2",
+        "fortna_address": "Bank717.5",
+        "description": "Fortna SSV510N2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV510O1",
+        "fortna_name": "SSV510O1",
+        "fortna_address": "Bank717.6",
+        "description": "Fortna SSV510O1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV510O2",
+        "fortna_name": "SSV510O2",
+        "fortna_address": "Bank717.7",
+        "description": "Fortna SSV510O2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV510P1",
+        "fortna_name": "SSV510P1",
+        "fortna_address": "Bank717.10",
+        "description": "Fortna SSV510P1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSV510P2",
+        "fortna_name": "SSV510P2",
+        "fortna_address": "Bank717.11",
+        "description": "Fortna SSV510P2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602C_P",
+        "fortna_name": "SSVEZPE602C_P",
+        "fortna_address": "Bank520.11",
+        "description": "Fortna SSVEZPE602C_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602D_P",
+        "fortna_name": "SSVEZPE602D_P",
+        "fortna_address": "Bank520.12",
+        "description": "Fortna SSVEZPE602D_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602E_P",
+        "fortna_name": "SSVEZPE602E_P",
+        "fortna_address": "Bank520.13",
+        "description": "Fortna SSVEZPE602E_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602F_P",
+        "fortna_name": "SSVEZPE602F_P",
+        "fortna_address": "Bank620.0",
+        "description": "Fortna SSVEZPE602F_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602G_P",
+        "fortna_name": "SSVEZPE602G_P",
+        "fortna_address": "Bank620.1",
+        "description": "Fortna SSVEZPE602G_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602H_P",
+        "fortna_name": "SSVEZPE602H_P",
+        "fortna_address": "Bank620.2",
+        "description": "Fortna SSVEZPE602H_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602I_P",
+        "fortna_name": "SSVEZPE602I_P",
+        "fortna_address": "Bank620.3",
+        "description": "Fortna SSVEZPE602I_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602J_P",
+        "fortna_name": "SSVEZPE602J_P",
+        "fortna_address": "Bank620.4",
+        "description": "Fortna SSVEZPE602J_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602K_P",
+        "fortna_name": "SSVEZPE602K_P",
+        "fortna_address": "Bank620.5",
+        "description": "Fortna SSVEZPE602K_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602M_P",
+        "fortna_name": "SSVEZPE602M_P",
+        "fortna_address": "Bank715.1",
+        "description": "Fortna SSVEZPE602M_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602N_P",
+        "fortna_name": "SSVEZPE602N_P",
+        "fortna_address": "Bank715.2",
+        "description": "Fortna SSVEZPE602N_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602O_P",
+        "fortna_name": "SSVEZPE602O_P",
+        "fortna_address": "Bank715.4",
+        "description": "Fortna SSVEZPE602O_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE602P_P",
+        "fortna_name": "SSVEZPE602P_P",
+        "fortna_address": "Bank715.5",
+        "description": "Fortna SSVEZPE602P_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "P444_VFD",
+        "fortna_name": "VFD444_AUX",
+        "fortna_address": "Bank525.0",
+        "description": "VFD discrete \u2192 P444_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P444_VFD",
+        "fortna_name": "VFD444_EN",
+        "fortna_address": "Bank524.0",
+        "description": "VFD discrete \u2192 P444_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P500A_VFD",
+        "fortna_name": "VFD500A_AUX",
+        "fortna_address": "Bank525.3",
+        "description": "VFD discrete \u2192 P500A_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P500A_VFD",
+        "fortna_name": "VFD500A_EN",
+        "fortna_address": "Bank524.2",
+        "description": "VFD discrete \u2192 P500A_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P500_VFD",
+        "fortna_name": "VFD500_AUX",
+        "fortna_address": "Bank525.2",
+        "description": "VFD discrete \u2192 P500_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P500_VFD",
+        "fortna_name": "VFD500_EN",
+        "fortna_address": "Bank524.1",
+        "description": "VFD discrete \u2192 P500_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P502_VFD",
+        "fortna_name": "VFD502_AUX",
+        "fortna_address": "Bank525.4",
+        "description": "VFD discrete \u2192 P502_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P502_VFD",
+        "fortna_name": "VFD502_EN",
+        "fortna_address": "Bank524.3",
+        "description": "VFD discrete \u2192 P502_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P504_VFD",
+        "fortna_name": "VFD504_AUX",
+        "fortna_address": "Bank525.5",
+        "description": "VFD discrete \u2192 P504_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P504_VFD",
+        "fortna_name": "VFD504_EN",
+        "fortna_address": "Bank524.4",
+        "description": "VFD discrete \u2192 P504_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P506_VFD",
+        "fortna_name": "VFD506_AUX",
+        "fortna_address": "Bank525.6",
+        "description": "VFD discrete \u2192 P506_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P506_VFD",
+        "fortna_name": "VFD506_EN",
+        "fortna_address": "Bank524.5",
+        "description": "VFD discrete \u2192 P506_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P508_VFD",
+        "fortna_name": "VFD508_AUX",
+        "fortna_address": "Bank623.10",
+        "description": "VFD discrete \u2192 P508_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P508_VFD",
+        "fortna_name": "VFD508_EN",
+        "fortna_address": "Bank624.0",
+        "description": "VFD discrete \u2192 P508_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P509_VFD",
+        "fortna_name": "VFD509",
+        "fortna_address": "Bank716.0",
+        "description": "VFD discrete \u2192 P509_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P509_VFD",
+        "fortna_name": "VFD509_AUX",
+        "fortna_address": "Bank713.10",
+        "description": "VFD discrete \u2192 P509_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P510_VFD",
+        "fortna_name": "VFD510",
+        "fortna_address": "Bank716.1",
+        "description": "VFD discrete \u2192 P510_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P510_VFD",
+        "fortna_name": "VFD510_AUX",
+        "fortna_address": "Bank713.11",
+        "description": "VFD discrete \u2192 P510_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P544_VFD",
+        "fortna_name": "VFD544_AUX",
+        "fortna_address": "Bank525.7",
+        "description": "VFD discrete \u2192 P544_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P544_VFD",
+        "fortna_name": "VFD544_EN",
+        "fortna_address": "Bank524.6",
+        "description": "VFD discrete \u2192 P544_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P550_VFD",
+        "fortna_name": "VFD550",
+        "fortna_address": "Bank716.2",
+        "description": "VFD discrete \u2192 P550_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P550_VFD",
+        "fortna_name": "VFD550_AUX",
+        "fortna_address": "Bank713.12",
+        "description": "VFD discrete \u2192 P550_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P600M_VFD",
+        "fortna_name": "VFD600M",
+        "fortna_address": "Bank716.3",
+        "description": "VFD discrete \u2192 P600M_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P600M_VFD",
+        "fortna_name": "VFD600M_AUX",
+        "fortna_address": "Bank713.13",
+        "description": "VFD discrete \u2192 P600M_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P600N_VFD",
+        "fortna_name": "VFD600N",
+        "fortna_address": "Bank716.4",
+        "description": "VFD discrete \u2192 P600N_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P600N_VFD",
+        "fortna_name": "VFD600N_AUX",
+        "fortna_address": "Bank713.14",
+        "description": "VFD discrete \u2192 P600N_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P600O_VFD",
+        "fortna_name": "VFD600O",
+        "fortna_address": "Bank716.6",
+        "description": "VFD discrete \u2192 P600O_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P600O_VFD",
+        "fortna_name": "VFD600O_AUX",
+        "fortna_address": "Bank713.16",
+        "description": "VFD discrete \u2192 P600O_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P600P_VFD",
+        "fortna_name": "VFD600P",
+        "fortna_address": "Bank716.7",
+        "description": "VFD discrete \u2192 P600P_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P600P_VFD",
+        "fortna_name": "VFD600P_AUX",
+        "fortna_address": "Bank713.17",
+        "description": "VFD discrete \u2192 P600P_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P700A_VFD",
+        "fortna_name": "VFD700A",
+        "fortna_address": "Bank524.7",
+        "description": "VFD discrete \u2192 P700A_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "P700A_VFD",
+        "fortna_name": "VFD700A_AUX",
+        "fortna_address": "Bank525.11",
+        "description": "VFD discrete \u2192 P700A_VFD (Motor_Starter_UDT)",
+        "type": "Motor_Starter_UDT",
+        "device_class": "vfd_ms"
+      },
+      {
+        "tag": "WH816",
+        "fortna_name": "WH816",
+        "fortna_address": "Bank500.4",
+        "description": "Fortna WH816 (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "EZPE442_F",
+        "fortna_name": "EZPE442_F",
+        "fortna_address": "Bank521.0",
+        "description": "FULL EYE DETECTION ON P442",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE442_P",
+        "fortna_name": "EZPE442_P",
+        "fortna_address": "Bank521.1",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P442",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE444_P",
+        "fortna_name": "PE444_P",
+        "fortna_address": "Bank510.0",
+        "description": "PRODUCT PRESENT AT DISCHARGE OF P444",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPWS442",
+        "fortna_name": "EZPWS442",
+        "fortna_address": "Bank516.0",
+        "description": "Fortna EZPWS442 (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "SSVEZPE442_P",
+        "fortna_name": "SSVEZPE442_P",
+        "fortna_address": "Bank520.0",
+        "description": "Fortna SSVEZPE442_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "EZPE530_F1",
+        "fortna_name": "EZPE530_F1",
+        "fortna_address": "Bank521.2",
+        "description": "FULL EYE DETECTION ON P530",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE530_F2",
+        "fortna_name": "EZPE530_F2",
+        "fortna_address": "Bank521.3",
+        "description": "FULL EYE ON P530 DOWNSTREAM OF P720 MERGE",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE530_P1",
+        "fortna_name": "EZPE530_P1",
+        "fortna_address": "Bank521.4",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P530",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE530_P2",
+        "fortna_name": "EZPE530_P2",
+        "fortna_address": "Bank521.5",
+        "description": "PRODUCT IS PRESENT ON P530 PRIOR TO P720 MERGE",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE536_F",
+        "fortna_name": "EZPE536_F",
+        "fortna_address": "Bank521.6",
+        "description": "FULL EYE DETECTION ON P536",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE536_P",
+        "fortna_name": "EZPE536_P",
+        "fortna_address": "Bank521.7",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P536",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE542_F",
+        "fortna_name": "EZPE542_F",
+        "fortna_address": "Bank521.10",
+        "description": "FULL EYE DETECTION ON P542",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE542_P",
+        "fortna_name": "EZPE542_P",
+        "fortna_address": "Bank521.11",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P542",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE564_F",
+        "fortna_name": "EZPE564_F",
+        "fortna_address": "Bank714.0",
+        "description": "FULL EYE ON P564",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE566_P",
+        "fortna_name": "EZPE566_P",
+        "fortna_address": "Bank714.1",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P566",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE500_J",
+        "fortna_name": "PE500_J",
+        "fortna_address": "Bank510.1",
+        "description": "JAM DETECTION AT MERGE ON P500",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE504_I",
+        "fortna_name": "PE504_I",
+        "fortna_address": "Bank523.10",
+        "description": "INDUCT EYE ON P504",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE506_I",
+        "fortna_name": "PE506_I",
+        "fortna_address": "Bank523.11",
+        "description": "INDUCT EYE ON P506",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE508_I",
+        "fortna_name": "PE508_I",
+        "fortna_address": "Bank623.0",
+        "description": "INDUCT EYE ON P508",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE508_J",
+        "fortna_name": "PE508_J",
+        "fortna_address": "Bank610.0",
+        "description": "JAM DETECTION AT DISCHARGE OF P508",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE509_I",
+        "fortna_name": "PE509_I",
+        "fortna_address": "Bank713.3",
+        "description": "INDUCT EYE ON P509",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE510_I",
+        "fortna_name": "PE510_I",
+        "fortna_address": "Bank713.4",
+        "description": "INDUCT EYE ON P510",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE510_J",
+        "fortna_name": "PE510_J",
+        "fortna_address": "Bank704.0",
+        "description": "JAM DETECTION EYE ON P510",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE544_P",
+        "fortna_name": "PE544_P",
+        "fortna_address": "Bank510.2",
+        "description": "PRODUCT PRESENT AT DISCHARGE OF P544",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE552_JF",
+        "fortna_name": "PE552_JF",
+        "fortna_address": "Bank704.1",
+        "description": "PRODUCT PRESENT AT JAM/FULL EYE PE552_JF ON P552",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE556_JF",
+        "fortna_name": "PE556_JF",
+        "fortna_address": "Bank704.2",
+        "description": "PRODUCT PRESENT AT JAM/FULL EYE PE556_JF ON P556",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE562_JF",
+        "fortna_name": "PE562_JF",
+        "fortna_address": "Bank704.3",
+        "description": "PRODUCT PRESENT AT JAM/FULL EYE PE562_JF ON P556",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PRS506",
+        "fortna_name": "PRS506",
+        "fortna_address": "Bank523.12",
+        "description": "Fortna PRS506 (digital_in) I",
+        "type": "BOOL",
+        "device_class": "digital_in"
+      },
+      {
+        "tag": "PRS508",
+        "fortna_name": "PRS508",
+        "fortna_address": "Bank623.2",
+        "description": "Fortna PRS508 (digital_in) I",
+        "type": "BOOL",
+        "device_class": "digital_in"
+      },
+      {
+        "tag": "PRS509",
+        "fortna_name": "PRS509",
+        "fortna_address": "Bank713.6",
+        "description": "Fortna PRS509 (digital_in) I",
+        "type": "BOOL",
+        "device_class": "digital_in"
+      },
+      {
+        "tag": "PRS510",
+        "fortna_name": "PRS510",
+        "fortna_address": "Bank713.7",
+        "description": "Fortna PRS510 (digital_in) I",
+        "type": "BOOL",
+        "device_class": "digital_in"
+      },
+      {
+        "tag": "ENC504",
+        "fortna_name": "ENC504",
+        "fortna_address": "Bank523.14",
+        "description": "Fortna ENC504 (encoder) I",
+        "type": "BOOL",
+        "device_class": "encoder"
+      },
+      {
+        "tag": "ENC506",
+        "fortna_name": "ENC506",
+        "fortna_address": "Bank523.15",
+        "description": "Fortna ENC506 (encoder) I",
+        "type": "BOOL",
+        "device_class": "encoder"
+      },
+      {
+        "tag": "ENC508",
+        "fortna_name": "ENC508",
+        "fortna_address": "Bank623.4",
+        "description": "Fortna ENC508 (encoder) I",
+        "type": "BOOL",
+        "device_class": "encoder"
+      },
+      {
+        "tag": "ENC509",
+        "fortna_name": "ENC509",
+        "fortna_address": "Bank713.0",
+        "description": "Fortna ENC509 (encoder) I",
+        "type": "BOOL",
+        "device_class": "encoder"
+      },
+      {
+        "tag": "ENC510",
+        "fortna_name": "ENC510",
+        "fortna_address": "Bank713.1",
+        "description": "Fortna ENC510 (encoder) I",
+        "type": "BOOL",
+        "device_class": "encoder"
+      },
+      {
+        "tag": "EZPWS530",
+        "fortna_name": "EZPWS530",
+        "fortna_address": "Bank516.1",
+        "description": "Fortna EZPWS530 (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS536",
+        "fortna_name": "EZPWS536",
+        "fortna_address": "Bank516.2",
+        "description": "Fortna EZPWS536 (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS542",
+        "fortna_name": "EZPWS542",
+        "fortna_address": "Bank516.3",
+        "description": "Fortna EZPWS542 (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS564_AUX",
+        "fortna_name": "EZPWS564_AUX",
+        "fortna_address": "Bank705.0",
+        "description": "Fortna EZPWS564_AUX (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "EZPWS566_AUX",
+        "fortna_name": "EZPWS566_AUX",
+        "fortna_address": "Bank705.1",
+        "description": "Fortna EZPWS566_AUX (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "SSVEZPE530_P1",
+        "fortna_name": "SSVEZPE530_P1",
+        "fortna_address": "Bank520.1",
+        "description": "Fortna SSVEZPE530_P1 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE530_P2",
+        "fortna_name": "SSVEZPE530_P2",
+        "fortna_address": "Bank520.2",
+        "description": "Fortna SSVEZPE530_P2 (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE536_P",
+        "fortna_name": "SSVEZPE536_P",
+        "fortna_address": "Bank520.3",
+        "description": "Fortna SSVEZPE536_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE542_P",
+        "fortna_name": "SSVEZPE542_P",
+        "fortna_address": "Bank520.4",
+        "description": "Fortna SSVEZPE542_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "SSVEZPE566_P",
+        "fortna_name": "SSVEZPE566_P",
+        "fortna_address": "Bank715.0",
+        "description": "Fortna SSVEZPE566_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "WB500",
+        "fortna_name": "WB500",
+        "fortna_address": "Bank513.0",
+        "description": "Fortna WB500 (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "PE600C_J",
+        "fortna_name": "PE600C_J",
+        "fortna_address": "Bank510.17",
+        "description": "JAM DETECTION AT DIVERT ONTO P600C",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600D_J",
+        "fortna_name": "PE600D_J",
+        "fortna_address": "Bank512.0",
+        "description": "JAM DETECTION AT DIVERT ONTO P600D",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600E_J",
+        "fortna_name": "PE600E_J",
+        "fortna_address": "Bank512.1",
+        "description": "JAM DETECTION AT DIVERT ONTO P600E",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600F_J",
+        "fortna_name": "PE600F_J",
+        "fortna_address": "Bank610.4",
+        "description": "JAM DETECTION AT DIVERT ONTO P600F",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600G_J",
+        "fortna_name": "PE600G_J",
+        "fortna_address": "Bank610.5",
+        "description": "JAM DETECTION AT DIVERT ONTO P600G",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600H_J",
+        "fortna_name": "PE600H_J",
+        "fortna_address": "Bank610.6",
+        "description": "JAM DETECTION AT DIVERT ONTO P600H",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600I_J",
+        "fortna_name": "PE600I_J",
+        "fortna_address": "Bank610.7",
+        "description": "JAM DETECTION AT DIVERT ONTO P600I",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600J_J",
+        "fortna_name": "PE600J_J",
+        "fortna_address": "Bank610.10",
+        "description": "JAM DETECTION AT DIVERT ONTO P600J",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600K_J",
+        "fortna_name": "PE600K_J",
+        "fortna_address": "Bank610.11",
+        "description": "JAM DETECTION AT DIVERT ONTO P600K",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600M_J",
+        "fortna_name": "PE600M_J",
+        "fortna_address": "Bank704.5",
+        "description": "JAM DETECTION EYE ON P600M",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600N_J",
+        "fortna_name": "PE600N_J",
+        "fortna_address": "Bank704.6",
+        "description": "JAM DETECTION EYE ON P600N",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600O_J",
+        "fortna_name": "PE600O_J",
+        "fortna_address": "Bank704.7",
+        "description": "JAM DETECTION EYE ON P600O",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE600P_J",
+        "fortna_name": "PE600P_J",
+        "fortna_address": "Bank704.10",
+        "description": "JAM DETECTION EYE ON P600P",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608C_F",
+        "fortna_name": "PE608C_F",
+        "fortna_address": "Bank514.5",
+        "description": "FULL EYE DETECTION ON P608C",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608D_F",
+        "fortna_name": "PE608D_F",
+        "fortna_address": "Bank514.6",
+        "description": "FULL EYE DETECTION ON P608D",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608E_F",
+        "fortna_name": "PE608E_F",
+        "fortna_address": "Bank514.7",
+        "description": "FULL EYE DETECTION ON P608E",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608F_F",
+        "fortna_name": "PE608F_F",
+        "fortna_address": "Bank612.0",
+        "description": "FULL EYE DETECTION ON P608F",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608G_F",
+        "fortna_name": "PE608G_F",
+        "fortna_address": "Bank612.1",
+        "description": "FULL EYE DETECTION ON P608G",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608H_F",
+        "fortna_name": "PE608H_F",
+        "fortna_address": "Bank612.2",
+        "description": "FULL EYE DETECTION ON P608H",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608I_F",
+        "fortna_name": "PE608I_F",
+        "fortna_address": "Bank612.3",
+        "description": "FULL EYE DETECTION ON P608I",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608J_F",
+        "fortna_name": "PE608J_F",
+        "fortna_address": "Bank612.4",
+        "description": "FULL EYE DETECTION ON P608J",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608K_F",
+        "fortna_name": "PE608K_F",
+        "fortna_address": "Bank612.5",
+        "description": "FULL EYE DETECTION ON P608K",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608M_F",
+        "fortna_name": "PE608M_F",
+        "fortna_address": "Bank704.12",
+        "description": "FULL EYE ON P608M",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608N_F",
+        "fortna_name": "PE608N_F",
+        "fortna_address": "Bank704.13",
+        "description": "FULL EYE ON P608N",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608O_F",
+        "fortna_name": "PE608O_F",
+        "fortna_address": "Bank704.14",
+        "description": "FULL EYE ON P608O",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE608P_F",
+        "fortna_name": "PE608P_F",
+        "fortna_address": "Bank704.15",
+        "description": "FULL EYE ON P608P",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "WB608C",
+        "fortna_name": "WB608C",
+        "fortna_address": "Bank513.7",
+        "description": "Fortna WB608C (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608D",
+        "fortna_name": "WB608D",
+        "fortna_address": "Bank515.0",
+        "description": "Fortna WB608D (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608E",
+        "fortna_name": "WB608E",
+        "fortna_address": "Bank515.1",
+        "description": "Fortna WB608E (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608F",
+        "fortna_name": "WB608F",
+        "fortna_address": "Bank611.0",
+        "description": "Fortna WB608F (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608G",
+        "fortna_name": "WB608G",
+        "fortna_address": "Bank611.1",
+        "description": "Fortna WB608G (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608H",
+        "fortna_name": "WB608H",
+        "fortna_address": "Bank611.2",
+        "description": "Fortna WB608H (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608I",
+        "fortna_name": "WB608I",
+        "fortna_address": "Bank611.3",
+        "description": "Fortna WB608I (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608J",
+        "fortna_name": "WB608J",
+        "fortna_address": "Bank611.4",
+        "description": "Fortna WB608J (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608K",
+        "fortna_name": "WB608K",
+        "fortna_address": "Bank611.5",
+        "description": "Fortna WB608K (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608M1",
+        "fortna_name": "WB608M1",
+        "fortna_address": "Bank707.0",
+        "description": "Fortna WB608M1 (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608N1",
+        "fortna_name": "WB608N1",
+        "fortna_address": "Bank707.1",
+        "description": "Fortna WB608N1 (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608O",
+        "fortna_name": "WB608O",
+        "fortna_address": "Bank707.3",
+        "description": "Fortna WB608O (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB608P",
+        "fortna_name": "WB608P",
+        "fortna_address": "Bank707.4",
+        "description": "Fortna WB608P (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "EZPE718_F",
+        "fortna_name": "EZPE718_F",
+        "fortna_address": "Bank521.12",
+        "description": "FULL EYE DETECTION ON P718",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE718_P",
+        "fortna_name": "EZPE718_P",
+        "fortna_address": "Bank521.13",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P718",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE700A_J",
+        "fortna_name": "PE700A_J",
+        "fortna_address": "Bank510.16",
+        "description": "JAM DETECTION AT DIVERT ONTO P700A",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE700B_J",
+        "fortna_name": "PE700B_J",
+        "fortna_address": "Bank510.3",
+        "description": "JAM DETECTION AT DIVERT ONTO P700B",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE700C_J",
+        "fortna_name": "PE700C_J",
+        "fortna_address": "Bank510.4",
+        "description": "JAM DETECTION AT DIVERT ONTO P700C",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE704A_F",
+        "fortna_name": "PE704A_F",
+        "fortna_address": "Bank514.3",
+        "description": "FULL EYE DETECTION ON P704A",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE704B_F",
+        "fortna_name": "PE704B_F",
+        "fortna_address": "Bank514.0",
+        "description": "FULL EYE DETECTION ON P704B",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE704C_F",
+        "fortna_name": "PE704C_F",
+        "fortna_address": "Bank514.1",
+        "description": "FULL EYE DETECTION ON P704C",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE714_JF",
+        "fortna_name": "PE714_JF",
+        "fortna_address": "Bank510.5",
+        "description": "PRODUCT PRESENT AT JAM/FULL EYE PE714_JF ON P714",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE720_J",
+        "fortna_name": "PE720_J",
+        "fortna_address": "Bank510.6",
+        "description": "JAM DETECTION AT MERGE OF P720",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPWS718",
+        "fortna_name": "EZPWS718",
+        "fortna_address": "Bank516.4",
+        "description": "Fortna EZPWS718 (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "SSVEZPE718_P",
+        "fortna_name": "SSVEZPE718_P",
+        "fortna_address": "Bank520.5",
+        "description": "Fortna SSVEZPE718_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "WB700A",
+        "fortna_name": "WB700A",
+        "fortna_address": "Bank513.5",
+        "description": "Fortna WB700A (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB700B",
+        "fortna_name": "WB700B",
+        "fortna_address": "Bank513.1",
+        "description": "Fortna WB700B (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "WB700C",
+        "fortna_name": "WB700C",
+        "fortna_address": "Bank513.2",
+        "description": "Fortna WB700C (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      },
+      {
+        "tag": "EZPE810_F",
+        "fortna_name": "EZPE810_F",
+        "fortna_address": "Bank521.14",
+        "description": "FULL EYE DETECTION ON P810",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPE810_P",
+        "fortna_name": "EZPE810_P",
+        "fortna_address": "Bank521.15",
+        "description": "PRODUCT IS PRESENT AT DISCHARGE OF P810",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE802_P",
+        "fortna_name": "PE802_P",
+        "fortna_address": "Bank510.7",
+        "description": "PRODUCT PRESENT AT DISCHARGE OF P802",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE806_JF",
+        "fortna_name": "PE806_JF",
+        "fortna_address": "Bank510.10",
+        "description": "PRODUCT PRESENT AT JAM/FULL EYE PE806_JF ON P806",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE812_J",
+        "fortna_name": "PE812_J",
+        "fortna_address": "Bank510.11",
+        "description": "JAM DETECTION AT MERGE ON P812",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE814_FDD",
+        "fortna_name": "PE814_FDD",
+        "fortna_address": "Bank510.12",
+        "description": "FIRE DOOR ON P814 IS IN THE DOWN POSITION",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "PE814_FDJ",
+        "fortna_name": "PE814_FDJ",
+        "fortna_address": "Bank510.13",
+        "description": "JAM EYE DETECTION AT FIRE DOOR ON P814",
+        "type": "PE_UDT",
+        "device_class": "photoeye"
+      },
+      {
+        "tag": "EZPWS810",
+        "fortna_name": "EZPWS810",
+        "fortna_address": "Bank516.5",
+        "description": "Fortna EZPWS810 (power_supply) O",
+        "type": "BOOL",
+        "device_class": "power_supply"
+      },
+      {
+        "tag": "SSVEZPE810_P",
+        "fortna_name": "SSVEZPE810_P",
+        "fortna_address": "Bank520.6",
+        "description": "Fortna SSVEZPE810_P (digital_out) O",
+        "type": "BOOL",
+        "device_class": "digital_out"
+      },
+      {
+        "tag": "WB812",
+        "fortna_name": "WB812",
+        "fortna_address": "Bank513.3",
+        "description": "Fortna WB812 (beacon) O",
+        "type": "BOOL",
+        "device_class": "beacon"
+      }
+    ],
+    "conveyors_generated_names": [
+      "P442",
+      "P444",
+      "P500",
+      "P502",
+      "P504",
+      "P506",
+      "P506A",
+      "P508",
+      "P508A",
+      "P509",
+      "P510",
+      "P530",
+      "P530A",
+      "P536",
+      "P542",
+      "P544",
+      "P552",
+      "P556",
+      "P564",
+      "P566",
+      "P600C",
+      "P600D",
+      "P600E",
+      "P600F",
+      "P600G",
+      "P600H",
+      "P600I",
+      "P600J",
+      "P600K",
+      "P600M",
+      "P600N",
+      "P600O",
+      "P600P",
+      "P602C",
+      "P602D",
+      "P602E",
+      "P602F",
+      "P602G",
+      "P602H",
+      "P602I",
+      "P602J",
+      "P602K",
+      "P602M",
+      "P602N",
+      "P602O",
+      "P602P",
+      "P700A",
+      "P700B",
+      "P700C",
+      "P704A",
+      "P704B",
+      "P704C",
+      "P714",
+      "P718",
+      "P720",
+      "P802",
+      "P806",
+      "P810",
+      "P812",
+      "P814"
+    ],
+    "encoder_count": 5,
+    "encoder_tags_found": [
+      "ENC504",
+      "ENC506",
+      "ENC508",
+      "ENC509",
+      "ENC510"
+    ]
+  },
+  "structural": {
+    "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp5-gap-closure\\generated\\ORNCCP5_candidate_v2.L5X",
+    "exists": true,
+    "xml_parses": true,
+    "duplicate_controller_tags": [],
+    "undefined_routine_calls": [],
+    "dangling_tag_refs_sample": [],
+    "programs_with_main": [],
+    "notes": [
+      "Studio 5000 download validation NOT claimed"
+    ],
+    "ok": true
+  },
+  "input_counts": {
+    "conveyors": 60,
+    "pe_devices": 94,
+    "io_points": 395,
+    "modules": 61,
+    "areas": [
+      "ORNCCP5_Area"
+    ]
+  }
+}

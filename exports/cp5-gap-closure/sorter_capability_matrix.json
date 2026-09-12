@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-12T20:14:48.792339+00:00",
+  "decomposition_policy": "No monolithic Sorter_Track generator",
+  "capabilities": {
+    "sorter_encoder_speed_validation": {
+      "state": "GENERATABLE",
+      "discovered": true
+    },
+    "induct_token_creation": {
+      "state": "MODELED"
+    },
+    "scanner_token_update": {
+      "state": "MODELED"
+    },
+    "track_offset": {
+      "state": "NOT_SUPPORTED"
+    },
+    "package_tracking": {
+      "state": "MODELED"
+    },
+    "route_destination": {
+      "state": "CONFIGURATION_REQUIRED"
+    },
+    "divert_readiness": {
+      "state": "NOT_SUPPORTED"
+    },
+    "divert_trigger": {
+      "state": "NOT_SUPPORTED"
+    },
+    "divert_confirmation": {
+      "state": "NOT_SUPPORTED"
+    },
+    "divert_rate_limit": {
+      "state": "NOT_SUPPORTED"
+    },
+    "recirculation": {
+      "state": "NOT_SUPPORTED"
+    },
+    "reason_codes": {
+      "state": "MODELED"
+    },
+    "wcs_request": {
+      "state": "MODELED"
+    },
+    "wcs_response": {
+      "state": "NOT_SUPPORTED"
+    },
+    "wcs_confirmation_event": {
+      "state": "NOT_SUPPORTED"
+    }
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "generated_at": "2026-09-12T20:14:48.793222+00:00",
+  "capabilities": {
+    "message_configuration": "MODELED",
+    "event_topic_configuration": "MODELED",
+    "inbound_queue": "DISCOVERED",
+    "outbound_queue": "DISCOVERED",
+    "decision_request": "NOT_SUPPORTED",
+    "decision_response": "NOT_SUPPORTED",
+    "divert_confirmation": "NOT_SUPPORTED",
+    "tcp_transport": "NOT_SUPPORTED",
+    "heartbeat": "NOT_SUPPORTED"
+  },
+  "note": "Do not copy finished WCS program; runtime queues \u2260 static PLC defs"
+}

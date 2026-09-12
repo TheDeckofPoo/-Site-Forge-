@@ -1,0 +1,45 @@
+{
+  "generated_at": "2026-09-12T20:14:48.775347+00:00",
+  "count": 3,
+  "merges": [
+    {
+      "name": "MERGE_812_2-1",
+      "process": "CTRL",
+      "owner": "ORNCCP5",
+      "num_inputs": "2",
+      "provenance": "RUN_EXPLICIT",
+      "source_scope": "controller_overlay",
+      "confidence": "HIGH",
+      "merge_family": "MultiInputMerge",
+      "generator_support": "CONFIGURATION_REQUIRED",
+      "not_sawtooth": true
+    },
+    {
+      "name": "MERGE_500_2-1",
+      "process": "CTRL",
+      "owner": "ORNCCP5",
+      "num_inputs": "2",
+      "provenance": "RUN_EXPLICIT",
+      "source_scope": "controller_overlay",
+      "confidence": "HIGH",
+      "merge_family": "MultiInputMerge",
+      "generator_support": "CONFIGURATION_REQUIRED",
+      "not_sawtooth": true
+    },
+    {
+      "name": "MERGE_720_SPUR",
+      "process": "CTRL",
+      "owner": "ORNCCP5",
+      "num_inputs": "2",
+      "provenance": "RUN_EXPLICIT",
+      "source_scope": "controller_overlay",
+      "confidence": "HIGH",
+      "merge_family": "MultiInputMerge",
+      "generator_support": "CONFIGURATION_REQUIRED",
+      "not_sawtooth": true
+    }
+  ],
+  "zipper_tables_present": true,
+  "generated_capabilities": [],
+  "note": "Do not force merges through Sawtooth logic"
+}

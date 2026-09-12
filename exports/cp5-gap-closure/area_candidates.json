@@ -1,0 +1,117 @@
+{
+  "generated_at": "2026-09-12T20:14:48.735819+00:00",
+  "proven_areas": [],
+  "engineer_required": true,
+  "candidates": [
+    {
+      "name": "ORNCCP5_Area",
+      "status": "ENGINEER_REQUIRED_PROVISIONAL",
+      "evidence": [
+        "project.cfg MACHINENAME=ORNCCP5",
+        "load_from_run provisional area = controller scope"
+      ],
+      "confidence": "LOW",
+      "note": "Not a plant engineering Area; engineer must rename/split"
+    },
+    {
+      "name": "BIN MODULE A",
+      "status": "GROUPING_HINT_NOT_AREA",
+      "evidence": [
+        "StartStopZones.asc row"
+      ],
+      "confidence": "MEDIUM",
+      "note": "Start/Stop zone \u2260 Engineering Area; do not auto-promote"
+    },
+    {
+      "name": "CARTON FLOW MODULE B",
+      "status": "GROUPING_HINT_NOT_AREA",
+      "evidence": [
+        "StartStopZones.asc row"
+      ],
+      "confidence": "MEDIUM",
+      "note": "Start/Stop zone \u2260 Engineering Area; do not auto-promote"
+    },
+    {
+      "name": "CARTON FLOW MODULE C",
+      "status": "GROUPING_HINT_NOT_AREA",
+      "evidence": [
+        "StartStopZones.asc row"
+      ],
+      "confidence": "MEDIUM",
+      "note": "Start/Stop zone \u2260 Engineering Area; do not auto-promote"
+    },
+    {
+      "name": "SAWTOOTH, CITY, DANCE",
+      "status": "GROUPING_HINT_NOT_AREA",
+      "evidence": [
+        "StartStopZones.asc row"
+      ],
+      "confidence": "MEDIUM",
+      "note": "Start/Stop zone \u2260 Engineering Area; do not auto-promote"
+    },
+    {
+      "name": "RED ROOM",
+      "status": "GROUPING_HINT_NOT_AREA",
+      "evidence": [
+        "StartStopZones.asc row"
+      ],
+      "confidence": "MEDIUM",
+      "note": "Start/Stop zone \u2260 Engineering Area; do not auto-promote"
+    },
+    {
+      "name": "SHIPPING AREA",
+      "status": "GROUPING_HINT_NOT_AREA",
+      "evidence": [
+        "StartStopZones.asc row"
+      ],
+      "confidence": "MEDIUM",
+      "note": "Start/Stop zone \u2260 Engineering Area; do not auto-promote"
+    },
+    {
+      "name": "TRASH",
+      "status": "GROUPING_HINT_NOT_AREA",
+      "evidence": [
+        "StartStopZones.asc row"
+      ],
+      "confidence": "MEDIUM",
+      "note": "Start/Stop zone \u2260 Engineering Area; do not auto-promote"
+    },
+    {
+      "name": "NEW CAR-BIN MERGE",
+      "status": "GROUPING_HINT_NOT_AREA",
+      "evidence": [
+        "StartStopZones.asc row"
+      ],
+      "confidence": "MEDIUM",
+      "note": "Start/Stop zone \u2260 Engineering Area; do not auto-promote"
+    },
+    {
+      "name": "ORNCCP2",
+      "status": "OWNERSHIP_HINT",
+      "evidence": [
+        "Jamzones.asc Zone Owner appears 12 times"
+      ],
+      "confidence": "LOW",
+      "note": "May indicate process ownership, not Engineering Area"
+    },
+    {
+      "name": "ORNCCP4",
+      "status": "OWNERSHIP_HINT",
+      "evidence": [
+        "Jamzones.asc Zone Owner appears 8 times"
+      ],
+      "confidence": "LOW",
+      "note": "May indicate process ownership, not Engineering Area"
+    },
+    {
+      "name": "ORNCCP5",
+      "status": "OWNERSHIP_HINT",
+      "evidence": [
+        "Jamzones.asc Zone Owner appears 7 times"
+      ],
+      "confidence": "LOW",
+      "note": "May indicate process ownership, not Engineering Area"
+    }
+  ],
+  "policy": "Do not copy finished-PLC Area names into generation"
+}

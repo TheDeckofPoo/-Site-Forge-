@@ -1,0 +1,49 @@
+{
+  "generated_at": "2026-09-12T20:14:48.773240+00:00",
+  "discovered": 5,
+  "in_l5x_count": 5,
+  "encoders": [
+    {
+      "name": "ENC504",
+      "encoder_io": "ENC504",
+      "inclusion": "INCLUDED",
+      "source_table": "Encoders.asc",
+      "in_generated_l5x": true,
+      "disposition": "GENERATED"
+    },
+    {
+      "name": "ENC506",
+      "encoder_io": "ENC506",
+      "inclusion": "INCLUDED",
+      "source_table": "Encoders.asc",
+      "in_generated_l5x": true,
+      "disposition": "GENERATED"
+    },
+    {
+      "name": "ENC508",
+      "encoder_io": "ENC508",
+      "inclusion": "INCLUDED",
+      "source_table": "Encoders.asc",
+      "in_generated_l5x": true,
+      "disposition": "GENERATED"
+    },
+    {
+      "name": "ENC509",
+      "encoder_io": "ENC509",
+      "inclusion": "INCLUDED",
+      "source_table": "Encoders.asc",
+      "in_generated_l5x": true,
+      "disposition": "GENERATED"
+    },
+    {
+      "name": "ENC510",
+      "encoder_io": "ENC510",
+      "inclusion": "INCLUDED",
+      "source_table": "Encoders.asc",
+      "in_generated_l5x": true,
+      "disposition": "GENERATED"
+    }
+  ],
+  "meta_encoder_count": 5,
+  "bridge_fix": "PASS"
+}

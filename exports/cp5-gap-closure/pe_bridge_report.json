@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-09-12T20:14:48.736900+00:00",
+  "discovered": 94,
+  "included": 94,
+  "with_io": 94,
+  "compiler_consumed": 94,
+  "generated_pe_devices": 94,
+  "generated_pe_logic_rungs": 81,
+  "role_counts": {
+    "FULL": 42,
+    "RESERVE": 37,
+    "DETECTION": 29,
+    "JAM": 27,
+    "FULL_JAM": 5,
+    "UNKNOWN": 1
+  },
+  "bridge_fix": "PASS"
+}

@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-09-12T20:14:48.737606+00:00",
+  "compiler_io_points": 395,
+  "compiler_modules": 61,
+  "generated_io_modules": 61,
+  "generated_io_points": 395,
+  "generated_io_map_rungs": 368,
+  "io_map_mapped": 353,
+  "io_map_source": "run_tar_gz_banks_eip",
+  "bridge_fix": "PASS",
+  "sources": [
+    "Configio.asc",
+    "IOCard.asc",
+    "Conveyor I/O fields",
+    "EIP topology"
+  ]
+}

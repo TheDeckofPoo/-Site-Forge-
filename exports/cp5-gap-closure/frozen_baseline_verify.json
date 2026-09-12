@@ -1,0 +1,26 @@
+{
+  "ok": true,
+  "files": {
+    "frozen_output.json": {
+      "exists": true,
+      "size": 1031,
+      "sha256": "60b9f2713a068d9f224a2829e0309933203d09b44f7c1d7422d92c86e5970896"
+    },
+    "generated/ORNCCP5_blind_candidate.L5X": {
+      "exists": true,
+      "size": 1100004,
+      "sha256": "22c68474f6239f8c24464d4de52134f3fb4a96f2ae8bf1b4d0f3ba7533ac052b"
+    },
+    "site_model.json": {
+      "exists": true,
+      "size": 2422016,
+      "sha256": "647c0938dca89b1657a990cf890b8265f70e6030d2dada2afef48da8d1811d90"
+    },
+    "generation_support_matrix.json": {
+      "exists": true,
+      "size": 7235,
+      "sha256": "1275a4d882bae55163d4adb360c6d4fae711639d0aee6ecdd3e759c3f7300f03"
+    }
+  },
+  "l5x_matches_freeze_record": true
+}

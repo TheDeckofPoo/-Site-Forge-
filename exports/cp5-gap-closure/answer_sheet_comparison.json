@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-09-12T20:14:48.835840+00:00",
+  "generated_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp5-gap-closure\\generated\\ORNCCP5_candidate_v2.L5X",
+  "answer_sheet_path": "C:\\Users\\curtiskricke\\Desktop\\Autogen\\ORLY_Greensboro_NC_PLC5.L5X",
+  "answer_sheet_used_for_generation": false,
+  "firewall": "validation-only; generation must not import this module",
+  "comparisons": [
+    {
+      "aspect": "program_family:Other",
+      "category": "LUCKY",
+      "generated": true,
+      "answer_sheet": true
+    },
+    {
+      "aspect": "equipment_identities",
+      "category": "CORRECT_FROM_EVIDENCE",
+      "generated_count": 60,
+      "answer_sheet_count": 3,
+      "sitemodel_count": 79,
+      "generated_also_in_sitemodel": 60,
+      "in_answer_not_generated": 3,
+      "note": "Presence in answer sheet alone does not require generation"
+    },
+    {
+      "aspect": "pe_identities",
+      "category": "CORRECT_FROM_EVIDENCE",
+      "generated_count": 188,
+      "answer_sheet_count": 241,
+      "meta_pe_device_count": 94
+    },
+    {
+      "aspect": "encoder_identities",
+      "category": "CORRECT_FROM_EVIDENCE",
+      "generated": [
+        "ENC504",
+        "ENC506",
+        "ENC508",
+        "ENC509",
+        "ENC510"
+      ],
+      "answer_sheet": []
+    },
+    {
+      "aspect": "scanner_presence",
+      "category": "CORRECT_BUT_UNSUPPORTED",
+      "sitemodel_scanners": 1,
+      "generated_scanner_program": false
+    },
+    {
+      "aspect": "wcs_feature_class",
+      "category": "CORRECT_BUT_UNSUPPORTED",
+      "answer_sheet_has_wcs_program": false,
+      "generated_wcs_program": false
+    },
+    {
+      "aspect": "sorter_feature_class",
+      "category": "CORRECT_BUT_UNSUPPORTED",
+      "sitemodel_sorters": 5,
+      "answer_sheet_sorter_programs": [],
+      "generated_sorter_programs": []
+    },
+    {
+      "aspect": "area_grouping",
+      "category": "CORRECT_FROM_EVIDENCE",
+      "detail": "Provisional controller Area from RUN; plant Areas remain engineer-required",
+      "generated_areas": {
+        "ORNCCP5_Area": 60
+      },
+      "note": "Do not treat answer-sheet Area names as generation targets"
+    }
+  ],
+  "ok": true,
+  "counts_by_category": {
+    "LUCKY": 1,
+    "CORRECT_FROM_EVIDENCE": 4,
+    "CORRECT_BUT_UNSUPPORTED": 3
+  }
+}

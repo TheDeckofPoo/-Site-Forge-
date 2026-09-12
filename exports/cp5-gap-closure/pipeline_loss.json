@@ -1,0 +1,708 @@
+{
+  "generated_at": "2026-09-12T20:14:48.730736+00:00",
+  "blind_v1_loss_note": "Blind candidate used a minimal ConveyorRow list hard-capped at 40 and omitted pe_devices/io_points/modules from AutogenInput \u2014 primary bridge defect.",
+  "blind_v1_meta": {
+    "project": "ORNCCP5_Blind",
+    "processor": "1756-L83E",
+    "revision": "35.00",
+    "library": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\OReilly_Library_v3.L5X",
+    "conveyor_count": 40,
+    "area_count": 1,
+    "tag_count": 236,
+    "program_count": 6,
+    "programs": [
+      "Area_1_Area_Slow",
+      "Area_1_Area_Fast",
+      "Area_1_Area_L1",
+      "Area_1_Area_L2",
+      "Sys",
+      "IO_MAP"
+    ],
+    "areas_summary": {
+      "Area_1": 40
+    },
+    "conveyor_sample": [
+      "P440",
+      "P442",
+      "P444",
+      "P500",
+      "P502",
+      "P504",
+      "P506",
+      "P506A",
+      "P508",
+      "P508A",
+      "P509",
+      "P510",
+      "P526",
+      "P528",
+      "P530",
+      "P530A",
+      "P532",
+      "P534",
+      "P536",
+      "P538",
+      "P540",
+      "P542",
+      "P544",
+      "P552",
+      "P554"
+    ],
+    "template_usage": {
+      "P1000_Conv": 40
+    },
+    "missing_excel_templates_in_library": [],
+    "io_module_count": 0,
+    "io_point_count": 0,
+    "io_tags_in_l5x": 0,
+    "pe_device_count": 0,
+    "pe_logic_rungs": 0,
+    "slow_flt_rungs": 40,
+    "conveyors_with_real_pe": 0,
+    "eip_adapter_count": 0,
+    "eip_rio_modules": [],
+    "eip_child_modules": [],
+    "eip_child_count": 0,
+    "eip_interface_ip": "",
+    "io_word_map_count": 0,
+    "io_map_rungs": 0,
+    "io_map_mapped": 0,
+    "io_map_unmapped": 0,
+    "io_map_source": "run_tar_gz_banks_eip",
+    "io_map_note": "Built from RUN Conveyor.asc banks + EIP word_map \u2192 CPxRIOn modules",
+    "include_io_map": true,
+    "gold_io_map_blocked": false,
+    "eip_modules_filtered_to_word_map": [],
+    "gold_programs": [
+      "Sys"
+    ],
+    "sorter_build": {},
+    "equipment_plan": {},
+    "optional_programs_available": [
+      "ShippingSorter_Area_L3",
+      "WCS_Interface_TCP_IP",
+      "Sorter_Track",
+      "Sawtooth_Merge"
+    ],
+    "task_schedule": {
+      "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
+      "Sys": "Task Sys @ 100ms (own task)",
+      "P10_Fast_20ms": [
+        "Area_1_Area_Fast"
+      ],
+      "P11_Slow_200ms": [
+        "Area_1_Area_Slow"
+      ]
+    },
+    "encoded_aois_stripped": false,
+    "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
+    "note": "Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File\u2192Open L5X).",
+    "io_tag_rows": []
+  },
+  "bridge_report": {
+    "source": "load_from_run",
+    "conveyors_from_run": 60,
+    "pe_devices_from_run": 94,
+    "io_points_from_run": 395,
+    "modules_from_run": 61,
+    "enrichments": [
+      {
+        "kind": "pe_roles",
+        "count": 5
+      }
+    ],
+    "site_model_encoders": [
+      "ENC504",
+      "ENC506",
+      "ENC508",
+      "ENC509",
+      "ENC510"
+    ],
+    "site_model_equipment_included": 79
+  },
+  "entities": {
+    "equipment": {
+      "sitemodel": {
+        "total": 79,
+        "INCLUDED": 79,
+        "AVAILABLE": 0,
+        "EXCLUDED": 0
+      },
+      "compiler_consumed_conveyors": 60,
+      "generated_conveyors": 60,
+      "dispositions": {
+        "CONFIGURATION_REQUIRED": 19,
+        "GENERATED": 60
+      },
+      "rows": [
+        {
+          "name": "P440",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P442",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P444",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P500",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P502",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P504",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P506",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P506A",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P508",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P508A",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P509",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P510",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P526",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P528",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P530",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P530A",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P532",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P534",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P536",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P538",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P540",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P542",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P544",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P552",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P554",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P556",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P560",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P562",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P564",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P566",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600C",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600D",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600E",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600F",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600G",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600H",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600I",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600J",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600K",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600M",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600N",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600O",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P600P",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602C",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602D",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602E",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602F",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602G",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602H",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602I",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602J",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602K",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602M",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602N",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602O",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P602P",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P700A",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P700B",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P700C",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P702A",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P702B",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P702C",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P704A",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P704B",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P704C",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P712",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P714",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P716",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P718",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P720",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P800",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P802",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P804",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P806",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P808",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        },
+        {
+          "name": "P810",
+          "type": "ZEROPRESSURE",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P812",
+          "type": "STRAIGHT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P814",
+          "type": "BELT",
+          "inclusion": "INCLUDED",
+          "disposition": "GENERATED"
+        },
+        {
+          "name": "P816",
+          "type": "CURVE",
+          "inclusion": "INCLUDED",
+          "disposition": "CONFIGURATION_REQUIRED"
+        }
+      ]
+    },
+    "photoeyes": {
+      "sitemodel": {
+        "total": 94,
+        "INCLUDED": 94,
+        "AVAILABLE": 0,
+        "EXCLUDED": 0
+      },
+      "compiler_consumed": 94,
+      "generated": 94,
+      "pe_logic_rungs": 81
+    },
+    "motors": {
+      "sitemodel": {
+        "total": 96,
+        "INCLUDED": 96,
+        "AVAILABLE": 0,
+        "EXCLUDED": 0
+      }
+    },
+    "vfds": {
+      "sitemodel": {
+        "total": 16,
+        "INCLUDED": 16,
+        "AVAILABLE": 0,
+        "EXCLUDED": 0
+      }
+    },
+    "encoders": {
+      "sitemodel": {
+        "total": 5,
+        "INCLUDED": 5,
+        "AVAILABLE": 0,
+        "EXCLUDED": 0
+      },
+      "generated": 5
+    },
+    "io": {
+      "compiler_io_points": 395,
+      "compiler_modules": 61,
+      "generated_io_points": 395,
+      "generated_io_modules": 61,
+      "generated_io_map_rungs": 368
+    },
+    "areas": {
+      "sitemodel": 1,
+      "generated_areas": 1,
+      "areas_summary": {
+        "ORNCCP5_Area": 60
+      }
+    },
+    "estop": {
+      "legacy_count_labeled_zones": 90,
+      "estop_devices": 90,
+      "estop_circuits_or_aliases": 0,
+      "estop_zones_operational": 0,
+      "note": "EStop.asc rows were previously counted as 'E-stop zones'. Correct taxonomy: mostly ES devices/circuits; operational zones require explicit zone membership.",
+      "device_samples": [
+        "4ES",
+        "5ES",
+        "6ES",
+        "ES422",
+        "ES500",
+        "ES610F",
+        "ES610G",
+        "ES610H",
+        "ES610I",
+        "ES610J",
+        "ES610K",
+        "ES612F",
+        "ES612G",
+        "ES612H",
+        "ES612I",
+        "ES612J",
+        "ES612K",
+        "ES708B",
+        "ES708C",
+        "ES710B"
+      ],
+      "zone_samples": []
+    },
+    "startstop_zones": 8,
+    "jam_zones": 27,
+    "full_fulljam": {
+      "legacy_full_groups_count": 79,
+      "full_pe_detectors": 59,
+      "fulljam_detectors": 20,
+      "jamcheck_relationships": 162,
+      "note": "Prior 'Full groups' counted Full/FullJam PE relationship heads, not operational conveyor groups. Do not treat every conveyor as a Full group."
+    },
+    "merges": 3,
+    "scanners": 1,
+    "sorters": 5,
+    "communications": 201
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-09-12T20:14:48.791138+00:00",
+  "library": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\OReilly_Library_v3.L5X",
+  "aois": [
+    {
+      "aoi": "AOI_TIME_DIFFERENCE",
+      "classification": "GENERIC_REUSABLE",
+      "required_inputs": "see AOI definition in library",
+      "run_sources": [],
+      "engineer_required_arguments": []
+    },
+    {
+      "aoi": "AOI_SNTP_QUERY_AOI",
+      "classification": "GENERIC_REUSABLE",
+      "file": "tools\\libraries\\AOI_SNTP_QUERY_AOI.L5X",
+      "required_inputs": "see AOI L5X",
+      "run_sources": [],
+      "engineer_required_arguments": []
+    },
+    {
+      "aoi": "Slow_Flt_AOI",
+      "classification": "GENERIC_REUSABLE",
+      "file": "tools\\libraries\\Slow_Flt_AOI.L5X",
+      "required_inputs": "see AOI L5X",
+      "run_sources": [],
+      "engineer_required_arguments": []
+    },
+    {
+      "aoi": "TRK_Divert_WaveFunction_AOI",
+      "classification": "GENERIC_WITH_CONFIG",
+      "file": "tools\\libraries\\TRK_Divert_WaveFunction_AOI.L5X",
+      "required_inputs": "see AOI L5X",
+      "run_sources": [],
+      "engineer_required_arguments": []
+    }
+  ],
+  "policy": "SITE_FIXED gold Sorter_Track/WCS/ShippingSorter programs are reference-only",
+  "reference_only_forbidden_as_templates": [
+    "Sorter_Track_Program.L5X",
+    "WCS_Interface_TCP_IP_Program.L5X",
+    "ShippingSorter_Area_L3_Program.L5X"
+  ]
+}
