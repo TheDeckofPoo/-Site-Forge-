@@ -1,0 +1,30 @@
+﻿[
+    {
+        "name":  "identity",
+        "code":  0
+    },
+    {
+        "name":  "display",
+        "code":  0
+    },
+    {
+        "name":  "cp4disc",
+        "code":  0
+    },
+    {
+        "name":  "cp2gate",
+        "code":  0
+    },
+    {
+        "name":  "presentation",
+        "code":  0
+    },
+    {
+        "name":  "geometry",
+        "code":  0
+    },
+    {
+        "name":  "legacy_decode",
+        "code":  0
+    }
+]

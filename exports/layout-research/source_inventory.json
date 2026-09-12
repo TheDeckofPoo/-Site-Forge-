@@ -1,0 +1,380 @@
+[
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["X_cord", "Y_cord"],
+    "example": "P312 X_cord=64950 Y_cord=85700 (ORNCCP2 sample family)",
+    "semantic_meaning": "Infeed/ENTRY end of conveyor body in plant drawing units (not footprint center)",
+    "confidence": "HIGH",
+    "site_forge_use": "Primary placement for PhysicalConveyor; already used by fortna_physical_geometry.py"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Angle"],
+    "example": "P312 Angle=90",
+    "semantic_meaning": "Flow direction at infeed, degrees CCW from +X",
+    "confidence": "HIGH",
+    "site_forge_use": "Orientation for linear bodies and curve infeed tangent"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Length", "Width"],
+    "example": "P312 Length=3000 Width=200; CURVE Length=-1 sentinel",
+    "semantic_meaning": "Centerline body length and cross-belt/frame width; Length=-1 means curve (do not use as linear length)",
+    "confidence": "HIGH",
+    "site_forge_use": "Linear body geometry; Width for all types including curves"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Type"],
+    "example": "STRAIGHT / CURVE / BELT / ZEROPRESSURE / TRIANG / PHOTOCELL / MOTOR",
+    "semantic_meaning": "Drawable object class selecting ph_draw_* renderer and Site Forge body model",
+    "confidence": "HIGH",
+    "site_forge_use": "Branch geometry model; filter mechanical vs devices"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Inside_Radius", "Infeed_Tangent", "Discharge_Tangent"],
+    "example": "P104 IR=266.667 InT=50 OutT=50 Length=-1",
+    "semantic_meaning": "Curve inner radius and tangent stub lengths in drawing units; not topology foreign keys",
+    "confidence": "HIGH",
+    "site_forge_use": "CURVE body construction (greensboro-infeed-v1); already used"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Layer"],
+    "example": "Most mech Layer=0; many MOTOR Layer=9; many PHOTOCELL Layer=4",
+    "semantic_meaning": "GUI display layer index; layer 0 always shown; toggled via Layerson",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional visibility filtering only; not elevation or topology"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["NoseOver"],
+    "example": "P106=Double Noseover (28/485 mech)",
+    "semantic_meaning": "Equipment feature flag for noseover style",
+    "confidence": "MEDIUM",
+    "site_forge_use": "Annotation / equipment detail; unused for body math today"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Infeed_Elevation", "Discharge_Elevation"],
+    "example": "P100 Infeed_Elevation=250 Discharge_Elevation=250",
+    "semantic_meaning": "Vertical elevations in drawing units",
+    "confidence": "MEDIUM",
+    "site_forge_use": "Future grade/3D; unused in 2D schematic import"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Belt_Width"],
+    "example": "P118 Width=200 Belt_Width=150",
+    "semantic_meaning": "Physical belt width distinct from frame Width when populated",
+    "confidence": "MEDIUM",
+    "site_forge_use": "Optional annotation; keep Width for schematic body"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Roller_Centers", "Supports", "Tapered_Rollers", "Belt_Info", "Price"],
+    "example": "P100 Roller_Centers=33.333 Supports=Tri; Belt_Info/Price empty on mech",
+    "semantic_meaning": "Mechanical catalog / BOM-style attributes",
+    "confidence": "MEDIUM",
+    "site_forge_use": "Unused for layout graph; defer"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["b", "c"],
+    "example": "CURVE P108 Angle=270 b=180; ZP P312 c=30 b=12 Underline=250",
+    "semantic_meaning": "Hypothesis: CURVE b≈absolute exit bearing (mod 360); ZP b/c≈zone count/pitch helpers — not documented in HELP",
+    "confidence": "MEDIUM",
+    "site_forge_use": "Do not invent; validate CURVE b against mates before replacing turn heuristic"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Default Colors", "Drawstate", "Was_Drawstate", "Font", "Good_color", "Bad_color"],
+    "example": "Default Colors=CONV_RUNNING Drawstate=3 Font=char8",
+    "semantic_meaning": "Runtime HMI styling / draw state; not static geometry",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional theming via Colors/Colorset tables; ignore Drawstate for import"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["IO_Name", "IO_Address_Word", "IO_Address_Bit", "Machine_Name", "In Motor Chain", "Drive", "Speed"],
+    "example": "P100 word=6000 In Motor Chain=Y Drive=1 Speed=65",
+    "semantic_meaning": "Identity, controller scoping, drive/speed metadata",
+    "confidence": "HIGH",
+    "site_forge_use": "Ownership filters and equipment metadata; Motor column empty — use Mtrchain"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\PhView.asc",
+    "table": "PhView",
+    "fields": ["Name", "X", "Y", "Z", "Layer_Set", "Map", "RotateV", "RotateH", "Fill Color"],
+    "example": "O'Reilly Main View X=88 Y=58 Z=6 Layer_Set=DEFAULT Map=#0",
+    "semantic_meaning": "Named operator viewport bookmarks into the conveyor schematic",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional camera presets; values are site/RUN-specific"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\PhMap.asc",
+    "table": "PhMap",
+    "fields": ["Name", "UpperLeftX", "UpperLeftY", "LowerRightX", "LowerRightY", "RotateV", "RotateH"],
+    "example": "Map #0 often 0,0,0,0 on this archive",
+    "semantic_meaning": "Map = rectangular sub-area of conveyor screen for zoom/focus",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional region bookmarks when extents populated"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\edworld.asc",
+    "table": "edworld",
+    "fields": ["View_Name", "Left", "Right", "Bottom", "Top", "Layer_Set", "BackGround_Color"],
+    "example": "ALL Left/Right/Bottom≈24132 Top≈25972 BackGround_Color=BLACK",
+    "semantic_meaning": "Virtual world / clip extents for views (Set World Views)",
+    "confidence": "MEDIUM",
+    "site_forge_use": "Diagnostic bounds only; mostly placeholders on this RUN"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\PhPos.asc",
+    "table": "PhPos",
+    "fields": ["Owner", "X", "Y", "W", "H"],
+    "example": "Start Stop X=358 Y=259 W=640 H=414",
+    "semantic_meaning": "Desktop window positions for named UI panels — NOT plant coordinates",
+    "confidence": "HIGH",
+    "site_forge_use": "Do not import as equipment layout"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Layerset.asc",
+    "table": "Layerset",
+    "fields": ["Set_Name"],
+    "example": "DEFAULT",
+    "semantic_meaning": "Named layer-set definitions referenced by views",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional visibility grouping with Layerson"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Layerson.asc",
+    "table": "Layerson",
+    "fields": ["Layer_Set", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20"],
+    "example": "DEFAULT all Y for layers 0-20 on first row",
+    "semantic_meaning": "Per-layer Y/N visibility; layer 0 always displayed per HELP",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional display filters matching legacy HMI"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\gui.cfg",
+    "table": "gui.cfg/[DrawParams]",
+    "fields": ["DrawConveyor", "AnimateGear", "DrawCursorPosition", "ConveyorRefresh"],
+    "example": "DrawConveyor=ON AnimateGear=OFF ConveyorRefresh=250",
+    "semantic_meaning": "GUI draw toggles and refresh rates for conveyor screen",
+    "confidence": "HIGH",
+    "site_forge_use": "Confirms ASC-driven live drawing; no extra geometry payload"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\project.cfg",
+    "table": "project.cfg/[DATA_CONFIG]",
+    "fields": ["FORTNADIR", "PROJECTDIR", "MACHINENAME", "PROJECTNAME", "GUIPRIO"],
+    "example": "FORTNADIR=./FORTNA MACHINENAME=ORNCCP2 PROJECTNAME=OReillyGreensboro",
+    "semantic_meaning": "RUN directory layout and machine identity for ASC loading",
+    "confidence": "HIGH",
+    "site_forge_use": "Resolve FORTNA/PROJECT paths and machine-scoped *.asc.<name> overlays"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\ScreenCapture.asc",
+    "table": "ScreenCapture",
+    "fields": ["StartPageX", "StartPageY", "EndPageX", "EndPageY", "FileName", "Enable"],
+    "example": "0,0–1200,1200 FileName=fpcscreen Enable=Y",
+    "semantic_meaning": "Raster capture rectangle for dashboard wallpaper (PHS/BMP/PNG pipeline)",
+    "confidence": "HIGH",
+    "site_forge_use": "Not plant layout; optional visual regression vs legacy PNG"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Animate.asc",
+    "table": "Animate",
+    "fields": ["X_COORD", "Y_COORD", "Width", "Length", "Angle", "Conv", "Progress"],
+    "example": "All placeholder INVALID/0 on this RUN (5000 rows)",
+    "semantic_meaning": "Runtime carton animation slots along conveyors",
+    "confidence": "HIGH",
+    "site_forge_use": "Ignore for static PhysicalConveyor import"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\PeDisplay.asc",
+    "table": "PeDisplay",
+    "fields": ["Description", "ConveyorRec", "Duration", "Location"],
+    "example": "Unpopulated INVALID rows",
+    "semantic_meaning": "Photoeye display overlay association to conveyor records",
+    "confidence": "MEDIUM",
+    "site_forge_use": "Future PE callouts if populated; empty here"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Colors.asc",
+    "table": "Colors",
+    "fields": ["Color", "R", "G", "B"],
+    "example": "VERY DARK BLUE R=13 G=37 B=139",
+    "semantic_meaning": "Named RGB palette for HMI",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional theming"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Colorset.asc",
+    "table": "Colorset",
+    "fields": ["Colorset", "Outline", "Fill", "Flash_Y_N"],
+    "example": "CONV_RUNNING Outline=LIGHTGREEN Fill=GREEN Flash=N",
+    "semantic_meaning": "Named outline/fill sets for conveyor draw states",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional status colors"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Convclr.asc",
+    "table": "Convclr",
+    "fields": ["Colorset Name", "Colorset On", "Colorset Off", "Colorset HtrOff"],
+    "example": "CONV_RUNNING → CONV_RUNNING / CONV_STOPPED / HeaterOff",
+    "semantic_meaning": "Maps logical conveyor color roles to Colorset names",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional; ties Default Colors field to palettes"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\convtype.asc",
+    "table": "convtype",
+    "fields": ["Object_type"],
+    "example": "STRAIGHT CURVE BELT ZEROPRESSURE TRIANG ZOOMBOX PHOTOCELL MOTOR",
+    "semantic_meaning": "Enumeration of drawable Conveyor.Type values",
+    "confidence": "HIGH",
+    "site_forge_use": "Allow-list / classifier for import"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Convpath.asc",
+    "table": "Convpath",
+    "fields": ["Piece", "Input", "Output", "PE_at", "PEname"],
+    "example": "1000 placeholder rows; 0 P→P edges",
+    "semantic_meaning": "Tracking/piece-path slots — not static conveyor successor graph (empty here)",
+    "confidence": "HIGH",
+    "site_forge_use": "Do not use for downstream on this archive"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Pathsets.asc",
+    "table": "Pathsets",
+    "fields": ["Name", "Pth1", "Pth2", "Pth3", "Pth4", "Pth5", "Pth6", "Pth7", "Pth8", "Pth9", "Pth10", "Distance"],
+    "example": "Unpopulated on active Greensboro RUN",
+    "semantic_meaning": "Named path sequences for induct/outduct style routing when filled",
+    "confidence": "HIGH",
+    "site_forge_use": "Unavailable here; continue geometric/engineer topology"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\MergeInputs.asc.ORNCCP2",
+    "table": "MergeInputs",
+    "fields": ["Name", "MergeBoss", "MergeRoute", "Presense", "ReleaseIO", "Priority"],
+    "example": "LANE1_P404 MergeBoss=MERGE_406_3-1 Presense=PE404_P ReleaseIO=M404",
+    "semantic_meaning": "Merge lane control topology (boss/route/PE/release) — not XY layout",
+    "confidence": "HIGH",
+    "site_forge_use": "Merge module wiring; prefer machine-suffixed ASC"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Mtrchain.asc",
+    "table": "Mtrchain",
+    "fields": ["Motor_Name", "Motor_Chained1", "Motor_Chained2", "Motor_Chained3", "Motor_Chained4", "Motor_Chained5", "Motor_Chained6", "Motor_Chained7", "Motor_Chained8", "Motor_Chained9", "Motor_Chained10"],
+    "example": "Motor → one or more P### conveyors",
+    "semantic_meaning": "Motor chain membership linking drives to conveyors",
+    "confidence": "HIGH",
+    "site_forge_use": "Drive grouping for physical model"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\GpxBelt.asc",
+    "table": "GpxBelt",
+    "fields": ["Name", "InductPE", "DischargePE", "VFD_EN", "HighSpeed", "LowSpeed"],
+    "example": "Schema present; gapping belt control — not schematic XY",
+    "semantic_meaning": "Gapping/belt speed control table",
+    "confidence": "MEDIUM",
+    "site_forge_use": "Control config only"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\dds.xml",
+    "table": "dds_window / dds_control",
+    "fields": ["window_positionX", "window_positionY", "window_width", "window_height", "control_posX", "control_posY", "control_width", "control_height"],
+    "example": "pna_system_status_window 25,25 828x620",
+    "semantic_meaning": "Print-and-Apply status GUI widget layout",
+    "confidence": "HIGH",
+    "site_forge_use": "Not plant schematic"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\Display.dat.ORNCCP5",
+    "table": "Display.dat",
+    "fields": ["HistData menu columns (CSV-like)"],
+    "example": "SHIP_SCAN_504,HistData,... ORNCCP5",
+    "semantic_meaning": "Config for separate /usr/local/bin/Display stats application",
+    "confidence": "HIGH",
+    "site_forge_use": "Not conveyor layout"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\docs\\training\\FPC Docs 3\\SendConvImage.txt",
+    "table": "training",
+    "fields": ["ScreenCapture", "fpcscreen", "PHS", "PNG", "WCS.IMAGE.CONVEYOR"],
+    "example": "Captures conveyor screen via PrintMainScreen → fpcscreen* → PNG to ActiveMQ",
+    "semantic_meaning": "Documents that legacy layout is live-drawn then rasterized for Dashboard",
+    "confidence": "HIGH",
+    "site_forge_use": "Confirms ASC is source of truth for schematic; PNG is presentation export"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\HELP\\en_US\\Layerset.htm",
+    "table": "HELP",
+    "fields": ["Layer", "layer set"],
+    "example": "Parts on layer zero always displayed; layer set selects other layers",
+    "semantic_meaning": "Authoritative description of Layer/Layerson behavior",
+    "confidence": "HIGH",
+    "site_forge_use": "Interpret Conveyor.Layer as GUI visibility"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\HELP\\en_US\\Map.htm",
+    "table": "HELP",
+    "fields": ["upper left", "lower right", "PhMap"],
+    "example": "Map is sub-area of conveyor screen by corner coordinates",
+    "semantic_meaning": "Authoritative PhMap semantics",
+    "confidence": "HIGH",
+    "site_forge_use": "Optional view regions"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\fpgui",
+    "table": "ELF strings (no decompile)",
+    "fields": ["X_cord", "Y_cord", "inside_radius", "ph_draw_straight", "ph_draw_curve", "gui.cfg", "edworld", "PhView", "Images.wgtp"],
+    "example": "Version-11.36.0-Release-0; paths ./FORTNA %s/%s.asc; DrawConveyor",
+    "semantic_meaning": "Confirms GUI binary consumes Conveyor ASC geometry and listed presentation tables",
+    "confidence": "HIGH",
+    "site_forge_use": "Evidence only; further investigation via file/strings/readelf per Part F plan"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN\\FORTNA\\PhView.asc",
+    "table": "PhView",
+    "fields": ["Name", "X", "Y", "Z"],
+    "example": "O'Reilly Main View X=420 Y=270 (differs from active)",
+    "semantic_meaning": "Same schema; camera bookmarks differ per RUN extract",
+    "confidence": "HIGH",
+    "site_forge_use": "Per-RUN presets; do not hardcode Greensboro active values"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_reno_peek\\20260813-1132-MSCRENO-MSCRENOPICK-RUN\\RUN\\FORTNA\\PhView.asc",
+    "table": "PhView",
+    "fields": ["Name", "X", "Y", "RotateV", "RotateH"],
+    "example": "The whole system X=0 Y=660 RotateV=Y RotateH=Y",
+    "semantic_meaning": "Site-specific view names/rotations on Reno PICK RUN",
+    "confidence": "HIGH",
+    "site_forge_use": "Demonstrates PhView portability pattern across sites"
+  },
+  {
+    "file": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+    "table": "Conveyor",
+    "fields": ["Trigger1", "Trigger2", "Trigger3", "Trigger4", "TriggerLink_Name", "Gen_Flag", "ErrLink", "ErrTime", "Gen_Security", "Bitstate", "Was_Bitstate"],
+    "example": "Mostly empty / zero on mechanical rows",
+    "semantic_meaning": "Logic, security, and runtime bit hooks unused for static layout",
+    "confidence": "HIGH",
+    "site_forge_use": "Unused for Site Forge layout import"
+  }
+]

@@ -1,0 +1,2249 @@
+{
+  "generated_at": "2026-09-12T07:57:46.661784+00:00",
+  "sites": {
+    "ORNCCP2": {
+      "machine": "ORNCCP2",
+      "equipment_count": 37,
+      "pair_count": 28,
+      "cluster_count": 4,
+      "classification_counts": {
+        "SUSPECT_RUN_GEOMETRY": 13,
+        "SERIAL_OVERLAP": 13,
+        "UNKNOWN": 2
+      },
+      "clusters": [
+        {
+          "members": [
+            "P134",
+            "P136",
+            "P136A",
+            "P138",
+            "P148",
+            "P150",
+            "P150A",
+            "P238",
+            "P242",
+            "P312",
+            "P314",
+            "P316",
+            "P320",
+            "P322",
+            "P324",
+            "P400",
+            "P402",
+            "P404",
+            "P406",
+            "P408"
+          ],
+          "size": 20
+        },
+        {
+          "members": [
+            "P1002",
+            "P1008",
+            "P1014"
+          ],
+          "size": 3
+        },
+        {
+          "members": [
+            "P226",
+            "P229"
+          ],
+          "size": 2
+        },
+        {
+          "members": [
+            "P230",
+            "P232"
+          ],
+          "size": 2
+        }
+      ],
+      "pairs": [
+        {
+          "a": "P134",
+          "b": "P136A",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 4229.03,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P134",
+          "b": "P400",
+          "bbox_overlap_area": 18802.04,
+          "centerline_distance": 1136.54,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 677.67,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P136",
+          "b": "P136A",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 5025.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.252,
+          "types": [
+            "ZEROPRESSURE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P136",
+          "b": "P138",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1312.5,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.296,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P136",
+          "b": "P316",
+          "bbox_overlap_area": 91666.6,
+          "centerline_distance": 1009.11,
+          "angle_delta_deg": 170.0,
+          "endpoint_distance": 258.33,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P136A",
+          "b": "P316",
+          "bbox_overlap_area": 72153.28,
+          "centerline_distance": 4072.29,
+          "angle_delta_deg": 170.0,
+          "endpoint_distance": 258.33,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P138",
+          "b": "P404",
+          "bbox_overlap_area": 0.0,
+          "centerline_distance": 341.67,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 341.67,
+          "length_similarity": 1.0,
+          "types": [
+            "BELT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "UNKNOWN"
+        },
+        {
+          "a": "P138",
+          "b": "P406",
+          "bbox_overlap_area": 76308.4,
+          "centerline_distance": 1087.02,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 200.85,
+          "length_similarity": 0.4,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P148",
+          "b": "P150A",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 3494.84,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P150A",
+          "b": "P150",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 4300.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.313,
+          "types": [
+            "ZEROPRESSURE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P150A",
+          "b": "P324",
+          "bbox_overlap_area": 82951.64,
+          "centerline_distance": 3282.44,
+          "angle_delta_deg": 170.0,
+          "endpoint_distance": 200.0,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P150A",
+          "b": "P238",
+          "bbox_overlap_area": 123333.4,
+          "centerline_distance": 921.24,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 2170.83,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P150",
+          "b": "P242",
+          "bbox_overlap_area": 0.0,
+          "centerline_distance": 301.04,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 300.0,
+          "length_similarity": 0.976,
+          "types": [
+            "ZEROPRESSURE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "UNKNOWN"
+        },
+        {
+          "a": "P150",
+          "b": "P324",
+          "bbox_overlap_area": 80000.0,
+          "centerline_distance": 1078.37,
+          "angle_delta_deg": 170.0,
+          "endpoint_distance": 200.0,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P150",
+          "b": "P400",
+          "bbox_overlap_area": 70000.0,
+          "centerline_distance": 1640.21,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 150.0,
+          "length_similarity": 0.593,
+          "types": [
+            "ZEROPRESSURE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P242",
+          "b": "P400",
+          "bbox_overlap_area": 70000.0,
+          "centerline_distance": 1615.31,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 150.0,
+          "length_similarity": 0.608,
+          "types": [
+            "ZEROPRESSURE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P312",
+          "b": "P314",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2750.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.833,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P314",
+          "b": "P316",
+          "bbox_overlap_area": 44845.66,
+          "centerline_distance": 1503.42,
+          "angle_delta_deg": 100.0,
+          "endpoint_distance": 72.15,
+          "length_similarity": 0.0,
+          "types": [
+            "BELT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P322",
+          "b": "P320",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2650.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.767,
+          "types": [
+            "STRAIGHT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P322",
+          "b": "P324",
+          "bbox_overlap_area": 43631.78,
+          "centerline_distance": 1417.67,
+          "angle_delta_deg": 100.0,
+          "endpoint_distance": 73.78,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P400",
+          "b": "P402",
+          "bbox_overlap_area": 70000.0,
+          "centerline_distance": 5960.22,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 150.0,
+          "length_similarity": 0.114,
+          "types": [
+            "STRAIGHT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P402",
+          "b": "P404",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 5650.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.056,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P404",
+          "b": "P406",
+          "bbox_overlap_area": 76308.4,
+          "centerline_distance": 1077.81,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 142.86,
+          "length_similarity": 0.4,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P406",
+          "b": "P408",
+          "bbox_overlap_area": 84608.0,
+          "centerline_distance": 12144.41,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 140.18,
+          "length_similarity": 0.066,
+          "types": [
+            "STRAIGHT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P1002",
+          "b": "P1014",
+          "bbox_overlap_area": 61112.94,
+          "centerline_distance": 11606.57,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 427.2,
+          "length_similarity": 0.214,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P1008",
+          "b": "P1014",
+          "bbox_overlap_area": 61110.61,
+          "centerline_distance": 2657.54,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 11500.98,
+          "length_similarity": 0.214,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P226",
+          "b": "P229",
+          "bbox_overlap_area": 35480.8,
+          "centerline_distance": 6733.0,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 16.67,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P230",
+          "b": "P232",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1625.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.226,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        }
+      ]
+    },
+    "ORNCCP4": {
+      "machine": "ORNCCP4",
+      "equipment_count": 76,
+      "pair_count": 88,
+      "cluster_count": 1,
+      "classification_counts": {
+        "SERIAL_OVERLAP": 41,
+        "SUSPECT_RUN_GEOMETRY": 47
+      },
+      "clusters": [
+        {
+          "members": [
+            "P100",
+            "P100A",
+            "P102",
+            "P104",
+            "P106",
+            "P108",
+            "P110",
+            "P112",
+            "P114",
+            "P116",
+            "P118",
+            "P120",
+            "P200",
+            "P200A",
+            "P202",
+            "P204",
+            "P206",
+            "P208",
+            "P209",
+            "P210",
+            "P211",
+            "P212",
+            "P213",
+            "P214",
+            "P215",
+            "P216",
+            "P217",
+            "P218",
+            "P219",
+            "P219A",
+            "P226",
+            "P229",
+            "P231",
+            "P231A",
+            "P300",
+            "P300A",
+            "P302",
+            "P304",
+            "P305",
+            "P306",
+            "P308",
+            "P408",
+            "P410",
+            "P412",
+            "P414",
+            "P416",
+            "P418",
+            "P420",
+            "P422",
+            "P424",
+            "P424A",
+            "P426",
+            "P428",
+            "P430",
+            "P432",
+            "P434",
+            "P436",
+            "P438",
+            "P446",
+            "P447",
+            "P448",
+            "P450",
+            "P452",
+            "P454",
+            "P456",
+            "P818",
+            "P820",
+            "P822",
+            "P824",
+            "P826",
+            "P828",
+            "P830",
+            "P832",
+            "P834",
+            "P836"
+          ],
+          "size": 75
+        }
+      ],
+      "pairs": [
+        {
+          "a": "P100",
+          "b": "P102",
+          "bbox_overlap_area": 43333.2,
+          "centerline_distance": 9908.33,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 16.67,
+          "length_similarity": 0.418,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P100",
+          "b": "P100A",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 5850.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 1.0,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P102",
+          "b": "P104",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 7211.34,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P104",
+          "b": "P106",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2218.14,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P106",
+          "b": "P108",
+          "bbox_overlap_area": 40000.2,
+          "centerline_distance": 2218.14,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "BELT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P108",
+          "b": "P110",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 503.46,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P110",
+          "b": "P112",
+          "bbox_overlap_area": 38750.0,
+          "centerline_distance": 520.82,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 6.25,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P112",
+          "b": "P114",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1597.12,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P114",
+          "b": "P116",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 10808.33,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.143,
+          "types": [
+            "BELT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P116",
+          "b": "P118",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 10058.33,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.063,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P116",
+          "b": "P414",
+          "bbox_overlap_area": 48925.6,
+          "centerline_distance": 10750.29,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1580.26,
+          "length_similarity": 0.196,
+          "types": [
+            "ZEROPRESSURE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P116",
+          "b": "P209",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 6667.12,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 2824.5,
+          "length_similarity": 0.067,
+          "types": [
+            "ZEROPRESSURE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P118",
+          "b": "P120",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 750.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.25,
+          "types": [
+            "BELT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P118",
+          "b": "P414",
+          "bbox_overlap_area": 280000.0,
+          "centerline_distance": 740.3,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1580.26,
+          "length_similarity": 0.324,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P120",
+          "b": "P414",
+          "bbox_overlap_area": 100000.0,
+          "centerline_distance": 278.86,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1508.74,
+          "length_similarity": 0.081,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P200",
+          "b": "P202",
+          "bbox_overlap_area": 33333.4,
+          "centerline_distance": 9858.33,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 33.33,
+          "length_similarity": 0.424,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P200",
+          "b": "P200A",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 5850.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 1.0,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P202",
+          "b": "P204",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 7111.39,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P206",
+          "b": "P208",
+          "bbox_overlap_area": 34291.46,
+          "centerline_distance": 1354.1,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 22.25,
+          "length_similarity": 0.0,
+          "types": [
+            "BELT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P206",
+          "b": "P204",
+          "bbox_overlap_area": 38333.4,
+          "centerline_distance": 1234.37,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 8.33,
+          "length_similarity": 0.0,
+          "types": [
+            "BELT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P208",
+          "b": "P209",
+          "bbox_overlap_area": 37220.84,
+          "centerline_distance": 988.95,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 12.86,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P210",
+          "b": "P408",
+          "bbox_overlap_area": 160000.0,
+          "centerline_distance": 3797.21,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 7323.44,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P210",
+          "b": "P211",
+          "bbox_overlap_area": 37025.6,
+          "centerline_distance": 1461.2,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 15.16,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P210",
+          "b": "P209",
+          "bbox_overlap_area": 36717.47,
+          "centerline_distance": 993.2,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 12.86,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P212",
+          "b": "P214",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 7900.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.975,
+          "types": [
+            "ZEROPRESSURE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P212",
+          "b": "P308",
+          "bbox_overlap_area": 120346.91,
+          "centerline_distance": 2870.37,
+          "angle_delta_deg": 170.0,
+          "endpoint_distance": 950.0,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P214",
+          "b": "P216",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 4500.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.154,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P214",
+          "b": "P414",
+          "bbox_overlap_area": 108925.6,
+          "centerline_distance": 4921.87,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1907.12,
+          "length_similarity": 0.474,
+          "types": [
+            "ZEROPRESSURE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P216",
+          "b": "P218",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 750.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.25,
+          "types": [
+            "BELT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P216",
+          "b": "P414",
+          "bbox_overlap_area": 280000.0,
+          "centerline_distance": 691.47,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1320.83,
+          "length_similarity": 0.324,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P218",
+          "b": "P414",
+          "bbox_overlap_area": 100000.0,
+          "centerline_distance": 676.64,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1084.71,
+          "length_similarity": 0.081,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P300",
+          "b": "P305",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2500.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.25,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P300",
+          "b": "P300A",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 4000.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 1.0,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P302",
+          "b": "P304",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 8000.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.231,
+          "types": [
+            "STRAIGHT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P302",
+          "b": "P305",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 7000.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.077,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P304",
+          "b": "P306",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2250.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.5,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P306",
+          "b": "P308",
+          "bbox_overlap_area": 38745.38,
+          "centerline_distance": 1072.5,
+          "angle_delta_deg": 100.0,
+          "endpoint_distance": 73.44,
+          "length_similarity": 0.0,
+          "types": [
+            "BELT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P408",
+          "b": "P410",
+          "bbox_overlap_area": 38405.4,
+          "centerline_distance": 12024.64,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 7.97,
+          "length_similarity": 0.053,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P408",
+          "b": "P209",
+          "bbox_overlap_area": 1753.0,
+          "centerline_distance": 4183.07,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 7319.01,
+          "length_similarity": 0.056,
+          "types": [
+            "ZEROPRESSURE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P410",
+          "b": "P412",
+          "bbox_overlap_area": 39988.5,
+          "centerline_distance": 746.62,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 4.8,
+          "length_similarity": 0.25,
+          "types": [
+            "BELT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P410",
+          "b": "P414",
+          "bbox_overlap_area": 169603.8,
+          "centerline_distance": 1325.49,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1140.28,
+          "length_similarity": 0.324,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P412",
+          "b": "P414",
+          "bbox_overlap_area": 100000.0,
+          "centerline_distance": 630.55,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1159.58,
+          "length_similarity": 0.081,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P416",
+          "b": "P418",
+          "bbox_overlap_area": 45000.0,
+          "centerline_distance": 3699.18,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 8.33,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P416",
+          "b": "P414",
+          "bbox_overlap_area": 121013.34,
+          "centerline_distance": 2121.57,
+          "angle_delta_deg": 135.0,
+          "endpoint_distance": 362.82,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P418",
+          "b": "P420",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 3563.49,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P447",
+          "b": "P446",
+          "bbox_overlap_area": 44350.54,
+          "centerline_distance": 658.59,
+          "angle_delta_deg": 80.0,
+          "endpoint_distance": 72.09,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P447",
+          "b": "P448",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2120.83,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.198,
+          "types": [
+            "STRAIGHT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P422",
+          "b": "P424",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1800.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.5,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P422",
+          "b": "P420",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 818.62,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "BELT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P424",
+          "b": "P446",
+          "bbox_overlap_area": 141874.59,
+          "centerline_distance": 947.54,
+          "angle_delta_deg": 10.0,
+          "endpoint_distance": 558.33,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P424",
+          "b": "P424A",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1325.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.104,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P426",
+          "b": "P428",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 558.66,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P426",
+          "b": "P824",
+          "bbox_overlap_area": 35000.0,
+          "centerline_distance": 4636.4,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 875.36,
+          "length_similarity": 0.055,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P426",
+          "b": "P424A",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 425.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.417,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P428",
+          "b": "P430",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 5745.75,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P428",
+          "b": "P824",
+          "bbox_overlap_area": 125000.0,
+          "centerline_distance": 4416.66,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 875.36,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P430",
+          "b": "P432",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 6779.17,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.226,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P432",
+          "b": "P434",
+          "bbox_overlap_area": 39999.8,
+          "centerline_distance": 1473.14,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P434",
+          "b": "P436",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1050.04,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P436",
+          "b": "P438",
+          "bbox_overlap_area": 40000.6,
+          "centerline_distance": 1031.35,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P446",
+          "b": "P424A",
+          "bbox_overlap_area": 30207.99,
+          "centerline_distance": 527.38,
+          "angle_delta_deg": 10.0,
+          "endpoint_distance": 558.33,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P448",
+          "b": "P450",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2920.83,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.649,
+          "types": [
+            "BELT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P450",
+          "b": "P452",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1389.18,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P452",
+          "b": "P454",
+          "bbox_overlap_area": 128333.2,
+          "centerline_distance": 450.0,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P454",
+          "b": "P456",
+          "bbox_overlap_area": 41666.8,
+          "centerline_distance": 2223.91,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 8.33,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P818",
+          "b": "P820",
+          "bbox_overlap_area": 40000.2,
+          "centerline_distance": 2400.72,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "STRAIGHT",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P820",
+          "b": "P822",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2147.63,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P822",
+          "b": "P824",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 7429.17,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.351,
+          "types": [
+            "STRAIGHT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P824",
+          "b": "P826",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 6325.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.15,
+          "types": [
+            "STRAIGHT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P826",
+          "b": "P828",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 3437.5,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.316,
+          "types": [
+            "BELT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P828",
+          "b": "P830",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 2834.97,
+          "angle_delta_deg": 90.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "ZEROPRESSURE",
+            "CURVE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P830",
+          "b": "P832",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1354.28,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P832",
+          "b": "P834",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 1700.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.545,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P832",
+          "b": "P414",
+          "bbox_overlap_area": 188925.6,
+          "centerline_distance": 1948.3,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 1926.23,
+          "length_similarity": 0.595,
+          "types": [
+            "ZEROPRESSURE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P834",
+          "b": "P836",
+          "bbox_overlap_area": 40000.0,
+          "centerline_distance": 750.0,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 0.0,
+          "length_similarity": 0.25,
+          "types": [
+            "BELT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P834",
+          "b": "P414",
+          "bbox_overlap_area": 280000.0,
+          "centerline_distance": 972.06,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 773.53,
+          "length_similarity": 0.324,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P836",
+          "b": "P414",
+          "bbox_overlap_area": 100000.0,
+          "centerline_distance": 1234.76,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 519.95,
+          "length_similarity": 0.081,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P219A",
+          "b": "P414",
+          "bbox_overlap_area": 88925.6,
+          "centerline_distance": 1609.57,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 291.44,
+          "length_similarity": 0.081,
+          "types": [
+            "BELT",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P219A",
+          "b": "P219",
+          "bbox_overlap_area": 34813.75,
+          "centerline_distance": 772.94,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 23.18,
+          "length_similarity": 0.25,
+          "types": [
+            "BELT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P414",
+          "b": "P219",
+          "bbox_overlap_area": 24339.8,
+          "centerline_distance": 2260.47,
+          "angle_delta_deg": 45.0,
+          "endpoint_distance": 295.4,
+          "length_similarity": 0.324,
+          "types": [
+            "STRAIGHT",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P226",
+          "b": "P229",
+          "bbox_overlap_area": 35480.8,
+          "centerline_distance": 6733.0,
+          "angle_delta_deg": 180.0,
+          "endpoint_distance": 16.67,
+          "length_similarity": 0.0,
+          "types": [
+            "CURVE",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SUSPECT_RUN_GEOMETRY"
+        },
+        {
+          "a": "P219",
+          "b": "P217",
+          "bbox_overlap_area": 45558.8,
+          "centerline_distance": 4559.71,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 27.79,
+          "length_similarity": 0.15,
+          "types": [
+            "BELT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P217",
+          "b": "P215",
+          "bbox_overlap_area": 76929.83,
+          "centerline_distance": 4454.31,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 154.75,
+          "length_similarity": 0.125,
+          "types": [
+            "ZEROPRESSURE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P231A",
+          "b": "P215",
+          "bbox_overlap_area": 70107.6,
+          "centerline_distance": 2620.04,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 143.1,
+          "length_similarity": 0.236,
+          "types": [
+            "ZEROPRESSURE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P231A",
+          "b": "P231",
+          "bbox_overlap_area": 42575.1,
+          "centerline_distance": 3617.93,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 15.58,
+          "length_similarity": 0.717,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P213",
+          "b": "P215",
+          "bbox_overlap_area": 69606.27,
+          "centerline_distance": 2023.99,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 150.14,
+          "length_similarity": 0.33,
+          "types": [
+            "ZEROPRESSURE",
+            "STRAIGHT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P213",
+          "b": "P211",
+          "bbox_overlap_area": 39523.57,
+          "centerline_distance": 2632.32,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 3.53,
+          "length_similarity": 0.736,
+          "types": [
+            "ZEROPRESSURE",
+            "BELT"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        },
+        {
+          "a": "P231",
+          "b": "P229",
+          "bbox_overlap_area": 36487.3,
+          "centerline_distance": 8065.4,
+          "angle_delta_deg": 0.0,
+          "endpoint_distance": 15.58,
+          "length_similarity": 0.232,
+          "types": [
+            "BELT",
+            "ZEROPRESSURE"
+          ],
+          "layers": [
+            "0",
+            "0"
+          ],
+          "classification": "SERIAL_OVERLAP"
+        }
+      ]
+    }
+  }
+}

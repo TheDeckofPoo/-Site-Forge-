@@ -1,15 +1,15 @@
 # Greensboro Auto Build From RUN — acceptance
 
-- **conveyors_discovered**: 37
-- **conveyors_placed**: 37
-- **conveyors_with_usable_xy**: 37
-- **conveyors_with_usable_angle**: 37
-- **conveyors_with_usable_length**: 29
-- **motors_discovered**: 34
+- **conveyors_discovered**: 35
+- **conveyors_placed**: 35
+- **conveyors_with_usable_xy**: 35
+- **conveyors_with_usable_angle**: 35
+- **conveyors_with_usable_length**: 27
+- **motors_discovered**: 33
 - **vfd_motors**: 0
-- **contactor_motors**: 34
+- **contactor_motors**: 33
 - **unknown_motors**: 0
-- **auto_connections**: 3
-- **ambiguous_connections**: 20
-- **disconnected_equipment**: 31
+- **auto_connections**: 9
+- **ambiguous_connections**: 28
+- **disconnected_equipment**: 19
 - **merges_detected**: 0

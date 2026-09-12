@@ -1451,41 +1451,161 @@
   }
 
   /**
-   * Presentation-only lane separation for stacked bodies.
-   * Never mutates sourceX/Y/pathCanvas engineering geometry — only returns dx/dy.
+   * LAYOUT INTERPRETER — presentation-only geometry.
+   *
+   * RAW ENGINEERING GEOMETRY (sourceX/Y/Angle/Length/Width/pathCanvas/entry/exit)
+   * stays authoritative for workbook, PLC downstream, and L5X.
+   *
+   * DISPLAY = projected canvas + (display_dx, display_dy).
+   * Never mutates topology / RUN coordinates / engineering geometry.
+   *
+   * Passes:
+   *   1) stack / parallel lane separation for overlapping bodies
+   *   2) merge feed-lane fan (2:1 / 3:1 / sawtooth) when asMerge + inbound wires
+   *   3) connectivity-assisted mating nudge for trustworthy physical wires
    */
-  function computePresentationOffsets(nodes) {
+  function computePresentationOffsets(nodes, area) {
     const offsets = {};
-    (nodes || []).forEach((n) => { offsets[n.id] = { dx: 0, dy: 0 }; });
-    if (!tb.laneSeparate) return offsets;
+    (nodes || []).forEach((n) => {
+      offsets[n.id] = { dx: 0, dy: 0, lane: 0, reason: '' };
+      n.display_dx = 0;
+      n.display_dy = 0;
+      n.display_lane = 0;
+      n.display_reason = '';
+    });
+    if (!tb.laneSeparate) {
+      tb._presentationOffsets = offsets;
+      return offsets;
+    }
     const list = (nodes || []).filter(isSchematicNode);
+    const byId = {};
+    list.forEach((n) => { byId[n.id] = n; });
+    const midOf = (n) => {
+      if (n.entryCanvas && n.exitCanvas) {
+        return { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 };
+      }
+      return { x: Number(n.x) || 0, y: Number(n.y) || 0 };
+    };
+    const angOf = (n) => Number(n.sourceAngle != null ? n.sourceAngle : n.rotation) || 0;
+    const angDelta = (a, b) => {
+      const d = Math.abs(a - b) % 360;
+      return Math.min(d, 360 - d);
+    };
+    const setOff = (n, dx, dy, lane, reason, extra) => {
+      const prev = offsets[n.id] || { dx: 0, dy: 0 };
+      // Accumulate only when stacking on empty; later passes may refine.
+      const out = {
+        dx, dy, lane: lane || 0, reason: reason || '',
+        ...(extra || {}),
+      };
+      // Prefer explicit later reason over empty earlier.
+      if (prev.reason && !reason) {
+        out.dx = prev.dx; out.dy = prev.dy; out.lane = prev.lane; out.reason = prev.reason;
+      }
+      offsets[n.id] = out;
+      n.display_dx = out.dx;
+      n.display_dy = out.dy;
+      n.display_lane = out.lane;
+      n.display_reason = out.reason;
+    };
+
+    // --- Pass 1: overlapping body stacks → perpendicular lane separation ---
     const groups = [];
     const used = new Set();
-    const keyOf = (n) => {
-      const e = n.entryCanvas;
-      const x = e ? e.x : Number(n.x) || 0;
-      const y = e ? e.y : Number(n.y) || 0;
-      return `${Math.round(x / 8)}_${Math.round(y / 8)}_${Math.round(Number(n.sourceAngle) || Number(n.rotation) || 0)}`;
-    };
-    list.forEach((n) => {
+    const sorted = list.slice().sort((a, b) => String(a.conveyorTag || a.id).localeCompare(String(b.conveyorTag || b.id)));
+    sorted.forEach((n) => {
       if (used.has(n.id)) return;
-      const k = keyOf(n);
-      const group = list.filter((o) => !used.has(o.id) && keyOf(o) === k);
-      group.forEach((o) => used.add(o.id));
+      const mn = midOf(n);
+      const an = angOf(n);
+      const group = [n];
+      used.add(n.id);
+      sorted.forEach((o) => {
+        if (used.has(o.id)) return;
+        const mo = midOf(o);
+        if (Math.hypot(mn.x - mo.x, mn.y - mo.y) < 28 && angDelta(an, angOf(o)) < 20) {
+          group.push(o);
+          used.add(o.id);
+        }
+      });
       if (group.length > 1) groups.push(group);
     });
-    const laneGap = 14; // canvas px — visual only
+    const laneGap = 16;
     groups.forEach((group) => {
       group.sort((a, b) => String(a.conveyorTag || '').localeCompare(String(b.conveyorTag || '')));
+      const reason = group.some((g) => g.asMerge || String(g.equipmentType || '').toUpperCase() === 'MERGE')
+        ? 'MERGE_LANE_SEPARATION'
+        : (group.length >= 3 ? 'PARALLEL_LANE_SEPARATION' : 'STACK_SEPARATION');
       group.forEach((n, i) => {
-        const ang = ((Number(n.sourceAngle) || Number(n.rotation) || 0) * Math.PI) / 180;
-        // Offset perpendicular to flow (screen Y already flipped in canvas coords → use +x side)
+        const ang = (angOf(n) * Math.PI) / 180;
         const nx = -Math.sin(ang);
         const ny = Math.cos(ang);
         const shift = (i - (group.length - 1) / 2) * laneGap;
-        offsets[n.id] = { dx: nx * shift, dy: -ny * shift, stackIndex: i, stackSize: group.length };
+        setOff(n, nx * shift, -ny * shift, i, reason, { stackIndex: i, stackSize: group.length });
       });
     });
+
+    // --- Pass 2: merge feed-lane fan (presentation only) ---
+    // When a discharge is marked asMerge (or equipmentType MERGE) with ≥2 inbound
+    // wires, spread upstream bodies along the discharge normal so a 2:1 / 3:1 /
+    // sawtooth reads as conveyor geometry rather than a node graph.
+    const wires = (area && area.wires) || [];
+    const mergeNodes = list.filter((n) => n.asMerge || String(n.equipmentType || '').toUpperCase() === 'MERGE'
+      || String(n.renderKind || '').toLowerCase() === 'merge');
+    mergeNodes.forEach((dst) => {
+      const inbound = wires.filter((w) => w.to === dst.id).map((w) => byId[w.from]).filter(Boolean);
+      if (inbound.length < 2) return;
+      inbound.sort((a, b) => String(a.conveyorTag || a.id).localeCompare(String(b.conveyorTag || b.id)));
+      const dang = (angOf(dst) * Math.PI) / 180;
+      const nx = -Math.sin(dang);
+      const ny = Math.cos(dang);
+      const gap = Math.max(14, Math.min(28, (Number(dst.width) || 200) * 0.04));
+      inbound.forEach((up, i) => {
+        // Do not overwrite a larger stack separation already applied to the upstream.
+        const prev = offsets[up.id];
+        if (prev && prev.reason === 'PARALLEL_LANE_SEPARATION' && (prev.stackSize || 0) > inbound.length) return;
+        const shift = (i - (inbound.length - 1) / 2) * gap;
+        const reason = inbound.length >= 3 ? 'SAWTOOTH_OR_MULTI_MERGE_FAN' : 'MERGE_2TO1_FAN';
+        setOff(up, nx * shift, -ny * shift, i, reason, {
+          mergeDischarge: dst.conveyorTag || dst.id,
+          mergeLaneCount: inbound.length,
+        });
+      });
+      // Keep discharge centered (lane 0) with a merge reason marker if unset.
+      if (!offsets[dst.id]?.reason) {
+        setOff(dst, 0, 0, 0, 'MERGE_DISCHARGE_ANCHOR', { mergeLaneCount: inbound.length });
+      }
+    });
+
+    // --- Pass 3: connectivity-assisted mating nudge ---
+    // For trustworthy physical wires, if display offsets left a gap between
+    // upstream EXIT and downstream ENTRY, nudge the *downstream* display origin
+    // so endpoints visually mate. Caps small noise only — never invents PLC links.
+    wires.forEach((w) => {
+      if (!w.physical) return;
+      const conf = String(w.confidence || '').toUpperCase();
+      if (!(conf === 'CONFIRMED' || conf.includes('HIGH'))) return;
+      const a = byId[w.from];
+      const b = byId[w.to];
+      if (!a?.exitCanvas || !b?.entryCanvas) return;
+      const oa = offsets[a.id] || { dx: 0, dy: 0 };
+      const ob = offsets[b.id] || { dx: 0, dy: 0 };
+      const ax = a.exitCanvas.x + (oa.dx || 0);
+      const ay = a.exitCanvas.y + (oa.dy || 0);
+      const bx = b.entryCanvas.x + (ob.dx || 0);
+      const by = b.entryCanvas.y + (ob.dy || 0);
+      const gap = Math.hypot(ax - bx, ay - by);
+      // Only normalize small presentation gaps (noise / prior lane shift).
+      if (gap < 0.5 || gap > 18) return;
+      // If downstream already has a strong merge/stack reason with large offset, skip.
+      if (ob.reason && String(ob.reason).includes('PARALLEL') && Math.hypot(ob.dx || 0, ob.dy || 0) > 8) return;
+      const ndx = (ob.dx || 0) + (ax - bx);
+      const ndy = (ob.dy || 0) + (ay - by);
+      setOff(b, ndx, ndy, ob.lane || 0, ob.reason ? `${ob.reason}+MATE_NUDGE` : 'CONNECTIVITY_MATE_NUDGE', {
+        matedFrom: a.conveyorTag || a.id,
+        mateGapBefore: gap,
+      });
+    });
+
     tb._presentationOffsets = offsets;
     return offsets;
   }
@@ -1520,7 +1640,7 @@
     // only adds extra cues — it does not replace the schematic.
     const nodes = (area?.nodes || []).filter(isSchematicNode);
     const lod = detailLevel();
-    const offsets = computePresentationOffsets(nodes);
+    const offsets = computePresentationOffsets(nodes, area);
     const debug = tb.viewMode === 'geom-debug' || !!tb.layers?.physical;
     let html = '';
     const labelCandidates = [];
@@ -1553,19 +1673,29 @@
       const mid = applyPresOffset(mid0, off);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tag)}</title></path>`;
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
-      // Site overview: P-tag only (+ AREA/ES required badges in debug/close)
+      // Progressive labels: overview = P-tag; mid = AREA?/ES?; close/selected = drive/PE/VFD/encoder
       if (lod === 'overview' || lod === 'mid' || sel || lod === 'close') {
         const len = Number(n.length) || (n.entryCanvas && n.exitCanvas
           ? Math.hypot(n.exitCanvas.x - n.entryCanvas.x, n.exitCanvas.y - n.entryCanvas.y)
           : 0);
         let labelTag = tag;
-        if (n.areaRequired) labelTag += ' · AREA?';
-        if (n.esZoneRequired) labelTag += ' · ES?';
+        if (lod !== 'overview' || sel) {
+          if (n.areaRequired) labelTag += ' · AREA?';
+          if (n.esZoneRequired) labelTag += ' · ES?';
+        }
+        if ((lod === 'close' || sel) && Array.isArray(n.motorsMeta) && n.motorsMeta[0]) {
+          const m = n.motorsMeta[0].motor || n.motorsMeta[0].tag;
+          if (m) labelTag += ` · ${m}`;
+        }
+        if ((lod === 'close' || sel) && n.vfdTag) labelTag += ` · ${n.vfdTag}`;
+        if ((lod === 'close' || sel) && n.encoderTag) labelTag += ` · ${n.encoderTag}`;
         labelCandidates.push({
           id: n.id,
           tag: labelTag,
           x: mid.x,
           y: mid.y,
+          anchorX: mid.x,
+          anchorY: mid.y,
           selected: sel,
           priority: len,
         });
@@ -1573,6 +1703,12 @@
     });
     placeSchematicLabels(labelCandidates).forEach((lab) => {
       if (lab.hidden) return;
+      // Leader line only when label was moved off the body midpoint.
+      if (lab.offsetIndex > 0 || lab.forced) {
+        const ax = lab.anchorX != null ? lab.anchorX : lab.x;
+        const ay = lab.anchorY != null ? lab.anchorY : lab.y;
+        html += `<line class="tb-schematic-leader" data-id="${escapeHtml(lab.id)}" x1="${ax}" y1="${ay}" x2="${lab.x}" y2="${lab.y}" />`;
+      }
       html += `<text class="tb-schematic-label" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${escapeHtml(lab.tag)}</text>`;
     });
     // Confirmed physical mates: endpoints share location — show ▶◀ joint, not Bezier
@@ -1653,9 +1789,10 @@
   }
 
   function detailLevel() {
+    // Progressive disclosure: far = P-tag only; closer = Area/ES/VFD/PE
     const z = Number(tb.view?.zoom) || 1;
-    if (z < 0.85) return 'overview';
-    if (z < 1.4) return 'mid';
+    if (z < 0.9) return 'overview';
+    if (z < 1.35) return 'mid';
     return 'close';
   }
 

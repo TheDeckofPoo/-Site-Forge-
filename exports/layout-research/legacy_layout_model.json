@@ -1,0 +1,6271 @@
+{
+  "generated_at": "2026-09-12T07:46:50.834366+00:00",
+  "source": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN\\FORTNA\\Conveyor.asc",
+  "note": "Decoded from known Conveyor.asc geometry (infeed-origin model)",
+  "equipment": [
+    {
+      "id": "P100",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P102",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P104",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P106",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P108",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P110",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P112",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P114",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P116",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P118",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P120",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P101",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P103",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P124",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P126",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P128",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P132",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P134",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P136",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P136A",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P138",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P125",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P127",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P140",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P142",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P144",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P146",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P148",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P150A",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P150",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P141",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P143",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P200",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P202",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P201",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P206",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P203",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P208",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P210",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P212",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P214",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P216",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P218",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P220",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P221",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P223",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P234",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P236",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P240",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P242",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P235",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P237",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P300",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P302",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P304",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P306",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P308",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P301",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P303",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P310",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P312",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P314",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P316",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P311",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P313",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P321",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P322",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P320",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P324",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P318",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P319",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P400",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P402",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P404",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P406",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P408",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P410",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P412",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P416",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P418",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P447",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P422",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P424",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P426",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P428",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P430",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P432",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P434",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P436",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P438",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P440",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P442",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P444",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P446",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P448",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P450",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P452",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P454",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P456",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P458",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P460",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P462",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P464",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1000",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P466",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P500",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P504",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P526",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P528",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P530A",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P530",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P534",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P536",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P542",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P544",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600F",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P606F",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602F",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610F",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612F",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600G",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P606G",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602G",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610G",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612G",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600H",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P606H",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602H",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610H",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612H",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600I",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P606I",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602I",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610I",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612I",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600J",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P606J",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602J",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610J",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612J",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600K",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P606K",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602K",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610K",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612K",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P700B",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P702B",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P704B",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P706B",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P708B",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P710B",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P700C",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P702C",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P704C",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P706C",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P708C",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P710C",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P712",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P714",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P716",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P718",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P720",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P800",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P802",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P804",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P806",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P808",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P812",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P810",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P814",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P816",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P818",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P820",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P822",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P824",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P826",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P828",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P830",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P832",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P834",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P836",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1002",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1004",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1006",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1008",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1010",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1014",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1016",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1018",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1120",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1020",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1200",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1202",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1206",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1208",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1210",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P538",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P540",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P532",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P502",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P420",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P145",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P219A",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P414",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P238",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P130",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P226",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P204",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P506",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P508",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P305",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P424A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P506A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P508A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610C",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612C",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600C",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602C",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610D",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612D",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602D",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600D",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600E",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602E",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612E",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610E",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P708A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P704A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P702A",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P700A",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P706A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P710A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P222",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P219",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P217",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P231A",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P213",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P215",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P211",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P209",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P231",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P229",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600M",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600N",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P509",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P510",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P566",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P564",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P552",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P554",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P556",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P560",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P562",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602M",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602N",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610M",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610N",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612M",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612N",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P228",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P230",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P232",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1001",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1005",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1007",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1011",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P1015",
+      "type": "BELT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P300A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P200A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P100A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P309",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P220A",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P123",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P317",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P233",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P139",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600O",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602O",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610O",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612O",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P600P",
+      "type": "CURVE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P602P",
+      "type": "ZEROPRESSURE",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P612P",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "id": "P610P",
+      "type": "STRAIGHT",
+      "layer": "0",
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "connections": [],
+  "geometry": [
+    {
+      "equipment_id": "P100",
+      "entry": {
+        "x": 54450.0,
+        "y": 69883.333
+      },
+      "exit": {
+        "x": 54450.0,
+        "y": 75733.333
+      },
+      "angle": 90.0,
+      "length": 5850.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P102",
+      "entry": {
+        "x": 54450.0,
+        "y": 75716.667
+      },
+      "exit": {
+        "x": 54450.0,
+        "y": 89716.667
+      },
+      "angle": 90.0,
+      "length": 14000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P104",
+      "entry": {
+        "x": 54450.0,
+        "y": 89716.667
+      },
+      "exit": {
+        "x": 54866.667,
+        "y": 90133.334
+      },
+      "angle": 90.0,
+      "length": 675.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P106",
+      "entry": {
+        "x": 54866.667,
+        "y": 90133.333
+      },
+      "exit": {
+        "x": 58866.667,
+        "y": 90133.333
+      },
+      "angle": 0.0,
+      "length": 4000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P108",
+      "entry": {
+        "x": 59283.333,
+        "y": 90550.0
+      },
+      "exit": {
+        "x": 58866.666,
+        "y": 90133.333
+      },
+      "angle": 270.0,
+      "length": 675.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P110",
+      "entry": {
+        "x": 59283.333,
+        "y": 90550.0
+      },
+      "exit": {
+        "x": 59283.333,
+        "y": 91050.0
+      },
+      "angle": 90.0,
+      "length": 500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P112",
+      "entry": {
+        "x": 58816.667,
+        "y": 91475.0
+      },
+      "exit": {
+        "x": 59283.334,
+        "y": 91056.25
+      },
+      "angle": 0.0,
+      "length": 728.0421767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P114",
+      "entry": {
+        "x": 58816.667,
+        "y": 91475.0
+      },
+      "exit": {
+        "x": 56116.667,
+        "y": 91475.0
+      },
+      "angle": 180.0,
+      "length": 2700.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P116",
+      "entry": {
+        "x": 56116.667,
+        "y": 91475.0
+      },
+      "exit": {
+        "x": 37200.0,
+        "y": 91475.0
+      },
+      "angle": 180.0,
+      "length": 18916.667,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P118",
+      "entry": {
+        "x": 37200.0,
+        "y": 91475.0
+      },
+      "exit": {
+        "x": 36000.0,
+        "y": 91475.0
+      },
+      "angle": 180.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P120",
+      "entry": {
+        "x": 36000.0,
+        "y": 91475.0
+      },
+      "exit": {
+        "x": 35700.0,
+        "y": 91475.0
+      },
+      "angle": 180.0,
+      "length": 300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P101",
+      "entry": {
+        "x": 54200.0,
+        "y": 64033.333
+      },
+      "exit": {
+        "x": 54200.0,
+        "y": 88833.333
+      },
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P103",
+      "entry": {
+        "x": 54700.0,
+        "y": 64033.333
+      },
+      "exit": {
+        "x": 54700.0,
+        "y": 88833.333
+      },
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P124",
+      "entry": {
+        "x": 71258.333,
+        "y": 79350.0
+      },
+      "exit": {
+        "x": 71258.333,
+        "y": 89700.0
+      },
+      "angle": 90.0,
+      "length": 10350.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P126",
+      "entry": {
+        "x": 71258.333,
+        "y": 89700.0
+      },
+      "exit": {
+        "x": 71675.0,
+        "y": 90133.334
+      },
+      "angle": 90.0,
+      "length": 692.6261767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P128",
+      "entry": {
+        "x": 71675.0,
+        "y": 90133.333
+      },
+      "exit": {
+        "x": 72875.0,
+        "y": 90133.333
+      },
+      "angle": 0.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P132",
+      "entry": {
+        "x": 73200.0,
+        "y": 90541.667
+      },
+      "exit": {
+        "x": 73200.0,
+        "y": 91241.667
+      },
+      "angle": 90.0,
+      "length": 700.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P134",
+      "entry": {
+        "x": 72783.333,
+        "y": 91733.333
+      },
+      "exit": {
+        "x": 73202.083,
+        "y": 91241.666
+      },
+      "angle": 0.0,
+      "length": 753.0421767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P136",
+      "entry": {
+        "x": 64758.333,
+        "y": 91733.333
+      },
+      "exit": {
+        "x": 62733.333,
+        "y": 91733.333
+      },
+      "angle": 180.0,
+      "length": 2025.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P136A",
+      "entry": {
+        "x": 72783.333,
+        "y": 91733.333
+      },
+      "exit": {
+        "x": 64758.333,
+        "y": 91733.333
+      },
+      "angle": 180.0,
+      "length": 8025.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P138",
+      "entry": {
+        "x": 62733.333,
+        "y": 91733.333
+      },
+      "exit": {
+        "x": 62133.333,
+        "y": 91733.333
+      },
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P125",
+      "entry": {
+        "x": 71008.334,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 71008.334,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P127",
+      "entry": {
+        "x": 71508.333,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 71508.333,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P140",
+      "entry": {
+        "x": 81675.0,
+        "y": 79358.333
+      },
+      "exit": {
+        "x": 81675.0,
+        "y": 89708.333
+      },
+      "angle": 90.0,
+      "length": 10350.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P142",
+      "entry": {
+        "x": 81675.0,
+        "y": 89708.333
+      },
+      "exit": {
+        "x": 82091.667,
+        "y": 90125.0
+      },
+      "angle": 90.0,
+      "length": 675.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P144",
+      "entry": {
+        "x": 82091.667,
+        "y": 90125.0
+      },
+      "exit": {
+        "x": 83291.667,
+        "y": 90125.0
+      },
+      "angle": 0.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P146",
+      "entry": {
+        "x": 83666.667,
+        "y": 90508.333
+      },
+      "exit": {
+        "x": 83666.667,
+        "y": 91208.333
+      },
+      "angle": 90.0,
+      "length": 700.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P148",
+      "entry": {
+        "x": 83250.0,
+        "y": 91775.0
+      },
+      "exit": {
+        "x": 83666.667,
+        "y": 91208.333
+      },
+      "angle": 0.0,
+      "length": 825.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P150A",
+      "entry": {
+        "x": 83250.0,
+        "y": 91775.0
+      },
+      "exit": {
+        "x": 76700.0,
+        "y": 91775.0
+      },
+      "angle": 180.0,
+      "length": 6550.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P150",
+      "entry": {
+        "x": 76700.0,
+        "y": 91775.0
+      },
+      "exit": {
+        "x": 74650.0,
+        "y": 91775.0
+      },
+      "angle": 180.0,
+      "length": 2050.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P141",
+      "entry": {
+        "x": 81425.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 81425.0,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P143",
+      "entry": {
+        "x": 81925.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 81925.0,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P200",
+      "entry": {
+        "x": 50275.0,
+        "y": 69900.0
+      },
+      "exit": {
+        "x": 50275.0,
+        "y": 75750.0
+      },
+      "angle": 90.0,
+      "length": 5850.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P202",
+      "entry": {
+        "x": 50275.0,
+        "y": 75783.333
+      },
+      "exit": {
+        "x": 50275.0,
+        "y": 89583.333
+      },
+      "angle": 90.0,
+      "length": 13800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P201",
+      "entry": {
+        "x": 50025.0,
+        "y": 64033.333
+      },
+      "exit": {
+        "x": 50025.0,
+        "y": 88833.333
+      },
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P206",
+      "entry": {
+        "x": 50700.0,
+        "y": 90000.0
+      },
+      "exit": {
+        "x": 52700.0,
+        "y": 90000.0
+      },
+      "angle": 0.0,
+      "length": 2000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P203",
+      "entry": {
+        "x": 50525.0,
+        "y": 64033.333
+      },
+      "exit": {
+        "x": 50525.0,
+        "y": 88833.333
+      },
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P208",
+      "entry": {
+        "x": 53320.249,
+        "y": 90592.562
+      },
+      "exit": {
+        "x": 52720.249,
+        "y": 90009.228
+      },
+      "angle": 270.0,
+      "length": 1025.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P210",
+      "entry": {
+        "x": 52716.667,
+        "y": 92483.997
+      },
+      "exit": {
+        "x": 53316.667,
+        "y": 91892.33
+      },
+      "angle": 0.0,
+      "length": 1034.2921767569042,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P212",
+      "entry": {
+        "x": 52700.0,
+        "y": 91175.0
+      },
+      "exit": {
+        "x": 44700.0,
+        "y": 91175.0
+      },
+      "angle": 180.0,
+      "length": 8000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P214",
+      "entry": {
+        "x": 44700.0,
+        "y": 91175.0
+      },
+      "exit": {
+        "x": 36900.0,
+        "y": 91175.0
+      },
+      "angle": 180.0,
+      "length": 7800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P216",
+      "entry": {
+        "x": 36900.0,
+        "y": 91175.0
+      },
+      "exit": {
+        "x": 35700.0,
+        "y": 91175.0
+      },
+      "angle": 180.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P218",
+      "entry": {
+        "x": 35700.0,
+        "y": 91175.0
+      },
+      "exit": {
+        "x": 35400.0,
+        "y": 91175.0
+      },
+      "angle": 180.0,
+      "length": 300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P220",
+      "entry": {
+        "x": 68152.416,
+        "y": 78885.224
+      },
+      "exit": {
+        "x": 68152.416,
+        "y": 88735.224
+      },
+      "angle": 90.0,
+      "length": 9850.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P221",
+      "entry": {
+        "x": 67900.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 67900.0,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P223",
+      "entry": {
+        "x": 68400.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 68400.0,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P234",
+      "entry": {
+        "x": 79266.667,
+        "y": 78825.0
+      },
+      "exit": {
+        "x": 79266.667,
+        "y": 88625.0
+      },
+      "angle": 90.0,
+      "length": 9800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P236",
+      "entry": {
+        "x": 79266.667,
+        "y": 88658.333
+      },
+      "exit": {
+        "x": 79266.667,
+        "y": 91658.333
+      },
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P240",
+      "entry": {
+        "x": 78850.0,
+        "y": 92075.0
+      },
+      "exit": {
+        "x": 76650.0,
+        "y": 92075.0
+      },
+      "angle": 180.0,
+      "length": 2200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P242",
+      "entry": {
+        "x": 76650.0,
+        "y": 92075.0
+      },
+      "exit": {
+        "x": 74650.0,
+        "y": 92075.0
+      },
+      "angle": 180.0,
+      "length": 2000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P235",
+      "entry": {
+        "x": 79016.666,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 79016.666,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P237",
+      "entry": {
+        "x": 79516.666,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 79516.666,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P300",
+      "entry": {
+        "x": 46100.0,
+        "y": 68033.333
+      },
+      "exit": {
+        "x": 46100.0,
+        "y": 72033.333
+      },
+      "angle": 90.0,
+      "length": 4000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P302",
+      "entry": {
+        "x": 46100.0,
+        "y": 73033.333
+      },
+      "exit": {
+        "x": 46100.0,
+        "y": 86033.333
+      },
+      "angle": 90.0,
+      "length": 13000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P304",
+      "entry": {
+        "x": 46100.0,
+        "y": 86033.333
+      },
+      "exit": {
+        "x": 46100.0,
+        "y": 89033.333
+      },
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P306",
+      "entry": {
+        "x": 46100.0,
+        "y": 89033.333
+      },
+      "exit": {
+        "x": 46100.0,
+        "y": 90533.333
+      },
+      "angle": 90.0,
+      "length": 1500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P308",
+      "entry": {
+        "x": 45650.0,
+        "y": 91175.0
+      },
+      "exit": {
+        "x": 46051.73456654821,
+        "y": 90477.98327436257
+      },
+      "angle": 350.0,
+      "length": 975.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P301",
+      "entry": {
+        "x": 45850.0,
+        "y": 64033.333
+      },
+      "exit": {
+        "x": 45850.0,
+        "y": 88833.333
+      },
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P303",
+      "entry": {
+        "x": 46350.0,
+        "y": 64033.333
+      },
+      "exit": {
+        "x": 46350.0,
+        "y": 88833.333
+      },
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P310",
+      "entry": {
+        "x": 64950.0,
+        "y": 77500.0
+      },
+      "exit": {
+        "x": 64950.0,
+        "y": 86000.0
+      },
+      "angle": 90.0,
+      "length": 8500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P312",
+      "entry": {
+        "x": 64950.0,
+        "y": 85700.0
+      },
+      "exit": {
+        "x": 64950.0,
+        "y": 88700.0
+      },
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P314",
+      "entry": {
+        "x": 64950.0,
+        "y": 88700.0
+      },
+      "exit": {
+        "x": 64950.0,
+        "y": 91200.0
+      },
+      "angle": 90.0,
+      "length": 2500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P316",
+      "entry": {
+        "x": 64500.0,
+        "y": 91733.333
+      },
+      "exit": {
+        "x": 64919.09938431491,
+        "y": 91134.7970496638
+      },
+      "angle": 350.0,
+      "length": 875.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P311",
+      "entry": {
+        "x": 64700.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 64700.0,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P313",
+      "entry": {
+        "x": 65200.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 65200.0,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P321",
+      "entry": {
+        "x": 76700.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 76700.0,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P322",
+      "entry": {
+        "x": 76950.0,
+        "y": 88916.667
+      },
+      "exit": {
+        "x": 76950.0,
+        "y": 91216.667
+      },
+      "angle": 90.0,
+      "length": 2300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P320",
+      "entry": {
+        "x": 76950.0,
+        "y": 85916.667
+      },
+      "exit": {
+        "x": 76950.0,
+        "y": 88916.667
+      },
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P324",
+      "entry": {
+        "x": 76500.0,
+        "y": 91775.0
+      },
+      "exit": {
+        "x": 76914.75817987324,
+        "y": 91151.8438558385
+      },
+      "angle": 350.0,
+      "length": 900.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P318",
+      "entry": {
+        "x": 76950.0,
+        "y": 77500.0
+      },
+      "exit": {
+        "x": 76950.0,
+        "y": 86000.0
+      },
+      "angle": 90.0,
+      "length": 8500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P319",
+      "entry": {
+        "x": 77200.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 77200.0,
+        "y": 88100.0
+      },
+      "angle": 90.0,
+      "length": 19100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P400",
+      "entry": {
+        "x": 74650.0,
+        "y": 91925.0
+      },
+      "exit": {
+        "x": 73433.333,
+        "y": 91925.0
+      },
+      "angle": 180.0,
+      "length": 1216.667,
+      "width": 500.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P402",
+      "entry": {
+        "x": 73433.333,
+        "y": 92075.0
+      },
+      "exit": {
+        "x": 62733.333,
+        "y": 92075.0
+      },
+      "angle": 180.0,
+      "length": 10700.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P404",
+      "entry": {
+        "x": 62733.333,
+        "y": 92075.0
+      },
+      "exit": {
+        "x": 62133.333,
+        "y": 92075.0
+      },
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P406",
+      "entry": {
+        "x": 62114.875,
+        "y": 91933.333
+      },
+      "exit": {
+        "x": 60614.875,
+        "y": 91933.333
+      },
+      "angle": 180.0,
+      "length": 1500.0,
+      "width": 600.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P408",
+      "entry": {
+        "x": 60637.915,
+        "y": 92071.609
+      },
+      "exit": {
+        "x": 37804.582,
+        "y": 92071.609
+      },
+      "angle": 180.0,
+      "length": 22833.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P410",
+      "entry": {
+        "x": 37796.609,
+        "y": 92071.609
+      },
+      "exit": {
+        "x": 36596.609,
+        "y": 92071.609
+      },
+      "angle": 180.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P412",
+      "entry": {
+        "x": 36600.0,
+        "y": 92075.0
+      },
+      "exit": {
+        "x": 36300.0,
+        "y": 92075.0
+      },
+      "angle": 180.0,
+      "length": 300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P416",
+      "entry": {
+        "x": 34308.333,
+        "y": 89716.667
+      },
+      "exit": {
+        "x": 34962.498999999996,
+        "y": 90387.5
+      },
+      "angle": 90.0,
+      "length": 1155.1060224242044,
+      "width": 250.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P418",
+      "entry": {
+        "x": 34316.667,
+        "y": 89716.667
+      },
+      "exit": {
+        "x": 34316.667,
+        "y": 83016.667
+      },
+      "angle": 270.0,
+      "length": 6700.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P447",
+      "entry": {
+        "x": 38283.333,
+        "y": 82050.0
+      },
+      "exit": {
+        "x": 38283.333,
+        "y": 81350.0
+      },
+      "angle": 270.0,
+      "length": 700.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P422",
+      "entry": {
+        "x": 34700.0,
+        "y": 82600.0
+      },
+      "exit": {
+        "x": 35900.0,
+        "y": 82600.0
+      },
+      "angle": 0.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P424",
+      "entry": {
+        "x": 35900.0,
+        "y": 82600.0
+      },
+      "exit": {
+        "x": 38300.0,
+        "y": 82600.0
+      },
+      "angle": 0.0,
+      "length": 2400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P426",
+      "entry": {
+        "x": 38550.0,
+        "y": 82600.0
+      },
+      "exit": {
+        "x": 39150.0,
+        "y": 82600.0
+      },
+      "angle": 0.0,
+      "length": 600.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P428",
+      "entry": {
+        "x": 39150.0,
+        "y": 82600.0
+      },
+      "exit": {
+        "x": 39583.333,
+        "y": 82175.0
+      },
+      "angle": 0.0,
+      "length": 704.5351601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P430",
+      "entry": {
+        "x": 39583.333,
+        "y": 82175.0
+      },
+      "exit": {
+        "x": 39583.333,
+        "y": 71116.667
+      },
+      "angle": 270.0,
+      "length": 11058.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P432",
+      "entry": {
+        "x": 39583.334,
+        "y": 71116.668
+      },
+      "exit": {
+        "x": 39583.334,
+        "y": 68616.668
+      },
+      "angle": 270.0,
+      "length": 2500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P434",
+      "entry": {
+        "x": 40000.0,
+        "y": 68200.0
+      },
+      "exit": {
+        "x": 39583.333,
+        "y": 68616.667
+      },
+      "angle": 180.0,
+      "length": 675.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P436",
+      "entry": {
+        "x": 40000.0,
+        "y": 68200.0
+      },
+      "exit": {
+        "x": 41641.667,
+        "y": 68200.0
+      },
+      "angle": 0.0,
+      "length": 1641.667,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P438",
+      "entry": {
+        "x": 41641.664,
+        "y": 68200.0
+      },
+      "exit": {
+        "x": 42016.664,
+        "y": 67766.667
+      },
+      "angle": 0.0,
+      "length": 650.9581767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P440",
+      "entry": {
+        "x": 42016.666,
+        "y": 67766.667
+      },
+      "exit": {
+        "x": 42016.666,
+        "y": 64766.667
+      },
+      "angle": 270.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P442",
+      "entry": {
+        "x": 42016.666,
+        "y": 64766.666
+      },
+      "exit": {
+        "x": 42016.666,
+        "y": 57199.998999999996
+      },
+      "angle": 270.0,
+      "length": 7566.667,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P444",
+      "entry": {
+        "x": 42016.666,
+        "y": 57200.0
+      },
+      "exit": {
+        "x": 42016.666,
+        "y": 56000.0
+      },
+      "angle": 270.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P446",
+      "entry": {
+        "x": 37741.667,
+        "y": 82600.0
+      },
+      "exit": {
+        "x": 38251.03994545071,
+        "y": 81985.54740061754
+      },
+      "angle": -10.0,
+      "length": 971.2011601693957,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P448",
+      "entry": {
+        "x": 38283.333,
+        "y": 81350.0
+      },
+      "exit": {
+        "x": 38283.333,
+        "y": 77808.333
+      },
+      "angle": 270.0,
+      "length": 3541.667,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P450",
+      "entry": {
+        "x": 38283.333,
+        "y": 77808.333
+      },
+      "exit": {
+        "x": 38283.333,
+        "y": 75508.333
+      },
+      "angle": 270.0,
+      "length": 2300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P452",
+      "entry": {
+        "x": 38283.333,
+        "y": 75508.333
+      },
+      "exit": {
+        "x": 37833.333,
+        "y": 75066.666
+      },
+      "angle": 270.0,
+      "length": 734.2921767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P454",
+      "entry": {
+        "x": 37833.333,
+        "y": 75066.667
+      },
+      "exit": {
+        "x": 37383.333,
+        "y": 75508.334
+      },
+      "angle": 180.0,
+      "length": 734.2921767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P456",
+      "entry": {
+        "x": 37383.333,
+        "y": 75500.0
+      },
+      "exit": {
+        "x": 37383.333,
+        "y": 79500.0
+      },
+      "angle": 90.0,
+      "length": 4000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P458",
+      "entry": {
+        "x": 36983.333,
+        "y": 79150.0
+      },
+      "exit": {
+        "x": 36575.0,
+        "y": 79558.333
+      },
+      "angle": 180.0,
+      "length": 641.4079765091406,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P460",
+      "entry": {
+        "x": 36575.0,
+        "y": 79533.333
+      },
+      "exit": {
+        "x": 36575.0,
+        "y": 78633.333
+      },
+      "angle": 270.0,
+      "length": 900.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P462",
+      "entry": {
+        "x": 36575.0,
+        "y": 78633.333
+      },
+      "exit": {
+        "x": 36575.0,
+        "y": 75033.333
+      },
+      "angle": 270.0,
+      "length": 3600.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P464",
+      "entry": {
+        "x": 36375.0,
+        "y": 78783.333
+      },
+      "exit": {
+        "x": 36375.0,
+        "y": 75033.333
+      },
+      "angle": 270.0,
+      "length": 3750.0,
+      "width": 150.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1000",
+      "entry": {
+        "x": 62200.0,
+        "y": 87066.667
+      },
+      "exit": {
+        "x": 62200.0,
+        "y": 77666.667
+      },
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P466",
+      "entry": {
+        "x": 36775.0,
+        "y": 78783.333
+      },
+      "exit": {
+        "x": 36775.0,
+        "y": 75033.333
+      },
+      "angle": 270.0,
+      "length": 3750.0,
+      "width": 150.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P500",
+      "entry": {
+        "x": 42166.667,
+        "y": 56000.0
+      },
+      "exit": {
+        "x": 42166.667,
+        "y": 54800.0
+      },
+      "angle": 270.0,
+      "length": 1200.0,
+      "width": 500.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P504",
+      "entry": {
+        "x": 42383.333,
+        "y": 54366.667
+      },
+      "exit": {
+        "x": 44683.333,
+        "y": 54366.667
+      },
+      "angle": 0.0,
+      "length": 2300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P526",
+      "entry": {
+        "x": 80600.0,
+        "y": 53350.0
+      },
+      "exit": {
+        "x": 68600.0,
+        "y": 53350.0
+      },
+      "angle": 180.0,
+      "length": 12000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P528",
+      "entry": {
+        "x": 68600.0,
+        "y": 53350.0
+      },
+      "exit": {
+        "x": 56600.0,
+        "y": 53350.0
+      },
+      "angle": 180.0,
+      "length": 12000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P530A",
+      "entry": {
+        "x": 56600.0,
+        "y": 53350.0
+      },
+      "exit": {
+        "x": 54600.0,
+        "y": 53350.0
+      },
+      "angle": 180.0,
+      "length": 2000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P530",
+      "entry": {
+        "x": 54600.0,
+        "y": 53350.0
+      },
+      "exit": {
+        "x": 43800.0,
+        "y": 53350.0
+      },
+      "angle": 180.0,
+      "length": 10800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P534",
+      "entry": {
+        "x": 43216.666,
+        "y": 53958.334
+      },
+      "exit": {
+        "x": 43216.666,
+        "y": 56758.334
+      },
+      "angle": 90.0,
+      "length": 2800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P536",
+      "entry": {
+        "x": 43216.667,
+        "y": 56758.334
+      },
+      "exit": {
+        "x": 43216.667,
+        "y": 61058.334
+      },
+      "angle": 90.0,
+      "length": 4300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P542",
+      "entry": {
+        "x": 42316.667,
+        "y": 61058.333
+      },
+      "exit": {
+        "x": 42316.667,
+        "y": 57200.0
+      },
+      "angle": 270.0,
+      "length": 3858.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P544",
+      "entry": {
+        "x": 42316.666,
+        "y": 57200.0
+      },
+      "exit": {
+        "x": 42316.666,
+        "y": 56000.0
+      },
+      "angle": 270.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600F",
+      "entry": {
+        "x": 62800.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 62291.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P606F",
+      "entry": {
+        "x": 44704.062,
+        "y": 114718.231
+      },
+      "exit": {
+        "x": 44704.062,
+        "y": 113318.231
+      },
+      "angle": 270.0,
+      "length": 1400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602F",
+      "entry": {
+        "x": 62800.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 62800.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610F",
+      "entry": {
+        "x": 61750.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 61750.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612F",
+      "entry": {
+        "x": 62250.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 62250.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600G",
+      "entry": {
+        "x": 66100.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 65591.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P606G",
+      "entry": {
+        "x": 45014.785,
+        "y": 114732.705
+      },
+      "exit": {
+        "x": 45014.785,
+        "y": 113332.705
+      },
+      "angle": 270.0,
+      "length": 1400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602G",
+      "entry": {
+        "x": 66100.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 66100.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610G",
+      "entry": {
+        "x": 65050.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 65050.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612G",
+      "entry": {
+        "x": 65550.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 65550.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600H",
+      "entry": {
+        "x": 69400.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 68891.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P606H",
+      "entry": {
+        "x": 43724.737,
+        "y": 115180.913
+      },
+      "exit": {
+        "x": 43724.737,
+        "y": 113780.913
+      },
+      "angle": 270.0,
+      "length": 1400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602H",
+      "entry": {
+        "x": 69400.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 69400.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610H",
+      "entry": {
+        "x": 68350.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 68350.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612H",
+      "entry": {
+        "x": 68850.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 68850.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600I",
+      "entry": {
+        "x": 72900.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 72391.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P606I",
+      "entry": {
+        "x": 44021.379,
+        "y": 115190.073
+      },
+      "exit": {
+        "x": 44021.379,
+        "y": 113790.073
+      },
+      "angle": 270.0,
+      "length": 1400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602I",
+      "entry": {
+        "x": 72900.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 72900.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610I",
+      "entry": {
+        "x": 71850.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 71850.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612I",
+      "entry": {
+        "x": 72350.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 72350.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600J",
+      "entry": {
+        "x": 76200.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 75691.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P606J",
+      "entry": {
+        "x": 45395.569,
+        "y": 114899.628
+      },
+      "exit": {
+        "x": 45395.569,
+        "y": 113499.628
+      },
+      "angle": 270.0,
+      "length": 1400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602J",
+      "entry": {
+        "x": 76200.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 76200.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610J",
+      "entry": {
+        "x": 75150.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 75150.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612J",
+      "entry": {
+        "x": 75650.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 75650.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600K",
+      "entry": {
+        "x": 79500.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 78991.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P606K",
+      "entry": {
+        "x": 44261.317,
+        "y": 115554.524
+      },
+      "exit": {
+        "x": 44261.317,
+        "y": 112804.524
+      },
+      "angle": 270.0,
+      "length": 2750.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602K",
+      "entry": {
+        "x": 79500.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 79500.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610K",
+      "entry": {
+        "x": 78450.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 78450.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612K",
+      "entry": {
+        "x": 78950.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 78950.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P700B",
+      "entry": {
+        "x": 50400.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 49891.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P702B",
+      "entry": {
+        "x": 50400.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 50400.0,
+        "y": 57100.0
+      },
+      "angle": 90.0,
+      "length": 2100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P704B",
+      "entry": {
+        "x": 50400.0,
+        "y": 57100.0
+      },
+      "exit": {
+        "x": 50400.0,
+        "y": 60500.0
+      },
+      "angle": 90.0,
+      "length": 3400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P706B",
+      "entry": {
+        "x": 50400.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 50400.0,
+        "y": 60800.0
+      },
+      "angle": 90.0,
+      "length": 300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P708B",
+      "entry": {
+        "x": 50150.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 50150.0,
+        "y": 55500.0
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P710B",
+      "entry": {
+        "x": 50650.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 50650.0,
+        "y": 55500.0
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P700C",
+      "entry": {
+        "x": 52200.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 51691.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P702C",
+      "entry": {
+        "x": 52200.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 52200.0,
+        "y": 57100.0
+      },
+      "angle": 90.0,
+      "length": 2100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P704C",
+      "entry": {
+        "x": 52200.0,
+        "y": 57100.0
+      },
+      "exit": {
+        "x": 52200.0,
+        "y": 60500.0
+      },
+      "angle": 90.0,
+      "length": 3400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P706C",
+      "entry": {
+        "x": 52200.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 52200.0,
+        "y": 60800.0
+      },
+      "angle": 90.0,
+      "length": 300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P708C",
+      "entry": {
+        "x": 51950.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 51950.0,
+        "y": 55500.0
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P710C",
+      "entry": {
+        "x": 52450.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 52450.0,
+        "y": 55500.0
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P712",
+      "entry": {
+        "x": 48100.0,
+        "y": 60900.0
+      },
+      "exit": {
+        "x": 54000.0,
+        "y": 60900.0
+      },
+      "angle": 0.0,
+      "length": 5900.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P714",
+      "entry": {
+        "x": 54000.0,
+        "y": 60900.0
+      },
+      "exit": {
+        "x": 54416.667,
+        "y": 60483.333
+      },
+      "angle": 0.0,
+      "length": 675.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P716",
+      "entry": {
+        "x": 54416.667,
+        "y": 60483.333
+      },
+      "exit": {
+        "x": 54416.667,
+        "y": 58983.333
+      },
+      "angle": 270.0,
+      "length": 1500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P718",
+      "entry": {
+        "x": 54416.667,
+        "y": 58983.333
+      },
+      "exit": {
+        "x": 54416.667,
+        "y": 53983.333
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P720",
+      "entry": {
+        "x": 54416.667,
+        "y": 53983.333
+      },
+      "exit": {
+        "x": 53908.334,
+        "y": 53366.667
+      },
+      "angle": 270.0,
+      "length": 971.2011601693957,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P800",
+      "entry": {
+        "x": 33950.0,
+        "y": 52850.0
+      },
+      "exit": {
+        "x": 33950.0,
+        "y": 60350.0
+      },
+      "angle": 90.0,
+      "length": 7500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P802",
+      "entry": {
+        "x": 33950.0,
+        "y": 60350.0
+      },
+      "exit": {
+        "x": 33950.0,
+        "y": 63550.0
+      },
+      "angle": 90.0,
+      "length": 3200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P804",
+      "entry": {
+        "x": 33600.0,
+        "y": 52850.0
+      },
+      "exit": {
+        "x": 33600.0,
+        "y": 59950.0
+      },
+      "angle": 90.0,
+      "length": 7100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P806",
+      "entry": {
+        "x": 33600.0,
+        "y": 59950.0
+      },
+      "exit": {
+        "x": 34154.166,
+        "y": 60462.5
+      },
+      "angle": 90.0,
+      "length": 907.5031142543319,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P808",
+      "entry": {
+        "x": 34200.0,
+        "y": 61050.0
+      },
+      "exit": {
+        "x": 33662.5,
+        "y": 60529.167
+      },
+      "angle": 270.0,
+      "length": 899.1701142543319,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P812",
+      "entry": {
+        "x": 34075.0,
+        "y": 63550.0
+      },
+      "exit": {
+        "x": 34075.0,
+        "y": 64750.0
+      },
+      "angle": 90.0,
+      "length": 1200.0,
+      "width": 450.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P810",
+      "entry": {
+        "x": 34200.0,
+        "y": 61050.0
+      },
+      "exit": {
+        "x": 34200.0,
+        "y": 63550.0
+      },
+      "angle": 90.0,
+      "length": 2500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P814",
+      "entry": {
+        "x": 33950.0,
+        "y": 64750.0
+      },
+      "exit": {
+        "x": 33950.0,
+        "y": 67775.0
+      },
+      "angle": 90.0,
+      "length": 3025.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P816",
+      "entry": {
+        "x": 33950.0,
+        "y": 67775.0
+      },
+      "exit": {
+        "x": 34400.0,
+        "y": 68200.0
+      },
+      "angle": 90.0,
+      "length": 717.6251767569042,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P818",
+      "entry": {
+        "x": 34391.667,
+        "y": 68200.0
+      },
+      "exit": {
+        "x": 38758.334,
+        "y": 68200.0
+      },
+      "angle": 0.0,
+      "length": 4366.667,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P820",
+      "entry": {
+        "x": 39175.0,
+        "y": 68616.667
+      },
+      "exit": {
+        "x": 38758.333,
+        "y": 68200.0
+      },
+      "angle": -90.0,
+      "length": 675.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P822",
+      "entry": {
+        "x": 39175.0,
+        "y": 68616.667
+      },
+      "exit": {
+        "x": 39175.0,
+        "y": 72475.0
+      },
+      "angle": 90.0,
+      "length": 3858.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P824",
+      "entry": {
+        "x": 39175.0,
+        "y": 72475.0
+      },
+      "exit": {
+        "x": 39175.0,
+        "y": 83475.0
+      },
+      "angle": 90.0,
+      "length": 11000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P826",
+      "entry": {
+        "x": 39175.0,
+        "y": 83475.0
+      },
+      "exit": {
+        "x": 39175.0,
+        "y": 85125.0
+      },
+      "angle": 90.0,
+      "length": 1650.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P828",
+      "entry": {
+        "x": 39175.0,
+        "y": 85125.0
+      },
+      "exit": {
+        "x": 39175.0,
+        "y": 90350.0
+      },
+      "angle": 90.0,
+      "length": 5225.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P830",
+      "entry": {
+        "x": 38700.0,
+        "y": 90775.0
+      },
+      "exit": {
+        "x": 39175.0,
+        "y": 90350.0
+      },
+      "angle": 0.0,
+      "length": 742.6251767569042,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P832",
+      "entry": {
+        "x": 38700.0,
+        "y": 90775.0
+      },
+      "exit": {
+        "x": 36500.0,
+        "y": 90775.0
+      },
+      "angle": 180.0,
+      "length": 2200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P834",
+      "entry": {
+        "x": 36500.0,
+        "y": 90775.0
+      },
+      "exit": {
+        "x": 35300.0,
+        "y": 90775.0
+      },
+      "angle": 180.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P836",
+      "entry": {
+        "x": 35300.0,
+        "y": 90775.0
+      },
+      "exit": {
+        "x": 35000.0,
+        "y": 90775.0
+      },
+      "angle": 180.0,
+      "length": 300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1002",
+      "entry": {
+        "x": 62200.0,
+        "y": 68266.66
+      },
+      "exit": {
+        "x": 62200.0,
+        "y": 63266.66
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 333.333,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1004",
+      "entry": {
+        "x": 62766.667,
+        "y": 87066.667
+      },
+      "exit": {
+        "x": 62766.667,
+        "y": 76966.667
+      },
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1006",
+      "entry": {
+        "x": 73700.0,
+        "y": 87066.667
+      },
+      "exit": {
+        "x": 73700.0,
+        "y": 77666.667
+      },
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1008",
+      "entry": {
+        "x": 73700.0,
+        "y": 68266.667
+      },
+      "exit": {
+        "x": 73700.0,
+        "y": 63266.667
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 333.333,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1010",
+      "entry": {
+        "x": 74266.666,
+        "y": 87066.667
+      },
+      "exit": {
+        "x": 74266.666,
+        "y": 76966.667
+      },
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1014",
+      "entry": {
+        "x": 61800.0,
+        "y": 63116.666
+      },
+      "exit": {
+        "x": 85200.0,
+        "y": 63116.666
+      },
+      "angle": 0.0,
+      "length": 23400.0,
+      "width": 333.333,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1016",
+      "entry": {
+        "x": 85391.667,
+        "y": 71866.667
+      },
+      "exit": {
+        "x": 85391.667,
+        "y": 80866.667
+      },
+      "angle": 90.0,
+      "length": 9000.0,
+      "width": 383.333,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1018",
+      "entry": {
+        "x": 85391.667,
+        "y": 80866.667
+      },
+      "exit": {
+        "x": 85391.667,
+        "y": 91566.667
+      },
+      "angle": 90.0,
+      "length": 10700.0,
+      "width": 383.333,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1120",
+      "entry": {
+        "x": 44035.289,
+        "y": 113668.793
+      },
+      "exit": {
+        "x": 45035.289,
+        "y": 113668.793
+      },
+      "angle": 0.0,
+      "length": 1000.0,
+      "width": 150.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1020",
+      "entry": {
+        "x": 45824.622,
+        "y": 114177.831
+      },
+      "exit": {
+        "x": 42524.622,
+        "y": 114177.831
+      },
+      "angle": 180.0,
+      "length": 3300.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1200",
+      "entry": {
+        "x": 44201.0,
+        "y": 114805.535
+      },
+      "exit": {
+        "x": 44576.0,
+        "y": 114805.535
+      },
+      "angle": 0.0,
+      "length": 375.0,
+      "width": 300.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1202",
+      "entry": {
+        "x": 43505.663,
+        "y": 115050.856
+      },
+      "exit": {
+        "x": 43505.663,
+        "y": 113396.956
+      },
+      "angle": 270.0,
+      "length": 1653.9,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1206",
+      "entry": {
+        "x": 45896.704,
+        "y": 114169.611
+      },
+      "exit": {
+        "x": 41975.604,
+        "y": 114169.611
+      },
+      "angle": 180.0,
+      "length": 3921.1,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1208",
+      "entry": {
+        "x": 45460.251,
+        "y": 114163.975
+      },
+      "exit": {
+        "x": 42960.251,
+        "y": 114163.975
+      },
+      "angle": 180.0,
+      "length": 2500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1210",
+      "entry": {
+        "x": 43524.619,
+        "y": 114078.561
+      },
+      "exit": {
+        "x": 46024.619,
+        "y": 114078.561
+      },
+      "angle": 0.0,
+      "length": 2500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P538",
+      "entry": {
+        "x": 42766.669,
+        "y": 61441.668
+      },
+      "exit": {
+        "x": 43216.669,
+        "y": 61058.333999999995
+      },
+      "angle": 0.0,
+      "length": 683.1127143782137,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P540",
+      "entry": {
+        "x": 42316.666,
+        "y": 61058.325
+      },
+      "exit": {
+        "x": 42766.666,
+        "y": 61441.657999999996
+      },
+      "angle": 90.0,
+      "length": 683.1117143782137,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P532",
+      "entry": {
+        "x": 43800.0,
+        "y": 53350.0
+      },
+      "exit": {
+        "x": 43216.667,
+        "y": 53958.333
+      },
+      "angle": 180.0,
+      "length": 1037.8681601693957,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P502",
+      "entry": {
+        "x": 42383.333,
+        "y": 54366.667
+      },
+      "exit": {
+        "x": 42016.666,
+        "y": 54800.001000000004
+      },
+      "angle": 180.0,
+      "length": 642.6261767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P420",
+      "entry": {
+        "x": 34700.0,
+        "y": 82600.0
+      },
+      "exit": {
+        "x": 34316.666,
+        "y": 83016.667
+      },
+      "angle": 180.0,
+      "length": 642.6261767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P145",
+      "entry": {
+        "x": 83300.0,
+        "y": 90125.0
+      },
+      "exit": {
+        "x": 82933.333,
+        "y": 90491.667
+      },
+      "angle": 180.0,
+      "length": 575.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P219A",
+      "entry": {
+        "x": 37300.0,
+        "y": 92775.0
+      },
+      "exit": {
+        "x": 37000.0,
+        "y": 92775.0
+      },
+      "angle": 180.0,
+      "length": 300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P414",
+      "entry": {
+        "x": 37219.628,
+        "y": 93055.141
+      },
+      "exit": {
+        "x": 34603.33290960977,
+        "y": 90438.84590960978
+      },
+      "angle": 225.0,
+      "length": 3700.0,
+      "width": 250.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P238",
+      "entry": {
+        "x": 78850.0,
+        "y": 92075.0
+      },
+      "exit": {
+        "x": 79266.667,
+        "y": 91658.333
+      },
+      "angle": 0.0,
+      "length": 675.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P130",
+      "entry": {
+        "x": 72475.0,
+        "y": 90500.0
+      },
+      "exit": {
+        "x": 72841.667,
+        "y": 90866.667
+      },
+      "angle": 90.0,
+      "length": 575.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P226",
+      "entry": {
+        "x": 67780.765,
+        "y": 92761.24
+      },
+      "exit": {
+        "x": 68147.432,
+        "y": 92394.573
+      },
+      "angle": 0.0,
+      "length": 575.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P204",
+      "entry": {
+        "x": 50275.0,
+        "y": 89583.333
+      },
+      "exit": {
+        "x": 50691.667,
+        "y": 90000.0
+      },
+      "angle": 90.0,
+      "length": 675.9591767569043,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P506",
+      "entry": {
+        "x": 44683.333,
+        "y": 54366.667
+      },
+      "exit": {
+        "x": 60883.333,
+        "y": 54366.667
+      },
+      "angle": 0.0,
+      "length": 16200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P508",
+      "entry": {
+        "x": 61383.333,
+        "y": 54366.667
+      },
+      "exit": {
+        "x": 79883.333,
+        "y": 54366.667
+      },
+      "angle": 0.0,
+      "length": 18500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P305",
+      "entry": {
+        "x": 46100.0,
+        "y": 72033.333
+      },
+      "exit": {
+        "x": 46100.0,
+        "y": 73033.333
+      },
+      "angle": 90.0,
+      "length": 1000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P424A",
+      "entry": {
+        "x": 38300.0,
+        "y": 82600.0
+      },
+      "exit": {
+        "x": 38550.0,
+        "y": 82600.0
+      },
+      "angle": 0.0,
+      "length": 250.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P506A",
+      "entry": {
+        "x": 60883.333,
+        "y": 54366.667
+      },
+      "exit": {
+        "x": 61383.333,
+        "y": 54366.667
+      },
+      "angle": 0.0,
+      "length": 500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P508A",
+      "entry": {
+        "x": 79883.333,
+        "y": 54366.667
+      },
+      "exit": {
+        "x": 80200.0,
+        "y": 54366.667
+      },
+      "angle": 0.0,
+      "length": 316.667,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610C",
+      "entry": {
+        "x": 52850.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 52850.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612C",
+      "entry": {
+        "x": 53350.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 53350.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600C",
+      "entry": {
+        "x": 53900.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 53391.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602C",
+      "entry": {
+        "x": 53900.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 53900.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610D",
+      "entry": {
+        "x": 55250.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 55250.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612D",
+      "entry": {
+        "x": 55750.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 55750.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602D",
+      "entry": {
+        "x": 56300.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 56300.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600D",
+      "entry": {
+        "x": 56300.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 55791.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600E",
+      "entry": {
+        "x": 58700.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 58191.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602E",
+      "entry": {
+        "x": 58700.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 58700.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612E",
+      "entry": {
+        "x": 58150.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 58150.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610E",
+      "entry": {
+        "x": 57650.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 57650.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P708A",
+      "entry": {
+        "x": 48150.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 48150.0,
+        "y": 55500.0
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P704A",
+      "entry": {
+        "x": 48400.0,
+        "y": 57100.0
+      },
+      "exit": {
+        "x": 48400.0,
+        "y": 60500.0
+      },
+      "angle": 90.0,
+      "length": 3400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P702A",
+      "entry": {
+        "x": 48400.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 48400.0,
+        "y": 57100.0
+      },
+      "angle": 90.0,
+      "length": 2100.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P700A",
+      "entry": {
+        "x": 48400.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 47891.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P706A",
+      "entry": {
+        "x": 48400.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 48400.0,
+        "y": 60800.0
+      },
+      "angle": 90.0,
+      "length": 300.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P710A",
+      "entry": {
+        "x": 48650.0,
+        "y": 60500.0
+      },
+      "exit": {
+        "x": 48650.0,
+        "y": 55500.0
+      },
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P222",
+      "entry": {
+        "x": 68152.416,
+        "y": 88743.544
+      },
+      "exit": {
+        "x": 68152.416,
+        "y": 92407.627
+      },
+      "angle": 90.0,
+      "length": 3664.083,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P219",
+      "entry": {
+        "x": 38522.929,
+        "y": 92778.391
+      },
+      "exit": {
+        "x": 37322.929,
+        "y": 92778.391
+      },
+      "angle": 180.0,
+      "length": 1200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P217",
+      "entry": {
+        "x": 46470.135,
+        "y": 92778.391
+      },
+      "exit": {
+        "x": 38495.135,
+        "y": 92778.391
+      },
+      "angle": 180.0,
+      "length": 7975.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P231A",
+      "entry": {
+        "x": 51667.195,
+        "y": 92770.923
+      },
+      "exit": {
+        "x": 47433.862,
+        "y": 92770.923
+      },
+      "angle": 180.0,
+      "length": 4233.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P213",
+      "entry": {
+        "x": 50469.477,
+        "y": 92477.699
+      },
+      "exit": {
+        "x": 47436.144,
+        "y": 92477.699
+      },
+      "angle": 180.0,
+      "length": 3033.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P215",
+      "entry": {
+        "x": 47434.4,
+        "y": 92627.828
+      },
+      "exit": {
+        "x": 46434.4,
+        "y": 92627.828
+      },
+      "angle": 180.0,
+      "length": 1000.0,
+      "width": 500.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P211",
+      "entry": {
+        "x": 52701.795,
+        "y": 92481.079
+      },
+      "exit": {
+        "x": 50468.462,
+        "y": 92481.079
+      },
+      "angle": 180.0,
+      "length": 2233.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P209",
+      "entry": {
+        "x": 53321.407,
+        "y": 90605.374
+      },
+      "exit": {
+        "x": 53321.407,
+        "y": 91880.374
+      },
+      "angle": 90.0,
+      "length": 1275.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P231",
+      "entry": {
+        "x": 54685.128,
+        "y": 92768.579
+      },
+      "exit": {
+        "x": 51651.795,
+        "y": 92768.579
+      },
+      "angle": 180.0,
+      "length": 3033.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P229",
+      "entry": {
+        "x": 67767.195,
+        "y": 92770.923
+      },
+      "exit": {
+        "x": 54700.528000000006,
+        "y": 92770.923
+      },
+      "angle": 180.0,
+      "length": 13066.667,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600M",
+      "entry": {
+        "x": 89400.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 88891.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600N",
+      "entry": {
+        "x": 92700.0,
+        "y": 55000.0
+      },
+      "exit": {
+        "x": 92191.667,
+        "y": 54391.667
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P509",
+      "entry": {
+        "x": 80183.333,
+        "y": 54366.667
+      },
+      "exit": {
+        "x": 91183.333,
+        "y": 54366.667
+      },
+      "angle": 0.0,
+      "length": 11000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P510",
+      "entry": {
+        "x": 91183.333,
+        "y": 54366.667
+      },
+      "exit": {
+        "x": 102183.333,
+        "y": 54366.667
+      },
+      "angle": 0.0,
+      "length": 11000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P566",
+      "entry": {
+        "x": 91400.0,
+        "y": 53350.0
+      },
+      "exit": {
+        "x": 80600.0,
+        "y": 53350.0
+      },
+      "angle": 180.0,
+      "length": 10800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P564",
+      "entry": {
+        "x": 101600.0,
+        "y": 53350.0
+      },
+      "exit": {
+        "x": 91400.0,
+        "y": 53350.0
+      },
+      "angle": 180.0,
+      "length": 10200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P552",
+      "entry": {
+        "x": 102733.333,
+        "y": 54766.667
+      },
+      "exit": {
+        "x": 102175.0,
+        "y": 54366.667
+      },
+      "angle": 270.0,
+      "length": 804.5351601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P554",
+      "entry": {
+        "x": 102733.333,
+        "y": 54766.667
+      },
+      "exit": {
+        "x": 102733.333,
+        "y": 57450.0
+      },
+      "angle": 90.0,
+      "length": 2683.333,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P556",
+      "entry": {
+        "x": 101991.667,
+        "y": 57475.0
+      },
+      "exit": {
+        "x": 102412.5,
+        "y": 57895.833
+      },
+      "angle": 90.0,
+      "length": 682.5031142543319,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P560",
+      "entry": {
+        "x": 101991.667,
+        "y": 57483.333
+      },
+      "exit": {
+        "x": 101991.667,
+        "y": 53733.333
+      },
+      "angle": 270.0,
+      "length": 3750.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P562",
+      "entry": {
+        "x": 101991.667,
+        "y": 53733.333
+      },
+      "exit": {
+        "x": 101604.167,
+        "y": 53345.833
+      },
+      "angle": 270.0,
+      "length": 615.8371142543319,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602M",
+      "entry": {
+        "x": 89400.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 89400.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602N",
+      "entry": {
+        "x": 92700.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 92700.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610M",
+      "entry": {
+        "x": 88350.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 88350.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610N",
+      "entry": {
+        "x": 91650.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 91650.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612M",
+      "entry": {
+        "x": 88850.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 88850.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612N",
+      "entry": {
+        "x": 92150.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 92150.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P228",
+      "entry": {
+        "x": 9470.634,
+        "y": 1550.65
+      },
+      "exit": {
+        "x": 7070.634,
+        "y": 1550.6500000000003
+      },
+      "angle": 180.0,
+      "length": 2400.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P230",
+      "entry": {
+        "x": 7070.634,
+        "y": 1550.65
+      },
+      "exit": {
+        "x": 4420.634,
+        "y": 1550.6500000000003
+      },
+      "angle": 180.0,
+      "length": 2650.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P232",
+      "entry": {
+        "x": 4420.634,
+        "y": 1550.65
+      },
+      "exit": {
+        "x": 3820.634,
+        "y": 1550.65
+      },
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1001",
+      "entry": {
+        "x": 62200.0,
+        "y": 77666.667
+      },
+      "exit": {
+        "x": 62200.0,
+        "y": 68266.667
+      },
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1005",
+      "entry": {
+        "x": 62766.667,
+        "y": 76966.667
+      },
+      "exit": {
+        "x": 62766.667,
+        "y": 66866.667
+      },
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1007",
+      "entry": {
+        "x": 73700.0,
+        "y": 77666.667
+      },
+      "exit": {
+        "x": 73700.0,
+        "y": 68266.667
+      },
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1011",
+      "entry": {
+        "x": 74266.666,
+        "y": 76966.667
+      },
+      "exit": {
+        "x": 74266.666,
+        "y": 66866.667
+      },
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P1015",
+      "entry": {
+        "x": 85391.667,
+        "y": 62866.667
+      },
+      "exit": {
+        "x": 85391.667,
+        "y": 71866.667
+      },
+      "angle": 90.0,
+      "length": 9000.0,
+      "width": 383.333,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P300A",
+      "entry": {
+        "x": 46100.0,
+        "y": 64033.333
+      },
+      "exit": {
+        "x": 46100.0,
+        "y": 68033.333
+      },
+      "angle": 90.0,
+      "length": 4000.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P200A",
+      "entry": {
+        "x": 50275.0,
+        "y": 64050.0
+      },
+      "exit": {
+        "x": 50275.0,
+        "y": 69900.0
+      },
+      "angle": 90.0,
+      "length": 5850.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P100A",
+      "entry": {
+        "x": 54450.0,
+        "y": 64033.333
+      },
+      "exit": {
+        "x": 54450.0,
+        "y": 69883.333
+      },
+      "angle": 90.0,
+      "length": 5850.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P309",
+      "entry": {
+        "x": 64950.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 64950.0,
+        "y": 77500.0
+      },
+      "angle": 90.0,
+      "length": 8500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P220A",
+      "entry": {
+        "x": 68152.416,
+        "y": 69035.224
+      },
+      "exit": {
+        "x": 68152.416,
+        "y": 78885.224
+      },
+      "angle": 90.0,
+      "length": 9850.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P123",
+      "entry": {
+        "x": 71258.333,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 71258.333,
+        "y": 79350.0
+      },
+      "angle": 90.0,
+      "length": 10350.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P317",
+      "entry": {
+        "x": 76950.0,
+        "y": 69000.0
+      },
+      "exit": {
+        "x": 76950.0,
+        "y": 77500.0
+      },
+      "angle": 90.0,
+      "length": 8500.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P233",
+      "entry": {
+        "x": 79266.667,
+        "y": 69025.0
+      },
+      "exit": {
+        "x": 79266.667,
+        "y": 78825.0
+      },
+      "angle": 90.0,
+      "length": 9800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P139",
+      "entry": {
+        "x": 81675.0,
+        "y": 69008.333
+      },
+      "exit": {
+        "x": 81675.0,
+        "y": 79358.333
+      },
+      "angle": 90.0,
+      "length": 10350.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600O",
+      "entry": {
+        "x": 95979.646,
+        "y": 55183.189
+      },
+      "exit": {
+        "x": 95471.313,
+        "y": 54574.856
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602O",
+      "entry": {
+        "x": 96000.0,
+        "y": 59800.0
+      },
+      "exit": {
+        "x": 96000.0,
+        "y": 55000.0
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610O",
+      "entry": {
+        "x": 94950.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 94950.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612O",
+      "entry": {
+        "x": 95450.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 95450.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P600P",
+      "entry": {
+        "x": 99279.646,
+        "y": 55183.189
+      },
+      "exit": {
+        "x": 98771.313,
+        "y": 54574.856
+      },
+      "angle": 270.0,
+      "length": 962.8681601693958,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P602P",
+      "entry": {
+        "x": 99277.045,
+        "y": 59983.189
+      },
+      "exit": {
+        "x": 99277.045,
+        "y": 55183.189
+      },
+      "angle": 270.0,
+      "length": 4800.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P612P",
+      "entry": {
+        "x": 98750.0,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 98750.0,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    },
+    {
+      "equipment_id": "P610P",
+      "entry": {
+        "x": 98166.667,
+        "y": 59300.0
+      },
+      "exit": {
+        "x": 98166.667,
+        "y": 55100.0
+      },
+      "angle": 270.0,
+      "length": 4200.0,
+      "width": 200.0,
+      "provenance": "RUN_EXPLICIT",
+      "model": "greensboro-infeed-v1"
+    }
+  ],
+  "layers": [
+    {
+      "id": "0",
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "annotations": [],
+  "provenance": [
+    {
+      "statement": "Conveyor.asc X_cord/Y_cord/Angle/Length/Width/Layer decoded",
+      "confidence": "HIGH"
+    }
+  ]
+}
