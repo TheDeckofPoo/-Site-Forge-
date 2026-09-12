@@ -1,6 +1,6 @@
 # RUN Geometry Investigation
 
-Generated: `2026-09-11T21:01:54.311886+00:00`
+Generated: `2026-09-12T05:17:01.635689+00:00`
 RUN: `workspace\active\RUN`
 Controller/machine scope: `ORNCCP2`
 
@@ -27,11 +27,11 @@ Controller/machine scope: `ORNCCP2`
 | Motors driving multiple conveyors (Mtrchain fan-out) | 38 |
 | Photoeyes scoped to controller | 44 |
 | Merge table hints | 8 |
-| Connection candidates (total geometric) | 23 |
-| CONFIRMED connections | 1 |
+| Connection candidates (total geometric) | 37 |
+| CONFIRMED connections | 7 |
 | HIGH-CONFIDENCE CANDIDATE | 2 |
-| AMBIGUOUS connections | 20 |
-| Conveyors without strong outbound geometric link (approx unknown) | 34 |
+| AMBIGUOUS connections | 28 |
+| Conveyors without strong outbound geometric link (approx unknown) | 28 |
 
 ## Fields recovered from Conveyor.asc
 
@@ -77,7 +77,7 @@ Present but weak/empty on this controller sample:
 
 ## Geometry model assumptions
 
-(X,Y)=footprint center; Angle=flow direction deg CCW from +X; entry/exit at ±Length/2 along angle. CURVE/TRIANG lower confidence.
+(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; exit=XY+Length·û. CURVE uses Inside_Radius+tangents+90° arc (MEDIUM).
 
 **Critical rule:** numerical P-tag order is never treated as physical adjacency.
 
@@ -92,9 +92,15 @@ Present but weak/empty on this controller sample:
 
 Sample high-confidence / confirmed (up to 15):
 
-- `P312 → P314` CONFIRMED dist=250.0 angΔ=0.0
-- `P320 → P322` HIGH-CONFIDENCE CANDIDATE dist=350.0 angΔ=0.0
-- `P138 → P404` HIGH-CONFIDENCE CANDIDATE dist=690.461 angΔ=0.0
+- `P136 → P138` CONFIRMED dist=0.0 angΔ=0.0
+- `P136A → P136` CONFIRMED dist=0.0 angΔ=0.0
+- `P150A → P150` CONFIRMED dist=0.0 angΔ=0.0
+- `P230 → P232` CONFIRMED dist=0.0 angΔ=0.0
+- `P312 → P314` CONFIRMED dist=0.0 angΔ=0.0
+- `P320 → P322` CONFIRMED dist=0.0 angΔ=0.0
+- `P402 → P404` CONFIRMED dist=0.0 angΔ=0.0
+- `P406 → P408` HIGH-CONFIDENCE CANDIDATE dist=140.182 angΔ=0.0
+- `P400 → P402` HIGH-CONFIDENCE CANDIDATE dist=150.0 angΔ=0.0
 
 ## Desired future PhysicalConveyor model (feasibility)
 
@@ -116,10 +122,10 @@ Physical connections should eventually be mating entry/exit anchors, not generic
 
 ## Artifacts
 
-- `exports\run-geometry\greensboro_equipment.json`
-- `exports\run-geometry\greensboro_connection_candidates.json`
-- `exports\run-geometry\ORNCCP2_equipment.csv`
-- `exports\run-geometry\ORNCCP2_layout_preview.svg` (diagnostic preview only)
+- `exports\cp2-gate\geometry-calib\greensboro_equipment.json`
+- `exports\cp2-gate\geometry-calib\greensboro_connection_candidates.json`
+- `exports\cp2-gate\geometry-calib\ORNCCP2_equipment.csv`
+- `exports\cp2-gate\geometry-calib\ORNCCP2_layout_preview.svg` (diagnostic preview only)
 
 ## Out of scope
 

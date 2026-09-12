@@ -1,0 +1,6559 @@
+{
+  "summary": {
+    "generated_at": "2026-09-12T05:17:01.635689+00:00",
+    "run_dir": "workspace\\active\\RUN",
+    "machine": "ORNCCP2",
+    "conveyors_discovered": 37,
+    "usable_xy": 37,
+    "usable_angle": 37,
+    "usable_length_width": 29,
+    "motors_discovered": 118,
+    "motors_linked_via_mtrchain": 34,
+    "vfd_classified": 0,
+    "contactor_classified": 34,
+    "unknown_drive": 3,
+    "multiple_motor_conveyors": 0,
+    "motors_driving_multiple_conveyors": 38,
+    "photoeyes_scoped": 44,
+    "merge_table_hints": 8,
+    "connection_candidates_total": 37,
+    "confirmed_connections": 7,
+    "high_confidence_candidates": 2,
+    "ambiguous_connections": 28,
+    "unknown_connections": 28,
+    "anchor_model_assumption": "(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; exit=XY+Length\u00b7\u00fb. CURVE uses Inside_Radius+tangents+90\u00b0 arc (MEDIUM).",
+    "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence."
+  },
+  "equipment": [
+    {
+      "conveyor": "P100",
+      "x": 54450.0,
+      "y": 69883.333,
+      "angle": 90.0,
+      "length": 5850.0,
+      "width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M100"
+      ],
+      "drives": [
+        {
+          "motor": "M100",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [],
+      "entry_anchor": {
+        "x": 54450.0,
+        "y": 69883.333
+      },
+      "exit_anchor": {
+        "x": 54450.0,
+        "y": 75733.333
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 54450.0,
+          "Y_cord": 69883.333,
+          "Angle": 90.0,
+          "Length": 5850.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 54450.0,
+          "y": 69883.333
+        },
+        "exit": {
+          "x": 54450.0,
+          "y": 75733.333
+        },
+        "center": {
+          "x": 54450.0,
+          "y": 72808.333
+        },
+        "angle_in": 90.0,
+        "angle_out": 90.0,
+        "length": 5850.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 54450.0,
+            "y": 69883.333
+          },
+          {
+            "cmd": "line",
+            "x": 54450.0,
+            "y": 75733.333
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 54450.0,
+          "y": 69883.333
+        },
+        {
+          "cmd": "line",
+          "x": 54450.0,
+          "y": 75733.333
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 250.0,
+      "discharge_elevation": 250.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "2.000",
+      "io_name": "P100",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1000",
+      "x": 62200.0,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M1000"
+      ],
+      "drives": [
+        {
+          "motor": "M1000",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1000_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62200.0,
+        "y": 87066.667
+      },
+      "exit_anchor": {
+        "x": 62200.0,
+        "y": 77666.667
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 62200.0,
+          "Y_cord": 87066.667,
+          "Angle": 270.0,
+          "Length": 9400.0,
+          "Width": 266.667,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 62200.0,
+          "y": 87066.667
+        },
+        "exit": {
+          "x": 62200.0,
+          "y": 77666.667
+        },
+        "center": {
+          "x": 62200.0,
+          "y": 82366.667
+        },
+        "angle_in": 270.0,
+        "angle_out": 270.0,
+        "length": 9400.0,
+        "width": 266.667,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 62200.0,
+            "y": 87066.667
+          },
+          {
+            "cmd": "line",
+            "x": 62200.0,
+            "y": 77666.667
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 270.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 62200.0,
+          "y": 87066.667
+        },
+        {
+          "cmd": "line",
+          "x": 62200.0,
+          "y": 77666.667
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 575.0,
+      "discharge_elevation": 575.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "5.000",
+      "io_name": "P1000",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1002",
+      "x": 62200.0,
+      "y": 68266.66,
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M1002"
+      ],
+      "drives": [
+        {
+          "motor": "M1002",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1002_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62200.0,
+        "y": 68266.66
+      },
+      "exit_anchor": {
+        "x": 62200.0,
+        "y": 63266.66
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 62200.0,
+          "Y_cord": 68266.66,
+          "Angle": 270.0,
+          "Length": 5000.0,
+          "Width": 333.333,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 62200.0,
+          "y": 68266.66
+        },
+        "exit": {
+          "x": 62200.0,
+          "y": 63266.66
+        },
+        "center": {
+          "x": 62200.0,
+          "y": 65766.66
+        },
+        "angle_in": 270.0,
+        "angle_out": 270.0,
+        "length": 5000.0,
+        "width": 333.333,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 62200.0,
+            "y": 68266.66
+          },
+          {
+            "cmd": "line",
+            "x": 62200.0,
+            "y": 63266.66
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 270.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 62200.0,
+          "y": 68266.66
+        },
+        {
+          "cmd": "line",
+          "x": 62200.0,
+          "y": 63266.66
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 500.0,
+      "discharge_elevation": 3000.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "5.000",
+      "io_name": "P1002",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1004",
+      "x": 62766.667,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M1004"
+      ],
+      "drives": [
+        {
+          "motor": "M1004",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1004_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62766.667,
+        "y": 87066.667
+      },
+      "exit_anchor": {
+        "x": 62766.667,
+        "y": 76966.667
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 62766.667,
+          "Y_cord": 87066.667,
+          "Angle": 270.0,
+          "Length": 10100.0,
+          "Width": 266.667,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 62766.667,
+          "y": 87066.667
+        },
+        "exit": {
+          "x": 62766.667,
+          "y": 76966.667
+        },
+        "center": {
+          "x": 62766.667,
+          "y": 82016.667
+        },
+        "angle_in": 270.0,
+        "angle_out": 270.0,
+        "length": 10100.0,
+        "width": 266.667,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 62766.667,
+            "y": 87066.667
+          },
+          {
+            "cmd": "line",
+            "x": 62766.667,
+            "y": 76966.667
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 270.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 62766.667,
+          "y": 87066.667
+        },
+        {
+          "cmd": "line",
+          "x": 62766.667,
+          "y": 76966.667
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 1475.0,
+      "discharge_elevation": 1475.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "14.000",
+      "io_name": "P1004",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1006",
+      "x": 73700.0,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 9400.0,
+      "width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M1006"
+      ],
+      "drives": [
+        {
+          "motor": "M1006",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1006_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 73700.0,
+        "y": 87066.667
+      },
+      "exit_anchor": {
+        "x": 73700.0,
+        "y": 77666.667
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 73700.0,
+          "Y_cord": 87066.667,
+          "Angle": 270.0,
+          "Length": 9400.0,
+          "Width": 266.667,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 73700.0,
+          "y": 87066.667
+        },
+        "exit": {
+          "x": 73700.0,
+          "y": 77666.667
+        },
+        "center": {
+          "x": 73700.0,
+          "y": 82366.667
+        },
+        "angle_in": 270.0,
+        "angle_out": 270.0,
+        "length": 9400.0,
+        "width": 266.667,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 73700.0,
+            "y": 87066.667
+          },
+          {
+            "cmd": "line",
+            "x": 73700.0,
+            "y": 77666.667
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 270.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 73700.0,
+          "y": 87066.667
+        },
+        {
+          "cmd": "line",
+          "x": 73700.0,
+          "y": 77666.667
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 575.0,
+      "discharge_elevation": 575.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "5.000",
+      "io_name": "P1006",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1008",
+      "x": 73700.0,
+      "y": 68266.667,
+      "angle": 270.0,
+      "length": 5000.0,
+      "width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M1008"
+      ],
+      "drives": [
+        {
+          "motor": "M1008",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1008_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 73700.0,
+        "y": 68266.667
+      },
+      "exit_anchor": {
+        "x": 73700.0,
+        "y": 63266.667
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 73700.0,
+          "Y_cord": 68266.667,
+          "Angle": 270.0,
+          "Length": 5000.0,
+          "Width": 333.333,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 73700.0,
+          "y": 68266.667
+        },
+        "exit": {
+          "x": 73700.0,
+          "y": 63266.667
+        },
+        "center": {
+          "x": 73700.0,
+          "y": 65766.667
+        },
+        "angle_in": 270.0,
+        "angle_out": 270.0,
+        "length": 5000.0,
+        "width": 333.333,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 73700.0,
+            "y": 68266.667
+          },
+          {
+            "cmd": "line",
+            "x": 73700.0,
+            "y": 63266.667
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 270.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 73700.0,
+          "y": 68266.667
+        },
+        {
+          "cmd": "line",
+          "x": 73700.0,
+          "y": 63266.667
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 500.0,
+      "discharge_elevation": 3000.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "5.000",
+      "io_name": "P1008",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P101",
+      "x": 54200.0,
+      "y": 64033.333,
+      "angle": 90.0,
+      "length": 24800.0,
+      "width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [],
+      "drives": [],
+      "drive_type": "UNKNOWN",
+      "photoeyes_name_associated": [],
+      "entry_anchor": {
+        "x": 54200.0,
+        "y": 64033.333
+      },
+      "exit_anchor": {
+        "x": 54200.0,
+        "y": 88833.333
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 54200.0,
+          "Y_cord": 64033.333,
+          "Angle": 90.0,
+          "Length": 24800.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 54200.0,
+          "y": 64033.333
+        },
+        "exit": {
+          "x": 54200.0,
+          "y": 88833.333
+        },
+        "center": {
+          "x": 54200.0,
+          "y": 76433.333
+        },
+        "angle_in": 90.0,
+        "angle_out": 90.0,
+        "length": 24800.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 54200.0,
+            "y": 64033.333
+          },
+          {
+            "cmd": "line",
+            "x": 54200.0,
+            "y": 88833.333
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 54200.0,
+          "y": 64033.333
+        },
+        {
+          "cmd": "line",
+          "x": 54200.0,
+          "y": 88833.333
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 250.0,
+      "discharge_elevation": 250.0,
+      "part_number": "19GSR",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "2.000",
+      "io_name": "P101",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "N",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1010",
+      "x": 74266.666,
+      "y": 87066.667,
+      "angle": 270.0,
+      "length": 10100.0,
+      "width": 266.667,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M1010"
+      ],
+      "drives": [
+        {
+          "motor": "M1010",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1010_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 74266.666,
+        "y": 87066.667
+      },
+      "exit_anchor": {
+        "x": 74266.666,
+        "y": 76966.667
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 74266.666,
+          "Y_cord": 87066.667,
+          "Angle": 270.0,
+          "Length": 10100.0,
+          "Width": 266.667,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 74266.666,
+          "y": 87066.667
+        },
+        "exit": {
+          "x": 74266.666,
+          "y": 76966.667
+        },
+        "center": {
+          "x": 74266.666,
+          "y": 82016.667
+        },
+        "angle_in": 270.0,
+        "angle_out": 270.0,
+        "length": 10100.0,
+        "width": 266.667,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 74266.666,
+            "y": 87066.667
+          },
+          {
+            "cmd": "line",
+            "x": 74266.666,
+            "y": 76966.667
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 270.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 74266.666,
+          "y": 87066.667
+        },
+        {
+          "cmd": "line",
+          "x": 74266.666,
+          "y": 76966.667
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 1475.0,
+      "discharge_elevation": 1475.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "14.000",
+      "io_name": "P1010",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1014",
+      "x": 61800.0,
+      "y": 63116.666,
+      "angle": 0.0,
+      "length": 23400.0,
+      "width": 333.333,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M1014"
+      ],
+      "drives": [
+        {
+          "motor": "M1014",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1014_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 61800.0,
+        "y": 63116.666
+      },
+      "exit_anchor": {
+        "x": 85200.0,
+        "y": 63116.666
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 61800.0,
+          "Y_cord": 63116.666,
+          "Angle": 0.0,
+          "Length": 23400.0,
+          "Width": 333.333,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 61800.0,
+          "y": 63116.666
+        },
+        "exit": {
+          "x": 85200.0,
+          "y": 63116.666
+        },
+        "center": {
+          "x": 73500.0,
+          "y": 63116.666
+        },
+        "angle_in": 0.0,
+        "angle_out": 0.0,
+        "length": 23400.0,
+        "width": 333.333,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 61800.0,
+            "y": 63116.666
+          },
+          {
+            "cmd": "line",
+            "x": 85200.0,
+            "y": 63116.666
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 0.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 61800.0,
+          "y": 63116.666
+        },
+        {
+          "cmd": "line",
+          "x": 85200.0,
+          "y": 63116.666
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2900.0,
+      "discharge_elevation": 2900.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "29.000",
+      "io_name": "P1014",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P1018",
+      "x": 85391.667,
+      "y": 80866.667,
+      "angle": 90.0,
+      "length": 10700.0,
+      "width": 383.333,
+      "equipment_type": "BELT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M1018"
+      ],
+      "drives": [
+        {
+          "motor": "M1018",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE1018_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 85391.667,
+        "y": 80866.667
+      },
+      "exit_anchor": {
+        "x": 85391.667,
+        "y": 91566.667
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "BELT",
+        "source": {
+          "X_cord": 85391.667,
+          "Y_cord": 80866.667,
+          "Angle": 90.0,
+          "Length": 10700.0,
+          "Width": 383.333,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "BELT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "belt",
+        "entry": {
+          "x": 85391.667,
+          "y": 80866.667
+        },
+        "exit": {
+          "x": 85391.667,
+          "y": 91566.667
+        },
+        "center": {
+          "x": 85391.667,
+          "y": 86216.667
+        },
+        "angle_in": 90.0,
+        "angle_out": 90.0,
+        "length": 10700.0,
+        "width": 383.333,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 85391.667,
+            "y": 80866.667
+          },
+          {
+            "cmd": "line",
+            "x": 85391.667,
+            "y": 91566.667
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "belt_transition"
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 85391.667,
+          "y": 80866.667
+        },
+        {
+          "cmd": "line",
+          "x": 85391.667,
+          "y": 91566.667
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "belt",
+      "infeed_elevation": 2800.0,
+      "discharge_elevation": 1600.0,
+      "part_number": "TH",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "28.000",
+      "io_name": "P1018",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P126",
+      "x": 71258.333,
+      "y": 89700.0,
+      "angle": 90.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "infeed_tangent": 66.667,
+      "discharge_tangent": 50.0,
+      "inside_radius": 266.667,
+      "motors": [
+        "M128"
+      ],
+      "drives": [
+        {
+          "motor": "M128",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE126_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 71258.333,
+        "y": 89700.0
+      },
+      "exit_anchor": {
+        "x": 71675.0,
+        "y": 90133.334
+      },
+      "anchor_assumption": "curve_ir_tangent_v1",
+      "geometry": {
+        "equipment_type": "CURVE",
+        "source": {
+          "X_cord": 71258.333,
+          "Y_cord": 89700.0,
+          "Angle": 90.0,
+          "Length": -1.0,
+          "Width": 200.0,
+          "Inside_Radius": 266.667,
+          "Infeed_Tangent": 66.667,
+          "Discharge_Tangent": 50.0,
+          "Type": "CURVE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "curve",
+        "entry": {
+          "x": 71258.333,
+          "y": 89700.0
+        },
+        "exit": {
+          "x": 71675.0,
+          "y": 90133.334
+        },
+        "center": {
+          "x": 71466.66649999999,
+          "y": 89916.667
+        },
+        "arc_center": {
+          "x": 71625.0,
+          "y": 89766.667
+        },
+        "angle_in": 90.0,
+        "angle_out": 0.0,
+        "length": 692.6261767569043,
+        "width": 200.0,
+        "inside_radius": 266.667,
+        "centerline_radius": 366.667,
+        "infeed_tangent": 66.667,
+        "discharge_tangent": 50.0,
+        "sweep_deg": -90.0,
+        "turn": "CW",
+        "path": [
+          {
+            "cmd": "move",
+            "x": 71258.333,
+            "y": 89700.0
+          },
+          {
+            "cmd": "line",
+            "x": 71258.333,
+            "y": 89766.667
+          },
+          {
+            "cmd": "arc",
+            "x": 71625.0,
+            "y": 90133.334,
+            "radius": 366.667,
+            "sweep_deg": -90.0,
+            "center": {
+              "x": 71625.0,
+              "y": 89766.667
+            },
+            "large_arc": 0,
+            "sweep_flag": 1
+          },
+          {
+            "cmd": "line",
+            "x": 71675.0,
+            "y": 90133.334
+          }
+        ],
+        "arc_samples": [
+          {
+            "x": 71258.333,
+            "y": 89766.667
+          },
+          {
+            "x": 71259.7282786348,
+            "y": 89798.62413472605
+          },
+          {
+            "x": 71263.90349562628,
+            "y": 89830.3380563606
+          },
+          {
+            "x": 71270.82687505207,
+            "y": 89861.5674028106
+          },
+          {
+            "x": 71280.4457258143,
+            "y": 89892.0744998928
+          },
+          {
+            "x": 71292.68684265063,
+            "y": 89921.62717017767
+          },
+          {
+            "x": 71307.45706327057,
+            "y": 89950.0005
+          },
+          {
+            "x": 71324.64397737669,
+            "y": 89976.97855118752
+          },
+          {
+            "x": 71344.1167821749,
+            "y": 90002.35600448094
+          },
+          {
+            "x": 71365.72727786268,
+            "y": 90025.93972213732
+          },
+          {
+            "x": 71389.31099551906,
+            "y": 90047.5502178251
+          },
+          {
+            "x": 71414.68844881248,
+            "y": 90067.02302262331
+          },
+          {
+            "x": 71441.6665,
+            "y": 90084.20993672943
+          },
+          {
+            "x": 71470.03982982233,
+            "y": 90098.98015734938
+          },
+          {
+            "x": 71499.5925001072,
+            "y": 90111.22127418571
+          },
+          {
+            "x": 71530.0995971894,
+            "y": 90120.84012494794
+          },
+          {
+            "x": 71561.3289436394,
+            "y": 90127.76350437372
+          },
+          {
+            "x": 71593.04286527395,
+            "y": 90131.93872136521
+          },
+          {
+            "x": 71625.0,
+            "y": 90133.334
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "inside_radius": "RUN",
+          "tangents": "RUN",
+          "sweep": "ASSUMPTION",
+          "turn": "ASSUMPTION",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "curve_ir_tangent_v1"
+        },
+        "confidence": "MEDIUM",
+        "turn_selected": "CW",
+        "turn_score": -1946.3809593422313
+      },
+      "angle_out": 0.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 71258.333,
+          "y": 89700.0
+        },
+        {
+          "cmd": "line",
+          "x": 71258.333,
+          "y": 89766.667
+        },
+        {
+          "cmd": "arc",
+          "x": 71625.0,
+          "y": 90133.334,
+          "radius": 366.667,
+          "sweep_deg": -90.0,
+          "center": {
+            "x": 71625.0,
+            "y": 89766.667
+          },
+          "large_arc": 0,
+          "sweep_flag": 1
+        },
+        {
+          "cmd": "line",
+          "x": 71675.0,
+          "y": 90133.334
+        }
+      ],
+      "arc_samples": [
+        {
+          "x": 71258.333,
+          "y": 89766.667
+        },
+        {
+          "x": 71259.7282786348,
+          "y": 89798.62413472605
+        },
+        {
+          "x": 71263.90349562628,
+          "y": 89830.3380563606
+        },
+        {
+          "x": 71270.82687505207,
+          "y": 89861.5674028106
+        },
+        {
+          "x": 71280.4457258143,
+          "y": 89892.0744998928
+        },
+        {
+          "x": 71292.68684265063,
+          "y": 89921.62717017767
+        },
+        {
+          "x": 71307.45706327057,
+          "y": 89950.0005
+        },
+        {
+          "x": 71324.64397737669,
+          "y": 89976.97855118752
+        },
+        {
+          "x": 71344.1167821749,
+          "y": 90002.35600448094
+        },
+        {
+          "x": 71365.72727786268,
+          "y": 90025.93972213732
+        },
+        {
+          "x": 71389.31099551906,
+          "y": 90047.5502178251
+        },
+        {
+          "x": 71414.68844881248,
+          "y": 90067.02302262331
+        },
+        {
+          "x": 71441.6665,
+          "y": 90084.20993672943
+        },
+        {
+          "x": 71470.03982982233,
+          "y": 90098.98015734938
+        },
+        {
+          "x": 71499.5925001072,
+          "y": 90111.22127418571
+        },
+        {
+          "x": 71530.0995971894,
+          "y": 90120.84012494794
+        },
+        {
+          "x": 71561.3289436394,
+          "y": 90127.76350437372
+        },
+        {
+          "x": 71593.04286527395,
+          "y": 90131.93872136521
+        },
+        {
+          "x": 71625.0,
+          "y": 90133.334
+        }
+      ],
+      "render_kind": "curve",
+      "infeed_elevation": 250.0,
+      "discharge_elevation": 250.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "2.000",
+      "io_name": "P126",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "curve_length_sentinel"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "conveyor": "P134",
+      "x": 72783.333,
+      "y": 91733.333,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "infeed_tangent": 52.083,
+      "discharge_tangent": 125.0,
+      "inside_radius": 266.667,
+      "motors": [
+        "M132"
+      ],
+      "drives": [
+        {
+          "motor": "M132",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE134_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 72783.333,
+        "y": 91733.333
+      },
+      "exit_anchor": {
+        "x": 73202.083,
+        "y": 92225.0
+      },
+      "anchor_assumption": "curve_ir_tangent_v1",
+      "geometry": {
+        "equipment_type": "CURVE",
+        "source": {
+          "X_cord": 72783.333,
+          "Y_cord": 91733.333,
+          "Angle": 0.0,
+          "Length": -1.0,
+          "Width": 200.0,
+          "Inside_Radius": 266.667,
+          "Infeed_Tangent": 52.083,
+          "Discharge_Tangent": 125.0,
+          "Type": "CURVE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "curve",
+        "entry": {
+          "x": 72783.333,
+          "y": 91733.333
+        },
+        "exit": {
+          "x": 73202.083,
+          "y": 92225.0
+        },
+        "center": {
+          "x": 72992.708,
+          "y": 91979.16649999999
+        },
+        "arc_center": {
+          "x": 72835.416,
+          "y": 92100.0
+        },
+        "angle_in": 0.0,
+        "angle_out": 90.0,
+        "length": 753.0421767569043,
+        "width": 200.0,
+        "inside_radius": 266.667,
+        "centerline_radius": 366.667,
+        "infeed_tangent": 52.083,
+        "discharge_tangent": 125.0,
+        "sweep_deg": 90.0,
+        "turn": "CCW",
+        "path": [
+          {
+            "cmd": "move",
+            "x": 72783.333,
+            "y": 91733.333
+          },
+          {
+            "cmd": "line",
+            "x": 72835.416,
+            "y": 91733.333
+          },
+          {
+            "cmd": "arc",
+            "x": 73202.083,
+            "y": 92100.0,
+            "radius": 366.667,
+            "sweep_deg": 90.0,
+            "center": {
+              "x": 72835.416,
+              "y": 92100.0
+            },
+            "large_arc": 0,
+            "sweep_flag": 0
+          },
+          {
+            "cmd": "line",
+            "x": 73202.083,
+            "y": 92225.0
+          }
+        ],
+        "arc_samples": [
+          {
+            "x": 72835.416,
+            "y": 91733.333
+          },
+          {
+            "x": 72867.37313472605,
+            "y": 91734.7282786348
+          },
+          {
+            "x": 72899.0870563606,
+            "y": 91738.90349562628
+          },
+          {
+            "x": 72930.3164028106,
+            "y": 91745.82687505207
+          },
+          {
+            "x": 72960.8234998928,
+            "y": 91755.4457258143
+          },
+          {
+            "x": 72990.37617017767,
+            "y": 91767.68684265063
+          },
+          {
+            "x": 73018.74949999999,
+            "y": 91782.45706327057
+          },
+          {
+            "x": 73045.72755118752,
+            "y": 91799.64397737669
+          },
+          {
+            "x": 73071.10500448094,
+            "y": 91819.1167821749
+          },
+          {
+            "x": 73094.68872213732,
+            "y": 91840.72727786268
+          },
+          {
+            "x": 73116.2992178251,
+            "y": 91864.31099551906
+          },
+          {
+            "x": 73135.7720226233,
+            "y": 91889.68844881248
+          },
+          {
+            "x": 73152.95893672942,
+            "y": 91916.6665
+          },
+          {
+            "x": 73167.72915734937,
+            "y": 91945.03982982233
+          },
+          {
+            "x": 73179.9702741857,
+            "y": 91974.5925001072
+          },
+          {
+            "x": 73189.58912494793,
+            "y": 92005.0995971894
+          },
+          {
+            "x": 73196.51250437372,
+            "y": 92036.3289436394
+          },
+          {
+            "x": 73200.6877213652,
+            "y": 92068.04286527395
+          },
+          {
+            "x": 73202.083,
+            "y": 92100.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "inside_radius": "RUN",
+          "tangents": "RUN",
+          "sweep": "ASSUMPTION",
+          "turn": "ASSUMPTION",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "curve_ir_tangent_v1"
+        },
+        "confidence": "MEDIUM",
+        "turn_selected": "CCW",
+        "turn_score": -275.63846338999934
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 72783.333,
+          "y": 91733.333
+        },
+        {
+          "cmd": "line",
+          "x": 72835.416,
+          "y": 91733.333
+        },
+        {
+          "cmd": "arc",
+          "x": 73202.083,
+          "y": 92100.0,
+          "radius": 366.667,
+          "sweep_deg": 90.0,
+          "center": {
+            "x": 72835.416,
+            "y": 92100.0
+          },
+          "large_arc": 0,
+          "sweep_flag": 0
+        },
+        {
+          "cmd": "line",
+          "x": 73202.083,
+          "y": 92225.0
+        }
+      ],
+      "arc_samples": [
+        {
+          "x": 72835.416,
+          "y": 91733.333
+        },
+        {
+          "x": 72867.37313472605,
+          "y": 91734.7282786348
+        },
+        {
+          "x": 72899.0870563606,
+          "y": 91738.90349562628
+        },
+        {
+          "x": 72930.3164028106,
+          "y": 91745.82687505207
+        },
+        {
+          "x": 72960.8234998928,
+          "y": 91755.4457258143
+        },
+        {
+          "x": 72990.37617017767,
+          "y": 91767.68684265063
+        },
+        {
+          "x": 73018.74949999999,
+          "y": 91782.45706327057
+        },
+        {
+          "x": 73045.72755118752,
+          "y": 91799.64397737669
+        },
+        {
+          "x": 73071.10500448094,
+          "y": 91819.1167821749
+        },
+        {
+          "x": 73094.68872213732,
+          "y": 91840.72727786268
+        },
+        {
+          "x": 73116.2992178251,
+          "y": 91864.31099551906
+        },
+        {
+          "x": 73135.7720226233,
+          "y": 91889.68844881248
+        },
+        {
+          "x": 73152.95893672942,
+          "y": 91916.6665
+        },
+        {
+          "x": 73167.72915734937,
+          "y": 91945.03982982233
+        },
+        {
+          "x": 73179.9702741857,
+          "y": 91974.5925001072
+        },
+        {
+          "x": 73189.58912494793,
+          "y": 92005.0995971894
+        },
+        {
+          "x": 73196.51250437372,
+          "y": 92036.3289436394
+        },
+        {
+          "x": 73200.6877213652,
+          "y": 92068.04286527395
+        },
+        {
+          "x": 73202.083,
+          "y": 92100.0
+        }
+      ],
+      "render_kind": "curve",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P134",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "curve_length_sentinel"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "conveyor": "P136",
+      "x": 64758.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 2025.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M136"
+      ],
+      "drives": [
+        {
+          "motor": "M136",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE136_F1",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE136_F2",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE136_P1",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE136_P2",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 64758.333,
+        "y": 91733.333
+      },
+      "exit_anchor": {
+        "x": 62733.333,
+        "y": 91733.333
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 64758.333,
+          "Y_cord": 91733.333,
+          "Angle": 180.0,
+          "Length": 2025.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 64758.333,
+          "y": 91733.333
+        },
+        "exit": {
+          "x": 62733.333,
+          "y": 91733.333
+        },
+        "center": {
+          "x": 63745.833,
+          "y": 91733.333
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 2025.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 64758.333,
+            "y": 91733.333
+          },
+          {
+            "cmd": "line",
+            "x": 62733.333,
+            "y": 91733.333
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 64758.333,
+          "y": 91733.333
+        },
+        {
+          "cmd": "line",
+          "x": 62733.333,
+          "y": 91733.333
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P136",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P136A",
+      "x": 72783.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 8025.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M136"
+      ],
+      "drives": [
+        {
+          "motor": "M136",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [],
+      "entry_anchor": {
+        "x": 72783.333,
+        "y": 91733.333
+      },
+      "exit_anchor": {
+        "x": 64758.333,
+        "y": 91733.333
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 72783.333,
+          "Y_cord": 91733.333,
+          "Angle": 180.0,
+          "Length": 8025.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 72783.333,
+          "y": 91733.333
+        },
+        "exit": {
+          "x": 64758.333,
+          "y": 91733.333
+        },
+        "center": {
+          "x": 68770.833,
+          "y": 91733.333
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 8025.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 72783.333,
+            "y": 91733.333
+          },
+          {
+            "cmd": "line",
+            "x": 64758.333,
+            "y": 91733.333
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 72783.333,
+          "y": 91733.333
+        },
+        {
+          "cmd": "line",
+          "x": 64758.333,
+          "y": 91733.333
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P136A",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P138",
+      "x": 62733.333,
+      "y": 91733.333,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "equipment_type": "BELT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M138"
+      ],
+      "drives": [
+        {
+          "motor": "M138",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE138_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62733.333,
+        "y": 91733.333
+      },
+      "exit_anchor": {
+        "x": 62133.333,
+        "y": 91733.333
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "BELT",
+        "source": {
+          "X_cord": 62733.333,
+          "Y_cord": 91733.333,
+          "Angle": 180.0,
+          "Length": 600.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "BELT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "belt",
+        "entry": {
+          "x": 62733.333,
+          "y": 91733.333
+        },
+        "exit": {
+          "x": 62133.333,
+          "y": 91733.333
+        },
+        "center": {
+          "x": 62433.333,
+          "y": 91733.333
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 600.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 62733.333,
+            "y": 91733.333
+          },
+          {
+            "cmd": "line",
+            "x": 62133.333,
+            "y": 91733.333
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "belt_transition"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 62733.333,
+          "y": 91733.333
+        },
+        {
+          "cmd": "line",
+          "x": 62133.333,
+          "y": 91733.333
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "belt",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P138",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P142",
+      "x": 81675.0,
+      "y": 89708.333,
+      "angle": 90.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "infeed_tangent": 50.0,
+      "discharge_tangent": 50.0,
+      "inside_radius": 266.667,
+      "motors": [
+        "M144"
+      ],
+      "drives": [
+        {
+          "motor": "M144",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE142_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 81675.0,
+        "y": 89708.333
+      },
+      "exit_anchor": {
+        "x": 82091.667,
+        "y": 90125.0
+      },
+      "anchor_assumption": "curve_ir_tangent_v1",
+      "geometry": {
+        "equipment_type": "CURVE",
+        "source": {
+          "X_cord": 81675.0,
+          "Y_cord": 89708.333,
+          "Angle": 90.0,
+          "Length": -1.0,
+          "Width": 200.0,
+          "Inside_Radius": 266.667,
+          "Infeed_Tangent": 50.0,
+          "Discharge_Tangent": 50.0,
+          "Type": "CURVE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "curve",
+        "entry": {
+          "x": 81675.0,
+          "y": 89708.333
+        },
+        "exit": {
+          "x": 82091.667,
+          "y": 90125.0
+        },
+        "center": {
+          "x": 81883.33350000001,
+          "y": 89916.66649999999
+        },
+        "arc_center": {
+          "x": 82041.667,
+          "y": 89758.333
+        },
+        "angle_in": 90.0,
+        "angle_out": 0.0,
+        "length": 675.9591767569043,
+        "width": 200.0,
+        "inside_radius": 266.667,
+        "centerline_radius": 366.667,
+        "infeed_tangent": 50.0,
+        "discharge_tangent": 50.0,
+        "sweep_deg": -90.0,
+        "turn": "CW",
+        "path": [
+          {
+            "cmd": "move",
+            "x": 81675.0,
+            "y": 89708.333
+          },
+          {
+            "cmd": "line",
+            "x": 81675.0,
+            "y": 89758.333
+          },
+          {
+            "cmd": "arc",
+            "x": 82041.667,
+            "y": 90125.0,
+            "radius": 366.667,
+            "sweep_deg": -90.0,
+            "center": {
+              "x": 82041.667,
+              "y": 89758.333
+            },
+            "large_arc": 0,
+            "sweep_flag": 1
+          },
+          {
+            "cmd": "line",
+            "x": 82091.667,
+            "y": 90125.0
+          }
+        ],
+        "arc_samples": [
+          {
+            "x": 81675.0,
+            "y": 89758.333
+          },
+          {
+            "x": 81676.3952786348,
+            "y": 89790.29013472605
+          },
+          {
+            "x": 81680.57049562628,
+            "y": 89822.0040563606
+          },
+          {
+            "x": 81687.49387505207,
+            "y": 89853.2334028106
+          },
+          {
+            "x": 81697.1127258143,
+            "y": 89883.7404998928
+          },
+          {
+            "x": 81709.35384265063,
+            "y": 89913.29317017767
+          },
+          {
+            "x": 81724.12406327057,
+            "y": 89941.66649999999
+          },
+          {
+            "x": 81741.31097737669,
+            "y": 89968.64455118752
+          },
+          {
+            "x": 81760.7837821749,
+            "y": 89994.02200448094
+          },
+          {
+            "x": 81782.39427786268,
+            "y": 90017.60572213732
+          },
+          {
+            "x": 81805.97799551906,
+            "y": 90039.2162178251
+          },
+          {
+            "x": 81831.35544881248,
+            "y": 90058.68902262331
+          },
+          {
+            "x": 81858.33350000001,
+            "y": 90075.87593672943
+          },
+          {
+            "x": 81886.70682982233,
+            "y": 90090.64615734937
+          },
+          {
+            "x": 81916.2595001072,
+            "y": 90102.8872741857
+          },
+          {
+            "x": 81946.7665971894,
+            "y": 90112.50612494793
+          },
+          {
+            "x": 81977.9959436394,
+            "y": 90119.42950437372
+          },
+          {
+            "x": 82009.70986527395,
+            "y": 90123.6047213652
+          },
+          {
+            "x": 82041.667,
+            "y": 90125.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "inside_radius": "RUN",
+          "tangents": "RUN",
+          "sweep": "ASSUMPTION",
+          "turn": "ASSUMPTION",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "curve_ir_tangent_v1"
+        },
+        "confidence": "MEDIUM",
+        "turn_selected": "CW",
+        "turn_score": -2015.9948757100046
+      },
+      "angle_out": 0.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 81675.0,
+          "y": 89708.333
+        },
+        {
+          "cmd": "line",
+          "x": 81675.0,
+          "y": 89758.333
+        },
+        {
+          "cmd": "arc",
+          "x": 82041.667,
+          "y": 90125.0,
+          "radius": 366.667,
+          "sweep_deg": -90.0,
+          "center": {
+            "x": 82041.667,
+            "y": 89758.333
+          },
+          "large_arc": 0,
+          "sweep_flag": 1
+        },
+        {
+          "cmd": "line",
+          "x": 82091.667,
+          "y": 90125.0
+        }
+      ],
+      "arc_samples": [
+        {
+          "x": 81675.0,
+          "y": 89758.333
+        },
+        {
+          "x": 81676.3952786348,
+          "y": 89790.29013472605
+        },
+        {
+          "x": 81680.57049562628,
+          "y": 89822.0040563606
+        },
+        {
+          "x": 81687.49387505207,
+          "y": 89853.2334028106
+        },
+        {
+          "x": 81697.1127258143,
+          "y": 89883.7404998928
+        },
+        {
+          "x": 81709.35384265063,
+          "y": 89913.29317017767
+        },
+        {
+          "x": 81724.12406327057,
+          "y": 89941.66649999999
+        },
+        {
+          "x": 81741.31097737669,
+          "y": 89968.64455118752
+        },
+        {
+          "x": 81760.7837821749,
+          "y": 89994.02200448094
+        },
+        {
+          "x": 81782.39427786268,
+          "y": 90017.60572213732
+        },
+        {
+          "x": 81805.97799551906,
+          "y": 90039.2162178251
+        },
+        {
+          "x": 81831.35544881248,
+          "y": 90058.68902262331
+        },
+        {
+          "x": 81858.33350000001,
+          "y": 90075.87593672943
+        },
+        {
+          "x": 81886.70682982233,
+          "y": 90090.64615734937
+        },
+        {
+          "x": 81916.2595001072,
+          "y": 90102.8872741857
+        },
+        {
+          "x": 81946.7665971894,
+          "y": 90112.50612494793
+        },
+        {
+          "x": 81977.9959436394,
+          "y": 90119.42950437372
+        },
+        {
+          "x": 82009.70986527395,
+          "y": 90123.6047213652
+        },
+        {
+          "x": 82041.667,
+          "y": 90125.0
+        }
+      ],
+      "render_kind": "curve",
+      "infeed_elevation": 250.0,
+      "discharge_elevation": 250.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "2.000",
+      "io_name": "P142",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "curve_length_sentinel"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "conveyor": "P148",
+      "x": 83250.0,
+      "y": 91775.0,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "infeed_tangent": 50.0,
+      "discharge_tangent": 200.0,
+      "inside_radius": 266.667,
+      "motors": [
+        "M146"
+      ],
+      "drives": [
+        {
+          "motor": "M146",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE148_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 83250.0,
+        "y": 91775.0
+      },
+      "exit_anchor": {
+        "x": 83666.667,
+        "y": 91208.333
+      },
+      "anchor_assumption": "curve_ir_tangent_v1",
+      "geometry": {
+        "equipment_type": "CURVE",
+        "source": {
+          "X_cord": 83250.0,
+          "Y_cord": 91775.0,
+          "Angle": 0.0,
+          "Length": -1.0,
+          "Width": 200.0,
+          "Inside_Radius": 266.667,
+          "Infeed_Tangent": 50.0,
+          "Discharge_Tangent": 200.0,
+          "Type": "CURVE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "curve",
+        "entry": {
+          "x": 83250.0,
+          "y": 91775.0
+        },
+        "exit": {
+          "x": 83666.667,
+          "y": 91208.333
+        },
+        "center": {
+          "x": 83458.33350000001,
+          "y": 91491.66649999999
+        },
+        "arc_center": {
+          "x": 83300.0,
+          "y": 91408.333
+        },
+        "angle_in": 0.0,
+        "angle_out": 270.0,
+        "length": 825.9591767569043,
+        "width": 200.0,
+        "inside_radius": 266.667,
+        "centerline_radius": 366.667,
+        "infeed_tangent": 50.0,
+        "discharge_tangent": 200.0,
+        "sweep_deg": -90.0,
+        "turn": "CW",
+        "path": [
+          {
+            "cmd": "move",
+            "x": 83250.0,
+            "y": 91775.0
+          },
+          {
+            "cmd": "line",
+            "x": 83300.0,
+            "y": 91775.0
+          },
+          {
+            "cmd": "arc",
+            "x": 83666.667,
+            "y": 91408.333,
+            "radius": 366.667,
+            "sweep_deg": -90.0,
+            "center": {
+              "x": 83300.0,
+              "y": 91408.333
+            },
+            "large_arc": 0,
+            "sweep_flag": 1
+          },
+          {
+            "cmd": "line",
+            "x": 83666.667,
+            "y": 91208.333
+          }
+        ],
+        "arc_samples": [
+          {
+            "x": 83300.0,
+            "y": 91775.0
+          },
+          {
+            "x": 83331.95713472605,
+            "y": 91773.6047213652
+          },
+          {
+            "x": 83363.6710563606,
+            "y": 91769.42950437372
+          },
+          {
+            "x": 83394.9004028106,
+            "y": 91762.50612494793
+          },
+          {
+            "x": 83425.4074998928,
+            "y": 91752.8872741857
+          },
+          {
+            "x": 83454.96017017767,
+            "y": 91740.64615734937
+          },
+          {
+            "x": 83483.3335,
+            "y": 91725.87593672943
+          },
+          {
+            "x": 83510.31155118752,
+            "y": 91708.68902262331
+          },
+          {
+            "x": 83535.68900448094,
+            "y": 91689.2162178251
+          },
+          {
+            "x": 83559.27272213732,
+            "y": 91667.60572213732
+          },
+          {
+            "x": 83580.8832178251,
+            "y": 91644.02200448094
+          },
+          {
+            "x": 83600.35602262331,
+            "y": 91618.64455118752
+          },
+          {
+            "x": 83617.54293672943,
+            "y": 91591.66649999999
+          },
+          {
+            "x": 83632.31315734937,
+            "y": 91563.29317017767
+          },
+          {
+            "x": 83644.5542741857,
+            "y": 91533.7404998928
+          },
+          {
+            "x": 83654.17312494793,
+            "y": 91503.2334028106
+          },
+          {
+            "x": 83661.09650437372,
+            "y": 91472.0040563606
+          },
+          {
+            "x": 83665.2717213652,
+            "y": 91440.29013472605
+          },
+          {
+            "x": 83666.667,
+            "y": 91408.333
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "inside_radius": "RUN",
+          "tangents": "RUN",
+          "sweep": "ASSUMPTION",
+          "turn": "ASSUMPTION",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "curve_ir_tangent_v1"
+        },
+        "confidence": "MEDIUM",
+        "turn_selected": "CW",
+        "turn_score": -2493.3386129623477
+      },
+      "angle_out": 270.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 83250.0,
+          "y": 91775.0
+        },
+        {
+          "cmd": "line",
+          "x": 83300.0,
+          "y": 91775.0
+        },
+        {
+          "cmd": "arc",
+          "x": 83666.667,
+          "y": 91408.333,
+          "radius": 366.667,
+          "sweep_deg": -90.0,
+          "center": {
+            "x": 83300.0,
+            "y": 91408.333
+          },
+          "large_arc": 0,
+          "sweep_flag": 1
+        },
+        {
+          "cmd": "line",
+          "x": 83666.667,
+          "y": 91208.333
+        }
+      ],
+      "arc_samples": [
+        {
+          "x": 83300.0,
+          "y": 91775.0
+        },
+        {
+          "x": 83331.95713472605,
+          "y": 91773.6047213652
+        },
+        {
+          "x": 83363.6710563606,
+          "y": 91769.42950437372
+        },
+        {
+          "x": 83394.9004028106,
+          "y": 91762.50612494793
+        },
+        {
+          "x": 83425.4074998928,
+          "y": 91752.8872741857
+        },
+        {
+          "x": 83454.96017017767,
+          "y": 91740.64615734937
+        },
+        {
+          "x": 83483.3335,
+          "y": 91725.87593672943
+        },
+        {
+          "x": 83510.31155118752,
+          "y": 91708.68902262331
+        },
+        {
+          "x": 83535.68900448094,
+          "y": 91689.2162178251
+        },
+        {
+          "x": 83559.27272213732,
+          "y": 91667.60572213732
+        },
+        {
+          "x": 83580.8832178251,
+          "y": 91644.02200448094
+        },
+        {
+          "x": 83600.35602262331,
+          "y": 91618.64455118752
+        },
+        {
+          "x": 83617.54293672943,
+          "y": 91591.66649999999
+        },
+        {
+          "x": 83632.31315734937,
+          "y": 91563.29317017767
+        },
+        {
+          "x": 83644.5542741857,
+          "y": 91533.7404998928
+        },
+        {
+          "x": 83654.17312494793,
+          "y": 91503.2334028106
+        },
+        {
+          "x": 83661.09650437372,
+          "y": 91472.0040563606
+        },
+        {
+          "x": 83665.2717213652,
+          "y": 91440.29013472605
+        },
+        {
+          "x": 83666.667,
+          "y": 91408.333
+        }
+      ],
+      "render_kind": "curve",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P148",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "curve_length_sentinel"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "conveyor": "P150",
+      "x": 76700.0,
+      "y": 91775.0,
+      "angle": 180.0,
+      "length": 2050.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M150"
+      ],
+      "drives": [
+        {
+          "motor": "M150",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE150_F1",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE150_F2",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE150_P2",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE150_P1",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 76700.0,
+        "y": 91775.0
+      },
+      "exit_anchor": {
+        "x": 74650.0,
+        "y": 91775.0
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 76700.0,
+          "Y_cord": 91775.0,
+          "Angle": 180.0,
+          "Length": 2050.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 76700.0,
+          "y": 91775.0
+        },
+        "exit": {
+          "x": 74650.0,
+          "y": 91775.0
+        },
+        "center": {
+          "x": 75675.0,
+          "y": 91775.0
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 2050.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 76700.0,
+            "y": 91775.0
+          },
+          {
+            "cmd": "line",
+            "x": 74650.0,
+            "y": 91775.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 76700.0,
+          "y": 91775.0
+        },
+        {
+          "cmd": "line",
+          "x": 74650.0,
+          "y": 91775.0
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P150",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P150A",
+      "x": 83250.0,
+      "y": 91775.0,
+      "angle": 180.0,
+      "length": 6550.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M150"
+      ],
+      "drives": [
+        {
+          "motor": "M150",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [],
+      "entry_anchor": {
+        "x": 83250.0,
+        "y": 91775.0
+      },
+      "exit_anchor": {
+        "x": 76700.0,
+        "y": 91775.0
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 83250.0,
+          "Y_cord": 91775.0,
+          "Angle": 180.0,
+          "Length": 6550.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 83250.0,
+          "y": 91775.0
+        },
+        "exit": {
+          "x": 76700.0,
+          "y": 91775.0
+        },
+        "center": {
+          "x": 79975.0,
+          "y": 91775.0
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 6550.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 83250.0,
+            "y": 91775.0
+          },
+          {
+            "cmd": "line",
+            "x": 76700.0,
+            "y": 91775.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 83250.0,
+          "y": 91775.0
+        },
+        {
+          "cmd": "line",
+          "x": 76700.0,
+          "y": 91775.0
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P150A",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P215",
+      "x": 47434.4,
+      "y": 92627.828,
+      "angle": 180.0,
+      "length": 1000.0,
+      "width": 500.0,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M215"
+      ],
+      "drives": [
+        {
+          "motor": "M215",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE215_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 47434.4,
+        "y": 92627.828
+      },
+      "exit_anchor": {
+        "x": 46434.4,
+        "y": 92627.828
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 47434.4,
+          "Y_cord": 92627.828,
+          "Angle": 180.0,
+          "Length": 1000.0,
+          "Width": 500.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 47434.4,
+          "y": 92627.828
+        },
+        "exit": {
+          "x": 46434.4,
+          "y": 92627.828
+        },
+        "center": {
+          "x": 46934.4,
+          "y": 92627.828
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 1000.0,
+        "width": 500.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 47434.4,
+            "y": 92627.828
+          },
+          {
+            "cmd": "line",
+            "x": 46434.4,
+            "y": 92627.828
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 47434.4,
+          "y": 92627.828
+        },
+        {
+          "cmd": "line",
+          "x": 46434.4,
+          "y": 92627.828
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P215",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P226",
+      "x": 67780.765,
+      "y": 92761.24,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 266.667,
+      "motors": [
+        "M229"
+      ],
+      "drives": [
+        {
+          "motor": "M229",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE226_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 67780.765,
+        "y": 92761.24
+      },
+      "exit_anchor": {
+        "x": 68147.432,
+        "y": 93127.907
+      },
+      "anchor_assumption": "curve_ir_tangent_v1",
+      "geometry": {
+        "equipment_type": "CURVE",
+        "source": {
+          "X_cord": 67780.765,
+          "Y_cord": 92761.24,
+          "Angle": 0.0,
+          "Length": -1.0,
+          "Width": 200.0,
+          "Inside_Radius": 266.667,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "CURVE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "curve",
+        "entry": {
+          "x": 67780.765,
+          "y": 92761.24
+        },
+        "exit": {
+          "x": 68147.432,
+          "y": 93127.907
+        },
+        "center": {
+          "x": 67964.0985,
+          "y": 92944.5735
+        },
+        "arc_center": {
+          "x": 67780.765,
+          "y": 93127.907
+        },
+        "angle_in": 0.0,
+        "angle_out": 90.0,
+        "length": 575.9591767569043,
+        "width": 200.0,
+        "inside_radius": 266.667,
+        "centerline_radius": 366.667,
+        "infeed_tangent": 0.0,
+        "discharge_tangent": 0.0,
+        "sweep_deg": 90.0,
+        "turn": "CCW",
+        "path": [
+          {
+            "cmd": "move",
+            "x": 67780.765,
+            "y": 92761.24
+          },
+          {
+            "cmd": "arc",
+            "x": 68147.432,
+            "y": 93127.907,
+            "radius": 366.667,
+            "sweep_deg": 90.0,
+            "center": {
+              "x": 67780.765,
+              "y": 93127.907
+            },
+            "large_arc": 0,
+            "sweep_flag": 0
+          }
+        ],
+        "arc_samples": [
+          {
+            "x": 67780.765,
+            "y": 92761.24
+          },
+          {
+            "x": 67812.72213472605,
+            "y": 92762.6352786348
+          },
+          {
+            "x": 67844.4360563606,
+            "y": 92766.81049562628
+          },
+          {
+            "x": 67875.6654028106,
+            "y": 92773.73387505207
+          },
+          {
+            "x": 67906.1724998928,
+            "y": 92783.3527258143
+          },
+          {
+            "x": 67935.72517017767,
+            "y": 92795.59384265063
+          },
+          {
+            "x": 67964.0985,
+            "y": 92810.36406327058
+          },
+          {
+            "x": 67991.07655118752,
+            "y": 92827.5509773767
+          },
+          {
+            "x": 68016.45400448094,
+            "y": 92847.0237821749
+          },
+          {
+            "x": 68040.03772213732,
+            "y": 92868.63427786269
+          },
+          {
+            "x": 68061.6482178251,
+            "y": 92892.21799551907
+          },
+          {
+            "x": 68081.12102262331,
+            "y": 92917.59544881248
+          },
+          {
+            "x": 68098.30793672943,
+            "y": 92944.57350000001
+          },
+          {
+            "x": 68113.07815734937,
+            "y": 92972.94682982234
+          },
+          {
+            "x": 68125.3192741857,
+            "y": 93002.49950010721
+          },
+          {
+            "x": 68134.93812494793,
+            "y": 93033.00659718941
+          },
+          {
+            "x": 68141.86150437372,
+            "y": 93064.2359436394
+          },
+          {
+            "x": 68146.0367213652,
+            "y": 93095.94986527396
+          },
+          {
+            "x": 68147.432,
+            "y": 93127.907
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "inside_radius": "RUN",
+          "tangents": "RUN",
+          "sweep": "ASSUMPTION",
+          "turn": "ASSUMPTION",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "curve_ir_tangent_v1"
+        },
+        "confidence": "MEDIUM",
+        "turn_selected": "CCW",
+        "turn_score": -521.5532114990792
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 67780.765,
+          "y": 92761.24
+        },
+        {
+          "cmd": "arc",
+          "x": 68147.432,
+          "y": 93127.907,
+          "radius": 366.667,
+          "sweep_deg": 90.0,
+          "center": {
+            "x": 67780.765,
+            "y": 93127.907
+          },
+          "large_arc": 0,
+          "sweep_flag": 0
+        }
+      ],
+      "arc_samples": [
+        {
+          "x": 67780.765,
+          "y": 92761.24
+        },
+        {
+          "x": 67812.72213472605,
+          "y": 92762.6352786348
+        },
+        {
+          "x": 67844.4360563606,
+          "y": 92766.81049562628
+        },
+        {
+          "x": 67875.6654028106,
+          "y": 92773.73387505207
+        },
+        {
+          "x": 67906.1724998928,
+          "y": 92783.3527258143
+        },
+        {
+          "x": 67935.72517017767,
+          "y": 92795.59384265063
+        },
+        {
+          "x": 67964.0985,
+          "y": 92810.36406327058
+        },
+        {
+          "x": 67991.07655118752,
+          "y": 92827.5509773767
+        },
+        {
+          "x": 68016.45400448094,
+          "y": 92847.0237821749
+        },
+        {
+          "x": 68040.03772213732,
+          "y": 92868.63427786269
+        },
+        {
+          "x": 68061.6482178251,
+          "y": 92892.21799551907
+        },
+        {
+          "x": 68081.12102262331,
+          "y": 92917.59544881248
+        },
+        {
+          "x": 68098.30793672943,
+          "y": 92944.57350000001
+        },
+        {
+          "x": 68113.07815734937,
+          "y": 92972.94682982234
+        },
+        {
+          "x": 68125.3192741857,
+          "y": 93002.49950010721
+        },
+        {
+          "x": 68134.93812494793,
+          "y": 93033.00659718941
+        },
+        {
+          "x": 68141.86150437372,
+          "y": 93064.2359436394
+        },
+        {
+          "x": 68146.0367213652,
+          "y": 93095.94986527396
+        },
+        {
+          "x": 68147.432,
+          "y": 93127.907
+        }
+      ],
+      "render_kind": "curve",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P226",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "curve_length_sentinel"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "conveyor": "P229",
+      "x": 67767.195,
+      "y": 92770.923,
+      "angle": 180.0,
+      "length": 13066.667,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M229"
+      ],
+      "drives": [
+        {
+          "motor": "M229",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE229_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 67767.195,
+        "y": 92770.923
+      },
+      "exit_anchor": {
+        "x": 54700.528000000006,
+        "y": 92770.923
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 67767.195,
+          "Y_cord": 92770.923,
+          "Angle": 180.0,
+          "Length": 13066.667,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 67767.195,
+          "y": 92770.923
+        },
+        "exit": {
+          "x": 54700.528000000006,
+          "y": 92770.923
+        },
+        "center": {
+          "x": 61233.861500000006,
+          "y": 92770.923
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 13066.667,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 67767.195,
+            "y": 92770.923
+          },
+          {
+            "cmd": "line",
+            "x": 54700.528000000006,
+            "y": 92770.923
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 67767.195,
+          "y": 92770.923
+        },
+        {
+          "cmd": "line",
+          "x": 54700.528000000006,
+          "y": 92770.923
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P229",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P230",
+      "x": 7070.634,
+      "y": 1550.65,
+      "angle": 180.0,
+      "length": 2650.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [],
+      "drives": [],
+      "drive_type": "UNKNOWN",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE230_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE230_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 7070.634,
+        "y": 1550.65
+      },
+      "exit_anchor": {
+        "x": 4420.634,
+        "y": 1550.6500000000003
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 7070.634,
+          "Y_cord": 1550.65,
+          "Angle": 180.0,
+          "Length": 2650.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 7070.634,
+          "y": 1550.65
+        },
+        "exit": {
+          "x": 4420.634,
+          "y": 1550.6500000000003
+        },
+        "center": {
+          "x": 5745.634,
+          "y": 1550.65
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 2650.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 7070.634,
+            "y": 1550.65
+          },
+          {
+            "cmd": "line",
+            "x": 4420.634,
+            "y": 1550.6500000000003
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 7070.634,
+          "y": 1550.65
+        },
+        {
+          "cmd": "line",
+          "x": 4420.634,
+          "y": 1550.6500000000003
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P230",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "N",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P232",
+      "x": 4420.634,
+      "y": 1550.65,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "equipment_type": "BELT",
+      "infeed_tangent": 150.0,
+      "discharge_tangent": 150.0,
+      "inside_radius": 150.0,
+      "motors": [],
+      "drives": [],
+      "drive_type": "UNKNOWN",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE232_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 4420.634,
+        "y": 1550.65
+      },
+      "exit_anchor": {
+        "x": 3820.634,
+        "y": 1550.65
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "BELT",
+        "source": {
+          "X_cord": 4420.634,
+          "Y_cord": 1550.65,
+          "Angle": 180.0,
+          "Length": 600.0,
+          "Width": 200.0,
+          "Inside_Radius": 150.0,
+          "Infeed_Tangent": 150.0,
+          "Discharge_Tangent": 150.0,
+          "Type": "BELT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "belt",
+        "entry": {
+          "x": 4420.634,
+          "y": 1550.65
+        },
+        "exit": {
+          "x": 3820.634,
+          "y": 1550.65
+        },
+        "center": {
+          "x": 4120.634,
+          "y": 1550.65
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 600.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 4420.634,
+            "y": 1550.65
+          },
+          {
+            "cmd": "line",
+            "x": 3820.634,
+            "y": 1550.65
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "belt_transition"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 4420.634,
+          "y": 1550.65
+        },
+        {
+          "cmd": "line",
+          "x": 3820.634,
+          "y": 1550.65
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "belt",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P232",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "N",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P238",
+      "x": 78850.0,
+      "y": 92075.0,
+      "angle": 0.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "infeed_tangent": 50.0,
+      "discharge_tangent": 50.0,
+      "inside_radius": 266.667,
+      "motors": [
+        "M240"
+      ],
+      "drives": [
+        {
+          "motor": "M240",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE238_JF",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 78850.0,
+        "y": 92075.0
+      },
+      "exit_anchor": {
+        "x": 79266.667,
+        "y": 91658.333
+      },
+      "anchor_assumption": "curve_ir_tangent_v1",
+      "geometry": {
+        "equipment_type": "CURVE",
+        "source": {
+          "X_cord": 78850.0,
+          "Y_cord": 92075.0,
+          "Angle": 0.0,
+          "Length": -1.0,
+          "Width": 200.0,
+          "Inside_Radius": 266.667,
+          "Infeed_Tangent": 50.0,
+          "Discharge_Tangent": 50.0,
+          "Type": "CURVE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "curve",
+        "entry": {
+          "x": 78850.0,
+          "y": 92075.0
+        },
+        "exit": {
+          "x": 79266.667,
+          "y": 91658.333
+        },
+        "center": {
+          "x": 79058.33350000001,
+          "y": 91866.66649999999
+        },
+        "arc_center": {
+          "x": 78900.0,
+          "y": 91708.333
+        },
+        "angle_in": 0.0,
+        "angle_out": 270.0,
+        "length": 675.9591767569043,
+        "width": 200.0,
+        "inside_radius": 266.667,
+        "centerline_radius": 366.667,
+        "infeed_tangent": 50.0,
+        "discharge_tangent": 50.0,
+        "sweep_deg": -90.0,
+        "turn": "CW",
+        "path": [
+          {
+            "cmd": "move",
+            "x": 78850.0,
+            "y": 92075.0
+          },
+          {
+            "cmd": "line",
+            "x": 78900.0,
+            "y": 92075.0
+          },
+          {
+            "cmd": "arc",
+            "x": 79266.667,
+            "y": 91708.333,
+            "radius": 366.667,
+            "sweep_deg": -90.0,
+            "center": {
+              "x": 78900.0,
+              "y": 91708.333
+            },
+            "large_arc": 0,
+            "sweep_flag": 1
+          },
+          {
+            "cmd": "line",
+            "x": 79266.667,
+            "y": 91658.333
+          }
+        ],
+        "arc_samples": [
+          {
+            "x": 78900.0,
+            "y": 92075.0
+          },
+          {
+            "x": 78931.95713472605,
+            "y": 92073.6047213652
+          },
+          {
+            "x": 78963.6710563606,
+            "y": 92069.42950437372
+          },
+          {
+            "x": 78994.9004028106,
+            "y": 92062.50612494793
+          },
+          {
+            "x": 79025.4074998928,
+            "y": 92052.8872741857
+          },
+          {
+            "x": 79054.96017017767,
+            "y": 92040.64615734937
+          },
+          {
+            "x": 79083.3335,
+            "y": 92025.87593672943
+          },
+          {
+            "x": 79110.31155118752,
+            "y": 92008.68902262331
+          },
+          {
+            "x": 79135.68900448094,
+            "y": 91989.2162178251
+          },
+          {
+            "x": 79159.27272213732,
+            "y": 91967.60572213732
+          },
+          {
+            "x": 79180.8832178251,
+            "y": 91944.02200448094
+          },
+          {
+            "x": 79200.35602262331,
+            "y": 91918.64455118752
+          },
+          {
+            "x": 79217.54293672943,
+            "y": 91891.66649999999
+          },
+          {
+            "x": 79232.31315734937,
+            "y": 91863.29317017767
+          },
+          {
+            "x": 79244.5542741857,
+            "y": 91833.7404998928
+          },
+          {
+            "x": 79254.17312494793,
+            "y": 91803.2334028106
+          },
+          {
+            "x": 79261.09650437372,
+            "y": 91772.0040563606
+          },
+          {
+            "x": 79265.2717213652,
+            "y": 91740.29013472605
+          },
+          {
+            "x": 79266.667,
+            "y": 91708.333
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "inside_radius": "RUN",
+          "tangents": "RUN",
+          "sweep": "ASSUMPTION",
+          "turn": "ASSUMPTION",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "curve_ir_tangent_v1"
+        },
+        "confidence": "MEDIUM",
+        "turn_selected": "CW",
+        "turn_score": -2569.317161772366
+      },
+      "angle_out": 270.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 78850.0,
+          "y": 92075.0
+        },
+        {
+          "cmd": "line",
+          "x": 78900.0,
+          "y": 92075.0
+        },
+        {
+          "cmd": "arc",
+          "x": 79266.667,
+          "y": 91708.333,
+          "radius": 366.667,
+          "sweep_deg": -90.0,
+          "center": {
+            "x": 78900.0,
+            "y": 91708.333
+          },
+          "large_arc": 0,
+          "sweep_flag": 1
+        },
+        {
+          "cmd": "line",
+          "x": 79266.667,
+          "y": 91658.333
+        }
+      ],
+      "arc_samples": [
+        {
+          "x": 78900.0,
+          "y": 92075.0
+        },
+        {
+          "x": 78931.95713472605,
+          "y": 92073.6047213652
+        },
+        {
+          "x": 78963.6710563606,
+          "y": 92069.42950437372
+        },
+        {
+          "x": 78994.9004028106,
+          "y": 92062.50612494793
+        },
+        {
+          "x": 79025.4074998928,
+          "y": 92052.8872741857
+        },
+        {
+          "x": 79054.96017017767,
+          "y": 92040.64615734937
+        },
+        {
+          "x": 79083.3335,
+          "y": 92025.87593672943
+        },
+        {
+          "x": 79110.31155118752,
+          "y": 92008.68902262331
+        },
+        {
+          "x": 79135.68900448094,
+          "y": 91989.2162178251
+        },
+        {
+          "x": 79159.27272213732,
+          "y": 91967.60572213732
+        },
+        {
+          "x": 79180.8832178251,
+          "y": 91944.02200448094
+        },
+        {
+          "x": 79200.35602262331,
+          "y": 91918.64455118752
+        },
+        {
+          "x": 79217.54293672943,
+          "y": 91891.66649999999
+        },
+        {
+          "x": 79232.31315734937,
+          "y": 91863.29317017767
+        },
+        {
+          "x": 79244.5542741857,
+          "y": 91833.7404998928
+        },
+        {
+          "x": 79254.17312494793,
+          "y": 91803.2334028106
+        },
+        {
+          "x": 79261.09650437372,
+          "y": 91772.0040563606
+        },
+        {
+          "x": 79265.2717213652,
+          "y": 91740.29013472605
+        },
+        {
+          "x": 79266.667,
+          "y": 91708.333
+        }
+      ],
+      "render_kind": "curve",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P238",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "curve_length_sentinel"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "conveyor": "P242",
+      "x": 76650.0,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 2000.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M242"
+      ],
+      "drives": [
+        {
+          "motor": "M242",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE242_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE242_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 76650.0,
+        "y": 92075.0
+      },
+      "exit_anchor": {
+        "x": 74650.0,
+        "y": 92075.0
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 76650.0,
+          "Y_cord": 92075.0,
+          "Angle": 180.0,
+          "Length": 2000.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 76650.0,
+          "y": 92075.0
+        },
+        "exit": {
+          "x": 74650.0,
+          "y": 92075.0
+        },
+        "center": {
+          "x": 75650.0,
+          "y": 92075.0
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 2000.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 76650.0,
+            "y": 92075.0
+          },
+          {
+            "cmd": "line",
+            "x": 74650.0,
+            "y": 92075.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 76650.0,
+          "y": 92075.0
+        },
+        {
+          "cmd": "line",
+          "x": 74650.0,
+          "y": 92075.0
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P242",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P312",
+      "x": 64950.0,
+      "y": 85700.0,
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M312"
+      ],
+      "drives": [
+        {
+          "motor": "M312",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE312_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE312_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 64950.0,
+        "y": 85700.0
+      },
+      "exit_anchor": {
+        "x": 64950.0,
+        "y": 88700.0
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 64950.0,
+          "Y_cord": 85700.0,
+          "Angle": 90.0,
+          "Length": 3000.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 64950.0,
+          "y": 85700.0
+        },
+        "exit": {
+          "x": 64950.0,
+          "y": 88700.0
+        },
+        "center": {
+          "x": 64950.0,
+          "y": 87200.0
+        },
+        "angle_in": 90.0,
+        "angle_out": 90.0,
+        "length": 3000.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 64950.0,
+            "y": 85700.0
+          },
+          {
+            "cmd": "line",
+            "x": 64950.0,
+            "y": 88700.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 64950.0,
+          "y": 85700.0
+        },
+        {
+          "cmd": "line",
+          "x": 64950.0,
+          "y": 88700.0
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2050.0,
+      "discharge_elevation": 2050.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "20.000",
+      "io_name": "P312",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P314",
+      "x": 64950.0,
+      "y": 88700.0,
+      "angle": 90.0,
+      "length": 2500.0,
+      "width": 200.0,
+      "equipment_type": "BELT",
+      "infeed_tangent": 7.5,
+      "discharge_tangent": 7.5,
+      "inside_radius": 7.5,
+      "motors": [
+        "M314"
+      ],
+      "drives": [
+        {
+          "motor": "M314",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE314_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 64950.0,
+        "y": 88700.0
+      },
+      "exit_anchor": {
+        "x": 64950.0,
+        "y": 91200.0
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "BELT",
+        "source": {
+          "X_cord": 64950.0,
+          "Y_cord": 88700.0,
+          "Angle": 90.0,
+          "Length": 2500.0,
+          "Width": 200.0,
+          "Inside_Radius": 7.5,
+          "Infeed_Tangent": 7.5,
+          "Discharge_Tangent": 7.5,
+          "Type": "BELT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "belt",
+        "entry": {
+          "x": 64950.0,
+          "y": 88700.0
+        },
+        "exit": {
+          "x": 64950.0,
+          "y": 91200.0
+        },
+        "center": {
+          "x": 64950.0,
+          "y": 89950.0
+        },
+        "angle_in": 90.0,
+        "angle_out": 90.0,
+        "length": 2500.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 64950.0,
+            "y": 88700.0
+          },
+          {
+            "cmd": "line",
+            "x": 64950.0,
+            "y": 91200.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "belt_transition"
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 64950.0,
+          "y": 88700.0
+        },
+        {
+          "cmd": "line",
+          "x": 64950.0,
+          "y": 91200.0
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "belt",
+      "infeed_elevation": 2050.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "20.000",
+      "io_name": "P314",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P316",
+      "x": 64500.0,
+      "y": 91733.333,
+      "angle": 350.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "infeed_tangent": 150.0,
+      "discharge_tangent": 150.0,
+      "inside_radius": 266.667,
+      "motors": [
+        "M314"
+      ],
+      "drives": [
+        {
+          "motor": "M314",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE316_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 64500.0,
+        "y": 91733.333
+      },
+      "exit_anchor": {
+        "x": 65098.53595033619,
+        "y": 92152.4323843149
+      },
+      "anchor_assumption": "curve_ir_tangent_v1",
+      "geometry": {
+        "equipment_type": "CURVE",
+        "source": {
+          "X_cord": 64500.0,
+          "Y_cord": 91733.333,
+          "Angle": 350.0,
+          "Length": -1.0,
+          "Width": 200.0,
+          "Inside_Radius": 266.667,
+          "Infeed_Tangent": 150.0,
+          "Discharge_Tangent": 150.0,
+          "Type": "CURVE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "curve",
+        "entry": {
+          "x": 64500.0,
+          "y": 91733.333
+        },
+        "exit": {
+          "x": 65098.53595033619,
+          "y": 92152.4323843149
+        },
+        "center": {
+          "x": 64799.2679751681,
+          "y": 91942.88269215745
+        },
+        "arc_center": {
+          "x": 64711.39221931243,
+          "y": 92068.38227772368
+        },
+        "angle_in": 350.0,
+        "angle_out": 80.0,
+        "length": 875.9591767569043,
+        "width": 200.0,
+        "inside_radius": 266.667,
+        "centerline_radius": 366.667,
+        "infeed_tangent": 150.0,
+        "discharge_tangent": 150.0,
+        "sweep_deg": 90.0,
+        "turn": "CCW",
+        "path": [
+          {
+            "cmd": "move",
+            "x": 64500.0,
+            "y": 91733.333
+          },
+          {
+            "cmd": "line",
+            "x": 64647.72116295183,
+            "y": 91707.28577334995
+          },
+          {
+            "cmd": "arc",
+            "x": 65072.488723686154,
+            "y": 92004.71122136308,
+            "radius": 366.667,
+            "sweep_deg": 90.0,
+            "center": {
+              "x": 64711.39221931243,
+              "y": 92068.38227772368
+            },
+            "large_arc": 0,
+            "sweep_flag": 0
+          },
+          {
+            "cmd": "line",
+            "x": 65098.53595033619,
+            "y": 92152.4323843149
+          }
+        ],
+        "arc_samples": [
+          {
+            "x": 64647.72116295183,
+            "y": 91707.28577334995
+          },
+          {
+            "x": 64679.435084586374,
+            "y": 91703.11055635847
+          },
+          {
+            "x": 64711.39221931243,
+            "y": 91701.71527772368
+          },
+          {
+            "x": 64743.34935403848,
+            "y": 91703.11055635847
+          },
+          {
+            "x": 64775.06327567303,
+            "y": 91707.28577334995
+          },
+          {
+            "x": 64806.29262212303,
+            "y": 91714.20915277574
+          },
+          {
+            "x": 64836.79971920522,
+            "y": 91723.82800353797
+          },
+          {
+            "x": 64866.35238949011,
+            "y": 91736.0691203743
+          },
+          {
+            "x": 64894.72571931243,
+            "y": 91750.83934099425
+          },
+          {
+            "x": 64921.70377049996,
+            "y": 91768.02625510037
+          },
+          {
+            "x": 64947.081223793364,
+            "y": 91787.49905989858
+          },
+          {
+            "x": 64970.66494144976,
+            "y": 91809.10955558634
+          },
+          {
+            "x": 64992.275437137534,
+            "y": 91832.69327324274
+          },
+          {
+            "x": 65011.74824193574,
+            "y": 91858.07072653614
+          },
+          {
+            "x": 65028.93515604186,
+            "y": 91885.04877772367
+          },
+          {
+            "x": 65043.7053766618,
+            "y": 91913.422107546
+          },
+          {
+            "x": 65055.94649349814,
+            "y": 91942.97477783088
+          },
+          {
+            "x": 65065.565344260365,
+            "y": 91973.48187491306
+          },
+          {
+            "x": 65072.488723686154,
+            "y": 92004.71122136308
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "inside_radius": "RUN",
+          "tangents": "RUN",
+          "sweep": "ASSUMPTION",
+          "turn": "ASSUMPTION",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "curve_ir_tangent_v1"
+        },
+        "confidence": "MEDIUM",
+        "turn_selected": "CCW",
+        "turn_score": -539.7984265914281
+      },
+      "angle_out": 80.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 64500.0,
+          "y": 91733.333
+        },
+        {
+          "cmd": "line",
+          "x": 64647.72116295183,
+          "y": 91707.28577334995
+        },
+        {
+          "cmd": "arc",
+          "x": 65072.488723686154,
+          "y": 92004.71122136308,
+          "radius": 366.667,
+          "sweep_deg": 90.0,
+          "center": {
+            "x": 64711.39221931243,
+            "y": 92068.38227772368
+          },
+          "large_arc": 0,
+          "sweep_flag": 0
+        },
+        {
+          "cmd": "line",
+          "x": 65098.53595033619,
+          "y": 92152.4323843149
+        }
+      ],
+      "arc_samples": [
+        {
+          "x": 64647.72116295183,
+          "y": 91707.28577334995
+        },
+        {
+          "x": 64679.435084586374,
+          "y": 91703.11055635847
+        },
+        {
+          "x": 64711.39221931243,
+          "y": 91701.71527772368
+        },
+        {
+          "x": 64743.34935403848,
+          "y": 91703.11055635847
+        },
+        {
+          "x": 64775.06327567303,
+          "y": 91707.28577334995
+        },
+        {
+          "x": 64806.29262212303,
+          "y": 91714.20915277574
+        },
+        {
+          "x": 64836.79971920522,
+          "y": 91723.82800353797
+        },
+        {
+          "x": 64866.35238949011,
+          "y": 91736.0691203743
+        },
+        {
+          "x": 64894.72571931243,
+          "y": 91750.83934099425
+        },
+        {
+          "x": 64921.70377049996,
+          "y": 91768.02625510037
+        },
+        {
+          "x": 64947.081223793364,
+          "y": 91787.49905989858
+        },
+        {
+          "x": 64970.66494144976,
+          "y": 91809.10955558634
+        },
+        {
+          "x": 64992.275437137534,
+          "y": 91832.69327324274
+        },
+        {
+          "x": 65011.74824193574,
+          "y": 91858.07072653614
+        },
+        {
+          "x": 65028.93515604186,
+          "y": 91885.04877772367
+        },
+        {
+          "x": 65043.7053766618,
+          "y": 91913.422107546
+        },
+        {
+          "x": 65055.94649349814,
+          "y": 91942.97477783088
+        },
+        {
+          "x": 65065.565344260365,
+          "y": 91973.48187491306
+        },
+        {
+          "x": 65072.488723686154,
+          "y": 92004.71122136308
+        }
+      ],
+      "render_kind": "curve",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P316",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "curve_length_sentinel"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "conveyor": "P320",
+      "x": 76950.0,
+      "y": 85916.667,
+      "angle": 90.0,
+      "length": 3000.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 7.5,
+      "discharge_tangent": 7.5,
+      "inside_radius": 7.5,
+      "motors": [
+        "M320"
+      ],
+      "drives": [
+        {
+          "motor": "M320",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE320_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE320_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 76950.0,
+        "y": 85916.667
+      },
+      "exit_anchor": {
+        "x": 76950.0,
+        "y": 88916.667
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 76950.0,
+          "Y_cord": 85916.667,
+          "Angle": 90.0,
+          "Length": 3000.0,
+          "Width": 200.0,
+          "Inside_Radius": 7.5,
+          "Infeed_Tangent": 7.5,
+          "Discharge_Tangent": 7.5,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 76950.0,
+          "y": 85916.667
+        },
+        "exit": {
+          "x": 76950.0,
+          "y": 88916.667
+        },
+        "center": {
+          "x": 76950.0,
+          "y": 87416.667
+        },
+        "angle_in": 90.0,
+        "angle_out": 90.0,
+        "length": 3000.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 76950.0,
+            "y": 85916.667
+          },
+          {
+            "cmd": "line",
+            "x": 76950.0,
+            "y": 88916.667
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 76950.0,
+          "y": 85916.667
+        },
+        {
+          "cmd": "line",
+          "x": 76950.0,
+          "y": 88916.667
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2050.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "20.000",
+      "io_name": "P320",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P322",
+      "x": 76950.0,
+      "y": 88916.667,
+      "angle": 90.0,
+      "length": 2300.0,
+      "width": 200.0,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M322"
+      ],
+      "drives": [
+        {
+          "motor": "M322",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE322_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 76950.0,
+        "y": 88916.667
+      },
+      "exit_anchor": {
+        "x": 76950.0,
+        "y": 91216.667
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 76950.0,
+          "Y_cord": 88916.667,
+          "Angle": 90.0,
+          "Length": 2300.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 76950.0,
+          "y": 88916.667
+        },
+        "exit": {
+          "x": 76950.0,
+          "y": 91216.667
+        },
+        "center": {
+          "x": 76950.0,
+          "y": 90066.667
+        },
+        "angle_in": 90.0,
+        "angle_out": 90.0,
+        "length": 2300.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 76950.0,
+            "y": 88916.667
+          },
+          {
+            "cmd": "line",
+            "x": 76950.0,
+            "y": 91216.667
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 90.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 76950.0,
+          "y": 88916.667
+        },
+        {
+          "cmd": "line",
+          "x": 76950.0,
+          "y": 91216.667
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2050.0,
+      "discharge_elevation": 2050.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "20.000",
+      "io_name": "P322",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P324",
+      "x": 76500.0,
+      "y": 91775.0,
+      "angle": 350.0,
+      "length": -1.0,
+      "width": 200.0,
+      "equipment_type": "CURVE",
+      "infeed_tangent": 150.0,
+      "discharge_tangent": 175.0,
+      "inside_radius": 266.667,
+      "motors": [
+        "M322"
+      ],
+      "drives": [
+        {
+          "motor": "M322",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE324_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 76500.0,
+        "y": 91775.0
+      },
+      "exit_anchor": {
+        "x": 77102.87715477786,
+        "y": 92218.71957814021
+      },
+      "anchor_assumption": "curve_ir_tangent_v1",
+      "geometry": {
+        "equipment_type": "CURVE",
+        "source": {
+          "X_cord": 76500.0,
+          "Y_cord": 91775.0,
+          "Angle": 350.0,
+          "Length": -1.0,
+          "Width": 200.0,
+          "Inside_Radius": 266.667,
+          "Infeed_Tangent": 150.0,
+          "Discharge_Tangent": 175.0,
+          "Type": "CURVE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "curve",
+        "entry": {
+          "x": 76500.0,
+          "y": 91775.0
+        },
+        "exit": {
+          "x": 77102.87715477786,
+          "y": 92218.71957814021
+        },
+        "center": {
+          "x": 76801.43857738894,
+          "y": 91996.8597890701
+        },
+        "arc_center": {
+          "x": 76711.39221931243,
+          "y": 92110.04927772368
+        },
+        "angle_in": 350.0,
+        "angle_out": 80.0,
+        "length": 900.9591767569043,
+        "width": 200.0,
+        "inside_radius": 266.667,
+        "centerline_radius": 366.667,
+        "infeed_tangent": 150.0,
+        "discharge_tangent": 175.0,
+        "sweep_deg": 90.0,
+        "turn": "CCW",
+        "path": [
+          {
+            "cmd": "move",
+            "x": 76500.0,
+            "y": 91775.0
+          },
+          {
+            "cmd": "line",
+            "x": 76647.72116295183,
+            "y": 91748.95277334996
+          },
+          {
+            "cmd": "arc",
+            "x": 77072.48872368615,
+            "y": 92046.37822136308,
+            "radius": 366.667,
+            "sweep_deg": 90.0,
+            "center": {
+              "x": 76711.39221931243,
+              "y": 92110.04927772368
+            },
+            "large_arc": 0,
+            "sweep_flag": 0
+          },
+          {
+            "cmd": "line",
+            "x": 77102.87715477786,
+            "y": 92218.71957814021
+          }
+        ],
+        "arc_samples": [
+          {
+            "x": 76647.72116295183,
+            "y": 91748.95277334996
+          },
+          {
+            "x": 76679.43508458637,
+            "y": 91744.77755635847
+          },
+          {
+            "x": 76711.39221931243,
+            "y": 91743.38227772368
+          },
+          {
+            "x": 76743.34935403848,
+            "y": 91744.77755635847
+          },
+          {
+            "x": 76775.06327567303,
+            "y": 91748.95277334996
+          },
+          {
+            "x": 76806.29262212303,
+            "y": 91755.87615277575
+          },
+          {
+            "x": 76836.79971920521,
+            "y": 91765.49500353797
+          },
+          {
+            "x": 76866.3523894901,
+            "y": 91777.7361203743
+          },
+          {
+            "x": 76894.72571931242,
+            "y": 91792.50634099425
+          },
+          {
+            "x": 76921.70377049995,
+            "y": 91809.69325510037
+          },
+          {
+            "x": 76947.08122379336,
+            "y": 91829.16605989858
+          },
+          {
+            "x": 76970.66494144975,
+            "y": 91850.77655558634
+          },
+          {
+            "x": 76992.27543713753,
+            "y": 91874.36027324274
+          },
+          {
+            "x": 77011.74824193574,
+            "y": 91899.73772653614
+          },
+          {
+            "x": 77028.93515604186,
+            "y": 91926.71577772367
+          },
+          {
+            "x": 77043.70537666179,
+            "y": 91955.089107546
+          },
+          {
+            "x": 77055.94649349814,
+            "y": 91984.64177783088
+          },
+          {
+            "x": 77065.56534426037,
+            "y": 92015.14887491307
+          },
+          {
+            "x": 77072.48872368615,
+            "y": 92046.37822136308
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "inside_radius": "RUN",
+          "tangents": "RUN",
+          "sweep": "ASSUMPTION",
+          "turn": "ASSUMPTION",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "curve_ir_tangent_v1"
+        },
+        "confidence": "MEDIUM",
+        "turn_selected": "CCW",
+        "turn_score": -475.13475400194613
+      },
+      "angle_out": 80.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 76500.0,
+          "y": 91775.0
+        },
+        {
+          "cmd": "line",
+          "x": 76647.72116295183,
+          "y": 91748.95277334996
+        },
+        {
+          "cmd": "arc",
+          "x": 77072.48872368615,
+          "y": 92046.37822136308,
+          "radius": 366.667,
+          "sweep_deg": 90.0,
+          "center": {
+            "x": 76711.39221931243,
+            "y": 92110.04927772368
+          },
+          "large_arc": 0,
+          "sweep_flag": 0
+        },
+        {
+          "cmd": "line",
+          "x": 77102.87715477786,
+          "y": 92218.71957814021
+        }
+      ],
+      "arc_samples": [
+        {
+          "x": 76647.72116295183,
+          "y": 91748.95277334996
+        },
+        {
+          "x": 76679.43508458637,
+          "y": 91744.77755635847
+        },
+        {
+          "x": 76711.39221931243,
+          "y": 91743.38227772368
+        },
+        {
+          "x": 76743.34935403848,
+          "y": 91744.77755635847
+        },
+        {
+          "x": 76775.06327567303,
+          "y": 91748.95277334996
+        },
+        {
+          "x": 76806.29262212303,
+          "y": 91755.87615277575
+        },
+        {
+          "x": 76836.79971920521,
+          "y": 91765.49500353797
+        },
+        {
+          "x": 76866.3523894901,
+          "y": 91777.7361203743
+        },
+        {
+          "x": 76894.72571931242,
+          "y": 91792.50634099425
+        },
+        {
+          "x": 76921.70377049995,
+          "y": 91809.69325510037
+        },
+        {
+          "x": 76947.08122379336,
+          "y": 91829.16605989858
+        },
+        {
+          "x": 76970.66494144975,
+          "y": 91850.77655558634
+        },
+        {
+          "x": 76992.27543713753,
+          "y": 91874.36027324274
+        },
+        {
+          "x": 77011.74824193574,
+          "y": 91899.73772653614
+        },
+        {
+          "x": 77028.93515604186,
+          "y": 91926.71577772367
+        },
+        {
+          "x": 77043.70537666179,
+          "y": 91955.089107546
+        },
+        {
+          "x": 77055.94649349814,
+          "y": 91984.64177783088
+        },
+        {
+          "x": 77065.56534426037,
+          "y": 92015.14887491307
+        },
+        {
+          "x": 77072.48872368615,
+          "y": 92046.37822136308
+        }
+      ],
+      "render_kind": "curve",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P324",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "CURVE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [
+        "curve_length_sentinel"
+      ],
+      "confidence": "MEDIUM"
+    },
+    {
+      "conveyor": "P400",
+      "x": 74650.0,
+      "y": 91925.0,
+      "angle": 180.0,
+      "length": 1216.667,
+      "width": 500.0,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M400"
+      ],
+      "drives": [
+        {
+          "motor": "M400",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE400_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 74650.0,
+        "y": 91925.0
+      },
+      "exit_anchor": {
+        "x": 73433.333,
+        "y": 91925.0
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 74650.0,
+          "Y_cord": 91925.0,
+          "Angle": 180.0,
+          "Length": 1216.667,
+          "Width": 500.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 74650.0,
+          "y": 91925.0
+        },
+        "exit": {
+          "x": 73433.333,
+          "y": 91925.0
+        },
+        "center": {
+          "x": 74041.66649999999,
+          "y": 91925.0
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 1216.667,
+        "width": 500.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 74650.0,
+            "y": 91925.0
+          },
+          {
+            "cmd": "line",
+            "x": 73433.333,
+            "y": 91925.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 74650.0,
+          "y": 91925.0
+        },
+        {
+          "cmd": "line",
+          "x": 73433.333,
+          "y": 91925.0
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P400",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P402",
+      "x": 73433.333,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 10700.0,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M402"
+      ],
+      "drives": [
+        {
+          "motor": "M402",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE402_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        },
+        {
+          "photoeye": "EZPE402_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 73433.333,
+        "y": 92075.0
+      },
+      "exit_anchor": {
+        "x": 62733.333,
+        "y": 92075.0
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 73433.333,
+          "Y_cord": 92075.0,
+          "Angle": 180.0,
+          "Length": 10700.0,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 73433.333,
+          "y": 92075.0
+        },
+        "exit": {
+          "x": 62733.333,
+          "y": 92075.0
+        },
+        "center": {
+          "x": 68083.333,
+          "y": 92075.0
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 10700.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 73433.333,
+            "y": 92075.0
+          },
+          {
+            "cmd": "line",
+            "x": 62733.333,
+            "y": 92075.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 73433.333,
+          "y": 92075.0
+        },
+        {
+          "cmd": "line",
+          "x": 62733.333,
+          "y": 92075.0
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P402",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P404",
+      "x": 62733.333,
+      "y": 92075.0,
+      "angle": 180.0,
+      "length": 600.0,
+      "width": 200.0,
+      "equipment_type": "BELT",
+      "infeed_tangent": 150.0,
+      "discharge_tangent": 150.0,
+      "inside_radius": 150.0,
+      "motors": [
+        "M404"
+      ],
+      "drives": [
+        {
+          "motor": "M404",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE404_P",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62733.333,
+        "y": 92075.0
+      },
+      "exit_anchor": {
+        "x": 62133.333,
+        "y": 92075.0
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "BELT",
+        "source": {
+          "X_cord": 62733.333,
+          "Y_cord": 92075.0,
+          "Angle": 180.0,
+          "Length": 600.0,
+          "Width": 200.0,
+          "Inside_Radius": 150.0,
+          "Infeed_Tangent": 150.0,
+          "Discharge_Tangent": 150.0,
+          "Type": "BELT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "belt",
+        "entry": {
+          "x": 62733.333,
+          "y": 92075.0
+        },
+        "exit": {
+          "x": 62133.333,
+          "y": 92075.0
+        },
+        "center": {
+          "x": 62433.333,
+          "y": 92075.0
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 600.0,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 62733.333,
+            "y": 92075.0
+          },
+          {
+            "cmd": "line",
+            "x": 62133.333,
+            "y": 92075.0
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "belt_transition"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 62733.333,
+          "y": 92075.0
+        },
+        {
+          "cmd": "line",
+          "x": 62133.333,
+          "y": 92075.0
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "belt",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P404",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "BELT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P406",
+      "x": 62114.875,
+      "y": 91933.333,
+      "angle": 180.0,
+      "length": 1500.0,
+      "width": 600.0,
+      "equipment_type": "STRAIGHT",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M406"
+      ],
+      "drives": [
+        {
+          "motor": "M406",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "PE406_J",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 62114.875,
+        "y": 91933.333
+      },
+      "exit_anchor": {
+        "x": 60614.875,
+        "y": 91933.333
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "STRAIGHT",
+        "source": {
+          "X_cord": 62114.875,
+          "Y_cord": 91933.333,
+          "Angle": 180.0,
+          "Length": 1500.0,
+          "Width": 600.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "STRAIGHT"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 62114.875,
+          "y": 91933.333
+        },
+        "exit": {
+          "x": 60614.875,
+          "y": 91933.333
+        },
+        "center": {
+          "x": 61364.875,
+          "y": 91933.333
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 1500.0,
+        "width": 600.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 62114.875,
+            "y": 91933.333
+          },
+          {
+            "cmd": "line",
+            "x": 60614.875,
+            "y": 91933.333
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "straight"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 62114.875,
+          "y": 91933.333
+        },
+        {
+          "cmd": "line",
+          "x": 60614.875,
+          "y": 91933.333
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P406",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "STRAIGHT",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    },
+    {
+      "conveyor": "P408",
+      "x": 60637.915,
+      "y": 92071.609,
+      "angle": 180.0,
+      "length": 22833.333,
+      "width": 200.0,
+      "equipment_type": "ZEROPRESSURE",
+      "infeed_tangent": 0.0,
+      "discharge_tangent": 0.0,
+      "inside_radius": 0.0,
+      "motors": [
+        "M408"
+      ],
+      "drives": [
+        {
+          "motor": "M408",
+          "drive_type": "CONTACTOR / MOTOR STARTER"
+        }
+      ],
+      "drive_type": "CONTACTOR / MOTOR STARTER",
+      "photoeyes_name_associated": [
+        {
+          "photoeye": "EZPE408_F",
+          "association": "name_suffix_match",
+          "confidence": "HIGH-CONFIDENCE CANDIDATE"
+        }
+      ],
+      "entry_anchor": {
+        "x": 60637.915,
+        "y": 92071.609
+      },
+      "exit_anchor": {
+        "x": 37804.582,
+        "y": 92071.609
+      },
+      "anchor_assumption": "infeed_origin_v1",
+      "geometry": {
+        "equipment_type": "ZEROPRESSURE",
+        "source": {
+          "X_cord": 60637.915,
+          "Y_cord": 92071.609,
+          "Angle": 180.0,
+          "Length": 22833.333,
+          "Width": 200.0,
+          "Inside_Radius": 0.0,
+          "Infeed_Tangent": 0.0,
+          "Discharge_Tangent": 0.0,
+          "Type": "ZEROPRESSURE"
+        },
+        "calibration": "greensboro-infeed-v1",
+        "kind": "linear",
+        "entry": {
+          "x": 60637.915,
+          "y": 92071.609
+        },
+        "exit": {
+          "x": 37804.582,
+          "y": 92071.609
+        },
+        "center": {
+          "x": 49221.2485,
+          "y": 92071.609
+        },
+        "angle_in": 180.0,
+        "angle_out": 180.0,
+        "length": 22833.333,
+        "width": 200.0,
+        "path": [
+          {
+            "cmd": "move",
+            "x": 60637.915,
+            "y": 92071.609
+          },
+          {
+            "cmd": "line",
+            "x": 37804.582,
+            "y": 92071.609
+          }
+        ],
+        "provenance": {
+          "xy": "RUN",
+          "angle": "RUN",
+          "length": "RUN",
+          "anchors": "INFERRED_GEOMETRY",
+          "model": "infeed_origin_v1"
+        },
+        "confidence": "HIGH",
+        "render_hint": "zeropressure"
+      },
+      "angle_out": 180.0,
+      "path": [
+        {
+          "cmd": "move",
+          "x": 60637.915,
+          "y": 92071.609
+        },
+        {
+          "cmd": "line",
+          "x": 37804.582,
+          "y": 92071.609
+        }
+      ],
+      "arc_samples": [],
+      "render_kind": "linear",
+      "infeed_elevation": 2750.0,
+      "discharge_elevation": 2750.0,
+      "part_number": "190",
+      "device_description": "",
+      "io_module_type": "",
+      "drawing_page": "27.000",
+      "io_name": "P408",
+      "machine_name": "",
+      "io_address_word": "6000",
+      "in_motor_chain": "Y",
+      "source_fields": {
+        "table": "FORTNA/Conveyor.asc",
+        "type": "ZEROPRESSURE",
+        "x_field": "X_cord",
+        "y_field": "Y_cord",
+        "angle_field": "Angle",
+        "length_field": "Length",
+        "width_field": "Width",
+        "inside_radius_field": "Inside_Radius",
+        "infeed_tangent_field": "Infeed_Tangent",
+        "discharge_tangent_field": "Discharge_Tangent",
+        "xy_meaning": "infeed_entry_end",
+        "motor_association": "Mtrchain.asc Motor_Chained* \u2192 P-tag"
+      },
+      "geometry_issues": [],
+      "confidence": "HIGH"
+    }
+  ]
+}

@@ -163,6 +163,15 @@
       },
       "detail": "Structural program differences vs finished (validation only)",
       "verdict": "PARTIAL"
+    },
+    {
+      "category": "layout visualization",
+      "score": {
+        "schematic_renderer": true,
+        "calibration": "greensboro-infeed-v1"
+      },
+      "detail": "Schematic renderer + infeed calibration shipped; Curtis print-side acceptance required (do not auto-PASS)",
+      "verdict": "CURTIS ACCEPTANCE REQUIRED"
     }
   ],
   "layout_visualization_gate": {

@@ -20,6 +20,7 @@
 |---|---|
 | `exports/cp2-gate/io_inventory.json` | RUN-scoped I/O inventory |
 | `exports/cp2-gate/equipment_inventory.json` | Equipment completeness + ownership confidence |
+| `exports/cp2-gate/ownership_classification.json` | RUN-only EXACT CP2 ownership classes |
 | `exports/cp2-gate/area_safety_inventory.json` | Areas / ES zones from workbook |
 | `exports/cp2-gate/estop_inventory.json` | E-stop devices (no invented equipment maps) |
 | `exports/cp2-gate/layout_metrics.json` | Physical layout + visual acceptance |
@@ -41,7 +42,7 @@
 | E-stop/safety coverage | **PARTIAL** | Device presence vs generated; affected-equipment not invented |
 | program structure | **PARTIAL** | Structural program differences vs finished (validation only) |
 
-| layout visualization (Curtis) | **FAIL** | PRE-FIX card UI FAIL (Curtis screenshot). POST-FIX compact-segment / Fit Site code **present** on this branch; browser verification **pending**. RUN geometry preserved. |
+| layout visualization (Curtis) | **CURTIS ACCEPTANCE REQUIRED** | Calibration `greensboro-infeed-v1` + physical schematic renderer shipped. Do **not** auto-PASS. Curtis must compare beside the print. |
 
 ### 1. I/O inventory: **PASS**
 
@@ -49,7 +50,23 @@ Scoped ORNCCP2 I/O points: **243** (DI 52, DO 191, PE 44, MS out 60, OL/aux 59, 
 
 ### 2. Equipment completeness: **PARTIAL**
 
-RUN conveyors expected: **37**; workbook represented: **37**; HIGH-confidence CP2: **31**; AMBIGUOUS may-belong: **13**; motors/MS 118, photoeyes 44, control stations 21, E-stops 18. Ownership confidence is flagged; equipment with missing I/O is retained.
+RUN Autogen-scoped conveyors (PE/VFD-only historical path): **37**; workbook represented: **37**; EXACT ownership CP2_CONFIRMED: **59**; CP2_CANDIDATE: **4**; NOT_CP2: **147**; UNKNOWN: **74**; motors/MS 118, photoeyes 44, control stations 21, E-stops 18. Ownership uses RUN-only exact PE/motor/VFD + Mtrchain; equipment with missing I/O is retained.
+
+#### Ownership findings (37 vs 57)
+
+- **CP2_CONFIRMED = 59** via exact RUN device association (includes motors + Mtrchain).
+- **Old Autogen-scoped count = 37** undercounted because untagged mechanical rows were linked from PE/VFD only — motors were omitted (the RUN scoping hole).
+- **Finished PLC conveyor count = 57** is a **validation observation only**, not a generation target. Do not copy or force CONFIRMED to equal 57.
+- Gap explanation: RUN scoping hole (motors omitted from Autogen link set) + naming granularity (finished lettered AOIs such as `P130A`–`P130E` / `P145A`–`E` are device evidence on parent mechanical `P130` / `P145` in RUN — lettered conveyors are **not invented** from finished PLC).
+- Sample CONFIRMED: `P1000`, `P1001`, `P123`, `P124`, `P128`, `P130`, `P132`, `P145`, `P220`, `P220A`, `P309`, `P310`, …
+- Sample CANDIDATE (cross-controller device evidence): `P215`, `P226`, `P229`, `P408`
+- Artifact: `exports/cp2-gate/ownership_classification.json` (also embedded in `equipment_inventory.json`).
+- Classifier CLI:
+  ```
+  python tools/scripts/fortna_cp2_ownership.py \
+    --run-dir workspace/active/RUN --machine ORNCCP2 \
+    --out exports/cp2-gate/ownership_classification.json
+  ```
 
 ### 3. Areas and ES zones: **FAIL**
 
@@ -59,23 +76,47 @@ Workbook areas: `['ORNCCP2_Area']`; ES zones: `['ORNCCP2_ESZone1']`. Engineer-co
 
 CP2 E-stop/safety devices from Conveyor.asc: **44**. Affected-equipment mappings are **not invented**. Missing area/zone/reset fields marked `ENGINEER CONFIGURATION REQUIRED`.
 
-### 5. Physical layout metrics: **FAIL**
+### 5. Physical layout metrics: **CURTIS ACCEPTANCE REQUIRED**
 
-Placed 37, unplaced 0, high-confidence connections 3, ambiguous 20, manual required 85. Geometry inventory: **PASS**. Visualization gate: **FAIL**.
+Placed **37**, unplaced 0, auto connections **9** (geometry confirmed **7** + high **2**), ambiguous 28, disconnected 21. Geometry inventory: **PASS** (calibration applied). Visualization gate: **CURTIS ACCEPTANCE REQUIRED** (do not auto-PASS).
 
-#### Visual layout acceptance (Curtis Auto Build)
+#### Coordinate calibration (`greensboro-infeed-v1`)
 
-Curtis Auto Build screenshot acceptance is **FAIL**: equipment is placed but bunched; physical runs are not recognizable (Node-RED cards); cards/labels excessively overlap; P-tags are unreadable when overlapped; connected mates show as long bezier curves between cards; disconnected/ambiguous state is only partially obvious.
+See `docs/RUN_GEOMETRY_CALIBRATION.md`.
 
-- Pre-fix card UI: **FAIL**
-- Post-fix presentation code (`.tb-seg` / Fit Site): **PRESENT**
-- Browser verification: PENDING
+| Finding | Confidence |
+|---------|------------|
+| `X_cord`/`Y_cord` = **infeed/ENTRY end** (not footprint center) | **HIGH** |
+| `Angle` = flow deg CCW from +X; `Length` = full centerline from infeed | **HIGH** |
+| Prior center±L/2 model **rejected** (false 250–750u gaps; infeed yields 0) | **HIGH** |
+| `CURVE` `Length=-1`; body from `Inside_Radius` + tangent stubs + 90° arc | **MEDIUM** |
+| Tangents are stub lengths, not topology FKs | **HIGH** |
 
-Underlying RUN geometry is preserved (not rearranged by P-number). Visualization gate reflects Curtis Auto Build FAIL. PRE-FIX FAIL / POST-FIX code present but browser verification pending.
+Finished PLC was **not** used to answer geometry questions. Print is visual acceptance only after the hypothesis.
 
-**Presentation correction on this branch (not a geometry rewrite):** Transport Build now draws Auto-Built equipment as compact oriented segments (`.tb-seg`) with ENTRY◀ / EXIT▶ mating anchors, Fit Site / Fit Area framing, Ctrl+wheel zoom, and zoom-dependent detail. Source RUN `X/Y/Angle/Length/Width` are not modified to pass the screenshot. Curtis’s screenshot remains the authoritative **FAIL** for the pre-fix card presentation; re-verify in desktop after Auto Build From RUN before flipping the visual gate.
+#### Physical schematic renderer
 
-The screenshot from Curtis is real engineering acceptance evidence: the current Auto Build technically places equipment, but the presentation is not yet acceptable as a physical site-layout view. Treat that as a FAIL for the current CP2 layout-visualization gate, while preserving the underlying RUN geometry for investigation.
+Transport Build now separates:
+
+- **Physical Equipment Model** — Site Model / RUN geometry → `#tb-schematic` continuous bodies
+- **Graph / topology relationships** — wires / mates only when RUN-confirmed or engineer-set
+
+Renderer supports **STRAIGHT / ZEROPRESSURE / BELT / CURVE / UNKNOWN**. Curves are arcs (not rotated rectangles). Site zoom labels are primarily **P-tags**. Motors / PE / Area / ES Zone stay in inspector / selection / prepared layers. Confirmed mates render as coinciding endpoints with **▶◀** (no Bezier). Unknown topology stays disconnected — overlap alone never creates a connection.
+
+Layers prepared: Physical (full), Motors, Photoeyes, Area, Safety, Controller, Tracking (stubs).
+
+#### Visual layout acceptance
+
+| Criterion | Status |
+|-----------|--------|
+| Pre-fix Node-RED cards | **FAIL** (Curtis) |
+| Compact-segment interim | **FAIL** (Curtis: still scattered labeled objects) |
+| Schematic renderer implemented | **YES** |
+| Browser / print recognition | **CURTIS ACCEPTANCE REQUIRED** |
+
+**Do not mark this visual gate PASS automatically.**
+
+Success means Curtis can look at Site Forge beside the Greensboro conveyor print and recognize major runs, curves, and relative arrangement — not CAD-perfect, but physically recognizable.
 
 ### 6. Library provenance: **PASS**
 

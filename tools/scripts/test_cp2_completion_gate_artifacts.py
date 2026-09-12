@@ -24,7 +24,18 @@ REQUIRED = {
         "counts",
         "run_conveyors_expected",
         "ownership_for_run_conveyors",
+        "ownership_classification",
+        "ownership_validation_observation",
         "verdict",
+    },
+    "ownership_classification.json": {
+        "generated_at",
+        "machine",
+        "counts",
+        "by_class",
+        "classifications",
+        "validation_observation",
+        "policy",
     },
     "area_safety_inventory.json": {
         "generated_at",

@@ -125,6 +125,18 @@ def build_transport_graph(
         angle = float(e["angle"] or 0.0)
         # Keep continuous rotation for physical display; portSides uses 90° steps
         rot_step = int(round(angle / 90.0) * 90) % 360
+        geom = e.get("geometry") or {}
+        # Canvas x/y = schematic body center; sourceX/Y remain RUN infeed (never mutated)
+        body_cx, body_cy = cx, cy
+        if e.get("x") is not None and e.get("y") is not None and geom.get("center"):
+            try:
+                gcx = float(geom["center"]["x"])
+                gcy = float(geom["center"]["y"])
+                sx, sy = float(e["x"]), float(e["y"])
+                body_cx = cx + (gcx - sx) * scale
+                body_cy = cy - (gcy - sy) * scale  # Y flip matches _normalize_canvas
+            except Exception:
+                body_cx, body_cy = cx, cy
 
         devices = []
         for d in e.get("drives") or []:
@@ -162,13 +174,51 @@ def build_transport_graph(
             )
 
         kind = _kind_from_type(e.get("equipment_type") or "")
+        # Project RUN-world path points into canvas space for schematic SVG
+        def _proj_pt(pt: dict | None) -> dict | None:
+            if not pt or e.get("x") is None or e.get("y") is None:
+                return None
+            try:
+                return {
+                    "x": round(cx + (float(pt["x"]) - float(e["x"])) * scale, 2),
+                    "y": round(cy - (float(pt["y"]) - float(e["y"])) * scale, 2),
+                }
+            except Exception:
+                return None
+
+        canvas_path = []
+        for cmd in e.get("path") or geom.get("path") or []:
+            item = {"cmd": cmd.get("cmd")}
+            if "x" in cmd and "y" in cmd:
+                p = _proj_pt({"x": cmd["x"], "y": cmd["y"]})
+                if p:
+                    item.update(p)
+            if cmd.get("cmd") == "arc":
+                item["radius"] = round(float(cmd.get("radius") or 0) * scale, 2)
+                item["sweep_deg"] = cmd.get("sweep_deg")
+                # SVG Y-flip reverses arc sweep direction
+                sf = cmd.get("sweep_flag")
+                if sf is not None:
+                    item["sweep_flag"] = 0 if sf else 1
+                else:
+                    item["sweep_flag"] = 1 if float(cmd.get("sweep_deg") or 0) < 0 else 0
+                if cmd.get("center"):
+                    item["center"] = _proj_pt(cmd["center"])
+            canvas_path.append(item)
+
+        canvas_arc_samples = []
+        for pt in e.get("arc_samples") or geom.get("arc_samples") or []:
+            p = _proj_pt(pt)
+            if p:
+                canvas_arc_samples.append(p)
+
         node = {
             "id": nid,
             "kind": kind,
             "label": tag,
             "conveyorTag": tag,
-            "x": round(cx, 2),
-            "y": round(cy, 2),
+            "x": round(body_cx, 2),
+            "y": round(body_cy, 2),
             "rotation": rot_step,
             "sourceX": sx,
             "sourceY": sy,
@@ -176,11 +226,23 @@ def build_transport_graph(
             "length": e.get("length"),
             "width": e.get("width"),
             "equipmentType": e.get("equipment_type") or "",
+            "infeedTangent": e.get("infeed_tangent"),
+            "dischargeTangent": e.get("discharge_tangent"),
+            "insideRadius": e.get("inside_radius"),
             "entryAnchor": e.get("entry_anchor"),
             "exitAnchor": e.get("exit_anchor"),
+            "entryCanvas": _proj_pt(e.get("entry_anchor")),
+            "exitCanvas": _proj_pt(e.get("exit_anchor")),
+            "pathCanvas": canvas_path,
+            "arcSamplesCanvas": canvas_arc_samples,
+            "renderKind": e.get("render_kind") or geom.get("kind") or "unknown",
+            "angleOut": e.get("angle_out") or geom.get("angle_out"),
             "physical": True,
+            "schematic": True,
             "provenance": {
                 "geometry": "IMPORTED",
+                "xy_meaning": "infeed_entry_end",
+                "calibration": "greensboro-infeed-v1",
                 "area": "SUGGESTED",
                 "safetyZone": "UNKNOWN",
                 "source": "RUN/Conveyor.asc+Mtrchain",

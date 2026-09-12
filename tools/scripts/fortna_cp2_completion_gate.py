@@ -29,6 +29,12 @@ sys.path.insert(0, str(SCRIPTS))
 
 from fortna_asc import CONVEYOR_TYPES, read_asc  # noqa: E402
 from fortna_autogen import DEFAULT_LIBRARY, load_eip_topology, load_from_run  # noqa: E402
+from fortna_cp2_ownership import (  # noqa: E402
+    FINISHED_PLC_CONVEYOR_COUNT,
+    OLD_AUTOGEN_SCOPED_COUNT,
+    classify_ownership,
+    write_classification,
+)
 from fortna_io_extract import (  # noqa: E402
     belongs_to_controller,
     equipment_kind,
@@ -561,6 +567,13 @@ def build_equipment_inventory(
 
     no_io = [t for t in run_conveyors if t.upper() not in io_linked]
 
+    # RUN-only exact ownership (PE + motor + VFD + Mtrchain). Never uses finished PLC.
+    ownership_class = classify_ownership(run_dir, machine)
+    oc_counts = ownership_class.get("counts") or {}
+    oc_by = ownership_class.get("by_class") or {}
+    confirmed_n = int(oc_counts.get("CP2_CONFIRMED", 0))
+    candidate_n = int(oc_counts.get("CP2_CANDIDATE", 0))
+
     return {
         "generated_at": _ts(),
         "machine": machine,
@@ -574,6 +587,10 @@ def build_equipment_inventory(
             "high_confidence_cp2": len(high),
             "ambiguous_may_belong_cp2": len(ambiguous),
             "unknown_may_belong_cp2": len(unknown),
+            "cp2_confirmed": confirmed_n,
+            "cp2_candidate": candidate_n,
+            "not_cp2": int(oc_counts.get("NOT_CP2", 0)),
+            "ownership_unknown": int(oc_counts.get("UNKNOWN", 0)),
             "motors_ms": len(motors),
             "photoeyes": len(pes),
             "control_stations": len(stations),
@@ -588,6 +605,31 @@ def build_equipment_inventory(
         "ambiguous_may_belong_cp2": [m.get("conveyor_tag") for m in ambiguous],
         "unknown_may_belong_cp2": [m.get("conveyor_tag") for m in unknown][:100],
         "ownership_for_run_conveyors": ownership,
+        "ownership_classification": ownership_class,
+        "ownership_classification_summary": {
+            "match_mode": "EXACT",
+            "counts": oc_counts,
+            "by_class": {
+                "CP2_CONFIRMED": oc_by.get("CP2_CONFIRMED") or [],
+                "CP2_CANDIDATE": oc_by.get("CP2_CANDIDATE") or [],
+                "NOT_CP2": oc_by.get("NOT_CP2") or [],
+                "UNKNOWN": (oc_by.get("UNKNOWN") or [])[:100],
+            },
+        },
+        "ownership_validation_observation": {
+            "cp2_confirmed": confirmed_n,
+            "cp2_candidate": candidate_n,
+            "old_autogen_pe_vfd_scoped": OLD_AUTOGEN_SCOPED_COUNT,
+            "finished_plc_conveyors": FINISHED_PLC_CONVEYOR_COUNT,
+            "explanation": (
+                "Old Autogen scoped count (37) undercounted CP2 because it linked "
+                "untagged mechanical rows via PE/VFD only and omitted motors/Mtrchain. "
+                "Finished PLC count (57) is a validation observation only — not a "
+                "generation target. Gap vs CONFIRMED is RUN scoping + naming "
+                "granularity (finished lettered AOIs like P130A are device evidence "
+                "on parent P130 in RUN; do not invent lettered conveyors)."
+            ),
+        },
         "motors_ms": sorted({p.get("fortna_name") for p in motors if p.get("fortna_name")}),
         "photoeyes": sorted({p.get("fortna_name") for p in pes if p.get("fortna_name")}),
         "control_stations": sorted({p.get("fortna_name") for p in stations if p.get("fortna_name")}),
@@ -597,10 +639,11 @@ def build_equipment_inventory(
             "Physical equipment is NOT discarded merely because one I/O mapping is missing.",
             "AMBIGUOUS/UNKNOWN candidates that may belong to CP2 are listed for engineer review.",
             "Do not invent controller ownership — confidence is flagged.",
+            "Ownership classes use EXACT PE/motor/VFD + Mtrchain association (RUN-only).",
+            "Finished PLC conveyor count is validation observation only — never a copy target.",
         ],
-        "verdict": "PARTIAL" if (ambiguous or wb_missing or no_io) else "PASS",
+        "verdict": "PARTIAL" if (ambiguous or wb_missing or no_io or candidate_n) else "PASS",
     }
-
 
 # ---------------------------------------------------------------------------
 # 3. Areas / ES zones
@@ -1444,6 +1487,7 @@ def write_gate_doc(
         "|---|---|",
         "| `exports/cp2-gate/io_inventory.json` | RUN-scoped I/O inventory |",
         "| `exports/cp2-gate/equipment_inventory.json` | Equipment completeness + ownership confidence |",
+        "| `exports/cp2-gate/ownership_classification.json` | RUN-only EXACT CP2 ownership classes |",
         "| `exports/cp2-gate/area_safety_inventory.json` | Areas / ES zones from workbook |",
         "| `exports/cp2-gate/estop_inventory.json` | E-stop devices (no invented equipment maps) |",
         "| `exports/cp2-gate/layout_metrics.json` | Physical layout + visual acceptance |",
@@ -1493,19 +1537,55 @@ def write_gate_doc(
             f"EIP mapped {io_inv['counts']['eip_mapped']} / unmapped {io_inv['counts']['eip_unmapped']}."
         ),
     )
+    oc_counts = (equip.get("ownership_classification") or {}).get("counts") or {}
+    obs = equip.get("ownership_validation_observation") or {}
+    confirmed_n = int(obs.get("cp2_confirmed") or oc_counts.get("CP2_CONFIRMED") or 0)
+    candidate_n = int(obs.get("cp2_candidate") or oc_counts.get("CP2_CANDIDATE") or 0)
     lines += _verdict_line(
         "2. Equipment completeness",
         equip.get("verdict", "PARTIAL"),
         (
-            f"RUN conveyors expected: **{equip['counts']['run_conveyors_expected']}**; "
+            f"RUN Autogen-scoped conveyors (PE/VFD-only historical path): "
+            f"**{equip['counts']['run_conveyors_expected']}**; "
             f"workbook represented: **{equip['counts']['workbook_conveyors_represented']}**; "
-            f"HIGH-confidence CP2: **{equip['counts']['high_confidence_cp2']}**; "
-            f"AMBIGUOUS may-belong: **{equip['counts']['ambiguous_may_belong_cp2']}**; "
+            f"EXACT ownership CP2_CONFIRMED: **{confirmed_n}**; "
+            f"CP2_CANDIDATE: **{candidate_n}**; "
+            f"NOT_CP2: **{oc_counts.get('NOT_CP2', equip['counts'].get('not_cp2', 0))}**; "
+            f"UNKNOWN: **{oc_counts.get('UNKNOWN', equip['counts'].get('ownership_unknown', 0))}**; "
             f"motors/MS {equip['counts']['motors_ms']}, photoeyes {equip['counts']['photoeyes']}, "
             f"control stations {equip['counts']['control_stations']}, E-stops {equip['counts']['estops']}. "
-            "Ownership confidence is flagged; equipment with missing I/O is retained."
+            "Ownership uses RUN-only exact PE/motor/VFD + Mtrchain; equipment with missing I/O is retained."
         ),
     )
+    lines += [
+        "",
+        "#### Ownership findings (37 vs 57)",
+        "",
+        (
+            f"- **CP2_CONFIRMED = {confirmed_n}** via exact RUN device association "
+            f"(includes motors + Mtrchain)."
+        ),
+        (
+            f"- **Old Autogen-scoped count = {OLD_AUTOGEN_SCOPED_COUNT}** undercounted because "
+            "untagged mechanical rows were linked from PE/VFD only — motors were omitted."
+        ),
+        (
+            f"- **Finished PLC conveyor count = {FINISHED_PLC_CONVEYOR_COUNT}** is a "
+            "**validation observation only**, not a generation target. Do not copy or "
+            "force CONFIRMED to equal 57."
+        ),
+        (
+            "- Gap explanation: RUN scoping hole (motors omitted from Autogen link set) + "
+            "naming granularity (finished lettered AOIs such as `P130A`–`P130E` / `P145A`–`E` "
+            "are device evidence on parent mechanical `P130` / `P145` in RUN — lettered "
+            "conveyors are **not invented** from finished PLC)."
+        ),
+        (
+            "- Artifact: `exports/cp2-gate/ownership_classification.json` "
+            "(also embedded under `equipment_inventory.json` → `ownership_classification`)."
+        ),
+        "",
+    ]
     lines += _verdict_line(
         "3. Areas and ES zones",
         area.get("verdict", "FAIL"),
@@ -1618,9 +1698,12 @@ def run_gate(run_dir: Path, machine: str, out_dir: Path) -> dict:
     cmap = _ensure_controller_map(run_dir, out_dir)
 
     # Inventories that do not need generation yet
-    print("[gate] Equipment inventory…")
+    print("[gate] Equipment inventory + RUN-only ownership classification…")
     equip = build_equipment_inventory(run_dir, machine, workbook, cmap)
     _write_json(out_dir / "equipment_inventory.json", equip)
+    oc_payload = equip.get("ownership_classification")
+    if isinstance(oc_payload, dict) and oc_payload.get("classifications") is not None:
+        write_classification(oc_payload, out_dir / "ownership_classification.json")
 
     print("[gate] Layout metrics…")
     layout = build_layout_metrics(run_dir, machine, out_dir)

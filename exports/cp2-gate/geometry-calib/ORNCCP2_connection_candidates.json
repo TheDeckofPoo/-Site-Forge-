@@ -1,0 +1,593 @@
+{
+  "summary": {
+    "generated_at": "2026-09-12T05:17:01.635689+00:00",
+    "run_dir": "workspace\\active\\RUN",
+    "machine": "ORNCCP2",
+    "conveyors_discovered": 37,
+    "usable_xy": 37,
+    "usable_angle": 37,
+    "usable_length_width": 29,
+    "motors_discovered": 118,
+    "motors_linked_via_mtrchain": 34,
+    "vfd_classified": 0,
+    "contactor_classified": 34,
+    "unknown_drive": 3,
+    "multiple_motor_conveyors": 0,
+    "motors_driving_multiple_conveyors": 38,
+    "photoeyes_scoped": 44,
+    "merge_table_hints": 8,
+    "connection_candidates_total": 37,
+    "confirmed_connections": 7,
+    "high_confidence_candidates": 2,
+    "ambiguous_connections": 28,
+    "unknown_connections": 28,
+    "anchor_model_assumption": "(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; exit=XY+Length\u00b7\u00fb. CURVE uses Inside_Radius+tangents+90\u00b0 arc (MEDIUM).",
+    "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence."
+  },
+  "candidates": [
+    {
+      "from_conveyor": "P404",
+      "to_conveyor": "P406",
+      "exit_to_entry_distance": 142.864,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order",
+      "ambiguity": "2 inbound geometric candidates"
+    },
+    {
+      "from_conveyor": "P150",
+      "to_conveyor": "P400",
+      "exit_to_entry_distance": 150.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order",
+      "ambiguity": "2 inbound geometric candidates"
+    },
+    {
+      "from_conveyor": "P242",
+      "to_conveyor": "P400",
+      "exit_to_entry_distance": 150.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order",
+      "ambiguity": "2 inbound geometric candidates"
+    },
+    {
+      "from_conveyor": "P150A",
+      "to_conveyor": "P324",
+      "exit_to_entry_distance": 200.0,
+      "angle_delta_deg": 170.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P138",
+      "to_conveyor": "P406",
+      "exit_to_entry_distance": 200.85,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order",
+      "ambiguity": "2 inbound geometric candidates"
+    },
+    {
+      "from_conveyor": "P136A",
+      "to_conveyor": "P316",
+      "exit_to_entry_distance": 258.333,
+      "angle_delta_deg": 170.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P134",
+      "to_conveyor": "P402",
+      "exit_to_entry_distance": 275.638,
+      "angle_delta_deg": 90.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P150A",
+      "to_conveyor": "P242",
+      "exit_to_entry_distance": 304.138,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P136",
+      "to_conveyor": "P404",
+      "exit_to_entry_distance": 341.667,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P402",
+      "to_conveyor": "P138",
+      "exit_to_entry_distance": 341.667,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P1002",
+      "to_conveyor": "P1014",
+      "exit_to_entry_distance": 427.198,
+      "angle_delta_deg": 90.0,
+      "width_ref": 333.333,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P324",
+      "to_conveyor": "P242",
+      "exit_to_entry_distance": 475.135,
+      "angle_delta_deg": 100.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P226",
+      "to_conveyor": "P229",
+      "exit_to_entry_distance": 521.553,
+      "angle_delta_deg": 90.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P316",
+      "to_conveyor": "P136",
+      "exit_to_entry_distance": 539.798,
+      "angle_delta_deg": 100.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P314",
+      "to_conveyor": "P136",
+      "exit_to_entry_distance": 566.728,
+      "angle_delta_deg": 90.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P324",
+      "to_conveyor": "P150",
+      "exit_to_entry_distance": 599.331,
+      "angle_delta_deg": 100.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P322",
+      "to_conveyor": "P150",
+      "exit_to_entry_distance": 611.748,
+      "angle_delta_deg": 90.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P402",
+      "to_conveyor": "P406",
+      "exit_to_entry_distance": 634.476,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P134",
+      "to_conveyor": "P136A",
+      "exit_to_entry_distance": 645.824,
+      "angle_delta_deg": 90.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P136",
+      "to_conveyor": "P406",
+      "exit_to_entry_distance": 649.993,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P400",
+      "to_conveyor": "P134",
+      "exit_to_entry_distance": 677.67,
+      "angle_delta_deg": 180.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P400",
+      "to_conveyor": "P136A",
+      "exit_to_entry_distance": 677.67,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P138",
+      "to_conveyor": "P404",
+      "exit_to_entry_distance": 690.461,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P404",
+      "to_conveyor": "P138",
+      "exit_to_entry_distance": 690.461,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P314",
+      "to_conveyor": "P316",
+      "exit_to_entry_distance": 697.814,
+      "angle_delta_deg": 100.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P148",
+      "to_conveyor": "P150A",
+      "exit_to_entry_distance": 703.365,
+      "angle_delta_deg": 90.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P322",
+      "to_conveyor": "P324",
+      "exit_to_entry_distance": 717.102,
+      "angle_delta_deg": 100.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P322",
+      "to_conveyor": "P242",
+      "exit_to_entry_distance": 909.25,
+      "angle_delta_deg": 90.0,
+      "width_ref": 200.0,
+      "classification": "AMBIGUOUS",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P136",
+      "to_conveyor": "P138",
+      "exit_to_entry_distance": 0.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "CONFIRMED",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P136A",
+      "to_conveyor": "P136",
+      "exit_to_entry_distance": 0.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "CONFIRMED",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P150A",
+      "to_conveyor": "P150",
+      "exit_to_entry_distance": 0.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "CONFIRMED",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P230",
+      "to_conveyor": "P232",
+      "exit_to_entry_distance": 0.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "CONFIRMED",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P312",
+      "to_conveyor": "P314",
+      "exit_to_entry_distance": 0.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "CONFIRMED",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P320",
+      "to_conveyor": "P322",
+      "exit_to_entry_distance": 0.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "CONFIRMED",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P402",
+      "to_conveyor": "P404",
+      "exit_to_entry_distance": 0.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "CONFIRMED",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P406",
+      "to_conveyor": "P408",
+      "exit_to_entry_distance": 140.182,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "HIGH-CONFIDENCE CANDIDATE",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    },
+    {
+      "from_conveyor": "P400",
+      "to_conveyor": "P402",
+      "exit_to_entry_distance": 150.0,
+      "angle_delta_deg": 0.0,
+      "width_ref": 200.0,
+      "classification": "HIGH-CONFIDENCE CANDIDATE",
+      "method": "geometry_exit_to_entry",
+      "note": "Not inferred from P-tag numerical order"
+    }
+  ],
+  "merge_hints": [
+    {
+      "source_file": "MergeInputs.asc.ORNCCP2",
+      "name": "LANE1_P404",
+      "valid": "Y",
+      "merge_boss": "MERGE_406_3-1",
+      "presence": "PE404_P",
+      "p_tags_mentioned": [
+        "P404"
+      ],
+      "raw_subset": {
+        "Name": "LANE1_P404",
+        "MergeBoss": "MERGE_406_3-1",
+        "Valid": "Y",
+        "MyTurn": "Waiting Route",
+        "Index": "0",
+        "CalcPriority": "0",
+        "MergeRoute": "LANE1_P404",
+        "IsClear": "1",
+        "RanEnough": "0",
+        "Presense": "PE404_P"
+      }
+    },
+    {
+      "source_file": "MergeInputs.asc.ORNCCP2",
+      "name": "LANE2_P138",
+      "valid": "Y",
+      "merge_boss": "MERGE_406_3-1",
+      "presence": "PE138_P",
+      "p_tags_mentioned": [
+        "P138",
+        "P2C",
+        "P2L",
+        "P2R"
+      ],
+      "raw_subset": {
+        "Name": "LANE2_P138",
+        "MergeBoss": "MERGE_406_3-1",
+        "Valid": "Y",
+        "MyTurn": "Waiting Clear Tm",
+        "Index": "1",
+        "CalcPriority": "101",
+        "MergeRoute": "LANE2_P138",
+        "IsClear": "0",
+        "RanEnough": "1",
+        "Presense": "PE138_P"
+      }
+    },
+    {
+      "source_file": "MergeInputs.asc.ORNCCP2",
+      "name": "LANE1_P136",
+      "valid": "Y",
+      "merge_boss": "MERGE_316_SPUR",
+      "presence": "EZPE136_P1",
+      "p_tags_mentioned": [
+        "P1",
+        "P136",
+        "P1C",
+        "P1L",
+        "P1R"
+      ],
+      "raw_subset": {
+        "Name": "LANE1_P136",
+        "MergeBoss": "MERGE_316_SPUR",
+        "Valid": "Y",
+        "MyTurn": "Running",
+        "Index": "0",
+        "CalcPriority": "101",
+        "MergeRoute": "LANE1_P136",
+        "IsClear": "0",
+        "RanEnough": "0",
+        "Presense": "EZPE136_P1"
+      }
+    },
+    {
+      "source_file": "MergeInputs.asc.ORNCCP2",
+      "name": "LANE2_P312",
+      "valid": "Y",
+      "merge_boss": "MERGE_316_SPUR",
+      "presence": "PE314_P",
+      "p_tags_mentioned": [
+        "P312"
+      ],
+      "raw_subset": {
+        "Name": "LANE2_P312",
+        "MergeBoss": "MERGE_316_SPUR",
+        "Valid": "Y",
+        "MyTurn": "Stopped",
+        "Index": "1",
+        "CalcPriority": "1100",
+        "IsClear": "1",
+        "RanEnough": "0",
+        "Presense": "PE314_P"
+      }
+    },
+    {
+      "source_file": "MergeInputs.asc.ORNCCP2",
+      "name": "LANE1_P242",
+      "valid": "Y",
+      "merge_boss": "MERGE_400_2-1",
+      "presence": "EZPE242_P",
+      "p_tags_mentioned": [
+        "P242"
+      ],
+      "raw_subset": {
+        "Name": "LANE1_P242",
+        "MergeBoss": "MERGE_400_2-1",
+        "Valid": "Y",
+        "MyTurn": "Running",
+        "Index": "0",
+        "CalcPriority": "1101",
+        "MergeRoute": "LANE1_P242",
+        "IsClear": "1",
+        "RanEnough": "0",
+        "Presense": "EZPE242_P"
+      }
+    },
+    {
+      "source_file": "MergeInputs.asc.ORNCCP2",
+      "name": "LANE2_P150_2-1",
+      "valid": "Y",
+      "merge_boss": "MERGE_400_2-1",
+      "presence": "EZPE150_P2",
+      "p_tags_mentioned": [
+        "P150",
+        "P2",
+        "P2C",
+        "P2L",
+        "P2R"
+      ],
+      "raw_subset": {
+        "Name": "LANE2_P150_2-1",
+        "MergeBoss": "MERGE_400_2-1",
+        "Valid": "Y",
+        "MyTurn": "Stopped",
+        "Index": "1",
+        "CalcPriority": "1100",
+        "IsClear": "1",
+        "RanEnough": "0",
+        "Presense": "EZPE150_P2"
+      }
+    },
+    {
+      "source_file": "MergeInputs.asc.ORNCCP2",
+      "name": "LANE1_P150_SPUR",
+      "valid": "Y",
+      "merge_boss": "MERGE_324_SPUR",
+      "presence": "EZPE150_P1",
+      "p_tags_mentioned": [
+        "P1",
+        "P150",
+        "P1C",
+        "P1L",
+        "P1R"
+      ],
+      "raw_subset": {
+        "Name": "LANE1_P150_SPUR",
+        "MergeBoss": "MERGE_324_SPUR",
+        "Valid": "Y",
+        "MyTurn": "Running",
+        "Index": "0",
+        "CalcPriority": "1101",
+        "MergeRoute": "LANE1_P150_SPUR",
+        "IsClear": "1",
+        "RanEnough": "1",
+        "Presense": "EZPE150_P1"
+      }
+    },
+    {
+      "source_file": "MergeInputs.asc.ORNCCP2",
+      "name": "LANE2_P320",
+      "valid": "Y",
+      "merge_boss": "MERGE_324_SPUR",
+      "presence": "PE322_P",
+      "p_tags_mentioned": [
+        "P320"
+      ],
+      "raw_subset": {
+        "Name": "LANE2_P320",
+        "MergeBoss": "MERGE_324_SPUR",
+        "Valid": "Y",
+        "MyTurn": "Stopped",
+        "Index": "1",
+        "CalcPriority": "1100",
+        "IsClear": "1",
+        "RanEnough": "0",
+        "Presense": "PE322_P"
+      }
+    }
+  ]
+}

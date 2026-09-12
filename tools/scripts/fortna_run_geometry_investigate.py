@@ -74,13 +74,17 @@ def _unit(angle_deg: float) -> tuple[float, float]:
 
 
 def _anchors(x: float, y: float, length: float, angle: float) -> dict:
-    """Assume (x,y) is footprint center; entry/exit at ±L/2 along angle."""
+    """XY = infeed/ENTRY end; exit = XY + Length along Angle (Greensboro calibration).
+
+    Prior (incorrect) model treated XY as footprint center ± L/2. Internal RUN
+    abutments (P312→P314, P136→P138, …) validate the infeed-origin model at HIGH
+    confidence. See fortna_physical_geometry.CALIBRATION / docs/RUN_GEOMETRY_CALIBRATION.md.
+    """
     ux, uy = _unit(angle)
-    half = length / 2.0
     return {
-        "entry": {"x": x - ux * half, "y": y - uy * half},
-        "exit": {"x": x + ux * half, "y": y + uy * half},
-        "assumption": "center_origin_flow_along_angle",
+        "entry": {"x": x, "y": y},
+        "exit": {"x": x + length * ux, "y": y + length * uy},
+        "assumption": "infeed_origin_flow_along_angle_v1",
     }
 
 
@@ -314,18 +318,40 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
         x, y = _f(r.get("X_cord")), _f(r.get("Y_cord"))
         ang, length, width = _f(r.get("Angle")), _f(r.get("Length")), _f(r.get("Width"))
         typ = _clean(r.get("Type")).upper()
+        in_tan = _f(r.get("Infeed_Tangent"))
+        out_tan = _f(r.get("Discharge_Tangent"))
+        inside_r = _f(r.get("Inside_Radius"))
         conf = []
         if x is None or y is None:
             conf.append("missing_xy")
         if ang is None:
             conf.append("missing_angle")
-        if length is None or length <= 0:
-            conf.append("missing_length")
         if typ in {"CURVE", "TRIANG"}:
-            conf.append("non_straight_geometry")
+            if inside_r is None or inside_r <= 0:
+                conf.append("curve_missing_inside_radius")
+            if length is None or length <= 0:
+                conf.append("curve_length_sentinel")  # expected (-1); not a hard fail
+        elif length is None or length <= 0:
+            conf.append("missing_length")
+
+        # Physical geometry (infeed-origin + curve IR/tangents) — see fortna_physical_geometry
+        try:
+            from fortna_physical_geometry import build_equipment_geometry
+
+            geom = build_equipment_geometry(r)
+        except Exception:
+            geom = None
 
         anchors = None
-        if x is not None and y is not None and ang is not None and length and length > 0:
+        if geom and geom.get("entry") and geom.get("exit"):
+            anchors = {
+                "entry": geom["entry"],
+                "exit": geom["exit"],
+                "assumption": (geom.get("provenance") or {}).get("model")
+                or geom.get("kind")
+                or "physical_geometry_v1",
+            }
+        elif x is not None and y is not None and ang is not None and length and length > 0:
             anchors = _anchors(x, y, length, ang)
 
         # Motors: Mtrchain primary; never invent
@@ -359,7 +385,11 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                     }
                 )
 
-        geom_conf = "HIGH" if not conf else ("MEDIUM" if "non_straight_geometry" in conf and len(conf) == 1 else "LOW")
+        hard_issues = [c for c in conf if c not in {"curve_length_sentinel"}]
+        if geom and geom.get("confidence"):
+            geom_conf = geom["confidence"]
+        else:
+            geom_conf = "HIGH" if not hard_issues else ("MEDIUM" if len(hard_issues) == 1 else "LOW")
         equipment.append(
             {
                 "conveyor": name,
@@ -369,6 +399,9 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                 "length": length,
                 "width": width,
                 "equipment_type": typ,
+                "infeed_tangent": in_tan,
+                "discharge_tangent": out_tan,
+                "inside_radius": inside_r,
                 "motors": motors,
                 "drives": drive_types,
                 "drive_type": (
@@ -380,6 +413,11 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                 "entry_anchor": anchors["entry"] if anchors else None,
                 "exit_anchor": anchors["exit"] if anchors else None,
                 "anchor_assumption": anchors["assumption"] if anchors else None,
+                "geometry": geom,
+                "angle_out": (geom or {}).get("angle_out"),
+                "path": (geom or {}).get("path") or [],
+                "arc_samples": (geom or {}).get("arc_samples") or [],
+                "render_kind": (geom or {}).get("kind") or "unknown",
                 "infeed_elevation": _f(r.get("Infeed_Elevation")),
                 "discharge_elevation": _f(r.get("Discharge_Elevation")),
                 "part_number": _clean(r.get("Part_Number")),
@@ -398,12 +436,50 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                     "angle_field": "Angle",
                     "length_field": "Length",
                     "width_field": "Width",
+                    "inside_radius_field": "Inside_Radius",
+                    "infeed_tangent_field": "Infeed_Tangent",
+                    "discharge_tangent_field": "Discharge_Tangent",
+                    "xy_meaning": "infeed_entry_end",
                     "motor_association": "Mtrchain.asc Motor_Chained* → P-tag",
                 },
                 "geometry_issues": conf,
                 "confidence": geom_conf,
             }
         )
+
+    # Second pass: refine CURVE turn using other equipment entry points as mate targets
+    try:
+        from fortna_physical_geometry import build_equipment_geometry
+
+        mate_entries = [
+            (float(e["entry_anchor"]["x"]), float(e["entry_anchor"]["y"]))
+            for e in equipment
+            if e.get("entry_anchor")
+        ]
+        for e in equipment:
+            if (e.get("equipment_type") or "").upper() not in {"CURVE", "TRIANG"}:
+                continue
+            tag = e["conveyor"].upper()
+            r = mech_by_name.get(tag)
+            if not r:
+                continue
+            others = [p for p in mate_entries if e.get("entry_anchor") and (
+                abs(p[0] - float(e["entry_anchor"]["x"])) > 1e-6
+                or abs(p[1] - float(e["entry_anchor"]["y"])) > 1e-6
+            )]
+            geom = build_equipment_geometry(r, mate_entries=others)
+            if geom and geom.get("entry") and geom.get("exit"):
+                e["geometry"] = geom
+                e["entry_anchor"] = geom["entry"]
+                e["exit_anchor"] = geom["exit"]
+                e["anchor_assumption"] = (geom.get("provenance") or {}).get("model") or "curve_ir_tangent_v1"
+                e["path"] = geom.get("path") or []
+                e["arc_samples"] = geom.get("arc_samples") or []
+                e["render_kind"] = geom.get("kind") or "curve"
+                e["angle_out"] = geom.get("angle_out")
+                e["confidence"] = geom.get("confidence") or e.get("confidence")
+    except Exception:
+        pass
 
     # Connection candidates (geometry only — never P-number order)
     by_tag = {e["conveyor"].upper(): e for e in equipment}
@@ -422,15 +498,17 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                 continue
             d = _dist(a["exit_anchor"], b["entry_anchor"])
             wref = min(float(a["width"] or 1), float(b["width"] or 1))
-            ang_err = _angle_delta(float(a["angle"] or 0), float(b["angle"] or 0))
-            # Thresholds in RUN drawing units (same as X_cord/Length).
-            # Observed belt widths ~200–333 and consecutive exit→entry gaps often
-            # ~250–750u even when angles align — calibrate bands to that scale.
+            a_out = a.get("angle_out")
+            if a_out is None:
+                a_out = a.get("angle") or 0
+            ang_err = _angle_delta(float(a_out), float(b.get("angle") or 0))
+            # Thresholds in RUN drawing units (infeed-origin model).
+            # True abutments land near distance 0; keep modest bands for gaps/joints.
             if d > max(3.0 * wref, 1200.0):
                 continue
-            if d <= max(0.75 * wref, 300.0) and ang_err <= 15.0:
+            if d <= max(0.25 * wref, 50.0) and ang_err <= 15.0:
                 level = "CONFIRMED"
-            elif d <= max(2.0 * wref, 750.0) and ang_err <= 30.0:
+            elif d <= max(1.0 * wref, 250.0) and ang_err <= 30.0:
                 level = "HIGH-CONFIDENCE CANDIDATE"
             elif d <= max(3.0 * wref, 1200.0):
                 level = "AMBIGUOUS"
@@ -506,8 +584,8 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
             - len({c["from_conveyor"].upper() for c in candidates if c["classification"] != "AMBIGUOUS"}),
         ),
         "anchor_model_assumption": (
-            "(X,Y)=footprint center; Angle=flow direction deg CCW from +X; "
-            "entry/exit at ±Length/2 along angle. CURVE/TRIANG lower confidence."
+            "(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; "
+            "exit=XY+Length·û. CURVE uses Inside_Radius+tangents+90° arc (MEDIUM)."
         ),
         "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence.",
     }

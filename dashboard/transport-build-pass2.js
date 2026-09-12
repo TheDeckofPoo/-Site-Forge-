@@ -884,9 +884,10 @@
 
   function patchNodeAppearance() {
     // After Pass1 render, rewrite conveyor node inner content to flow style + multi-sel class.
-    // Physical Auto Build segments keep compact schematic markup from Pass1 (LOD in render).
+    // Schematic / physical bodies are drawn in #tb-schematic — do not expand into info cards.
     const {
-      tb, activeArea, isConv, escapeHtml, peRolesOnNode, peRoleBadgesHtml, KIND_META, isPhysicalSeg, detailLevel,
+      tb, activeArea, isConv, escapeHtml, peRolesOnNode, peRoleBadgesHtml, KIND_META,
+      isPhysicalSeg, isSchematicNode, detailLevel,
     } = A();
     const area = activeArea();
     const lod = typeof detailLevel === 'function' ? detailLevel() : 'mid';
@@ -903,8 +904,14 @@
       }
       if ((n.ambiguousInbound || []).length) el.classList.add('tb-ambiguous');
 
-      // Compact physical segments: do not expand back into Node-RED info cards
-      if (el.classList.contains('tb-seg') || (typeof isPhysicalSeg === 'function' && isPhysicalSeg(n))) {
+      // Schematic proxies / compact segments: details live in inspector + hover
+      if (
+        el.classList.contains('tb-schematic-proxy')
+        || el.classList.contains('tb-seg')
+        || (typeof isSchematicNode === 'function' && isSchematicNode(n))
+        || (typeof isPhysicalSeg === 'function' && isPhysicalSeg(n))
+      ) {
+        if (el.classList.contains('tb-schematic-proxy')) return;
         if (lod === 'close' || n.id === tb.selectedId) {
           const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
           const motorLab = motors.map((m) => escapeHtml(m.tag)).join(' · ')
@@ -1405,8 +1412,21 @@
     tb.physicalLayout = !!g.physicalLayout;
     tb.metrics = mSafe(res.metrics || g.metrics || {});
     if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
+    if (!tb.layers) {
+      tb.layers = {
+        physical: true, motors: false, photoeyes: false, area: false,
+        safety: false, controller: false, tracking: false,
+      };
+    }
+    tb.layers.physical = true;
     const cs = Number(tb.metrics.canvas_scale || g.canvasScale);
     if (cs && cs > 0) tb.view.canvasScale = cs;
+    // Ensure schematic flags on imported nodes
+    (tb.areas || []).forEach((area) => {
+      (area.nodes || []).forEach((n) => {
+        if (n.physical && (n.pathCanvas || n.entryCanvas)) n.schematic = true;
+      });
+    });
     save();
     render();
     // Frame the imported CP2 equipment immediately (usable schematic overview)
@@ -1446,6 +1466,13 @@
     });
     $('tb-fit-area')?.addEventListener('click', () => {
       try { A().fitArea?.(); } catch (err) { A().status(`Fit Area: ${err?.message || err}`); }
+    });
+    $('tb-layer-physical')?.addEventListener('change', (ev) => {
+      const { tb, render, status } = A();
+      if (!tb.layers) tb.layers = {};
+      tb.layers.physical = !!ev.target.checked;
+      render();
+      status(`Physical layer ${tb.layers.physical ? 'on' : 'off'}`);
     });
     $('tb-build-chain')?.addEventListener('click', () => openChainDialog());
     $('tb-chain-cancel')?.addEventListener('click', () => closeChainDialog());

@@ -35,9 +35,12 @@ def main() -> int:
         ("fitArea helper", "function fitArea" in js),
         ("ENTRY/EXIT labels", "ENTRY" in js and "EXIT" in js),
         ("view.zoom presentation", "view" in js and "canvasScale" in js),
-        ("pass2 skips card rewrite for segs", "tb-seg" in p2 and "Node-RED" in p2),
+        ("pass2 skips card rewrite for segs", "tb-schematic-proxy" in p2 or ("tb-seg" in p2 and "schematic" in p2)),
+        ("schematic layer present", "tb-schematic" in html and "drawSchematic" in js),
+        ("isSchematicNode helper", "function isSchematicNode" in js),
         ("pass2 Fit Site after Auto Build", "fitSite" in p2),
         ("ctrl+wheel zoom", "ctrlKey" in p2 and "wheel" in p2),
+        ("layers prepared", "tb-layer-physical" in html and "tb-layer-motors" in html),
     ]
     for name, ok in checks:
         status = "PASS" if ok else "FAIL"

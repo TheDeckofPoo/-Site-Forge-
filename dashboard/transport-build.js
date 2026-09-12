@@ -160,6 +160,16 @@
     },
     metrics: null,
     physicalLayout: false,
+    // Site layers — only Physical fully implemented this pass
+    layers: {
+      physical: true,
+      motors: false,
+      photoeyes: false,
+      area: false,
+      safety: false,
+      controller: false,
+      tracking: false,
+    },
   };
 
   function $(id) {
@@ -1300,6 +1310,114 @@
     return !!(n && n.physical && isConv(n.kind) && (n.length != null || n.sourceX != null));
   }
 
+  function isSchematicNode(n) {
+    return !!(n && n.physical && (n.schematic || (n.pathCanvas && n.pathCanvas.length) || n.entryCanvas));
+  }
+
+  /** Build SVG path `d` from projected pathCanvas commands (Y already flipped). */
+  function schematicPathD(pathCanvas) {
+    if (!pathCanvas || !pathCanvas.length) return '';
+    const parts = [];
+    let x0 = null;
+    let y0 = null;
+    pathCanvas.forEach((cmd) => {
+      const c = String(cmd.cmd || '').toLowerCase();
+      if (c === 'move') {
+        parts.push(`M ${cmd.x} ${cmd.y}`);
+        x0 = cmd.x;
+        y0 = cmd.y;
+      } else if (c === 'line') {
+        parts.push(`L ${cmd.x} ${cmd.y}`);
+        x0 = cmd.x;
+        y0 = cmd.y;
+      } else if (c === 'arc') {
+        const r = Math.max(1, Number(cmd.radius) || 1);
+        const sweep = cmd.sweep_flag != null ? Number(cmd.sweep_flag) : 1;
+        const large = Number(cmd.large_arc) || 0;
+        parts.push(`A ${r} ${r} 0 ${large} ${sweep} ${cmd.x} ${cmd.y}`);
+        x0 = cmd.x;
+        y0 = cmd.y;
+      }
+    });
+    return parts.join(' ');
+  }
+
+  function schematicStrokeWidth(n) {
+    const s = presentationScale();
+    const w = Number(n.width);
+    const px = (Number.isFinite(w) && w > 0 ? w : 200) * s;
+    return Math.max(6, Math.min(18, px));
+  }
+
+  function drawSchematic(area) {
+    const svg = $('tb-schematic');
+    if (!svg) return;
+    if (!(tb.layers?.physical !== false)) {
+      svg.innerHTML = '';
+      return;
+    }
+    const nodes = (area?.nodes || []).filter(isSchematicNode);
+    const lod = detailLevel();
+    let html = '';
+    nodes.forEach((n) => {
+      let d = schematicPathD(n.pathCanvas);
+      if (!d && n.entryCanvas && n.exitCanvas) {
+        d = `M ${n.entryCanvas.x} ${n.entryCanvas.y} L ${n.exitCanvas.x} ${n.exitCanvas.y}`;
+      }
+      if (!d && n.arcSamplesCanvas?.length) {
+        d = n.arcSamplesCanvas.map((p, i) => `${i ? 'L' : 'M'} ${p.x} ${p.y}`).join(' ');
+      }
+      if (!d) return;
+      const rk = String(n.renderKind || n.equipmentType || 'unknown').toLowerCase();
+      const sw = schematicStrokeWidth(n);
+      const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
+      const amb = (n.ambiguousInbound || []).length > 0;
+      let cls = `tb-schematic-body tb-rk-${rk}`;
+      if (sel) cls += ' selected';
+      if (amb) cls += ' tb-ambiguous';
+      const tag = (n.conveyorTag || n.label || '').trim() || 'P???';
+      const mid = n.entryCanvas && n.exitCanvas
+        ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
+        : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
+      html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tag)}</title></path>`;
+      html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
+      // Site overview: P-tag only. Detail/inspector hold motor/PE/Area/ES.
+      if (lod === 'overview' || lod === 'mid' || sel) {
+        html += `<text class="tb-schematic-label" x="${mid.x}" y="${mid.y}">${escapeHtml(tag)}</text>`;
+      }
+    });
+    // Confirmed physical mates: endpoints share location — show ▶◀ joint, not Bezier
+    (area?.wires || []).forEach((w) => {
+      if (!w.physical) return;
+      const conf = String(w.confidence || '').toUpperCase();
+      if (!(conf === 'CONFIRMED' || conf.includes('HIGH'))) return;
+      const a = (area.nodes || []).find((n) => n.id === w.from);
+      const b = (area.nodes || []).find((n) => n.id === w.to);
+      if (!a?.exitCanvas || !b?.entryCanvas) return;
+      const mx = (a.exitCanvas.x + b.entryCanvas.x) / 2;
+      const my = (a.exitCanvas.y + b.entryCanvas.y) / 2;
+      html += `<text class="tb-mate-mark" x="${mx}" y="${my}" title="EXIT ▶◀ ENTRY">▶◀</text>`;
+    });
+    svg.innerHTML = html;
+    svg.querySelectorAll('.tb-schematic-hit').forEach((el) => {
+      el.style.pointerEvents = 'stroke';
+      el.addEventListener('mousedown', (ev) => {
+        const id = el.getAttribute('data-id');
+        const n = (area.nodes || []).find((x) => x.id === id);
+        if (!n) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (tb.connectMode && isConv(n.kind)) {
+          handleConnectModeClick(n);
+          return;
+        }
+        selectNode(n.id);
+        const pt = canvasPointFromEvent(ev);
+        tb.moving = { id: n.id, ox: pt.x - n.x, oy: pt.y - n.y };
+      });
+    });
+  }
+
   /** Screen flow angle (deg). RUN Y is flipped to canvas → negate sourceAngle (matches layout SVG). */
   function flowAngleDeg(n) {
     if (n.sourceAngle != null && n.sourceAngle !== '') return -Number(n.sourceAngle);
@@ -1316,8 +1434,19 @@
     return { L, W };
   }
 
-  /** ENTRY / EXIT anchors in canvas space. Uses n.x/n.y as center (Auto Build convention). */
+  /** ENTRY / EXIT anchors in canvas space. Prefer projected entryCanvas/exitCanvas (infeed model). */
   function physicalAnchors(n) {
+    if (n.entryCanvas && n.exitCanvas) {
+      return {
+        center: {
+          x: (n.entryCanvas.x + n.exitCanvas.x) / 2,
+          y: (n.entryCanvas.y + n.exitCanvas.y) / 2,
+        },
+        entry: { x: n.entryCanvas.x, y: n.entryCanvas.y },
+        exit: { x: n.exitCanvas.x, y: n.exitCanvas.y },
+      };
+    }
+    // Fallback: treat n.x/n.y as body center with length along flow (legacy)
     const { L } = segSize(n);
     const ang = (flowAngleDeg(n) * Math.PI) / 180;
     const hl = L / 2;
@@ -1385,21 +1514,15 @@
     tb.view.zoom = z;
     const host = $('tb-nodes');
     const wires = $('tb-wires');
+    const schematic = $('tb-schematic');
     const bg = $('tb-canvas-bg');
     const origin = '0 0';
     const t = `scale(${z})`;
-    if (host) {
-      host.style.transform = t;
-      host.style.transformOrigin = origin;
-    }
-    if (wires) {
-      wires.style.transform = t;
-      wires.style.transformOrigin = origin;
-    }
-    if (bg) {
-      bg.style.transform = t;
-      bg.style.transformOrigin = origin;
-    }
+    [host, wires, schematic, bg].forEach((el) => {
+      if (!el) return;
+      el.style.transform = t;
+      el.style.transformOrigin = origin;
+    });
     const canvas = $('tb-canvas');
     if (canvas) canvas.dataset.zoom = String(z);
   }
@@ -1493,7 +1616,8 @@
       const meta = KIND_META[n.kind] || { icon: 'fa-cube', color: 'text-slate-300', title: n.kind };
       const el = document.createElement('div');
       el.dataset.id = n.id;
-      const useSeg = isPhysicalSeg(n);
+      const useSchematic = isSchematicNode(n) && (tb.layers?.physical !== false);
+      const useSeg = !useSchematic && isPhysicalSeg(n);
       const rot = Number(n.rotation || 0) % 360;
       const sides = portSides(useSeg ? 0 : rot); // segment ports sit on length ends
 
@@ -1544,7 +1668,18 @@
         : (tb.connectMode && tb.connectSourceId && n.id !== tb.connectSourceId ? ' tb-connect-dst' : '');
       if (n.asMerge) el.classList.add('tb-as-merge');
 
-      if (useSeg) {
+      if (useSchematic) {
+        // Invisible proxy at body center — selection/drag/connect; body drawn in #tb-schematic
+        el.className = `tb-node tb-schematic-proxy tb-physical${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}`;
+        if ((n.ambiguousInbound || []).length) el.classList.add('tb-ambiguous');
+        el.style.left = `${(Number(n.x) || 0) - 9}px`;
+        el.style.top = `${(Number(n.y) || 0) - 9}px`;
+        el.style.width = '18px';
+        el.style.height = '18px';
+        el.style.transform = '';
+        el.innerHTML = `${portsHtml}`;
+        el.title = (n.conveyorTag || n.label || '').trim();
+      } else if (useSeg) {
         const { L, W } = segSize(n);
         const ang = flowAngleDeg(n);
         const eq = String(n.equipmentType || '').toUpperCase();
@@ -1627,6 +1762,7 @@
 
     ensureCanvasExtents(area);
     applyViewportZoom();
+    drawSchematic(area);
     drawWires();
     renderInspector();
     renderTopologyTable();
@@ -1649,6 +1785,11 @@
   function portCenter(nodeId, port) {
     const area = activeArea();
     const node = (area?.nodes || []).find((n) => n.id === nodeId);
+    if (node && isSchematicNode(node) && node.entryCanvas && node.exitCanvas) {
+      const key = port || 'in';
+      if (key === 'out') return { x: node.exitCanvas.x, y: node.exitCanvas.y };
+      return { x: node.entryCanvas.x, y: node.entryCanvas.y };
+    }
     if (node && isPhysicalSeg(node)) {
       const a = physicalAnchors(node);
       const key = port || 'in';
@@ -1676,11 +1817,20 @@
   function ensureCanvasExtents(area) {
     const host = $('tb-nodes');
     const wires = $('tb-wires');
+    const schematic = $('tb-schematic');
     if (!host) return;
     let maxX = 1600;
     let maxY = 1000;
     (area?.nodes || []).forEach((n) => {
-      if (isPhysicalSeg(n)) {
+      if (isSchematicNode(n) && n.entryCanvas && n.exitCanvas) {
+        const pad = 40;
+        maxX = Math.max(maxX, n.entryCanvas.x + pad, n.exitCanvas.x + pad, (Number(n.x) || 0) + pad);
+        maxY = Math.max(maxY, n.entryCanvas.y + pad, n.exitCanvas.y + pad, (Number(n.y) || 0) + pad);
+        (n.pathCanvas || []).forEach((p) => {
+          if (p.x != null) maxX = Math.max(maxX, p.x + pad);
+          if (p.y != null) maxY = Math.max(maxY, p.y + pad);
+        });
+      } else if (isPhysicalSeg(n)) {
         const a = physicalAnchors(n);
         const { W } = segSize(n);
         const pad = Math.max(40, W * 2);
@@ -1693,12 +1843,13 @@
     });
     host.style.minWidth = `${maxX}px`;
     host.style.minHeight = `${maxY}px`;
-    if (wires) {
-      wires.setAttribute('width', String(maxX));
-      wires.setAttribute('height', String(maxY));
-      wires.style.width = `${maxX}px`;
-      wires.style.height = `${maxY}px`;
-    }
+    [wires, schematic].forEach((el) => {
+      if (!el) return;
+      el.setAttribute('width', String(maxX));
+      el.setAttribute('height', String(maxY));
+      el.style.width = `${maxX}px`;
+      el.style.height = `${maxY}px`;
+    });
   }
 
   function drawWires(temp) {
@@ -1719,19 +1870,22 @@
       const b = portCenter(wire.to, wire.toPort || 'in');
       if (!a || !b) return;
       const dist = Math.hypot(b.x - a.x, b.y - a.y);
+      const conf = String(wire.confidence || '').toUpperCase();
+      // Confirmed physical mates: endpoints coincide — mate mark drawn in schematic layer; no Bezier wire
+      if (wire.physical && (conf === 'CONFIRMED' || conf.includes('HIGH')) && dist < 12) {
+        return;
+      }
       let d;
       if (wire.physical && dist < 80) {
         // Short mating stub — reads as physically joined EXIT▶◀ENTRY
         d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
       } else if (wire.physical) {
-        const mx = (a.x + b.x) / 2;
-        const my = (a.y + b.y) / 2;
-        d = `M ${a.x} ${a.y} Q ${mx} ${my}, ${b.x} ${b.y}`;
+        // Still-disconnected physical candidate — thin dashed cue only (not topology invention)
+        d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
       } else {
         const dx = Math.max(40, Math.abs(b.x - a.x) * 0.45);
         d = `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
       }
-      const conf = String(wire.confidence || '').toUpperCase();
       let cls = 'tb-wire';
       if (wire.physical) cls += ' tb-physical';
       if (conf === 'CONFIRMED') cls += ' tb-conf-confirmed';
@@ -3199,6 +3353,7 @@
     safetyForAreaName,
     STORE_KEY,
     isPhysicalSeg,
+    isSchematicNode,
     physicalAnchors,
     segSize,
     presentationScale,
@@ -3209,6 +3364,8 @@
     fitViewToNodes,
     applyViewportZoom,
     nodesBBox,
+    drawSchematic,
+    schematicPathD,
   };
 
   if (document.readyState === 'loading') {

@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-12T04:57:49.009899+00:00",
+  "generated_at": "2026-09-12T05:22:05.216734+00:00",
   "machine": "ORNCCP2",
   "run_dir": "workspace\\active\\RUN",
   "builder": "fortna_run_physical_layout.build_transport_graph",
@@ -8,12 +8,12 @@
     "placed": 37,
     "unplaced": 0,
     "discovered": 37,
-    "high_confidence_connections": 3,
-    "ambiguous_connections": 20,
-    "unknown_connections": 34,
-    "disconnected_equipment": 31,
-    "manual_required": 85,
-    "merges_detected": 0
+    "high_confidence_connections": 9,
+    "ambiguous_connections": 28,
+    "disconnected_equipment": 21,
+    "manual_required": 49,
+    "merges_detected": 0,
+    "confirmed_from_geometry_summary": 7
   },
   "geometry_summary": {
     "generated_at": "2026-09-12T04:57:48.991918+00:00",
@@ -50,14 +50,14 @@
     "vfd_motors": 0,
     "contactor_motors": 34,
     "unknown_motors": 0,
-    "auto_connections": 3,
-    "ambiguous_connections": 20,
-    "disconnected_equipment": 31,
+    "auto_connections": 9,
+    "ambiguous_connections": 28,
+    "disconnected_equipment": 21,
     "merges_detected": 0,
     "canvas_scale": 0.009208479347567838,
     "geometry_summary": {
-      "generated_at": "2026-09-12T04:57:48.991918+00:00",
-      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+      "generated_at": "2026-09-12T05:17:23.532433+00:00",
+      "run_dir": "workspace\\active\\RUN",
       "machine": "ORNCCP2",
       "conveyors_discovered": 37,
       "usable_xy": 37,
@@ -72,77 +72,61 @@
       "motors_driving_multiple_conveyors": 38,
       "photoeyes_scoped": 44,
       "merge_table_hints": 8,
-      "connection_candidates_total": 23,
-      "confirmed_connections": 1,
+      "connection_candidates_total": 37,
+      "confirmed_connections": 7,
       "high_confidence_candidates": 2,
-      "ambiguous_connections": 20,
-      "unknown_connections": 34,
-      "anchor_model_assumption": "(X,Y)=footprint center; Angle=flow direction deg CCW from +X; entry/exit at \u00b1Length/2 along angle. CURVE/TRIANG lower confidence.",
+      "ambiguous_connections": 28,
+      "unknown_connections": 28,
+      "anchor_model_assumption": "(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; exit=XY+Length\u00b7\u00fb. CURVE uses Inside_Radius+tangents+90\u00b0 arc (MEDIUM).",
       "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence."
     }
   },
   "visual_layout_acceptance": {
-    "source": "Curtis Auto Build acceptance (screenshot / field FAIL) + code inspection",
+    "source": "Curtis browser acceptance + post schematic-renderer implementation",
     "all_cp2_equipment_visible": {
-      "verdict": "PARTIAL",
-      "detail": "Placed but bunched \u2014 equipment present, not spatially readable as plant layout"
+      "verdict": "CURTIS ACCEPTANCE REQUIRED",
+      "detail": "37 Autogen-scoped placed with schematic bodies; ownership finds 59 CP2_CONFIRMED \u2014 expansion is engineer-gated"
     },
     "physical_runs_recognizable": {
-      "verdict": "FAIL",
-      "detail": "Node-RED style cards; physical runs not recognizable"
+      "verdict": "CURTIS ACCEPTANCE REQUIRED",
+      "detail": "Infeed-origin + curve IR/tangent renderer shipped; print-side recognition must be confirmed by Curtis"
     },
     "not_excessively_overlapping": {
-      "verdict": "FAIL",
-      "detail": "Cards / labels overlap excessively"
+      "verdict": "CURTIS ACCEPTANCE REQUIRED",
+      "detail": "Schematic strokes replace cards/segments; browser confirmation required"
     },
     "p_tags_readable": {
-      "verdict": "FAIL",
-      "detail": "P-tags unreadable when overlapped"
+      "verdict": "CURTIS ACCEPTANCE REQUIRED",
+      "detail": "Site zoom shows P-tag labels only on schematic midpoints"
     },
     "connected_equipment_mates_visually": {
-      "verdict": "FAIL",
-      "detail": "Long bezier curves between cards \u2014 mates not visually obvious"
+      "verdict": "CURTIS ACCEPTANCE REQUIRED",
+      "detail": "CONFIRMED mates use coinciding endpoints + \u25b6\u25c0 mark; no Bezier for d\u22480"
     },
     "disconnected_ambiguous_obvious": {
-      "verdict": "PARTIAL",
-      "detail": "Some ambiguous/disconnected state available in graph metrics, not obvious in card UI"
+      "verdict": "CURTIS ACCEPTANCE REQUIRED",
+      "detail": "Unmated equipment remains visually disconnected; ambiguous flagged amber"
     },
-    "layout_visualization_gate": "FAIL",
+    "layout_visualization_gate": "CURTIS ACCEPTANCE REQUIRED",
     "pre_fix_card_ui": "FAIL",
-    "post_fix_presentation_code": "PRESENT",
-    "browser_verification": "PENDING",
-    "presentation_code_scan": {
-      "compact_segment_presentation_code_present": true,
-      "hits": [
-        "transport-build.js: .tb-seg",
-        "transport-build.js: Fit Site",
-        "transport-build-pass2.js: .tb-seg",
-        "transport-build-pass2.js: Fit Site",
-        "index.html: .tb-seg",
-        "index.html: Fit Site"
-      ],
-      "checked_paths": [
-        "C:\\dev\\worktree\\FortnaPlus\\dashboard\\transport-build.js",
-        "C:\\dev\\worktree\\FortnaPlus\\dashboard\\transport-build-pass2.js",
-        "C:\\dev\\worktree\\FortnaPlus\\dashboard\\fortna-plus.js",
-        "C:\\dev\\worktree\\FortnaPlus\\dashboard\\index.html"
-      ]
-    },
-    "note": "Underlying RUN geometry is preserved (not rearranged by P-number). Visualization gate reflects Curtis Auto Build FAIL. PRE-FIX FAIL / POST-FIX code present but browser verification pending.",
-    "presentation_shipped_this_branch": {
-      "compact_segments": true,
-      "entry_exit_mating_anchors": true,
-      "fit_site_fit_area": true,
-      "ctrl_wheel_zoom": true,
-      "zoom_dependent_detail": true,
-      "source_run_geometry_mutated": false,
-      "visual_gate_still": "FAIL until browser re-verification against Greensboro prints"
-    }
+    "compact_segment_interim": "FAIL (Curtis: still scattered labeled objects)",
+    "schematic_renderer": "IMPLEMENTED",
+    "coordinate_calibration": "greensboro-infeed-v1 HIGH/MEDIUM",
+    "browser_verification": "CURTIS ACCEPTANCE REQUIRED",
+    "do_not_auto_pass": true,
+    "note": "Do not mark visual gate PASS automatically. Curtis must compare Site Forge beside the Greensboro print."
   },
   "artifacts": {
     "transport_graph": "exports\\cp2-gate\\layout\\transport_graph_from_run.json",
     "auto_build_metrics": "exports\\cp2-gate\\layout\\auto_build_metrics.json"
   },
-  "verdict": "FAIL",
-  "geometry_inventory_verdict": "PASS"
+  "verdict": "CURTIS ACCEPTANCE REQUIRED",
+  "geometry_inventory_verdict": "PASS",
+  "calibration": {
+    "version": "greensboro-infeed-v1",
+    "doc": "docs/RUN_GEOMETRY_CALIBRATION.md",
+    "xy_meaning": "infeed_entry_end",
+    "prior_model": "footprint_center_plus_minus_L_over_2",
+    "confidence": "HIGH for linear; MEDIUM for curve sweep/turn"
+  }
 }
