@@ -40,43 +40,80 @@
     return next;
   }
 
-  /** Fortna PE suffix → Autogen roles (multi-select; Exit+Jam is normal for _P). */
-  const PE_ROLE_ORDER = ['exit', 'add', 'jam', 'full'];
+  /**
+   * PE roles for Autogen — only RUN-supported suffixes or engineer-confirmed.
+   * Do NOT silently invent Exit/Jam/Full/Add when evidence is weak.
+   */
+  const PE_ROLE_ORDER = ['exit', 'add', 'jam', 'full', 'other', 'none'];
+  const PE_ROLE_APPLY = ['exit', 'add', 'jam', 'full']; // roles that may drive PLC AOIs
   const PE_ROLE_BADGE = {
     exit: { letter: 'P', cls: 'tb-pe-role-exit', title: 'Exit / product (_P) → Fast_Conv ExitPE' },
     add: { letter: 'A', cls: 'tb-pe-role-add', title: 'Add / entrance → Fast_Conv AddPE' },
     jam: { letter: 'J', cls: 'tb-pe-role-jam', title: 'Jam (_J) → Slow_Jam' },
     full: { letter: 'F', cls: 'tb-pe-role-full', title: 'Full (_F) → Full_PE' },
+    other: { letter: '?', cls: 'tb-pe-role-other', title: 'Other (engineer-described; not auto-wired)' },
+    none: { letter: '–', cls: 'tb-pe-role-none', title: 'None — intentionally no PLC PE role' },
   };
 
+  /** Returns roles only when tag suffix is RUN-explicit. Empty = PE ROLE REQUIRED. */
   function inferPeRoles(tag) {
     const u = String(tag || '').trim().toUpperCase();
-    if (!u) return ['exit'];
-    if (/_F\d*$|_FULL|FULL/.test(u) && !/_JF|_FDJ/.test(u)) return ['full'];
-    if (/_J\d*$|_JAM|JAM|_JF|_FDJ/.test(u)) return ['jam'];
-    if (/_P\d*$|PRODUCT|PRESENT|DISCHARGE/.test(u) || /_P$/.test(u)) return ['exit', 'jam'];
-    return ['exit'];
+    if (!u) return [];
+    // Strict Fortna suffix evidence only — no default 'exit'
+    if (/_F\d*$|_FULL/.test(u) && !/_JF|_FDJ/.test(u)) return ['full'];
+    if (/_J\d*$|_JAM|_JF|_FDJ/.test(u)) return ['jam'];
+    if (/_P\d*$|_P$/.test(u)) return ['exit', 'jam']; // Fortna _P = product/exit (+ jam common)
+    if (/_A\d*$|_ADD/.test(u)) return ['add'];
+    return [];
+  }
+
+  function peEvidenceLevel(tag) {
+    const roles = inferPeRoles(tag);
+    return roles.length ? 'RUN_EXPLICIT' : 'UNKNOWN';
   }
 
   function normalizePeRoles(roles) {
     const set = new Set((roles || []).map((r) => String(r || '').toLowerCase()).filter(Boolean));
+    if (set.has('none')) return ['none'];
     return PE_ROLE_ORDER.filter((r) => set.has(r));
   }
 
   function ensurePeRoles(dev, { forceInfer = false } = {}) {
     if (!dev || dev.kind !== 'photoeye') return [];
-    // Keep engineer overrides unless tag change forces a fresh infer
-    if (!forceInfer && (dev.rolesManual || (Array.isArray(dev.roles) && dev.roles.length))) {
+    // Engineer confirmation always wins
+    if (!forceInfer && dev.rolesManual) {
+      dev.roles = normalizePeRoles(dev.roles);
+      dev.peRoleRequired = false;
+      dev.peRoleProvenance = 'ENGINEER_CONFIGURED';
+      return dev.roles;
+    }
+    if (!forceInfer && Array.isArray(dev.roles) && dev.roles.length && !dev.peRoleRequired) {
+      // Previously confirmed / RUN-derived — keep unless forceInfer
       dev.roles = normalizePeRoles(dev.roles);
       return dev.roles;
     }
-    dev.roles = inferPeRoles(dev.tag || dev.name || '');
-    return dev.roles;
+    const inferred = inferPeRoles(dev.tag || dev.name || '');
+    if (inferred.length) {
+      dev.roles = inferred;
+      dev.peRoleRequired = false;
+      dev.peRoleProvenance = 'RUN_EXPLICIT';
+      return dev.roles;
+    }
+    // Insufficient evidence — do not invent roles
+    dev.roles = [];
+    dev.peRoleRequired = true;
+    dev.peRoleProvenance = 'UNKNOWN';
+    return [];
   }
 
-  function peRoleBadgesHtml(roles) {
+  function peRoleBadgesHtml(roles, { required } = {}) {
+    if (required) {
+      return '<span class="tb-pe-role-required" title="PE ROLE REQUIRED — select JAM/FULL/EXIT/ADD/OTHER/NONE">PE ROLE REQUIRED</span>';
+    }
     const list = normalizePeRoles(roles);
-    if (!list.length) return '';
+    if (!list.length) {
+      return '<span class="tb-pe-role-required" title="PE ROLE REQUIRED">PE ROLE REQUIRED</span>';
+    }
     return list
       .map((r) => {
         const meta = PE_ROLE_BADGE[r];
@@ -2283,6 +2320,8 @@
             const el = $(`tb-insp-pe-role-${role}`);
             if (el) el.checked = roles.has(role);
           });
+          const req = $('tb-insp-pe-role-required');
+          if (req) req.classList.toggle('hidden', !dev.peRoleRequired);
         }
       }
       return;
@@ -2424,7 +2463,9 @@
         list.innerHTML = devices
           .map((d, i) => {
             const label = d.tag || d.name || d.kind;
-            const badges = d.kind === 'photoeye' ? peRoleBadgesHtml(ensurePeRoles(d)) : '';
+            const badges = d.kind === 'photoeye'
+              ? peRoleBadgesHtml(ensurePeRoles(d), { required: !!d.peRoleRequired })
+              : '';
             return `<div class="flex items-center gap-2 text-[10px] bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer hover:border-fuchsia-700/50" data-sel-dev="${escapeHtml(d.id)}">
               ${kindIconHtml(d.kind)}
               <span class="flex-1 truncate">${escapeHtml(label)}</span>
@@ -2900,15 +2941,29 @@
       id: area.id,
       name: area.name || '',
       nodes: (area.nodes || []).map((n) => {
-        const devices = (n.devices || []).map((d) => ({
-          id: d.id,
-          kind: d.kind,
-          tag: d.tag || d.name || '',
-          name: d.name || d.tag || '',
-          roles: Array.isArray(d.roles) ? d.roles.slice() : [],
-          rolesManual: !!d.rolesManual,
-          driveType: d.driveType || undefined,
-        }));
+        const devices = (n.devices || []).map((d) => {
+          // Only RUN-explicit or engineer-confirmed PE roles go to Autogen
+          let roles = [];
+          if (d.kind === 'photoeye') {
+            if (d.rolesManual && Array.isArray(d.roles)) {
+              roles = d.roles.filter((r) => PE_ROLE_APPLY.includes(r));
+            } else if (!d.peRoleRequired) {
+              roles = (inferPeRoles(d.tag || d.name || '')).filter((r) => PE_ROLE_APPLY.includes(r));
+            }
+            // peRoleRequired / none / other → no AOI roles emitted
+          }
+          return {
+            id: d.id,
+            kind: d.kind,
+            tag: d.tag || d.name || '',
+            name: d.name || d.tag || '',
+            roles,
+            rolesManual: !!d.rolesManual,
+            peRoleRequired: !!d.peRoleRequired,
+            peRoleProvenance: d.peRoleProvenance || undefined,
+            driveType: d.driveType || undefined,
+          };
+        });
         return {
           id: n.id,
           kind: n.kind,
@@ -3441,26 +3496,44 @@
     });
 
     PE_ROLE_ORDER.forEach((role) => {
-      $(`tb-insp-pe-role-${role}`)?.addEventListener('change', () => {
+      $(`tb-insp-pe-role-${role}`)?.addEventListener('change', (ev) => {
         const a = activeArea();
         const n = a?.nodes.find((x) => x.id === tb.selectedId);
         const d = n?.devices?.find((x) => x.id === tb.selectedDeviceId);
         if (!d || d.kind !== 'photoeye') return;
+        // NONE is exclusive
+        if (role === 'none' && ev.target.checked) {
+          PE_ROLE_ORDER.forEach((r) => {
+            const el = $(`tb-insp-pe-role-${r}`);
+            if (el) el.checked = r === 'none';
+          });
+        } else if (role !== 'none' && ev.target.checked) {
+          const noneEl = $('tb-insp-pe-role-none');
+          if (noneEl) noneEl.checked = false;
+        }
         const next = PE_ROLE_ORDER.filter((r) => !!$(`tb-insp-pe-role-${r}`)?.checked);
         if (!next.length) {
-          // Cleared all roles → restore original tag-inferred defaults (not "stuck on previous")
+          // Cleared → PE ROLE REQUIRED (do not invent defaults)
           d.rolesManual = false;
           d.roles = inferPeRoles(d.tag || d.name || '');
-          status(`PE roles cleared → defaults ${(d.roles || []).join('+') || 'exit'}`);
+          d.peRoleRequired = !(d.roles && d.roles.length);
+          d.peRoleProvenance = d.peRoleRequired ? 'UNKNOWN' : 'RUN_EXPLICIT';
+          status(d.peRoleRequired
+            ? 'PE ROLE REQUIRED — select JAM / FULL / EXIT / ADD / OTHER / NONE'
+            : `PE roles from RUN suffix → ${d.roles.join('+')}`);
         } else {
           d.roles = next;
           d.rolesManual = true;
-          status(`PE roles → ${d.roles.join('+')}`);
+          d.peRoleRequired = false;
+          d.peRoleProvenance = 'ENGINEER_CONFIGURED';
+          status(`PE roles (engineer) → ${d.roles.join('+')}`);
         }
         PE_ROLE_ORDER.forEach((r) => {
           const el = $(`tb-insp-pe-role-${r}`);
           if (el) el.checked = (d.roles || []).includes(r);
         });
+        const req = $('tb-insp-pe-role-required');
+        if (req) req.classList.toggle('hidden', !d.peRoleRequired);
         save();
         render();
       });

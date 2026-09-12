@@ -1,21 +1,20 @@
 # CP4 Blind Discovery — ORNCCP4
 
-**Status:** Discovery only — **no PLC generation**  
+**Branch:** `feature/cp4-blind-discovery`  
+**Status:** Discovery only — **no sawtooth / CP4 PLC generation**  
 **Firewall:** Finished PLC4 L5X was **not** read  
-**RUN:** `workspace/cp4-run/RUN` (from Greensboro ORNCCP4 tar; extract gitignored)  
+**RUN:** `workspace/cp4-run/RUN` (Greensboro ORNCCP4 tar; extract gitignored)  
 **Artifacts:** `exports/cp4-discovery/`
 
 ---
 
-## Scope
+## Philosophy
 
-| In scope | Out of scope |
-|----------|----------------|
-| Sawtooth / VFD / encoder / tracking inventory | Sawtooth PLC generation |
-| CP4 physical geometry inventory | Matching finished PLC4 counts |
-| Provenance + leakage regression | Autogen workbook changes for CP4 |
+- CURRENT RUN = production source truth  
+- Finished PLC4 = validation/reference only (architecture review may compare later)  
+- Do not invent Area/ES or lane identity from P-number order  
 
-Architecture/review may compare to finished PLC4 **after** this freeze.
+Provenance on relationships: `RUN_EXPLICIT` | `RUN_DERIVED` | `ENGINEER_CONFIGURED` | `UNKNOWN`
 
 ---
 
@@ -23,30 +22,33 @@ Architecture/review may compare to finished PLC4 **after** this freeze.
 
 | Item | Count |
 |------|------:|
-| Mechanical equipment (CP4-linked) | 76 |
-| VFD unique bases (explicit conveyor maps) | 13 |
-| Sawtooth merges / lanes | 1 / 5 |
-| Saw lanes with physical geometry | 5 / 5 |
+| Physical / mechanical conveyors (CP4-linked) | 76 |
+| Placed (geometry) | 76 |
+| VFD unique bases / device rows | 13 / 32 |
+| Explicit VFD→conveyor maps | 13 |
 | Encoders | 2 |
+| Sawtooth merges | 1 (`SAWTOOTH_MERGE`) |
+| Sawtooth lanes | 5 (all with conveyor + PE + drive) |
 | Tracking tables with active rows | 3 |
+| Unknowns (Area/ES engineer-required) | 1 category |
 
-Lane identity comes from explicit Name tokens (e.g. `LANE_0_P219` → `P219`) — **not** P-number order.
+Lane identity from Name tokens (e.g. `LANE_0_P219` → `P219`) — not LaneNdx / P-order.
 
 ---
 
-## Artifacts
+## Deliverables
 
 | File | Contents |
 |------|----------|
-| `equipment.json` | CP4 mechanical inventory + geometry |
-| `vfd.json` | VFD devices and explicit mappings |
-| `sawtooth.json` | Merges + lanes |
+| `site_model.json` | Canonical CP4 Site Model (conveyors, sawtooth, VFDs, encoders, relationships) |
+| `equipment.json` | Detailed equipment inventory |
+| `vfd.json` | VFD devices + mappings |
+| `sawtooth.json` | Merges + lanes + timing |
 | `encoders.json` | Encoder table + associations |
 | `tracking_wcs.json` | MsgTrack / MsgWCS / SrtTrack / XfrTrack / WCSEvents |
-| `layout_metrics.json` | Placement + connection candidates |
-| `report.md` | Narrative summary |
-
-Provenance codes: `RUN_EXPLICIT` | `RUN_INFERRED` | `ENGINEER_REQUIRED` | `UNKNOWN`
+| `unknowns.json` | Gaps (Area/ES, unmapped items) |
+| `layout_metrics.json` | Placement / connection candidates |
+| `report.md` | Narrative |
 
 ## Reproduce
 
@@ -57,7 +59,23 @@ python tools/scripts/fortna_cp4_discovery.py \
 python tools/scripts/test_cp4_discovery_no_leakage.py
 ```
 
-## Related
+Leakage test must PASS with finished PLC4 present / absent / renamed.
 
-- CP2 demo readiness / Fit Visible: `docs/CP2_COMPLETION_GATE.md`
-- Geometry calibration: `docs/RUN_GEOMETRY_CALIBRATION.md`
+## CP2 freeze (same tip)
+
+Transport workflow preserved:
+
+Import RUN → Auto Build → Review / Correct → Apply to Autogen → Build PLC
+
+Demo blockers addressed on this branch:
+
+- **PE ROLE REQUIRED** when RUN suffix evidence is insufficient (no silent Exit/Jam/Full)
+- Engineer can select **JAM / FULL / EXIT / ADD / OTHER / NONE**
+- Autogen apply emits only RUN-explicit or engineer-confirmed PE roles
+- Bulk **Apply Area / ES** for selected conveyor runs (does not invent Area/ES)
+
+## Out of scope
+
+- Sawtooth PLC generation  
+- Matching finished PLC4 conveyor counts  
+- Inferring Area/ES from RUN to reduce manual work  

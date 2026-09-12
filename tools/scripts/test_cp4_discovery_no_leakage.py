@@ -32,7 +32,7 @@ DIGEST_FILES = (
     "vfd.json",
     "sawtooth.json",
     "encoders.json",
-    "tracking_wcs.json",
+    "tracking_wcs.json", "site_model.json", "unknowns.json",
     "layout_metrics.json",
 )
 

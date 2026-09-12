@@ -535,13 +535,24 @@
     const { tb, escapeHtml, activeArea } = A();
     const bar = $('tb-bulk-bar');
     if (!bar) return;
-    const n = (tb.selectedIds || []).length;
-    if (n < 2) {
+    const n = (tb.selectedIds || []).length || (tb.selectedId ? 1 : 0);
+    // Show for multi-select, or single select when Area/ES still required
+    const nodes = selectedConvNodes();
+    const needsConfig = nodes.some((x) => x.areaRequired || x.esZoneRequired);
+    if (n < 2 && !needsConfig) {
+      bar.classList.add('hidden');
+      return;
+    }
+    if (n < 1) {
       bar.classList.add('hidden');
       return;
     }
     bar.classList.remove('hidden');
-    if ($('tb-bulk-count')) $('tb-bulk-count').textContent = `${n} conveyors selected`;
+    if ($('tb-bulk-count')) {
+      $('tb-bulk-count').textContent = n === 1
+        ? `1 conveyor · assign Area / ES`
+        : `${n} conveyors selected`;
+    }
     const areaSel = $('tb-bulk-area');
     if (areaSel) {
       areaSel.innerHTML = (tb.areas || [])
@@ -551,7 +562,6 @@
         )
         .join('');
     }
-    const nodes = selectedConvNodes();
     const zones = [...new Set(nodes.map((x) => x.safetyZone || '').filter(Boolean))];
     if ($('tb-bulk-eszone') && document.activeElement !== $('tb-bulk-eszone')) {
       $('tb-bulk-eszone').value = zones.length === 1 ? zones[0] : ensureBuildContext().safetyZone || '';
@@ -561,20 +571,37 @@
   function applyBulkEdit() {
     const { tb, save, render, status, moveNodeToArea } = A();
     const ids = [...(tb.selectedIds || [])];
+    if (!ids.length && tb.selectedId) ids.push(tb.selectedId);
     if (ids.length < 1) return;
-    pushHistory(`Bulk edit (${ids.length})`);
+    pushHistory(`Bulk Area/ES (${ids.length})`);
     const destArea = $('tb-bulk-area')?.value || '';
     const zone = ($('tb-bulk-eszone')?.value || '').trim();
+    if (!destArea && !zone) {
+      status('Select an Area and/or type an ES Zone, then Apply Area / ES');
+      return;
+    }
     ids.forEach((id) => {
       if (destArea) moveNodeToArea(id, destArea);
       for (const a of tb.areas) {
         const n = (a.nodes || []).find((x) => x.id === id);
-        if (n && zone) n.safetyZone = zone;
+        if (!n) continue;
+        if (destArea) {
+          n.areaRequired = false;
+          if (!n.provenance) n.provenance = {};
+          n.provenance.area = 'ENGINEER';
+        }
+        if (zone) {
+          n.safetyZone = zone;
+          n.esZoneRequired = false;
+          if (!n.provenance) n.provenance = {};
+          n.provenance.safetyZone = 'ENGINEER';
+        }
       }
     });
+    // Also rename active area if engineer is assigning a real name via build context later
     save();
     render();
-    status(`Bulk applied to ${ids.length} conveyor(s)`);
+    status(`Area/ES applied to ${ids.length} conveyor(s) — engineer configuration`);
     refreshPass2Chrome();
   }
 

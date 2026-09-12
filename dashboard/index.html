@@ -294,6 +294,13 @@
     .tb-pe-role-add { color: #7dd3fc; background: #0c4a6e; border-color: #0369a1; }
     .tb-pe-role-jam { color: #fcd34d; background: #451a03; border-color: #b45309; }
     .tb-pe-role-full { color: #d8b4fe; background: #3b0764; border-color: #7e22ce; }
+    .tb-pe-role-other { color: #cbd5e1; background: #1e293b; border-color: #475569; }
+    .tb-pe-role-none { color: #64748b; background: #0f172a; border-color: #334155; }
+    .tb-pe-role-required {
+      display: inline-flex; align-items: center; font-size: 8px; font-weight: 700;
+      letter-spacing: 0.03em; padding: 1px 5px; border-radius: 3px;
+      color: #fecaca; background: #450a0a; border: 1px solid #991b1b;
+    }
     #tb-wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
     .tb-wire { fill: none; stroke: #64748b; stroke-width: 2.5; }
     .tb-wire.active { stroke: #e879f9; }
@@ -2138,22 +2145,27 @@
         <button type="button" id="tb-continue-close" class="btn-ghost text-[10px] px-2 py-1 rounded text-slate-500">Esc</button>
         <div id="tb-continue-hits" class="w-full max-h-28 overflow-y-auto flex flex-wrap gap-1"></div>
       </div>
-      <!-- Multi-select bulk bar -->
+      <!-- Multi-select bulk bar — Area / ES Zone fast assign for a conveyor run -->
       <div id="tb-bulk-bar" class="tb-bulk-bar hidden shrink-0 px-4 py-1.5 flex items-center gap-2 flex-wrap text-[11px]">
         <span id="tb-bulk-count" class="text-sky-300 font-semibold">0 selected</span>
-        <label class="flex items-center gap-1 text-slate-400">Area
-          <select id="tb-bulk-area" class="bg-slate-900 border border-slate-700 rounded text-xs px-1.5 py-1"></select>
+        <span class="text-[10px] text-slate-500">Assign to run:</span>
+        <label class="flex items-center gap-1 text-slate-300 font-medium">Area
+          <select id="tb-bulk-area" class="bg-slate-900 border border-fuchsia-800/60 rounded text-xs px-1.5 py-1 min-w-[120px]"></select>
         </label>
-        <label class="flex items-center gap-1 text-slate-400">ES Zone
-          <input id="tb-bulk-eszone" type="text" class="bg-slate-900 border border-slate-700 rounded text-xs px-1.5 py-1 mono min-w-[120px]" />
+        <label class="flex items-center gap-1 text-slate-300 font-medium">ES Zone
+          <input id="tb-bulk-eszone" type="text" list="tb-ctx-eszone-list" placeholder="e.g. ModuleB_ES1"
+            class="bg-slate-900 border border-amber-800/60 rounded text-xs px-1.5 py-1 mono min-w-[140px]" />
         </label>
-        <button type="button" id="tb-bulk-apply" class="btn-ghost text-[10px] px-2 py-1 rounded border border-sky-800 text-sky-300">Apply to Selection</button>
-        <button type="button" id="tb-bulk-chain" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700">Select Chain</button>
-        <button type="button" id="tb-bulk-align" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700">Align</button>
-        <button type="button" id="tb-bulk-space" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700">Space Evenly</button>
-        <button type="button" id="tb-bulk-layout" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700">Auto Layout Selection</button>
+        <button type="button" id="tb-bulk-apply" class="btn-ghost text-[10px] px-2.5 py-1 rounded border border-emerald-600/70 text-emerald-200 font-semibold" title="Apply Area + ES Zone to the entire selection (engineer configuration)">
+          Apply Area / ES
+        </button>
+        <button type="button" id="tb-bulk-chain" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700" title="Expand selection to the connected chain">Select Chain</button>
         <button type="button" id="tb-bulk-terminal" class="btn-ghost text-[10px] px-2 py-1 rounded border border-amber-900/50 text-amber-300">Mark Terminal</button>
         <button type="button" id="tb-bulk-delete" class="btn-ghost text-[10px] px-2 py-1 rounded border border-red-950/50 text-red-400 ml-auto">Delete</button>
+        <!-- Presentation helpers kept but demoted -->
+        <button type="button" id="tb-bulk-align" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-800 text-slate-500 hidden">Align</button>
+        <button type="button" id="tb-bulk-space" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-800 text-slate-500 hidden">Space Evenly</button>
+        <button type="button" id="tb-bulk-layout" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-800 text-slate-500 hidden">Auto Layout Selection</button>
       </div>
       <!-- Build Chain dialog -->
       <div id="tb-chain-dialog" class="hidden fixed inset-0 z-[200] flex items-center justify-center bg-black/70" style="display:none">
@@ -2464,30 +2476,38 @@
                 <p id="tb-insp-dev-hint" class="text-[9px] text-slate-600 mt-1">Type to search — buildable tags only.</p>
               </div>
               <div id="tb-insp-pe-roles-wrap" class="hidden space-y-1.5">
-                <div class="text-[10px] text-slate-500 uppercase tracking-wider">PE roles</div>
+                <div class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                  PE roles
+                  <span id="tb-insp-pe-role-required" class="tb-pe-role-required hidden">PE ROLE REQUIRED</span>
+                </div>
                 <p class="text-[9px] text-slate-600 leading-relaxed">
-                  Fortna suffixes:
-                  <span class="mono text-cyan-400">_P</span> product/exit ·
-                  <span class="mono text-amber-400">_J</span> jam ·
-                  <span class="mono text-violet-400">_F</span> full.
-                  Exit + Jam together is normal for <span class="mono">_P</span> eyes.
+                  Only RUN suffixes (<span class="mono text-cyan-400">_P</span>/<span class="mono text-amber-400">_J</span>/<span class="mono text-violet-400">_F</span>)
+                  auto-fill. Otherwise choose explicitly — uncertain roles are <strong>not</strong> sent to Autogen.
                 </p>
                 <div class="grid grid-cols-2 gap-1.5 text-[10px]">
                   <label class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer">
-                    <input type="checkbox" id="tb-insp-pe-role-exit" class="rounded border-slate-600" data-pe-role="exit">
-                    <span class="tb-pe-role tb-pe-role-exit">P</span> Exit
-                  </label>
-                  <label class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer">
-                    <input type="checkbox" id="tb-insp-pe-role-add" class="rounded border-slate-600" data-pe-role="add">
-                    <span class="tb-pe-role tb-pe-role-add">A</span> Add
-                  </label>
-                  <label class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer">
                     <input type="checkbox" id="tb-insp-pe-role-jam" class="rounded border-slate-600" data-pe-role="jam">
-                    <span class="tb-pe-role tb-pe-role-jam">J</span> Jam
+                    <span class="tb-pe-role tb-pe-role-jam">J</span> JAM
                   </label>
                   <label class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer">
                     <input type="checkbox" id="tb-insp-pe-role-full" class="rounded border-slate-600" data-pe-role="full">
-                    <span class="tb-pe-role tb-pe-role-full">F</span> Full
+                    <span class="tb-pe-role tb-pe-role-full">F</span> FULL
+                  </label>
+                  <label class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer">
+                    <input type="checkbox" id="tb-insp-pe-role-exit" class="rounded border-slate-600" data-pe-role="exit">
+                    <span class="tb-pe-role tb-pe-role-exit">P</span> EXIT
+                  </label>
+                  <label class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer">
+                    <input type="checkbox" id="tb-insp-pe-role-add" class="rounded border-slate-600" data-pe-role="add">
+                    <span class="tb-pe-role tb-pe-role-add">A</span> ADD
+                  </label>
+                  <label class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer">
+                    <input type="checkbox" id="tb-insp-pe-role-other" class="rounded border-slate-600" data-pe-role="other">
+                    <span class="tb-pe-role tb-pe-role-other">?</span> OTHER
+                  </label>
+                  <label class="flex items-center gap-1.5 bg-slate-900/80 border border-slate-800 rounded-lg px-2 py-1 cursor-pointer">
+                    <input type="checkbox" id="tb-insp-pe-role-none" class="rounded border-slate-600" data-pe-role="none">
+                    <span class="tb-pe-role tb-pe-role-none">–</span> NONE
                   </label>
                 </div>
               </div>

@@ -46,7 +46,9 @@ except Exception:  # pragma: no cover
     build_equipment_geometry = None  # type: ignore
 
 PROVENANCE_RUN_EXPLICIT = "RUN_EXPLICIT"
-PROVENANCE_RUN_INFERRED = "RUN_INFERRED"
+PROVENANCE_RUN_DERIVED = "RUN_DERIVED"
+PROVENANCE_RUN_INFERRED = "RUN_INFERRED"  # legacy alias → prefer RUN_DERIVED in new fields
+PROVENANCE_ENGINEER_CONFIGURED = "ENGINEER_CONFIGURED"
 PROVENANCE_ENGINEER_REQUIRED = "ENGINEER_REQUIRED"
 PROVENANCE_UNKNOWN = "UNKNOWN"
 
@@ -1453,17 +1455,40 @@ def discover(run_dir: Path, machine: str, out_dir: Path) -> dict[str, Any]:
         machine, run_dir, out_dir, sawtooth, vfd, encoders, tracking, equipment, layout
     )
 
+    site_model = build_site_model(
+        machine, run_dir, equipment, vfd, sawtooth, encoders, tracking, layout
+    )
+    unknowns = build_unknowns(equipment, vfd, sawtooth, encoders, tracking, layout)
+
     artifacts = {
         "equipment.json": equipment,
+        "site_model.json": site_model,
         "vfd.json": vfd,
         "sawtooth.json": sawtooth,
         "encoders.json": encoders,
         "tracking_wcs.json": tracking,
         "layout_metrics.json": layout,
+        "unknowns.json": unknowns,
     }
     for name, doc in artifacts.items():
         (out_dir / name).write_text(
             json.dumps(doc, indent=2, default=str), encoding="utf-8"
+        )
+    report = report.replace(
+        "- `layout_metrics.json`\n- `report.md`",
+        "- `layout_metrics.json`\n- `site_model.json`\n- `unknowns.json`\n- `report.md`",
+    )
+    # Ensure report lists required headline counts
+    if "site_model.json" not in report:
+        report = report.rstrip() + (
+            "\n\n## Site model / unknowns\n\n"
+            f"- Canonical site model: `site_model.json` "
+            f"({site_model['counts'].get('conveyors', 0)} conveyors, "
+            f"{site_model['counts'].get('relationships', 0)} relationships)\n"
+            f"- Unknowns / gaps: `unknowns.json` "
+            f"({unknowns['counts'].get('total', 0)} items)\n"
+            "- Finished PLC4 L5X was **not** read.\n"
+            "- Sawtooth PLC generation was **not** implemented.\n"
         )
     (out_dir / "report.md").write_text(report, encoding="utf-8")
 
@@ -1471,6 +1496,7 @@ def discover(run_dir: Path, machine: str, out_dir: Path) -> dict[str, Any]:
         "out_dir": str(out_dir),
         "counts": {
             "equipment": equipment["counts"]["equipment"],
+            "conveyors": site_model["counts"].get("conveyors", 0),
             "vfd_bases": vfd["counts"]["unique_vfd_bases"],
             "vfd_devices": vfd["counts"]["device_rows"],
             "saw_merges": sawtooth["counts"]["merges"],
@@ -1479,8 +1505,228 @@ def discover(run_dir: Path, machine: str, out_dir: Path) -> dict[str, Any]:
             "tracking_active_tables": tracking["counts"]["tables_with_active_rows"],
             "placed": layout["placed"],
             "unplaced": layout["unplaced"],
+            "unknowns": unknowns["counts"].get("total", 0),
         },
         "artifacts": [str(out_dir / n) for n in list(artifacts) + ["report.md"]],
+    }
+
+
+def build_site_model(
+    machine: str,
+    run_dir: Path,
+    equipment: dict,
+    vfd: dict,
+    sawtooth: dict,
+    encoders: dict,
+    tracking: dict,
+    layout: dict,
+) -> dict[str, Any]:
+    """Canonical CP4 Site Model (discovery only — no PLC generation)."""
+    conveyors = []
+    for e in equipment.get("equipment") or []:
+        tag = e.get("conveyor_tag") or e.get("tag") or e.get("conveyor")
+        entry = e.get("entry_anchor") or e.get("entry")
+        exit_pt = e.get("exit_anchor") or e.get("exit")
+        conveyors.append(
+            {
+                "tag": tag,
+                "type": e.get("equipment_type") or e.get("type"),
+                "geometry": {
+                    "x": e.get("x"),
+                    "y": e.get("y"),
+                    "angle": e.get("angle"),
+                    "length": e.get("length"),
+                    "width": e.get("width"),
+                    "entry": entry,
+                    "exit": exit_pt,
+                },
+                "has_geometry": bool(e.get("has_geometry") or (entry and exit_pt)),
+                "placed": bool(e.get("placed")),
+                "motors": e.get("motors") or [],
+                "saw_lane": e.get("saw_lane"),
+                "provenance": e.get("provenance") or e.get("ownership_provenance") or PROVENANCE_RUN_EXPLICIT,
+                "controller": machine,
+            }
+        )
+    relationships = []
+    vfd_map = vfd.get("by_base") or vfd.get("vfds") or {}
+    if isinstance(vfd_map, dict):
+        for base, info in vfd_map.items():
+            if not isinstance(info, dict):
+                continue
+            for conv in info.get("conveyors") or []:
+                relationships.append(
+                    {
+                        "from": base,
+                        "to": conv,
+                        "kind": "vfd_to_conveyor",
+                        "provenance": info.get("provenance") or PROVENANCE_RUN_EXPLICIT,
+                    }
+                )
+    if isinstance(vfd.get("mappings"), list):
+        for m in vfd["mappings"]:
+            relationships.append(
+                {
+                    "from": m.get("vfd") or m.get("from"),
+                    "to": m.get("conveyor") or m.get("to"),
+                    "kind": "vfd_to_conveyor",
+                    "provenance": m.get("provenance") or PROVENANCE_RUN_EXPLICIT,
+                }
+            )
+    for lane in sawtooth.get("lanes") or []:
+        if lane.get("conveyor"):
+            relationships.append(
+                {
+                    "from": lane.get("name"),
+                    "to": lane.get("conveyor"),
+                    "kind": "saw_lane_to_conveyor",
+                    "provenance": lane.get("conveyor_provenance") or PROVENANCE_RUN_EXPLICIT,
+                }
+            )
+        if lane.get("photoeye"):
+            relationships.append(
+                {
+                    "from": lane.get("name"),
+                    "to": lane.get("photoeye"),
+                    "kind": "saw_lane_to_pe",
+                    "provenance": PROVENANCE_RUN_EXPLICIT,
+                }
+            )
+        drive = lane.get("drive") or lane.get("drive/vfd") or lane.get("disable_io")
+        if drive:
+            relationships.append(
+                {
+                    "from": lane.get("name"),
+                    "to": drive,
+                    "kind": "saw_lane_to_drive",
+                    "provenance": PROVENANCE_RUN_EXPLICIT,
+                }
+            )
+    for enc in encoders.get("encoders") or []:
+        name = enc.get("encoder") or enc.get("name")
+        for tgt in enc.get("associations") or enc.get("linked") or []:
+            relationships.append(
+                {
+                    "from": name,
+                    "to": tgt.get("target") if isinstance(tgt, dict) else tgt,
+                    "kind": "encoder_association",
+                    "provenance": (tgt.get("provenance") if isinstance(tgt, dict) else None)
+                    or enc.get("provenance")
+                    or PROVENANCE_UNKNOWN,
+                }
+            )
+
+    return {
+        "generated_at": _ts(),
+        "machine": machine,
+        "source_of_truth": "CP4 RUN only — finished PLC4 L5X not read; no sawtooth PLC generation",
+        "run_dir": str(run_dir),
+        "counts": {
+            "conveyors": len(conveyors),
+            "vfd_bases": (vfd.get("counts") or {}).get("unique_vfd_bases", 0),
+            "encoders": (encoders.get("counts") or {}).get("encoders", 0),
+            "saw_merges": (sawtooth.get("counts") or {}).get("merges", 0),
+            "saw_lanes": (sawtooth.get("counts") or {}).get("lanes", 0),
+            "relationships": len(relationships),
+            "placed": layout.get("placed", 0),
+            "unplaced": layout.get("unplaced", 0),
+        },
+        "conveyors": conveyors,
+        "sawtooth": {
+            "merges": sawtooth.get("merges") or [],
+            "lanes": sawtooth.get("lanes") or [],
+        },
+        "vfds": vfd,
+        "encoders": encoders.get("encoders") or [],
+        "tracking_wcs_summary": {
+            "tables_with_active_rows": (tracking.get("counts") or {}).get(
+                "tables_with_active_rows", 0
+            ),
+            "characterization": tracking.get("characterization") or {},
+        },
+        "relationships": relationships,
+        "controller_area_safety_evidence": {
+            "note": "Area/ES zone names are not inventable from RUN alone for CP4 — ENGINEER_CONFIGURED required before generation",
+            "provenance": PROVENANCE_UNKNOWN,
+        },
+    }
+
+
+def build_unknowns(
+    equipment: dict,
+    vfd: dict,
+    sawtooth: dict,
+    encoders: dict,
+    tracking: dict,
+    layout: dict,
+) -> dict[str, Any]:
+    items: list[dict[str, Any]] = []
+    for e in equipment.get("equipment") or []:
+        tag = e.get("conveyor_tag") or e.get("tag") or e.get("conveyor")
+        entry = e.get("entry_anchor") or e.get("entry")
+        exit_pt = e.get("exit_anchor") or e.get("exit")
+        if e.get("has_geometry") is False or (not entry or not exit_pt):
+            if not e.get("placed"):
+                items.append(
+                    {
+                        "kind": "geometry",
+                        "tag": tag,
+                        "reason": "missing entry/exit geometry or unplaced",
+                        "provenance": PROVENANCE_UNKNOWN,
+                    }
+                )
+    unk_vfd = (vfd.get("counts") or {}).get("unknown_conveyor_mapping", 0)
+    if unk_vfd:
+        for row in vfd.get("unknown_mappings") or vfd.get("devices") or []:
+            if isinstance(row, dict) and (
+                row.get("conveyors") in (None, [], "") or row.get("unknown")
+            ):
+                items.append(
+                    {
+                        "kind": "vfd_mapping",
+                        "tag": row.get("name") or row.get("vfd") or row.get("base"),
+                        "reason": "VFD without explicit conveyor mapping",
+                        "provenance": PROVENANCE_UNKNOWN,
+                    }
+                )
+    for lane in sawtooth.get("lanes") or []:
+        if not lane.get("conveyor"):
+            items.append(
+                {
+                    "kind": "saw_lane",
+                    "tag": lane.get("name"),
+                    "reason": "lane missing conveyor identity",
+                    "provenance": PROVENANCE_UNKNOWN,
+                }
+            )
+    for enc in encoders.get("encoders") or []:
+        assoc = enc.get("associations") or enc.get("linked") or []
+        if not assoc:
+            items.append(
+                {
+                    "kind": "encoder",
+                    "tag": enc.get("encoder") or enc.get("name"),
+                    "reason": "encoder has no explicit sawtooth/VFD association",
+                    "provenance": PROVENANCE_UNKNOWN,
+                }
+            )
+    # Area / ES always unknown from RUN for discovery freeze
+    items.append(
+        {
+            "kind": "area_es",
+            "tag": "*",
+            "reason": "Area / ES zone not recoverable from CP4 RUN — engineer configuration required before generation",
+            "provenance": PROVENANCE_UNKNOWN,
+        }
+    )
+    by_kind: dict[str, int] = {}
+    for it in items:
+        by_kind[it["kind"]] = by_kind.get(it["kind"], 0) + 1
+    return {
+        "generated_at": _ts(),
+        "source_of_truth": "CP4 RUN discovery gaps — finished PLC4 not consulted",
+        "counts": {"total": len(items), "by_kind": by_kind},
+        "items": items,
     }
 
 
