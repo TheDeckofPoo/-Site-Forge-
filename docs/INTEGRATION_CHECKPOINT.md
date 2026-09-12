@@ -1,4 +1,4 @@
-# Site Forge — Integration Checkpoint
+﻿# Site Forge — Integration Checkpoint
 
 **Branch:** `feature/site-forge-integration-checkpoint`  
 **Do NOT merge to main automatically** — prepare for review only.
@@ -11,7 +11,8 @@
 |-----|-----|--------|
 | site-forge/main (stale) | `e42d0e17782a` | End Of Day Push 08/17 |
 | Integration base (pre-checkpoint docs) | `1de03cdfb104` | Tip of `feature/cp4-compiler-pass2` |
-| Integration HEAD | `3b253e51a242` | This checkpoint: README/UX/layout/legacy research |
+| Integration content commit | `a881a7e257f1` | README/UX/layout/legacy research |
+| Integration HEAD | *(branch tip — run `git rev-parse HEAD`)* | Includes docs SHA fill on top of content commit |
 | Merge-base(main, tip) | `e42d0e17782a` | Tip contains main as ancestor |
 
 ### Ancestry (tip contains earlier accepted work)
@@ -32,13 +33,14 @@ No duplicate cherry-picks — linear first-parent ancestry stacks the work.
 ### Commit ancestry summary (newest → older)
 
 ```
-3b253e51a242  feature/site-forge-integration-checkpoint  (this checkpoint)
-  └─ 1de03cd  CP4 Pass 2 ownership + Sawtooth param + UX simplicity
-       └─ 7f05fec  CP4 Pass1 self-audit 76vs80 + Sawtooth symbols
-            └─ d77716d  CP4 Compiler Pass 1 candidate generation
-                 └─ 491df25  Freeze CP2 PE/Area + CP4 blind discovery
-                      └─ … transport / geometry / source-truth …
-                           └─ e42d0e1  site-forge/main
+feature/site-forge-integration-checkpoint  (branch tip)
+  └─ a881a7e  Integration checkpoint: README/UX/layout/legacy research
+       └─ 1de03cd  CP4 Pass 2 ownership + Sawtooth param + UX simplicity
+            └─ 7f05fec  CP4 Pass1 self-audit 76vs80 + Sawtooth symbols
+                 └─ d77716d  CP4 Compiler Pass 1 candidate generation
+                      └─ 491df25  Freeze CP2 PE/Area + CP4 blind discovery
+                           └─ … transport / geometry / source-truth …
+                                └─ e42d0e1  site-forge/main
 ```
 
 ---
