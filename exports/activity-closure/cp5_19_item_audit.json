@@ -1,0 +1,816 @@
+{
+  "generated_at": "2026-09-12T20:47:47.867608+00:00",
+  "policy": "N/A alone must not resolve activity or generation disposition",
+  "count": 19,
+  "reason_counts": {
+    "MISSING_IO_PROOF": 19
+  },
+  "buckets": {
+    "proven_active": 1,
+    "likely_active": 18,
+    "historical_candidates": 0,
+    "engineer_required": 19,
+    "compiler_bugs": 0
+  },
+  "items": [
+    {
+      "identity": "P440",
+      "equipment_type": "BELT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P526",
+      "equipment_type": "STRAIGHT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P528",
+      "equipment_type": "STRAIGHT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P532",
+      "equipment_type": "CURVE",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P534",
+      "equipment_type": "BELT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P538",
+      "equipment_type": "CURVE",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P540",
+      "equipment_type": "CURVE",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P554",
+      "equipment_type": "BELT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P560",
+      "equipment_type": "STRAIGHT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P562",
+      "equipment_type": "CURVE",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_CONFIRMED",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:fulljam_link",
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P702A",
+      "equipment_type": "BELT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P702B",
+      "equipment_type": "BELT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P702C",
+      "equipment_type": "BELT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P712",
+      "equipment_type": "STRAIGHT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P716",
+      "equipment_type": "BELT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P800",
+      "equipment_type": "STRAIGHT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P804",
+      "equipment_type": "STRAIGHT",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P808",
+      "equipment_type": "CURVE",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    },
+    {
+      "identity": "P816",
+      "equipment_type": "CURVE",
+      "inclusion": "INCLUDED",
+      "active_state": "ACTIVE_LIKELY",
+      "controller_evidence": {
+        "machine_name_raw": null,
+        "machine_name_ambiguous": true,
+        "source_scope": "base",
+        "note": "N/A Machine_Name is ambiguous ownership \u2014 not inactive"
+      },
+      "io_evidence": {
+        "io_address_word": null,
+        "has_io_evidence_kind": false
+      },
+      "motor_vfd_evidence": {
+        "has_motor": false,
+        "has_vfd": false,
+        "has_mtrchain": true
+      },
+      "pe_evidence": {
+        "has_pe_assignment": false
+      },
+      "path_evidence": {
+        "has_path": false
+      },
+      "zone_evidence": {
+        "area_id": "Area_1",
+        "es_zone_id": null,
+        "jam_zone_id": null
+      },
+      "subsystem_references": false,
+      "evidence_for": [
+        "cross_table:mtrchain",
+        "strong_cross_table_or_relationship_link",
+        "relationship_graph_member"
+      ],
+      "evidence_against": [],
+      "generation_reason": "ACTIVE_IN_SCOPE",
+      "reason_not_generated": "MISSING_IO_PROOF",
+      "na_alone_used": false
+    }
+  ]
+}

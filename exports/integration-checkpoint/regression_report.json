@@ -1,0 +1,149 @@
+{
+  "generated_at": "2026-09-12T20:50:23.132254+00:00",
+  "single_field_na_deactivation_used": false,
+  "tests": {
+    "activity_classification_closure": "PASS",
+    "fortnaplus_knowledge_layer": "PASS",
+    "run_driven_workspace": "PASS",
+    "cp4_discovery_no_leakage": "PASS",
+    "source_truth_no_leakage": "PASS",
+    "knowledge_driven_compiler": "PASS",
+    "area_rename_l5x": "PASS",
+    "cp5_blind_identity": "PASS",
+    "validation_firewall": "PASS"
+  },
+  "activity": {
+    "generated_at": "2026-09-12T20:47:47.919051+00:00",
+    "single_field_na_deactivation_used": false,
+    "ambiguous_field_policy": [
+      "",
+      "-",
+      "--",
+      "?",
+      "INVALID",
+      "N/A",
+      "N/A~",
+      "NA",
+      "NONE",
+      "NULL",
+      "N\\A",
+      "UNKNOWN",
+      "~"
+    ],
+    "cp2": {
+      "inclusion": {
+        "INCLUDED": 223
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 185,
+        "ACTIVE_LIKELY": 38
+      }
+    },
+    "cp4": {
+      "inclusion": {
+        "INCLUDED": 235
+      },
+      "active_state": {
+        "ACTIVE_LIKELY": 46,
+        "ACTIVE_CONFIRMED": 189
+      }
+    },
+    "cp5": {
+      "inclusion": {
+        "INCLUDED": 295
+      },
+      "active_state": {
+        "ACTIVE_LIKELY": 28,
+        "ACTIVE_CONFIRMED": 267
+      }
+    },
+    "cp5_19": {
+      "proven_active": 1,
+      "likely_active": 18,
+      "historical_candidates": 0,
+      "engineer_required": 19,
+      "compiler_bugs": 0
+    },
+    "cp5_bridge_preserved": true,
+    "cp5_bridge_actual": {
+      "conveyors_generated": 60,
+      "pe_generated": 94,
+      "io_modules": 61,
+      "io_map_rungs": 368,
+      "encoders": 5
+    }
+  },
+  "cp5_19": {
+    "proven_active": 1,
+    "likely_active": 18,
+    "historical_candidates": 0,
+    "engineer_required": 19,
+    "compiler_bugs": 0
+  },
+  "cp5_bridge_floor": {
+    "generated_at": "2026-09-12T20:47:47.917921+00:00",
+    "floor": {
+      "conveyors_generated": 60,
+      "pe_generated": 94,
+      "io_modules": 61,
+      "io_map_rungs": 368,
+      "encoders": 5
+    },
+    "actual": {
+      "conveyors_generated": 60,
+      "pe_generated": 94,
+      "io_modules": 61,
+      "io_map_rungs": 368,
+      "encoders": 5
+    },
+    "reductions": {
+      "conveyors_generated": {
+        "floor": 60,
+        "actual": 60,
+        "ok": true
+      },
+      "pe_generated": {
+        "floor": 94,
+        "actual": 94,
+        "ok": true
+      },
+      "io_modules": {
+        "floor": 61,
+        "actual": 61,
+        "ok": true
+      },
+      "io_map_rungs": {
+        "floor": 368,
+        "actual": 368,
+        "ok": true
+      },
+      "encoders": {
+        "floor": 5,
+        "actual": 5,
+        "ok": true
+      }
+    },
+    "preserved": true,
+    "note": "Any reduction requires explicit evidence-based explanation"
+  },
+  "cp5_gap_closure_summary": {
+    "conveyors_generated": 60,
+    "pe_generated": 94,
+    "io_map_rungs": 368,
+    "encoders_in_l5x": 5
+  },
+  "equipment_inclusion": {
+    "cp2": {
+      "INCLUDED": 63
+    },
+    "cp4": {
+      "INCLUDED": 76
+    },
+    "cp5": {
+      "INCLUDED": 79
+    }
+  },
+  "gitattributes_ags_script_fix": true,
+  "safe_for_architecture_review": true,
+  "safe_for_main_merge": false
+}

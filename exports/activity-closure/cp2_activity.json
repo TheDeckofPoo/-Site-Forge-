@@ -1,0 +1,148 @@
+{
+  "generated_at": "2026-09-12T20:47:47.775938+00:00",
+  "machine": "ORNCCP2",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+  "totals": {
+    "inclusion": {
+      "INCLUDED": 223
+    },
+    "active_state": {
+      "ACTIVE_CONFIRMED": 185,
+      "ACTIVE_LIKELY": 38
+    }
+  },
+  "per_bucket": {
+    "equipment": {
+      "total": 63,
+      "inclusion": {
+        "INCLUDED": 63
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 25,
+        "ACTIVE_LIKELY": 38
+      }
+    },
+    "motors": {
+      "total": 116,
+      "inclusion": {
+        "INCLUDED": 116
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 116
+      }
+    },
+    "vfds": {
+      "total": 0,
+      "inclusion": {},
+      "active_state": {}
+    },
+    "photoeyes": {
+      "total": 44,
+      "inclusion": {
+        "INCLUDED": 44
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 44
+      }
+    },
+    "encoders": {
+      "total": 0,
+      "inclusion": {},
+      "active_state": {}
+    },
+    "sorters": {
+      "total": 0,
+      "inclusion": {},
+      "active_state": {}
+    },
+    "sawtooth_merges": {
+      "total": 0,
+      "inclusion": {},
+      "active_state": {}
+    }
+  },
+  "activity_counts": {
+    "by_active_state": {
+      "ACTIVE_CONFIRMED": 278,
+      "ACTIVE_LIKELY": 131,
+      "INACTIVE_CONFIRMED": 2
+    },
+    "by_inclusion": {
+      "AVAILABLE": 86,
+      "EXCLUDED": 2,
+      "INCLUDED": 323
+    }
+  },
+  "policy": {
+    "single_field_na_deactivation": false,
+    "ambiguous_field_values": [
+      "",
+      "-",
+      "--",
+      "?",
+      "INVALID",
+      "N/A",
+      "N/A~",
+      "NA",
+      "NONE",
+      "NULL",
+      "N\\A",
+      "UNKNOWN",
+      "~"
+    ]
+  },
+  "high_included_explanation": {
+    "note": "High INCLUDED ratio is supported by positive cross-table evidence (I/O, Mtrchain, jam/full, ownership) \u2014 not forced balance.",
+    "top_positive_signals": [
+      [
+        "evidence:mtrchain",
+        116
+      ],
+      [
+        "evidence:motor_name_link",
+        96
+      ],
+      [
+        "evidence:activity_likely",
+        76
+      ],
+      [
+        "strong_cross_table_or_relationship_link",
+        63
+      ],
+      [
+        "relationship_graph_member",
+        63
+      ],
+      [
+        "cross_table:mtrchain",
+        60
+      ],
+      [
+        "evidence:activity_strong_link",
+        50
+      ],
+      [
+        "evidence:pe_name_link",
+        44
+      ],
+      [
+        "cross_table:full_link",
+        10
+      ],
+      [
+        "evidence:full_link",
+        10
+      ],
+      [
+        "cross_table:jam_link",
+        9
+      ],
+      [
+        "evidence:jam_link",
+        9
+      ]
+    ]
+  },
+  "single_field_na_deactivation_used": false
+}

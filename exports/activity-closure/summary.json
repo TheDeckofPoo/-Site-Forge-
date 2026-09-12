@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-09-12T20:47:47.919051+00:00",
+  "single_field_na_deactivation_used": false,
+  "ambiguous_field_policy": [
+    "",
+    "-",
+    "--",
+    "?",
+    "INVALID",
+    "N/A",
+    "N/A~",
+    "NA",
+    "NONE",
+    "NULL",
+    "N\\A",
+    "UNKNOWN",
+    "~"
+  ],
+  "cp2": {
+    "inclusion": {
+      "INCLUDED": 223
+    },
+    "active_state": {
+      "ACTIVE_CONFIRMED": 185,
+      "ACTIVE_LIKELY": 38
+    }
+  },
+  "cp4": {
+    "inclusion": {
+      "INCLUDED": 235
+    },
+    "active_state": {
+      "ACTIVE_LIKELY": 46,
+      "ACTIVE_CONFIRMED": 189
+    }
+  },
+  "cp5": {
+    "inclusion": {
+      "INCLUDED": 295
+    },
+    "active_state": {
+      "ACTIVE_LIKELY": 28,
+      "ACTIVE_CONFIRMED": 267
+    }
+  },
+  "cp5_19": {
+    "proven_active": 1,
+    "likely_active": 18,
+    "historical_candidates": 0,
+    "engineer_required": 19,
+    "compiler_bugs": 0
+  },
+  "cp5_bridge_preserved": true,
+  "cp5_bridge_actual": {
+    "conveyors_generated": 60,
+    "pe_generated": 94,
+    "io_modules": 61,
+    "io_map_rungs": 368,
+    "encoders": 5
+  }
+}

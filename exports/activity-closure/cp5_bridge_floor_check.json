@@ -1,0 +1,46 @@
+{
+  "generated_at": "2026-09-12T20:47:47.917921+00:00",
+  "floor": {
+    "conveyors_generated": 60,
+    "pe_generated": 94,
+    "io_modules": 61,
+    "io_map_rungs": 368,
+    "encoders": 5
+  },
+  "actual": {
+    "conveyors_generated": 60,
+    "pe_generated": 94,
+    "io_modules": 61,
+    "io_map_rungs": 368,
+    "encoders": 5
+  },
+  "reductions": {
+    "conveyors_generated": {
+      "floor": 60,
+      "actual": 60,
+      "ok": true
+    },
+    "pe_generated": {
+      "floor": 94,
+      "actual": 94,
+      "ok": true
+    },
+    "io_modules": {
+      "floor": 61,
+      "actual": 61,
+      "ok": true
+    },
+    "io_map_rungs": {
+      "floor": 368,
+      "actual": 368,
+      "ok": true
+    },
+    "encoders": {
+      "floor": 5,
+      "actual": 5,
+      "ok": true
+    }
+  },
+  "preserved": true,
+  "note": "Any reduction requires explicit evidence-based explanation"
+}

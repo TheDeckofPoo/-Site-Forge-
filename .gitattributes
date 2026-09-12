@@ -1,0 +1,31 @@
+# =============================================================================
+# GitHub Linguist / language stats
+# =============================================================================
+# FortnaPlus .asc configuration tables are pipe/tilde-delimited plant data, NOT
+# AGS Script. Mark them undetectable so GitHub does not skew language stats.
+#
+# Real application source (Python, JS, HTML, CSS, Rhai, etc.) remains detectable.
+# =============================================================================
+
+# FortnaPlus / FPC ASC configuration & overlays (often misdetected as AGS Script)
+*.asc linguist-detectable=false
+*.asc.* linguist-detectable=false
+**/FORTNA/** linguist-vendored
+**/FORTNA/** linguist-detectable=false
+
+# Training document corpus (binary / reference — not product source)
+docs/training/** linguist-vendored
+docs/training/** linguist-detectable=false
+
+# Generated / export artifacts
+exports/**/*.json linguist-generated
+exports/**/*.md linguist-generated
+exports/**/*.L5X linguist-generated
+exports/**/*.l5x linguist-generated
+
+# Vendor / reference Rockwell libraries (generic, not authored app logic)
+tools/libraries/** linguist-vendored
+
+# Workspace RUN extracts (local site data)
+workspace/**/RUN/** linguist-vendored
+workspace/**/RUN/** linguist-detectable=false

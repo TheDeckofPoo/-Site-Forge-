@@ -42,6 +42,34 @@ from fortna_site_model import (
 YES = {"Y", "YES", "TRUE", "1", "ON", "ENABLE", "ENABLED"}
 NO = {"N", "NO", "FALSE", "0", "OFF", "DISABLE", "DISABLED"}
 
+# Placeholder / ambiguous raw values. MUST NOT alone deactivate, exclude,
+# mark stale, or block generation. Preserve under provenance / Source Evidence.
+AMBIGUOUS_FIELD_VALUES = {
+    "",
+    "N/A",
+    "NA",
+    "N\\A",
+    "NONE",
+    "NULL",
+    "~",
+    "N/A~",
+    "INVALID",
+    "UNKNOWN",
+    "?",
+    "-",
+    "--",
+}
+
+
+def _raw_str(v: Any) -> str:
+    return str(v if v is not None else "").strip().strip('"')
+
+
+def _is_ambiguous_field_value(v: Any) -> bool:
+    """True when a field value is a placeholder with no automatic activity weight."""
+    s = _raw_str(v)
+    return s.upper() in {x.upper() for x in AMBIGUOUS_FIELD_VALUES} or s.startswith("===")
+
 # ---------------------------------------------------------------------------
 # Cross-table evidence weights
 # Docs: FPC-Motor-Startup-Chains, FPC-Fulls-Jams-Fulljams, FPC-StartStopZones.
@@ -177,12 +205,50 @@ def classify_object(
     superseded: bool = False,
     in_machine_scope: bool | None = None,
 ) -> dict[str, Any]:
-    """Mutate/return obj with active_state, inclusion, confidence, generation_state."""
+    """Mutate/return obj with active_state, inclusion, confidence, generation_state.
+
+    Every decision records:
+      evidence_for[], evidence_against[], source_tables[], confidence,
+      engineer_override, generation_reason
+
+    N/A / blank / NONE alone MUST NOT deactivate, exclude, mark stale, or
+    block generation. Such values are preserved as contextual Source Evidence.
+    """
     out = obj
     nn = normalize_name(out.get("normalized_name") or out.get("raw_name") or "")
     related_links = related_links or set()
     evidence = list(out.get("evidence") or [])
     scope = out.get("source_scope") or ""
+    evidence_for: list[str] = []
+    evidence_against: list[str] = []
+    source_tables: list[str] = []
+    if out.get("source_table"):
+        source_tables.append(str(out.get("source_table")))
+
+    def _finish(
+        *,
+        generation_reason: str,
+        engineer_override: bool = False,
+    ) -> dict[str, Any]:
+        out["evidence"] = evidence
+        out["evidence_for"] = evidence_for
+        out["evidence_against"] = evidence_against
+        out["source_tables"] = sorted({s for s in source_tables if s})
+        out["generation_reason"] = generation_reason
+        out["engineer_override_applied"] = engineer_override
+        # Preserve ambiguous raw ownership values for UI Source Evidence display.
+        raw_mach = _raw_str(out.get("machine_name") or out.get("Machine_Name") or "")
+        if _is_ambiguous_field_value(raw_mach) and raw_mach:
+            out.setdefault("source_evidence_notes", []).append(
+                {
+                    "field": "Machine_Name",
+                    "raw_value": raw_mach,
+                    "interpretation": "ambiguous_ownership_evidence",
+                    "automatic_activity_weight": 0,
+                    "note": "N/A/blank alone does not deactivate or exclude",
+                }
+            )
+        return out
 
     # Engineer override short-circuit
     ov = out.get("engineer_override")
@@ -198,8 +264,8 @@ def classify_object(
         out["confidence"] = ov.get("confidence") or "HIGH"
         out["provenance"] = PROV_ENGINEER
         evidence.append({"kind": "engineer_override_applied"})
-        out["evidence"] = evidence
-        return out
+        evidence_for.append("engineer_override")
+        return _finish(generation_reason="ENGINEER_OVERRIDE", engineer_override=True)
 
     if scope == SCOPE_HISTORICAL or superseded or out.get("active_state_hint") == HISTORICAL_OR_STALE:
         out["active_state"] = HISTORICAL_OR_STALE
@@ -207,24 +273,58 @@ def classify_object(
         out["confidence"] = "HIGH" if superseded or scope == SCOPE_HISTORICAL else "MEDIUM"
         out["generation_state"] = GEN_EXCLUDED
         evidence.append({"kind": "historical_or_superseded", "superseded": superseded})
-        out["evidence"] = evidence
+        if scope == SCOPE_HISTORICAL:
+            evidence_against.append("historical_asc_scope")
+        if superseded:
+            evidence_against.append("superseded_candidate_confirmed_or_hint")
         out["activity_score"] = 0
-        return out
+        return _finish(
+            generation_reason="HISTORICAL_OR_SUPERSEDED",
+        )
 
-    enable_val = _clean(
+    # Documented enable/disable controls only — never N/A/blank alone.
+    enable_raw = (
         out.get("enable")
         or out.get("EnableBit")
         or out.get("AllowedToRun")
         or out.get("WCSEnable")
         or (out.get("attrs") or {}).get("enable")
     )
-    offline = _clean(out.get("Offline") or out.get("offline") or "")
-    disable_io = _clean(out.get("Disable I/O") or out.get("disable_io") or out.get("DisableIO") or "")
+    offline_raw = out.get("Offline") or out.get("offline") or ""
+    disable_io_raw = (
+        out.get("Disable I/O") or out.get("disable_io") or out.get("DisableIO") or ""
+    )
+    enable_val = _clean(enable_raw)
+    offline = _clean(offline_raw)
+    disable_io = _clean(disable_io_raw)
+
+    # Record ambiguous placeholder fields as contextual evidence only.
+    for field, raw in (
+        ("Machine_Name", out.get("machine_name") or out.get("Machine_Name")),
+        ("enable", enable_raw),
+        ("Offline", offline_raw),
+        ("Disable I/O", disable_io_raw),
+    ):
+        if raw is not None and _is_ambiguous_field_value(raw) and _raw_str(raw):
+            evidence.append(
+                {
+                    "kind": "ambiguous_field_value",
+                    "field": field,
+                    "raw_value": _raw_str(raw),
+                    "automatic_activity_weight": 0,
+                }
+            )
 
     scored = score_cross_table_evidence(out, related_links=related_links)
     score = int(scored["score"])
     out["activity_score"] = score
     out["activity_score_breakdown"] = scored["breakdown"]
+    for kind in scored["matched_kinds"]:
+        evidence_for.append(f"cross_table:{kind}")
+        # Infer source tables from evidence detail when present
+        for e in evidence:
+            if e.get("kind") == kind and e.get("table"):
+                source_tables.append(str(e.get("table")))
 
     strong_link = (
         nn in related_links
@@ -232,12 +332,40 @@ def classify_object(
         or score >= SCORE_ACTIVE_LIKELY
     )
     overlay_presence = scope == SCOPE_OVERLAY or _has_kind(out, "controller_overlay", "source")
-    io_assigned = _has_kind(out, "controller_io", "io_assignment", "configio_link", "iocard_link") or bool(
-        _clean(out.get("io_address_word") or out.get("IO_Address_Word") or "")
-    )
+    io_assigned = _has_kind(
+        out, "controller_io", "io_assignment", "configio_link", "iocard_link"
+    ) or bool(_clean(out.get("io_address_word") or out.get("IO_Address_Word") or ""))
 
-    # Explicit inactive signals
-    if offline.upper() in YES or enable_val.upper() in NO:
+    if io_assigned:
+        evidence_for.append("valid_current_io")
+    if overlay_presence:
+        evidence_for.append("controller_overlay_or_scope")
+    if strong_link:
+        evidence_for.append("strong_cross_table_or_relationship_link")
+    if nn in related_links:
+        evidence_for.append("relationship_graph_member")
+
+    # Explicit inactive signals — documented enable/offline only.
+    # N/A / blank enable is NOT inactive.
+    explicit_inactive = False
+    if offline and offline.upper() in YES:
+        explicit_inactive = True
+        evidence_against.append("offline=YES")
+    if enable_val and enable_val.upper() in NO:
+        explicit_inactive = True
+        evidence_against.append(f"enable={enable_val}")
+    # Disable I/O alone is NOT automatic deactivation (optional force path).
+    if disable_io and not _is_ambiguous_field_value(disable_io):
+        evidence.append(
+            {
+                "kind": "disable_io_present",
+                "value": disable_io,
+                "automatic_activity_weight": 0,
+                "note": "Disable I/O is optional force path — not sole inactivity proof",
+            }
+        )
+
+    if explicit_inactive:
         out["active_state"] = INACTIVE_CONFIRMED
         out["inclusion"] = EXCLUDED
         out["confidence"] = "HIGH"
@@ -249,11 +377,12 @@ def classify_object(
                 "enable": enable_val,
             }
         )
-        out["evidence"] = evidence
-        return out
+        return _finish(generation_reason="EXPLICIT_INACTIVE_DOCUMENTED_FIELD")
 
     # Score-first activity decision (cross-table participation).
-    if score >= SCORE_ACTIVE_CONFIRMED and (io_assigned or overlay_presence or enable_val.upper() in YES or score >= 7):
+    if score >= SCORE_ACTIVE_CONFIRMED and (
+        io_assigned or overlay_presence or (enable_val and enable_val.upper() in YES) or score >= 7
+    ):
         state = ACTIVE_CONFIRMED
         conf = "HIGH"
         evidence.append(
@@ -263,7 +392,9 @@ def classify_object(
                 "matched": scored["matched_kinds"],
             }
         )
-    elif strong_link and (io_assigned or overlay_presence or enable_val.upper() in YES):
+    elif strong_link and (
+        io_assigned or overlay_presence or (enable_val and enable_val.upper() in YES)
+    ):
         state = ACTIVE_CONFIRMED
         conf = "HIGH"
         evidence.append({"kind": "activity_strong_link", "score": score})
@@ -281,63 +412,100 @@ def classify_object(
         state = CANDIDATE
         conf = "LOW"
         evidence.append({"kind": "activity_candidate_only", "score": score})
+        if _has_kind(out, "geometry_candidate") and score < SCORE_ACTIVE_LIKELY:
+            evidence_against.append("geometry_only_insufficient_for_include")
     else:
         state = out.get("active_state") or UNKNOWN
         conf = out.get("confidence") or "UNKNOWN"
         if state == UNKNOWN:
             evidence.append({"kind": "activity_unknown", "score": score})
+            evidence_against.append("insufficient_positive_cross_table_evidence")
 
     out["active_state"] = state
     out["confidence"] = conf
 
-    # Inclusion relative to machine scope
+    # Inclusion relative to machine scope.
+    # Ambiguous Machine_Name (N/A/blank) is NOT "wrong owner" — treat as unknown ownership.
     scoped = in_machine_scope
+    raw_mach = _raw_str(out.get("machine_name") or out.get("Machine_Name") or "")
     if scoped is None:
-        row_mach = _clean(out.get("machine_name") or out.get("Machine_Name") or "")
-        if row_mach:
-            scoped = row_mach.upper() == machine.upper()
+        if _is_ambiguous_field_value(raw_mach):
+            # Ambiguous ownership — fall back to positive evidence, never force EXCLUDED.
+            scoped = strong_link or overlay_presence or score >= SCORE_ACTIVE_LIKELY or io_assigned
+            evidence.append(
+                {
+                    "kind": "ambiguous_ownership",
+                    "field": "Machine_Name",
+                    "raw_value": raw_mach or "(blank)",
+                    "interpretation": "ambiguous_ownership_evidence",
+                    "automatic_activity_weight": 0,
+                }
+            )
         else:
-            scoped = strong_link or overlay_presence or score >= SCORE_ACTIVE_LIKELY
+            row_mach = _clean(raw_mach)
+            if row_mach:
+                scoped = row_mach.upper() == machine.upper()
+                if scoped:
+                    evidence_for.append(f"machine_ownership={row_mach}")
+                else:
+                    evidence_against.append(f"machine_ownership_other={row_mach}")
+            else:
+                scoped = strong_link or overlay_presence or score >= SCORE_ACTIVE_LIKELY
 
     # Default Area_1 / engineer-required placeholders stay INCLUDED for the workspace.
     if out.get("default_area") or out.get("provenance") == PROV_ENGINEER_REQUIRED:
         scoped = True
+        evidence_for.append("engineer_required_or_default_area")
         if state in {UNKNOWN, CANDIDATE}:
             state = ACTIVE_LIKELY
             out["active_state"] = state
             conf = out.get("confidence") or "LOW"
             out["confidence"] = conf
 
+    generation_reason = "CLASSIFIED"
     if state in {INACTIVE_CONFIRMED, HISTORICAL_OR_STALE}:
         out["inclusion"] = EXCLUDED
         out["generation_state"] = GEN_EXCLUDED
+        generation_reason = "INACTIVE_OR_HISTORICAL"
     elif state in {ACTIVE_CONFIRMED, ACTIVE_LIKELY} and scoped:
         out["inclusion"] = INCLUDED
+        generation_reason = "ACTIVE_IN_SCOPE"
         if out.get("generation_state") not in {GEN_NOT_SUPPORTED, GEN_EXCLUDED}:
             if out.get("kind") in {"sorter", "tracking", "wcs"}:
                 out["generation_state"] = GEN_NOT_SUPPORTED
-            elif out.get("area_id") or out.get("kind") in {"sawtooth_merge", "sawtooth_lane", "equipment"}:
+                generation_reason = "ACTIVE_BUT_GENERATION_NOT_SUPPORTED"
+            elif out.get("area_id") or out.get("kind") in {
+                "sawtooth_merge",
+                "sawtooth_lane",
+                "equipment",
+            }:
                 out["generation_state"] = out.get("generation_state") or GEN_CFG
             else:
                 out["generation_state"] = out.get("generation_state") or GEN_CFG
     elif state == CANDIDATE:
         out["inclusion"] = AVAILABLE
         out["generation_state"] = out.get("generation_state") or GEN_CFG
+        generation_reason = "CANDIDATE_NEEDS_REVIEW"
     else:
-        out["inclusion"] = AVAILABLE if scoped is False else (out.get("inclusion") or AVAILABLE)
+        # Unknown / out-of-scope: AVAILABLE for review — never silent EXCLUDE from N/A.
+        if scoped is False and state not in {ACTIVE_CONFIRMED, ACTIVE_LIKELY}:
+            out["inclusion"] = AVAILABLE
+            generation_reason = "OUT_OF_SCOPE_OR_INSUFFICIENT_EVIDENCE"
+            evidence_against.append("not_in_machine_scope_or_insufficient_evidence")
+        else:
+            out["inclusion"] = out.get("inclusion") or AVAILABLE
+            generation_reason = "AVAILABLE_DEFAULT"
         if out["inclusion"] == EXCLUDED:
             out["generation_state"] = GEN_EXCLUDED
+        else:
+            out["generation_state"] = out.get("generation_state") or GEN_CFG
 
     # Hard rule: inactive/historical never INCLUDED; never delete stale rows
     if out["active_state"] in {INACTIVE_CONFIRMED, HISTORICAL_OR_STALE}:
         out["inclusion"] = EXCLUDED
+        generation_reason = "INACTIVE_OR_HISTORICAL"
 
-    # Silence unused local (Disable I/O inspected for future expansion)
-    _ = disable_io
-
-    out["evidence"] = evidence
-    return out
-
+    return _finish(generation_reason=generation_reason)
 
 def classify_site_model(model: dict[str, Any], machine: str) -> dict[str, Any]:
     """Classify all buckets; return activity_classification summary."""
@@ -406,6 +574,18 @@ def classify_site_model(model: dict[str, Any], machine: str) -> dict[str, Any]:
         normalize_name(x.get("identity") or x.get("normalized_name") or "")
         for x in (model.get("_historical_superseded") or [])
     }
+    # Also honor SUPERSEDED_CANDIDATE list when engineer-confirmed or HIGH confidence
+    # with definitive reasons — candidates alone do not auto-exclude.
+    for cand in model.get("superseded_candidates") or []:
+        if not isinstance(cand, dict):
+            continue
+        if cand.get("engineer_confirmed") or (
+            cand.get("confidence") == "HIGH"
+            and "replacement_relationship" in (cand.get("reasons") or [])
+        ):
+            nn = normalize_name(cand.get("normalized_name") or cand.get("identity") or "")
+            if nn:
+                superseded_names.add(nn)
 
     for key in buckets:
         items = model.get(key) or []
@@ -464,5 +644,13 @@ def classify_site_model(model: dict[str, Any], machine: str) -> dict[str, Any]:
             "Engineer override wins when present",
             "Cross-table participation (Mtrchain/Jam*/Full*/Saw*/Sorter/Configio) raises activity_score",
             "Stale rows are never deleted — only INCLUDED/AVAILABLE/EXCLUDED",
+            "N/A / blank / NONE alone MUST NOT deactivate, exclude, mark stale, or block generation",
+            "Machine_Name=N/A is ambiguous ownership evidence, not device inactive",
+            "Disable I/O alone is not automatic deactivation",
+            "Every decision records evidence_for / evidence_against / generation_reason",
         ],
+        "policy": {
+            "single_field_na_deactivation": False,
+            "ambiguous_field_values": sorted(AMBIGUOUS_FIELD_VALUES),
+        },
     }

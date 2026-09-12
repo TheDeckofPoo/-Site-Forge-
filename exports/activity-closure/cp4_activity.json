@@ -1,0 +1,164 @@
+{
+  "generated_at": "2026-09-12T20:47:47.814641+00:00",
+  "machine": "ORNCCP4",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+  "totals": {
+    "inclusion": {
+      "INCLUDED": 235
+    },
+    "active_state": {
+      "ACTIVE_LIKELY": 46,
+      "ACTIVE_CONFIRMED": 189
+    }
+  },
+  "per_bucket": {
+    "equipment": {
+      "total": 76,
+      "inclusion": {
+        "INCLUDED": 76
+      },
+      "active_state": {
+        "ACTIVE_LIKELY": 46,
+        "ACTIVE_CONFIRMED": 30
+      }
+    },
+    "motors": {
+      "total": 86,
+      "inclusion": {
+        "INCLUDED": 86
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 86
+      }
+    },
+    "vfds": {
+      "total": 13,
+      "inclusion": {
+        "INCLUDED": 13
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 13
+      }
+    },
+    "photoeyes": {
+      "total": 55,
+      "inclusion": {
+        "INCLUDED": 55
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 55
+      }
+    },
+    "encoders": {
+      "total": 2,
+      "inclusion": {
+        "INCLUDED": 2
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 2
+      }
+    },
+    "sorters": {
+      "total": 2,
+      "inclusion": {
+        "INCLUDED": 2
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 2
+      }
+    },
+    "sawtooth_merges": {
+      "total": 1,
+      "inclusion": {
+        "INCLUDED": 1
+      },
+      "active_state": {
+        "ACTIVE_CONFIRMED": 1
+      }
+    }
+  },
+  "activity_counts": {
+    "by_active_state": {
+      "ACTIVE_CONFIRMED": 289,
+      "ACTIVE_LIKELY": 140,
+      "INACTIVE_CONFIRMED": 2
+    },
+    "by_inclusion": {
+      "AVAILABLE": 87,
+      "EXCLUDED": 2,
+      "INCLUDED": 342
+    }
+  },
+  "policy": {
+    "single_field_na_deactivation": false,
+    "ambiguous_field_values": [
+      "",
+      "-",
+      "--",
+      "?",
+      "INVALID",
+      "N/A",
+      "N/A~",
+      "NA",
+      "NONE",
+      "NULL",
+      "N\\A",
+      "UNKNOWN",
+      "~"
+    ]
+  },
+  "high_included_explanation": {
+    "note": "High INCLUDED ratio is supported by positive cross-table evidence (I/O, Mtrchain, jam/full, ownership) \u2014 not forced balance.",
+    "top_positive_signals": [
+      [
+        "evidence:mtrchain",
+        150
+      ],
+      [
+        "evidence:activity_likely",
+        92
+      ],
+      [
+        "evidence:motor_name_link",
+        86
+      ],
+      [
+        "strong_cross_table_or_relationship_link",
+        76
+      ],
+      [
+        "relationship_graph_member",
+        76
+      ],
+      [
+        "cross_table:mtrchain",
+        75
+      ],
+      [
+        "evidence:activity_strong_link",
+        60
+      ],
+      [
+        "evidence:pe_name_link",
+        50
+      ],
+      [
+        "evidence:vfd_name_link",
+        32
+      ],
+      [
+        "cross_table:full_link",
+        16
+      ],
+      [
+        "evidence:full_link",
+        16
+      ],
+      [
+        "cross_table:fulljam_link",
+        10
+      ]
+    ]
+  },
+  "single_field_na_deactivation_used": false
+}
