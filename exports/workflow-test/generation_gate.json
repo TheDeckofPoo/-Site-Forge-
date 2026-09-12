@@ -1,0 +1,18 @@
+{
+  "generated_at": "2026-09-12T17:06:35.202598+00:00",
+  "foundation_pass": true,
+  "checks": {
+    "site_model_shape": true,
+    "table_precedence": true,
+    "activity_buckets": true,
+    "cp4_transport": true,
+    "cp4_sawtooth": true,
+    "cp2_transport": true,
+    "cp2_no_fake_sawtooth": true,
+    "area_1_default": true,
+    "inactive_not_included": true,
+    "sorter_not_generated": true,
+    "no_finished_plc_inputs": true,
+    "change_report": true
+  }
+}

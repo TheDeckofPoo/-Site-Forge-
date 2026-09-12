@@ -1,0 +1,123 @@
+{
+  "generated_at": "2026-09-12T16:58:43.730902+00:00",
+  "machine": "ORNCCP4",
+  "policy": "Tracking/WCS PLC generation is NOT_SUPPORTED unless a complete generic library path already exists. Greensboro gold packs do not qualify.",
+  "status_legend": [
+    "DISCOVERED",
+    "MODELED",
+    "GENERATABLE",
+    "CONFIGURATION_REQUIRED",
+    "NOT_SUPPORTED"
+  ],
+  "capabilities": [
+    {
+      "capability": "sorter_entity_inventory",
+      "status": "DISCOVERED",
+      "evidence": "Sorters.asc (+ machine overlay)",
+      "notes": "Named sorter rows + encoder links"
+    },
+    {
+      "capability": "encoder_parameter_inventory",
+      "status": "DISCOVERED",
+      "evidence": "Encoders.asc",
+      "notes": "Ticks/FPM/EnableBit/Jamzone discoverable; sawtooth encoder emit is separate"
+    },
+    {
+      "capability": "zone_lane_assignment",
+      "status": "DISCOVERED",
+      "evidence": "SrtZoneLane.asc",
+      "notes": "HostZone / Lane / AppSorter relationships"
+    },
+    {
+      "capability": "scan_boss_topology",
+      "status": "DISCOVERED",
+      "evidence": "SrtScanBoss.asc + SrtAppControl.asc",
+      "notes": "Scan zone \u2194 app sorter linkage"
+    },
+    {
+      "capability": "srt_track_runtime_slots",
+      "status": "DISCOVERED",
+      "evidence": "SrtTrack1..5.asc",
+      "notes": "Runtime carton slots; not static divert topology"
+    },
+    {
+      "capability": "xfr_track_runtime_slots",
+      "status": "MODELED",
+      "evidence": "XfrTrack.asc",
+      "notes": "Schema present; often zero active named rows"
+    },
+    {
+      "capability": "wcs_event_topic_map",
+      "status": "DISCOVERED",
+      "evidence": "WCSEvents.asc + MsgWCS.asc + MsgMap.asc",
+      "notes": "Event\u2192topic discoverable; not PLC generation"
+    },
+    {
+      "capability": "msg_track_queue",
+      "status": "MODELED",
+      "evidence": "MsgTrack.asc",
+      "notes": "Often zero-byte on transport/sawtooth controllers"
+    },
+    {
+      "capability": "sorter_model_schema",
+      "status": "MODELED",
+      "evidence": "docs/SORTER_COMPILER_MODEL.md + subsystem_model.json",
+      "notes": "Generic SorterModel fields defined for future compilers"
+    },
+    {
+      "capability": "sorter_track_plc_generation",
+      "status": "NOT_SUPPORTED",
+      "evidence": "tools/libraries/programs/Sorter_Track_Program.L5X + fortna_sorter_build.py",
+      "notes": "Gold Greensboro pack with token-rename/divert-limit only \u2014 not a complete generic library path"
+    },
+    {
+      "capability": "wcs_interface_plc_generation",
+      "status": "NOT_SUPPORTED",
+      "evidence": "tools/libraries/programs/WCS_Interface_TCP_IP_Program.L5X",
+      "notes": "Gold pack merge only; no RUN\u2192WCS generic compiler"
+    },
+    {
+      "capability": "shipping_sorter_area_l3_generation",
+      "status": "NOT_SUPPORTED",
+      "evidence": "tools/libraries/programs/ShippingSorter_Area_L3_Program.L5X",
+      "notes": "Gold pack; site wiring engineer-required"
+    },
+    {
+      "capability": "trk_divert_wave_aoi_reuse",
+      "status": "CONFIGURATION_REQUIRED",
+      "evidence": "tools/libraries/TRK_Divert_WaveFunction_AOI.L5X",
+      "notes": "AOI available; divert count / IO mapping needs engineer or sorter_build UI"
+    },
+    {
+      "capability": "encoder_routine_stub_reuse",
+      "status": "CONFIGURATION_REQUIRED",
+      "evidence": "tools/libraries/Enc_Routine_ST.L5X",
+      "notes": "Pattern stub; site encoder tags/config required"
+    },
+    {
+      "capability": "mhs_guideline_sorter_scaffolds",
+      "status": "CONFIGURATION_REQUIRED",
+      "evidence": "tools/scripts/fortna_mhs_sorter.py",
+      "notes": "FMS/Non-Con guideline scaffolds \u2014 not FortnaPlus RUN-driven Sorter_Track"
+    },
+    {
+      "capability": "divert_io_and_lane_plc_map",
+      "status": "NOT_SUPPORTED",
+      "evidence": "gaps.divert_io_map",
+      "notes": "No complete RUN\u2192PLC divert output map for generic emit"
+    },
+    {
+      "capability": "tracking_conveyor_chain_generation",
+      "status": "NOT_SUPPORTED",
+      "evidence": "gaps.tracking_conveyor_chain",
+      "notes": "Induct/tracking chain not fully derivable from RUN track tables alone"
+    }
+  ],
+  "counts": {
+    "DISCOVERED": 6,
+    "MODELED": 3,
+    "GENERATABLE": 0,
+    "CONFIGURATION_REQUIRED": 3,
+    "NOT_SUPPORTED": 5
+  }
+}

@@ -1,0 +1,533 @@
+{
+  "generated_at": "2026-09-12T16:58:43.730885+00:00",
+  "machine": {
+    "value": "ORNCCP4",
+    "source": "project.cfg / CLI",
+    "provenance": "RUN_DERIVED"
+  },
+  "source_of_truth": "RUN only \u2014 finished PLC L5X not read; discovery skeleton only",
+  "generation_boundary": {
+    "emits_l5x": false,
+    "tracking_wcs_generation": "NOT_SUPPORTED",
+    "note": "Subsystem skeleton is discovery-only. Gold Sorter_Track / WCS_Interface packs exist but are Greensboro-fixed; no complete generic library path."
+  },
+  "characterization": {
+    "sorter_kind": {
+      "value": "sawtooth_plus_city_counter",
+      "source": "FORTNA/Sorters.asc",
+      "provenance": "RUN_DERIVED"
+    },
+    "active_sorter_count": {
+      "value": 2,
+      "source": "FORTNA/Sorters.asc",
+      "provenance": "RUN_DERIVED"
+    },
+    "active_encoder_count": {
+      "value": 2,
+      "source": "FORTNA/Encoders.asc",
+      "provenance": "RUN_DERIVED"
+    },
+    "active_zone_lane_count": {
+      "value": 2,
+      "source": "FORTNA/SrtZoneLane.asc",
+      "provenance": "RUN_DERIVED"
+    },
+    "srttrack_active_total": {
+      "value": 98,
+      "source": "FORTNA/SrtTrack*.asc",
+      "provenance": "RUN_DERIVED"
+    },
+    "msgtrack_active": {
+      "value": 0,
+      "source": "FORTNA/MsgTrack.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    "msgwcs_active": {
+      "value": 1999,
+      "source": "FORTNA/MsgWCS.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    "xfrtrack_active": {
+      "value": 0,
+      "source": "FORTNA/XfrTrack.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    "wcs_events_active_named": {
+      "value": 99,
+      "source": "FORTNA/WCSEvents.asc",
+      "provenance": "RUN_EXPLICIT"
+    }
+  },
+  "sorters": [
+    {
+      "name": {
+        "value": "SAWTOOTH_MERGE",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_io": {
+        "value": "ENC414",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "machine": {
+        "value": "ORNCCP4",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    },
+    {
+      "name": {
+        "value": "CITY_LANE",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "encoder_io": {
+        "value": "ENC424",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "machine": {
+        "value": "ORNCCP4",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    }
+  ],
+  "encoders": [
+    {
+      "name": {
+        "value": "ENC414",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "io": {
+        "value": "ENC414",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enable_bit": {
+        "value": "VFD414_AUX",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "jamzone": {
+        "value": "SAWTOOTH MERGE",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "ticks_per_foot": {
+        "value": "6.000",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "target_fpm": {
+        "value": "150.000",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    },
+    {
+      "name": {
+        "value": "ENC424",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "io": {
+        "value": "ENC424",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enable_bit": {
+        "value": "VFD424_AUX",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "jamzone": {
+        "value": "CITY COUNTER",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "ticks_per_foot": {
+        "value": "6.000",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "target_fpm": {
+        "value": "225.000",
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    }
+  ],
+  "app_controls": [
+    {
+      "name": {
+        "value": "CITY COUNTER",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "control_machine": {
+        "value": "ORNCCP4",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "crr_msg_table": {
+        "value": "MsgCR1",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "dcm_msg_table": {
+        "value": "MsgDC1",
+        "source": "FORTNA/SrtAppControl.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    }
+  ],
+  "scan_bosses": [
+    {
+      "name": {
+        "value": "City Counter Sorter",
+        "source": "FORTNA/SrtScanBoss.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "CITY COUNTER",
+        "source": "FORTNA/SrtScanBoss.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "scan_zone": {
+        "value": "CITY_SCAN_422",
+        "source": "FORTNA/SrtScanBoss.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "402",
+        "source": "FORTNA/SrtScanBoss.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    }
+  ],
+  "zone_lanes": [
+    {
+      "name": {
+        "value": "City Counter",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "CITY COUNTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "CITY LANE 1ST SOLENOID",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "001",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcEZPE450_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    },
+    {
+      "name": {
+        "value": "Straight",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled": {
+        "value": "Y",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "app_sorter": {
+        "value": "CITY COUNTER",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane": {
+        "value": "STRAIGHT",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "host_zone": {
+        "value": "000",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "full_clear_timer": {
+        "value": "tmfcEZPE456_F",
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    }
+  ],
+  "srt_tracks": [
+    {
+      "slot": 1,
+      "table": "SrtTrack1.asc",
+      "active_rows": {
+        "value": 98,
+        "source": "FORTNA/SrtTrack1.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "row_count": {
+        "value": 100,
+        "source": "FORTNA/SrtTrack1.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "byte_size": {
+        "value": 29082,
+        "source": "FORTNA/SrtTrack1.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sample_scan_zones": {
+        "value": [
+          "CITY_422"
+        ],
+        "source": "FORTNA/SrtTrack1.asc",
+        "provenance": "RUN_DERIVED"
+      }
+    },
+    {
+      "slot": 2,
+      "table": "SrtTrack2.asc",
+      "active_rows": {
+        "value": 0,
+        "source": "FORTNA/SrtTrack2.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "row_count": {
+        "value": 100,
+        "source": "FORTNA/SrtTrack2.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "byte_size": {
+        "value": 22719,
+        "source": "FORTNA/SrtTrack2.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sample_scan_zones": {
+        "value": [],
+        "source": "FORTNA/SrtTrack2.asc",
+        "provenance": "RUN_DERIVED"
+      }
+    },
+    {
+      "slot": 3,
+      "table": "SrtTrack3.asc",
+      "active_rows": {
+        "value": 0,
+        "source": "FORTNA/SrtTrack3.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "row_count": {
+        "value": 100,
+        "source": "FORTNA/SrtTrack3.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "byte_size": {
+        "value": 22719,
+        "source": "FORTNA/SrtTrack3.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sample_scan_zones": {
+        "value": [],
+        "source": "FORTNA/SrtTrack3.asc",
+        "provenance": "RUN_DERIVED"
+      }
+    },
+    {
+      "slot": 4,
+      "table": "SrtTrack4.asc",
+      "active_rows": {
+        "value": 0,
+        "source": "FORTNA/SrtTrack4.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "row_count": {
+        "value": 100,
+        "source": "FORTNA/SrtTrack4.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "byte_size": {
+        "value": 22719,
+        "source": "FORTNA/SrtTrack4.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sample_scan_zones": {
+        "value": [],
+        "source": "FORTNA/SrtTrack4.asc",
+        "provenance": "RUN_DERIVED"
+      }
+    },
+    {
+      "slot": 5,
+      "table": "SrtTrack5.asc",
+      "active_rows": {
+        "value": 0,
+        "source": "FORTNA/SrtTrack5.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "row_count": {
+        "value": 100,
+        "source": "FORTNA/SrtTrack5.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "byte_size": {
+        "value": 22719,
+        "source": "FORTNA/SrtTrack5.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "sample_scan_zones": {
+        "value": [],
+        "source": "FORTNA/SrtTrack5.asc",
+        "provenance": "RUN_DERIVED"
+      }
+    }
+  ],
+  "xfr_track": {
+    "active_rows": {
+      "value": 0,
+      "source": "FORTNA/XfrTrack.asc",
+      "provenance": "RUN_EXPLICIT"
+    },
+    "headers_present": {
+      "value": true,
+      "source": "FORTNA/XfrTrack.asc",
+      "provenance": "RUN_EXPLICIT"
+    }
+  },
+  "messaging": {
+    "msg_track": {
+      "byte_size": {
+        "value": 0,
+        "source": "FORTNA/MsgTrack.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "active_rows": {
+        "value": 0,
+        "source": "FORTNA/MsgTrack.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    },
+    "msg_wcs": {
+      "active_rows": {
+        "value": 1999,
+        "source": "FORTNA/MsgWCS.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "note": {
+        "value": "Runtime outbound WCS queue; Destination topics, not topology",
+        "source": "FORTNA/MsgWCS.asc",
+        "provenance": "RUN_DERIVED"
+      }
+    },
+    "wcs_events": {
+      "active_named_rows": {
+        "value": 99,
+        "source": "FORTNA/WCSEvents.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "enabled_samples": [
+        {
+          "event": {
+            "value": "BARCODELENGTHERROR",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "destination": {
+            "value": "/topic/WCSEVENT.FPC.PNA.ALARM",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "category": {
+            "value": "PNA",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          }
+        },
+        {
+          "event": {
+            "value": "BROKEN",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "destination": {
+            "value": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "category": {
+            "value": "CHAIN",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          }
+        },
+        {
+          "event": {
+            "value": "BUSY",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "destination": {
+            "value": "/topic/WCSEVENT.FPC.PNA.ALARM",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "category": {
+            "value": "PNA",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          }
+        },
+        {
+          "event": {
+            "value": "BUSYWAIT",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "destination": {
+            "value": "/topic/WCSEVENT.FPC.PNA.ALARM",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "category": {
+            "value": "PNA",
+            "source": "FORTNA/WCSEvents.asc",
+            "provenance": "RUN_EXPLICIT"
+          }
+        }
+      ]
+    }
+  },
+  "gaps": [
+    {
+      "item": "divert_io_map",
+      "detail": "RUN does not expose PLC divert output tags as a complete generic map",
+      "provenance": "ENGINEER_REQUIRED"
+    },
+    {
+      "item": "tracking_conveyor_chain",
+      "detail": "Induct/tracking conveyor sequence for Sorter_Track is not fully derivable from SrtTrack* runtime slots alone",
+      "provenance": "ENGINEER_REQUIRED"
+    },
+    {
+      "item": "wcs_tcp_endpoints",
+      "detail": "WCSEvents topics discovered; TCP peer/port wiring is engineer/config",
+      "provenance": "ENGINEER_REQUIRED"
+    }
+  ]
+}

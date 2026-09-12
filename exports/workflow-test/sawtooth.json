@@ -1,0 +1,35 @@
+{
+  "generated_at": "2026-09-12T17:06:35.202598+00:00",
+  "status": "FOUNDATION_PASS",
+  "cp4": {
+    "present": true,
+    "merges": 1,
+    "lanes": 5,
+    "vfds": [
+      "VFD118_EN",
+      "VFD216_EN",
+      "VFD219",
+      "VFD410_EN",
+      "VFD414_AUX",
+      "VFD834_EN"
+    ],
+    "photoeyes": [
+      "PE118_P",
+      "PE216_P",
+      "PE219_P",
+      "PE410_P",
+      "PE834_P"
+    ],
+    "encoders": [
+      "ENC414",
+      "ENC424"
+    ],
+    "config_required": []
+  },
+  "cp2": {
+    "present": false,
+    "merges": 0,
+    "lanes": 0,
+    "note": "No active SawMerge/SawLane evidence \u2014 not faked"
+  }
+}

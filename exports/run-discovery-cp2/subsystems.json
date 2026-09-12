@@ -1,0 +1,2808 @@
+{
+  "generated_at": "2026-09-12T17:05:31.235643+00:00",
+  "machine": "ORNCCP2",
+  "transport": {
+    "present": true,
+    "node_count": 59,
+    "edge_count": 28,
+    "visual_freeze": true,
+    "metrics": {
+      "generated_at": "2026-09-12T17:05:30.868908+00:00",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+      "machine": "ORNCCP2",
+      "conveyors_discovered": 161,
+      "usable_xy": 161,
+      "usable_angle": 161,
+      "usable_length_width": 117,
+      "motors_discovered": 118,
+      "motors_linked_via_mtrchain": 33,
+      "vfd_classified": 0,
+      "contactor_classified": 33,
+      "unknown_drive": 128,
+      "multiple_motor_conveyors": 0,
+      "motors_driving_multiple_conveyors": 38,
+      "photoeyes_scoped": 44,
+      "merge_table_hints": 8,
+      "connection_candidates_total": 235,
+      "confirmed_connections": 59,
+      "high_confidence_candidates": 5,
+      "ambiguous_connections": 171,
+      "unknown_connections": 97,
+      "anchor_model_assumption": "(X,Y)=infeed/ENTRY end; Angle=flow deg CCW from +X; exit=XY+Length\u00b7\u00fb. CURVE uses Inside_Radius+tangents+90\u00b0 arc (MEDIUM).",
+      "topology_rule": "P-tag numerical order is NEVER used as physical adjacency evidence.",
+      "scoped_nodes": 59,
+      "scoped_edges": 28
+    }
+  },
+  "sawtooth": {
+    "present": false,
+    "merges": [],
+    "counts": {
+      "merges": 0,
+      "lanes": 0
+    },
+    "config_required": [],
+    "sources": {},
+    "semantics": {},
+    "lanes": [],
+    "vfds": [],
+    "photoeyes": [],
+    "encoders": []
+  },
+  "sorter": {
+    "present": false,
+    "sorters": [],
+    "generation_state": "NOT_SUPPORTED",
+    "note": "Discovery stub only \u2014 no sorter PLC generation"
+  },
+  "tracking_wcs": {
+    "tracking_systems": [
+      {
+        "canonical_id": "tracking:MSGWCS.ASC",
+        "kind": "tracking",
+        "source_table": "MsgWCS.asc",
+        "source_row": null,
+        "source_scope": "base_only",
+        "raw_name": "MsgWCS.asc",
+        "normalized_name": "MSGWCS.ASC",
+        "active_state": "ACTIVE_LIKELY",
+        "inclusion": "AVAILABLE",
+        "confidence": "MEDIUM",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "tracking_table",
+            "active_rows": 1999
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "active_rows": 1999,
+        "path": "FORTNA/MsgWCS.asc"
+      },
+      {
+        "canonical_id": "tracking:WCSEVENTS.ASC",
+        "kind": "tracking",
+        "source_table": "WCSEvents.asc",
+        "source_row": null,
+        "source_scope": "base_only",
+        "raw_name": "WCSEvents.asc",
+        "normalized_name": "WCSEVENTS.ASC",
+        "active_state": "ACTIVE_LIKELY",
+        "inclusion": "AVAILABLE",
+        "confidence": "MEDIUM",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "tracking_table",
+            "active_rows": 99
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "active_rows": 99,
+        "path": "FORTNA/WCSEvents.asc"
+      }
+    ],
+    "wcs_interfaces": [
+      {
+        "canonical_id": "wcs:BARCODELENGTHERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "BARCODELENGTHERROR",
+        "source_scope": "base_only",
+        "raw_name": "BARCODELENGTHERROR",
+        "normalized_name": "BARCODELENGTHERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "BARCODELENGTHERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:BROKEN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "BROKEN",
+        "source_scope": "base_only",
+        "raw_name": "BROKEN",
+        "normalized_name": "BROKEN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "BROKEN",
+              "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+              "category": "CHAIN",
+              "service": "FPC.CHAIN",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+        "category": "CHAIN"
+      },
+      {
+        "canonical_id": "wcs:BUSY",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "BUSY",
+        "source_scope": "base_only",
+        "raw_name": "BUSY",
+        "normalized_name": "BUSY",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "BUSY",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:BUSYWAIT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "BUSYWAIT",
+        "source_scope": "base_only",
+        "raw_name": "BUSYWAIT",
+        "normalized_name": "BUSYWAIT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "BUSYWAIT",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:CHANGEMENU",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CHANGEMENU",
+        "source_scope": "base_only",
+        "raw_name": "CHANGEMENU",
+        "normalized_name": "CHANGEMENU",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CHANGEMENU",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:CHANGEMENU_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CHANGEMENU_T",
+        "source_scope": "base_only",
+        "raw_name": "CHANGEMENU_T",
+        "normalized_name": "CHANGEMENU_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CHANGEMENU_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:CLONEMENU_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CLONEMENU_T",
+        "source_scope": "base_only",
+        "raw_name": "CLONEMENU_T",
+        "normalized_name": "CLONEMENU_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CLONEMENU_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:CLOSEMENU_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CLOSEMENU_T",
+        "source_scope": "base_only",
+        "raw_name": "CLOSEMENU_T",
+        "normalized_name": "CLOSEMENU_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CLOSEMENU_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:COMMPROCESSERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "COMMPROCESSERROR",
+        "source_scope": "base_only",
+        "raw_name": "COMMPROCESSERROR",
+        "normalized_name": "COMMPROCESSERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "COMMPROCESSERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:COPYCLIP_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "COPYCLIP_T",
+        "source_scope": "base_only",
+        "raw_name": "COPYCLIP_T",
+        "normalized_name": "COPYCLIP_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "COPYCLIP_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:DBUPDATEERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "DBUPDATEERROR",
+        "source_scope": "base_only",
+        "raw_name": "DBUPDATEERROR",
+        "normalized_name": "DBUPDATEERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "DBUPDATEERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:DELETEREC_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "DELETEREC_T",
+        "source_scope": "base_only",
+        "raw_name": "DELETEREC_T",
+        "normalized_name": "DELETEREC_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "DELETEREC_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:DOPROC",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "DOPROC",
+        "source_scope": "base_only",
+        "raw_name": "DOPROC",
+        "normalized_name": "DOPROC",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "DOPROC",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:DOSQL",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "DOSQL",
+        "source_scope": "base_only",
+        "raw_name": "DOSQL",
+        "normalized_name": "DOSQL",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "DOSQL",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:ERROREVENT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "ERROREVENT",
+        "source_scope": "base_only",
+        "raw_name": "ERROREVENT",
+        "normalized_name": "ERROREVENT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "ERROREVENT",
+              "destination": "/topic/WCSEVENT.FPC.FP.ALARM",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "N",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.ALARM",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:EXITPWR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "EXITPWR",
+        "source_scope": "base_only",
+        "raw_name": "EXITPWR",
+        "normalized_name": "EXITPWR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "EXITPWR",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:EXITUSER",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "EXITUSER",
+        "source_scope": "base_only",
+        "raw_name": "EXITUSER",
+        "normalized_name": "EXITUSER",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "EXITUSER",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:FAILLOGIN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FAILLOGIN",
+        "source_scope": "base_only",
+        "raw_name": "FAILLOGIN",
+        "normalized_name": "FAILLOGIN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FAILLOGIN",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:FAILMENUSEC",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FAILMENUSEC",
+        "source_scope": "base_only",
+        "raw_name": "FAILMENUSEC",
+        "normalized_name": "FAILMENUSEC",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FAILMENUSEC",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:FAILPROCSEC",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FAILPROCSEC",
+        "source_scope": "base_only",
+        "raw_name": "FAILPROCSEC",
+        "normalized_name": "FAILPROCSEC",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FAILPROCSEC",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:FILLTABLE_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FILLTABLE_T",
+        "source_scope": "base_only",
+        "raw_name": "FILLTABLE_T",
+        "normalized_name": "FILLTABLE_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FILLTABLE_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:FORCEOFF",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FORCEOFF",
+        "source_scope": "base_only",
+        "raw_name": "FORCEOFF",
+        "normalized_name": "FORCEOFF",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FORCEOFF",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:FORCEOFF_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FORCEOFF_T",
+        "source_scope": "base_only",
+        "raw_name": "FORCEOFF_T",
+        "normalized_name": "FORCEOFF_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FORCEOFF_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:FORCEON",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FORCEON",
+        "source_scope": "base_only",
+        "raw_name": "FORCEON",
+        "normalized_name": "FORCEON",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FORCEON",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:FORCEON_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "FORCEON_T",
+        "source_scope": "base_only",
+        "raw_name": "FORCEON_T",
+        "normalized_name": "FORCEON_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "FORCEON_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:HOUSEKEEP",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "HOUSEKEEP",
+        "source_scope": "base_only",
+        "raw_name": "HOUSEKEEP",
+        "normalized_name": "HOUSEKEEP",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "HOUSEKEEP",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:INSERTREC_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "INSERTREC_T",
+        "source_scope": "base_only",
+        "raw_name": "INSERTREC_T",
+        "normalized_name": "INSERTREC_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "INSERTREC_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:INVERT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "INVERT",
+        "source_scope": "base_only",
+        "raw_name": "INVERT",
+        "normalized_name": "INVERT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "INVERT",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:JAMZONE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "JAMZONE",
+        "source_scope": "base_only",
+        "raw_name": "JAMZONE",
+        "normalized_name": "JAMZONE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "JAMZONE",
+              "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:LABELRECORDEMPTY",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LABELRECORDEMPTY",
+        "source_scope": "base_only",
+        "raw_name": "LABELRECORDEMPTY",
+        "normalized_name": "LABELRECORDEMPTY",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LABELRECORDEMPTY",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:LOGIN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LOGIN",
+        "source_scope": "base_only",
+        "raw_name": "LOGIN",
+        "normalized_name": "LOGIN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LOGIN",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:LOGOUT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LOGOUT",
+        "source_scope": "base_only",
+        "raw_name": "LOGOUT",
+        "normalized_name": "LOGOUT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LOGOUT",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:LOOSE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LOOSE",
+        "source_scope": "base_only",
+        "raw_name": "LOOSE",
+        "normalized_name": "LOOSE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LOOSE",
+              "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+              "category": "CHAIN",
+              "service": "FPC.CHAIN",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+        "category": "CHAIN"
+      },
+      {
+        "canonical_id": "wcs:LRMNOLABEL",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "LRMNOLABEL",
+        "source_scope": "base_only",
+        "raw_name": "LRMNOLABEL",
+        "normalized_name": "LRMNOLABEL",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "LRMNOLABEL",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:MACHINESTATE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "MACHINESTATE",
+        "source_scope": "base_only",
+        "raw_name": "MACHINESTATE",
+        "normalized_name": "MACHINESTATE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "MACHINESTATE",
+              "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:NOCARTONRECORD",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOCARTONRECORD",
+        "source_scope": "base_only",
+        "raw_name": "NOCARTONRECORD",
+        "normalized_name": "NOCARTONRECORD",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOCARTONRECORD",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOCOMMMACHINE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOCOMMMACHINE",
+        "source_scope": "base_only",
+        "raw_name": "NOCOMMMACHINE",
+        "normalized_name": "NOCOMMMACHINE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOCOMMMACHINE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOCOMMRESPONSE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOCOMMRESPONSE",
+        "source_scope": "base_only",
+        "raw_name": "NOCOMMRESPONSE",
+        "normalized_name": "NOCOMMRESPONSE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOCOMMRESPONSE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOEHPRINTER",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOEHPRINTER",
+        "source_scope": "base_only",
+        "raw_name": "NOEHPRINTER",
+        "normalized_name": "NOEHPRINTER",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOEHPRINTER",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOHOSTMSG",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOHOSTMSG",
+        "source_scope": "base_only",
+        "raw_name": "NOHOSTMSG",
+        "normalized_name": "NOHOSTMSG",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOHOSTMSG",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOIPADDRESS",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOIPADDRESS",
+        "source_scope": "base_only",
+        "raw_name": "NOIPADDRESS",
+        "normalized_name": "NOIPADDRESS",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOIPADDRESS",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOLABELCOLUMN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLABELCOLUMN",
+        "source_scope": "base_only",
+        "raw_name": "NOLABELCOLUMN",
+        "normalized_name": "NOLABELCOLUMN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLABELCOLUMN",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOLABELIMAGE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLABELIMAGE",
+        "source_scope": "base_only",
+        "raw_name": "NOLABELIMAGE",
+        "normalized_name": "NOLABELIMAGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLABELIMAGE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOLABELONTAMP",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLABELONTAMP",
+        "source_scope": "base_only",
+        "raw_name": "NOLABELONTAMP",
+        "normalized_name": "NOLABELONTAMP",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLABELONTAMP",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOLABELRECORD",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLABELRECORD",
+        "source_scope": "base_only",
+        "raw_name": "NOLABELRECORD",
+        "normalized_name": "NOLABELRECORD",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLABELRECORD",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOLRM",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOLRM",
+        "source_scope": "base_only",
+        "raw_name": "NOLRM",
+        "normalized_name": "NOLRM",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOLRM",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOORDERIMAGE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOORDERIMAGE",
+        "source_scope": "base_only",
+        "raw_name": "NOORDERIMAGE",
+        "normalized_name": "NOORDERIMAGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOORDERIMAGE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOPTYPE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOPTYPE",
+        "source_scope": "base_only",
+        "raw_name": "NOPTYPE",
+        "normalized_name": "NOPTYPE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOPTYPE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOREADLABELIMAGE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOREADLABELIMAGE",
+        "source_scope": "base_only",
+        "raw_name": "NOREADLABELIMAGE",
+        "normalized_name": "NOREADLABELIMAGE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOREADLABELIMAGE",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOSKU",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOSKU",
+        "source_scope": "base_only",
+        "raw_name": "NOSKU",
+        "normalized_name": "NOSKU",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOSKU",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:NOTYPECOLUMN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "NOTYPECOLUMN",
+        "source_scope": "base_only",
+        "raw_name": "NOTYPECOLUMN",
+        "normalized_name": "NOTYPECOLUMN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "NOTYPECOLUMN",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:OPENMENU",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "OPENMENU",
+        "source_scope": "base_only",
+        "raw_name": "OPENMENU",
+        "normalized_name": "OPENMENU",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "OPENMENU",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:OPENMENU_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "OPENMENU_T",
+        "source_scope": "base_only",
+        "raw_name": "OPENMENU_T",
+        "normalized_name": "OPENMENU_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "OPENMENU_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:PASTECLIP_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "PASTECLIP_T",
+        "source_scope": "base_only",
+        "raw_name": "PASTECLIP_T",
+        "normalized_name": "PASTECLIP_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "PASTECLIP_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:PRINTERERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "PRINTERERROR",
+        "source_scope": "base_only",
+        "raw_name": "PRINTERERROR",
+        "normalized_name": "PRINTERERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "PRINTERERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:SAVETABLE_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SAVETABLE_T",
+        "source_scope": "base_only",
+        "raw_name": "SAVETABLE_T",
+        "normalized_name": "SAVETABLE_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SAVETABLE_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:SENDERROR",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SENDERROR",
+        "source_scope": "base_only",
+        "raw_name": "SENDERROR",
+        "normalized_name": "SENDERROR",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SENDERROR",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:SENDREC_T",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SENDREC_T",
+        "source_scope": "base_only",
+        "raw_name": "SENDREC_T",
+        "normalized_name": "SENDREC_T",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SENDREC_T",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:SENDSTART",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SENDSTART",
+        "source_scope": "base_only",
+        "raw_name": "SENDSTART",
+        "normalized_name": "SENDSTART",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SENDSTART",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:SENDSTOP",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SENDSTOP",
+        "source_scope": "base_only",
+        "raw_name": "SENDSTOP",
+        "normalized_name": "SENDSTOP",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SENDSTOP",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:SIGUSR1",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SIGUSR1",
+        "source_scope": "base_only",
+        "raw_name": "SIGUSR1",
+        "normalized_name": "SIGUSR1",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SIGUSR1",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:SLEEP",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SLEEP",
+        "source_scope": "base_only",
+        "raw_name": "SLEEP",
+        "normalized_name": "SLEEP",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SLEEP",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:STARTALLZONES",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STARTALLZONES",
+        "source_scope": "base_only",
+        "raw_name": "STARTALLZONES",
+        "normalized_name": "STARTALLZONES",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STARTALLZONES",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:STARTJAMZONE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STARTJAMZONE",
+        "source_scope": "base_only",
+        "raw_name": "STARTJAMZONE",
+        "normalized_name": "STARTJAMZONE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STARTJAMZONE",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:STARTSTOPZONE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STARTSTOPZONE",
+        "source_scope": "base_only",
+        "raw_name": "STARTSTOPZONE",
+        "normalized_name": "STARTSTOPZONE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STARTSTOPZONE",
+              "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.STATE",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:STOPALLZONES",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STOPALLZONES",
+        "source_scope": "base_only",
+        "raw_name": "STOPALLZONES",
+        "normalized_name": "STOPALLZONES",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STOPALLZONES",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:STOPJAMZONE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STOPJAMZONE",
+        "source_scope": "base_only",
+        "raw_name": "STOPJAMZONE",
+        "normalized_name": "STOPJAMZONE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STOPJAMZONE",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:STOPPROC",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "STOPPROC",
+        "source_scope": "base_only",
+        "raw_name": "STOPPROC",
+        "normalized_name": "STOPPROC",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "STOPPROC",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:TAMPNORETURN",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "TAMPNORETURN",
+        "source_scope": "base_only",
+        "raw_name": "TAMPNORETURN",
+        "normalized_name": "TAMPNORETURN",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "TAMPNORETURN",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:TAMPNOTHOME",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "TAMPNOTHOME",
+        "source_scope": "base_only",
+        "raw_name": "TAMPNOTHOME",
+        "normalized_name": "TAMPNOTHOME",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "TAMPNOTHOME",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:TAMPTIMEOUT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "TAMPTIMEOUT",
+        "source_scope": "base_only",
+        "raw_name": "TAMPTIMEOUT",
+        "normalized_name": "TAMPTIMEOUT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "TAMPTIMEOUT",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:TEMPLATEDISABLED",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "TEMPLATEDISABLED",
+        "source_scope": "base_only",
+        "raw_name": "TEMPLATEDISABLED",
+        "normalized_name": "TEMPLATEDISABLED",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "TEMPLATEDISABLED",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:UNDEFINED",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "UNDEFINED",
+        "source_scope": "base_only",
+        "raw_name": "UNDEFINED",
+        "normalized_name": "UNDEFINED",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "UNDEFINED",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:UNFORCEOFF",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "UNFORCEOFF",
+        "source_scope": "base_only",
+        "raw_name": "UNFORCEOFF",
+        "normalized_name": "UNFORCEOFF",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "UNFORCEOFF",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:UNFORCEON",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "UNFORCEON",
+        "source_scope": "base_only",
+        "raw_name": "UNFORCEON",
+        "normalized_name": "UNFORCEON",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "UNFORCEON",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:UNINVERT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "UNINVERT",
+        "source_scope": "base_only",
+        "raw_name": "UNINVERT",
+        "normalized_name": "UNINVERT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "UNINVERT",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:VERIFYMISMATCH",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "VERIFYMISMATCH",
+        "source_scope": "base_only",
+        "raw_name": "VERIFYMISMATCH",
+        "normalized_name": "VERIFYMISMATCH",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "VERIFYMISMATCH",
+              "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+              "category": "PNA",
+              "service": "FPC.PNA",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+        "category": "PNA"
+      },
+      {
+        "canonical_id": "wcs:WAKE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "WAKE",
+        "source_scope": "base_only",
+        "raw_name": "WAKE",
+        "normalized_name": "WAKE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "WAKE",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:RELEASESAWWAVE",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "RELEASESAWWAVE",
+        "source_scope": "base_only",
+        "raw_name": "RELEASESAWWAVE",
+        "normalized_name": "RELEASESAWWAVE",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "RELEASESAWWAVE",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:SAVEFAIL",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SAVEFAIL",
+        "source_scope": "base_only",
+        "raw_name": "SAVEFAIL",
+        "normalized_name": "SAVEFAIL",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SAVEFAIL",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:SIGUSR2",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "SIGUSR2",
+        "source_scope": "base_only",
+        "raw_name": "SIGUSR2",
+        "normalized_name": "SIGUSR2",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "SIGUSR2",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:CHANGESHIFTER",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "CHANGESHIFTER",
+        "source_scope": "base_only",
+        "raw_name": "CHANGESHIFTER",
+        "normalized_name": "CHANGESHIFTER",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "CHANGESHIFTER",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:AUTOLOGOUT",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "AUTOLOGOUT",
+        "source_scope": "base_only",
+        "raw_name": "AUTOLOGOUT",
+        "normalized_name": "AUTOLOGOUT",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "AUTOLOGOUT",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      },
+      {
+        "canonical_id": "wcs:EXITOS",
+        "kind": "wcs",
+        "source_table": "WCSEvents.asc",
+        "source_row": "EXITOS",
+        "source_scope": "base_only",
+        "raw_name": "EXITOS",
+        "normalized_name": "EXITOS",
+        "active_state": "ACTIVE_CONFIRMED",
+        "inclusion": "AVAILABLE",
+        "confidence": "HIGH",
+        "provenance": "RUN_EXPLICIT",
+        "evidence": [
+          {
+            "kind": "wcs_enable",
+            "detail": {
+              "event": "EXITOS",
+              "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+              "category": "FP",
+              "service": "FPC.FP",
+              "mach_proc": "Y",
+              "provenance": "RUN_EXPLICIT"
+            }
+          }
+        ],
+        "engineer_override": null,
+        "generation_state": "NOT_SUPPORTED",
+        "area_id": null,
+        "es_zone_id": null,
+        "destination": "/topic/WCSEVENT.FPC.FP.MISC",
+        "category": "FP"
+      }
+    ],
+    "generation_state": "NOT_SUPPORTED"
+  },
+  "vfd_summary": {
+    "count": 0,
+    "bases": [],
+    "raw_counts": {}
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "generated_at": "2026-09-12T17:06:35.202598+00:00",
+  "status": "FOUNDATION_PASS_STUB",
+  "generation_state": "NOT_SUPPORTED",
+  "cp4_sorters": [
+    {
+      "name": "SAWTOOTH_MERGE",
+      "encoder_io": "ENC414",
+      "generation_state": "NOT_SUPPORTED"
+    },
+    {
+      "name": "CITY_LANE",
+      "encoder_io": "ENC424",
+      "generation_state": "NOT_SUPPORTED"
+    }
+  ],
+  "cp2_sorters": [],
+  "research_integrated": true,
+  "notes": [
+    "Discovery stub only \u2014 sorter PLC generation not faked"
+  ]
+}

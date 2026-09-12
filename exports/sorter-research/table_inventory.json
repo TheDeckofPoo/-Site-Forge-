@@ -1,0 +1,4181 @@
+{
+  "generated_at": "2026-09-12T16:58:43.730796+00:00",
+  "run_dir": "workspace\\cp4-run\\RUN",
+  "machine": "ORNCCP4",
+  "source_of_truth": "RUN only \u2014 finished PLC L5X not read",
+  "table_count": 98,
+  "tables_with_active_rows": 37,
+  "tables": [
+    {
+      "table": "MsgMap.asc",
+      "category": "comm_map",
+      "path": "FORTNA/MsgMap.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 3273,
+      "row_count": 50,
+      "active_rows": 15,
+      "headers": [
+        "Message_Name",
+        "Machine_Name",
+        "Recv_Msg_Type",
+        "Send_Msg_Type",
+        "Ack_Msg_Type",
+        "Menu_Name",
+        "Low_Cursor",
+        "High_Cursor",
+        "Stat_Cursor",
+        "Last_Record",
+        "Low_Head",
+        "High_Head",
+        "Key_Cursor",
+        "Id",
+        "LastId",
+        "Record",
+        "Delimiter",
+        "FieldLength",
+        "AckLen",
+        "CheckFile",
+        "pMsgType"
+      ],
+      "name_columns": [
+        "Message_Name"
+      ],
+      "samples": [
+        {
+          "Message_Name": "WCS_EVENT"
+        },
+        {
+          "Message_Name": "NMS_EVENT"
+        },
+        {
+          "Message_Name": "ErrorsMsg"
+        },
+        {
+          "Message_Name": "jammsg"
+        },
+        {
+          "Message_Name": "fulmsg"
+        },
+        {
+          "Message_Name": "CityScanner"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "Encoders.asc",
+      "category": "encoder",
+      "path": "FORTNA/Encoders.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 4297,
+      "row_count": 25,
+      "active_rows": 2,
+      "headers": [
+        "Encoder Name",
+        "Encoder I/O",
+        "Encoder Timer",
+        "Ticks Per Foot",
+        "Encoder Ticks",
+        "Calculated FPM",
+        "Target FPM",
+        "DupToMemBit",
+        "Tolerance_FPM",
+        "Delay Timer",
+        "Error",
+        "StoponError",
+        "EnableBit",
+        "Jamzone",
+        "NoSortonError",
+        "Failed",
+        "SampleSeconds",
+        "SampleTicks",
+        "Minimum_Calc_FPM",
+        "Maximum_Calc_FPM",
+        "NoSortOnSpeed",
+        "pSpeedOkay"
+      ],
+      "name_columns": [
+        "Encoder Name"
+      ],
+      "samples": [
+        {
+          "Encoder Name": "ENC414",
+          "Encoder I/O": "ENC414",
+          "EnableBit": "VFD414_AUX",
+          "Jamzone": "SAWTOOTH MERGE",
+          "Ticks Per Foot": "6.000",
+          "Target FPM": "150.000"
+        },
+        {
+          "Encoder Name": "ENC424",
+          "Encoder I/O": "ENC424",
+          "EnableBit": "VFD424_AUX",
+          "Jamzone": "CITY COUNTER",
+          "Ticks Per Foot": "6.000",
+          "Target FPM": "225.000"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "CombLane.asc",
+      "category": "lane",
+      "path": "FORTNA/CombLane.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 2953,
+      "row_count": 25,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Presense_Eye",
+        "Analog_IO",
+        "CurrentValue",
+        "Priority",
+        "Full_Timer",
+        "Waiting_Timer",
+        "Other_Bit",
+        "Wide_Box",
+        "Shifter",
+        "StopValue",
+        "SlowValue",
+        "FastValue",
+        "GoFast",
+        "GoSlow",
+        "GoStop",
+        "BossRecord",
+        "AccumSSV",
+        "EnableIO",
+        "LastToRun",
+        "State"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "ZipperLane.asc",
+      "category": "lane",
+      "path": "FORTNA/ZipperLane.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 16217,
+      "row_count": 20,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Enabled",
+        "EnableIO",
+        "InvrtEnableIO",
+        "pStatus1",
+        "pStatus2",
+        "pAccumState",
+        "pLaneState",
+        "ZipperMerge",
+        "Turns",
+        "SkipTurns",
+        "FullTurns",
+        "MeterTicksPerInch",
+        "PreTicksPerInch",
+        "ResrvLenInches",
+        "ResrvGapInches",
+        "MergeGapInches",
+        "MergeMinLenInches",
+        "PreMergeGapType",
+        "PreGapInches",
+        "StopInches",
+        "AccelMilliSec",
+        "DecelMilliSec",
+        "MinPercent",
+        "TargetPercent",
+        "MaxPercent",
+        "NoReservPercent",
+        "MeterSpdFtPerMin",
+        "BrakeMeterMtr",
+        "AccumIO",
+        "StopAction",
+        "AccumBit",
+        "InductStuckErr",
+        "StuckAction",
+        "StuckBit",
+        "FullClearTimer",
+        "LaneMergeDlyTM",
+        "BrakeMeterUpdate",
+        "PreMergeInduct",
+        "MergeUpdate",
+        "SpdControl",
+        "UseSpdFeedBack",
+        "Gain",
+        "SpdFactor",
+        "MaxErrorTicks",
+        "SlowLenAdjTicks",
+        "AdjustForDrift",
+        "MaxAdjustDrift",
+        "ReAssignLane",
+        "AccelRate",
+        "DecelRate",
+        "pMeterLocation",
+        "pMergeLocation",
+        "pMeterBoxLength",
+        "pPreMergeCurrGap",
+        "pPreMergeMaxSpeed",
+        "pMergeRsvLenReq",
+        "pMergeRsvLenFnd",
+        "pMergeTargetLoc",
+        "pMergeReservLoc",
+        "pMergeMaxSpeed",
+        "pPreMergeErr",
+        "pMergeError",
+        "pSpeed1",
+        "pSpeed2",
+        "pSpeed3",
+        "pSpdFdBack",
+        "pStopTicks",
+        "pLastMeterIndx",
+        "pReservLenTicks",
+        "pReservGapTicks",
+        "pEncRatioMerge",
+        "pEncRatioPreMerge",
+        "pSpeedRatio",
+        "pCurrentTtl",
+        "pCurrentTurn",
+        "pCurrentSkip",
+        "pLastEncPre",
+        "pLastEncMeter",
+        "pGapTicksPreMerge",
+        "pRatioCombined",
+        "pGapTicksMerge",
+        "pMinLenMerge",
+        "pLanePriority",
+        "pCreateRsvTarget",
+        "pCreateRsvLenReq",
+        "pCreateRsvFndTrg",
+        "pCreateRsvLenFnd",
+        "pSqrRootAdjTicks",
+        "pSqrRootStopTicks",
+        "pSqrRootDistTicks",
+        "pLastMergeNdx",
+        "pLastMergeSpd",
+        "pLastAdjTicks",
+        "pDriftAdjust",
+        "pInductPEStuck",
+        "pLastInvSpd"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "ZprLaneState.asc",
+      "category": "lane_lookup",
+      "path": "FORTNA/ZprLaneState.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 73,
+      "row_count": 10,
+      "active_rows": 3,
+      "headers": [
+        "\"State\""
+      ],
+      "name_columns": [
+        "\"State\""
+      ],
+      "samples": [
+        {
+          "\"State\"": "Stopped"
+        },
+        {
+          "\"State\"": "Adjusting Speed"
+        },
+        {
+          "\"State\"": "Target Speed"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "ZprStatusMsgs.asc",
+      "category": "lane_lookup",
+      "path": "FORTNA/ZprStatusMsgs.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 384,
+      "row_count": 50,
+      "active_rows": 0,
+      "headers": [
+        "Status",
+        "ErrorMsg",
+        "Comment"
+      ],
+      "name_columns": [
+        "Status"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "MergeRoute.asc",
+      "category": "merge_route",
+      "path": "FORTNA/MergeRoute.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 650,
+      "row_count": 15,
+      "active_rows": 4,
+      "headers": [
+        "Name",
+        "MergeInputs",
+        "MergeOutputs",
+        "RouteBusy",
+        "RouteRequested",
+        "Priority",
+        "OutDisabled",
+        "InvertOutDisable"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [
+        {
+          "Name": "LANE1_P212"
+        },
+        {
+          "Name": "LANE2_P304"
+        },
+        {
+          "Name": "LANE1_P213"
+        },
+        {
+          "Name": "LANE2_P231A"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "MsgTrack.asc",
+      "category": "msg_track",
+      "path": "FORTNA/MsgTrack.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 0,
+      "row_count": 0,
+      "active_rows": 0,
+      "headers": [],
+      "name_columns": [],
+      "samples": [],
+      "confidence": "medium",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "MsgWCS.asc",
+      "category": "msg_wcs",
+      "path": "FORTNA/MsgWCS.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 135514,
+      "row_count": 2000,
+      "active_rows": 1999,
+      "headers": [
+        "MsgText",
+        "Destination",
+        "TxStat",
+        "DbKey",
+        "DbTime",
+        "iDbTime"
+      ],
+      "name_columns": [
+        "Destination"
+      ],
+      "samples": [
+        {
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        },
+        {
+          "Destination": "/topic/WCSEVENT.FPC.FP.ALARM"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "PrintApplySrtrLn.asc",
+      "category": "project_config",
+      "path": "PROJECT/PrintApplySrtrLn.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 482,
+      "row_count": 20,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Enabled",
+        "EnabledRndRobin",
+        "ShippingLane",
+        "AssignIfFull",
+        "Lane",
+        "FullClearTimer",
+        "HostLane"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "HSSawLane.asc",
+      "category": "sawtooth_lane",
+      "path": "FORTNA/HSSawLane.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 10957,
+      "row_count": 50,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Enabled",
+        "Opportunistic",
+        "OpportunSingle",
+        "SawMerge",
+        "pStatus1",
+        "pStatus2",
+        "pLaneState",
+        "LanePE",
+        "FeedCompleteTM",
+        "EnableDelayTM",
+        "LaneSlow",
+        "SlowAction",
+        "SlowBit",
+        "LaneFast",
+        "FastAction",
+        "FastBit",
+        "SlowOrFast",
+        "SlowOrFastAction",
+        "SlowOrFastBit",
+        "AccumFast",
+        "AccumAction",
+        "AccumBit",
+        "BoxPresentOut",
+        "LaneInduct",
+        "GapError",
+        "ResetGapError",
+        "GapErrMtr",
+        "ErrMtrAction",
+        "ErrMtrBit",
+        "RunSlowOffset",
+        "StopFastOffset",
+        "RunFastOffset",
+        "ReAssignLane",
+        "pResrvReqTicks",
+        "pResrvTtl",
+        "pTicksFeed",
+        "pGapTicks",
+        "pInductLocRel",
+        "pInductLoc",
+        "pInductLrge",
+        "pLatchPE",
+        "pParamRecord",
+        "pLastRunSec",
+        "pLastRunMSec",
+        "pDelaySpace",
+        "pGapSpaceFnd",
+        "pPriorState",
+        "pGapErrOn",
+        "pOpporStart",
+        "pOpporEnd",
+        "pOppRstStart",
+        "pOppRstEnd",
+        "pOppAvail",
+        "pOppNeed"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SawLane.asc",
+      "category": "sawtooth_lane",
+      "path": "FORTNA/SawLane.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 10643,
+      "row_count": 50,
+      "active_rows": 5,
+      "headers": [
+        "Name",
+        "pStatus",
+        "SawMerge",
+        "ApproachUP",
+        "CollisionUP",
+        "LaneIN",
+        "LaneNdx",
+        "PhotoEyeIO",
+        "DisableIO",
+        "DisableBit",
+        "pLastRunTime",
+        "pState",
+        "TimeSlice",
+        "pSlicesRemaining",
+        "AllowedToRun",
+        "SliceSeconds",
+        "ReserveWhen",
+        "ReserveSeconds",
+        "ReserveFLAG",
+        "ReserveTM",
+        "ReserveRATE",
+        "MaxSlicesInTransit",
+        "AllowedInput",
+        "AllowedInvert",
+        "AllowedRatePop",
+        "pEnabled",
+        "EndOfWave_PE",
+        "EOW_PB",
+        "EOW_PB_Toggle",
+        "EOW_EnablePB",
+        "EOW_Light",
+        "EOW_EnableLt",
+        "EOW_LaneNotReq",
+        "EndOfWave_Error",
+        "pEOW_State",
+        "pEOW_Status",
+        "pEOW_Latch"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [
+        {
+          "Name": "LANE_0_P219"
+        },
+        {
+          "Name": "LANE_1_P408"
+        },
+        {
+          "Name": "LANE_3_P116"
+        },
+        {
+          "Name": "LANE_4_P214"
+        },
+        {
+          "Name": "LANE_5_P832"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SortBuff.asc",
+      "category": "sort_buffer",
+      "path": "FORTNA/SortBuff.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 256579,
+      "row_count": 24310,
+      "active_rows": 3000,
+      "headers": [
+        "Buffer Position",
+        "Index",
+        "Sorter"
+      ],
+      "name_columns": [
+        "Sorter"
+      ],
+      "samples": [
+        {
+          "Sorter": "SAWTOOTH_MERGE"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SortData.asc",
+      "category": "sort_data",
+      "path": "FORTNA/SortData.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 313477,
+      "row_count": 4140,
+      "active_rows": 3000,
+      "headers": [
+        "Sorter",
+        "Data Position",
+        "Lane",
+        "Index",
+        "Description",
+        "Expected Lane",
+        "Confirmed Lane",
+        "LaneAlt1",
+        "LaneAlt2",
+        "LaneAlt3",
+        "Box Size",
+        "FixedDwell",
+        "PercentBoxDwell",
+        "FixedDelay",
+        "PercentBoxDelay",
+        "Armed",
+        "Menu",
+        "Resrv",
+        "HstCnt",
+        "DCMSent",
+        "DCMTrig",
+        "ExpectedIndx"
+      ],
+      "name_columns": [
+        "Sorter"
+      ],
+      "samples": [
+        {
+          "Sorter": "SAWTOOTH_MERGE",
+          "Lane": "4"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE",
+          "Lane": "1"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE",
+          "Lane": "1"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE",
+          "Lane": "1"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE",
+          "Lane": "2"
+        },
+        {
+          "Sorter": "SAWTOOTH_MERGE",
+          "Lane": "2"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "LogSort.asc",
+      "category": "sort_log",
+      "path": "FORTNA/LogSort.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 5534,
+      "row_count": 500,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "pStatus",
+        "LogMsg"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtAppControl.asc",
+      "category": "sorter_app",
+      "path": "FORTNA/SrtAppControl.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 2338,
+      "row_count": 10,
+      "active_rows": 1,
+      "headers": [
+        "Name",
+        "Status",
+        "MtrStatus",
+        "SendAvailStatus",
+        "AvailAppSorter",
+        "ErrConfig",
+        "LogLevel",
+        "CartonIdUpdate",
+        "CrrMsgTable",
+        "DcmMsgTable",
+        "CsuMsgTable",
+        "CsmMsgTable",
+        "SecondCrrMsgTable",
+        "SecondDcmMsgTable",
+        "SecondCsuMsgTable",
+        "ControlMachine",
+        "SorterCnvMtr",
+        "MtrACTION",
+        "MtrBIT",
+        "NotAvailErrSig",
+        "NotAvailACTION",
+        "NotAvailBIT",
+        "ScanErrSig",
+        "ScanACTION",
+        "ScanBIT",
+        "DataErrLight",
+        "DataACTION",
+        "DataBIT",
+        "MtrMinStopTime",
+        "SndShipInCRR",
+        "SndPackInCRR",
+        "pErrorFlag",
+        "pResetFault",
+        "pMaxResponse",
+        "pGrtHalfSecond",
+        "pGrtQtrSecond",
+        "pNumSamples",
+        "pTrigError",
+        "pErrDesc",
+        "pScanError",
+        "pDataError",
+        "pWrkScanError",
+        "pWrkDataError"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [
+        {
+          "Name": "CITY COUNTER",
+          "ControlMachine": "ORNCCP4",
+          "CrrMsgTable": "MsgCR1",
+          "DcmMsgTable": "MsgDC1"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtLaneNotAvail.asc",
+      "category": "sorter_assign",
+      "path": "FORTNA/SrtLaneNotAvail.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 597,
+      "row_count": 10,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Status",
+        "AppSorter",
+        "SrchShifter",
+        "SortZoneLane",
+        "FullUpdate",
+        "FullUpdateTicks",
+        "StartTicks",
+        "MinStopTicks",
+        "MinReAssignTicks",
+        "StopInTransit",
+        "pTrnStpMnu",
+        "pTrnStpTrk",
+        "pIndStpMnu",
+        "pIndStpTrk"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtRndRobin.asc",
+      "category": "sorter_assign",
+      "path": "FORTNA/SrtRndRobin.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 396,
+      "row_count": 10,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "EnableSrt",
+        "pStatusMsg",
+        "LogLevel",
+        "AppSorter",
+        "TrackingTable",
+        "Sorter",
+        "pLastLane"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtCommMsgMatch.asc",
+      "category": "sorter_comm",
+      "path": "FORTNA/SrtCommMsgMatch.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 195,
+      "row_count": 10,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "CmdHdr",
+        "MatchColNum",
+        "MatchColData",
+        "SendAck",
+        "pFlag"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtHrtBeat.asc",
+      "category": "sorter_comm",
+      "path": "FORTNA/SrtHrtBeat.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 1133,
+      "row_count": 5,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "EnableFlag",
+        "Status",
+        "AppSorter",
+        "StopSorterOnErr",
+        "StopSrtOnHostErr",
+        "AutoResetError",
+        "ControlMachine",
+        "MsgMenu",
+        "HrtMsgTable",
+        "HBTimeIntrvl",
+        "HBMsgIntrvl",
+        "MsgErrTime",
+        "SendInitMsg",
+        "CommErrSignal",
+        "CommErrACTION",
+        "CommErrBIT",
+        "CommErrBit",
+        "HostErrSignal",
+        "HostErrACTION",
+        "HostErrBIT",
+        "HostErrBit",
+        "HostMsg",
+        "ResetCommError",
+        "ResetCommErrSig",
+        "ErrorsRecord",
+        "pQtyQueue",
+        "pCommAlrmState",
+        "pHostAlrmState",
+        "pLastTime",
+        "pLastMsgTime",
+        "pLastDbKey",
+        "pLastQueTime",
+        "pErrorFlag",
+        "pCommAlrmLtch",
+        "pHostAlrmLtch"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "Sorters.asc",
+      "category": "sorter_config",
+      "path": "FORTNA/Sorters.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 1991,
+      "row_count": 12,
+      "active_rows": 2,
+      "headers": [
+        "Sorter Name",
+        "Encoder ioName",
+        "Encoder tmName",
+        "Encoder Type",
+        "pStatus",
+        "Max Cartons",
+        "Max Verify Buffer",
+        "Dump NDX",
+        "Dump OUT",
+        "Dump IN",
+        "UseFirstShifterNdx",
+        "LastNdx",
+        "OK",
+        "ShiftOnOff",
+        "Machine",
+        "ManualShift",
+        "Shifted",
+        "Data LowRec",
+        "Data HighRec",
+        "Buffer LowRec",
+        "Buffer HighRec",
+        "Inpoints LowRec",
+        "Inpoints HighRec",
+        "Updates LowRec",
+        "Updates HighRec",
+        "Outpoints LowRec",
+        "Outpoints HighRec",
+        "ShiftCnt",
+        "TrigOnOnly",
+        "TrigOnOff",
+        "TrigTransOn",
+        "TrigTransOff",
+        "TrigWndwTicks",
+        "DivertEnableIO",
+        "InvertEnableIO",
+        "RecircRate",
+        "CntRecircWhenFull",
+        "RecircRateUpdPt",
+        "pDumpFrom",
+        "pDumpOffset",
+        "pLastDumpLoc",
+        "pFirstShifter",
+        "pLastShifter",
+        "pMaxNdx"
+      ],
+      "name_columns": [
+        "Sorter Name"
+      ],
+      "samples": [
+        {
+          "Sorter Name": "SAWTOOTH_MERGE",
+          "Encoder ioName": "ENC414",
+          "Machine": "ORNCCP4"
+        },
+        {
+          "Sorter Name": "CITY_LANE",
+          "Encoder ioName": "ENC424",
+          "Machine": "ORNCCP4"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtDevice1.asc",
+      "category": "sorter_device",
+      "path": "FORTNA/SrtDevice1.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 6885,
+      "row_count": 100,
+      "active_rows": 98,
+      "headers": [
+        "Name",
+        "TrkIndx",
+        "Scan",
+        "ScanSts",
+        "ScanType",
+        "ScanZone",
+        "TimeStamp"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [
+        {
+          "Name": "R1",
+          "ScanZone": "CITY_SCAN_422"
+        },
+        {
+          "Name": "R2",
+          "ScanZone": "CITY_SCAN_422"
+        },
+        {
+          "Name": "R3",
+          "ScanZone": "CITY_SCAN_422"
+        },
+        {
+          "Name": "R4",
+          "ScanZone": "CITY_SCAN_422"
+        },
+        {
+          "Name": "R5",
+          "ScanZone": "CITY_SCAN_422"
+        },
+        {
+          "Name": "R6",
+          "ScanZone": "CITY_SCAN_422"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtDevice2.asc",
+      "category": "sorter_device",
+      "path": "FORTNA/SrtDevice2.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 2170,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "TrkIndx",
+        "Scan",
+        "ScanSts",
+        "ScanType",
+        "ScanZone",
+        "TimeStamp"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtDevice3.asc",
+      "category": "sorter_device",
+      "path": "FORTNA/SrtDevice3.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 2170,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "TrkIndx",
+        "Scan",
+        "ScanSts",
+        "ScanType",
+        "ScanZone",
+        "TimeStamp"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtDevice4.asc",
+      "category": "sorter_device",
+      "path": "FORTNA/SrtDevice4.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 2170,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "TrkIndx",
+        "Scan",
+        "ScanSts",
+        "ScanType",
+        "ScanZone",
+        "TimeStamp"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtDevice5.asc",
+      "category": "sorter_device",
+      "path": "FORTNA/SrtDevice5.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 2170,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "TrkIndx",
+        "Scan",
+        "ScanSts",
+        "ScanType",
+        "ScanZone",
+        "TimeStamp"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtBadGapCnfg.asc",
+      "category": "sorter_gap",
+      "path": "FORTNA/SrtBadGapCnfg.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 170,
+      "row_count": 5,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Status",
+        "AppSorter",
+        "BadGapShifter",
+        "BadGapLane",
+        "SendDCMFail"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtZoneLane.asc",
+      "category": "sorter_lane",
+      "path": "FORTNA/SrtZoneLane.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 16848,
+      "row_count": 300,
+      "active_rows": 2,
+      "headers": [
+        "Name",
+        "Enabled",
+        "Status",
+        "AppSorter",
+        "AssignIfFull",
+        "AssignLaneZero",
+        "Lane",
+        "FullClearTimer",
+        "LaneEnableSignal",
+        "HostZone",
+        "RestoreLane",
+        "RndRobinEnabled",
+        "AvailForAssign",
+        "AssignIfNotEnabled",
+        "DSRRequest",
+        "TwoSidedShoe",
+        "RightSideDivert",
+        "ResetExpected"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [
+        {
+          "Name": "City Counter",
+          "AppSorter": "CITY COUNTER",
+          "HostZone": "001",
+          "Lane": "CITY LANE 1ST SOLENOID",
+          "Enabled": "Y",
+          "FullClearTimer": "tmfcEZPE450_F"
+        },
+        {
+          "Name": "Straight",
+          "AppSorter": "CITY COUNTER",
+          "HostZone": "000",
+          "Lane": "STRAIGHT",
+          "Enabled": "Y",
+          "FullClearTimer": "tmfcEZPE456_F"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtScanSts.asc",
+      "category": "sorter_lookup",
+      "path": "FORTNA/SrtScanSts.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 131,
+      "row_count": 15,
+      "active_rows": 0,
+      "headers": [
+        "\"Scan_Status\""
+      ],
+      "name_columns": [
+        "Scan_Status"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SorterSfgScrn.asc",
+      "category": "sorter_related",
+      "path": "PROJECT/SorterSfgScrn.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 653,
+      "row_count": 1,
+      "active_rows": 0,
+      "headers": [
+        "SorterName",
+        "EncoderIO",
+        "Induct PE",
+        "MaxCartons",
+        "LengthFeet",
+        "QtyInpoints",
+        "QtyUpdates",
+        "QtyOutpoints",
+        "StartLoLane",
+        "TicksPerFoot",
+        "EncoderTicksPerFoot",
+        "TickMilliSec",
+        "UpdateSpeed",
+        "SpeedFPM",
+        "NewSorter",
+        "NewEncoder",
+        "ClearAllSelections",
+        "AddNewTimerSorter",
+        "AddNewEncoderSorter",
+        "CreateNamesOutpointTable",
+        "DoubleResolution",
+        "UpdateOutpoints",
+        "AddSortZoneRecords",
+        "AddUpdatePtDesc",
+        "AddMemIO",
+        "ChangeToDoubleResolution",
+        "RemoveDoubleResolution",
+        "StartWord",
+        "SelectedSrtAppControl",
+        "Status",
+        "Error",
+        "Comment"
+      ],
+      "name_columns": [
+        "SorterName"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtInitNaList.asc",
+      "category": "sorter_related",
+      "path": "PROJECT/SrtInitNaList.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 197,
+      "row_count": 16,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "MenuToInit",
+        "ColumnName"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtrSideTypes.asc",
+      "category": "sorter_related",
+      "path": "PROJECT/SrtrSideTypes.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 41,
+      "row_count": 4,
+      "active_rows": 2,
+      "headers": [
+        "\"Types\""
+      ],
+      "name_columns": [
+        "\"Types\""
+      ],
+      "samples": [
+        {
+          "\"Types\"": "Right Side"
+        },
+        {
+          "\"Types\"": "Left Side"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtrStepTypes.asc",
+      "category": "sorter_related",
+      "path": "PROJECT/SrtrStepTypes.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 59,
+      "row_count": 11,
+      "active_rows": 2,
+      "headers": [
+        "\"Types\""
+      ],
+      "name_columns": [
+        "\"Types\""
+      ],
+      "samples": [
+        {
+          "\"Types\"": "Primary"
+        },
+        {
+          "\"Types\"": "Secondary"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtrUpdateParts.asc",
+      "category": "sorter_related",
+      "path": "PROJECT/SrtrUpdateParts.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 233,
+      "row_count": 1,
+      "active_rows": 0,
+      "headers": [
+        "IN",
+        "ER",
+        "SE",
+        "Text",
+        "Next",
+        "New",
+        "ShowAll",
+        "Not Required",
+        "First",
+        "Prev",
+        "Create Sorter",
+        "Create Lanes",
+        "Timer Encoder",
+        "2X Resolution",
+        "SC Sorter Type",
+        "Double Sided",
+        "Double Sided Shoe"
+      ],
+      "name_columns": [
+        "IN"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtrValTypes.asc",
+      "category": "sorter_related",
+      "path": "PROJECT/SrtrValTypes.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 238,
+      "row_count": 30,
+      "active_rows": 20,
+      "headers": [
+        "\"Types\""
+      ],
+      "name_columns": [
+        "\"Types\""
+      ],
+      "samples": [
+        {
+          "\"Types\"": "Conv Part"
+        },
+        {
+          "\"Types\"": "Sorter Name"
+        },
+        {
+          "\"Types\"": "Speed"
+        },
+        {
+          "\"Types\"": "Ticks"
+        },
+        {
+          "\"Types\"": "Qty Scanners"
+        },
+        {
+          "\"Types\"": "Scan"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtrWizardSteps.asc",
+      "category": "sorter_related",
+      "path": "PROJECT/SrtrWizardSteps.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 64248,
+      "row_count": 700,
+      "active_rows": 635,
+      "headers": [
+        "Prompt",
+        "NotRequired",
+        "PrefixSrchChars",
+        "PostfixSrchChars",
+        "PrefixChars",
+        "PartNameStr",
+        "PartName",
+        "TypeStep",
+        "ValidateType",
+        "PrimaryIter",
+        "SecondaryIter",
+        "TertiaryIter",
+        "DeviceChars",
+        "SideType"
+      ],
+      "name_columns": [
+        "Prompt"
+      ],
+      "samples": [
+        {
+          "Prompt": "Enter Sorter Name (i.e. Ship):"
+        },
+        {
+          "Prompt": "Enter Speed in Feet per Minute: (50 - 600)"
+        },
+        {
+          "Prompt": "Enter ticks per foot for the Sorter (4 - 24)"
+        },
+        {
+          "Prompt": "Enter number of Scanners (1 - 4)"
+        },
+        {
+          "Prompt": "Enter Device name for Scan 1 (i.e. rkt1)"
+        },
+        {
+          "Prompt": "Enter Device name for Scan 2 (i.e. rkt2)"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtScanBoss.asc",
+      "category": "sorter_scan",
+      "path": "FORTNA/SrtScanBoss.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 1651,
+      "row_count": 12,
+      "active_rows": 1,
+      "headers": [
+        "Name",
+        "ErrorMsg",
+        "ScanStatus",
+        "AppSorter",
+        "ScanZone",
+        "AssignUpdatePt",
+        "ScanError",
+        "ScanConflict",
+        "CommErr",
+        "SpcLane",
+        "Lane",
+        "TooLateUpdatePt",
+        "SendCRRUpdatePt",
+        "LengthUpdatePt",
+        "TooTallUpdatePt",
+        "TooTallSignal",
+        "SecondCRRUpdPt",
+        "SecondScanZone",
+        "SecondChkDiverted",
+        "ToteUpdatePt",
+        "ToteSignal",
+        "ToteUpdErrOnly",
+        "ToteErr",
+        "ToteErrMsg",
+        "ToteID",
+        "ToteUpdCSMAlso",
+        "pToteTrkMnu",
+        "pToteTrkIndx",
+        "pToteFound"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [
+        {
+          "Name": "City Counter Sorter",
+          "AppSorter": "CITY COUNTER",
+          "ScanZone": "CITY_SCAN_422",
+          "Lane": "402"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SortSimScans1.asc",
+      "category": "sorter_sim",
+      "path": "FORTNA/SortSimScans1.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SortSimScans2.asc",
+      "category": "sorter_sim",
+      "path": "FORTNA/SortSimScans2.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SortSimScans3.asc",
+      "category": "sorter_sim",
+      "path": "FORTNA/SortSimScans3.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SortSimScans4.asc",
+      "category": "sorter_sim",
+      "path": "FORTNA/SortSimScans4.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SortSimScans5.asc",
+      "category": "sorter_sim",
+      "path": "FORTNA/SortSimScans5.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtSimConfig.asc",
+      "category": "sorter_sim",
+      "path": "FORTNA/SrtSimConfig.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 774,
+      "row_count": 5,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "EnableSrt",
+        "Status",
+        "AppSorter",
+        "NumContSrt",
+        "CurContSrt",
+        "SimShifter",
+        "CreateSorterTmr",
+        "ShifterTimerHalt",
+        "NumCharScan",
+        "ScanDevice",
+        "ScaleDevice",
+        "ScaleString",
+        "PreFixString",
+        "PostFixString",
+        "InPoint",
+        "InductDumpPt",
+        "Length",
+        "Gap",
+        "SimCrrCsu",
+        "ScanSimMenu",
+        "SimScanFile",
+        "LoadFile",
+        "WrapScanList",
+        "ResetSimulation",
+        "pCurrLength",
+        "pCurrGap",
+        "pLastShiftCnt",
+        "pStateForcePE",
+        "pCurrSimRecord"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack1.asc",
+      "category": "srt_track",
+      "path": "FORTNA/SrtTrack1.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 29082,
+      "row_count": 100,
+      "active_rows": 98,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus",
+        "PaProcFlag",
+        "PaProcUpd",
+        "ExptRF",
+        "ExptSKU",
+        "ExptLPN",
+        "VerRF",
+        "VerSKU",
+        "VerLPN",
+        "CurrSpeed",
+        "Height",
+        "Width",
+        "Length",
+        "TooShort",
+        "SendUpdPrt",
+        "Scale",
+        "ConfirmTote",
+        "Param1",
+        "Param2",
+        "Param3",
+        "Param4",
+        "Param5",
+        "ConfirmShip",
+        "ConfirmPack",
+        "CombShip",
+        "CombPack",
+        "CombShipSts",
+        "CombPackSts",
+        "pVerifyErr",
+        "pPAPassThru",
+        "pPNAExempt",
+        "pPNAZoneCleared",
+        "DCMReq",
+        "SrtSimRecord",
+        "ToteFound",
+        "LRMSent",
+        "LVMSent",
+        "UUID"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [
+        {
+          "Name": "R1",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "ConfirmScan": "00214401901118761288"
+        },
+        {
+          "Name": "R2",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "ConfirmScan": "00524203501118762904"
+        },
+        {
+          "Name": "R3",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "ConfirmScan": "00165602401118814097"
+        },
+        {
+          "Name": "R4",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "ConfirmScan": "00213701401118815726"
+        },
+        {
+          "Name": "R5",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "ConfirmScan": "00397303801118760115"
+        },
+        {
+          "Name": "R6",
+          "ScanZoneID": "CITY_422",
+          "SorterLane": "0",
+          "ConfirmScan": "00220102701118764677"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack2.asc",
+      "category": "srt_track",
+      "path": "FORTNA/SrtTrack2.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 22719,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus",
+        "PaProcFlag",
+        "PaProcUpd",
+        "ExptRF",
+        "ExptSKU",
+        "ExptLPN",
+        "VerRF",
+        "VerSKU",
+        "VerLPN",
+        "CurrSpeed",
+        "Height",
+        "Width",
+        "Length",
+        "TooShort",
+        "SendUpdPrt",
+        "Scale",
+        "ConfirmTote",
+        "Param1",
+        "Param2",
+        "Param3",
+        "Param4",
+        "Param5",
+        "ConfirmShip",
+        "ConfirmPack",
+        "CombShip",
+        "CombPack",
+        "CombShipSts",
+        "CombPackSts",
+        "pVerifyErr",
+        "pPAPassThru",
+        "pPNAExempt",
+        "pPNAZoneCleared",
+        "DCMReq",
+        "SrtSimRecord",
+        "ToteFound",
+        "LRMSent",
+        "LVMSent",
+        "UUID"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack3.asc",
+      "category": "srt_track",
+      "path": "FORTNA/SrtTrack3.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 22719,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus",
+        "PaProcFlag",
+        "PaProcUpd",
+        "ExptRF",
+        "ExptSKU",
+        "ExptLPN",
+        "VerRF",
+        "VerSKU",
+        "VerLPN",
+        "CurrSpeed",
+        "Height",
+        "Width",
+        "Length",
+        "TooShort",
+        "SendUpdPrt",
+        "Scale",
+        "ConfirmTote",
+        "Param1",
+        "Param2",
+        "Param3",
+        "Param4",
+        "Param5",
+        "ConfirmShip",
+        "ConfirmPack",
+        "CombShip",
+        "CombPack",
+        "CombShipSts",
+        "CombPackSts",
+        "pVerifyErr",
+        "pPAPassThru",
+        "pPNAExempt",
+        "pPNAZoneCleared",
+        "DCMReq",
+        "SrtSimRecord",
+        "ToteFound",
+        "LRMSent",
+        "LVMSent",
+        "UUID"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack4.asc",
+      "category": "srt_track",
+      "path": "FORTNA/SrtTrack4.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 22719,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus",
+        "PaProcFlag",
+        "PaProcUpd",
+        "ExptRF",
+        "ExptSKU",
+        "ExptLPN",
+        "VerRF",
+        "VerSKU",
+        "VerLPN",
+        "CurrSpeed",
+        "Height",
+        "Width",
+        "Length",
+        "TooShort",
+        "SendUpdPrt",
+        "Scale",
+        "ConfirmTote",
+        "Param1",
+        "Param2",
+        "Param3",
+        "Param4",
+        "Param5",
+        "ConfirmShip",
+        "ConfirmPack",
+        "CombShip",
+        "CombPack",
+        "CombShipSts",
+        "CombPackSts",
+        "pVerifyErr",
+        "pPAPassThru",
+        "pPNAExempt",
+        "pPNAZoneCleared",
+        "DCMReq",
+        "SrtSimRecord",
+        "ToteFound",
+        "LRMSent",
+        "LVMSent",
+        "UUID"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "SrtTrack5.asc",
+      "category": "srt_track",
+      "path": "FORTNA/SrtTrack5.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 22719,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus",
+        "PaProcFlag",
+        "PaProcUpd",
+        "ExptRF",
+        "ExptSKU",
+        "ExptLPN",
+        "VerRF",
+        "VerSKU",
+        "VerLPN",
+        "CurrSpeed",
+        "Height",
+        "Width",
+        "Length",
+        "TooShort",
+        "SendUpdPrt",
+        "Scale",
+        "ConfirmTote",
+        "Param1",
+        "Param2",
+        "Param3",
+        "Param4",
+        "Param5",
+        "ConfirmShip",
+        "ConfirmPack",
+        "CombShip",
+        "CombPack",
+        "CombShipSts",
+        "CombPackSts",
+        "pVerifyErr",
+        "pPAPassThru",
+        "pPNAExempt",
+        "pPNAZoneCleared",
+        "DCMReq",
+        "SrtSimRecord",
+        "ToteFound",
+        "LRMSent",
+        "LVMSent",
+        "UUID"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "WCSEvents.asc",
+      "category": "wcs_events",
+      "path": "FORTNA/WCSEvents.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7250,
+      "row_count": 110,
+      "active_rows": 99,
+      "headers": [
+        "EventName",
+        "WCSEnable",
+        "WCSDestination",
+        "WCSCategory",
+        "WCSService",
+        "WCSMachProc",
+        "WCSLastTime",
+        "NMSEnable",
+        "NMSLastTime"
+      ],
+      "name_columns": [
+        "EventName"
+      ],
+      "samples": [
+        {
+          "EventName": "Bad Gap",
+          "WCSEnable": "N",
+          "WCSDestination": "/topic/WCSEVENT.FPC.FP.SCAN",
+          "WCSCategory": "SCAN"
+        },
+        {
+          "EventName": "Bad Read",
+          "WCSEnable": "N",
+          "WCSDestination": "/topic/WCSEVENT.FPC.FP.SCAN",
+          "WCSCategory": "SCAN"
+        },
+        {
+          "EventName": "BARCODELENGTHERROR",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "WCSCategory": "PNA"
+        },
+        {
+          "EventName": "BROKEN",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.CHAIN.ALARM",
+          "WCSCategory": "CHAIN"
+        },
+        {
+          "EventName": "BUSY",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "WCSCategory": "PNA"
+        },
+        {
+          "EventName": "BUSYWAIT",
+          "WCSEnable": "Y",
+          "WCSDestination": "/topic/WCSEVENT.FPC.PNA.ALARM",
+          "WCSCategory": "PNA"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "wcsAlarm.asc",
+      "category": "wcs_lookup",
+      "path": "FORTNA/wcsAlarm.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 161,
+      "row_count": 20,
+      "active_rows": 0,
+      "headers": [
+        "\"Alarm_Category\""
+      ],
+      "name_columns": [
+        "Alarm_Category"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "wcsSeverity.asc",
+      "category": "wcs_lookup",
+      "path": "FORTNA/wcsSeverity.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 71,
+      "row_count": 10,
+      "active_rows": 0,
+      "headers": [
+        "\"wcsSeverity\""
+      ],
+      "name_columns": [
+        "wcsSeverity"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrActionPop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrActionPop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 86,
+      "row_count": 10,
+      "active_rows": 8,
+      "headers": [
+        "\"ActionName\""
+      ],
+      "name_columns": [
+        "\"ActionName\""
+      ],
+      "samples": [
+        {
+          "\"ActionName\"": "Fire"
+        },
+        {
+          "\"ActionName\"": "UnFire"
+        },
+        {
+          "\"ActionName\"": "Enable"
+        },
+        {
+          "\"ActionName\"": "Disable"
+        },
+        {
+          "\"ActionName\"": "Latch"
+        },
+        {
+          "\"ActionName\"": "UnLatch"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrBoss.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrBoss.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 25883,
+      "row_count": 200,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "pStatus",
+        "Dest",
+        "CurrentTree",
+        "pState",
+        "Reset",
+        "LogLevel",
+        "MaxWaitTM",
+        "ProductINPUT",
+        "ProductSENSE",
+        "ReleaseOUTPUT",
+        "ReleaseAction",
+        "EnableMaxWait",
+        "EnableMxSense",
+        "NoScanner",
+        "Machine",
+        "NoScannerRoute",
+        "CompleteOneIter",
+        "XfrResetINPUT",
+        "XfrResetSENSE",
+        "OverrideINPUT",
+        "OverrideSENSE",
+        "XfrZoneID",
+        "pItemMenu",
+        "pItemIndex",
+        "pNoScanState",
+        "pProductState",
+        "pEnableMaxWaitState",
+        "pScrnUpdateTmr",
+        "pSwitchToSearch",
+        "pAtProdInput",
+        "pReleaseTranitions",
+        "pManualOverride"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrBossState.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrBossState.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 58,
+      "row_count": 8,
+      "active_rows": 6,
+      "headers": [
+        "\"StateName\""
+      ],
+      "name_columns": [
+        "\"StateName\""
+      ],
+      "samples": [
+        {
+          "\"StateName\"": "Idle"
+        },
+        {
+          "\"StateName\"": "Search"
+        },
+        {
+          "\"StateName\"": "Wait"
+        },
+        {
+          "\"StateName\"": "Run"
+        },
+        {
+          "\"StateName\"": "Reset"
+        },
+        {
+          "\"StateName\"": "Done"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrCfgDelayTmr.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrCfgDelayTmr.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 4875,
+      "row_count": 200,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "XfrConfig",
+        "State",
+        "Timer",
+        "TimerAction",
+        "pLinkNextRec"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrCfgInTimer.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrCfgInTimer.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 5296,
+      "row_count": 200,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "XfrConfig",
+        "State",
+        "RequiredTimer",
+        "TimerSense",
+        "pTimerState",
+        "pLinkNextRec"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrCfgInput.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrCfgInput.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 325354,
+      "row_count": 2500,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "XfrConfig",
+        "State",
+        "RequiredInput",
+        "InputSense",
+        "OrSignal1",
+        "OrSense1",
+        "OrSignal2",
+        "OrSense2",
+        "OrSignal3",
+        "OrSense3",
+        "OrSignal4",
+        "OrSense4",
+        "OrSignal5",
+        "OrSense5",
+        "OrSignal6",
+        "OrSense6",
+        "OrSignal7",
+        "OrSense7",
+        "pInputState",
+        "pOrState1",
+        "pOrState2",
+        "pOrState3",
+        "pOrState4",
+        "pOrState5",
+        "pOrState6",
+        "pOrState7",
+        "pLinkNextRec",
+        "ClearLatch"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrCfgOutput.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrCfgOutput.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 24651,
+      "row_count": 200,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "XfrConfig",
+        "Output",
+        "OutputAction",
+        "DisableAction",
+        "IdleAction",
+        "State1Action",
+        "State2Action",
+        "State3Action",
+        "State4Action",
+        "State5Action",
+        "State6Action",
+        "State7Action",
+        "State8Action",
+        "State9Action",
+        "State10Action",
+        "State11Action",
+        "State12Action",
+        "State13Action",
+        "State14Action",
+        "State15Action",
+        "State16Action",
+        "State17Action",
+        "State18Action",
+        "State19Action",
+        "State20Action",
+        "DoneAction",
+        "StateParameter",
+        "pLinkNextRec",
+        "pOutState"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrCfgPnAInput.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrCfgPnAInput.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 1942,
+      "row_count": 10,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "pStatus",
+        "XfrConfig",
+        "State",
+        "PrintLine",
+        "Printer",
+        "LabelNum",
+        "PrintCondition",
+        "VerifyScanZone",
+        "LogLevel",
+        "Machine",
+        "OrSignal1",
+        "OrSense1",
+        "OrSignal2",
+        "OrSense2",
+        "OrSignal3",
+        "OrSense3",
+        "OrSignal4",
+        "OrSense4",
+        "OrSignal5",
+        "OrSense5",
+        "OrSignal6",
+        "OrSense6",
+        "OrSignal7",
+        "OrSense7",
+        "pInputState",
+        "pOrState1",
+        "pOrState2",
+        "pOrState3",
+        "pOrState4",
+        "pOrState5",
+        "pOrState6",
+        "pOrState7",
+        "pCfgErr",
+        "pCfgMessage",
+        "pLabelVerified"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrCfgPnAOutput.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrCfgPnAOutput.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 505,
+      "row_count": 10,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "pStatus",
+        "XfrConfig",
+        "State",
+        "PrintLine",
+        "PrintAction",
+        "LogLevel",
+        "Machine",
+        "pCfgErr",
+        "pCfgMessage"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrCheckSet.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrCheckSet.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 52560,
+      "row_count": 2500,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "Tree",
+        "XfrConfig",
+        "MyGroup",
+        "CheckGroup"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrCnfgState.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrCnfgState.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 211,
+      "row_count": 24,
+      "active_rows": 23,
+      "headers": [
+        "\"StateName\""
+      ],
+      "name_columns": [
+        "\"StateName\""
+      ],
+      "samples": [
+        {
+          "\"StateName\"": "Idle"
+        },
+        {
+          "\"StateName\"": "State1"
+        },
+        {
+          "\"StateName\"": "State2"
+        },
+        {
+          "\"StateName\"": "State3"
+        },
+        {
+          "\"StateName\"": "State4"
+        },
+        {
+          "\"StateName\"": "State5"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrConfig.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrConfig.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 10245,
+      "row_count": 200,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "pRun",
+        "pStatus",
+        "pState",
+        "EnabledINPUT",
+        "EnabledSENSE",
+        "EnabledDELAY",
+        "DontDisableIdle",
+        "pCurrentBoss",
+        "pStateForRecs",
+        "pEnabledIOState",
+        "pFirstInputRec",
+        "pFirstOutputRec",
+        "pFirstInTmrRec",
+        "pFirstDelayTmrRec",
+        "pScrnUpdateTmr"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrDCMTrigPop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrDCMTrigPop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 58,
+      "row_count": 4,
+      "active_rows": 3,
+      "headers": [
+        "\"ProcessType\""
+      ],
+      "name_columns": [
+        "\"ProcessType\""
+      ],
+      "samples": [
+        {
+          "\"ProcessType\"": "NextXfrTrig"
+        },
+        {
+          "\"ProcessType\"": "XfrCRRTrig"
+        },
+        {
+          "\"ProcessType\"": "XfrCSMTrig"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrDCMTypePop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrDCMTypePop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 149,
+      "row_count": 12,
+      "active_rows": 10,
+      "headers": [
+        "\"ProcName\""
+      ],
+      "name_columns": [
+        "\"ProcName\""
+      ],
+      "samples": [
+        {
+          "\"ProcName\"": "StoreInTrk"
+        },
+        {
+          "\"ProcName\"": "ErrorOnly"
+        },
+        {
+          "\"ProcName\"": "GetLastScan"
+        },
+        {
+          "\"ProcName\"": "GetVerifyScan"
+        },
+        {
+          "\"ProcName\"": "StringToMenu"
+        },
+        {
+          "\"ProcName\"": "PutIdIntoMenu"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrErrConfig.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrErrConfig.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 4544,
+      "row_count": 50,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "Enable",
+        "XfrConfig",
+        "State",
+        "SendDCMOnError",
+        "ErrMsg",
+        "ProcessType",
+        "NextXfrRoute",
+        "CrrXfrBoss",
+        "CopyParmData",
+        "Parameter",
+        "UpdateHistory",
+        "HRRecord",
+        "AutoResetCons",
+        "MaximumErrors",
+        "ErrorIO",
+        "ErrorACTION",
+        "ErrorBIT",
+        "ErrorSignal",
+        "ResetCons",
+        "ResetConsSignal",
+        "ResetSeconds",
+        "XfrBossToStop",
+        "pConsecErrors",
+        "pResetSecsLeft"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrGoSet.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrGoSet.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 3652,
+      "row_count": 200,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "Tree",
+        "XfrConfig",
+        "InitialState"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrOutStatePop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrOutStatePop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 45,
+      "row_count": 4,
+      "active_rows": 2,
+      "headers": [
+        "\"ActionName\""
+      ],
+      "name_columns": [
+        "\"ActionName\""
+      ],
+      "samples": [
+        {
+          "\"ActionName\"": "Activate"
+        },
+        {
+          "\"ActionName\"": "DeActivate"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrPNAMonitorConfig.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrPNAMonitorConfig.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 625,
+      "row_count": 5,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Enabled",
+        "PNALine",
+        "ESM Scan Zone",
+        "ESM Received",
+        "ESS Sent",
+        "LRM Received",
+        "Label 1",
+        "Label 2",
+        "LabelCount",
+        "Verify Scan 1",
+        "Verify 1 Scan Device",
+        "Verify Scan 2",
+        "Verify 2 Scan Device",
+        "Induct Zone Config",
+        "PNA Zone Config",
+        "Verify Zone Config",
+        "pProcESM",
+        "pProcESS",
+        "pProcLRM",
+        "pProcVerify1",
+        "pProcVerify2",
+        "pInduct"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrPNAMonitorScreen.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrPNAMonitorScreen.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 574,
+      "row_count": 1,
+      "active_rows": 0,
+      "headers": [
+        "Induct PE",
+        "ESM Received",
+        "ESS Sent",
+        "PNA Zone PE",
+        "P1 Tamp Home",
+        "P2 Tamp Home",
+        "P1 Error",
+        "P2 Error",
+        "P1 LOTAR",
+        "P2 LOTAR",
+        "LRM Status",
+        "Label 1",
+        "Label 2",
+        "LabelCount",
+        "Induct Zone Motor",
+        "PNA Zone Motor",
+        "Verify Zone Motor",
+        "Scanner 1 Verify",
+        "Scanner 2 Verify",
+        "Clear Data",
+        "Monitoring Enabled",
+        "Induct Zone State",
+        "Induct Zone Status",
+        "PNA Zone State",
+        "PNA Zone Status",
+        "Verify Zone State",
+        "Verify Zone Status",
+        "Transfer PNA Config"
+      ],
+      "name_columns": [
+        "Induct PE"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrPalletMaint.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrPalletMaint.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 8505,
+      "row_count": 50,
+      "active_rows": 0,
+      "headers": [
+        "TransferName",
+        "Start",
+        "ZN01",
+        "Z01",
+        "S01",
+        "ZN02",
+        "Z02",
+        "S02",
+        "ZN03",
+        "Z03",
+        "S03",
+        "ZN04",
+        "Z04",
+        "S04",
+        "ZN05",
+        "Z05",
+        "S05",
+        "ZN06",
+        "Z06",
+        "S06",
+        "ZN07",
+        "Z07",
+        "S07",
+        "ZN08",
+        "Z08",
+        "S08",
+        "ZN09",
+        "Z09",
+        "S09",
+        "ZN10",
+        "Z10",
+        "S10",
+        "ZN11",
+        "Z11",
+        "S11",
+        "ZN12",
+        "Z12",
+        "S12",
+        "ZN13",
+        "Z13",
+        "S13",
+        "ZN14",
+        "Z14",
+        "S14",
+        "ZN15",
+        "Z15",
+        "S15",
+        "ZN16",
+        "Z16",
+        "S16",
+        "ZN17",
+        "Z17",
+        "S17",
+        "ZN18",
+        "Z18",
+        "S18",
+        "ZN19",
+        "Z19",
+        "S19",
+        "ZN20",
+        "Z20",
+        "S20"
+      ],
+      "name_columns": [
+        "TransferName"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrParamConfig.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrParamConfig.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 7714,
+      "row_count": 50,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "Enable",
+        "XfrConfig",
+        "State",
+        "ProcessType",
+        "ProcessEnableIO",
+        "EnableIOSense",
+        "Parameter",
+        "SndMsg",
+        "MenuName",
+        "MenuColumn",
+        "MenuRow",
+        "PageIndex",
+        "StatusSignal",
+        "StatusSense",
+        "ErrorSense",
+        "MsgSigOff",
+        "MsgSigOn",
+        "XfrScanRecord",
+        "UpdateHistory",
+        "HRRecord",
+        "AutoResetCons",
+        "MaximumErrors",
+        "ErrorIO",
+        "ErrorACTION",
+        "ErrorBIT",
+        "ErrorSignal",
+        "ResetCons",
+        "ResetConsSignal",
+        "ResetSeconds",
+        "XfrBossToStop",
+        "CheckParameter",
+        "MsgParamEqZero",
+        "MsgProcType",
+        "XfrBossRecord",
+        "XfrTreeRecord",
+        "XfrRouteBossRecord",
+        "XfrTriggerRoute",
+        "pConsecErrors",
+        "pResetSecsLeft"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrParamPop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrParamPop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 64,
+      "row_count": 6,
+      "active_rows": 5,
+      "headers": [
+        "\"ParamName\""
+      ],
+      "name_columns": [
+        "\"ParamName\""
+      ],
+      "samples": [
+        {
+          "\"ParamName\"": "Param 1"
+        },
+        {
+          "\"ParamName\"": "Param 2"
+        },
+        {
+          "\"ParamName\"": "Param 3"
+        },
+        {
+          "\"ParamName\"": "Param 4"
+        },
+        {
+          "\"ParamName\"": "Param 5"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrPnAUpdates.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrPnAUpdates.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 419,
+      "row_count": 10,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "pStatus",
+        "XfrConfig",
+        "State",
+        "LogLevel",
+        "Machine",
+        "pCfgErr",
+        "pCfgMessage"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrPrintAction.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrPrintAction.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 60,
+      "row_count": 4,
+      "active_rows": 2,
+      "headers": [
+        "\"Name\""
+      ],
+      "name_columns": [
+        "\"Name\""
+      ],
+      "samples": [
+        {
+          "\"Name\"": "Get Label (LRM)"
+        },
+        {
+          "\"Name\"": "Activate Printers (TAMP)"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrPrintCond.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrPrintCond.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 66,
+      "row_count": 4,
+      "active_rows": 2,
+      "headers": [
+        "\"Name\""
+      ],
+      "name_columns": [
+        "\"Name\""
+      ],
+      "samples": [
+        {
+          "\"Name\"": "Receive Label (LRM ACK/LMI)"
+        },
+        {
+          "\"Name\"": "Label Verification"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrPrmTpPop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrPrmTpPop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 72,
+      "row_count": 4,
+      "active_rows": 3,
+      "headers": [
+        "\"ProcessType\""
+      ],
+      "name_columns": [
+        "\"ProcessType\""
+      ],
+      "samples": [
+        {
+          "\"ProcessType\"": "Set Msg On-Off"
+        },
+        {
+          "\"ProcessType\"": "Set Msg On Only"
+        },
+        {
+          "\"ProcessType\"": "Set Msg Off Only"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrSensePop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrSensePop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 58,
+      "row_count": 6,
+      "active_rows": 4,
+      "headers": [
+        "\"SenseName\""
+      ],
+      "name_columns": [
+        "\"SenseName\""
+      ],
+      "samples": [
+        {
+          "\"SenseName\"": "Is On"
+        },
+        {
+          "\"SenseName\"": "Is Off"
+        },
+        {
+          "\"SenseName\"": "Trans On"
+        },
+        {
+          "\"SenseName\"": "Trans Off"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrSerialPop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrSerialPop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 61,
+      "row_count": 4,
+      "active_rows": 3,
+      "headers": [
+        "\"SerialType\""
+      ],
+      "name_columns": [
+        "\"SerialType\""
+      ],
+      "samples": [
+        {
+          "\"SerialType\"": "MSC Serial1"
+        },
+        {
+          "\"SerialType\"": "MSC Serial2"
+        },
+        {
+          "\"SerialType\"": "PA Send Label"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrSndMsg.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrSndMsg.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 2124,
+      "row_count": 50,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "Enable",
+        "pStatus",
+        "XfrConfig",
+        "State",
+        "Param1",
+        "Param2",
+        "MsgType",
+        "Machine",
+        "SendLabel",
+        "CheckParameter"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrStepTypes.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrStepTypes.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 59,
+      "row_count": 11,
+      "active_rows": 2,
+      "headers": [
+        "\"Types\""
+      ],
+      "name_columns": [
+        "\"Types\""
+      ],
+      "samples": [
+        {
+          "\"Types\"": "Primary"
+        },
+        {
+          "\"Types\"": "Secondary"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrTmrActnPop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrTmrActnPop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 47,
+      "row_count": 4,
+      "active_rows": 2,
+      "headers": [
+        "\"ActionName\""
+      ],
+      "name_columns": [
+        "\"ActionName\""
+      ],
+      "samples": [
+        {
+          "\"ActionName\"": "Run Timer"
+        },
+        {
+          "\"ActionName\"": "Reset Timer"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrTmrSnsePop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrTmrSnsePop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 43,
+      "row_count": 4,
+      "active_rows": 2,
+      "headers": [
+        "\"SenseName\""
+      ],
+      "name_columns": [
+        "\"SenseName\""
+      ],
+      "samples": [
+        {
+          "\"SenseName\"": "Is Done"
+        },
+        {
+          "\"SenseName\"": "Is Running"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrTransitionPop.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrTransitionPop.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 40,
+      "row_count": 3,
+      "active_rows": 2,
+      "headers": [
+        "\"SenseName\""
+      ],
+      "name_columns": [
+        "\"SenseName\""
+      ],
+      "samples": [
+        {
+          "\"SenseName\"": "Trans On"
+        },
+        {
+          "\"SenseName\"": "Trans Off"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrTree.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrTree.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 5486,
+      "row_count": 200,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "Boss",
+        "Dest",
+        "DoConfirm",
+        "AvailINPUT",
+        "AvailSENSE",
+        "pAvailIOState"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrTrig.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrTrig.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 1514,
+      "row_count": 50,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "Enable",
+        "XfrConfig",
+        "State",
+        "ProcessType",
+        "CrrXfrBoss",
+        "NextXfrRoute",
+        "CopyParmData",
+        "PNALine"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrUpdateParts.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrUpdateParts.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 115,
+      "row_count": 1,
+      "active_rows": 0,
+      "headers": [
+        "IN",
+        "ER",
+        "SE",
+        "Text",
+        "Next",
+        "New",
+        "ShowAll",
+        "Not Required",
+        "First",
+        "Prev",
+        "Create"
+      ],
+      "name_columns": [
+        "IN"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrValTypes.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrValTypes.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 366,
+      "row_count": 30,
+      "active_rows": 25,
+      "headers": [
+        "\"Types\""
+      ],
+      "name_columns": [
+        "\"Types\""
+      ],
+      "samples": [
+        {
+          "\"Types\"": "Conv Part"
+        },
+        {
+          "\"Types\"": "Xfr Name"
+        },
+        {
+          "\"Types\"": "Qty Scanners"
+        },
+        {
+          "\"Types\"": "Scan"
+        },
+        {
+          "\"Types\"": "Presence PE"
+        },
+        {
+          "\"Types\"": "Release SSV"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrWizardSteps.asc",
+      "category": "xfr_config",
+      "path": "PROJECT/XfrWizardSteps.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 9545,
+      "row_count": 200,
+      "active_rows": 35,
+      "headers": [
+        "Prompt",
+        "NotRequired",
+        "PrefixSrchChars",
+        "PostfixSrchChars",
+        "PrefixChars",
+        "PartNameStr",
+        "PartName",
+        "TypeStep",
+        "ValidateType",
+        "PrimaryIter",
+        "SecondaryIter",
+        "TertiaryIter",
+        "DeviceChars"
+      ],
+      "name_columns": [
+        "Prompt"
+      ],
+      "samples": [
+        {
+          "Prompt": "Enter Transfer Name: (Just the numeric digits)"
+        },
+        {
+          "Prompt": "Select the Transfer Infeed Conveyor: (click on the Part)"
+        },
+        {
+          "Prompt": "Enter number of Scanners (1 - 4)"
+        },
+        {
+          "Prompt": "Enter Device name for Scan 1 (i.e. rkt1)"
+        },
+        {
+          "Prompt": "Enter Device name for Scan 2 (i.e. rkt2)"
+        },
+        {
+          "Prompt": "Enter Device name for Scan 3 (i.e. rkt3)"
+        }
+      ],
+      "confidence": "high",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrDevice.asc",
+      "category": "xfr_device",
+      "path": "FORTNA/XfrDevice.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 2172,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "TrkIndx",
+        "Scan",
+        "ScanSts",
+        "ScanType",
+        "ScanZone",
+        "TimeStamp"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfRouteBoss.asc",
+      "category": "xfr_route",
+      "path": "FORTNA/XfRouteBoss.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 6907,
+      "row_count": 25,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Desc",
+        "pScanStatus",
+        "pXfrErrorMsg",
+        "LogLevel",
+        "ScanZone",
+        "EsmMsgTable",
+        "EssMsgTable",
+        "CrrMsgTable",
+        "CsmMsgTable",
+        "DcmMsgTable",
+        "CsuMsgTable",
+        "SendAvailStatus",
+        "AvailTransfer",
+        "Straight",
+        "CommErr",
+        "ScanError",
+        "NotDefined",
+        "NoData",
+        "RouteFull",
+        "ESMRoute",
+        "MaxWaitTime",
+        "NoScanTmr",
+        "NoRouteTmr",
+        "NoCartonTmr",
+        "ClrQueDlyTmr",
+        "DontChkNoScan",
+        "DontResetQue",
+        "DontResetRcv",
+        "NoRouteRetry",
+        "SystemRun",
+        "WaitPresence",
+        "XferCnvMtr",
+        "MtrACTION",
+        "MtrBIT",
+        "ScanErrSig",
+        "ScanACTION",
+        "ScanErrBIT",
+        "DataErrSig",
+        "DataACTION",
+        "DataBIT",
+        "RunNewXfr",
+        "CRRReadyToSend",
+        "CRRSendSense",
+        "SendOneCRR",
+        "ToteSensor",
+        "TotePresentStr",
+        "ToteAbsentStr",
+        "pProductState",
+        "pRouteTreeQue",
+        "pTrkMenuQue",
+        "pTrkIndxQue",
+        "pProcFlag",
+        "pXfrError",
+        "pGrtHalfSecond",
+        "pGrtQtrSecond",
+        "pMaxResponse",
+        "pNumSamples",
+        "pScanError",
+        "pDataError",
+        "pWrkScanError",
+        "pWrkDataError",
+        "pLastScan",
+        "pLastScanCnt",
+        "pLastScanProc",
+        "pParamConfigError",
+        "pTimeoutError",
+        "pESMAck",
+        "pTotePresent",
+        "pLastPack",
+        "pLastPackCnt",
+        "pLastPackProc"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfRouteTable.asc",
+      "category": "xfr_route",
+      "path": "FORTNA/XfRouteTable.asc.ORNCCP4",
+      "resolution": "controller_overlay",
+      "exists": true,
+      "byte_size": 2091,
+      "row_count": 25,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "Enabled",
+        "BossRecord",
+        "HostRouteStr",
+        "Route",
+        "NewRoute",
+        "AutoResetCons",
+        "MaximumErrors",
+        "ErrorIO",
+        "ErrorACTION",
+        "ErrorBIT",
+        "ErrorSignal",
+        "ResetCons",
+        "ResetConsSignal",
+        "HRTotalDiverted",
+        "HRFullAborts",
+        "HRXfrResets",
+        "DSRRequest",
+        "pRouteFull",
+        "pConsecErrors"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrSimScans1.asc",
+      "category": "xfr_sim",
+      "path": "FORTNA/XfrSimScans1.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrSimScans2.asc",
+      "category": "xfr_sim",
+      "path": "FORTNA/XfrSimScans2.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrSimScans3.asc",
+      "category": "xfr_sim",
+      "path": "FORTNA/XfrSimScans3.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrSimScans4.asc",
+      "category": "xfr_sim",
+      "path": "FORTNA/XfrSimScans4.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrSimScans5.asc",
+      "category": "xfr_sim",
+      "path": "FORTNA/XfrSimScans5.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 7028,
+      "row_count": 1000,
+      "active_rows": 0,
+      "headers": [
+        "CartonID",
+        "Scan",
+        "Scale"
+      ],
+      "name_columns": [
+        "CartonID"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "table": "XfrTrack.asc",
+      "category": "xfr_track",
+      "path": "FORTNA/XfrTrack.asc",
+      "resolution": "base",
+      "exists": true,
+      "byte_size": 24051,
+      "row_count": 100,
+      "active_rows": 0,
+      "headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "ConfirmTote",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus",
+        "PaProcFlag",
+        "PaProcUpd",
+        "ExptRF",
+        "ExptSKU",
+        "ExptLPN",
+        "VerRF",
+        "VerSKU",
+        "VerLPN",
+        "CurrSpeed",
+        "Height",
+        "Width",
+        "Length",
+        "TooShort",
+        "SendUpdPrt",
+        "pVerifyErr",
+        "LastTree",
+        "RouteBossRec",
+        "EmptyConfirm",
+        "pConfirmTrig",
+        "RouteTableRec",
+        "Param1",
+        "Param2",
+        "Param3",
+        "Param4",
+        "Param5",
+        "ConfirmShip",
+        "ConfirmPack",
+        "CombShip",
+        "CombPack",
+        "CombShipSts",
+        "CombPackSts",
+        "ESMInductTime",
+        "pTimeOutFlag",
+        "DCMStatus",
+        "XfrZoneID",
+        "pVerifyFlagTop",
+        "pVerifyFlagLeft",
+        "pVerifyFlagRight",
+        "pVerifyFlagFront",
+        "pInitialTrkIndx",
+        "pPNAExempt",
+        "LRMSent",
+        "LVMSent",
+        "UUID"
+      ],
+      "name_columns": [
+        "Name"
+      ],
+      "samples": [],
+      "confidence": "schema_only",
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "core_table_coverage": {
+    "required": [
+      "SrtTrack1.asc",
+      "SrtTrack2.asc",
+      "SrtTrack3.asc",
+      "SrtTrack4.asc",
+      "SrtTrack5.asc",
+      "XfrTrack.asc",
+      "MsgTrack.asc",
+      "MsgWCS.asc",
+      "WCSEvents.asc",
+      "Sorters.asc",
+      "Encoders.asc"
+    ],
+    "present": [
+      "SrtTrack1.asc",
+      "SrtTrack2.asc",
+      "SrtTrack3.asc",
+      "SrtTrack4.asc",
+      "SrtTrack5.asc",
+      "XfrTrack.asc",
+      "MsgTrack.asc",
+      "MsgWCS.asc",
+      "WCSEvents.asc",
+      "Sorters.asc",
+      "Encoders.asc"
+    ],
+    "missing": [],
+    "complete": true
+  },
+  "site_forge_code": {
+    "scripts": [
+      {
+        "path": "tools/scripts/fortna_sorter_discovery.py",
+        "role": "RUN sorter/track/WCS discovery",
+        "generates_l5x": false
+      },
+      {
+        "path": "tools/scripts/fortna_sorter_build.py",
+        "role": "Configure gold Sorter_Track_Program.L5X (divert limit + token rename)",
+        "generates_l5x": true,
+        "generic": false
+      },
+      {
+        "path": "tools/scripts/fortna_mhs_sorter.py",
+        "role": "MHS Non-Con / FMS shoe-sorter guideline scaffolds",
+        "generates_l5x": true,
+        "generic": false
+      },
+      {
+        "path": "tools/scripts/fortna_cp4_discovery.py",
+        "role": "CP4 blind discovery includes discover_tracking_wcs()",
+        "generates_l5x": false
+      },
+      {
+        "path": "tools/scripts/fortna_autogen.py",
+        "role": "Optional pack merge for Sorter_Track / WCS / ShippingSorter",
+        "generates_l5x": true,
+        "generic": false
+      },
+      {
+        "path": "tools/scripts/fortna_equipment_plan.py",
+        "role": "Tar equipment plan flags sorter_track_pack candidate",
+        "generates_l5x": false
+      },
+      {
+        "path": "tools/scripts/fortna_asc.py",
+        "role": "ASC parse; SORT/DIVERT device categorization",
+        "generates_l5x": false
+      }
+    ],
+    "libraries": [
+      {
+        "path": "tools/libraries/programs/Sorter_Track_Program.L5X",
+        "role": "Gold Sorter_Track program pack (Greensboro PLC5 pattern)",
+        "generic": false
+      },
+      {
+        "path": "tools/libraries/programs/WCS_Interface_TCP_IP_Program.L5X",
+        "role": "Gold WCS TCP/IP interface pack",
+        "generic": false
+      },
+      {
+        "path": "tools/libraries/programs/ShippingSorter_Area_L3_Program.L5X",
+        "role": "Gold ShippingSorter Area L3 pack",
+        "generic": false
+      },
+      {
+        "path": "tools/libraries/TRK_Divert_WaveFunction_AOI.L5X",
+        "role": "TRK_Divert_WaveFunction AOI",
+        "generic": true
+      },
+      {
+        "path": "tools/libraries/Enc_Routine_ST.L5X",
+        "role": "Encoder routine ST pattern stub",
+        "generic": false
+      }
+    ],
+    "ui_notes": [
+      "docs/SORTER_BUILD_UI_REVERT.md \u2014 sorter build UI demo-reverted; sorter_build fields remain in autogen"
+    ]
+  },
+  "cp2_comparison": {
+    "run_dir": "workspace/active/RUN",
+    "machine": "ORNCCP2",
+    "characterization": {
+      "sorter_kind": {
+        "value": "none",
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_DERIVED"
+      },
+      "active_sorter_count": {
+        "value": 0,
+        "source": "FORTNA/Sorters.asc",
+        "provenance": "RUN_DERIVED"
+      },
+      "active_encoder_count": {
+        "value": 0,
+        "source": "FORTNA/Encoders.asc",
+        "provenance": "RUN_DERIVED"
+      },
+      "active_zone_lane_count": {
+        "value": 0,
+        "source": "FORTNA/SrtZoneLane.asc",
+        "provenance": "RUN_DERIVED"
+      },
+      "srttrack_active_total": {
+        "value": 0,
+        "source": "FORTNA/SrtTrack*.asc",
+        "provenance": "RUN_DERIVED"
+      },
+      "msgtrack_active": {
+        "value": 0,
+        "source": "FORTNA/MsgTrack.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "msgwcs_active": {
+        "value": 1999,
+        "source": "FORTNA/MsgWCS.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "xfrtrack_active": {
+        "value": 0,
+        "source": "FORTNA/XfrTrack.asc",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "wcs_events_active_named": {
+        "value": 99,
+        "source": "FORTNA/WCSEvents.asc",
+        "provenance": "RUN_EXPLICIT"
+      }
+    },
+    "note": "ORNCCP2 (transport) has sorter/track/WCS table schemas and WCSEvents/MsgWCS traffic, but zero active Sorters/Encoders/SrtZoneLane/SrtAppControl/SrtTrack named rows. Sorter subsystem ownership on this site is ORNCCP4.",
+    "subsystem_model_path": "exports/sorter-research/cp2-comparison/subsystem_model.json"
+  }
+}

@@ -358,7 +358,34 @@ function createWindow() {
       const r = await runPythonAsync([APPLY_SCRIPT, 'import', archivePath]);
       if (!r.ok) return { success: false, message: r.error };
       const meta = JSON.parse(r.stdout);
-      return { success: true, meta };
+      // Unified RUN discovery (SiteModel) — automatic; no separate Discover buttons.
+      // Failure here must not fail the import itself.
+      let discovery = null;
+      try {
+        const runDir = meta.run_dir || path.join(ACTIVE_DIR, 'RUN');
+        let machine = '';
+        try {
+          const pn = String(meta.project_name || meta.machine || '');
+          const m = pn.match(/_([A-Z0-9]+)$/i);
+          if (m) machine = m[1].toUpperCase();
+        } catch (_) { /* ignore */ }
+        if (!machine && meta.controller) machine = String(meta.controller);
+        const discoverScript = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_run_workspace_discover.py');
+        if (fs.existsSync(discoverScript) && fs.existsSync(runDir)) {
+          // Machine defaults from project.cfg MACHINENAME when omitted.
+          const dArgs = [discoverScript, '--run-dir', runDir, '--out', path.join(REPO_ROOT, 'exports', 'run-discovery')];
+          if (machine) dArgs.push('--machine', machine);
+          const dr = await runPythonAsync(dArgs);
+          if (dr.ok) {
+            try { discovery = JSON.parse(dr.stdout); } catch (_) { discovery = { ok: true, raw: (dr.stdout || '').slice(0, 500) }; }
+          } else {
+            discovery = { ok: false, error: dr.error || 'discovery failed' };
+          }
+        }
+      } catch (de) {
+        discovery = { ok: false, error: de.message };
+      }
+      return { success: true, meta, discovery };
     } catch (e) {
       return { success: false, message: e.message };
     }

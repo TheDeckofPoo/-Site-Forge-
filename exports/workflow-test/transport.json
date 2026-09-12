@@ -1,0 +1,19 @@
+{
+  "generated_at": "2026-09-12T17:06:35.202598+00:00",
+  "status": "FOUNDATION_PASS",
+  "visual_freeze": true,
+  "cp4": {
+    "nodes": 72,
+    "edges": 40,
+    "equipment_included": 76
+  },
+  "cp2": {
+    "nodes": 59,
+    "edges": 28,
+    "equipment_included": 63
+  },
+  "notes": [
+    "Transport discovery data hooks only \u2014 UI polish frozen",
+    "Explicit RUN relationships beat numbering"
+  ]
+}

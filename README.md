@@ -1,56 +1,70 @@
 # Site Forge
 
-**RUN → Site Model → engineer correction → Rockwell L5X generation.**
+**Import RUN → discover site content → engineer corrects → Build PLC.**
 
-Site Forge (repo folder: FortnaPlus) is an Electron dashboard plus Python engines that import Fortna FPC / SortPlus **RUN** archives, help an engineer correct the site model in Transport Build, and compile supported Rockwell Studio 5000 **L5X** packages.
+Site Forge (repo folder: FortnaPlus) is an Electron app plus Python engines for Fortna FPC / SortPlus **RUN** archives. It auto-discovers transport, drives, sensors, and supported subsystems (Sawtooth, Sorter when evidenced), lets the engineer fix the uncertain remainder, and compiles **supported** Rockwell Studio 5000 **L5X**.
 
-It does **not** launch Studio 5000. You open the generated L5X yourself.
+It does **not** launch Studio 5000.
 
 ---
 
-## Main workflow
+## Normal workflow
 
 ```
 Import RUN
-    ↓
-Auto Build
-    ↓
-Review / Correct
-    ↓
-Apply to Autogen
-    ↓
+     ↓
+Discover site / machine content   (automatic on import / Auto Build)
+     ↓
+Auto-populate engineering editors
+     ↓
+Review / Correct / Include–Exclude
+     ↓
+Apply to canonical Site Model
+     ↓
 Build PLC
 ```
 
-| Step | Where | What happens |
-|------|-------|----------------|
-| **Import RUN** | I/O & Prints | Extract `.tar.gz` → `workspace/active/RUN` |
-| **Auto Build** | Transport Build | Place conveyors from RUN geometry (first-pass layout) |
-| **Review / Correct** | Transport Build | Fix topology, Area, ES Zone, PE roles |
-| **Apply to Autogen** | Transport Build | Persist approved Site Model into `workspace/autogen_workbook.json` |
-| **Build PLC** | PLC Autogen | Export L5X package under `exports/autogen/` |
+| Step | What the engineer sees |
+|------|-------------------------|
+| **Import RUN** | Drop `.tar.gz` → extract + **unified discovery** |
+| **Editors** | Transport / Sawtooth / Sorter views of the **same** canonical model |
+| **Review** | Fix Area, ES zone, topology, PE roles; move INCLUDED ↔ AVAILABLE ↔ EXCLUDED |
+| **Apply** | Persist engineer overrides into the site workbook / model |
+| **Build PLC** | Generate only what evidence + libraries support |
 
-**Complexity stays inside Site Forge.** New compiler packs (VFD, encoder, sawtooth) do **not** add top-level buttons. Prefer inspector context and **Advanced / Evidence**.
+**Product rule:** Site Forge should do **80–95%** of data entry. The engineer fixes the uncertain **5–20%**. Site Forge must **never guess** that remainder.
 
-See `docs/UX_PRINCIPLES.md`.
+**UX rule:** Complexity stays inside Site Forge — no top-level “Discover Sawtooth / Build VFD / Build Sorter” button farms. See `docs/UX_PRINCIPLES.md`.
 
 ---
 
-## What a RUN archive means
+## What a RUN means
 
-A RUN `.tar.gz` represents a **Fortna machine / control scope** (its ASC tables, EIP map, and related configuration).
+A RUN archive is a **machine / control scope**, not “one tar = one L5X” by fiat.
 
-- A **site** may contain **multiple** RUN archives (e.g. area masters CP2 / CP4 / CP5).
-- Each import is associated with the scope evidenced by **that** archive (`project.cfg`, `Machine.asc`, controller overlays such as `*.asc.ORNCCP4`).
-- Site Forge **discovers** scope from the archive — it does **not** assume one fixed site↔controller relationship, and it does **not** mean “one tar = one L5X” as a universal rule.
+- A site may have **multiple** RUNs (e.g. CP2 / CP4 / CP5).
+- Discovery uses controller-scoped tables (`*.asc.<CONTROLLER>`) with documented precedence (`docs/RUN_TABLE_PRECEDENCE.md`).
+- **Record exists ≠ generate.** Stale / historical ASC rows stay visible as AVAILABLE or EXCLUDED.
 
-Source of truth for generation:
+Generation inputs only:
 
-1. **Current RUN**
-2. **Engineer Site Forge edits**
-3. **Approved generic L5X libraries**
+1. Current RUN  
+2. Engineer Site Forge edits (overrides)  
+3. Approved generic L5X libraries  
 
-Finished / gold PLC files are **validation oracles only** — never generation input. See `docs/SOURCE_OF_TRUTH_POLICY.md`.
+Finished / gold PLCs are **validation oracles only** — never generation input (`docs/SOURCE_OF_TRUTH_POLICY.md`).
+
+---
+
+## Subsystems
+
+| Subsystem | On import |
+|-----------|-----------|
+| **Transport** | Auto-populated from RUN geometry + relationships |
+| **Sawtooth** | Auto-detected from SawLane/SawMerge (etc.); editor filled from evidence |
+| **Sorter** | Auto-detected when tables/evidence exist; generation only where supported — see `docs/SORTER_COMPILER_MODEL.md` |
+
+Unsupported behaviors stay marked **GENERATION NOT YET SUPPORTED** (e.g. full Tracking/WCS until the support matrix says otherwise).
 
 ---
 
@@ -63,51 +77,30 @@ cd C:\dev\worktree\FortnaPlus\desktop
 npm install
 ```
 
-Daily: run **`desktop\Launch-SiteForge.bat`**.
+Daily: **`desktop\Launch-SiteForge.bat`**.
 
-Do not open `dashboard\index.html` in a bare browser — Electron preload (`window.fortnaAPI`) is required.
+Requires Electron preload (`window.fortnaAPI`) — do not open `dashboard/index.html` bare.
 
 ---
 
-## Repository map (short)
+## Repository map
 
 ```
-dashboard/     UI (Transport Build, Autogen, I/O)
-desktop/       Electron shell + IPC
-tools/scripts/ Python engines (autogen, discovery, layout, …)
-tools/libraries/  Generic O'Reilly L5X + program packs
-workspace/     Active RUN + workbook (do not commit extracts)
-exports/       Generated L5X / reports / discovery packs
-docs/          Engineering policy + pass notes
+dashboard/        UI editors (Transport, Autogen, …)
+desktop/          Electron + IPC
+tools/scripts/    Discovery, semantics, compilers
+tools/libraries/  Generic Rockwell packs
+workspace/        Active RUN + workbook (local)
+exports/          Discovery packs, L5X, research
+docs/             Policy + engineering models
 ```
 
-| Stable path | Role |
-|-------------|------|
-| `workspace/active/RUN` | Current RUN extract (wiped on re-import) |
-| `workspace/autogen_workbook.json` | Engineer Autogen workbook (outside `active/`) |
-| `workspace/inbox/` | Drop `.tar.gz` archives |
-| `tools/libraries/OReilly_Library_v3.L5X` | Default AOI library |
-
----
-
-## Tabs (normal use)
-
-| Tab | Role |
-|-----|------|
-| **I/O & Prints** | Import RUN, inspect I/O |
-| **Transport Build** | Site model: areas, conveyors, PE, merges → Apply |
-| **PLC Autogen** | Build PLC (Export L5X) |
-| **Docs / Workspace** | Search docs, paths, meta |
-
-Sorter / Sawtooth / Ignition / Factory I/O / Site Twin tooling may still exist in code or under **Advanced** — they are **not** the primary workflow. Compiler features (e.g. CP4 sawtooth) are driven by RUN recognition + Autogen packs, not separate “Build Sawtooth” buttons.
-
----
-
-## Multi-controller sites
-
-Import each machine’s RUN when you work that scope. Discover controller ownership from RUN evidence (Machine_Name, EIP, PE/motor/VFD links). Do not invent Area/ES names from finished PLCs.
-
-Engineering pass notes (CP2/CP4, layout research, gold inventories) live under `docs/` — not in this README.
+| Path | Role |
+|------|------|
+| `workspace/active/RUN` | Current extract (wiped on re-import) |
+| `workspace/autogen_workbook.json` | Engineer workbook (outside `active/`) |
+| `exports/run-discovery/` | Canonical discovered site model |
+| `docs/RUN_DISCOVERY_MODEL.md` | SiteModel / activity / overrides |
 
 ---
 
@@ -116,13 +109,15 @@ Engineering pass notes (CP2/CP4, layout research, gold inventories) live under `
 | Doc | Topic |
 |-----|--------|
 | `docs/SOURCE_OF_TRUTH_POLICY.md` | Generation vs validation firewall |
-| `docs/UX_PRINCIPLES.md` | Simple-by-default UI rules |
-| `docs/INTEGRATION_CHECKPOINT.md` | Current integration lineage & tests |
-| `docs/RUN_GEOMETRY_CALIBRATION.md` | RUN X/Y = infeed model |
-| `docs/CP4_COMPILER_PASS2.md` | CP4 generation status |
+| `docs/UX_PRINCIPLES.md` | Simple by default |
+| `docs/RUN_DISCOVERY_MODEL.md` | Canonical discovery model |
+| `docs/RUN_TABLE_PRECEDENCE.md` | Base vs controller ASC overlays |
+| `docs/TRANSPORT_FREEZE_GATE.md` | Transport demo-ready freeze |
+| `docs/SAWTOOTH_CONTROL_MODEL.md` | Sawtooth semantics |
+| `docs/SORTER_COMPILER_MODEL.md` | Sorter discovery / support boundary |
 
 ---
 
 ## License / internal use
 
-Internal Fortna / LPS Engineering tooling. Treat RUN customer data and gold L5X libraries according to your site policies.
+Internal Fortna / LPS Engineering tooling. Treat customer RUN data and gold libraries per site policy.
