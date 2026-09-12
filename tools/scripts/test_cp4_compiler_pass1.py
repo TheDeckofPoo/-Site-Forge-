@@ -79,12 +79,39 @@ def test_lane_p116_pe118_vfd118() -> None:
     lane = next(l for l in disc["sawtooth"]["lanes"] if l.get("conveyor") == "P116")
     assert lane["photoeye"] == "PE118_P"
     assert "VFD118" in (lane.get("drive") or lane.get("vfd") or "")
+    # Must be RUN-explicit relationship — not tag-number matching (116≠118)
+    assert lane.get("conveyor_provenance") == PROV_RUN_EXPLICIT or lane.get("provenance") == PROV_RUN_EXPLICIT
+    assert "116" not in (lane.get("photoeye") or "")
     # VFD118 conveyor mapping is P118 (Mtrchain) — different from lane conveyor P116
     vfd118 = next(v for v in disc["vfd"]["vfds"] if v["vfd"] == "VFD118")
     assert "P118" in vfd118["conveyors"]
     assert "LANE_3_P116" in (vfd118.get("saw_lanes") or [])
-    print("  [PASS] saw lane P116 may use PE118/VFD118 (RUN-explicit)")
+    assert vfd118.get("saw_lane_mapping_provenance") == PROV_RUN_EXPLICIT
+    # Prove not derived from equal trailing digits
+    assert "P116" not in vfd118["conveyors"]
+    print("  [PASS] saw lane P116 may use PE118/VFD118 (RUN-explicit, not number match)")
 
+
+def test_shared_vfd_multi_conveyor_from_run() -> None:
+    disc = load_discovery(DISC)
+    vfd414 = next(v for v in disc["vfd"]["vfds"] if v["vfd"] == "VFD414")
+    assert set(vfd414["conveyors"]) >= {"P414", "P416"}
+    assert vfd414.get("conveyor_mapping_provenance") == PROV_RUN_EXPLICIT
+    methods = {e.get("method") for e in (vfd414.get("conveyor_mapping_evidence") or [])}
+    assert "Mtrchain.asc" in methods or any("Mtrchain" in str(m) for m in methods) or methods
+    vfd424 = next(v for v in disc["vfd"]["vfds"] if v["vfd"] == "VFD424")
+    assert set(vfd424["conveyors"]) >= {"P424", "P424A"}
+    assert vfd424.get("conveyor_mapping_provenance") == PROV_RUN_EXPLICIT
+    # Pass1 VFD generation must retain these
+    vgen_path = OUT / "vfd_generation.json"
+    if vgen_path.exists():
+        vgen = json.loads(vgen_path.read_text(encoding="utf-8"))
+        mapped = {r["conveyor"]: r for r in vgen.get("mapped_conveyors") or []}
+        for tag in ("P414", "P416", "P424", "P424A"):
+            assert tag in mapped, f"missing {tag} in vfd_generation"
+            assert mapped[tag]["provenance"] == PROV_RUN_EXPLICIT
+            assert mapped[tag]["rule"] == "explicit_discovery_mapping_beats_name_heuristic"
+    print("  [PASS] VFD414→P414,P416 and VFD424→P424,P424A from RUN evidence")
 
 def test_five_lanes_survive() -> None:
     disc = load_discovery(DISC)
@@ -227,6 +254,7 @@ def main() -> int:
     for fn in [
         test_explicit_vfd_beats_name_inference,
         test_lane_p116_pe118_vfd118,
+        test_shared_vfd_multi_conveyor_from_run,
         test_five_lanes_survive,
         test_slice_reserve_survive,
         test_encoder_params_survive,

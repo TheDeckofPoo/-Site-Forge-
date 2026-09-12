@@ -1,0 +1,2103 @@
+{
+  "generated_at": "2026-09-12T07:23:26.430584+00:00",
+  "finished_plc4_inspected": false,
+  "source_of_truth": "CP4 RUN + exports/cp4-discovery only",
+  "counts": {
+    "discovery_mechanical": 76,
+    "site_model_conveyors": 76,
+    "generated": 80,
+    "extras_generated_not_in_discovery": [
+      "P1200",
+      "P1202",
+      "P1206",
+      "P1208"
+    ],
+    "discovery_missing_from_generated": [],
+    "by_classification_generated": {
+      "RUN_MECHANICAL": 76,
+      "DERIVED_ALIAS": 4
+    }
+  },
+  "equation": {
+    "discovery_mechanical": 76,
+    "plus_legitimate_non_mechanical_generated": 0,
+    "minus_excluded_non_conveyor_mechanical": 0,
+    "equals_expected": 76,
+    "actual_generated": 80,
+    "delta": 4,
+    "unjustified_extras": [
+      "P1200",
+      "P1202",
+      "P1206",
+      "P1208"
+    ],
+    "proven": false
+  },
+  "acceptance": {
+    "generated_conveyor_set_accepted": false,
+    "verdict": "NOT_ACCEPTED",
+    "explanation": "76 discovery mechanical + 0 legitimate non-mechanical helpers = 76, but Pass1 generated 80. Extras ['P1200', 'P1202', 'P1206', 'P1208'] are DERIVED_ALIAS inclusions from load_from_run prefix linkage (e.g. P120 \u2192 P1200), not legitimate CP4-owned discovery entities. Equation not proven."
+  },
+  "conveyors": [
+    {
+      "conveyor": "P100",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 5,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P100",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P100A",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1371,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P100A",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P102",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 6,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P102",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P104",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 7,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P104",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P106",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 8,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P106",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P108",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 9,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P108",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P110",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 10,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P110",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P112",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 11,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P112",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P114",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 12,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P114",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P116",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 13,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P116",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P118",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 14,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P118",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P120",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 15,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P120",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P1200",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 212,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "N",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Conveyor.asc mechanical row exists but discovery excluded it; Pass1 kept it from load_from_run via prefix linkage to P120 (Machine_Name='', IO_Address_Word='6000', on_controller=False)",
+      "discovery_equipment_identity": null,
+      "mechanical_or_logical": "mechanical_asc_row_not_cp4_owned",
+      "generated": true,
+      "in_discovery_mechanical": false,
+      "classification": "DERIVED_ALIAS",
+      "prefix_parent_suspect": "P120",
+      "provenance": "RUN_DERIVED",
+      "reason": "Conveyor.asc mechanical row exists but discovery excluded it; Pass1 kept it from load_from_run via prefix linkage to P120 (Machine_Name='', IO_Address_Word='6000', on_controller=False)"
+    },
+    {
+      "conveyor": "P1202",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 213,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "N",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Conveyor.asc mechanical row exists but discovery excluded it; Pass1 kept it from load_from_run via prefix linkage to P120 (Machine_Name='', IO_Address_Word='6000', on_controller=False)",
+      "discovery_equipment_identity": null,
+      "mechanical_or_logical": "mechanical_asc_row_not_cp4_owned",
+      "generated": true,
+      "in_discovery_mechanical": false,
+      "classification": "DERIVED_ALIAS",
+      "prefix_parent_suspect": "P120",
+      "provenance": "RUN_DERIVED",
+      "reason": "Conveyor.asc mechanical row exists but discovery excluded it; Pass1 kept it from load_from_run via prefix linkage to P120 (Machine_Name='', IO_Address_Word='6000', on_controller=False)"
+    },
+    {
+      "conveyor": "P1206",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 214,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "N",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Conveyor.asc mechanical row exists but discovery excluded it; Pass1 kept it from load_from_run via prefix linkage to P120 (Machine_Name='', IO_Address_Word='6000', on_controller=False)",
+      "discovery_equipment_identity": null,
+      "mechanical_or_logical": "mechanical_asc_row_not_cp4_owned",
+      "generated": true,
+      "in_discovery_mechanical": false,
+      "classification": "DERIVED_ALIAS",
+      "prefix_parent_suspect": "P120",
+      "provenance": "RUN_DERIVED",
+      "reason": "Conveyor.asc mechanical row exists but discovery excluded it; Pass1 kept it from load_from_run via prefix linkage to P120 (Machine_Name='', IO_Address_Word='6000', on_controller=False)"
+    },
+    {
+      "conveyor": "P1208",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 215,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "N",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Conveyor.asc mechanical row exists but discovery excluded it; Pass1 kept it from load_from_run via prefix linkage to P120 (Machine_Name='', IO_Address_Word='6000', on_controller=False)",
+      "discovery_equipment_identity": null,
+      "mechanical_or_logical": "mechanical_asc_row_not_cp4_owned",
+      "generated": true,
+      "in_discovery_mechanical": false,
+      "classification": "DERIVED_ALIAS",
+      "prefix_parent_suspect": "P120",
+      "provenance": "RUN_DERIVED",
+      "reason": "Conveyor.asc mechanical row exists but discovery excluded it; Pass1 kept it from load_from_run via prefix linkage to P120 (Machine_Name='', IO_Address_Word='6000', on_controller=False)"
+    },
+    {
+      "conveyor": "P200",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 37,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P200",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P200A",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1370,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P200A",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P202",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 38,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P202",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P204",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 228,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P204",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P206",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 40,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P206",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P208",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 42,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P208",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P209",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1111,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P209",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P210",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 44,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P210",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P211",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1110,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P211",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P212",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 45,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P212",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P213",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1108,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P213",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P214",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 46,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P214",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P215",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1109,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P215",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P216",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 47,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P216",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P217",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1106,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P217",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P218",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 48,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P218",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P219",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1105,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P219",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P219A",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 223,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P219A",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P226",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 227,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P226",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P229",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1113,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P229",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P231",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1112,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P231",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P231A",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1107,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P231A",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P300",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 58,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P300",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P300A",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1369,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P300A",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P302",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 59,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P302",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P304",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 60,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P304",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P305",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 693,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P305",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P306",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 61,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P306",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P308",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 62,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P308",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P408",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 82,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P408",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P410",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 83,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P410",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P412",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 84,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P412",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P414",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 224,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P414",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P416",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 85,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P416",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P418",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 86,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P418",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P420",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 221,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P420",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P422",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 88,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P422",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P424",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 89,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P424",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P424A",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 1005,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P424A",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P426",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 90,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P426",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P428",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 91,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P428",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P430",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 92,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P430",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P432",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 93,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P432",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P434",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 94,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P434",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P436",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 95,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P436",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P438",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 96,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P438",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P446",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 100,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P446",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P447",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 87,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P447",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P448",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 101,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P448",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P450",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 102,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P450",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P452",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 103,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P452",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P454",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 104,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P454",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P456",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 105,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P456",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P462",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 108,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "N",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P462",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P818",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 192,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P818",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P820",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 193,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P820",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P822",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 194,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P822",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P824",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 195,
+        "type": "STRAIGHT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P824",
+        "equipment_type": "STRAIGHT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P826",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 196,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P826",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P828",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 197,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P828",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P830",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 198,
+        "type": "CURVE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P830",
+        "equipment_type": "CURVE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P832",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 199,
+        "type": "ZEROPRESSURE",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P832",
+        "equipment_type": "ZEROPRESSURE",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P834",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 200,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P834",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    },
+    {
+      "conveyor": "P836",
+      "source_table": "FORTNA/Conveyor.asc",
+      "source_row": {
+        "index": 201,
+        "type": "BELT",
+        "machine_name": "",
+        "io_address_word": "6000",
+        "in_motor_chain": "Y",
+        "on_controller_ornccp4": false
+      },
+      "source_evidence": "Present in frozen cp4-discovery mechanical equipment set",
+      "discovery_equipment_identity": {
+        "conveyor_tag": "P836",
+        "equipment_type": "BELT",
+        "ownership_provenance": "RUN_EXPLICIT",
+        "has_geometry": true
+      },
+      "mechanical_or_logical": "mechanical",
+      "generated": true,
+      "in_discovery_mechanical": true,
+      "classification": "RUN_MECHANICAL",
+      "prefix_parent_suspect": null,
+      "provenance": "RUN_EXPLICIT",
+      "reason": "Present in frozen cp4-discovery mechanical equipment set"
+    }
+  ]
+}

@@ -17,5 +17,9 @@
     "vfd_forced": 15
   },
   "tracking_wcs": "GENERATION NOT YET SUPPORTED",
-  "ok": true
+  "ok": true,
+  "conveyor_set_acceptance": "NOT_ACCEPTED",
+  "conveyor_count_note": "76 discovery mechanical + 4 DERIVED_ALIAS (P1200/P1202/P1206/P1208 prefix pollution from P120) = 80; equation not proven as legitimate",
+  "sawtooth_correctness_claim": false,
+  "sawtooth_note": "Program pack included but Greensboro-shaped MRG414/lane symbols not yet parameterized \u2014 see sawtooth_template_parameter_map.json"
 }

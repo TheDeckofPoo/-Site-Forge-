@@ -1,0 +1,3850 @@
+{
+  "generated_at": "2026-09-12T07:23:26.481251+00:00",
+  "finished_plc4_inspected": false,
+  "template_path": "tools\\libraries\\programs\\Sawtooth_Merge_Program.L5X",
+  "claim": "Sawtooth program pack is NOT claimed correctly generated \u2014 parameterization pending",
+  "run_sawtooth_lanes": [
+    {
+      "name": "LANE_0_P219",
+      "conveyor": "P219",
+      "photoeye": "PE219_P",
+      "drive": "VFD219"
+    },
+    {
+      "name": "LANE_1_P408",
+      "conveyor": "P408",
+      "photoeye": "PE410_P",
+      "drive": "VFD410_EN"
+    },
+    {
+      "name": "LANE_3_P116",
+      "conveyor": "P116",
+      "photoeye": "PE118_P",
+      "drive": "VFD118_EN"
+    },
+    {
+      "name": "LANE_4_P214",
+      "conveyor": "P214",
+      "photoeye": "PE216_P",
+      "drive": "VFD216_EN"
+    },
+    {
+      "name": "LANE_5_P832",
+      "conveyor": "P832",
+      "photoeye": "PE834_P",
+      "drive": "VFD834_EN"
+    }
+  ],
+  "run_merge": {
+    "name": "SAWTOOTH_MERGE",
+    "motor_io": "VFD414_AUX",
+    "reservation": "SAW_RESERVATION",
+    "lane_enable_delay_tm": "tmSawMerge_DLY",
+    "slice_seconds": 18.0,
+    "lanes": [
+      "LANE_0_P219",
+      "LANE_1_P408",
+      "LANE_3_P116",
+      "LANE_4_P214",
+      "LANE_5_P832"
+    ],
+    "source_file": "FORTNA/SawMerge.asc.ORNCCP4",
+    "provenance": "RUN_EXPLICIT"
+  },
+  "counts": {
+    "symbols_inventoried": 630,
+    "by_classification": {
+      "GENERIC_KEEP": 371,
+      "PARAMETERIZE_FROM_RUN": 215,
+      "ENGINEER_CONFIG_REQUIRED": 44
+    }
+  },
+  "symbols": [
+    {
+      "symbol": "ACC",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "AcceptedSlugLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "AcceptingProduct",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "AddionalGap",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiCollAvgSlotSize",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiDataShiftArray_GPR",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiLaneCompareMask",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiLaneLoc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiOptDnStrmSearchLimit",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiOptUpStrmSearchLimit",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiResvRqstGrant",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiResvRqstOrder",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "adiStartupLaneLoc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Allowable_DiffSpd",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Allowable_PPIDiff",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Alm_HighPPI",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Alm_LowPPI",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Anti_Gridlock",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "AnyConveyorFaulted",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "arDeltaDistAccum",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "astGPR_PkgData",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ClctrRunOutDist",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ClctrSlugGapAdder",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ClctrSpeed_FPM",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ClctrSrtSafteyTmrPreset",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Color",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Conv_Enc",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Encoder symbol \u2014 bind ENC414/ENC424 from discovery"
+    },
+    {
+      "symbol": "Conv_Fast",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Conv_PE",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "CurrentTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "DebounceOFFTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "DebounceONTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diBlockedCount",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diBlockedJamPre",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diClctrMode",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diClctrModePrev",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diClctrRunoutDist",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diClctrSlugGapAdder",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diClctrSrtSafteyTmrPreset",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diClctrStrtSaftyTMR",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diClctRunoutAccum",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diClearCount",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diCnvId",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diCollHistSrchCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diCollHistSrchIdx",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diCollHistTrackId",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diCollHistTrackIdInit",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diCollLaneEmptyOptPreset",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diCollMrgCapIndex_A",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diCollMrgCapIndex_B",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diDelta",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diDoorID",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diFarUpstreamResvCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diGapStep",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diGPR_End_Loc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diGPR_EntrPE_Loc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diGPR_Eval_Loc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diGPR_LE_End_Loc_IDMem",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diGPR_LE_Eval_Loc_IDMem",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diHistSampleCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diHistSum",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diLaneId",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diLaneMode",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diLaneModePrev",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diLanePkgSeqId",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diLaneTrackId",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diLaneWaitingMask",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diLoadBalDelayCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diNumCaptures",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diNumLanes",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diNumPE",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diONS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diOptimizedDelayCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diPkgID",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diPkgID_1_Transfer",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diPkgID_2_Transfer",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diPlsAccum",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diPlsCntSave",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diPlsLocation",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diPsuedoEncMaxCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diQ1_End_Loc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diQ1_SafetyReleaseTimerPre",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diQ1_TrainStrandedTimerPre",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diQ2_NoCartonTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diQ2_SlugGapAdder",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diResvLaneLoc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Disabled",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "DisableEngMgmt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "DisableJam",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Disable_PPIFlt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSChklotCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSearchForSlotCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSlotAtMergeFndCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSlotAtMergeSearchCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSlotCompromisedCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSlotFndCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSlotPastMergeCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSlotResevedCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSlotSizePls",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diSlotStartLoc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diTotalMergeCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diTrackId",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diTrkIdOut",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diValueTo_AND",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diValueTo_OR",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "diWaitForLaneMaskCnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "EnableIn",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "EnableOut",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Enable_hold",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "configure",
+      "reason": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "symbol": "Enc",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Enc_FltTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "EngMgmt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "EngMgmtTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "EngMgmt_Rst",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "EStopped",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "EZPE116_F",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "EZPE127_F",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "EZPE212_F2",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "EZPE408_F",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "EZPE832_F",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "FlowControlActive",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Flt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "FltSilenced",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "FPM",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Full",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "FullOffTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "FullOnTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Histogram",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "HMI",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Indexing",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "InstructFault",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "i_rCnvVelCurr",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "i_rCnvVelPrev",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "i_rDeltaTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Jam",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "JamSilenced",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "JamTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Jog",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Lane",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "LaneOffset",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "LaneOffsetCorr",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "LaneOffsetMeasured",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "LastConv",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Loaded",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "MaintenanceMode",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Manual",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Manual_ONS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "MRG414_adiCollTrkArray",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_adiCollTrkArray_Capture",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_adiCollTrkArray_Freeze",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_aoColl_01_CnvDeltaDist",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_aoUNL_MRG_CnvDeltaDist",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_aoUNL_Q2_CnvDeltaDist",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astCollHist",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astCollPe",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astCollPeCfg",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astCollPeTrackCal",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astLaneClctrSlotResCnts",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astLaneClctrSlotResvCntrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astLaneClctrSlotResvCntrl_Clr",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astLaneClctrSlotResvCntrl_Freeze",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astLaneClctrSlotResvStat",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astLanePeTrackCal",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astUNL_BFR_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astUNL_GPR_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astUNL_MRG_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astUNL_PT_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astUNL_Q1_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astUNL_Q2_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astUNL_SlugBldCfg",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_astUNL_SlugBldCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_c_xFALSE",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_c_xTRUE",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrEncLane",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrFltLaneIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrResvAtSlotLaneIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrResvMngIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrResvMngLaneIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrResvMngStrtIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrSchLane",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrShiftIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrSlotCmpsdLaneIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrSlotInsert",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrSlotOrdIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrSlotOrdIdxLim",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diClctrSlotSrchNum",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollAvgSlotSizePls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollCalPeIndex",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollChkIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollChkLaneTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollChkSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollClrIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollClrLaneTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollClrSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollClrSlotSizeToDel",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollDelaySlotSizePls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollDeltaEncCnt",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollDeltaEncCntMax",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollDnStrmFreeSearchLimitPls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollDnStrmFreeSlotSizePls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollDnStrmModSlotSizePls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollDnStrmSrchIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollDnStrmXtraSlotSizePls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollEncCntCopy",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollEncCntCurr",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollEncCntPrev",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollEncInconsistentCnt",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollEncShftIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollFirsAvailLoc",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollHistArrayErrCnt",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollHistPeIndex",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollHistPeLocation",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollLaneCompareMask",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollMrgExtLaneTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollMrgLaneTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollPeIndex",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollPeLocation",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollResvMngrScanCnt",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollRsrvIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollRsrvLaneTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollRsrvSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollSlotDelStartIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollSrchCellEmptyCnt",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollSrchIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollStartSrchIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollTotalXtraSlotSizePls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollTrkPkgAryLastIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollTrkPkgArySize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollTrkPkgShiftSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollUpStrmFreeSearchLimitPls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollUpStrmFreeSlotSizePls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollUpStrmSrchIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollUpStrmXtraSlotSizePls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diCollUsableSlotSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diHMI_LaneIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diLaneCalPeIndex",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diLanecntsResetIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diLaneEmptyCnt",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diLaneEmptyPkg_Status",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diLaneID_Mod",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diLanePkgSeqId_Max",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotEndLoc",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotLnID",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotPkgSeqID",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotResvLaneLoc",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotResvLen",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotStartLoc",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotStartLocIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotStartLocNew",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNextUpStrmSlotTrkID",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diNoCartonGap",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diResvRqstAryIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diResvRqstOrderArySize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_diSlotSizePlsNew",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_di_LaneCntrlIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_Enable_NoCartonCheck",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_FreezeIdx1",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollChkLaneId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollChkSlotSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollChkStartIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollChkTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollClrLaneId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollClrSlotSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollClrStartIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollClrTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollMrgLaneId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollMrgSlotSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollMrgStartIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollMrgStartOffset",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollMrgTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollRsrvLaneId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollRsrvStartIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollRsrvTrkId",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollRsvSlotSize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollSrchSlotSizeReq",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diCollSrchStartIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_i_diUNL_LaneIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_o_diCollFndSlotLoc",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_o_xCollChkSlotCmpsd",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_o_xCollSlotAtMrg",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_o_xCollSlotFnd",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_o_xCollSlotPastMrg",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rCollDeltaDist",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rCollDeltaDistRemain",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rCollDeltaDist_Total",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rCollDeltaEncPls",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rCollDeltaEncPlsTrunc",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rCollPrev_IPS",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rCollSpdFeedback_IPS",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rCollSpeed_IPS",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_rFastTaskDeltaMilliSecs",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stCollHistTmp",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stCollHistTmpZero",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stCollLaneMrgCapture",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stCollLaneMrgCnts",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stCollStatus",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stCollTrkSysCfg",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stLaneClctrSlotResMngr",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stLaneClctrSlotResvCntrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stLaneClctrSlotResvcnt_CLR",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stLaneClctrSlotResvStat",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stUNL_MRG_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stUNL_PT_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stUNL_Q2_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stUNL_SlugBldCfgTmp1",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_stUNL_SlugBldCtrlTmp1",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xCollFirstAvailFnd",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xCollLaneMrgCaptureArm",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xCollPeCalReset",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xCollResetCounts",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xCollResetTracking",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xCollTrackConfigured",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xCollTrackPE_OffsetCaptureArm",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xINIT",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xLaneClctrPeCalibrate",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xLaneClctrSlotResvFnd",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xLaneClctrTrkAryFreeze",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xLaneClctrTrkHistorize",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xLaneOffsetFind",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xLanePeCalReset",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xLane_OffsetCaptureArm",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xResetCollHistogram",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xShiftUpstrmSlotsAfterNoCarton",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xSystemDrivesConfigured",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG414_xUnloadLaneConfigured",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_aoUNL_PT_CnvDeltaDist",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astCollPeTrackCal",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astLaneClctrSlotResvCntrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astLanePeTrackCal",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astUNL_BFR_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astUNL_GPR_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astUNL_PT_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astUNL_Q1_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astUNL_Q2_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_astUNL_SlugBldCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_diHMI_LaneIdx",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_diNoCartonGap",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_rFastTaskDeltaMilliSecs",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_stLaneClctrSlotResvCntrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_stUNL_Q2_CnvCtrl",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_stUNL_SlugBldCfgTmp1",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_xCollTrackPE_OffsetCaptureArm",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_xLaneClctrPeCalibrate",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG422_xLane_OffsetCaptureArm",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG500_adiCollTrkArray_Freeze",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG500_astCollPeTrackCal",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG500_astLaneClctrSlotResvCntrl_Freeze",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG500_stCollLaneMrgCapture",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG500_xCollTrackPE_OffsetCaptureArm",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "MRG500_xLaneClctrPeCalibrate",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Collector-prefixed symbol; RUN merge motor_io=VFD414_AUX implies collector family \u2014 retarget map required"
+    },
+    {
+      "symbol": "Mtr_Contactor_Flt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Mtr_Overload_Flt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Mtr_Start_Flt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Mtr_Start_FltTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Mtr_Stop_Flt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Mtr_Stop_FltTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "NoProductTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "NoProductTimer",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "NoProductTimerOn",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ORLY_Greensboro_NC_PLC4",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Site/controller name residue from gold pack"
+    },
+    {
+      "symbol": "P118_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P118 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P120_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P120 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P148",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "P1491_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P1491 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P1492_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P1492 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P216_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P216 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P218_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P218 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P219A_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P219A not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P219_Conv",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Site conveyor/HMI/enc tag in pack; map from RUN lane/collector evidence (P219)"
+    },
+    {
+      "symbol": "P2426_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P2426 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P249",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "P2501_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P2501 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P3451_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P3451 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P3452_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P3452 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P410_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P410 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P412_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P412 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P4131_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P4131 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P4132_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P4132 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P414_Conv",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Site conveyor/HMI/enc tag in pack; map from RUN lane/collector evidence (P414)"
+    },
+    {
+      "symbol": "P414_Enc",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Site conveyor/HMI/enc tag in pack; map from RUN lane/collector evidence (P414)"
+    },
+    {
+      "symbol": "P414_SawMerge_HMI",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Site conveyor/HMI/enc tag in pack; map from RUN lane/collector evidence (P414)"
+    },
+    {
+      "symbol": "P418_Conv",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Site conveyor/HMI/enc tag in pack; map from RUN lane/collector evidence (P418)"
+    },
+    {
+      "symbol": "P422",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "P422_SawMerge_HMI",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P422 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P834_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P834 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "P836_Conv",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack conveyor-like tag P836 not in current RUN lane set \u2014 confirm keep/remove/retarget"
+    },
+    {
+      "symbol": "PE118_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE118_P",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Lane PE present in RUN SawLane \u2014 retarget to discovery PE tags"
+    },
+    {
+      "symbol": "PE1491_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE1491_P",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE1492_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE216_P",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Lane PE present in RUN SawLane \u2014 retarget to discovery PE tags"
+    },
+    {
+      "symbol": "PE219A_J",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE219_P",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Lane PE present in RUN SawLane \u2014 retarget to discovery PE tags"
+    },
+    {
+      "symbol": "PE2426_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE3451_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE3451_P",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE3452_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE410_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE410_P",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Lane PE present in RUN SawLane \u2014 retarget to discovery PE tags"
+    },
+    {
+      "symbol": "PE4131_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE4131_P",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE4132_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE414A_J",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE414B_J",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE414C_J",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE414D_J",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE414_J",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE418_I",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE418_P",
+      "classification": "ENGINEER_CONFIG_REQUIRED",
+      "action": "parameterize",
+      "reason": "Pack PE not listed on current RUN saw lanes \u2014 confirm"
+    },
+    {
+      "symbol": "PE834_P",
+      "classification": "PARAMETERIZE_FROM_RUN",
+      "action": "parameterize",
+      "reason": "Lane PE present in RUN SawLane \u2014 retarget to discovery PE tags"
+    },
+    {
+      "symbol": "PE_Clear",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "PE_Jam",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "PPI",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "PPI_FltTime",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "PPI_Ratio",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "PRE",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "PresetInv",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "q_rDeltaDistance",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rBFR_ExitPeClearDist",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rBFR_SpeedFollowRatio",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rBox_1_Len_GPR_S2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rBox_1_Len_GPR_S4",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rBox_2_Len_GPR_S2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rBox_2_Len_GPR_S4",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rClctrMinGap",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rClctrPsuedoEnc_IPP",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rClctrRealEnc_IPP",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rClctrSpd_FPM",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rClctrSpd_IPS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rCurrSpd",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rDeltaDist",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rDesireAccel",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rDesireSpeed_FPM",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rDesireSpeed_IPS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rDesireSpeed_Percent",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Ready",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ReadyToMerge",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Ready_To_Receive",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Ready_To_Receive_Time",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Release",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ReleaseLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ReleaseLengthFull",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ReleasingSlugLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "ReservedSlugLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Reset",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Reset_Time",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RestartTmr_DN",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RestartTmr_TT",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Restart_Time",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Reverse",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rExitPeClearDistAccum_BFR",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rGapBack",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rGapDelta_GPR",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rGapFront",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rGPR_MatchSpeed_IPS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rHistAvg",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rMRG_StartupDistPre",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rPkgGap_GPR",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rPkgLen_GPR",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rPrevSpd",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rPT_HoldReleaseSpeedDistPre",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rPT_StartupDistPre",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_AcceptGapLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_ConveyorLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_DecelTravelDist_S4",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_GapLength_Q",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_MatchSpeed_IPS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_MaxTrainLen",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_MaxTrainReleaseLen",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_MaxTrainTrailingGap",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_ReleaseSpeed_IPS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_SlotSizeMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_SlugAcceptLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_SlugGapReleaseMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_SlugLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_SlugLengthAcceptMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_SlugLengthCapture",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_SlugLengthReleaseMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ1_SlugLength_Q",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_ConveyorLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_MaxTrainLen",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_ReleaseSpeed_IPS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_SlotSizeMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_SlugGapLengthAcceptMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_SlugGapLengthAccept_Q",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_SlugGapLength_Q",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_SlugLengthAcceptMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_SlugLengthAccept_Q",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_SlugLengthReleaseMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rQ2_SlugLength_Q",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rReqGapSize_GPR",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rReqGapSize_GPR_S2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rReqGapSize_GPR_S4",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rSlotReserveMultiple",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rSlotSizeInch",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rSorterGap",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rSorterSpeed_FPM",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rSorterSpeed_IPS",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rStartupSlotSizeInch",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rStartupSlugLengthMeasure",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "rStartupSlugLenInch",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_CollLaneMergeCapture",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_CollPeTrackCal",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_CollResetCounts",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_CollTrackHist",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_CollTrackInit",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_CollTrackMain",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_CollTrackResvMngr",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_DeltaDist_NoGapStore",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_IO_Map_NoGapStore",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RT_LaneOffsetFind",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Run",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "RunEnabled",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Running",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Run_Hold",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Run_Stats",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Sawtooth_Merge",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Silenced",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SlugAccepted",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SlugGapLength",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SlugHalted",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SlugLengthReserved",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SlugReleaseDone",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SlugReleasing",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SlugTrackID",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Spd",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SR_CollTrackChkSlot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SR_CollTrackClrSlot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SR_CollTrackRsrvSlot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SR_CollTrackSlotAtMrgPnt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SR_CollTrackSrchSlot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "SR_LaneCntrl",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "StartUpEnabled",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Status",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Stopped",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Stop_Next",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Sts",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Sts_Enc_Flt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Sts_HighPPI_AlmTot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Sts_LowPPI_AlmTot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Sts_PPI_Flt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "TimerEnable",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "tmrSafetyRelease_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "tmrSlugHalted_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "tmrSlugReleased_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "tmrSlugReleased_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "tmrStopped_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "tmrTrainStrand_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Tot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "TotTimeHr",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "TotTimeMin",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "TotTimeSec",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "Type",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "UpStrmCommLoss",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "VFD_Flt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "VFD_Running",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xChkForCompromisedSlot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xClctrAllLanesMrgCmpt",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xClctrRunning",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xClctrRunningAtSpeed",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xClctrRunningPrev",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCntInProgress",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCnvFaulted",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCnvReadyToRun",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCnvRestartReq",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCnvRunEnable",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCnvRunning",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCnvStopped",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCollHistMatchFnd",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xCollOptimizeSearch",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xDnStrmIsBlockedPrev",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xGPR_PE_BlockedEntrMem",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xHoldReleaseSpeed_PT",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xInterlock_IN",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xInterlock_OUT",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xIsBlocked",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xIsBlockedPrev",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xIsByPassed",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xIsJammed",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneAnyConvFaulted",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneDisabled",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneFaulted",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneFlowControlActive",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneMaintMode",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneMerging",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneRunEnable",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneStartupEnable",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneStop",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneWaitingForResv",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xLaneWaitingForslot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xMaxSlugLen_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xMaxTrainLenArm_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xMaxTrainLen_EN",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xOkToReleaseLane",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xPeState",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xPeStatePrev",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xPE_BlockedEntr",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xPE_BlockedExit",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSearchForSlot",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSearchForSlotAck",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSearchForSlotPrev",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlotAtMergePoint",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlotCompromised",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlotFound",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlotPastMergePoint",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlotReserved",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlotResvRevoked",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugAccepted_ONS_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugAccepted_ONS_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugAccepted_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugAccepted_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugAcceptingMeasure_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugAccepting_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugAccepting_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugApproachClctrSrch",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugHalted_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugLengthAcceptMeasureArm_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugLengthReleaseMeasureArm_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugReadyToRelease_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugReadyToRelease_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugReleased_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugReleased_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugReleasing_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xSlugReleasing_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xStartupComplete",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xTransferPkgTo_Q1",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xUnloaderInterlockOut",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    },
+    {
+      "symbol": "xWaitRelease_Q2",
+      "classification": "GENERIC_KEEP",
+      "action": "keep",
+      "reason": "Looks like generic control / AOI plumbing"
+    }
+  ],
+  "notes": [
+    "Do not implement retargeting in this audit pass.",
+    "PARAMETERIZE_FROM_RUN items need an explicit rename/bind map from discovery.",
+    "GENERIC_KEEP items stay as library/control plumbing.",
+    "ENGINEER_CONFIG_REQUIRED items need human confirmation before generation claims correctness."
+  ]
+}

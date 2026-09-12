@@ -29,3 +29,10 @@ Lane identities preserved from RUN Name tokens (not PE/VFD number equality).
 
 ## Configuration required
 See `configuration_required.json` for Area / ES / downstream / sawtooth parameterization gaps.
+
+## Self-audit (no finished PLC4)
+
+See conveyor_realization_audit.md — generated conveyor set is **NOT_ACCEPTED**
+until the 76↔80 delta is resolved (4 DERIVED_ALIAS extras).
+
+Sawtooth pack is **not** claimed correctly generated; see sawtooth_template_parameter_map.json.
