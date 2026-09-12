@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-09-12T16:21:51.981739+00:00",
+  "finished_plc4_used": false,
+  "libraries": [
+    {
+      "path": "tools/libraries/OReilly_Library_v3.L5X",
+      "role": "main_aoi_library",
+      "provenance": "GENERIC_LIBRARY"
+    },
+    {
+      "path": "tools/libraries/programs/Sys_Program.L5X",
+      "role": "sys_program",
+      "provenance": "GENERIC_LIBRARY"
+    },
+    {
+      "path": "tools/libraries/programs/System_Program.L5X",
+      "role": "system_program",
+      "provenance": "GENERIC_LIBRARY"
+    },
+    {
+      "path": "tools/libraries/Slow_Flt_AOI.L5X",
+      "role": "slow_flt_overlay",
+      "provenance": "GENERIC_LIBRARY"
+    },
+    {
+      "path": "tools/libraries/programs/IO_MAP_Program.L5X",
+      "role": "io_map_optional",
+      "provenance": "GENERIC_LIBRARY",
+      "included": false
+    },
+    {
+      "path": "tools/libraries/programs/Sawtooth_Merge_Program.L5X",
+      "role": "optional_program:Sawtooth_Merge",
+      "provenance": "GENERIC_LIBRARY_TEMPLATE",
+      "included": true,
+      "note": "Gold program pack \u2014 not finished PLC4 controller input"
+    },
+    {
+      "path": "tools/libraries/Enc_Routine_ST.L5X",
+      "role": "encoder_routine_pattern",
+      "provenance": "GENERIC_LIBRARY",
+      "included": false,
+      "note": "Referenced for encoder parameter preservation / future emit"
+    }
+  ],
+  "libraries_root": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries",
+  "pass": "cp4-sawtooth-fidelity"
+}

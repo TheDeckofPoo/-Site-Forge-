@@ -1,0 +1,189 @@
+{
+  "generated_at": "2026-09-12T16:21:52.142489+00:00",
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-semantics\\generated\\OReillyGreensboro_ORNCCP4.L5X",
+  "ok": true,
+  "passed": 36,
+  "failed": 0,
+  "checks": [
+    {
+      "name": "l5x_exists",
+      "ok": true,
+      "detail": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-semantics\\generated\\OReillyGreensboro_ORNCCP4.L5X"
+    },
+    {
+      "name": "has_Sawtooth_Merge",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "has_SawFid_LaneCount",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "lane_count_tag_equals_5",
+      "ok": true,
+      "detail": "value=5"
+    },
+    {
+      "name": "model_lane_count_equals_5",
+      "ok": true,
+      "detail": "model=5"
+    },
+    {
+      "name": "index_tag_L1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pe_present_PE219_P",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "drive_present_VFD219",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "conv_marker_L1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "index_tag_L2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pe_present_PE410_P",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "drive_present_VFD410_EN",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "conv_marker_L2",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "index_tag_L3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pe_present_PE118_P",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "drive_present_VFD118_EN",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "conv_marker_L3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "index_tag_L4",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pe_present_PE216_P",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "drive_present_VFD216_EN",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "conv_marker_L4",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "index_tag_L5",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "pe_present_PE834_P",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "drive_present_VFD834_EN",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "conv_marker_L5",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "LANE_3_P116_PE118_VFD118",
+      "ok": true,
+      "detail": "pe=PE118_P drive=VFD118_EN"
+    },
+    {
+      "name": "ENC414_ticks_tag",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "VFD414_shared_P414",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Conv_PE_filled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Conv_PE_has_real_XIO_or_XIC",
+      "ok": true,
+      "detail": "expect SawSem occupied binding"
+    },
+    {
+      "name": "Conv_Enc_filled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "Conv_Fast_filled",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "no_dangling_SawSem_refs",
+      "ok": true,
+      "detail": "dangling=[]"
+    },
+    {
+      "name": "slice_timer_L1",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "reserve_timer_L3",
+      "ok": true,
+      "detail": ""
+    },
+    {
+      "name": "ENC424_not_forced_sawtooth",
+      "ok": true,
+      "detail": "jamzone=CITY COUNTER; role=CITY_COUNTER"
+    }
+  ]
+}

@@ -1,0 +1,1546 @@
+{
+  "generated_at": "2026-09-12T16:17:55.081653+00:00",
+  "source": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\programs\\Sawtooth_Merge_Program.L5X",
+  "program_name": "Sawtooth_Merge",
+  "main_routine": "Main_Routine",
+  "routine_count": 20,
+  "tag_count": 208,
+  "call_graph": {
+    "entry": "Main_Routine",
+    "unreachable_or_unreferenced": [],
+    "edges": [
+      {
+        "from": "Main_Routine",
+        "to": "Conv_Enc"
+      },
+      {
+        "from": "Main_Routine",
+        "to": "Conv_Fast"
+      },
+      {
+        "from": "Main_Routine",
+        "to": "Conv_PE"
+      },
+      {
+        "from": "Main_Routine",
+        "to": "RT_CollTrackMain"
+      },
+      {
+        "from": "Main_Routine",
+        "to": "RT_DeltaDist_NoGapStore"
+      },
+      {
+        "from": "Main_Routine",
+        "to": "RT_IO_Map_NoGapStore"
+      },
+      {
+        "from": "RT_CollTrackMain",
+        "to": "RT_CollLaneMergeCapture"
+      },
+      {
+        "from": "RT_CollTrackMain",
+        "to": "RT_CollPeTrackCal"
+      },
+      {
+        "from": "RT_CollTrackMain",
+        "to": "RT_CollResetCounts"
+      },
+      {
+        "from": "RT_CollTrackMain",
+        "to": "RT_CollTrackHist"
+      },
+      {
+        "from": "RT_CollTrackMain",
+        "to": "RT_CollTrackInit"
+      },
+      {
+        "from": "RT_CollTrackMain",
+        "to": "RT_CollTrackResvMngr"
+      },
+      {
+        "from": "RT_CollTrackMain",
+        "to": "RT_LaneOffsetFind"
+      },
+      {
+        "from": "RT_CollTrackMain",
+        "to": "SR_LaneCntrl"
+      },
+      {
+        "from": "RT_CollTrackResvMngr",
+        "to": "SR_CollTrackChkSlot"
+      },
+      {
+        "from": "RT_CollTrackResvMngr",
+        "to": "SR_CollTrackClrSlot"
+      },
+      {
+        "from": "RT_CollTrackResvMngr",
+        "to": "SR_CollTrackRsrvSlot"
+      },
+      {
+        "from": "RT_CollTrackResvMngr",
+        "to": "SR_CollTrackSlotAtMrgPnt"
+      },
+      {
+        "from": "RT_CollTrackResvMngr",
+        "to": "SR_CollTrackSrchSlot"
+      },
+      {
+        "from": "SR_LaneCntrl",
+        "to": "SR_CollTrackClrSlot"
+      }
+    ]
+  },
+  "routines": [
+    {
+      "routine": "Conv_Enc",
+      "type": "RLL",
+      "purpose": "Encoder processing (RLL; pack may be empty stub)",
+      "called_by": [
+        "Main_Routine"
+      ],
+      "calls": [],
+      "tags_read": [],
+      "tags_written": [],
+      "tags_touched_count": 0,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": []
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 0,
+      "comment_samples": []
+    },
+    {
+      "routine": "Conv_Fast",
+      "type": "RLL",
+      "purpose": "Fast-task conveyor processing (RLL; pack may be empty stub)",
+      "called_by": [
+        "Main_Routine"
+      ],
+      "calls": [],
+      "tags_read": [],
+      "tags_written": [],
+      "tags_touched_count": 0,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": []
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 0,
+      "comment_samples": []
+    },
+    {
+      "routine": "Conv_PE",
+      "type": "RLL",
+      "purpose": "Photoeye / conveyor PE processing (RLL; pack may be empty stub)",
+      "called_by": [
+        "Main_Routine"
+      ],
+      "calls": [],
+      "tags_read": [],
+      "tags_written": [],
+      "tags_touched_count": 0,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": []
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 0,
+      "comment_samples": []
+    },
+    {
+      "routine": "Main_Routine",
+      "type": "RLL",
+      "purpose": "Program entry; schedules Conv_* and gated tracking/reservation JSRs",
+      "called_by": [],
+      "calls": [
+        "Conv_Enc",
+        "Conv_Fast",
+        "Conv_PE",
+        "RT_CollTrackMain",
+        "RT_DeltaDist_NoGapStore",
+        "RT_IO_Map_NoGapStore"
+      ],
+      "tags_read": [
+        "MRG414_xCollLaneMrgCaptureArm",
+        "MRG414_xCollResetCounts",
+        "MRG414_xCollTrackPE_OffsetCaptureArm",
+        "MRG414_xLaneClctrPeCalibrate",
+        "MRG414_xLaneClctrTrkAryFreeze",
+        "MRG414_xLaneClctrTrkHistorize",
+        "MRG414_xLaneOffsetFind",
+        "MRG414_xLane_OffsetCaptureArm"
+      ],
+      "tags_written": [
+        "MRG414_stCollLaneMrgCapture",
+        "MRG414_stCollStatus",
+        "MRG414_xCollTrackConfigured",
+        "MRG414_xINIT",
+        "P414_SawMerge_HMI"
+      ],
+      "tags_touched_count": 13,
+      "timers_counters": [],
+      "aoi_or_fb_like": [
+        "NOP"
+      ],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_stCollLaneMrgCapture",
+          "MRG414_stCollStatus",
+          "MRG414_xCollLaneMrgCaptureArm",
+          "MRG414_xCollResetCounts",
+          "MRG414_xCollTrackConfigured",
+          "MRG414_xCollTrackPE_OffsetCaptureArm",
+          "MRG414_xINIT",
+          "MRG414_xLaneClctrPeCalibrate",
+          "MRG414_xLaneClctrTrkAryFreeze",
+          "MRG414_xLaneClctrTrkHistorize",
+          "MRG414_xLaneOffsetFind",
+          "MRG414_xLane_OffsetCaptureArm"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 15,
+      "comment_samples": [
+        "//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\nInitialize Default Values\n//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
+        "//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\nEnable Collector Tracking Histogram\nRefer to \"RT_CollTrackHist\"\n//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
+        "//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\nReset Reservation Stats for Lanes\nRefer to \"RT_CollResetCounts\"\n//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
+        "//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\nDebug: Freeze the Track Array Data to \n\"MRG500_adiCollTrkArray_Freeze\"\n\"MRG500_astLaneClctrSlotResvCntrl_Freeze\"\n//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
+        "/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\nCalibrate PEs on the Collector\nRefer to \"RT_CollPeTrackCal\". First enable \"MRG500_xLaneClctrPeCalibrate\" then \"MRG500_xCollTrackPE_OffsetCaptureArm\".\nPE offsets will be saved to \"MRG500_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG500_xCollTrackPE_OffsetCaptureArm\" gets reset when process is completed.\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
+        "/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\nCalibrate PEs on the Collector\nRefer to \"RT_CollPeTrackCal\". First enable \"MRG500_xLaneClctrPeCalibrate\" then \"MRG500_xCollTrackPE_OffsetCaptureArm\".\nPE offsets will be saved to \"MRG500_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG500_xCollTrackPE_OffsetCaptureArm\" gets reset when process is completed.\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////",
+        "/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////\nCollector Lane Merge Capture to check slug reservation against actual slug position\nRefer to \"RT_CollLaneMergeCapture\" and (MRG500_stCollLaneMrgCapture.diLaneId, MRG500_stCollLaneMrgCapture.diDelta)\n/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"
+      ]
+    },
+    {
+      "routine": "RT_CollLaneMergeCapture",
+      "type": "ST",
+      "purpose": "Capture lane-to-collector merge point offsets",
+      "called_by": [
+        "RT_CollTrackMain"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_adiCollTrkArray",
+        "MRG414_adiCollTrkArray_Capture",
+        "MRG414_astCollPe",
+        "MRG414_astCollPeCfg",
+        "MRG414_diCollTrkPkgAryLastIdx",
+        "MRG414_diCollTrkPkgArySize",
+        "MRG414_diLaneID_Mod"
+      ],
+      "tags_written": [
+        "MRG414_stCollLaneMrgCapture",
+        "MRG414_stCollTrkSysCfg",
+        "MRG414_xCollLaneMrgCaptureArm"
+      ],
+      "tags_touched_count": 10,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_adiCollTrkArray",
+          "MRG414_adiCollTrkArray_Capture",
+          "MRG414_astCollPe",
+          "MRG414_astCollPeCfg",
+          "MRG414_diCollTrkPkgAryLastIdx",
+          "MRG414_diCollTrkPkgArySize",
+          "MRG414_diLaneID_Mod",
+          "MRG414_stCollLaneMrgCapture",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_xCollLaneMrgCaptureArm"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 61,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_CollPeTrackCal",
+      "type": "ST",
+      "purpose": "Collision / collector PE track calibration",
+      "called_by": [
+        "RT_CollTrackMain"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_astCollPe",
+        "MRG414_astCollPeTrackCal",
+        "MRG414_c_xFALSE",
+        "MRG414_diCollDeltaEncCnt",
+        "MRG414_stCollTrkSysCfg"
+      ],
+      "tags_written": [
+        "MRG414_diCollCalPeIndex",
+        "MRG414_xCollPeCalReset",
+        "MRG414_xCollTrackPE_OffsetCaptureArm"
+      ],
+      "tags_touched_count": 8,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_astCollPe",
+          "MRG414_astCollPeTrackCal",
+          "MRG414_c_xFALSE",
+          "MRG414_diCollCalPeIndex",
+          "MRG414_diCollDeltaEncCnt",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_xCollPeCalReset",
+          "MRG414_xCollTrackPE_OffsetCaptureArm"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 63,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_CollResetCounts",
+      "type": "ST",
+      "purpose": "Reset collector tracking counters",
+      "called_by": [
+        "RT_CollTrackMain"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_astLaneClctrSlotResCnts",
+        "MRG414_stCollTrkSysCfg",
+        "MRG414_stLaneClctrSlotResvcnt_CLR"
+      ],
+      "tags_written": [
+        "MRG414_diLanecntsResetIdx"
+      ],
+      "tags_touched_count": 4,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_astLaneClctrSlotResCnts",
+          "MRG414_diLanecntsResetIdx",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_stLaneClctrSlotResvcnt_CLR"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 23,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_CollTrackHist",
+      "type": "ST",
+      "purpose": "Collector tracking history maintenance",
+      "called_by": [
+        "RT_CollTrackMain"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_adiCollTrkArray",
+        "MRG414_astCollHist",
+        "MRG414_astCollPeCfg",
+        "MRG414_c_xFALSE",
+        "MRG414_c_xTRUE",
+        "MRG414_diCollTrkPkgArySize",
+        "MRG414_diLaneID_Mod",
+        "MRG414_stCollHistTmpZero",
+        "MRG414_stCollTrkSysCfg"
+      ],
+      "tags_written": [
+        "MRG414_diCollHistArrayErrCnt",
+        "MRG414_diCollHistPeIndex",
+        "MRG414_diCollHistPeLocation",
+        "MRG414_stCollHistTmp",
+        "MRG414_xResetCollHistogram"
+      ],
+      "tags_touched_count": 14,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_adiCollTrkArray",
+          "MRG414_astCollHist",
+          "MRG414_astCollPeCfg",
+          "MRG414_c_xFALSE",
+          "MRG414_c_xTRUE",
+          "MRG414_diCollHistArrayErrCnt",
+          "MRG414_diCollHistPeIndex",
+          "MRG414_diCollHistPeLocation",
+          "MRG414_diCollTrkPkgArySize",
+          "MRG414_diLaneID_Mod",
+          "MRG414_stCollHistTmp",
+          "MRG414_stCollHistTmpZero",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_xResetCollHistogram"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 204,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_CollTrackInit",
+      "type": "ST",
+      "purpose": "Initialize collector tracking structures",
+      "called_by": [
+        "RT_CollTrackMain"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_astCollPeCfg",
+        "MRG414_astCollPeTrackCal",
+        "MRG414_astLanePeTrackCal",
+        "MRG414_astUNL_SlugBldCfg",
+        "P414_SawMerge_HMI"
+      ],
+      "tags_written": [
+        "MRG414_c_xFALSE",
+        "MRG414_c_xTRUE",
+        "MRG414_diLaneID_Mod",
+        "MRG414_diLanePkgSeqId_Max",
+        "MRG414_stCollTrkSysCfg",
+        "MRG414_xLaneClctrTrkHistorize"
+      ],
+      "tags_touched_count": 11,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_astCollPeCfg",
+          "MRG414_astCollPeTrackCal",
+          "MRG414_astLanePeTrackCal",
+          "MRG414_astUNL_SlugBldCfg",
+          "MRG414_c_xFALSE",
+          "MRG414_c_xTRUE",
+          "MRG414_diLaneID_Mod",
+          "MRG414_diLanePkgSeqId_Max",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_xLaneClctrTrkHistorize"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 307,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_CollTrackMain",
+      "type": "ST",
+      "purpose": "Collector tracking main; inits hist/PE cal/lane merge capture/resv/lane control",
+      "called_by": [
+        "Main_Routine"
+      ],
+      "calls": [
+        "RT_CollLaneMergeCapture",
+        "RT_CollPeTrackCal",
+        "RT_CollResetCounts",
+        "RT_CollTrackHist",
+        "RT_CollTrackInit",
+        "RT_CollTrackResvMngr",
+        "RT_LaneOffsetFind",
+        "SR_LaneCntrl"
+      ],
+      "tags_read": [
+        "MRG414_adiCollTrkArray",
+        "MRG414_adiCollTrkArray_Freeze",
+        "MRG414_aoColl_01_CnvDeltaDist",
+        "MRG414_astCollPe",
+        "MRG414_astCollPeCfg",
+        "MRG414_astLaneClctrSlotResvCntrl",
+        "MRG414_astLaneClctrSlotResvCntrl_Clr",
+        "MRG414_astLaneClctrSlotResvCntrl_Freeze",
+        "MRG414_c_xFALSE",
+        "MRG414_c_xTRUE",
+        "MRG414_diCollTrkPkgArySize",
+        "MRG414_rCollSpdFeedback_IPS",
+        "MRG414_rFastTaskDeltaMilliSecs",
+        "MRG414_stCollTrkSysCfg",
+        "MRG414_xCollLaneMrgCaptureArm",
+        "MRG414_xLaneClctrPeCalibrate",
+        "MRG414_xLaneClctrTrkHistorize",
+        "MRG414_xLaneOffsetFind",
+        "MRG414_xSystemDrivesConfigured"
+      ],
+      "tags_written": [
+        "MRG414_FreezeIdx1",
+        "MRG414_diClctrEncLane",
+        "MRG414_diCollDeltaEncCnt",
+        "MRG414_diCollDeltaEncCntMax",
+        "MRG414_diCollEncCntCopy",
+        "MRG414_diCollEncCntCurr",
+        "MRG414_diCollEncCntPrev",
+        "MRG414_diCollEncInconsistentCnt",
+        "MRG414_diCollEncShftIdx",
+        "MRG414_diCollPeIndex",
+        "MRG414_diCollPeLocation",
+        "MRG414_diCollTrkPkgAryLastIdx",
+        "MRG414_diCollTrkPkgShiftSize",
+        "MRG414_di_LaneCntrlIdx",
+        "MRG414_rCollDeltaDist",
+        "MRG414_rCollDeltaDistRemain",
+        "MRG414_rCollDeltaDist_Total",
+        "MRG414_rCollDeltaEncPls",
+        "MRG414_rCollDeltaEncPlsTrunc",
+        "MRG414_rCollPrev_IPS",
+        "MRG414_rCollSpeed_IPS",
+        "MRG414_xCollResetCounts",
+        "MRG414_xCollResetTracking",
+        "MRG414_xCollTrackConfigured",
+        "MRG414_xLaneClctrTrkAryFreeze"
+      ],
+      "tags_touched_count": 44,
+      "timers_counters": [],
+      "aoi_or_fb_like": [
+        "AO_CnvDeltaDist"
+      ],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_FreezeIdx1",
+          "MRG414_adiCollTrkArray",
+          "MRG414_adiCollTrkArray_Freeze",
+          "MRG414_aoColl_01_CnvDeltaDist",
+          "MRG414_astCollPe",
+          "MRG414_astCollPeCfg",
+          "MRG414_astLaneClctrSlotResvCntrl",
+          "MRG414_astLaneClctrSlotResvCntrl_Clr",
+          "MRG414_astLaneClctrSlotResvCntrl_Freeze",
+          "MRG414_c_xFALSE",
+          "MRG414_c_xTRUE",
+          "MRG414_diClctrEncLane",
+          "MRG414_diCollDeltaEncCnt",
+          "MRG414_diCollDeltaEncCntMax",
+          "MRG414_diCollEncCntCopy",
+          "MRG414_diCollEncCntCurr",
+          "MRG414_diCollEncCntPrev",
+          "MRG414_diCollEncInconsistentCnt",
+          "MRG414_diCollEncShftIdx",
+          "MRG414_diCollPeIndex",
+          "MRG414_diCollPeLocation",
+          "MRG414_diCollTrkPkgAryLastIdx",
+          "MRG414_diCollTrkPkgArySize",
+          "MRG414_diCollTrkPkgShiftSize",
+          "MRG414_di_LaneCntrlIdx",
+          "MRG414_rCollDeltaDist",
+          "MRG414_rCollDeltaDistRemain",
+          "MRG414_rCollDeltaDist_Total",
+          "MRG414_rCollDeltaEncPls",
+          "MRG414_rCollDeltaEncPlsTrunc",
+          "MRG414_rCollPrev_IPS",
+          "MRG414_rCollSpdFeedback_IPS",
+          "MRG414_rCollSpeed_IPS",
+          "MRG414_rFastTaskDeltaMilliSecs",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_xCollLaneMrgCaptureArm",
+          "MRG414_xCollResetCounts",
+          "MRG414_xCollResetTracking",
+          "MRG414_xCollTrackConfigured",
+          "MRG414_xLaneClctrPeCalibrate",
+          "MRG414_xLaneClctrTrkAryFreeze",
+          "MRG414_xLaneClctrTrkHistorize",
+          "MRG414_xLaneOffsetFind",
+          "MRG414_xSystemDrivesConfigured"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 254,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_CollTrackResvMngr",
+      "type": "ST",
+      "purpose": "Reservation manager \u2014 search/reserve/clear/check slots at merge point",
+      "called_by": [
+        "RT_CollTrackMain"
+      ],
+      "calls": [
+        "SR_CollTrackChkSlot",
+        "SR_CollTrackClrSlot",
+        "SR_CollTrackRsrvSlot",
+        "SR_CollTrackSlotAtMrgPnt",
+        "SR_CollTrackSrchSlot"
+      ],
+      "tags_read": [
+        "MRG414_astLaneClctrSlotResCnts",
+        "MRG414_astLaneClctrSlotResvCntrl",
+        "MRG414_astLaneClctrSlotResvStat",
+        "MRG414_c_xFALSE",
+        "MRG414_diCollDeltaEncCnt",
+        "MRG414_diResvRqstOrderArySize",
+        "MRG414_o_diCollFndSlotLoc",
+        "MRG414_o_xCollChkSlotCmpsd",
+        "MRG414_o_xCollSlotAtMrg",
+        "MRG414_o_xCollSlotFnd",
+        "MRG414_o_xCollSlotPastMrg",
+        "MRG414_stCollTrkSysCfg",
+        "MRG414_stLaneClctrSlotResMngr"
+      ],
+      "tags_written": [
+        "MRG414_diClctrFltLaneIdx",
+        "MRG414_diClctrResvAtSlotLaneIdx",
+        "MRG414_diClctrResvMngIdx",
+        "MRG414_diClctrResvMngLaneIdx",
+        "MRG414_diClctrResvMngStrtIdx",
+        "MRG414_diClctrSchLane",
+        "MRG414_diClctrShiftIdx",
+        "MRG414_diClctrSlotCmpsdLaneIdx",
+        "MRG414_diClctrSlotInsert",
+        "MRG414_diClctrSlotOrdIdx",
+        "MRG414_diClctrSlotOrdIdxLim",
+        "MRG414_diClctrSlotSrchNum",
+        "MRG414_diCollAvgSlotSizePls",
+        "MRG414_diCollDnStrmFreeSearchLimitPls",
+        "MRG414_diCollLaneCompareMask",
+        "MRG414_diCollResvMngrScanCnt",
+        "MRG414_diCollUpStrmFreeSearchLimitPls",
+        "MRG414_diResvRqstAryIdx",
+        "MRG414_stCollStatus",
+        "MRG414_xLaneClctrSlotResvFnd"
+      ],
+      "tags_touched_count": 33,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_astLaneClctrSlotResCnts",
+          "MRG414_astLaneClctrSlotResvCntrl",
+          "MRG414_astLaneClctrSlotResvStat",
+          "MRG414_c_xFALSE",
+          "MRG414_diClctrFltLaneIdx",
+          "MRG414_diClctrResvAtSlotLaneIdx",
+          "MRG414_diClctrResvMngIdx",
+          "MRG414_diClctrResvMngLaneIdx",
+          "MRG414_diClctrResvMngStrtIdx",
+          "MRG414_diClctrSchLane",
+          "MRG414_diClctrShiftIdx",
+          "MRG414_diClctrSlotCmpsdLaneIdx",
+          "MRG414_diClctrSlotInsert",
+          "MRG414_diClctrSlotOrdIdx",
+          "MRG414_diClctrSlotOrdIdxLim",
+          "MRG414_diClctrSlotSrchNum",
+          "MRG414_diCollAvgSlotSizePls",
+          "MRG414_diCollDeltaEncCnt",
+          "MRG414_diCollDnStrmFreeSearchLimitPls",
+          "MRG414_diCollLaneCompareMask",
+          "MRG414_diCollResvMngrScanCnt",
+          "MRG414_diCollUpStrmFreeSearchLimitPls",
+          "MRG414_diResvRqstAryIdx",
+          "MRG414_diResvRqstOrderArySize",
+          "MRG414_o_diCollFndSlotLoc",
+          "MRG414_o_xCollChkSlotCmpsd",
+          "MRG414_o_xCollSlotAtMrg",
+          "MRG414_o_xCollSlotFnd",
+          "MRG414_o_xCollSlotPastMrg",
+          "MRG414_stCollStatus",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_stLaneClctrSlotResMngr",
+          "MRG414_xLaneClctrSlotResvFnd"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 579,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_DeltaDist_NoGapStore",
+      "type": "ST",
+      "purpose": "Collector delta-distance tracking without gap-store belts",
+      "called_by": [
+        "Main_Routine"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_aoUNL_MRG_CnvDeltaDist",
+        "MRG414_aoUNL_Q2_CnvDeltaDist",
+        "MRG414_astUNL_MRG_CnvCtrl",
+        "MRG414_astUNL_Q2_CnvCtrl",
+        "MRG414_rFastTaskDeltaMilliSecs"
+      ],
+      "tags_written": [],
+      "tags_touched_count": 5,
+      "timers_counters": [],
+      "aoi_or_fb_like": [
+        "AO_CnvDeltaDist"
+      ],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_aoUNL_MRG_CnvDeltaDist",
+          "MRG414_aoUNL_Q2_CnvDeltaDist",
+          "MRG414_astUNL_MRG_CnvCtrl",
+          "MRG414_astUNL_Q2_CnvCtrl",
+          "MRG414_rFastTaskDeltaMilliSecs"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 233,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_IO_Map_NoGapStore",
+      "type": "ST",
+      "purpose": "IO mapping for no-gap-store collector path",
+      "called_by": [
+        "Main_Routine"
+      ],
+      "calls": [],
+      "tags_read": [
+        "EZPE116_F",
+        "EZPE127_F",
+        "EZPE212_F2",
+        "EZPE408_F",
+        "EZPE832_F",
+        "MRG414_astCollPe",
+        "MRG414_astLaneClctrSlotResvCntrl",
+        "MRG414_astLaneClctrSlotResvStat",
+        "MRG414_astUNL_BFR_CnvCtrl",
+        "MRG414_astUNL_GPR_CnvCtrl",
+        "MRG414_astUNL_MRG_CnvCtrl",
+        "MRG414_astUNL_PT_CnvCtrl",
+        "MRG414_astUNL_Q1_CnvCtrl",
+        "MRG414_astUNL_Q2_CnvCtrl",
+        "MRG414_astUNL_SlugBldCfg",
+        "MRG414_astUNL_SlugBldCtrl",
+        "MRG414_diLaneEmptyPkg_Status",
+        "MRG414_rCollSpeed_IPS",
+        "P414_Enc",
+        "P414_SawMerge_HMI",
+        "PE118_P",
+        "PE216_P",
+        "PE219A_J",
+        "PE219_P",
+        "PE410_P",
+        "PE414A_J",
+        "PE414B_J",
+        "PE414C_J",
+        "PE414D_J",
+        "PE414_J",
+        "PE834_P"
+      ],
+      "tags_written": [
+        "MRG414_Enable_NoCartonCheck",
+        "MRG414_diHMI_LaneIdx",
+        "MRG414_diNoCartonGap",
+        "MRG414_rCollSpdFeedback_IPS",
+        "MRG414_stCollStatus",
+        "MRG414_stCollTrkSysCfg",
+        "MRG414_xShiftUpstrmSlotsAfterNoCarton",
+        "MRG414_xSystemDrivesConfigured",
+        "MRG414_xUnloadLaneConfigured",
+        "P118_Conv",
+        "P120_Conv",
+        "P216_Conv",
+        "P218_Conv",
+        "P219A_Conv",
+        "P219_Conv",
+        "P410_Conv",
+        "P412_Conv",
+        "P414_Conv",
+        "P418_Conv",
+        "P834_Conv",
+        "P836_Conv"
+      ],
+      "tags_touched_count": 52,
+      "timers_counters": [
+        "tmrSlugReleased_Q2"
+      ],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [
+          "PE118_P",
+          "PE216_P",
+          "PE219A_J",
+          "PE219_P",
+          "PE410_P",
+          "PE414A_J",
+          "PE414B_J",
+          "PE414C_J",
+          "PE414D_J",
+          "PE414_J",
+          "PE834_P"
+        ],
+        "full_eyes": [
+          "EZPE116_F",
+          "EZPE127_F",
+          "EZPE212_F2",
+          "EZPE408_F",
+          "EZPE832_F"
+        ],
+        "conveyors": [
+          "P118_Conv",
+          "P120_Conv",
+          "P216_Conv",
+          "P218_Conv",
+          "P219A_Conv",
+          "P219_Conv",
+          "P410_Conv",
+          "P412_Conv",
+          "P414_Conv",
+          "P418_Conv",
+          "P834_Conv",
+          "P836_Conv"
+        ],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_Enable_NoCartonCheck",
+          "MRG414_astCollPe",
+          "MRG414_astLaneClctrSlotResvCntrl",
+          "MRG414_astLaneClctrSlotResvStat",
+          "MRG414_astUNL_BFR_CnvCtrl",
+          "MRG414_astUNL_GPR_CnvCtrl",
+          "MRG414_astUNL_MRG_CnvCtrl",
+          "MRG414_astUNL_PT_CnvCtrl",
+          "MRG414_astUNL_Q1_CnvCtrl",
+          "MRG414_astUNL_Q2_CnvCtrl",
+          "MRG414_astUNL_SlugBldCfg",
+          "MRG414_astUNL_SlugBldCtrl",
+          "MRG414_diHMI_LaneIdx",
+          "MRG414_diLaneEmptyPkg_Status",
+          "MRG414_diNoCartonGap",
+          "MRG414_rCollSpdFeedback_IPS",
+          "MRG414_rCollSpeed_IPS",
+          "MRG414_stCollStatus",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_xShiftUpstrmSlotsAfterNoCarton",
+          "MRG414_xSystemDrivesConfigured",
+          "MRG414_xUnloadLaneConfigured"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 471,
+      "comment_samples": []
+    },
+    {
+      "routine": "RT_LaneOffsetFind",
+      "type": "ST",
+      "purpose": "Find / apply lane PE offsets on collector",
+      "called_by": [
+        "RT_CollTrackMain"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_astCollPe",
+        "MRG414_astLanePeTrackCal",
+        "MRG414_astUNL_Q2_CnvCtrl",
+        "MRG414_c_xFALSE",
+        "MRG414_c_xTRUE",
+        "MRG414_diCollDeltaEncCnt",
+        "MRG414_stCollTrkSysCfg"
+      ],
+      "tags_written": [
+        "MRG414_diLaneCalPeIndex",
+        "MRG414_xLanePeCalReset",
+        "MRG414_xLane_OffsetCaptureArm"
+      ],
+      "tags_touched_count": 10,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_astCollPe",
+          "MRG414_astLanePeTrackCal",
+          "MRG414_astUNL_Q2_CnvCtrl",
+          "MRG414_c_xFALSE",
+          "MRG414_c_xTRUE",
+          "MRG414_diCollDeltaEncCnt",
+          "MRG414_diLaneCalPeIndex",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_xLanePeCalReset",
+          "MRG414_xLane_OffsetCaptureArm"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 66,
+      "comment_samples": []
+    },
+    {
+      "routine": "SR_CollTrackChkSlot",
+      "type": "ST",
+      "purpose": "Validate reserved slot still valid",
+      "called_by": [
+        "RT_CollTrackResvMngr"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_adiCollTrkArray",
+        "MRG414_diCollTrkPkgAryLastIdx",
+        "MRG414_diCollTrkPkgArySize",
+        "MRG414_diLaneID_Mod",
+        "MRG414_i_diCollChkLaneId",
+        "MRG414_i_diCollChkSlotSize",
+        "MRG414_i_diCollChkStartIdx",
+        "MRG414_i_diCollChkTrkId"
+      ],
+      "tags_written": [
+        "MRG414_diCollChkIdx",
+        "MRG414_diCollChkLaneTrkId",
+        "MRG414_diCollChkSize",
+        "MRG414_o_xCollChkSlotCmpsd"
+      ],
+      "tags_touched_count": 12,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_adiCollTrkArray",
+          "MRG414_diCollChkIdx",
+          "MRG414_diCollChkLaneTrkId",
+          "MRG414_diCollChkSize",
+          "MRG414_diCollTrkPkgAryLastIdx",
+          "MRG414_diCollTrkPkgArySize",
+          "MRG414_diLaneID_Mod",
+          "MRG414_i_diCollChkLaneId",
+          "MRG414_i_diCollChkSlotSize",
+          "MRG414_i_diCollChkStartIdx",
+          "MRG414_i_diCollChkTrkId",
+          "MRG414_o_xCollChkSlotCmpsd"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 83,
+      "comment_samples": []
+    },
+    {
+      "routine": "SR_CollTrackClrSlot",
+      "type": "ST",
+      "purpose": "Clear a reserved collector slot",
+      "called_by": [
+        "RT_CollTrackResvMngr",
+        "SR_LaneCntrl"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_adiCollTrkArray",
+        "MRG414_diCollTrkPkgAryLastIdx",
+        "MRG414_diCollTrkPkgArySize",
+        "MRG414_diLaneID_Mod",
+        "MRG414_i_diCollClrLaneId",
+        "MRG414_i_diCollClrSlotSize",
+        "MRG414_i_diCollClrStartIdx",
+        "MRG414_i_diCollClrTrkId"
+      ],
+      "tags_written": [
+        "MRG414_diCollClrIdx",
+        "MRG414_diCollClrLaneTrkId",
+        "MRG414_diCollClrSize"
+      ],
+      "tags_touched_count": 11,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_adiCollTrkArray",
+          "MRG414_diCollClrIdx",
+          "MRG414_diCollClrLaneTrkId",
+          "MRG414_diCollClrSize",
+          "MRG414_diCollTrkPkgAryLastIdx",
+          "MRG414_diCollTrkPkgArySize",
+          "MRG414_diLaneID_Mod",
+          "MRG414_i_diCollClrLaneId",
+          "MRG414_i_diCollClrSlotSize",
+          "MRG414_i_diCollClrStartIdx",
+          "MRG414_i_diCollClrTrkId"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 56,
+      "comment_samples": []
+    },
+    {
+      "routine": "SR_CollTrackRsrvSlot",
+      "type": "ST",
+      "purpose": "Reserve a collector slot for a lane",
+      "called_by": [
+        "RT_CollTrackResvMngr"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_adiCollTrkArray",
+        "MRG414_diCollTrkPkgAryLastIdx",
+        "MRG414_diCollTrkPkgArySize",
+        "MRG414_diLaneID_Mod",
+        "MRG414_i_diCollRsrvLaneId",
+        "MRG414_i_diCollRsrvStartIdx",
+        "MRG414_i_diCollRsrvTrkId",
+        "MRG414_i_diCollRsvSlotSize"
+      ],
+      "tags_written": [
+        "MRG414_diCollRsrvIdx",
+        "MRG414_diCollRsrvLaneTrkId",
+        "MRG414_diCollRsrvSize"
+      ],
+      "tags_touched_count": 11,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_adiCollTrkArray",
+          "MRG414_diCollRsrvIdx",
+          "MRG414_diCollRsrvLaneTrkId",
+          "MRG414_diCollRsrvSize",
+          "MRG414_diCollTrkPkgAryLastIdx",
+          "MRG414_diCollTrkPkgArySize",
+          "MRG414_diLaneID_Mod",
+          "MRG414_i_diCollRsrvLaneId",
+          "MRG414_i_diCollRsrvStartIdx",
+          "MRG414_i_diCollRsrvTrkId",
+          "MRG414_i_diCollRsvSlotSize"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 56,
+      "comment_samples": []
+    },
+    {
+      "routine": "SR_CollTrackSlotAtMrgPnt",
+      "type": "ST",
+      "purpose": "Evaluate slot arriving at merge point",
+      "called_by": [
+        "RT_CollTrackResvMngr"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_adiCollTrkArray",
+        "MRG414_diCollTrkPkgArySize",
+        "MRG414_diLaneID_Mod",
+        "MRG414_i_diCollMrgLaneId",
+        "MRG414_i_diCollMrgSlotSize",
+        "MRG414_i_diCollMrgStartIdx",
+        "MRG414_i_diCollMrgStartOffset",
+        "MRG414_i_diCollMrgTrkId"
+      ],
+      "tags_written": [
+        "MRG414_diCollMrgExtLaneTrkId",
+        "MRG414_diCollMrgLaneTrkId",
+        "MRG414_o_xCollSlotAtMrg",
+        "MRG414_o_xCollSlotPastMrg"
+      ],
+      "tags_touched_count": 12,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_adiCollTrkArray",
+          "MRG414_diCollMrgExtLaneTrkId",
+          "MRG414_diCollMrgLaneTrkId",
+          "MRG414_diCollTrkPkgArySize",
+          "MRG414_diLaneID_Mod",
+          "MRG414_i_diCollMrgLaneId",
+          "MRG414_i_diCollMrgSlotSize",
+          "MRG414_i_diCollMrgStartIdx",
+          "MRG414_i_diCollMrgStartOffset",
+          "MRG414_i_diCollMrgTrkId",
+          "MRG414_o_xCollSlotAtMrg",
+          "MRG414_o_xCollSlotPastMrg"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 83,
+      "comment_samples": []
+    },
+    {
+      "routine": "SR_CollTrackSrchSlot",
+      "type": "ST",
+      "purpose": "Search free reservation slot on collector",
+      "called_by": [
+        "RT_CollTrackResvMngr"
+      ],
+      "calls": [],
+      "tags_read": [
+        "MRG414_adiCollTrkArray",
+        "MRG414_c_xTRUE",
+        "MRG414_diCollAvgSlotSizePls",
+        "MRG414_diCollDnStrmFreeSearchLimitPls",
+        "MRG414_diCollLaneCompareMask",
+        "MRG414_diCollTrkPkgAryLastIdx",
+        "MRG414_diCollTrkPkgArySize",
+        "MRG414_diCollUpStrmFreeSearchLimitPls",
+        "MRG414_diLaneEmptyPkg_Status",
+        "MRG414_i_diCollSrchSlotSizeReq",
+        "MRG414_i_diCollSrchStartIdx",
+        "MRG414_stCollTrkSysCfg"
+      ],
+      "tags_written": [
+        "MRG414_diCollDelaySlotSizePls",
+        "MRG414_diCollDnStrmFreeSlotSizePls",
+        "MRG414_diCollDnStrmModSlotSizePls",
+        "MRG414_diCollDnStrmSrchIdx",
+        "MRG414_diCollDnStrmXtraSlotSizePls",
+        "MRG414_diCollFirsAvailLoc",
+        "MRG414_diCollSrchCellEmptyCnt",
+        "MRG414_diCollSrchIdx",
+        "MRG414_diCollStartSrchIdx",
+        "MRG414_diCollTotalXtraSlotSizePls",
+        "MRG414_diCollUpStrmFreeSlotSizePls",
+        "MRG414_diCollUpStrmSrchIdx",
+        "MRG414_diCollUpStrmXtraSlotSizePls",
+        "MRG414_diLaneEmptyCnt",
+        "MRG414_o_diCollFndSlotLoc",
+        "MRG414_o_xCollSlotFnd",
+        "MRG414_stCollLaneMrgCnts",
+        "MRG414_xCollFirstAvailFnd"
+      ],
+      "tags_touched_count": 30,
+      "timers_counters": [],
+      "aoi_or_fb_like": [],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_adiCollTrkArray",
+          "MRG414_c_xTRUE",
+          "MRG414_diCollAvgSlotSizePls",
+          "MRG414_diCollDelaySlotSizePls",
+          "MRG414_diCollDnStrmFreeSearchLimitPls",
+          "MRG414_diCollDnStrmFreeSlotSizePls",
+          "MRG414_diCollDnStrmModSlotSizePls",
+          "MRG414_diCollDnStrmSrchIdx",
+          "MRG414_diCollDnStrmXtraSlotSizePls",
+          "MRG414_diCollFirsAvailLoc",
+          "MRG414_diCollLaneCompareMask",
+          "MRG414_diCollSrchCellEmptyCnt",
+          "MRG414_diCollSrchIdx",
+          "MRG414_diCollStartSrchIdx",
+          "MRG414_diCollTotalXtraSlotSizePls",
+          "MRG414_diCollTrkPkgAryLastIdx",
+          "MRG414_diCollTrkPkgArySize",
+          "MRG414_diCollUpStrmFreeSearchLimitPls",
+          "MRG414_diCollUpStrmFreeSlotSizePls",
+          "MRG414_diCollUpStrmSrchIdx",
+          "MRG414_diCollUpStrmXtraSlotSizePls",
+          "MRG414_diLaneEmptyCnt",
+          "MRG414_diLaneEmptyPkg_Status",
+          "MRG414_i_diCollSrchSlotSizeReq",
+          "MRG414_i_diCollSrchStartIdx",
+          "MRG414_o_diCollFndSlotLoc",
+          "MRG414_o_xCollSlotFnd",
+          "MRG414_stCollLaneMrgCnts",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_xCollFirstAvailFnd"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 261,
+      "comment_samples": []
+    },
+    {
+      "routine": "SR_LaneCntrl",
+      "type": "ST",
+      "purpose": "Per-lane release / hold / slug-build control state machine",
+      "called_by": [
+        "RT_CollTrackMain"
+      ],
+      "calls": [
+        "SR_CollTrackClrSlot"
+      ],
+      "tags_read": [
+        "MRG414_Enable_NoCartonCheck",
+        "MRG414_adiCollTrkArray",
+        "MRG414_astLaneClctrSlotResvCntrl",
+        "MRG414_astLaneClctrSlotResvStat",
+        "MRG414_astUNL_MRG_CnvCtrl",
+        "MRG414_astUNL_PT_CnvCtrl",
+        "MRG414_astUNL_Q2_CnvCtrl",
+        "MRG414_astUNL_SlugBldCfg",
+        "MRG414_astUNL_SlugBldCtrl",
+        "MRG414_diCollTrkPkgAryLastIdx",
+        "MRG414_diLaneID_Mod",
+        "MRG414_diLanePkgSeqId_Max",
+        "MRG414_diNoCartonGap",
+        "MRG414_i_diUNL_LaneIdx",
+        "MRG414_stCollStatus",
+        "MRG414_stCollTrkSysCfg",
+        "MRG414_stUNL_MRG_CnvCtrl",
+        "MRG414_stUNL_PT_CnvCtrl",
+        "MRG414_stUNL_Q2_CnvCtrl",
+        "MRG414_stUNL_SlugBldCfgTmp1",
+        "MRG414_xShiftUpstrmSlotsAfterNoCarton"
+      ],
+      "tags_written": [
+        "MRG414_diCollClrSlotSizeToDel",
+        "MRG414_diCollSlotDelStartIdx",
+        "MRG414_diCollUsableSlotSize",
+        "MRG414_diNextUpStrmSlotEndLoc",
+        "MRG414_diNextUpStrmSlotLnID",
+        "MRG414_diNextUpStrmSlotPkgSeqID",
+        "MRG414_diNextUpStrmSlotResvLaneLoc",
+        "MRG414_diNextUpStrmSlotResvLen",
+        "MRG414_diNextUpStrmSlotStartLoc",
+        "MRG414_diNextUpStrmSlotStartLocIdx",
+        "MRG414_diNextUpStrmSlotStartLocNew",
+        "MRG414_diNextUpStrmSlotTrkID",
+        "MRG414_diSlotSizePlsNew",
+        "MRG414_stLaneClctrSlotResvCntrl",
+        "MRG414_stLaneClctrSlotResvStat",
+        "MRG414_stUNL_SlugBldCtrlTmp1"
+      ],
+      "tags_touched_count": 37,
+      "timers_counters": [
+        "tmrSlugHalted_Q2",
+        "tmrSlugReleased_Q2",
+        "tmrStopped_Q2"
+      ],
+      "aoi_or_fb_like": [
+        "TONR"
+      ],
+      "inputs_outputs_heuristic": {
+        "enable_gates": [],
+        "lane_pe": [],
+        "full_eyes": [],
+        "conveyors": [],
+        "drives": [],
+        "merge_structs": [
+          "MRG414_Enable_NoCartonCheck",
+          "MRG414_adiCollTrkArray",
+          "MRG414_astLaneClctrSlotResvCntrl",
+          "MRG414_astLaneClctrSlotResvStat",
+          "MRG414_astUNL_MRG_CnvCtrl",
+          "MRG414_astUNL_PT_CnvCtrl",
+          "MRG414_astUNL_Q2_CnvCtrl",
+          "MRG414_astUNL_SlugBldCfg",
+          "MRG414_astUNL_SlugBldCtrl",
+          "MRG414_diCollClrSlotSizeToDel",
+          "MRG414_diCollSlotDelStartIdx",
+          "MRG414_diCollTrkPkgAryLastIdx",
+          "MRG414_diCollUsableSlotSize",
+          "MRG414_diLaneID_Mod",
+          "MRG414_diLanePkgSeqId_Max",
+          "MRG414_diNextUpStrmSlotEndLoc",
+          "MRG414_diNextUpStrmSlotLnID",
+          "MRG414_diNextUpStrmSlotPkgSeqID",
+          "MRG414_diNextUpStrmSlotResvLaneLoc",
+          "MRG414_diNextUpStrmSlotResvLen",
+          "MRG414_diNextUpStrmSlotStartLoc",
+          "MRG414_diNextUpStrmSlotStartLocIdx",
+          "MRG414_diNextUpStrmSlotStartLocNew",
+          "MRG414_diNextUpStrmSlotTrkID",
+          "MRG414_diNoCartonGap",
+          "MRG414_diSlotSizePlsNew",
+          "MRG414_i_diUNL_LaneIdx",
+          "MRG414_stCollStatus",
+          "MRG414_stCollTrkSysCfg",
+          "MRG414_stLaneClctrSlotResvCntrl",
+          "MRG414_stLaneClctrSlotResvStat",
+          "MRG414_stUNL_MRG_CnvCtrl",
+          "MRG414_stUNL_PT_CnvCtrl",
+          "MRG414_stUNL_Q2_CnvCtrl",
+          "MRG414_stUNL_SlugBldCfgTmp1",
+          "MRG414_stUNL_SlugBldCtrlTmp1",
+          "MRG414_xShiftUpstrmSlotsAfterNoCarton"
+        ]
+      },
+      "unresolved_external_deps": [],
+      "rung_or_line_count": 462,
+      "comment_samples": []
+    }
+  ],
+  "tag_role_summary": {
+    "conveyor_udt": {
+      "count": 12,
+      "symbols": [
+        "P118_Conv",
+        "P120_Conv",
+        "P216_Conv",
+        "P218_Conv",
+        "P219A_Conv",
+        "P219_Conv",
+        "P410_Conv",
+        "P412_Conv",
+        "P414_Conv",
+        "P418_Conv",
+        "P834_Conv",
+        "P836_Conv"
+      ]
+    },
+    "encoder_udt": {
+      "count": 1,
+      "symbols": [
+        "P414_Enc"
+      ]
+    },
+    "full_eye_pe_udt": {
+      "count": 5,
+      "symbols": [
+        "EZPE116_F",
+        "EZPE127_F",
+        "EZPE212_F2",
+        "EZPE408_F",
+        "EZPE832_F"
+      ]
+    },
+    "hmi": {
+      "count": 1,
+      "symbols": [
+        "P414_SawMerge_HMI"
+      ]
+    },
+    "merge_control": {
+      "count": 178,
+      "symbols": [
+        "MRG414_Enable_NoCartonCheck",
+        "MRG414_FreezeIdx1",
+        "MRG414_adiCollTrkArray",
+        "MRG414_adiCollTrkArray_Capture",
+        "MRG414_adiCollTrkArray_Freeze",
+        "MRG414_aoColl_01_CnvDeltaDist",
+        "MRG414_aoUNL_MRG_CnvDeltaDist",
+        "MRG414_aoUNL_Q2_CnvDeltaDist",
+        "MRG414_astCollHist",
+        "MRG414_astCollPe",
+        "MRG414_astCollPeCfg",
+        "MRG414_astCollPeTrackCal",
+        "MRG414_astLaneClctrSlotResCnts",
+        "MRG414_astLaneClctrSlotResvCntrl",
+        "MRG414_astLaneClctrSlotResvCntrl_Clr",
+        "MRG414_astLaneClctrSlotResvCntrl_Freeze",
+        "MRG414_astLaneClctrSlotResvStat",
+        "MRG414_astLanePeTrackCal",
+        "MRG414_astUNL_BFR_CnvCtrl",
+        "MRG414_astUNL_GPR_CnvCtrl",
+        "MRG414_astUNL_MRG_CnvCtrl",
+        "MRG414_astUNL_PT_CnvCtrl",
+        "MRG414_astUNL_Q1_CnvCtrl",
+        "MRG414_astUNL_Q2_CnvCtrl",
+        "MRG414_astUNL_SlugBldCfg",
+        "MRG414_astUNL_SlugBldCtrl",
+        "MRG414_c_xFALSE",
+        "MRG414_c_xTRUE",
+        "MRG414_diClctrEncLane",
+        "MRG414_diClctrFltLaneIdx",
+        "MRG414_diClctrResvAtSlotLaneIdx",
+        "MRG414_diClctrResvMngIdx",
+        "MRG414_diClctrResvMngLaneIdx",
+        "MRG414_diClctrResvMngStrtIdx",
+        "MRG414_diClctrSchLane",
+        "MRG414_diClctrShiftIdx",
+        "MRG414_diClctrSlotCmpsdLaneIdx",
+        "MRG414_diClctrSlotInsert",
+        "MRG414_diClctrSlotOrdIdx",
+        "MRG414_diClctrSlotOrdIdxLim",
+        "MRG414_diClctrSlotSrchNum",
+        "MRG414_diCollAvgSlotSizePls",
+        "MRG414_diCollCalPeIndex",
+        "MRG414_diCollChkIdx",
+        "MRG414_diCollChkLaneTrkId",
+        "MRG414_diCollChkSize",
+        "MRG414_diCollClrIdx",
+        "MRG414_diCollClrLaneTrkId",
+        "MRG414_diCollClrSize",
+        "MRG414_diCollClrSlotSizeToDel",
+        "MRG414_diCollDelaySlotSizePls",
+        "MRG414_diCollDeltaEncCnt",
+        "MRG414_diCollDeltaEncCntMax",
+        "MRG414_diCollDnStrmFreeSearchLimitPls",
+        "MRG414_diCollDnStrmFreeSlotSizePls",
+        "MRG414_diCollDnStrmModSlotSizePls",
+        "MRG414_diCollDnStrmSrchIdx",
+        "MRG414_diCollDnStrmXtraSlotSizePls",
+        "MRG414_diCollEncCntCopy",
+        "MRG414_diCollEncCntCurr",
+        "MRG414_diCollEncCntPrev",
+        "MRG414_diCollEncInconsistentCnt",
+        "MRG414_diCollEncShftIdx",
+        "MRG414_diCollFirsAvailLoc",
+        "MRG414_diCollHistArrayErrCnt",
+        "MRG414_diCollHistPeIndex",
+        "MRG414_diCollHistPeLocation",
+        "MRG414_diCollLaneCompareMask",
+        "MRG414_diCollMrgExtLaneTrkId",
+        "MRG414_diCollMrgLaneTrkId",
+        "MRG414_diCollPeIndex",
+        "MRG414_diCollPeLocation",
+        "MRG414_diCollResvMngrScanCnt",
+        "MRG414_diCollRsrvIdx",
+        "MRG414_diCollRsrvLaneTrkId",
+        "MRG414_diCollRsrvSize",
+        "MRG414_diCollSlotDelStartIdx",
+        "MRG414_diCollSrchCellEmptyCnt",
+        "MRG414_diCollSrchIdx",
+        "MRG414_diCollStartSrchIdx"
+      ]
+    },
+    "photoeyes": {
+      "count": 11,
+      "symbols": [
+        "PE118_P",
+        "PE216_P",
+        "PE219A_J",
+        "PE219_P",
+        "PE410_P",
+        "PE414A_J",
+        "PE414B_J",
+        "PE414C_J",
+        "PE414D_J",
+        "PE414_J",
+        "PE834_P"
+      ]
+    }
+  },
+  "control_model_seeds": {
+    "run_saw_state_vocab": [
+      "ERROR",
+      "IDLE",
+      "HOLDING",
+      "WAITING",
+      "RELEASING",
+      "HANGING"
+    ],
+    "run_hs_saw_state_vocab": [
+      "Stopped",
+      "Wait PE On",
+      "Wait Resrv",
+      "Feed Slow",
+      "Feed Fast",
+      "Wait PE Off Slow",
+      "Wait PE Off Fast"
+    ],
+    "library_mode_signal_hits": [
+      "Releasing",
+      "Slug",
+      "Stopped",
+      "Waiting",
+      "diLaneMode",
+      "diLaneModePrev",
+      "diLaneWaitingMask",
+      "releasing",
+      "reserve",
+      "slug",
+      "waiting"
+    ],
+    "feature_gates_in_main": [
+      "Enable_Merge1_Reserv",
+      "Enable_Merge2_Trk",
+      "Use_GapStore_Belts"
+    ],
+    "lane_control_routine": {
+      "name": "SR_LaneCntrl",
+      "type": "ST",
+      "line_count": 462,
+      "purpose": "Per-lane release / hold / slug-build control state machine"
+    },
+    "reservation_manager_routine": {
+      "name": "RT_CollTrackResvMngr",
+      "type": "ST",
+      "line_count": 579,
+      "calls": [
+        "SR_CollTrackChkSlot",
+        "SR_CollTrackClrSlot",
+        "SR_CollTrackRsrvSlot",
+        "SR_CollTrackSlotAtMrgPnt",
+        "SR_CollTrackSrchSlot"
+      ],
+      "purpose": "Reservation manager \u2014 search/reserve/clear/check slots at merge point"
+    },
+    "lane_mode_seed_notes": {
+      "0": "Idle / inactive (library default zero)",
+      "1": "Mode 1 observed in library comments/data \u2014 confirm vs SR_LaneCntrl",
+      "2": "Mode 2 heavily present in pack tag seed data (active/tracking-ish)"
+    },
+    "library_lane_modes_documented": {
+      "0": "Stopped",
+      "1": "Startup, Merge any possible parcels on Power Turn and Inject conveyor",
+      "2": "Normal",
+      "3": "Manual/Maint"
+    },
+    "library_collector_modes_documented": {
+      "0": "Collector conveyor Not Running in AUTO Mode",
+      "1": "Startup Mode, running out Collector",
+      "2": "Startup Mode, waiting for all lanes to complete their merge",
+      "3": "Normal Mode"
+    },
+    "ezpe_full_role": "RT_IO_Map_NoGapStore uses EZPE*.Full to select HMI ReleaseLengthFull vs ReleaseLength per lane index when gap-store belts are not used",
+    "confidence": "high for documented numeric modes; medium for RUN pState\u2194diLaneMode mapping"
+  },
+  "notes": [
+    "Tag read/write sets are heuristic from ST := and RLL OTE/MOV patterns.",
+    "AOI detection is name-heuristic; true AOI instances may live in controller, not this program export.",
+    "Finished PLC4 was not read."
+  ]
+}

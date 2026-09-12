@@ -1,0 +1,377 @@
+{
+  "generated_at": "2026-09-12T16:21:28.210114+00:00",
+  "finished_plc4_used": false,
+  "rule": "VFD xxx / _EN / _AUX roles from RUN evidence; explicit RUN beats digit heuristic",
+  "merge_motor": {
+    "symbol": "VFD414_AUX",
+    "vfd_base": "VFD414",
+    "role": "AUX",
+    "conveyors": [
+      "P414",
+      "P416"
+    ],
+    "provenance": "RUN_EXPLICIT",
+    "source": "SawMerge.asc"
+  },
+  "lane_drives": [
+    {
+      "lane": "LANE_0_P219",
+      "symbol": "VFD219",
+      "vfd_base": "VFD219",
+      "role": "EN",
+      "conveyor": "P219",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc"
+    },
+    {
+      "lane": "LANE_1_P408",
+      "symbol": "VFD410_EN",
+      "vfd_base": "VFD410",
+      "role": "EN",
+      "conveyor": "P408",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc"
+    },
+    {
+      "lane": "LANE_3_P116",
+      "symbol": "VFD118_EN",
+      "vfd_base": "VFD118",
+      "role": "EN",
+      "conveyor": "P116",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc"
+    },
+    {
+      "lane": "LANE_4_P214",
+      "symbol": "VFD216_EN",
+      "vfd_base": "VFD216",
+      "role": "EN",
+      "conveyor": "P214",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc"
+    },
+    {
+      "lane": "LANE_5_P832",
+      "symbol": "VFD834_EN",
+      "vfd_base": "VFD834",
+      "role": "EN",
+      "conveyor": "P832",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc"
+    }
+  ],
+  "shared_relationships": [
+    {
+      "vfd": "VFD414",
+      "conveyors": [
+        "P414",
+        "P416"
+      ],
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD414_EN",
+          "conveyor": "P414",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD414_EN",
+          "conveyor": "P416",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "vfd": "VFD424",
+      "conveyors": [
+        "P424",
+        "P424A"
+      ],
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD424_EN",
+          "conveyor": "P424",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD424_EN",
+          "conveyor": "P424A",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    }
+  ],
+  "devices": [
+    {
+      "io_name": "VFD118_AUX",
+      "vfd_base": "VFD118",
+      "role": "AUX",
+      "description": "VFD118 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD118_EN",
+      "vfd_base": "VFD118",
+      "role": "EN",
+      "description": "START VFD118",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD118_FLT",
+      "vfd_base": "VFD118",
+      "role": "FLT",
+      "description": "VFD118 HAS FAULTED",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD120_AUX",
+      "vfd_base": "VFD120",
+      "role": "AUX",
+      "description": "VFD120 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD120_EN",
+      "vfd_base": "VFD120",
+      "role": "EN",
+      "description": "START VFD120",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD216_AUX",
+      "vfd_base": "VFD216",
+      "role": "AUX",
+      "description": "VFD216 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD216_EN",
+      "vfd_base": "VFD216",
+      "role": "EN",
+      "description": "START VFD216",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD216_FLT",
+      "vfd_base": "VFD216",
+      "role": "FLT",
+      "description": "VFD216 HAS FAULTED",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD218_AUX",
+      "vfd_base": "VFD218",
+      "role": "AUX",
+      "description": "VFD218 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD218_EN",
+      "vfd_base": "VFD218",
+      "role": "EN",
+      "description": "START VFD218",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD410_AUX",
+      "vfd_base": "VFD410",
+      "role": "AUX",
+      "description": "VFD410 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD410_EN",
+      "vfd_base": "VFD410",
+      "role": "EN",
+      "description": "START VFD410",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD410_FLT",
+      "vfd_base": "VFD410",
+      "role": "FLT",
+      "description": "VFD410 HAS FAULTED",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD412_AUX",
+      "vfd_base": "VFD412",
+      "role": "AUX",
+      "description": "VFD412 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD412_EN",
+      "vfd_base": "VFD412",
+      "role": "EN",
+      "description": "START VFD412",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD414_AUX",
+      "vfd_base": "VFD414",
+      "role": "AUX",
+      "description": "VFD414 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD414_EN",
+      "vfd_base": "VFD414",
+      "role": "EN",
+      "description": "START VFD414",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD422_AUX",
+      "vfd_base": "VFD422",
+      "role": "AUX",
+      "description": "VFD422 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD422_EN",
+      "vfd_base": "VFD422",
+      "role": "EN",
+      "description": "START VFD422",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD422_FLT",
+      "vfd_base": "VFD422",
+      "role": "FLT",
+      "description": "VFD422 HAS FAULTED",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD424_AUX",
+      "vfd_base": "VFD424",
+      "role": "AUX",
+      "description": "VFD424 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD424_EN",
+      "vfd_base": "VFD424",
+      "role": "EN",
+      "description": "START VFD424",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD834_AUX",
+      "vfd_base": "VFD834",
+      "role": "AUX",
+      "description": "VFD834 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD834_EN",
+      "vfd_base": "VFD834",
+      "role": "EN",
+      "description": "START VFD834",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD834_FLT",
+      "vfd_base": "VFD834",
+      "role": "FLT",
+      "description": "VFD834 HAS FAULTED",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD836_AUX",
+      "vfd_base": "VFD836",
+      "role": "AUX",
+      "description": "VFD836 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD836_EN",
+      "vfd_base": "VFD836",
+      "role": "EN",
+      "description": "START VFD836",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD219_AUX",
+      "vfd_base": "VFD219",
+      "role": "AUX",
+      "description": "VFD219 IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD219_FLT",
+      "vfd_base": "VFD219",
+      "role": "FLT",
+      "description": "VFD219 HAS FAULTED",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD219A_AUX",
+      "vfd_base": "VFD219A",
+      "role": "AUX",
+      "description": "VFD219A IS RUNNING",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD219A",
+      "vfd_base": "VFD219A",
+      "role": "EN",
+      "description": "START VFD219A",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    },
+    {
+      "io_name": "VFD219",
+      "vfd_base": "VFD219",
+      "role": "EN",
+      "description": "START VFD219",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/Conveyor.asc"
+    }
+  ],
+  "counts": {
+    "devices": 32,
+    "lane_drives": 5,
+    "shared": 2,
+    "by_role": {
+      "AUX": 13,
+      "EN": 13,
+      "FLT": 6
+    }
+  }
+}

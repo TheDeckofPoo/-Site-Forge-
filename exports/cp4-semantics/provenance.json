@@ -1,0 +1,1131 @@
+{
+  "generated_at": "2026-09-12T16:21:51.981906+00:00",
+  "finished_plc4_used": false,
+  "policy": "Every generated symbol needs provenance else CONFIGURATION REQUIRED",
+  "counts_by_provenance": {
+    "RUN_EXPLICIT": 106,
+    "CONFIGURATION REQUIRED": 71,
+    "RUN_DERIVED": 2,
+    "GENERIC_LIBRARY": 6,
+    "GENERIC_LIBRARY_TEMPLATE": 1
+  },
+  "symbol_count": 186,
+  "symbols": [
+    {
+      "symbol": "merge_name",
+      "provenance": "RUN_EXPLICIT",
+      "role": "merge_identity",
+      "detail": "SawMerge.Name"
+    },
+    {
+      "symbol": "collector_digits",
+      "provenance": "RUN_EXPLICIT",
+      "role": "collector",
+      "detail": "SawMerge.MotorIO"
+    },
+    {
+      "symbol": "motor_io",
+      "provenance": "RUN_EXPLICIT",
+      "role": "merge_motor",
+      "detail": "SawMerge.MotorIO"
+    },
+    {
+      "symbol": "reservation",
+      "provenance": "RUN_EXPLICIT",
+      "role": "reservation",
+      "detail": "SawMerge.ReserveIN"
+    },
+    {
+      "symbol": "lane_enable_delay_tm",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_enable_delay",
+      "detail": "SawMerge.LaneEnableDelayTM"
+    },
+    {
+      "symbol": "slice_seconds_merge",
+      "provenance": "RUN_EXPLICIT",
+      "role": "merge_slice_time",
+      "detail": "SawMerge.pSliceSeconds"
+    },
+    {
+      "symbol": "lane_count",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_count",
+      "detail": "SawLane active rows"
+    },
+    {
+      "symbol": "LANE_0_P219.lane_identity",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_identity",
+      "detail": "SawLane.Name"
+    },
+    {
+      "symbol": "LANE_0_P219.lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_index",
+      "detail": "SawLane.LaneNdx"
+    },
+    {
+      "symbol": "LANE_0_P219.lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor",
+      "detail": "SawLane.Name token"
+    },
+    {
+      "symbol": "LANE_0_P219.lane_photoeye",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_photoeye",
+      "detail": "SawLane.PhotoEyeIO"
+    },
+    {
+      "symbol": "LANE_0_P219.lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_0_P219.lane_disable",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_disable",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_0_P219.slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "slice_seconds",
+      "detail": "SawLane.SliceSeconds"
+    },
+    {
+      "symbol": "LANE_0_P219.reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "reserve_seconds",
+      "detail": "SawLane.ReserveSeconds"
+    },
+    {
+      "symbol": "LANE_0_P219.approach",
+      "provenance": "RUN_EXPLICIT",
+      "role": "approach",
+      "detail": "SawLane.ApproachUP"
+    },
+    {
+      "symbol": "LANE_0_P219.collision",
+      "provenance": "RUN_EXPLICIT",
+      "role": "collision",
+      "detail": "SawLane.CollisionUP"
+    },
+    {
+      "symbol": "LANE_0_P219.merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "role": "merge_input",
+      "detail": "SawLane.LaneIN"
+    },
+    {
+      "symbol": "LANE_0_P219.full_eye_ezpe",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "full_eye_ezpe",
+      "detail": "SawLane.ReserveTM"
+    },
+    {
+      "symbol": "LANE_1_P408.lane_identity",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_identity",
+      "detail": "SawLane.Name"
+    },
+    {
+      "symbol": "LANE_1_P408.lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_index",
+      "detail": "SawLane.LaneNdx"
+    },
+    {
+      "symbol": "LANE_1_P408.lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor",
+      "detail": "SawLane.Name token"
+    },
+    {
+      "symbol": "LANE_1_P408.lane_photoeye",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_photoeye",
+      "detail": "SawLane.PhotoEyeIO"
+    },
+    {
+      "symbol": "LANE_1_P408.lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_1_P408.lane_disable",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_disable",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_1_P408.slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "slice_seconds",
+      "detail": "SawLane.SliceSeconds"
+    },
+    {
+      "symbol": "LANE_1_P408.reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "reserve_seconds",
+      "detail": "SawLane.ReserveSeconds"
+    },
+    {
+      "symbol": "LANE_1_P408.approach",
+      "provenance": "RUN_EXPLICIT",
+      "role": "approach",
+      "detail": "SawLane.ApproachUP"
+    },
+    {
+      "symbol": "LANE_1_P408.collision",
+      "provenance": "RUN_EXPLICIT",
+      "role": "collision",
+      "detail": "SawLane.CollisionUP"
+    },
+    {
+      "symbol": "LANE_1_P408.merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "role": "merge_input",
+      "detail": "SawLane.LaneIN"
+    },
+    {
+      "symbol": "LANE_1_P408.full_eye_ezpe",
+      "provenance": "RUN_EXPLICIT",
+      "role": "full_eye_ezpe",
+      "detail": "SawLane.ReserveTM"
+    },
+    {
+      "symbol": "LANE_3_P116.lane_identity",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_identity",
+      "detail": "SawLane.Name"
+    },
+    {
+      "symbol": "LANE_3_P116.lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_index",
+      "detail": "SawLane.LaneNdx"
+    },
+    {
+      "symbol": "LANE_3_P116.lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor",
+      "detail": "SawLane.Name token"
+    },
+    {
+      "symbol": "LANE_3_P116.lane_photoeye",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_photoeye",
+      "detail": "SawLane.PhotoEyeIO"
+    },
+    {
+      "symbol": "LANE_3_P116.lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_3_P116.lane_disable",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_disable",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_3_P116.slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "slice_seconds",
+      "detail": "SawLane.SliceSeconds"
+    },
+    {
+      "symbol": "LANE_3_P116.reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "reserve_seconds",
+      "detail": "SawLane.ReserveSeconds"
+    },
+    {
+      "symbol": "LANE_3_P116.approach",
+      "provenance": "RUN_EXPLICIT",
+      "role": "approach",
+      "detail": "SawLane.ApproachUP"
+    },
+    {
+      "symbol": "LANE_3_P116.collision",
+      "provenance": "RUN_EXPLICIT",
+      "role": "collision",
+      "detail": "SawLane.CollisionUP"
+    },
+    {
+      "symbol": "LANE_3_P116.merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "role": "merge_input",
+      "detail": "SawLane.LaneIN"
+    },
+    {
+      "symbol": "LANE_3_P116.full_eye_ezpe",
+      "provenance": "RUN_EXPLICIT",
+      "role": "full_eye_ezpe",
+      "detail": "SawLane.ReserveTM"
+    },
+    {
+      "symbol": "LANE_4_P214.lane_identity",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_identity",
+      "detail": "SawLane.Name"
+    },
+    {
+      "symbol": "LANE_4_P214.lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_index",
+      "detail": "SawLane.LaneNdx"
+    },
+    {
+      "symbol": "LANE_4_P214.lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor",
+      "detail": "SawLane.Name token"
+    },
+    {
+      "symbol": "LANE_4_P214.lane_photoeye",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_photoeye",
+      "detail": "SawLane.PhotoEyeIO"
+    },
+    {
+      "symbol": "LANE_4_P214.lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_4_P214.lane_disable",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_disable",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_4_P214.slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "slice_seconds",
+      "detail": "SawLane.SliceSeconds"
+    },
+    {
+      "symbol": "LANE_4_P214.reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "reserve_seconds",
+      "detail": "SawLane.ReserveSeconds"
+    },
+    {
+      "symbol": "LANE_4_P214.approach",
+      "provenance": "RUN_EXPLICIT",
+      "role": "approach",
+      "detail": "SawLane.ApproachUP"
+    },
+    {
+      "symbol": "LANE_4_P214.collision",
+      "provenance": "RUN_EXPLICIT",
+      "role": "collision",
+      "detail": "SawLane.CollisionUP"
+    },
+    {
+      "symbol": "LANE_4_P214.merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "role": "merge_input",
+      "detail": "SawLane.LaneIN"
+    },
+    {
+      "symbol": "LANE_4_P214.full_eye_ezpe",
+      "provenance": "RUN_DERIVED",
+      "role": "full_eye_ezpe",
+      "detail": "SawLane.ReserveTM"
+    },
+    {
+      "symbol": "LANE_5_P832.lane_identity",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_identity",
+      "detail": "SawLane.Name"
+    },
+    {
+      "symbol": "LANE_5_P832.lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_index",
+      "detail": "SawLane.LaneNdx"
+    },
+    {
+      "symbol": "LANE_5_P832.lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor",
+      "detail": "SawLane.Name token"
+    },
+    {
+      "symbol": "LANE_5_P832.lane_photoeye",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_photoeye",
+      "detail": "SawLane.PhotoEyeIO"
+    },
+    {
+      "symbol": "LANE_5_P832.lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_5_P832.lane_disable",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_disable",
+      "detail": "SawLane.DisableIO"
+    },
+    {
+      "symbol": "LANE_5_P832.slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "slice_seconds",
+      "detail": "SawLane.SliceSeconds"
+    },
+    {
+      "symbol": "LANE_5_P832.reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "role": "reserve_seconds",
+      "detail": "SawLane.ReserveSeconds"
+    },
+    {
+      "symbol": "LANE_5_P832.approach",
+      "provenance": "RUN_EXPLICIT",
+      "role": "approach",
+      "detail": "SawLane.ApproachUP"
+    },
+    {
+      "symbol": "LANE_5_P832.collision",
+      "provenance": "RUN_EXPLICIT",
+      "role": "collision",
+      "detail": "SawLane.CollisionUP"
+    },
+    {
+      "symbol": "LANE_5_P832.merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "role": "merge_input",
+      "detail": "SawLane.LaneIN"
+    },
+    {
+      "symbol": "LANE_5_P832.full_eye_ezpe",
+      "provenance": "RUN_EXPLICIT",
+      "role": "full_eye_ezpe",
+      "detail": "SawLane.ReserveTM"
+    },
+    {
+      "symbol": "encoder.ENC414.ticks_per_foot",
+      "provenance": "RUN_EXPLICIT",
+      "role": "encoder",
+      "detail": "Encoders.asc"
+    },
+    {
+      "symbol": "encoder.ENC414.target_fpm",
+      "provenance": "RUN_EXPLICIT",
+      "role": "encoder",
+      "detail": "Encoders.asc"
+    },
+    {
+      "symbol": "encoder.ENC414.enable",
+      "provenance": "RUN_EXPLICIT",
+      "role": "encoder_enable",
+      "detail": "Encoders.asc EnableBit"
+    },
+    {
+      "symbol": "encoder.ENC424.ticks_per_foot",
+      "provenance": "RUN_EXPLICIT",
+      "role": "encoder",
+      "detail": "Encoders.asc"
+    },
+    {
+      "symbol": "encoder.ENC424.target_fpm",
+      "provenance": "RUN_EXPLICIT",
+      "role": "encoder",
+      "detail": "Encoders.asc"
+    },
+    {
+      "symbol": "encoder.ENC424.enable",
+      "provenance": "RUN_EXPLICIT",
+      "role": "encoder_enable",
+      "detail": "Encoders.asc EnableBit"
+    },
+    {
+      "symbol": "P219_Conv",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor_udt",
+      "detail": "lane=LANE_0_P219"
+    },
+    {
+      "symbol": "PE219_P",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_pe",
+      "detail": "lane=LANE_0_P219"
+    },
+    {
+      "symbol": "VFD219",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "lane=LANE_0_P219"
+    },
+    {
+      "symbol": "EZPE217_F",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "lane_full_eye",
+      "detail": "lane=LANE_0_P219"
+    },
+    {
+      "symbol": "P408_Conv",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor_udt",
+      "detail": "lane=LANE_1_P408"
+    },
+    {
+      "symbol": "PE410_P",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_pe",
+      "detail": "lane=LANE_1_P408"
+    },
+    {
+      "symbol": "VFD410_EN",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "lane=LANE_1_P408"
+    },
+    {
+      "symbol": "EZPE408_F",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_full_eye",
+      "detail": "lane=LANE_1_P408"
+    },
+    {
+      "symbol": "P116_Conv",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor_udt",
+      "detail": "lane=LANE_3_P116"
+    },
+    {
+      "symbol": "PE118_P",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_pe",
+      "detail": "lane=LANE_3_P116"
+    },
+    {
+      "symbol": "VFD118_EN",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "lane=LANE_3_P116"
+    },
+    {
+      "symbol": "EZPE116_F",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_full_eye",
+      "detail": "lane=LANE_3_P116"
+    },
+    {
+      "symbol": "P214_Conv",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor_udt",
+      "detail": "lane=LANE_4_P214"
+    },
+    {
+      "symbol": "PE216_P",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_pe",
+      "detail": "lane=LANE_4_P214"
+    },
+    {
+      "symbol": "VFD216_EN",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "lane=LANE_4_P214"
+    },
+    {
+      "symbol": "EZPE212_F2",
+      "provenance": "RUN_DERIVED",
+      "role": "lane_full_eye",
+      "detail": "lane=LANE_4_P214"
+    },
+    {
+      "symbol": "P832_Conv",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_conveyor_udt",
+      "detail": "lane=LANE_5_P832"
+    },
+    {
+      "symbol": "PE834_P",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_pe",
+      "detail": "lane=LANE_5_P832"
+    },
+    {
+      "symbol": "VFD834_EN",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_drive",
+      "detail": "lane=LANE_5_P832"
+    },
+    {
+      "symbol": "EZPE832_F",
+      "provenance": "RUN_EXPLICIT",
+      "role": "lane_full_eye",
+      "detail": "lane=LANE_5_P832"
+    },
+    {
+      "symbol": "ENC414",
+      "provenance": "RUN_EXPLICIT",
+      "role": "encoder",
+      "detail": ""
+    },
+    {
+      "symbol": "ENC424",
+      "provenance": "RUN_EXPLICIT",
+      "role": "encoder",
+      "detail": ""
+    },
+    {
+      "symbol": "P118",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD118"
+    },
+    {
+      "symbol": "P120",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD120"
+    },
+    {
+      "symbol": "P216",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD216"
+    },
+    {
+      "symbol": "P218",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD218"
+    },
+    {
+      "symbol": "P219",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD219"
+    },
+    {
+      "symbol": "P219A",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD219A"
+    },
+    {
+      "symbol": "P410",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD410"
+    },
+    {
+      "symbol": "P412",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD412"
+    },
+    {
+      "symbol": "P414",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD414"
+    },
+    {
+      "symbol": "P416",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD414"
+    },
+    {
+      "symbol": "P422",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD422"
+    },
+    {
+      "symbol": "P424",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD424"
+    },
+    {
+      "symbol": "P424A",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD424"
+    },
+    {
+      "symbol": "P834",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD834"
+    },
+    {
+      "symbol": "P836",
+      "provenance": "RUN_EXPLICIT",
+      "role": "vfd_conveyor",
+      "detail": "vfd_base=VFD836"
+    },
+    {
+      "symbol": "EZPE127_F",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "Enable_Merge1_Reserv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "symbol": "Enable_Merge2_Trk",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "symbol": "Enable_hold",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "symbol": "MRG422_aoUNL_PT_CnvDeltaDist",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astCollPeTrackCal",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astLaneClctrSlotResvCntrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astLanePeTrackCal",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astUNL_BFR_CnvCtrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astUNL_GPR_CnvCtrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astUNL_PT_CnvCtrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astUNL_Q1_CnvCtrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astUNL_Q2_CnvCtrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_astUNL_SlugBldCtrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_diHMI_LaneIdx",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_diNoCartonGap",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_rFastTaskDeltaMilliSecs",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_stLaneClctrSlotResvCntrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_stUNL_Q2_CnvCtrl",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_stUNL_SlugBldCfgTmp1",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_xCollTrackPE_OffsetCaptureArm",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_xLaneClctrPeCalibrate",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG422_xLane_OffsetCaptureArm",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG500_adiCollTrkArray_Freeze",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG500_astCollPeTrackCal",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG500_astLaneClctrSlotResvCntrl_Freeze",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG500_stCollLaneMrgCapture",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG500_xCollTrackPE_OffsetCaptureArm",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "MRG500_xLaneClctrPeCalibrate",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P118_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P120_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P1491_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P1492_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P216_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P218_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P219A_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P2426_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P2501_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P3451_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P3452_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P410_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P412_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P4131_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P4132_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P418_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P422_SawMerge_HMI",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P834_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "P836_Conv",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE118_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE1491_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE1491_P",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE1492_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE219A_J",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE2426_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE3451_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE3451_P",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE3452_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE410_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE4131_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE4131_P",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE4132_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE414A_J",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE414B_J",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE414C_J",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE414D_J",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE414_J",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE418_I",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "PE418_P",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Site-like pack symbol without explicit RUN bind in this map"
+    },
+    {
+      "symbol": "Use_GapStore_Belts",
+      "provenance": "CONFIGURATION REQUIRED",
+      "role": "unmapped_pack_symbol",
+      "detail": "Feature enable flag \u2014 engineer/site configuration"
+    },
+    {
+      "symbol": "tools/libraries/OReilly_Library_v3.L5X",
+      "provenance": "GENERIC_LIBRARY",
+      "role": "main_aoi_library",
+      "detail": ""
+    },
+    {
+      "symbol": "tools/libraries/programs/Sys_Program.L5X",
+      "provenance": "GENERIC_LIBRARY",
+      "role": "sys_program",
+      "detail": ""
+    },
+    {
+      "symbol": "tools/libraries/programs/System_Program.L5X",
+      "provenance": "GENERIC_LIBRARY",
+      "role": "system_program",
+      "detail": ""
+    },
+    {
+      "symbol": "tools/libraries/Slow_Flt_AOI.L5X",
+      "provenance": "GENERIC_LIBRARY",
+      "role": "slow_flt_overlay",
+      "detail": ""
+    },
+    {
+      "symbol": "tools/libraries/programs/IO_MAP_Program.L5X",
+      "provenance": "GENERIC_LIBRARY",
+      "role": "io_map_optional",
+      "detail": ""
+    },
+    {
+      "symbol": "tools/libraries/programs/Sawtooth_Merge_Program.L5X",
+      "provenance": "GENERIC_LIBRARY_TEMPLATE",
+      "role": "optional_program:Sawtooth_Merge",
+      "detail": "Gold program pack \u2014 not finished PLC4 controller input"
+    },
+    {
+      "symbol": "tools/libraries/Enc_Routine_ST.L5X",
+      "provenance": "GENERIC_LIBRARY",
+      "role": "encoder_routine_pattern",
+      "detail": "Referenced for encoder parameter preservation / future emit"
+    }
+  ]
+}

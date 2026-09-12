@@ -1,0 +1,48 @@
+{
+  "generated_at": "2026-09-12T16:17:54.927879+00:00",
+  "encoders": [
+    {
+      "encoder": "ENC414",
+      "enable": "VFD414_AUX",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 150.0,
+      "jamzone": "SAWTOOTH MERGE",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "encoder": "ENC424",
+      "enable": "VFD424_AUX",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 225.0,
+      "jamzone": "CITY COUNTER",
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "vfd": {
+    "merge_motor_io": "VFD414_AUX",
+    "lane_drives": [
+      {
+        "lane": "LANE_0_P219",
+        "drive": "VFD219"
+      },
+      {
+        "lane": "LANE_1_P408",
+        "drive": "VFD410_EN"
+      },
+      {
+        "lane": "LANE_3_P116",
+        "drive": "VFD118_EN"
+      },
+      {
+        "lane": "LANE_4_P214",
+        "drive": "VFD216_EN"
+      },
+      {
+        "lane": "LANE_5_P832",
+        "drive": "VFD834_EN"
+      }
+    ],
+    "note": "Full shared-VFD map lives in discovery vfd.json / pass vfd_generation.json"
+  },
+  "status": "seed"
+}

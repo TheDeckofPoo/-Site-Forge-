@@ -1,0 +1,323 @@
+{
+  "name": "SAWTOOTH_MERGE",
+  "motor_io": {
+    "symbol": "VFD414_AUX",
+    "vfd_base": "VFD414",
+    "role": "AUX",
+    "provenance": "RUN_EXPLICIT",
+    "lane_name": null,
+    "conveyors": [
+      "P414",
+      "P416"
+    ],
+    "detail": "SawMerge.MotorIO",
+    "source": "SawMerge.asc"
+  },
+  "reservation": {
+    "symbol": "SAW_RESERVATION",
+    "merge_name": "SAWTOOTH_MERGE",
+    "provenance": "RUN_EXPLICIT",
+    "detail": "SawMerge.ReserveIN",
+    "source": "SawMerge.asc"
+  },
+  "lane_enable_delay_tm": "tmSawMerge_DLY",
+  "slice_seconds": 18.0,
+  "collector_digits": "414",
+  "lanes": [
+    {
+      "name": "LANE_0_P219",
+      "lane_index": 1,
+      "conveyor": "P219",
+      "photoeye": {
+        "symbol": "PE219_P",
+        "role": "photoeye",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_0_P219",
+        "detail": "SawLane.PhotoEyeIO",
+        "source": "SawLane.asc"
+      },
+      "drive": {
+        "symbol": "VFD219",
+        "vfd_base": "VFD219",
+        "role": "EN",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_0_P219",
+        "conveyors": [
+          "P219"
+        ],
+        "detail": "SawLane.DisableIO",
+        "source": "SawLane.asc"
+      },
+      "approach": "SAW_APP_LANE_0",
+      "collision": "SAW_COL_LANE_0",
+      "lane_input": "SAW_MERGE_IN_0",
+      "slice_seconds": 3.0,
+      "reserve_seconds": 10.0,
+      "reserve_tm": "tmfcEZPE217_F",
+      "full_eye": {
+        "symbol": "EZPE217_F",
+        "role": "full_eye",
+        "provenance": "RUN_DERIVED",
+        "lane_name": "LANE_0_P219",
+        "detail": "ReserveTM=tmfcEZPE217_F / Fullline EZPE217_F on P217; map gold EZPE127_F\u2192EZPE217_F",
+        "source": "SawLane.ReserveTM+Fullline.asc+pack"
+      },
+      "pack_full_eye_rename": {
+        "EZPE127_F": "EZPE217_F"
+      },
+      "allowed_to_run": true,
+      "provenance": "RUN_EXPLICIT",
+      "state": "CLEAR",
+      "detail": "ReserveTM=tmfcEZPE217_F / Fullline EZPE217_F on P217; map gold EZPE127_F\u2192EZPE217_F"
+    },
+    {
+      "name": "LANE_1_P408",
+      "lane_index": 2,
+      "conveyor": "P408",
+      "photoeye": {
+        "symbol": "PE410_P",
+        "role": "photoeye",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_1_P408",
+        "detail": "SawLane.PhotoEyeIO",
+        "source": "SawLane.asc"
+      },
+      "drive": {
+        "symbol": "VFD410_EN",
+        "vfd_base": "VFD410",
+        "role": "EN",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_1_P408",
+        "conveyors": [
+          "P408"
+        ],
+        "detail": "SawLane.DisableIO",
+        "source": "SawLane.asc"
+      },
+      "approach": "SAW_APP_LANE_1",
+      "collision": "SAW_COL_LANE_1",
+      "lane_input": "SAW_MERGE_IN_1",
+      "slice_seconds": 18.0,
+      "reserve_seconds": 20.0,
+      "reserve_tm": "tmfcEZPE408_F",
+      "full_eye": {
+        "symbol": "EZPE408_F",
+        "role": "full_eye",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_1_P408",
+        "detail": "ReserveTM=tmfcEZPE408_F exact pack symbol",
+        "source": "SawLane.ReserveTM"
+      },
+      "pack_full_eye_rename": null,
+      "allowed_to_run": true,
+      "provenance": "RUN_EXPLICIT",
+      "state": "CLEAR",
+      "detail": "ReserveTM=tmfcEZPE408_F exact pack symbol"
+    },
+    {
+      "name": "LANE_3_P116",
+      "lane_index": 3,
+      "conveyor": "P116",
+      "photoeye": {
+        "symbol": "PE118_P",
+        "role": "photoeye",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_3_P116",
+        "detail": "SawLane.PhotoEyeIO",
+        "source": "SawLane.asc"
+      },
+      "drive": {
+        "symbol": "VFD118_EN",
+        "vfd_base": "VFD118",
+        "role": "EN",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_3_P116",
+        "conveyors": [
+          "P116"
+        ],
+        "detail": "SawLane.DisableIO",
+        "source": "SawLane.asc"
+      },
+      "approach": "SAW_APP_LANE_3",
+      "collision": "SAW_COL_LANE_3",
+      "lane_input": "SAW_MERGE_IN_3",
+      "slice_seconds": 8.0,
+      "reserve_seconds": 20.0,
+      "reserve_tm": "tmfcEZPE116_F",
+      "full_eye": {
+        "symbol": "EZPE116_F",
+        "role": "full_eye",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_3_P116",
+        "detail": "ReserveTM=tmfcEZPE116_F exact pack symbol",
+        "source": "SawLane.ReserveTM"
+      },
+      "pack_full_eye_rename": null,
+      "allowed_to_run": true,
+      "provenance": "RUN_EXPLICIT",
+      "state": "CLEAR",
+      "detail": "ReserveTM=tmfcEZPE116_F exact pack symbol"
+    },
+    {
+      "name": "LANE_4_P214",
+      "lane_index": 4,
+      "conveyor": "P214",
+      "photoeye": {
+        "symbol": "PE216_P",
+        "role": "photoeye",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_4_P214",
+        "detail": "SawLane.PhotoEyeIO",
+        "source": "SawLane.asc"
+      },
+      "drive": {
+        "symbol": "VFD216_EN",
+        "vfd_base": "VFD216",
+        "role": "EN",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_4_P214",
+        "conveyors": [
+          "P214"
+        ],
+        "detail": "SawLane.DisableIO",
+        "source": "SawLane.asc"
+      },
+      "approach": "SAW_APP_LANE_4",
+      "collision": "SAW_COL_LANE_4",
+      "lane_input": "SAW_MERGE_IN_4",
+      "slice_seconds": 6.0,
+      "reserve_seconds": 15.0,
+      "reserve_tm": "tmfcEZPE212_F1",
+      "full_eye": {
+        "symbol": "EZPE212_F2",
+        "role": "full_eye_lane_conveyor",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_4_P214",
+        "detail": "ReserveTM=tmfcEZPE212_F1\u2192EZPE212_F1 on P212; pack/lane full eye EZPE212_F2 on P214 (paired; do not rename F1\u2194F2)",
+        "source": "SawLane.ReserveTM+Fullline.asc"
+      },
+      "pack_full_eye_rename": null,
+      "allowed_to_run": true,
+      "provenance": "RUN_EXPLICIT",
+      "state": "CLEAR",
+      "detail": "ReserveTM=tmfcEZPE212_F1\u2192EZPE212_F1 on P212; pack/lane full eye EZPE212_F2 on P214 (paired; do not rename F1\u2194F2)"
+    },
+    {
+      "name": "LANE_5_P832",
+      "lane_index": 5,
+      "conveyor": "P832",
+      "photoeye": {
+        "symbol": "PE834_P",
+        "role": "photoeye",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_5_P832",
+        "detail": "SawLane.PhotoEyeIO",
+        "source": "SawLane.asc"
+      },
+      "drive": {
+        "symbol": "VFD834_EN",
+        "vfd_base": "VFD834",
+        "role": "EN",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_5_P832",
+        "conveyors": [
+          "P832"
+        ],
+        "detail": "SawLane.DisableIO",
+        "source": "SawLane.asc"
+      },
+      "approach": "SAW_APP_LANE_5",
+      "collision": "SAW_COL_LANE_5",
+      "lane_input": "SAW_MERGE_IN_5",
+      "slice_seconds": 3.0,
+      "reserve_seconds": 10.0,
+      "reserve_tm": "tmfcEZPE832_F",
+      "full_eye": {
+        "symbol": "EZPE832_F",
+        "role": "full_eye",
+        "provenance": "RUN_EXPLICIT",
+        "lane_name": "LANE_5_P832",
+        "detail": "ReserveTM=tmfcEZPE832_F exact pack symbol",
+        "source": "SawLane.ReserveTM"
+      },
+      "pack_full_eye_rename": null,
+      "allowed_to_run": true,
+      "provenance": "RUN_EXPLICIT",
+      "state": "CLEAR",
+      "detail": "ReserveTM=tmfcEZPE832_F exact pack symbol"
+    }
+  ],
+  "encoders": [
+    {
+      "encoder": "ENC414",
+      "io": "ENC414",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 150.0,
+      "enable": "VFD414_AUX",
+      "jamzone": "SAWTOOTH MERGE",
+      "sawtooth_associated": true,
+      "role": "SAWTOOTH_COLLECTOR",
+      "provenance": "RUN_EXPLICIT",
+      "associations": [
+        {
+          "type": "encoder_enable_vfd",
+          "to": "VFD414_AUX",
+          "vfd_base": "VFD414",
+          "on_machine_vfd_inventory": true,
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "encoder_to_saw_merge_via_motor_io",
+          "to": "SAWTOOTH_MERGE",
+          "via": "VFD414_AUX",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "encoder_jamzone_sawtooth",
+          "to": "SAWTOOTH MERGE",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "detail": "jamzone=SAWTOOTH MERGE; role=SAWTOOTH_COLLECTOR",
+      "pulses": 0
+    },
+    {
+      "encoder": "ENC424",
+      "io": "ENC424",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 225.0,
+      "enable": "VFD424_AUX",
+      "jamzone": "CITY COUNTER",
+      "sawtooth_associated": false,
+      "role": "CITY_COUNTER",
+      "provenance": "RUN_EXPLICIT",
+      "associations": [
+        {
+          "type": "encoder_enable_vfd",
+          "to": "VFD424_AUX",
+          "vfd_base": "VFD424",
+          "on_machine_vfd_inventory": true,
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "detail": "jamzone=CITY COUNTER; role=CITY_COUNTER",
+      "pulses": 0
+    }
+  ],
+  "merge_available": true,
+  "provenance": "RUN_EXPLICIT",
+  "source_file": "FORTNA/SawMerge.asc.ORNCCP4",
+  "notes": [
+    "Explicit RUN relationships beat numbering heuristics",
+    "Encoder jamzone CITY COUNTER is not forced into Sawtooth without evidence",
+    "Finished PLC4 not consulted",
+    "Explicit cross-number bind kept: LANE_1_P408 conveyor=P408 PE=PE410_P drive=VFD410_EN",
+    "Explicit cross-number bind kept: LANE_3_P116 conveyor=P116 PE=PE118_P drive=VFD118_EN",
+    "Explicit cross-number bind kept: LANE_4_P214 conveyor=P214 PE=PE216_P drive=VFD216_EN",
+    "Explicit cross-number bind kept: LANE_5_P832 conveyor=P832 PE=PE834_P drive=VFD834_EN"
+  ],
+  "generated_at": "2026-09-12T16:21:28.210045+00:00",
+  "finished_plc4_used": false,
+  "lane_count": 5,
+  "method": "semantic_model_from_discovery_and_run"
+}

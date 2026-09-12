@@ -1,0 +1,148 @@
+{
+  "generated_at": "2026-09-12T16:21:28.217745+00:00",
+  "source_l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-sawtooth-pass\\generated\\Sawtooth_Merge_Parameterized.L5X",
+  "program_scope": "Sawtooth_Merge",
+  "finished_plc4_used": false,
+  "counts": {
+    "total": 12,
+    "was_nop": 12,
+    "CAN_GENERATE_REAL_LOGIC": 11,
+    "CONFIGURATION_REQUIRED": 0,
+    "UNSUPPORTED": 0,
+    "DOCUMENTATION_ONLY": 1
+  },
+  "items": [
+    {
+      "routine": "Conv_PE",
+      "rung": "0",
+      "lane_or_encoder": "LANE_0_P219",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN PE PE219_P + library PE_UDT.I.PE_Clear pattern",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE219_P.I.PE_Clear)OTE(SawSem_L1_Occupied);XIC(PE219_P.I.PE_Clear)OTE(SawSem_L1_Clear);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_PE",
+      "rung": "1",
+      "lane_or_encoder": "LANE_1_P408",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN PE PE410_P + library PE_UDT.I.PE_Clear pattern",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE410_P.I.PE_Clear)OTE(SawSem_L2_Occupied);XIC(PE410_P.I.PE_Clear)OTE(SawSem_L2_Clear);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_PE",
+      "rung": "2",
+      "lane_or_encoder": "LANE_3_P116",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN PE PE118_P + library PE_UDT.I.PE_Clear pattern",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE118_P.I.PE_Clear)OTE(SawSem_L3_Occupied);XIC(PE118_P.I.PE_Clear)OTE(SawSem_L3_Clear);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_PE",
+      "rung": "3",
+      "lane_or_encoder": "LANE_4_P214",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN PE PE216_P + library PE_UDT.I.PE_Clear pattern",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE216_P.I.PE_Clear)OTE(SawSem_L4_Occupied);XIC(PE216_P.I.PE_Clear)OTE(SawSem_L4_Clear);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_PE",
+      "rung": "4",
+      "lane_or_encoder": "LANE_5_P832",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN PE PE834_P + library PE_UDT.I.PE_Clear pattern",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE834_P.I.PE_Clear)OTE(SawSem_L5_Occupied);XIC(PE834_P.I.PE_Clear)OTE(SawSem_L5_Clear);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_Enc",
+      "rung": "0",
+      "lane_or_encoder": "ENC414",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "ENC414 sawtooth-associated via SAWTOOTH MERGE; enable=VFD414_AUX (library P414_Enc.FPM pattern)",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIC(VFD414_AUX)OTE(SawSem_ENC414_Enable);XIO(VFD414_AUX)OTE(SawSem_ENC414_Reset);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_Enc",
+      "rung": "1",
+      "lane_or_encoder": "ENC424",
+      "classification": "DOCUMENTATION_ONLY",
+      "reason": "ENC424 jamzone=CITY COUNTER \u2014 CITY COUNTER; not forced into Sawtooth",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "NOP();",
+      "provenance": "GENERIC_LIBRARY"
+    },
+    {
+      "routine": "Conv_Fast",
+      "rung": "0",
+      "lane_or_encoder": "LANE_0_P219",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN lane LANE_0_P219 PE=PE219_P conveyor=P219; emit semantic exit-blocked (full Fast_Conv AOI rewrite unsupported)",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE219_P.I.PE_Clear)OTE(SawSem_L1_ExitBlocked);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_Fast",
+      "rung": "1",
+      "lane_or_encoder": "LANE_1_P408",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN lane LANE_1_P408 PE=PE410_P conveyor=P408; emit semantic exit-blocked (full Fast_Conv AOI rewrite unsupported)",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE410_P.I.PE_Clear)OTE(SawSem_L2_ExitBlocked);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_Fast",
+      "rung": "2",
+      "lane_or_encoder": "LANE_3_P116",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN lane LANE_3_P116 PE=PE118_P conveyor=P116; emit semantic exit-blocked (full Fast_Conv AOI rewrite unsupported)",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE118_P.I.PE_Clear)OTE(SawSem_L3_ExitBlocked);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_Fast",
+      "rung": "3",
+      "lane_or_encoder": "LANE_4_P214",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN lane LANE_4_P214 PE=PE216_P conveyor=P214; emit semantic exit-blocked (full Fast_Conv AOI rewrite unsupported)",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE216_P.I.PE_Clear)OTE(SawSem_L4_ExitBlocked);",
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "routine": "Conv_Fast",
+      "rung": "4",
+      "lane_or_encoder": "LANE_5_P832",
+      "classification": "CAN_GENERATE_REAL_LOGIC",
+      "reason": "RUN lane LANE_5_P832 PE=PE834_P conveyor=P832; emit semantic exit-blocked (full Fast_Conv AOI rewrite unsupported)",
+      "prior_text": "NOP();",
+      "was_nop": true,
+      "proposed_text": "XIO(PE834_P.I.PE_Clear)OTE(SawSem_L5_ExitBlocked);",
+      "provenance": "RUN_EXPLICIT"
+    }
+  ]
+}

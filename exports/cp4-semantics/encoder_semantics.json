@@ -1,0 +1,67 @@
+{
+  "generated_at": "2026-09-12T16:21:28.210086+00:00",
+  "finished_plc4_used": false,
+  "policy": "ENC424 CITY COUNTER must not be forced into Sawtooth without evidence",
+  "encoders": [
+    {
+      "encoder": "ENC414",
+      "io": "ENC414",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 150.0,
+      "enable": "VFD414_AUX",
+      "jamzone": "SAWTOOTH MERGE",
+      "role": "SAWTOOTH_COLLECTOR",
+      "sawtooth_associated": true,
+      "provenance": "RUN_EXPLICIT",
+      "associations": [
+        {
+          "type": "encoder_enable_vfd",
+          "to": "VFD414_AUX",
+          "vfd_base": "VFD414",
+          "on_machine_vfd_inventory": true,
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "encoder_to_saw_merge_via_motor_io",
+          "to": "SAWTOOTH_MERGE",
+          "via": "VFD414_AUX",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "type": "encoder_jamzone_sawtooth",
+          "to": "SAWTOOTH MERGE",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "detail": "jamzone=SAWTOOTH MERGE; role=SAWTOOTH_COLLECTOR",
+      "generation_policy": "CAN_GENERATE_REAL_LOGIC"
+    },
+    {
+      "encoder": "ENC424",
+      "io": "ENC424",
+      "ticks_per_foot": 6.0,
+      "target_fpm": 225.0,
+      "enable": "VFD424_AUX",
+      "jamzone": "CITY COUNTER",
+      "role": "CITY_COUNTER",
+      "sawtooth_associated": false,
+      "provenance": "RUN_EXPLICIT",
+      "associations": [
+        {
+          "type": "encoder_enable_vfd",
+          "to": "VFD424_AUX",
+          "vfd_base": "VFD424",
+          "on_machine_vfd_inventory": true,
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "detail": "jamzone=CITY COUNTER; role=CITY_COUNTER",
+      "generation_policy": "DOCUMENTATION_ONLY"
+    }
+  ],
+  "counts": {
+    "total": 2,
+    "sawtooth_associated": 1,
+    "city_counter": 1
+  }
+}

@@ -1,0 +1,3983 @@
+{
+  "generated_at": "2026-09-12T16:17:54.921607+00:00",
+  "finished_plc4_used": false,
+  "source_pass": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-sawtooth-pass",
+  "pack": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\programs\\Sawtooth_Merge_Program.L5X",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+  "counts": {
+    "unmapped_from_pass": 69,
+    "extras_reserve_eyes": 3,
+    "total_audited": 72
+  },
+  "resolution_histogram": {
+    "CONFIGURATION_REQUIRED": 2,
+    "ENGINEER_CONFIGURED": 4,
+    "GENERIC_LIBRARY_CONSTANT": 6,
+    "RUN_DERIVED_HIGH_CONFIDENCE": 1,
+    "RUN_EXPLICIT": 19,
+    "UNUSED_FOR_THIS_SITE": 40
+  },
+  "policy": {
+    "no_digit_similarity_binding": true,
+    "prefer_run_evidence": true,
+    "allowed_resolutions": [
+      "RUN_EXPLICIT",
+      "RUN_DERIVED_HIGH_CONFIDENCE",
+      "GENERIC_LIBRARY_CONSTANT",
+      "ENGINEER_CONFIGURED",
+      "CONFIGURATION_REQUIRED",
+      "GENERATION_NOT_SUPPORTED",
+      "UNUSED_FOR_THIS_SITE",
+      "UNKNOWN"
+    ]
+  },
+  "symbols": [
+    {
+      "symbol": "EZPE127_F",
+      "datatype": "PE_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "IF EZPE127_F.Full THEN"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[IF EZPE127_F.Full THEN ]]>"
+        }
+      ],
+      "generic_library_role": "lane_or_line_full_eye",
+      "likely_equipment_or_function": "Full-eye photoeye (pack leftover if absent from RUN)",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not map to EZPE217_F by digit similarity",
+        "Site LANE_0 full eye is EZPE217_F per ReserveTM"
+      ],
+      "confidence": 0.85,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `EZPE127_F` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Gold-pack full eye without RUN device of same name"
+      ]
+    },
+    {
+      "symbol": "Enable_Merge1_Reserv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "XIC(Enable_Merge2_Trk)XIC(Enable_Merge1_Reserv)JSR(RT_CollTrackMain,0);"
+        }
+      ],
+      "generic_library_role": "feature_enable_gate",
+      "likely_equipment_or_function": "Logic feature gate (not a field device)",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Set TRUE/FALSE per site feature (gap-store vs no-gap-store, reservation enable)"
+      ],
+      "confidence": 0.85,
+      "resolution": "ENGINEER_CONFIGURED",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "Main/feature gate referenced in routines: ['Conv_Enc']"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Feature enable flag \u2014 engineer/site configuration",
+      "extra_from_lane": null,
+      "notes": [
+        "Pass classified as feature enable \u2014 not a RUN field device"
+      ]
+    },
+    {
+      "symbol": "Enable_Merge2_Trk",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "XIC(Enable_Merge2_Trk)[XIC(Use_GapStore_Belts) MOV(400,P414_SawMerge_HMI.ClctrSpeed_FPM) ,XIO(Use_GapStore_Belts) MOV(140,P414_SawMerge_HMI.ClctrSpeed_FPM) ];"
+        },
+        {
+          "routine": "Conv_Enc",
+          "snippet": "XIC(Enable_Merge2_Trk)XIO(Use_GapStore_Belts)JSR(RT_DeltaDist_NoGapStore,0);"
+        },
+        {
+          "routine": "Conv_Enc",
+          "snippet": "XIC(Enable_Merge2_Trk)XIO(Use_GapStore_Belts)JSR(RT_IO_Map_NoGapStore,0);"
+        },
+        {
+          "routine": "Conv_Enc",
+          "snippet": "XIC(Enable_Merge2_Trk)XIC(Enable_Merge1_Reserv)JSR(RT_CollTrackMain,0);"
+        }
+      ],
+      "generic_library_role": "feature_enable_gate",
+      "likely_equipment_or_function": "Logic feature gate (not a field device)",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Set TRUE/FALSE per site feature (gap-store vs no-gap-store, reservation enable)"
+      ],
+      "confidence": 0.85,
+      "resolution": "ENGINEER_CONFIGURED",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "Main/feature gate referenced in routines: ['Conv_Enc']"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Feature enable flag \u2014 engineer/site configuration",
+      "extra_from_lane": null,
+      "notes": [
+        "Pass classified as feature enable \u2014 not a RUN field device"
+      ]
+    },
+    {
+      "symbol": "Enable_hold",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [],
+      "instruction_context": [],
+      "generic_library_role": "feature_enable_gate",
+      "likely_equipment_or_function": "Logic feature gate (not a field device)",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Set TRUE/FALSE per site feature (gap-store vs no-gap-store, reservation enable)"
+      ],
+      "confidence": 0.85,
+      "resolution": "ENGINEER_CONFIGURED",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "Main/feature gate referenced in routines: []"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Feature enable flag \u2014 engineer/site configuration",
+      "extra_from_lane": null,
+      "notes": [
+        "Pass classified as feature enable \u2014 not a RUN field device"
+      ]
+    },
+    {
+      "symbol": "MRG422_aoUNL_PT_CnvDeltaDist",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_DeltaDist_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "AO_CnvDeltaDist(MRG422_aoUNL_PT_CnvDeltaDist[1],"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "AO_CnvDeltaDist(MRG422_aoUNL_PT_CnvDeltaDist[2],"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "AO_CnvDeltaDist(MRG422_aoUNL_PT_CnvDeltaDist[3],"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "AO_CnvDeltaDist(MRG422_aoUNL_PT_CnvDeltaDist[4],"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astCollPeTrackCal",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_CollPeTrackCal"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_CollPeTrackCal",
+          "snippet": "// PE offsets will be saved to \"MRG422_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG422_xCollTrackPE_OffsetCaptureArm\" gets reset when process is completed"
+        },
+        {
+          "routine": "RT_CollPeTrackCal",
+          "snippet": "<![CDATA[// PE offsets will be saved to \"MRG422_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG422_xCollTrackPE_OffsetCaptureArm\" gets reset when process is completed]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astLaneClctrSlotResvCntrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "SR_LaneCntrl"
+      ],
+      "instruction_context": [
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "//Update slot length in \"MRG422_astLaneClctrSlotResvCntrl\""
+        },
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "<![CDATA[ //Update slot length in \"MRG422_astLaneClctrSlotResvCntrl\"]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astLanePeTrackCal",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_CollTrackInit",
+        "RT_LaneOffsetFind"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_CollTrackInit",
+          "snippet": "//M422_SawMerge_HMI.Lane[12].LaneOffset := MRG422_astLanePeTrackCal[12].diPlsCntSave + diCollPeTrackExitLocation + M422_SawMerge_HMI.Lane[12].LaneOffsetCorr;"
+        },
+        {
+          "routine": "RT_CollTrackInit",
+          "snippet": "<![CDATA[//M422_SawMerge_HMI.Lane[12].LaneOffset := MRG422_astLanePeTrackCal[12].diPlsCntSave + diCollPeTrackExitLocation + M422_SawMerge_HMI.Lane[12].LaneOffsetCorr;]]>"
+        },
+        {
+          "routine": "RT_LaneOffsetFind",
+          "snippet": "// PE offsets will be saved to \"MRG422_astLanePeTrackCal[x].diPlsCntSave\" and \"MRG422_xLane_OffsetCaptureArm\" gets reset when process is completed"
+        },
+        {
+          "routine": "RT_LaneOffsetFind",
+          "snippet": "<![CDATA[// PE offsets will be saved to \"MRG422_astLanePeTrackCal[x].diPlsCntSave\" and \"MRG422_xLane_OffsetCaptureArm\" gets reset when process is completed]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astUNL_BFR_CnvCtrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_BFR_CnvCtrl[1].xPE_BlockedEntr := // Not used"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_BFR_CnvCtrl[1].xPE_BlockedExit := // Not used"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_BFR_CnvCtrl[1].xCnvFaulted := M824_Conv.Flt.Flt;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_BFR_CnvCtrl[1].xCnvRestartReq := NOT M824_Conv.RestartTmr_DN;"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astUNL_GPR_CnvCtrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG422_astUNL_GPR_CnvCtrl[1].xCnvRunning := M824_Conv.Running; // Gapper Conveyor Running Status"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "M824_Conv.Spd := MRG422_astUNL_GPR_CnvCtrl[1].rDesireSpeed_IPS * 5 / 1.5; //Gear ratio = 1.5"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_GPR_CnvCtrl[1].xCnvFaulted := M824_Conv.Flt.Flt;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_GPR_CnvCtrl[1].xCnvRestartReq := NOT M824_Conv.RestartTmr_DN;"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astUNL_PT_CnvCtrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_DeltaDist_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "MRG422_astUNL_PT_CnvCtrl[1].rPrevSpd := MRG422_astUNL_PT_CnvCtrl[1].rCurrSpd;"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "MRG422_astUNL_PT_CnvCtrl[1].rCurrSpd := 225/5;"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "MRG422_astUNL_PT_CnvCtrl[1].rCurrSpd,"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "MRG422_astUNL_PT_CnvCtrl[1].rPrevSpd,"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astUNL_Q1_CnvCtrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG422_astUNL_Q1_CnvCtrl[1].xCnvRunning := P2501_Conv.Running; // Gap&Store Conveyor Running Status"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P2501_Conv.Spd := MRG422_astUNL_Q1_CnvCtrl[1].rDesireSpeed_IPS * 5; // Commanded Speed to run"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[1].xCnvFaulted := P2501_Conv.Flt.Flt;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[1].xCnvRestartReq := NOT P2501_Conv.RestartTmr_DN;"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astUNL_Q2_CnvCtrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P410_Conv.Spd := 225; //MRG422_astUNL_Q2_CnvCtrl[2].rDesireSpeed_IPS * 5 / 1.5; //1.5= Gear Ratio on gapper;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P118_Conv.Spd := 225; //MRG422_astUNL_Q2_CnvCtrl[3].rDesireSpeed_IPS * 5 / 1.5; //1.5= Gear Ratio on gapper;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P216_Conv.Spd := 225; //MRG422_astUNL_Q2_CnvCtrl[4].rDesireSpeed_IPS * 5 / 1.5; //1.5= Gear Ratio on gapper;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P834_Conv.Spd := 225; //MRG422_astUNL_Q2_CnvCtrl[5].rDesireSpeed_IPS * 5 / 1.5; //1.5= Gear Ratio on gapper;"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_astUNL_SlugBldCtrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//P422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].Disabled := MRG422_astUNL_SlugBldCtrl[MRG422_diHMI_LaneIdx].xLaneDisabled; //M422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].Disabled"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_SlugBldCtrl[MRG414_diHMI_LaneIdx].xLaneFlowControlActive := 0; //MRG422_astUNL_SlugBldCtrl[MRG422_diHMI_LaneIdx].xLaneRunEnable AND NOT MRG422_astUNL_SlugBldCtrl[MRG422_diHMI_LaneIdx].xSlugReleasing_Q2;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[//P422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].Disabled := MRG422_astUNL_SlugBldCtrl[MRG422_diHMI_LaneIdx].xLaneDisabled; //M422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].Disabled]]>"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_SlugBldCtrl[MRG414_diHMI_LaneIdx].xLaneFlowControlActive := 0; //MRG422_astUNL_SlugBldCtrl[MRG422_diHMI_LaneIdx].xLaneRunEnable AND NOT MRG422_astUNL_SlugBldCtrl[MRG422_diHMI_LaneIdx].xSlugReleasing_Q2; ]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_diHMI_LaneIdx",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P414_SawMerge_HMI.Lane[MRG414_diHMI_LaneIdx].AcceptedSlugLength := MRG414_astLaneClctrSlotResvStat[MRG414_diHMI_LaneIdx].rSlotSizeInch; //M422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].AcceptedSlugLength"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P414_SawMerge_HMI.Lane[MRG414_diHMI_LaneIdx].ReservedSlugLength := MRG414_astLaneClctrSlotResvStat[MRG414_diHMI_LaneIdx].rSlotSizeInch; //M422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].ReservedSlugLength"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P414_SawMerge_HMI.Lane[MRG414_diHMI_LaneIdx].SlugTrackID := MRG414_astLaneClctrSlotResvStat[MRG414_diHMI_LaneIdx].diLanePkgSeqId; //M422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].SlugTrackID"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P414_SawMerge_HMI.Lane[MRG414_diHMI_LaneIdx].ReleasingSlugLength := MRG414_astUNL_SlugBldCtrl[MRG414_diHMI_LaneIdx].rQ2_SlugLengthReleaseMeasure; //M422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].ReleasingSlugLength"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_diNoCartonGap",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "SR_LaneCntrl"
+      ],
+      "instruction_context": [
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "MRG414_diCollSlotDelStartIdx := MRG414_stLaneClctrSlotResvCntrl.diSlotStartLoc + MRG414_diCollUsableSlotSize; //MRG422_stLaneClctrSlotResvCntrl.diResvLaneLoc - MRG422_diNoCartonGap + MRG422_stUNL_SlugBldCfgTmp1.diQ2_SlugGapAdder;"
+        },
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": " MRG414_diCollUsableSlotSize; //MRG422_stLaneClctrSlotResvCntrl.diResvLaneLoc - MRG422_diNoCartonGap + MRG422_stUNL_SlugBldCfgTmp1.diQ2_SlugGapAdder;]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_rFastTaskDeltaMilliSecs",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_DeltaDist_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "MRG422_rFastTaskDeltaMilliSecs,"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "MRG422_rFastTaskDeltaMilliSecs,"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "MRG422_rFastTaskDeltaMilliSecs,"
+        },
+        {
+          "routine": "RT_DeltaDist_NoGapStore",
+          "snippet": "MRG422_rFastTaskDeltaMilliSecs,"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_stLaneClctrSlotResvCntrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "SR_LaneCntrl"
+      ],
+      "instruction_context": [
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "MRG414_diCollSlotDelStartIdx := MRG414_stLaneClctrSlotResvCntrl.diSlotStartLoc + MRG414_diCollUsableSlotSize; //MRG422_stLaneClctrSlotResvCntrl.diResvLaneLoc - MRG422_diNoCartonGap + MRG422_stUNL_SlugBldCfgTmp1.diQ2_SlugGapAdder;"
+        },
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "MRG414_stLaneClctrSlotResvCntrl.diSlotStartLoc + MRG414_diCollUsableSlotSize; //MRG422_stLaneClctrSlotResvCntrl.diResvLaneLoc - MRG422_diNoCartonGap + MRG422_stUNL_SlugBldCfgTmp1.diQ2_SlugGapAdder;]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_stUNL_Q2_CnvCtrl",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "SR_LaneCntrl"
+      ],
+      "instruction_context": [
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "IF MRG414_stUNL_SlugBldCtrlTmp1.xSlugAccepted_Q2 THEN //RJ modified //org-> stUNL_SlugBldCtrl.xSlugAccepted_Q2 THEN AND (MRG422_stUNL_Q2_CnvCtrl.rCurrSpd <= 0.0)"
+        },
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "<![CDATA[IF MRG414_stUNL_SlugBldCtrlTmp1.xSlugAccepted_Q2 THEN //RJ modified //org-> stUNL_SlugBldCtrl.xSlugAccepted_Q2 THEN AND (MRG422_stUNL_Q2_CnvCtrl.rCurrSpd <= 0.0)]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_stUNL_SlugBldCfgTmp1",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "SR_LaneCntrl"
+      ],
+      "instruction_context": [
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "MRG414_diCollSlotDelStartIdx := MRG414_stLaneClctrSlotResvCntrl.diSlotStartLoc + MRG414_diCollUsableSlotSize; //MRG422_stLaneClctrSlotResvCntrl.diResvLaneLoc - MRG422_diNoCartonGap + MRG422_stUNL_SlugBldCfgTmp1.diQ2_SlugGapAdder;"
+        },
+        {
+          "routine": "SR_LaneCntrl",
+          "snippet": "tSize; //MRG422_stLaneClctrSlotResvCntrl.diResvLaneLoc - MRG422_diNoCartonGap + MRG422_stUNL_SlugBldCfgTmp1.diQ2_SlugGapAdder;]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_xCollTrackPE_OffsetCaptureArm",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_CollPeTrackCal"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_CollPeTrackCal",
+          "snippet": "// First enable \"MRG422_xLaneClctrPeCalibrate\" then \"MRG422_xCollTrackPE_OffsetCaptureArm\""
+        },
+        {
+          "routine": "RT_CollPeTrackCal",
+          "snippet": "// PE offsets will be saved to \"MRG422_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG422_xCollTrackPE_OffsetCaptureArm\" gets reset when process is completed"
+        },
+        {
+          "routine": "RT_CollPeTrackCal",
+          "snippet": "<![CDATA[// First enable \"MRG422_xLaneClctrPeCalibrate\" then \"MRG422_xCollTrackPE_OffsetCaptureArm\"]]>"
+        },
+        {
+          "routine": "RT_CollPeTrackCal",
+          "snippet": "<![CDATA[// PE offsets will be saved to \"MRG422_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG422_xCollTrackPE_OffsetCaptureArm\" gets reset when process is completed]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_xLaneClctrPeCalibrate",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_CollPeTrackCal",
+        "RT_LaneOffsetFind"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_CollPeTrackCal",
+          "snippet": "// First enable \"MRG422_xLaneClctrPeCalibrate\" then \"MRG422_xCollTrackPE_OffsetCaptureArm\""
+        },
+        {
+          "routine": "RT_CollPeTrackCal",
+          "snippet": "<![CDATA[// First enable \"MRG422_xLaneClctrPeCalibrate\" then \"MRG422_xCollTrackPE_OffsetCaptureArm\"]]>"
+        },
+        {
+          "routine": "RT_LaneOffsetFind",
+          "snippet": "// First enable \"MRG422_xLaneClctrPeCalibrate\" then \"MRG422_xLane_OffsetCaptureArm\""
+        },
+        {
+          "routine": "RT_LaneOffsetFind",
+          "snippet": "<![CDATA[// First enable \"MRG422_xLaneClctrPeCalibrate\" then \"MRG422_xLane_OffsetCaptureArm\"]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG422_xLane_OffsetCaptureArm",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_LaneOffsetFind"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_LaneOffsetFind",
+          "snippet": "// First enable \"MRG422_xLaneClctrPeCalibrate\" then \"MRG422_xLane_OffsetCaptureArm\""
+        },
+        {
+          "routine": "RT_LaneOffsetFind",
+          "snippet": "// PE offsets will be saved to \"MRG422_astLanePeTrackCal[x].diPlsCntSave\" and \"MRG422_xLane_OffsetCaptureArm\" gets reset when process is completed"
+        },
+        {
+          "routine": "RT_LaneOffsetFind",
+          "snippet": "<![CDATA[// First enable \"MRG422_xLaneClctrPeCalibrate\" then \"MRG422_xLane_OffsetCaptureArm\"]]>"
+        },
+        {
+          "routine": "RT_LaneOffsetFind",
+          "snippet": "<![CDATA[// PE offsets will be saved to \"MRG422_astLanePeTrackCal[x].diPlsCntSave\" and \"MRG422_xLane_OffsetCaptureArm\" gets reset when process is completed]]>"
+        }
+      ],
+      "generic_library_role": "gapstore_or_unload_path_merge_struct",
+      "likely_equipment_or_function": "Gold-pack gap-store / unload merge family (MRG422) \u2014 site collector is MRG414 family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Do not rename MRG422\u2192MRG414 by digit heuristic",
+        "Leave gated behind Use_GapStore_Belts / Enable_* or omit from site emit"
+      ],
+      "confidence": 0.8,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG422_* appears beside site collector MRG414_* in generic pack (gap-store/unload path)"
+        },
+        {
+          "kind": "PASS",
+          "detail": "Site SawMerge.MotorIO=VFD414_AUX \u2192 collector family MRG414, not 422"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "Digit-similarity to other merge numbers is NOT accepted as binding evidence"
+      ]
+    },
+    {
+      "symbol": "MRG500_adiCollTrkArray_Freeze",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "//////////////////////////////////////// Debug: Freeze the Track Array Data to \"MRG500_adiCollTrkArray_Freeze\" \"MRG500_astLaneClctrSlotResvCntrl_Freeze\" ///////////////////////////////////////////////////////////////////////////////////////"
+        }
+      ],
+      "generic_library_role": "calibration_freeze_or_capture_helper",
+      "likely_equipment_or_function": "Gold-pack calibration/freeze helper family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Keep as pack helper tags unless site provides alternate calibration workflow"
+      ],
+      "confidence": 0.75,
+      "resolution": "GENERIC_LIBRARY_CONSTANT",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG500_* used as calibration/freeze capture helpers in pack comments/routines"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "MRG500_astCollPeTrackCal",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "rate\" then \"MRG500_xCollTrackPE_OffsetCaptureArm\". PE offsets will be saved to \"MRG500_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG500_xCollTrackPE_OffsetCaptureArm\" gets reset when process is completed. /////////////////////////////////////"
+        },
+        {
+          "routine": "Conv_Enc",
+          "snippet": "rate\" then \"MRG500_xCollTrackPE_OffsetCaptureArm\". PE offsets will be saved to \"MRG500_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG500_xCollTrackPE_OffsetCaptureArm\" gets reset when process is completed. /////////////////////////////////////"
+        }
+      ],
+      "generic_library_role": "calibration_freeze_or_capture_helper",
+      "likely_equipment_or_function": "Gold-pack calibration/freeze helper family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Keep as pack helper tags unless site provides alternate calibration workflow"
+      ],
+      "confidence": 0.75,
+      "resolution": "GENERIC_LIBRARY_CONSTANT",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG500_* used as calibration/freeze capture helpers in pack comments/routines"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "MRG500_astLaneClctrSlotResvCntrl_Freeze",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "//////// Debug: Freeze the Track Array Data to \"MRG500_adiCollTrkArray_Freeze\" \"MRG500_astLaneClctrSlotResvCntrl_Freeze\" ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////"
+        }
+      ],
+      "generic_library_role": "calibration_freeze_or_capture_helper",
+      "likely_equipment_or_function": "Gold-pack calibration/freeze helper family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Keep as pack helper tags unless site provides alternate calibration workflow"
+      ],
+      "confidence": 0.75,
+      "resolution": "GENERIC_LIBRARY_CONSTANT",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG500_* used as calibration/freeze capture helpers in pack comments/routines"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "MRG500_stCollLaneMrgCapture",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "eservation against actual slug position Refer to \"RT_CollLaneMergeCapture\" and (MRG500_stCollLaneMrgCapture.diLaneId, MRG500_stCollLaneMrgCapture.diDelta) /////////////////////////////////////////////////////////////////////////////////////"
+        }
+      ],
+      "generic_library_role": "calibration_freeze_or_capture_helper",
+      "likely_equipment_or_function": "Gold-pack calibration/freeze helper family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Keep as pack helper tags unless site provides alternate calibration workflow"
+      ],
+      "confidence": 0.75,
+      "resolution": "GENERIC_LIBRARY_CONSTANT",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG500_* used as calibration/freeze capture helpers in pack comments/routines"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "MRG500_xCollTrackPE_OffsetCaptureArm",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "Refer to \"RT_CollPeTrackCal\". First enable \"MRG500_xLaneClctrPeCalibrate\" then \"MRG500_xCollTrackPE_OffsetCaptureArm\". PE offsets will be saved to \"MRG500_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG500_xCollTrackPE_OffsetCaptureArm\" gets re"
+        },
+        {
+          "routine": "Conv_Enc",
+          "snippet": "Refer to \"RT_CollPeTrackCal\". First enable \"MRG500_xLaneClctrPeCalibrate\" then \"MRG500_xCollTrackPE_OffsetCaptureArm\". PE offsets will be saved to \"MRG500_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG500_xCollTrackPE_OffsetCaptureArm\" gets re"
+        }
+      ],
+      "generic_library_role": "calibration_freeze_or_capture_helper",
+      "likely_equipment_or_function": "Gold-pack calibration/freeze helper family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Keep as pack helper tags unless site provides alternate calibration workflow"
+      ],
+      "confidence": 0.75,
+      "resolution": "GENERIC_LIBRARY_CONSTANT",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG500_* used as calibration/freeze capture helpers in pack comments/routines"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "MRG500_xLaneClctrPeCalibrate",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "//// Calibrate PEs on the Collector Refer to \"RT_CollPeTrackCal\". First enable \"MRG500_xLaneClctrPeCalibrate\" then \"MRG500_xCollTrackPE_OffsetCaptureArm\". PE offsets will be saved to \"MRG500_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG500_xC"
+        },
+        {
+          "routine": "Conv_Enc",
+          "snippet": "//// Calibrate PEs on the Collector Refer to \"RT_CollPeTrackCal\". First enable \"MRG500_xLaneClctrPeCalibrate\" then \"MRG500_xCollTrackPE_OffsetCaptureArm\". PE offsets will be saved to \"MRG500_astCollPeTrackCal[x].diPlsCntSave\" and \"MRG500_xC"
+        }
+      ],
+      "generic_library_role": "calibration_freeze_or_capture_helper",
+      "likely_equipment_or_function": "Gold-pack calibration/freeze helper family",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Keep as pack helper tags unless site provides alternate calibration workflow"
+      ],
+      "confidence": 0.75,
+      "resolution": "GENERIC_LIBRARY_CONSTANT",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "MRG500_* used as calibration/freeze capture helpers in pack comments/routines"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P118_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_PT_CnvCtrl[3].xCnvRunning := P118_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[3].xCnvRunning := P118_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P118_Conv.Spd := 225; //MRG422_astUNL_Q2_CnvCtrl[3].rDesireSpeed_IPS * 5 / 1.5; //1.5= Gear Ratio on gapper;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P118_Conv.PI.Run_Hold := not MRG414_astUNL_Q2_CnvCtrl[3].xInterlock_OUT and not PE118_P.I.PE_Clear;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P118)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P118",
+          "row_name": "P118"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P118",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P118_Conv` \u2194 RUN conveyor `P118` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P118` exists in RUN; pack UDT is `P118_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P118",
+          "row_name": "P118"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P118",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P120_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[3].xCnvRunning := P120_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P120_Conv.Spd := MRG414_astUNL_MRG_CnvCtrl[3].rDesireSpeed_FPM;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P120_Conv.PI.Run_Hold := NOT (MRG414_astUNL_MRG_CnvCtrl[3].xInterlock_OUT AND MRG414_astUNL_MRG_CnvCtrl[3].rDesireSpeed_IPS > 0);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[3].xCnvFaulted := P120_Conv.Flt.Flt;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P120)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P120",
+          "row_name": "PE414B_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P120",
+          "row_name": "P120"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P120",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P120_Conv` \u2194 RUN conveyor `P120` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P120` exists in RUN; pack UDT is `P120_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P120",
+          "row_name": "PE414B_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P120",
+          "row_name": "P120"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P120",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P1491_Conv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG422_astUNL_Q1_CnvCtrl[4].xCnvRunning := P1491_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P1491_Conv.Spd := MRG422_astUNL_Q1_CnvCtrl[4].rDesireSpeed_IPS * 5;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[4].xCnvFaulted := P1491_Conv.Flt.Flt;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[4].xCnvRestartReq := NOT P1491_Conv.RestartTmr_DN;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "Conveyor UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `P1491_Conv` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "P1492_Conv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_SlugBldCtrl[4].xLaneMaintMode := P218_Conv.HMI.Manual OR P216_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P1492_Conv.HMI.Manual OR P1491_Conv.HMI.Manual"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_SlugBldCtrl[5].xLaneMaintMode := P836_Conv.HMI.Manual OR P834_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P1492_Conv.HMI.Manual OR P1491_Conv.HMI.Manual"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_SlugBldCtrl[4].xLaneMaintMode := P218_Conv.HMI.Manual OR P216_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P1492_Conv.HMI.Manual OR P1491_Conv.HMI.Manual]]>"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_SlugBldCtrl[5].xLaneMaintMode := P836_Conv.HMI.Manual OR P834_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P1492_Conv.HMI.Manual OR P1491_Conv.HMI.Manual]]>"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "Conveyor UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `P1492_Conv` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "P216_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_PT_CnvCtrl[4].xCnvRunning := P216_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[4].xCnvRunning := P216_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P216_Conv.Spd := 225; //MRG422_astUNL_Q2_CnvCtrl[4].rDesireSpeed_IPS * 5 / 1.5; //1.5= Gear Ratio on gapper;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P216_Conv.PI.Run_Hold := not MRG414_astUNL_Q2_CnvCtrl[4].xInterlock_OUT and not PE216_P.I.PE_Clear;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P216)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P216",
+          "row_name": "P216"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P216",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P216_Conv` \u2194 RUN conveyor `P216` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P216` exists in RUN; pack UDT is `P216_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P216",
+          "row_name": "P216"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P216",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P218_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[4].xCnvRunning := P218_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P218_Conv.Spd := MRG414_astUNL_MRG_CnvCtrl[4].rDesireSpeed_FPM;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P218_Conv.PI.Run_Hold := NOT (MRG414_astUNL_MRG_CnvCtrl[4].xInterlock_OUT AND MRG414_astUNL_MRG_CnvCtrl[4].rDesireSpeed_IPS > 0);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[4].xCnvFaulted := P218_Conv.Flt.Flt;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P218)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P218",
+          "row_name": "PE414C_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P218",
+          "row_name": "P218"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P218",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P218_Conv` \u2194 RUN conveyor `P218` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P218` exists in RUN; pack UDT is `P218_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P218",
+          "row_name": "PE414C_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P218",
+          "row_name": "P218"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P218",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P219A_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[1].xCnvRunning := P219A_Conv.Running; // Spur/Inject Conveyor Running Status"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P219A_Conv.Spd := MRG414_astUNL_MRG_CnvCtrl[1].rDesireSpeed_FPM; // Commanded Speed to run"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P219A_Conv.PI.Run_Hold := NOT (MRG414_astUNL_MRG_CnvCtrl[1].xInterlock_OUT AND MRG414_astUNL_MRG_CnvCtrl[1].rDesireSpeed_IPS > 0);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[1].xCnvFaulted := P219A_Conv.Flt.Flt;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P219A)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P219A",
+          "row_name": "PE219A_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P219A",
+          "row_name": "P219A"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P219A",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P219A_Conv` \u2194 RUN conveyor `P219A` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P219A` exists in RUN; pack UDT is `P219A_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P219A",
+          "row_name": "PE219A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P219A",
+          "row_name": "P219A"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P219A",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P2426_Conv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_SlugBldCtrl[1].xLaneMaintMode := P219A_Conv.HMI.Manual OR P219_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P2426_Conv.HMI.Manual OR P2501_Conv.HMI.Manual"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_SlugBldCtrl[1].xLaneMaintMode := P219A_Conv.HMI.Manual OR P219_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P2426_Conv.HMI.Manual OR P2501_Conv.HMI.Manual]]>"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "Conveyor UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `P2426_Conv` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "P2501_Conv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG422_astUNL_Q1_CnvCtrl[1].xCnvRunning := P2501_Conv.Running; // Gap&Store Conveyor Running Status"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P2501_Conv.Spd := MRG422_astUNL_Q1_CnvCtrl[1].rDesireSpeed_IPS * 5; // Commanded Speed to run"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[1].xCnvFaulted := P2501_Conv.Flt.Flt;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[1].xCnvRestartReq := NOT P2501_Conv.RestartTmr_DN;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "Conveyor UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `P2501_Conv` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "P3451_Conv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[2].xCnvFaulted := P3451_Conv.Flt.Flt;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[2].xCnvRestartReq := NOT P3451_Conv.RestartTmr_DN;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_SlugBldCtrl[2].xLaneMaintMode := P412_Conv.HMI.Manual OR P410_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P3452_Conv.HMI.Manual OR P3451_Conv.HMI.Manual"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[//MRG422_astUNL_Q1_CnvCtrl[2].xCnvFaulted := P3451_Conv.Flt.Flt;]]>"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "Conveyor UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `P3451_Conv` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "P3452_Conv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_SlugBldCtrl[2].xLaneMaintMode := P412_Conv.HMI.Manual OR P410_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P3452_Conv.HMI.Manual OR P3451_Conv.HMI.Manual"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_SlugBldCtrl[2].xLaneMaintMode := P412_Conv.HMI.Manual OR P410_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P3452_Conv.HMI.Manual OR P3451_Conv.HMI.Manual]]>"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "Conveyor UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `P3452_Conv` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "P410_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_PT_CnvCtrl[2].xCnvRunning := P410_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[2].xCnvRunning := P410_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P410_Conv.Spd := 225; //MRG422_astUNL_Q2_CnvCtrl[2].rDesireSpeed_IPS * 5 / 1.5; //1.5= Gear Ratio on gapper;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P410_Conv.PI.Run_Hold := not MRG414_astUNL_Q2_CnvCtrl[2].xInterlock_OUT and not PE410_P.I.PE_Clear;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P410)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P410",
+          "row_name": "P410"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P410",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P410_Conv` \u2194 RUN conveyor `P410` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P410` exists in RUN; pack UDT is `P410_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P410",
+          "row_name": "P410"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P410",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P412_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[2].xCnvRunning := P412_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P412_Conv.Spd := MRG414_astUNL_MRG_CnvCtrl[2].rDesireSpeed_FPM;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P412_Conv.PI.Run_Hold := NOT (MRG414_astUNL_MRG_CnvCtrl[2].xInterlock_OUT AND MRG414_astUNL_MRG_CnvCtrl[2].rDesireSpeed_IPS > 0);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[2].xCnvFaulted := P412_Conv.Flt.Flt;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P412)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P412",
+          "row_name": "PE414A_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P412",
+          "row_name": "P412"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P412",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P412_Conv` \u2194 RUN conveyor `P412` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P412` exists in RUN; pack UDT is `P412_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P412",
+          "row_name": "PE414A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P412",
+          "row_name": "P412"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P412",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P4131_Conv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[3].xCnvFaulted := P4131_Conv.Flt.Flt;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//MRG422_astUNL_Q1_CnvCtrl[3].xCnvRestartReq := NOT P4131_Conv.RestartTmr_DN;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_SlugBldCtrl[3].xLaneMaintMode := P120_Conv.HMI.Manual OR P118_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P4132_Conv.HMI.Manual OR P4131_Conv.HMI.Manual"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[//MRG422_astUNL_Q1_CnvCtrl[3].xCnvFaulted := P4131_Conv.Flt.Flt;]]>"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "Conveyor UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `P4131_Conv` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "P4132_Conv",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_SlugBldCtrl[3].xLaneMaintMode := P120_Conv.HMI.Manual OR P118_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P4132_Conv.HMI.Manual OR P4131_Conv.HMI.Manual"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_SlugBldCtrl[3].xLaneMaintMode := P120_Conv.HMI.Manual OR P118_Conv.HMI.Manual; //If any conveyor in Manual Mode // OR P4132_Conv.HMI.Manual OR P4131_Conv.HMI.Manual]]>"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "Conveyor UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `P4132_Conv` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "P418_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P418_Conv.Spd := MRG414_stCollTrkSysCfg.rClctrSpd_FPM;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[P418_Conv.Spd := MRG414_stCollTrkSysCfg.rClctrSpd_FPM;]]>"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P418)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Fullline.asc",
+          "field": "Conveyor_Name",
+          "value": "P418",
+          "row_name": "EZPE418_F"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P418",
+          "row_name": "P418"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P418",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P418_Conv` \u2194 RUN conveyor `P418` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P418` exists in RUN; pack UDT is `P418_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Conveyor_Name",
+          "value": "P418",
+          "row_name": "EZPE418_F"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P418",
+          "row_name": "P418"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P418",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P422_SawMerge_HMI",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "//P422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].Disabled := MRG422_astUNL_SlugBldCtrl[MRG422_diHMI_LaneIdx].xLaneDisabled; //M422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].Disabled"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[//P422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].Disabled := MRG422_astUNL_SlugBldCtrl[MRG422_diHMI_LaneIdx].xLaneDisabled; //M422_SawMerge_HMI.Lane[MRG422_diHMI_LaneIdx].Disabled]]>"
+        }
+      ],
+      "generic_library_role": "sawtooth_hmi_faceplate",
+      "likely_equipment_or_function": "Unknown / pack-internal",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Relate to discovery token family for `P422_SawMerge_HMI`"
+      ],
+      "confidence": 0.75,
+      "resolution": "RUN_DERIVED_HIGH_CONFIDENCE",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P834_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_PT_CnvCtrl[5].xCnvRunning := P834_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[5].xCnvRunning := P834_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P834_Conv.Spd := 225; //MRG422_astUNL_Q2_CnvCtrl[5].rDesireSpeed_IPS * 5 / 1.5; //1.5= Gear Ratio on gapper;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P834_Conv.PI.Run_Hold := NOT MRG414_astUNL_Q2_CnvCtrl[5].xInterlock_OUT AND NOT PE834_P.I.PE_Clear;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P834)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P834",
+          "row_name": "P834"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P834",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P834_Conv` \u2194 RUN conveyor `P834` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P834` exists in RUN; pack UDT is `P834_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P834",
+          "row_name": "P834"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P834",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "P836_Conv",
+      "datatype": "Conv_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[5].xCnvRunning := P836_Conv.Running;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P836_Conv.Spd := MRG414_astUNL_MRG_CnvCtrl[5].rDesireSpeed_FPM;"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "P836_Conv.PI.Run_Hold := NOT (MRG414_astUNL_MRG_CnvCtrl[5].xInterlock_OUT AND MRG414_astUNL_MRG_CnvCtrl[5].rDesireSpeed_IPS > 0);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_MRG_CnvCtrl[5].xCnvFaulted := P836_Conv.Flt.Flt;"
+        }
+      ],
+      "generic_library_role": "conveyor_udt",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=P836)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P836",
+          "row_name": "PE414D_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P836",
+          "row_name": "P836"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P836",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Pack `P836_Conv` \u2194 RUN conveyor `P836` (present in RUN; confirm sawtooth role)"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "DISCOVERY",
+          "detail": "Token related to discovery inventory"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "Conveyor/token `P836` exists in RUN; pack UDT is `P836_Conv`"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Conveyor_Name",
+          "value": "P836",
+          "row_name": "PE414D_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P836",
+          "row_name": "P836"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P836",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "PE118_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_GPR_CnvCtrl[4].xPE_BlockedEntr := 0;//NOT(PE118_I.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_GPR_CnvCtrl[5].xPE_BlockedEntr := 0;//NOT(PE118_I.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_GPR_CnvCtrl[4].xPE_BlockedEntr := 0;//NOT(PE118_I.I.PE_Clear);]]>"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_GPR_CnvCtrl[5].xPE_BlockedEntr := 0;//NOT(PE118_I.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE118_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE1491_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q1_CnvCtrl[4].xPE_BlockedEntr := 0;//NOT(PE1491_I.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q1_CnvCtrl[5].xPE_BlockedEntr := 0;//NOT(PE1491_I.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q1_CnvCtrl[4].xPE_BlockedEntr := 0;//NOT(PE1491_I.I.PE_Clear);]]>"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q1_CnvCtrl[5].xPE_BlockedEntr := 0;//NOT(PE1491_I.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE1491_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE1491_P",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q1_CnvCtrl[4].xPE_BlockedExit := 0;//NOT(PE1491_P.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q1_CnvCtrl[5].xPE_BlockedExit := 0;//NOT(PE1491_P.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q1_CnvCtrl[4].xPE_BlockedExit := 0;//NOT(PE1491_P.I.PE_Clear);]]>"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q1_CnvCtrl[5].xPE_BlockedExit := 0;//NOT(PE1491_P.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "product_present_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE1491_P` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE1492_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[4].xPE_BlockedEntr := 0;//NOT(PE1492_I.I.PE_Clear); // Entry PE on Staging Belt (Q2);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[5].xPE_BlockedEntr := 0;//NOT(PE1492_I.I.PE_Clear); // Entry PE on Staging Belt (Q2);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q2_CnvCtrl[4].xPE_BlockedEntr := 0;//NOT(PE1492_I.I.PE_Clear); // Entry PE on Staging Belt (Q2);]]>"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q2_CnvCtrl[5].xPE_BlockedEntr := 0;//NOT(PE1492_I.I.PE_Clear); // Entry PE on Staging Belt (Q2);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE1492_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE219A_J",
+      "datatype": "PE_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astCollPe[1].xIsBlocked := NOT(PE219A_J.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astCollPe[1].xIsBlocked := NOT(PE219A_J.I.PE_Clear); ]]>"
+        }
+      ],
+      "generic_library_role": "collector_jam_photoeye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=PE219A_J)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE219A_J",
+          "row_name": "PE219A_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE219A_J",
+          "row_name": "PE219A_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE219A_J",
+          "row_name": "PE219A_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE219A_J",
+          "row_name": "PE219A_J"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE219A_J",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Exact RUN token `PE219A_J` exists \u2014 map pack tag to site IO/UDT of same name"
+      ],
+      "confidence": 0.95,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE219A_J",
+          "row_name": "PE219A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE219A_J",
+          "row_name": "PE219A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE219A_J",
+          "row_name": "PE219A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE219A_J",
+          "row_name": "PE219A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE219A_J",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "PE2426_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[1].xPE_BlockedEntr := 0; // NOT(PE2426_I.I.PE_Clear); // Entry PE on Staging Belt (Q2)"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q2_CnvCtrl[1].xPE_BlockedEntr := 0; // NOT(PE2426_I.I.PE_Clear); // Entry PE on Staging Belt (Q2)]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE2426_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE3451_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q1_CnvCtrl[2].xPE_BlockedEntr := 0;//NOT(PE3451_I.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q1_CnvCtrl[2].xPE_BlockedEntr := 0;//NOT(PE3451_I.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE3451_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE3451_P",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q1_CnvCtrl[2].xPE_BlockedExit := 0;//NOT(PE3451_P.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q1_CnvCtrl[2].xPE_BlockedExit := 0;//NOT(PE3451_P.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "product_present_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE3451_P` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE3452_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[2].xPE_BlockedEntr := 0;//NOT(PE3452_I.I.PE_Clear); // Entry PE on Staging Belt (Q2);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q2_CnvCtrl[2].xPE_BlockedEntr := 0;//NOT(PE3452_I.I.PE_Clear); // Entry PE on Staging Belt (Q2);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE3452_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE410_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_GPR_CnvCtrl[2].xPE_BlockedEntr := 0;//NOT(PE410_I.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_GPR_CnvCtrl[2].xPE_BlockedEntr := 0;//NOT(PE410_I.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE410_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE4131_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q1_CnvCtrl[3].xPE_BlockedEntr := 0;//NOT(PE4131_I.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q1_CnvCtrl[3].xPE_BlockedEntr := 0;//NOT(PE4131_I.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE4131_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE4131_P",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q1_CnvCtrl[3].xPE_BlockedExit := 0;//NOT(PE4131_P.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q1_CnvCtrl[3].xPE_BlockedExit := 0;//NOT(PE4131_P.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "product_present_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE4131_P` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE4132_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_Q2_CnvCtrl[3].xPE_BlockedEntr := 0;//NOT(PE4132_I.I.PE_Clear); // Entry PE on Staging Belt (Q2);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_Q2_CnvCtrl[3].xPE_BlockedEntr := 0;//NOT(PE4132_I.I.PE_Clear); // Entry PE on Staging Belt (Q2);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Omit or leave unmapped \u2014 no RUN equipment of this name"
+      ],
+      "confidence": 0.7,
+      "resolution": "UNUSED_FOR_THIS_SITE",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE4132_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE414A_J",
+      "datatype": "PE_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astCollPe[2].xIsBlocked := NOT(PE414A_J.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astCollPe[2].xIsBlocked := NOT(PE414A_J.I.PE_Clear); ]]>"
+        }
+      ],
+      "generic_library_role": "collector_jam_photoeye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=PE414A_J)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414A_J",
+          "row_name": "PE414A_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414A_J",
+          "row_name": "PE414A_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414A_J",
+          "row_name": "PE414A_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414A_J",
+          "row_name": "PE414A_J"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414A_J",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Exact RUN token `PE414A_J` exists \u2014 map pack tag to site IO/UDT of same name"
+      ],
+      "confidence": 0.95,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414A_J",
+          "row_name": "PE414A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414A_J",
+          "row_name": "PE414A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414A_J",
+          "row_name": "PE414A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414A_J",
+          "row_name": "PE414A_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414A_J",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "PE414B_J",
+      "datatype": "PE_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astCollPe[3].xIsBlocked := NOT(PE414B_J.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astCollPe[3].xIsBlocked := NOT(PE414B_J.I.PE_Clear); ]]>"
+        }
+      ],
+      "generic_library_role": "collector_jam_photoeye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=PE414B_J)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414B_J",
+          "row_name": "PE414B_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414B_J",
+          "row_name": "PE414B_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414B_J",
+          "row_name": "PE414B_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414B_J",
+          "row_name": "PE414B_J"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414B_J",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Exact RUN token `PE414B_J` exists \u2014 map pack tag to site IO/UDT of same name"
+      ],
+      "confidence": 0.95,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414B_J",
+          "row_name": "PE414B_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414B_J",
+          "row_name": "PE414B_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414B_J",
+          "row_name": "PE414B_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414B_J",
+          "row_name": "PE414B_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414B_J",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "PE414C_J",
+      "datatype": "PE_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astCollPe[4].xIsBlocked := NOT(PE414C_J.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astCollPe[4].xIsBlocked := NOT(PE414C_J.I.PE_Clear); ]]>"
+        }
+      ],
+      "generic_library_role": "collector_jam_photoeye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=PE414C_J)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414C_J",
+          "row_name": "PE414C_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414C_J",
+          "row_name": "PE414C_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414C_J",
+          "row_name": "PE414C_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414C_J",
+          "row_name": "PE414C_J"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414C_J",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Exact RUN token `PE414C_J` exists \u2014 map pack tag to site IO/UDT of same name"
+      ],
+      "confidence": 0.95,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414C_J",
+          "row_name": "PE414C_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414C_J",
+          "row_name": "PE414C_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414C_J",
+          "row_name": "PE414C_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414C_J",
+          "row_name": "PE414C_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414C_J",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "PE414D_J",
+      "datatype": "PE_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astCollPe[5].xIsBlocked := NOT(PE414D_J.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astCollPe[5].xIsBlocked := NOT(PE414D_J.I.PE_Clear); ]]>"
+        }
+      ],
+      "generic_library_role": "collector_jam_photoeye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=PE414D_J)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414D_J",
+          "row_name": "PE414D_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414D_J",
+          "row_name": "PE414D_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414D_J",
+          "row_name": "PE414D_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414D_J",
+          "row_name": "PE414D_J"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414D_J",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Exact RUN token `PE414D_J` exists \u2014 map pack tag to site IO/UDT of same name"
+      ],
+      "confidence": 0.95,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414D_J",
+          "row_name": "PE414D_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414D_J",
+          "row_name": "PE414D_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414D_J",
+          "row_name": "PE414D_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414D_J",
+          "row_name": "PE414D_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414D_J",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "PE414_J",
+      "datatype": "PE_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astCollPe[6].xIsBlocked := NOT(PE414_J.I.PE_Clear); // Last PE: Exit PE of the collector belt // Number of lanes + 1 // For this 5 lane setup"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astCollPe[6].xIsBlocked := NOT(PE414_J.I.PE_Clear); // Last PE: Exit PE of the collector belt // Number of lanes + 1 // For this 5 lane setup]]>"
+        }
+      ],
+      "generic_library_role": "collector_jam_photoeye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=PE414_J)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414_J",
+          "row_name": "PE414_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414_J",
+          "row_name": "PE414_J"
+        },
+        {
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414_J",
+          "row_name": "PE414_J"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414_J",
+          "row_name": "PE414_J"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414_J",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "Exact RUN token `PE414_J` exists \u2014 map pack tag to site IO/UDT of same name"
+      ],
+      "confidence": 0.95,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Desc",
+          "value": "PE414_J",
+          "row_name": "PE414_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Sensor_Name",
+          "value": "PE414_J",
+          "row_name": "PE414_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Jamcheck.asc",
+          "field": "Error_Name",
+          "value": "PE414_J",
+          "row_name": "PE414_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "PE414_J",
+          "row_name": "PE414_J"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE414_J",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": []
+    },
+    {
+      "symbol": "PE418_I",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_GPR_CnvCtrl[3].xPE_BlockedEntr := 0;//NOT(PE418_I.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_GPR_CnvCtrl[3].xPE_BlockedEntr := 0;//NOT(PE418_I.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "induct_or_intermediate_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Gold collector companion devices \u2014 confirm whether site collector train includes them via Conveyor.asc before binding"
+      ],
+      "confidence": 0.55,
+      "resolution": "CONFIGURATION_REQUIRED",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE418_I` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "PE418_P",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "MRG414_astUNL_GPR_CnvCtrl[3].xPE_BlockedExit := 0;//NOT(PE418_P.I.PE_Clear);"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[MRG414_astUNL_GPR_CnvCtrl[3].xPE_BlockedExit := 0;//NOT(PE418_P.I.PE_Clear);]]>"
+        }
+      ],
+      "generic_library_role": "product_present_photoeye",
+      "likely_equipment_or_function": "Photoeye UDT instance in pack",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Gold collector companion devices \u2014 confirm whether site collector train includes them via Conveyor.asc before binding"
+      ],
+      "confidence": 0.55,
+      "resolution": "CONFIGURATION_REQUIRED",
+      "evidence": [
+        {
+          "kind": "NEGATIVE_RUN",
+          "detail": "No exact token hit for `PE418_P` in scanned RUN Fortna tables"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Site-like pack symbol without explicit RUN bind in this map",
+      "extra_from_lane": null,
+      "notes": [
+        "No RUN exact match; refusing digit-similarity binding (policy)"
+      ]
+    },
+    {
+      "symbol": "Use_GapStore_Belts",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [
+        "Conv_Enc"
+      ],
+      "instruction_context": [
+        {
+          "routine": "Conv_Enc",
+          "snippet": "XIC(Enable_Merge2_Trk)[XIC(Use_GapStore_Belts) MOV(400,P414_SawMerge_HMI.ClctrSpeed_FPM) ,XIO(Use_GapStore_Belts) MOV(140,P414_SawMerge_HMI.ClctrSpeed_FPM) ];"
+        },
+        {
+          "routine": "Conv_Enc",
+          "snippet": "XIC(Enable_Merge2_Trk)XIO(Use_GapStore_Belts)JSR(RT_DeltaDist_NoGapStore,0);"
+        },
+        {
+          "routine": "Conv_Enc",
+          "snippet": "XIC(Enable_Merge2_Trk)XIO(Use_GapStore_Belts)JSR(RT_IO_Map_NoGapStore,0);"
+        }
+      ],
+      "generic_library_role": "feature_enable_gate",
+      "likely_equipment_or_function": "Logic feature gate (not a field device)",
+      "candidate_run_tables_fields": [],
+      "candidate_bindings": [
+        "Set TRUE/FALSE per site feature (gap-store vs no-gap-store, reservation enable)"
+      ],
+      "confidence": 0.85,
+      "resolution": "ENGINEER_CONFIGURED",
+      "evidence": [
+        {
+          "kind": "LIBRARY",
+          "detail": "Main/feature gate referenced in routines: ['Conv_Enc']"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "Feature enable flag \u2014 engineer/site configuration",
+      "extra_from_lane": null,
+      "notes": [
+        "Pass classified as feature enable \u2014 not a RUN field device"
+      ]
+    },
+    {
+      "symbol": "EZPE217_F",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [],
+      "instruction_context": [],
+      "generic_library_role": "lane_or_line_full_eye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=EZPE217_F)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        }
+      ],
+      "candidate_bindings": [
+        "Add pack tag EZPE217_F (PE_UDT) and bind to site full eye on P217",
+        "Wire reservation logic to tmfcEZPE217_F / EZPE217_F.Full \u2014 do not use EZPE127_F"
+      ],
+      "confidence": 0.95,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "kind": "RUN_EXPLICIT",
+          "detail": "SawLane.LANE_0_P219.ReserveTM=tmfcEZPE217_F; Conveyor+Fullline define EZPE217_F"
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "ReserveTM=tmfcEZPE217_F has no pack EZPE counterpart",
+      "extra_from_lane": "LANE_0_P219",
+      "notes": [
+        "Symbol is RUN_EXPLICIT; pack absence makes emit CONFIGURATION_REQUIRED until tag added"
+      ]
+    },
+    {
+      "symbol": "EZPE212_F2",
+      "datatype": "PE_UDT",
+      "declared_in_pack": true,
+      "routines": [
+        "RT_IO_Map_NoGapStore"
+      ],
+      "instruction_context": [
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "IF EZPE212_F2.Full THEN"
+        },
+        {
+          "routine": "RT_IO_Map_NoGapStore",
+          "snippet": "<![CDATA[IF EZPE212_F2.Full THEN ]]>"
+        }
+      ],
+      "generic_library_role": "lane_or_line_full_eye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=EZPE212_F2)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Error_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "EZPE212_F2",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "RUN defines EZPE212_F2 (Fullline\u2192P214; Conveyor 'FULL EYE ON P212 DOWNSTREAM OF P308 MERGE')",
+        "Pack SR_LaneCntrl uses EZPE212_F2.Full \u2014 confirm whether site Sawtooth reserve should stay on F2 or move to F1 per ReserveTM"
+      ],
+      "confidence": 0.9,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Error_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "EZPE212_F2",
+          "row_name": ""
+        },
+        {
+          "kind": "CONFLICT",
+          "detail": "SawLane.ReserveTM=tmfcEZPE212_F1 vs pack/Fullline-P214 EZPE212_F2"
+        }
+      ],
+      "pass_classification": "RUN_DERIVED",
+      "pass_reason": "ReserveTM=tmfcEZPE212_F1 \u2192 EZPE212_F1; pack has EZPE212_F2 (suffix variance \u2014 confirm)",
+      "extra_from_lane": "LANE_4_P214",
+      "notes": [
+        "Device token is RUN_EXPLICIT",
+        "Equivalence to LANE_4 ReserveTM tmfcEZPE212_F1 is NOT proven \u2014 open CONFIGURATION_REQUIRED decision"
+      ]
+    },
+    {
+      "symbol": "EZPE212_F1",
+      "datatype": "",
+      "declared_in_pack": false,
+      "routines": [],
+      "instruction_context": [],
+      "generic_library_role": "lane_or_line_full_eye",
+      "likely_equipment_or_function": "RUN device/token in Conveyor.asc.IO_Name (row=EZPE212_F1)",
+      "candidate_run_tables_fields": [
+        {
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Error_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "EZPE212_F1",
+          "row_name": ""
+        }
+      ],
+      "candidate_bindings": [
+        "ReserveTM points at tmfcEZPE212_F1 \u2014 keep as reservation timer identity",
+        "Pack currently references EZPE212_F2 \u2014 engineer must confirm which eye is Sawtooth full/reserve"
+      ],
+      "confidence": 0.95,
+      "resolution": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Fullline.asc",
+          "field": "Error_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "kind": "RUN_TABLE_HIT",
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "EZPE212_F1",
+          "row_name": ""
+        }
+      ],
+      "pass_classification": "CONFIGURATION REQUIRED",
+      "pass_reason": "LANE_4 ReserveTM extracts EZPE212_F1; pack/pass used EZPE212_F2",
+      "extra_from_lane": "LANE_4_P214",
+      "notes": [
+        "Presence of F1 in RUN is explicit; functional equivalence to pack F2 is NOT established",
+        "Sawtooth lane-full role vs Fullline/line-full role remains CONFIGURATION_REQUIRED"
+      ]
+    }
+  ],
+  "reserve_eye_summary": {
+    "EZPE217_F": {
+      "run_symbol_EZPE217_F": "RUN_EXPLICIT",
+      "pack_binding": "CONFIGURATION_REQUIRED \u2014 add/bind EZPE217_F into site program; replace Lane[1] EZPE127_F.Full reference; do not substitute by digit rename alone",
+      "do_not": "Do not rename EZPE127_F \u2192 EZPE217_F by digit similarity without confirming both ReserveTM and slug-length roles"
+    },
+    "EZPE212_F1_vs_F2": {
+      "reserve_timer_symbol": "RUN_EXPLICIT tmfcEZPE212_F1 / EZPE212_F1",
+      "pack_slug_length_full_eye": "EZPE212_F2 (library)",
+      "fullline_conveyor_for_F2": "P214 (sawtooth lane conveyor name)",
+      "fullline_conveyor_for_F1": "P212",
+      "recommended_audit_resolution": "CONFIGURATION_REQUIRED",
+      "do_not": "Do not rename F1\u2194F2 to force pack match; engineer must confirm ReserveTM eye vs slug-length Full eye (may differ)"
+    }
+  }
+}

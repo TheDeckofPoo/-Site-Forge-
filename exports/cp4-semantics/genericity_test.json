@@ -1,0 +1,60 @@
+{
+  "generated_at": "2026-09-12T16:21:52.144811+00:00",
+  "fixture": "synthetic_two_lane_merge",
+  "lane_count": 2,
+  "encoders": [
+    "ENC501",
+    "ENC599"
+  ],
+  "payload": {
+    "merge": "SYN_MERGE_A",
+    "motor_io": "VFD501_AUX",
+    "lanes": [
+      {
+        "name": "LANE_0_P701",
+        "conveyor": "P701",
+        "photoeye": "PE701_P",
+        "drive": "VFD701_EN",
+        "slice_seconds": 4.0,
+        "reserve_seconds": 9.0
+      },
+      {
+        "name": "LANE_1_P702",
+        "conveyor": "P702",
+        "photoeye": "PE702_P",
+        "drive": "VFD702_EN",
+        "slice_seconds": 5.0,
+        "reserve_seconds": 11.0
+      }
+    ],
+    "encoders": [
+      {
+        "encoder": "ENC501",
+        "enable": "VFD501_AUX",
+        "role": "SAWTOOTH_COLLECTOR",
+        "jamzone": "SYN MERGE"
+      },
+      {
+        "encoder": "ENC599",
+        "enable": "VFD599_AUX",
+        "role": "CITY_COUNTER",
+        "jamzone": "CITY COUNTER"
+      }
+    ]
+  },
+  "forbidden_tokens_checked": [
+    "414",
+    "219",
+    "408",
+    "116",
+    "214",
+    "832",
+    "Greensboro",
+    "ORNCCP4",
+    "PE118",
+    "VFD118"
+  ],
+  "leaks_found": [],
+  "ok": true,
+  "note": "Synthetic fixture must not emit Greensboro/ORNCCP4/site digits unless in fixture input"
+}

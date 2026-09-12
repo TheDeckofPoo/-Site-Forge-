@@ -701,7 +701,10 @@ def build_conv_routines_xml(pmap: SawtoothParamMap) -> dict[str, str]:
 
 
 def inject_fidelity_into_program_xml(xml: str, pmap: SawtoothParamMap) -> tuple[str, dict[str, Any]]:
-    """Insert SawFid_* tags and fill empty Conv_* routines via explicit map only."""
+    """Insert SawFid_* tags and fill empty Conv_* routines via explicit map only.
+
+    Prefer the Sawtooth_Merge program scope so Area_Slow/Fast Conv_* are untouched.
+    """
     report: dict[str, Any] = {
         "generated_at": _ts(),
         "tags_injected": 0,
@@ -712,44 +715,81 @@ def inject_fidelity_into_program_xml(xml: str, pmap: SawtoothParamMap) -> tuple[
     tags_xml = build_fidelity_cfg_tags_xml(pmap)
     report["tags_injected"] = tags_xml.count("<Tag Name=")
 
-    # Insert tags before first </Tags> inside the program export when present.
-    if tags_xml:
-        # Prefer program-local Tags; fall back to first </Tags>
-        replaced = False
-        # Insert immediately after opening <Tags> under the program when possible
-        m = re.search(r"(<Program[^>]*>.*?<Tags[^>]*>)", out, flags=re.S | re.I)
+    def _inject_into_fragment(fragment: str) -> tuple[str, str]:
+        if not tags_xml:
+            return fragment, "skipped_empty"
+        # Expand self-closing <Tags/> so we can place child tags legally
+        frag = re.sub(r"<Tags\s*/>", "<Tags></Tags>", fragment, count=1, flags=re.I)
+        m = re.search(r"(<Tags[^>]*>)", frag, flags=re.I)
         if m:
             pos = m.end()
-            out = out[:pos] + tags_xml + out[pos:]
-            replaced = True
-        if not replaced:
-            idx = out.find("</Tags>")
-            if idx >= 0:
-                out = out[:idx] + tags_xml + out[idx:]
-                replaced = True
-        report["tags_insert"] = "program_tags" if replaced else "FAILED"
+            return frag[:pos] + tags_xml + frag[pos:], "program_tags"
+        idx = frag.find("</Tags>")
+        if idx >= 0:
+            return frag[:idx] + tags_xml + frag[idx:], "before_Tags_close"
+        return fragment, "FAILED"
+
+    saw_m = re.search(
+        r'<Program Name="Sawtooth_Merge"[^>]*>.*?</Program>',
+        out,
+        flags=re.S | re.I,
+    )
+    if saw_m and tags_xml:
+        frag = saw_m.group(0)
+        new_frag, mode = _inject_into_fragment(frag)
+        out = out[: saw_m.start()] + new_frag + out[saw_m.end() :]
+        report["tags_insert"] = f"Sawtooth_Merge:{mode}"
+    elif tags_xml:
+        # Standalone program export (no multi-program controller wrapper)
+        out, mode = _inject_into_fragment(out)
+        report["tags_insert"] = mode
 
     routines = build_conv_routines_xml(pmap)
+    # Fill Conv_* inside Sawtooth_Merge when present; else whole file (standalone pack)
+    target = out
+    saw_m2 = re.search(
+        r'<Program Name="Sawtooth_Merge"[^>]*>.*?</Program>',
+        out,
+        flags=re.S | re.I,
+    )
+    scope_xml = saw_m2.group(0) if saw_m2 else out
+    new_scope = scope_xml
     for rname, content in routines.items():
-        # Replace empty self-closing routine
+        repl = f'<Routine Name="{rname}" Type="RLL">{content}</Routine>'
         pat_empty = re.compile(
             rf'<Routine Name="{rname}" Type="RLL"\s*/>',
             flags=re.I,
         )
-        repl = f'<Routine Name="{rname}" Type="RLL">{content}</Routine>'
-        if pat_empty.search(out):
-            out = pat_empty.sub(repl, out, count=1)
-            report["routines_filled"].append({"routine": rname, "mode": "replace_empty"})
+        if pat_empty.search(new_scope):
+            new_scope = pat_empty.sub(repl, new_scope, count=1)
+            report["routines_filled"].append(
+                {"routine": rname, "mode": "replace_empty", "scope": "Sawtooth_Merge" if saw_m2 else "whole"}
+            )
             continue
-        # Replace existing empty RLLContent
         pat_block = re.compile(
             rf'<Routine Name="{rname}" Type="RLL"\s*>\s*<RLLContent>\s*</RLLContent>\s*</Routine>',
             flags=re.I | re.S,
         )
-        if pat_block.search(out):
-            out = pat_block.sub(repl, out, count=1)
-            report["routines_filled"].append({"routine": rname, "mode": "replace_empty_block"})
+        if pat_block.search(new_scope):
+            new_scope = pat_block.sub(repl, new_scope, count=1)
+            report["routines_filled"].append(
+                {
+                    "routine": rname,
+                    "mode": "replace_empty_block",
+                    "scope": "Sawtooth_Merge" if saw_m2 else "whole",
+                }
+            )
             continue
-        report["routines_filled"].append({"routine": rname, "mode": "SKIPPED_NONEMPTY_OR_MISSING"})
+        report["routines_filled"].append(
+            {
+                "routine": rname,
+                "mode": "SKIPPED_NONEMPTY_OR_MISSING",
+                "scope": "Sawtooth_Merge" if saw_m2 else "whole",
+            }
+        )
+    if saw_m2:
+        out = out[: saw_m2.start()] + new_scope + out[saw_m2.end() :]
+    else:
+        out = new_scope
 
     return out, report

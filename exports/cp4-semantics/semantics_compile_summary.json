@@ -1,0 +1,59 @@
+{
+  "generated_at": "2026-09-12T16:21:52.228604+00:00",
+  "pass": "cp4-sawtooth-semantics",
+  "finished_plc4_used": false,
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-semantics\\generated\\OReillyGreensboro_ORNCCP4.L5X",
+  "parameterized_program": "C:\\dev\\worktree\\FortnaPlus\\exports\\cp4-semantics\\generated\\Sawtooth_Merge_Parameterized.L5X",
+  "content_digest": "4d12a537312397d4404a67896cd321266a37abef5e0f1da0a01e6b9a679a7c45",
+  "lane_count": 5,
+  "validation_ok": true,
+  "resolution_counts": {
+    "resolved_RUN": 69,
+    "resolved_library": 1,
+    "CONFIGURATION_REQUIRED": 301,
+    "UNKNOWN": 0,
+    "UNSUPPORTED": 1,
+    "placeholder_before_nop": 12,
+    "placeholder_after_nop": 1,
+    "can_generate_before": 11,
+    "can_generate_after_applied": 11
+  },
+  "placeholder_before_nop": 12,
+  "placeholder_after_nop": 1,
+  "upgrade": {
+    "renames": [
+      {
+        "from": "EZPE127_F",
+        "to": "EZPE217_F",
+        "occurrences": 2,
+        "provenance": "RUN_DERIVED"
+      }
+    ],
+    "tag_inject": "after_SawFid_LaneCount_in_Sawtooth_Merge",
+    "tags_injected": 34,
+    "routines": [
+      {
+        "routine": "Conv_PE",
+        "mode": "force_replace_in_Sawtooth_Merge"
+      },
+      {
+        "routine": "Conv_Enc",
+        "mode": "force_replace_in_Sawtooth_Merge"
+      },
+      {
+        "routine": "Conv_Fast",
+        "mode": "force_replace_in_Sawtooth_Merge"
+      }
+    ],
+    "real_logic_rungs": 11
+  },
+  "genericity_ok": true,
+  "sidecar_notes": [
+    "Integrated sidecar: `unresolved_symbol_audit.json` (145123 bytes)",
+    "Integrated sidecar: `unresolved_symbol_audit.md` (80278 bytes)",
+    "Integrated sidecar: `reserve_eye_analysis.md` (8070 bytes)",
+    "Integrated sidecar: `reserve_eye_analysis.json` (14958 bytes)"
+  ],
+  "tracking_wcs": "GENERATION NOT YET SUPPORTED",
+  "ok": true
+}

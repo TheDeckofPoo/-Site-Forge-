@@ -1,0 +1,481 @@
+{
+  "generated_at": "2026-09-12T16:17:54.917035+00:00",
+  "pack_ezpe_tags": [
+    "EZPE116_F",
+    "EZPE127_F",
+    "EZPE212_F2",
+    "EZPE408_F",
+    "EZPE832_F"
+  ],
+  "LANE_0_ReserveTM_EZPE217_F": {
+    "lane": "LANE_0_P219",
+    "run_reserve_tm": "tmfcEZPE217_F",
+    "extracted_ezpe": "EZPE217_F",
+    "pass_full_eye_ezpe": "EZPE217_F",
+    "pass_provenance": "CONFIGURATION REQUIRED",
+    "pass_note": "ReserveTM=tmfcEZPE217_F has no pack EZPE counterpart",
+    "pack_has_extracted": false,
+    "pack_ezpe_tags": [
+      "EZPE116_F",
+      "EZPE127_F",
+      "EZPE212_F2",
+      "EZPE408_F",
+      "EZPE832_F"
+    ],
+    "run_hits": {
+      "EZPE217_F": [
+        {
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE217_F",
+          "row_name": "EZPE217_F"
+        }
+      ],
+      "tmfcEZPE217_F": [
+        {
+          "table": "SawLane.asc.ORNCCP4",
+          "field": "ReserveTM",
+          "value": "tmfcEZPE217_F",
+          "row_name": "LANE_0_P219"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Clr_Timer_Name",
+          "value": "tmfcEZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "table": "timemenu.asc",
+          "field": "Timer_Name",
+          "value": "tmfcEZPE217_F",
+          "row_name": ""
+        }
+      ],
+      "tmEZPE217_F": [
+        {
+          "table": "Fullline.asc",
+          "field": "Timer_Name",
+          "value": "tmEZPE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "table": "timemenu.asc",
+          "field": "Timer_Name",
+          "value": "tmEZPE217_F",
+          "row_name": ""
+        }
+      ],
+      "PE217_F": [
+        {
+          "table": "Fullline.asc",
+          "field": "Error_Name",
+          "value": "PE217_F",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "PE217_F",
+          "row_name": ""
+        },
+        {
+          "table": "Errors.asc",
+          "field": "Description",
+          "value": "PE217_F",
+          "row_name": ""
+        }
+      ],
+      "P217": [
+        {
+          "table": "Fullline.asc",
+          "field": "Conveyor_Name",
+          "value": "P217",
+          "row_name": "EZPE217_F"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P217",
+          "row_name": "P217"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P217",
+          "row_name": ""
+        }
+      ],
+      "P219": [
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P219",
+          "row_name": "P219"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P219",
+          "row_name": ""
+        }
+      ]
+    },
+    "fullline": {
+      "Desc": "EZPE217_F",
+      "Sensor_Name": "EZPE217_F",
+      "Timer_Name": "tmEZPE217_F",
+      "Timer_Preset": "3.000",
+      "Clr_Timer_Name": "tmfcEZPE217_F",
+      "Clr_Timer_Preset": "10.000",
+      "Error_Name": "PE217_F",
+      "Conveyor_Name": "P217",
+      "DontFireResponse": "N",
+      "Response IO": "M215",
+      "Invert": "N",
+      "Go Until": "INVALID",
+      "ReSound Horn": "N/A",
+      "NoGap": "N",
+      "Status": "N",
+      "Sent": "0",
+      "FullClearOutput": "INVALID",
+      "FullClearACTION": "N/A",
+      "FullClearBIT": "0"
+    },
+    "conveyor": {
+      "IO_Name": "EZPE217_F",
+      "General_Description": "FULL EYE ON P217",
+      "Type": "PHOTOCELL",
+      "Machine_Name": "ORNCCP4"
+    },
+    "pack_usage": "RT_IO_Map_NoGapStore: IF EZPE127_F.Full THEN MRG414_astUNL_SlugBldCtrl[1].rQ1_SlugLength_Q := HMI Lane[1].ReleaseLengthFull ELSE ReleaseLength. This is slug-release-length selection when Use_GapStore_Belts=0 \u2014 not automatically the same mechanism as RUN SawLane.ReserveTM.",
+    "finding": "RUN SawLane.ReserveTM explicitly names tmfcEZPE217_F for LANE_0_P219. Conveyor.asc and Fullline.asc both define EZPE217_F (FULL EYE ON P217 / Fullline\u2192P217). Generic pack has NO EZPE217_F tag; it does have EZPE127_F used as Lane[1] full eye in RT_IO_Map_NoGapStore (different equipment \u2014 do NOT equate by digits). Pass marked CONFIGURATION REQUIRED because pack lacks counterpart \u2014 site symbol itself is RUN_EXPLICIT.",
+    "resolution_guidance": {
+      "run_symbol_EZPE217_F": "RUN_EXPLICIT",
+      "pack_binding": "CONFIGURATION_REQUIRED \u2014 add/bind EZPE217_F into site program; replace Lane[1] EZPE127_F.Full reference; do not substitute by digit rename alone",
+      "do_not": "Do not rename EZPE127_F \u2192 EZPE217_F by digit similarity without confirming both ReserveTM and slug-length roles"
+    },
+    "confidence": 0.95
+  },
+  "LANE_4_ReserveTM_EZPE212_F1_vs_pack_F2": {
+    "lane": "LANE_4_P214",
+    "run_reserve_tm": "tmfcEZPE212_F1",
+    "extracted_ezpe_from_reserve_tm": "EZPE212_F1",
+    "pass_full_eye_ezpe": "EZPE212_F2",
+    "pass_provenance": "RUN_DERIVED",
+    "pass_note": "ReserveTM=tmfcEZPE212_F1 \u2192 EZPE212_F1; pack has EZPE212_F2 (suffix variance \u2014 confirm)",
+    "pack_has_F1": false,
+    "pack_has_F2": true,
+    "pack_ezpe_tags": [
+      "EZPE116_F",
+      "EZPE127_F",
+      "EZPE212_F2",
+      "EZPE408_F",
+      "EZPE832_F"
+    ],
+    "run_hits": {
+      "EZPE212_F1": [
+        {
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Error_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "EZPE212_F1",
+          "row_name": ""
+        }
+      ],
+      "EZPE212_F2": [
+        {
+          "table": "Fullline.asc",
+          "field": "Desc",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Sensor_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Error_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "EZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Errors.asc",
+          "field": "ErrorName",
+          "value": "EZPE212_F2",
+          "row_name": ""
+        }
+      ],
+      "tmfcEZPE212_F1": [
+        {
+          "table": "SawLane.asc.ORNCCP4",
+          "field": "ReserveTM",
+          "value": "tmfcEZPE212_F1",
+          "row_name": "LANE_4_P214"
+        },
+        {
+          "table": "Fullline.asc",
+          "field": "Clr_Timer_Name",
+          "value": "tmfcEZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "MergeInputs.asc.ORNCCP4",
+          "field": "FullClearTimerName",
+          "value": "tmfcEZPE212_F1",
+          "row_name": "LANE1_P212"
+        },
+        {
+          "table": "timemenu.asc",
+          "field": "Timer_Name",
+          "value": "tmfcEZPE212_F1",
+          "row_name": ""
+        }
+      ],
+      "tmfcEZPE212_F2": [
+        {
+          "table": "Fullline.asc",
+          "field": "Clr_Timer_Name",
+          "value": "tmfcEZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Trigrset.asc.ORNCCP4",
+          "field": "loc",
+          "value": "tmfcEZPE212_F2",
+          "row_name": ""
+        },
+        {
+          "table": "Trigrset.asc.ORNCCP4",
+          "field": "loc3",
+          "value": "tmfcEZPE212_F2",
+          "row_name": ""
+        },
+        {
+          "table": "timemenu.asc",
+          "field": "Timer_Name",
+          "value": "tmfcEZPE212_F2",
+          "row_name": ""
+        }
+      ],
+      "tmEZPE212_F1": [
+        {
+          "table": "Fullline.asc",
+          "field": "Timer_Name",
+          "value": "tmEZPE212_F1",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "timemenu.asc",
+          "field": "Timer_Name",
+          "value": "tmEZPE212_F1",
+          "row_name": ""
+        }
+      ],
+      "tmEZPE212_F2": [
+        {
+          "table": "Fullline.asc",
+          "field": "Timer_Name",
+          "value": "tmEZPE212_F2",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "timemenu.asc",
+          "field": "Timer_Name",
+          "value": "tmEZPE212_F2",
+          "row_name": ""
+        }
+      ],
+      "P212": [
+        {
+          "table": "Fullline.asc",
+          "field": "Conveyor_Name",
+          "value": "P212",
+          "row_name": "EZPE212_F1"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P212",
+          "row_name": "P212"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P212",
+          "row_name": ""
+        }
+      ],
+      "P214": [
+        {
+          "table": "Fullline.asc",
+          "field": "Conveyor_Name",
+          "value": "P214",
+          "row_name": "EZPE212_F2"
+        },
+        {
+          "table": "Conveyor.asc",
+          "field": "IO_Name",
+          "value": "P214",
+          "row_name": "P214"
+        },
+        {
+          "table": "Mtrchain.asc",
+          "field": "Motor_Chained1",
+          "value": "P214",
+          "row_name": ""
+        }
+      ]
+    },
+    "fullline_F1": {
+      "Desc": "EZPE212_F1",
+      "Sensor_Name": "EZPE212_F1",
+      "Timer_Name": "tmEZPE212_F1",
+      "Timer_Preset": "5.000",
+      "Clr_Timer_Name": "tmfcEZPE212_F1",
+      "Clr_Timer_Preset": "10.000",
+      "Error_Name": "EZPE212_F1",
+      "Conveyor_Name": "P212",
+      "DontFireResponse": "N",
+      "Response IO": "M206",
+      "Invert": "N",
+      "Go Until": "INVALID",
+      "ReSound Horn": "N/A",
+      "NoGap": "N",
+      "Status": "N",
+      "Sent": "0",
+      "FullClearOutput": "INVALID",
+      "FullClearACTION": "N/A",
+      "FullClearBIT": "0"
+    },
+    "fullline_F2": {
+      "Desc": "EZPE212_F2",
+      "Sensor_Name": "EZPE212_F2",
+      "Timer_Name": "tmEZPE212_F2",
+      "Timer_Preset": "5.000",
+      "Clr_Timer_Name": "tmfcEZPE212_F2",
+      "Clr_Timer_Preset": "10.000",
+      "Error_Name": "EZPE212_F2",
+      "Conveyor_Name": "P214",
+      "DontFireResponse": "N",
+      "Response IO": "M306",
+      "Invert": "N",
+      "Go Until": "INVALID",
+      "ReSound Horn": "N/A",
+      "NoGap": "N",
+      "Status": "N",
+      "Sent": "0",
+      "FullClearOutput": "INVALID",
+      "FullClearACTION": "N/A",
+      "FullClearBIT": "0"
+    },
+    "conveyor_F1": {
+      "IO_Name": "EZPE212_F1",
+      "General_Description": "FULL EYE DETECTION ON P212",
+      "Type": "PHOTOCELL",
+      "Machine_Name": "ORNCCP4"
+    },
+    "conveyor_F2": {
+      "IO_Name": "EZPE212_F2",
+      "General_Description": "FULL EYE ON P212 DOWNSTREAM OF P308 MERGE",
+      "Type": "PHOTOCELL",
+      "Machine_Name": "ORNCCP4"
+    },
+    "pack_usage": "RT_IO_Map_NoGapStore: IF EZPE212_F2.Full THEN MRG414_astUNL_SlugBldCtrl[4].rQ1_SlugLength_Q := HMI Lane[4].ReleaseLengthFull ELSE ReleaseLength. Pack role here is slug-release-length selection (no gap-store path).",
+    "finding": "CONFLICT \u2014 do not auto-resolve. SawLane LANE_4_P214.ReserveTM=tmfcEZPE212_F1 (explicit reservation timer \u2192 EZPE212_F1). Fullline associates EZPE212_F1.Conveyor_Name=P212 and EZPE212_F2.Conveyor_Name=P214. Conveyor descriptions: F1='FULL EYE DETECTION ON P212'; F2='FULL EYE ON P212 DOWNSTREAM OF P308 MERGE'. Errors: F1='LANE FULL AT BIN MOD A ACCUM'; F2='LANE 1/2 FULL AT BIN MOD A ACCUM'. Generic pack declares/uses EZPE212_F2.Full for Lane[4] slug length in RT_IO_Map_NoGapStore. Prior pass fuzzy-mapped F1\u2192F2 (RUN_DERIVED) \u2014 ReserveTM identity and pack Full-eye role are not proven to be the same sensor.",
+    "resolution_guidance": {
+      "reserve_timer_symbol": "RUN_EXPLICIT tmfcEZPE212_F1 / EZPE212_F1",
+      "pack_slug_length_full_eye": "EZPE212_F2 (library)",
+      "fullline_conveyor_for_F2": "P214 (sawtooth lane conveyor name)",
+      "fullline_conveyor_for_F1": "P212",
+      "recommended_audit_resolution": "CONFIGURATION_REQUIRED",
+      "do_not": "Do not rename F1\u2194F2 to force pack match; engineer must confirm ReserveTM eye vs slug-length Full eye (may differ)"
+    },
+    "confidence": 0.9
+  },
+  "other_lane_reserve_eyes": [
+    {
+      "lane": "LANE_0_P219",
+      "reserve_tm": "tmfcEZPE217_F",
+      "full_eye_ezpe": "EZPE217_F",
+      "provenance": "CONFIGURATION REQUIRED",
+      "note": "ReserveTM=tmfcEZPE217_F has no pack EZPE counterpart",
+      "pack_has": false
+    },
+    {
+      "lane": "LANE_1_P408",
+      "reserve_tm": "tmfcEZPE408_F",
+      "full_eye_ezpe": "EZPE408_F",
+      "provenance": "RUN_EXPLICIT",
+      "note": "ReserveTM=tmfcEZPE408_F exact pack symbol",
+      "pack_has": true
+    },
+    {
+      "lane": "LANE_3_P116",
+      "reserve_tm": "tmfcEZPE116_F",
+      "full_eye_ezpe": "EZPE116_F",
+      "provenance": "RUN_EXPLICIT",
+      "note": "ReserveTM=tmfcEZPE116_F exact pack symbol",
+      "pack_has": true
+    },
+    {
+      "lane": "LANE_4_P214",
+      "reserve_tm": "tmfcEZPE212_F1",
+      "full_eye_ezpe": "EZPE212_F2",
+      "provenance": "RUN_DERIVED",
+      "note": "ReserveTM=tmfcEZPE212_F1 \u2192 EZPE212_F1; pack has EZPE212_F2 (suffix variance \u2014 confirm)",
+      "pack_has": true
+    },
+    {
+      "lane": "LANE_5_P832",
+      "reserve_tm": "tmfcEZPE832_F",
+      "full_eye_ezpe": "EZPE832_F",
+      "provenance": "RUN_EXPLICIT",
+      "note": "ReserveTM=tmfcEZPE832_F exact pack symbol",
+      "pack_has": true
+    }
+  ]
+}

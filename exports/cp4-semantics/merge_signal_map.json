@@ -1,0 +1,515 @@
+{
+  "generated_at": "2026-09-12T16:21:28.210081+00:00",
+  "finished_plc4_used": false,
+  "merge": "SAWTOOTH_MERGE",
+  "counts_by_provenance": {
+    "RUN_EXPLICIT": 61,
+    "RUN_DERIVED": 2
+  },
+  "mappings": [
+    {
+      "signal": "merge_name",
+      "value": "SAWTOOTH_MERGE",
+      "role": "merge_identity",
+      "provenance": "RUN_EXPLICIT",
+      "source": "FORTNA/SawMerge.asc.ORNCCP4",
+      "detail": ""
+    },
+    {
+      "signal": "collector_digits",
+      "value": "414",
+      "role": "collector",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawMerge.MotorIO",
+      "detail": ""
+    },
+    {
+      "signal": "motor_io",
+      "value": "VFD414_AUX",
+      "role": "merge_motor",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawMerge.asc",
+      "detail": "vfd_base=VFD414 role=AUX"
+    },
+    {
+      "signal": "reservation",
+      "value": "SAW_RESERVATION",
+      "role": "reservation",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawMerge.asc",
+      "detail": ""
+    },
+    {
+      "signal": "lane_enable_delay_tm",
+      "value": "tmSawMerge_DLY",
+      "role": "lane_enable_delay",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawMerge.LaneEnableDelayTM",
+      "detail": ""
+    },
+    {
+      "signal": "slice_seconds_merge",
+      "value": 18.0,
+      "role": "merge_slice_time",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawMerge.pSliceSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "lane_count",
+      "value": 5,
+      "role": "lane_count",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.lane_index",
+      "value": 1,
+      "role": "lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneNdx",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.conveyor",
+      "value": "P219",
+      "role": "lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.Name",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.photoeye",
+      "value": "PE219_P",
+      "role": "lane_pe",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.drive",
+      "value": "VFD219",
+      "role": "lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": "vfd_base=VFD219 role=EN"
+    },
+    {
+      "signal": "LANE_0_P219.approach",
+      "value": "SAW_APP_LANE_0",
+      "role": "approach",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ApproachUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.collision",
+      "value": "SAW_COL_LANE_0",
+      "role": "collision",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.CollisionUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.lane_input",
+      "value": "SAW_MERGE_IN_0",
+      "role": "merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneIN",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.slice_seconds",
+      "value": 3.0,
+      "role": "slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.SliceSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.reserve_seconds",
+      "value": 10.0,
+      "role": "reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.reserve_tm",
+      "value": "tmfcEZPE217_F",
+      "role": "reserve_tm",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_0_P219.full_eye",
+      "value": "EZPE217_F",
+      "role": "full_eye",
+      "provenance": "RUN_DERIVED",
+      "source": "SawLane.ReserveTM+Fullline.asc+pack",
+      "detail": "ReserveTM=tmfcEZPE217_F / Fullline EZPE217_F on P217; map gold EZPE127_F\u2192EZPE217_F"
+    },
+    {
+      "signal": "LANE_0_P219.pack_rename",
+      "value": "EZPE127_F->EZPE217_F",
+      "role": "full_eye_pack_rename",
+      "provenance": "RUN_DERIVED",
+      "source": "Fullline+pack",
+      "detail": "ReserveTM=tmfcEZPE217_F / Fullline EZPE217_F on P217; map gold EZPE127_F\u2192EZPE217_F"
+    },
+    {
+      "signal": "LANE_1_P408.lane_index",
+      "value": 2,
+      "role": "lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneNdx",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.conveyor",
+      "value": "P408",
+      "role": "lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.Name",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.photoeye",
+      "value": "PE410_P",
+      "role": "lane_pe",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.drive",
+      "value": "VFD410_EN",
+      "role": "lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": "vfd_base=VFD410 role=EN"
+    },
+    {
+      "signal": "LANE_1_P408.approach",
+      "value": "SAW_APP_LANE_1",
+      "role": "approach",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ApproachUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.collision",
+      "value": "SAW_COL_LANE_1",
+      "role": "collision",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.CollisionUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.lane_input",
+      "value": "SAW_MERGE_IN_1",
+      "role": "merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneIN",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.slice_seconds",
+      "value": 18.0,
+      "role": "slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.SliceSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.reserve_seconds",
+      "value": 20.0,
+      "role": "reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.reserve_tm",
+      "value": "tmfcEZPE408_F",
+      "role": "reserve_tm",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_1_P408.full_eye",
+      "value": "EZPE408_F",
+      "role": "full_eye",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM",
+      "detail": "ReserveTM=tmfcEZPE408_F exact pack symbol"
+    },
+    {
+      "signal": "LANE_3_P116.lane_index",
+      "value": 3,
+      "role": "lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneNdx",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.conveyor",
+      "value": "P116",
+      "role": "lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.Name",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.photoeye",
+      "value": "PE118_P",
+      "role": "lane_pe",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.drive",
+      "value": "VFD118_EN",
+      "role": "lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": "vfd_base=VFD118 role=EN"
+    },
+    {
+      "signal": "LANE_3_P116.approach",
+      "value": "SAW_APP_LANE_3",
+      "role": "approach",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ApproachUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.collision",
+      "value": "SAW_COL_LANE_3",
+      "role": "collision",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.CollisionUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.lane_input",
+      "value": "SAW_MERGE_IN_3",
+      "role": "merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneIN",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.slice_seconds",
+      "value": 8.0,
+      "role": "slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.SliceSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.reserve_seconds",
+      "value": 20.0,
+      "role": "reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.reserve_tm",
+      "value": "tmfcEZPE116_F",
+      "role": "reserve_tm",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_3_P116.full_eye",
+      "value": "EZPE116_F",
+      "role": "full_eye",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM",
+      "detail": "ReserveTM=tmfcEZPE116_F exact pack symbol"
+    },
+    {
+      "signal": "LANE_4_P214.lane_index",
+      "value": 4,
+      "role": "lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneNdx",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.conveyor",
+      "value": "P214",
+      "role": "lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.Name",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.photoeye",
+      "value": "PE216_P",
+      "role": "lane_pe",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.drive",
+      "value": "VFD216_EN",
+      "role": "lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": "vfd_base=VFD216 role=EN"
+    },
+    {
+      "signal": "LANE_4_P214.approach",
+      "value": "SAW_APP_LANE_4",
+      "role": "approach",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ApproachUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.collision",
+      "value": "SAW_COL_LANE_4",
+      "role": "collision",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.CollisionUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.lane_input",
+      "value": "SAW_MERGE_IN_4",
+      "role": "merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneIN",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.slice_seconds",
+      "value": 6.0,
+      "role": "slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.SliceSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.reserve_seconds",
+      "value": 15.0,
+      "role": "reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.reserve_tm",
+      "value": "tmfcEZPE212_F1",
+      "role": "reserve_tm",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_4_P214.full_eye",
+      "value": "EZPE212_F2",
+      "role": "full_eye_lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM+Fullline.asc",
+      "detail": "ReserveTM=tmfcEZPE212_F1\u2192EZPE212_F1 on P212; pack/lane full eye EZPE212_F2 on P214 (paired; do not rename F1\u2194F2)"
+    },
+    {
+      "signal": "LANE_5_P832.lane_index",
+      "value": 5,
+      "role": "lane_index",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneNdx",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.conveyor",
+      "value": "P832",
+      "role": "lane_conveyor",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.Name",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.photoeye",
+      "value": "PE834_P",
+      "role": "lane_pe",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.drive",
+      "value": "VFD834_EN",
+      "role": "lane_drive",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.asc",
+      "detail": "vfd_base=VFD834 role=EN"
+    },
+    {
+      "signal": "LANE_5_P832.approach",
+      "value": "SAW_APP_LANE_5",
+      "role": "approach",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ApproachUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.collision",
+      "value": "SAW_COL_LANE_5",
+      "role": "collision",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.CollisionUP",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.lane_input",
+      "value": "SAW_MERGE_IN_5",
+      "role": "merge_input",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.LaneIN",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.slice_seconds",
+      "value": 3.0,
+      "role": "slice_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.SliceSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.reserve_seconds",
+      "value": 10.0,
+      "role": "reserve_seconds",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveSeconds",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.reserve_tm",
+      "value": "tmfcEZPE832_F",
+      "role": "reserve_tm",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM",
+      "detail": ""
+    },
+    {
+      "signal": "LANE_5_P832.full_eye",
+      "value": "EZPE832_F",
+      "role": "full_eye",
+      "provenance": "RUN_EXPLICIT",
+      "source": "SawLane.ReserveTM",
+      "detail": "ReserveTM=tmfcEZPE832_F exact pack symbol"
+    }
+  ]
+}

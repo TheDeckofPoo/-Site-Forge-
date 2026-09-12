@@ -1,0 +1,328 @@
+{
+  "generated_at": "2026-09-12T16:21:51.981749+00:00",
+  "pass": "cp4-sawtooth-fidelity",
+  "rule": "explicit RUN VFD mapping beats naming heuristic",
+  "multi_equipment_ok": true,
+  "assertions": {
+    "VFD414": [
+      "P414",
+      "P416"
+    ],
+    "VFD424": [
+      "P424",
+      "P424A"
+    ],
+    "LANE_3_P116": {
+      "conveyor": "P116",
+      "PE": "PE118_P",
+      "drive": "VFD118_EN"
+    }
+  },
+  "mapped_conveyors": [
+    {
+      "conveyor": "P118",
+      "drive_class": "VFD",
+      "vfd_base": "VFD118",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD118_EN",
+          "conveyor": "P118",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P120",
+      "drive_class": "VFD",
+      "vfd_base": "VFD120",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD120_EN",
+          "conveyor": "P120",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P216",
+      "drive_class": "VFD",
+      "vfd_base": "VFD216",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD216_EN",
+          "conveyor": "P216",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P218",
+      "drive_class": "VFD",
+      "vfd_base": "VFD218",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD218_EN",
+          "conveyor": "P218",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P219",
+      "drive_class": "VFD",
+      "vfd_base": "VFD219",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD219",
+          "conveyor": "P219",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P219A",
+      "drive_class": "VFD",
+      "vfd_base": "VFD219A",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD219A",
+          "conveyor": "P219A",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P410",
+      "drive_class": "VFD",
+      "vfd_base": "VFD410",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD410_EN",
+          "conveyor": "P410",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P412",
+      "drive_class": "VFD",
+      "vfd_base": "VFD412",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD412_EN",
+          "conveyor": "P412",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P414",
+      "drive_class": "VFD",
+      "vfd_base": "VFD414",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD414_EN",
+          "conveyor": "P414",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD414_EN",
+          "conveyor": "P416",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P416",
+      "drive_class": "VFD",
+      "vfd_base": "VFD414",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD414_EN",
+          "conveyor": "P414",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD414_EN",
+          "conveyor": "P416",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P422",
+      "drive_class": "VFD",
+      "vfd_base": "VFD422",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD422_EN",
+          "conveyor": "P422",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P424",
+      "drive_class": "VFD",
+      "vfd_base": "VFD424",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD424_EN",
+          "conveyor": "P424",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD424_EN",
+          "conveyor": "P424A",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P424A",
+      "drive_class": "VFD",
+      "vfd_base": "VFD424",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD424_EN",
+          "conveyor": "P424",
+          "provenance": "RUN_EXPLICIT"
+        },
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD424_EN",
+          "conveyor": "P424A",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P834",
+      "drive_class": "VFD",
+      "vfd_base": "VFD834",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD834_EN",
+          "conveyor": "P834",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    },
+    {
+      "conveyor": "P836",
+      "drive_class": "VFD",
+      "vfd_base": "VFD836",
+      "autogen_type": "Transport with VFD",
+      "previous_type": "Transport with VFD",
+      "rule": "explicit_discovery_mapping_beats_name_heuristic",
+      "provenance": "RUN_EXPLICIT",
+      "evidence": [
+        {
+          "method": "Mtrchain.asc",
+          "motor_name": "VFD836_EN",
+          "conveyor": "P836",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ]
+    }
+  ],
+  "shared_relationships": [
+    {
+      "vfd": "VFD414",
+      "conveyors": [
+        "P414",
+        "P416"
+      ],
+      "provenance": "RUN_EXPLICIT"
+    },
+    {
+      "vfd": "VFD424",
+      "conveyors": [
+        "P424",
+        "P424A"
+      ],
+      "provenance": "RUN_EXPLICIT"
+    }
+  ],
+  "counts": {
+    "vfd_bases_discovery": 13,
+    "conveyors_forced_vfd": 15
+  },
+  "preserved_pass2": {
+    "unique_vfd_bases": 13,
+    "shared_vfd_relationships": true
+  }
+}
