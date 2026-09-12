@@ -1,0 +1,186 @@
+{
+  "generated_at": "2026-09-12T06:46:06.538342+00:00",
+  "machine": "ORNCCP2",
+  "run_dir": "workspace\\active\\RUN",
+  "source_of_truth": "CURRENT RUN geometry only",
+  "equipment_count": 37,
+  "classes": [
+    "SAME_PHYSICAL_EQUIPMENT",
+    "PARALLEL_EQUIPMENT",
+    "PARENT_CHILD",
+    "VALID_OVERLAP",
+    "SUSPECT_GEOMETRY",
+    "UNKNOWN"
+  ],
+  "counts_by_class": {
+    "SAME_PHYSICAL_EQUIPMENT": 0,
+    "PARALLEL_EQUIPMENT": 1,
+    "PARENT_CHILD": 0,
+    "VALID_OVERLAP": 3,
+    "SUSPECT_GEOMETRY": 0,
+    "UNKNOWN": 9
+  },
+  "overlap_pairs": [
+    {
+      "a": "P1000",
+      "b": "P1004",
+      "a_type": "STRAIGHT",
+      "b_type": "STRAIGHT",
+      "entry_distance": 566.667,
+      "exit_distance": 900.617,
+      "midpoint_distance": 666.042,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P1006",
+      "b": "P1010",
+      "a_type": "STRAIGHT",
+      "b_type": "STRAIGHT",
+      "entry_distance": 566.666,
+      "exit_distance": 900.617,
+      "midpoint_distance": 666.041,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P134",
+      "b": "P136A",
+      "a_type": "CURVE",
+      "b_type": "ZEROPRESSURE",
+      "entry_distance": 0.0,
+      "exit_distance": 8458.052,
+      "midpoint_distance": 4229.026,
+      "classification": "VALID_OVERLAP",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P134",
+      "b": "P400",
+      "a_type": "CURVE",
+      "b_type": "STRAIGHT",
+      "entry_distance": 1876.481,
+      "exit_distance": 721.403,
+      "midpoint_distance": 1136.539,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P138",
+      "b": "P404",
+      "a_type": "BELT",
+      "b_type": "BELT",
+      "entry_distance": 341.667,
+      "exit_distance": 341.667,
+      "midpoint_distance": 341.667,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P138",
+      "b": "P406",
+      "a_type": "BELT",
+      "b_type": "STRAIGHT",
+      "entry_distance": 649.993,
+      "exit_distance": 1531.573,
+      "midpoint_distance": 1087.015,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P148",
+      "b": "P150A",
+      "a_type": "CURVE",
+      "b_type": "ZEROPRESSURE",
+      "entry_distance": 0.0,
+      "exit_distance": 6989.675,
+      "midpoint_distance": 3494.838,
+      "classification": "VALID_OVERLAP",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P150",
+      "b": "P242",
+      "a_type": "ZEROPRESSURE",
+      "b_type": "ZEROPRESSURE",
+      "entry_distance": 304.138,
+      "exit_distance": 300.0,
+      "midpoint_distance": 301.04,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P226",
+      "b": "P229",
+      "a_type": "CURVE",
+      "b_type": "ZEROPRESSURE",
+      "entry_distance": 16.67,
+      "exit_distance": 13452.17,
+      "midpoint_distance": 6733.004,
+      "classification": "VALID_OVERLAP",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P229",
+      "b": "P406",
+      "a_type": "ZEROPRESSURE",
+      "b_type": "STRAIGHT",
+      "entry_distance": 5714.042,
+      "exit_distance": 5973.362,
+      "midpoint_distance": 847.774,
+      "classification": "PARALLEL_EQUIPMENT",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P314",
+      "b": "P316",
+      "a_type": "BELT",
+      "b_type": "CURVE",
+      "entry_distance": 3066.53,
+      "exit_distance": 72.155,
+      "midpoint_distance": 1503.418,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P322",
+      "b": "P324",
+      "a_type": "STRAIGHT",
+      "b_type": "CURVE",
+      "entry_distance": 2893.539,
+      "exit_distance": 73.784,
+      "midpoint_distance": 1417.67,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    },
+    {
+      "a": "P404",
+      "b": "P406",
+      "a_type": "BELT",
+      "b_type": "STRAIGHT",
+      "entry_distance": 634.476,
+      "exit_distance": 1525.052,
+      "midpoint_distance": 1077.809,
+      "classification": "UNKNOWN",
+      "provenance": "RUN_INFERRED",
+      "action": "DO_NOT_AUTO_SPREAD \u2014 engineer review"
+    }
+  ],
+  "policy": {
+    "move_equipment_to_fix_overlap": false,
+    "finished_plc_used": false,
+    "move_equipment_to_fix_text": false
+  }
+}

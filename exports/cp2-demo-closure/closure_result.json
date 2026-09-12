@@ -1,0 +1,38 @@
+{
+  "ok": true,
+  "out_dir": "exports\\cp2-demo-closure",
+  "demo_gate": "exports\\cp2-demo-closure\\demo_gate.md",
+  "docs": "docs\\CP2_DEMO_CLOSURE.md",
+  "generated_l5x": "exports\\cp2-demo-closure\\generated\\OReillyGreensboro_ORNCCP2.L5X",
+  "run_realization_counts": {
+    "run_equipment_discovered": 65,
+    "site_forge_supported": 65,
+    "automatically_realized": 31,
+    "engineer_confirmation_required": 33,
+    "unsupported": 0,
+    "ignored": 1
+  },
+  "pe_counts": {
+    "Full_PE": 11,
+    "PE_Logic": 66,
+    "insufficient_evidence": 38,
+    "by_provenance": {
+      "RUN_EXPLICIT": 39,
+      "DEFAULT": 38
+    }
+  },
+  "remaining_work": {
+    "conveyors_need_topology": 64,
+    "conveyors_need_area": 65,
+    "conveyors_need_es_zone": 65,
+    "pe_roles_need_confirmation": 19,
+    "unsupported_equipment_items": 0
+  },
+  "engineering_terms": [
+    "64 conveyors need topology",
+    "65 need Area",
+    "65 need ES Zone",
+    "19 PE roles need confirmation",
+    "0 unsupported equipment items"
+  ]
+}

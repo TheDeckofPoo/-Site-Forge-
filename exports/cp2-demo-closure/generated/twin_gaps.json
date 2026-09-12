@@ -1,0 +1,67 @@
+{
+  "kind": "fortna_twin_gaps",
+  "version": 1,
+  "generated_utc": "2026-09-12T06:45:42Z",
+  "project": "OReillyGreensboro_ORNCCP2",
+  "areas": [
+    "ORNCCP2_Area"
+  ],
+  "conveyor_count": 37,
+  "merge_count": 0,
+  "gap_count": 6,
+  "by_type": {
+    "missing_exit_pe": 6
+  },
+  "gaps": [
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P100",
+      "area": "ORNCCP2_Area",
+      "message": "P100 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P101",
+      "area": "ORNCCP2_Area",
+      "message": "P101 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P136A",
+      "area": "ORNCCP2_Area",
+      "message": "P136A has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P150A",
+      "area": "ORNCCP2_Area",
+      "message": "P150A has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P229",
+      "area": "ORNCCP2_Area",
+      "message": "P229 has no Exit PE (Fast_Conv uses NO_PE)"
+    },
+    {
+      "type": "missing_exit_pe",
+      "severity": "warn",
+      "conveyor": "P408",
+      "area": "ORNCCP2_Area",
+      "message": "P408 has no Exit PE (Fast_Conv uses NO_PE)"
+    }
+  ],
+  "note": "Gaps Autogen left for PRISM site-twin / AI propose-patches. Does not rewrite L5X \u2014 engineer Apply only.",
+  "report_hints": {
+    "areas_summary": {
+      "ORNCCP2_Area": 37
+    },
+    "io_map_unmapped": 202,
+    "conveyors_with_real_pe": 31
+  }
+}

@@ -2,8 +2,8 @@
 """Audit nearly-identical physical geometry among imported conveyors.
 
 Does NOT move equipment. Classifies overlaps as:
-  valid_parallel | parent_child | duplicate_run_geometry |
-  multiple_logical_on_one_physical | UNKNOWN
+  SAME_PHYSICAL_EQUIPMENT | PARALLEL_EQUIPMENT | PARENT_CHILD |
+  VALID_OVERLAP | SUSPECT_GEOMETRY | UNKNOWN
 
 SOURCE: RUN geometry only (infeed-origin model). Finished PLC never consulted.
 """
@@ -29,6 +29,15 @@ from fortna_run_geometry_investigate import (  # noqa: E402
     _is_mech_conveyor,
     _load_word_map,
     _row_on_controller,
+)
+
+OVERLAP_CLASSES = (
+    "SAME_PHYSICAL_EQUIPMENT",
+    "PARALLEL_EQUIPMENT",
+    "PARENT_CHILD",
+    "VALID_OVERLAP",
+    "SUSPECT_GEOMETRY",
+    "UNKNOWN",
 )
 
 
@@ -98,6 +107,13 @@ def _load_mech(run_dir: Path, machine: str) -> list[dict]:
     return out
 
 
+def _angle_delta(a: float | None, b: float | None) -> float | None:
+    if a is None or b is None:
+        return None
+    d = abs(float(a) - float(b)) % 360.0
+    return min(d, 360.0 - d)
+
+
 def _classify_pair(a: dict, b: dict, entry_d: float, exit_d: float, mid_d: float) -> str:
     """Heuristic classification — never invent topology."""
     same_xy = (
@@ -106,25 +122,38 @@ def _classify_pair(a: dict, b: dict, entry_d: float, exit_d: float, mid_d: float
         and abs(float(a["x"]) - float(b["x"])) < 1.0
         and abs(float(a["y"]) - float(b["y"])) < 1.0
     )
-    same_angle = (
-        a.get("angle") is not None
-        and b.get("angle") is not None
-        and abs(float(a["angle"]) - float(b["angle"])) % 360 < 1.0
-    )
+    ang_d = _angle_delta(a.get("angle"), b.get("angle"))
+    same_angle = ang_d is not None and ang_d < 1.0
+    parallel_angle = ang_d is not None and ang_d < 8.0
     ta, tb = a["tag"], b["tag"]
+    wref = max(float(a.get("width") or 200), float(b.get("width") or 200))
+
     # Parent/child naming: P136 / P136A
     if ta.rstrip("ABCDEFGH") == tb.rstrip("ABCDEFGH") and ta != tb:
-        if same_angle and (entry_d < 50 or exit_d < 50 or mid_d < 80):
-            return "parent_child"
-    # Parallel: similar angle, close midpoints, distinct entries
-    if same_angle and mid_d < max(float(a.get("width") or 200), float(b.get("width") or 200)) * 1.5:
-        if entry_d > 20 and exit_d > 20:
-            return "valid_parallel"
-    # Duplicate geometry: nearly identical entry+exit
+        if (same_angle or parallel_angle) and (entry_d < 50 or exit_d < 50 or mid_d < 80):
+            return "PARENT_CHILD"
+
+    # Same physical body: nearly identical entry+exit (or identical XY+angle)
     if entry_d < 5 and exit_d < 5 and same_angle:
-        return "duplicate_run_geometry"
-    if same_xy and same_angle:
-        return "multiple_logical_on_one_physical"
+        return "SAME_PHYSICAL_EQUIPMENT"
+    if same_xy and same_angle and mid_d < 25:
+        return "SAME_PHYSICAL_EQUIPMENT"
+
+    # Parallel equipment: similar heading, close midpoints, distinct ends
+    if parallel_angle and mid_d < wref * 1.5:
+        if entry_d > 20 and exit_d > 20:
+            return "PARALLEL_EQUIPMENT"
+
+    # Valid mate-like proximity (one end coincides, other far — curve→straight)
+    if min(entry_d, exit_d) < 25 and max(entry_d, exit_d) > max(wref, 200):
+        return "VALID_OVERLAP"
+
+    # Bodies nearly stacked but not identical — suspect RUN geometry
+    if mid_d < wref * 0.75 and entry_d < wref and exit_d < wref:
+        return "SUSPECT_GEOMETRY"
+    if same_xy and not same_angle:
+        return "SUSPECT_GEOMETRY"
+
     return "UNKNOWN"
 
 

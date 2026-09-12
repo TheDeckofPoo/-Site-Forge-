@@ -41,12 +41,18 @@ def main() -> int:
         ("pass2 Fit Visible after Auto Build", "fitVisible" in p2),
         ("ctrl+wheel zoom", "ctrlKey" in p2 and "wheel" in p2),
         ("layers prepared", "tb-layer-physical" in html and "tb-layer-motors" in html),
-        ("Fit Visible button", "tb-fit-visible" in html),
-        ("Fit All button", "tb-fit-all" in html),
+        ("Fit button", 'id="tb-fit"' in html),
+        ("Fit menu retains Fit All", 'id="tb-fit-all"' in html),
         ("fitVisible helper", "function fitVisible" in js),
         ("fitAll helper", "function fitAll" in js),
         ("label collision helper", "placeSchematicLabels" in js),
         ("outlier classifier", "classifySpatialOutliers" in js),
+        ("workflow strip", 'id="tb-workflow-strip"' in html),
+        ("Apply to Autogen", 'id="tb-apply-autogen"' in html),
+        ("canonical apply graph", "function buildCanonicalApplyGraph" in js),
+        ("Advanced menu", 'id="tb-advanced-menu"' in html),
+        ("Build PLC CTA", 'id="tb-goto-build-plc"' in html),
+        ("presentation offsets", "computePresentationOffsets" in js),
     ]
     for name, ok in checks:
         status = "PASS" if ok else "FAIL"

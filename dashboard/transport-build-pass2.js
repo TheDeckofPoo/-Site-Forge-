@@ -1429,29 +1429,41 @@
     });
     save();
     render();
-    // Frame visible/main-cluster equipment immediately (not full plant coords)
+    // Mark Area / ES as required when RUN did not supply confirmed values
+    (tb.areas || []).forEach((area) => {
+      const suggested = /_Imported$/i.test(area.name || '') || /RUN_Imported/i.test(area.name || '');
+      (area.nodes || []).forEach((n) => {
+        const areaName = area.name || '';
+        const hasRealArea = areaName && !suggested && !/^ORNCCP\d+_Imported$/i.test(areaName);
+        n.areaRequired = !hasRealArea;
+        const es = String(n.safetyZone || '').trim();
+        const esDefault = !es || /_ESZone1$/i.test(es) || /^UNKNOWN$/i.test(es);
+        n.esZoneRequired = esDefault;
+        if (esDefault) n.safetyZone = n.safetyZone || '';
+      });
+    });
+    tb.viewMode = 'schematic';
+    if (tb.layers) tb.layers.physical = false;
+    if (tb.workflow) tb.workflow.autobuild = true;
+    try { A().setWorkflowStep?.('review', { done: true }); } catch (_) { /* ignore */ }
+    // Frame visible working set (single Fit semantics)
     try {
       if (typeof A().fitVisible === 'function') A().fitVisible();
       else if (typeof A().fitSite === 'function') A().fitSite();
     } catch (_) { /* ignore */ }
     const m = tb.metrics || {};
+    const needArea = (tb.areas || []).reduce((s, a) => s + (a.nodes || []).filter((n) => n.areaRequired).length, 0);
+    const needEs = (tb.areas || []).reduce((s, a) => s + (a.nodes || []).filter((n) => n.esZoneRequired).length, 0);
     const detail = [
-      `Conveyors discovered: ${m.conveyors_discovered ?? '—'}`,
-      `Placed: ${m.conveyors_placed ?? '—'}`,
-      `Usable X/Y: ${m.conveyors_with_usable_xy ?? '—'}`,
-      `Usable angle: ${m.conveyors_with_usable_angle ?? '—'}`,
-      `Usable length/width: ${m.conveyors_with_usable_length ?? '—'}`,
-      `Motors: ${m.motors_discovered ?? '—'} (VFD ${m.vfd_motors ?? 0} · contactor ${m.contactor_motors ?? 0} · unknown ${m.unknown_motors ?? 0})`,
-      `Auto connections: ${m.auto_connections ?? '—'}`,
-      `Ambiguous: ${m.ambiguous_connections ?? '—'}`,
-      `Disconnected: ${m.disconnected_equipment ?? '—'}`,
-      `Merges detected: ${m.merges_detected ?? '—'}`,
-      `Canvas scale: ${m.canvas_scale != null ? Number(m.canvas_scale).toFixed(6) : '—'} (RUN length→px; source geometry unchanged)`,
+      `Conveyors placed: ${m.conveyors_placed ?? '—'} / ${m.conveyors_discovered ?? '—'}`,
+      `Auto connections: ${m.auto_connections ?? '—'} · Ambiguous: ${m.ambiguous_connections ?? '—'}`,
+      `AREA REQUIRED: ${needArea} · ES ZONE REQUIRED: ${needEs}`,
       '',
-      'Compact segments show physical runs. Use Fit Site / Fit Area. Correct relationships, Area/ES Zone, then Apply to Autogen.',
+      'Next: Review / Correct → Apply to Autogen → Build PLC',
+      'Clean schematic is the normal view. Geometry debug is under Advanced.',
     ].join('\n');
-    await showInfo('Auto Build From RUN complete', res.summary || 'Layout imported.', detail);
-    status(res.summary || 'Auto Build complete — review ambiguous connections');
+    await showInfo('Auto Build complete', res.summary || 'Layout imported — review & correct.', detail);
+    status(res.summary || 'Auto Build complete — Review / Correct, then Apply to Autogen');
   }
 
   function mSafe(obj) {
@@ -1462,24 +1474,56 @@
     $('tb-auto-build-run')?.addEventListener('click', () => {
       autoBuildFromRun().catch((err) => A().status(`Auto Build error: ${err?.message || err}`));
     });
+    $('tb-fit')?.addEventListener('click', () => {
+      try { A().fitVisible?.(); } catch (err) { A().status(`Fit: ${err?.message || err}`); }
+    });
     $('tb-fit-visible')?.addEventListener('click', () => {
-      try { A().fitVisible?.(); } catch (err) { A().status(`Fit Visible: ${err?.message || err}`); }
+      try { A().fitVisible?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Fit Visible: ${err?.message || err}`); }
     });
     $('tb-fit-all')?.addEventListener('click', () => {
-      try { A().fitAll?.(); } catch (err) { A().status(`Fit All: ${err?.message || err}`); }
+      try { A().fitAll?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Fit All: ${err?.message || err}`); }
     });
     $('tb-fit-site')?.addEventListener('click', () => {
-      try { A().fitSite?.(); } catch (err) { A().status(`Fit Site: ${err?.message || err}`); }
+      try { A().fitSite?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Fit Site: ${err?.message || err}`); }
     });
     $('tb-fit-area')?.addEventListener('click', () => {
-      try { A().fitArea?.(); } catch (err) { A().status(`Fit Area: ${err?.message || err}`); }
+      try { A().fitArea?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Fit Area: ${err?.message || err}`); }
+    });
+    $('tb-advanced-debug')?.addEventListener('change', (ev) => {
+      const { tb, render, status } = A();
+      tb.viewMode = ev.target.checked ? 'geom-debug' : 'schematic';
+      if (!tb.layers) tb.layers = {};
+      tb.layers.physical = !!ev.target.checked;
+      const phys = $('tb-layer-physical');
+      if (phys) phys.checked = !!ev.target.checked;
+      render();
+      status(ev.target.checked ? 'Geometry debug ON (Advanced)' : 'Clean schematic (normal)');
+    });
+    $('tb-lane-separate')?.addEventListener('change', (ev) => {
+      const { tb, render, status } = A();
+      tb.laneSeparate = !!ev.target.checked;
+      render();
+      status(`Lane separation ${tb.laneSeparate ? 'ON' : 'OFF'} (presentation only)`);
     });
     $('tb-layer-physical')?.addEventListener('change', (ev) => {
       const { tb, render, status } = A();
       if (!tb.layers) tb.layers = {};
       tb.layers.physical = !!ev.target.checked;
+      tb.viewMode = ev.target.checked ? 'geom-debug' : 'schematic';
+      const adv = $('tb-advanced-debug');
+      if (adv) adv.checked = !!ev.target.checked;
       render();
-      status(`Physical layer ${tb.layers.physical ? 'on' : 'off'}`);
+      status(`Physical debug ${tb.layers.physical ? 'on' : 'off'}`);
+    });
+    $('tb-goto-build-plc')?.addEventListener('click', () => {
+      try {
+        if (typeof window.activateTab === 'function') window.activateTab('autogen');
+        else document.querySelector('[data-tab="autogen"]')?.click();
+        setTimeout(() => $('btn-autogen-from-run')?.scrollIntoView({ behavior: 'smooth', block: 'center' }), 150);
+        A().status('PLC Autogen — use Export L5X Package to Build PLC');
+      } catch (err) {
+        A().status(`Build PLC: ${err?.message || err}`);
+      }
     });
     $('tb-build-chain')?.addEventListener('click', () => openChainDialog());
     $('tb-chain-cancel')?.addEventListener('click', () => closeChainDialog());

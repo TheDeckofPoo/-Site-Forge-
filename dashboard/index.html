@@ -419,6 +419,28 @@
       border: 1px solid #1e293b; border-radius: 999px; padding: 1px 6px; color: #94a3b8;
     }
     .tb-layer-chip input { accent-color: #38bdf8; }
+    #tb-workflow-strip .tb-wf-step {
+      color: #64748b; padding: 2px 8px; border-radius: 999px; border: 1px solid transparent;
+    }
+    #tb-workflow-strip .tb-wf-step.tb-wf-active {
+      color: #e2e8f0; border-color: #a855f7; background: rgba(168,85,247,0.12);
+    }
+    #tb-workflow-strip .tb-wf-step.tb-wf-done {
+      color: #6ee7b7; border-color: #065f46;
+    }
+    #tb-fit-menu > summary, #tb-advanced-menu > summary { list-style: none; }
+    #tb-fit-menu > summary::-webkit-details-marker,
+    #tb-advanced-menu > summary::-webkit-details-marker { display: none; }
+    .tb-area-required, .tb-es-required {
+      font-size: 8px; font-weight: 700; letter-spacing: 0.04em;
+      padding: 0 4px; border-radius: 3px; margin-left: 4px;
+    }
+    .tb-area-required { color: #fca5a5; background: #450a0a; border: 1px solid #7f1d1d; }
+    .tb-es-required { color: #fcd34d; background: #451a03; border: 1px solid #b45309; }
+    /* Clean schematic default — debug strokes only when Advanced geometry debug on */
+    #tb-canvas.tb-clean-schematic .tb-schematic-body { stroke: #94a3b8; }
+    #tb-canvas.tb-clean-schematic .tb-wire.tb-physical { stroke-width: 1.5; opacity: 0.35; }
+    #tb-canvas:not(.tb-geom-debug) .tb-mate-mark { font-size: 9px; opacity: 0.85; }
     .tb-drive-badge {
       font-size: 8px; font-weight: 700; letter-spacing: 0.02em;
       padding: 0 3px; border-radius: 3px; border: 1px solid #334155;
@@ -1996,79 +2018,93 @@
           </div>
         </div>
       </div>
+      <!-- Unmistakable workflow strip -->
+      <div id="tb-workflow-strip" class="shrink-0 px-4 py-1.5 border-b border-slate-800 bg-[#0a1018] flex items-center gap-2 flex-wrap text-[11px]">
+        <span class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mr-1">Workflow</span>
+        <span class="tb-wf-step" data-wf="import">1 · Import RUN</span>
+        <span class="text-slate-700">→</span>
+        <span class="tb-wf-step" data-wf="autobuild">2 · Auto Build</span>
+        <span class="text-slate-700">→</span>
+        <span class="tb-wf-step tb-wf-active" data-wf="review">3 · Review / Correct</span>
+        <span class="text-slate-700">→</span>
+        <span class="tb-wf-step" data-wf="apply">4 · Apply to Autogen</span>
+        <span class="text-slate-700">→</span>
+        <span class="tb-wf-step" data-wf="build">5 · Build PLC</span>
+        <span id="tb-wf-hint" class="ml-auto text-[10px] text-slate-500">Clean schematic is the normal view · Advanced holds geometry debug</span>
+      </div>
       <div class="shrink-0 px-4 py-2 border-b border-slate-800 bg-[#0c1219] flex items-center gap-3 flex-wrap">
         <div class="text-sm font-semibold text-fuchsia-300">
           <i class="fa-solid fa-diagram-project mr-1.5"></i>Transport Build
-          <span class="text-[10px] font-normal text-fuchsia-400/70 ml-1">Areas · merges · PE roles → Apply → Autogen</span>
         </div>
-        <div class="flex items-center gap-2 ml-auto">
+        <div class="flex items-center gap-2 ml-auto flex-wrap">
           <label class="text-[10px] text-slate-500 uppercase tracking-wider">Area</label>
           <select id="tb-area-select" class="bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200 min-w-[140px]"></select>
-          <button type="button" id="tb-area-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-900/50 text-fuchsia-300">
-            <i class="fa-solid fa-plus mr-1"></i>New area
-          </button>
-          <button type="button" id="tb-area-rename" class="btn-ghost text-xs px-2 py-1.5 rounded-lg" title="Rename area">
-            <i class="fa-solid fa-pen"></i>
-          </button>
-          <button type="button" id="tb-area-delete" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-red-400/80" title="Delete area">
-            <i class="fa-solid fa-trash"></i>
+          <button type="button" id="tb-area-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-900/50 text-fuchsia-300" title="New area">
+            <i class="fa-solid fa-plus mr-1"></i>New
           </button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
-          <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-600/70 text-emerald-200 font-semibold" title="Create first-pass physical layout from imported RUN geometry (X/Y/Angle/Length)">
-            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Auto Build From RUN
+          <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-600/70 text-emerald-200 font-semibold" title="Auto Build from imported RUN">
+            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Auto Build
           </button>
-          <button type="button" id="tb-build-chain" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-700/70 text-fuchsia-200 font-semibold" title="Paste a conveyor run: P102 P106 P108 or P102 → P106 → P108">
-            <i class="fa-solid fa-route mr-1"></i>Build Chain
-          </button>
-          <button type="button" id="tb-continue-run" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-cyan-800/60 text-cyan-300" title="Continue downstream from the selected conveyor">
-            <i class="fa-solid fa-forward mr-1"></i>Continue Run
-          </button>
-          <button type="button" id="tb-connect-mode" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-rose-900/50 text-rose-300" title="Click source then destination conveyor (Esc / right-click to exit)">
+          <button type="button" id="tb-connect-mode" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-rose-900/50 text-rose-300" title="Connect EXIT → ENTRY">
             <i class="fa-solid fa-link mr-1"></i>Connect
           </button>
-          <label class="flex items-center gap-1.5 text-[10px] text-slate-400 cursor-pointer select-none border border-slate-800 rounded-lg px-2 py-1" title="When on, each new conveyor auto-connects from the selected one">
-            <input type="checkbox" id="tb-auto-connect" class="rounded border-slate-600 bg-slate-900">
-            Auto Connect New
-          </label>
-          <button type="button" id="tb-auto-layout" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Auto-layout conveyors by directed flow (presentation only — avoid on physical RUN layouts)">
-            <i class="fa-solid fa-grip mr-1"></i>Auto Layout
+          <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit the current visible working set (~8% padding). Does not alter RUN geometry.">
+            <i class="fa-solid fa-expand mr-1"></i>Fit
           </button>
-          <button type="button" id="tb-fit-visible" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit visible/main-cluster equipment with ~8% padding. Does not alter RUN geometry. Outliers reported, not moved.">
-            <i class="fa-solid fa-expand mr-1"></i>Fit Visible
-          </button>
-          <button type="button" id="tb-fit-all" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-sky-900/50 text-sky-400/90" title="Fit all displayed equipment including spatial outliers">
-            <i class="fa-solid fa-border-all mr-1"></i>Fit All
-          </button>
-          <button type="button" id="tb-fit-site" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400" title="Alias of Fit Visible for physical layouts">
-            <i class="fa-solid fa-expand mr-1"></i>Fit Site
-          </button>
-          <button type="button" id="tb-fit-area" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400" title="Fit the active area (main cluster)">
-            <i class="fa-solid fa-compress mr-1"></i>Fit Area
-          </button>
-          <span class="w-px h-5 bg-slate-800 mx-1"></span>
-          <div class="flex items-center gap-1 text-[10px] text-slate-500" title="Site layers — Physical is fully implemented; others prepared">
-            <span class="uppercase tracking-wider text-slate-600 mr-1">Layers</span>
-            <label class="tb-layer-chip"><input type="checkbox" id="tb-layer-physical" checked> Physical</label>
-            <label class="tb-layer-chip opacity-50" title="Prepared — not fully implemented"><input type="checkbox" id="tb-layer-motors" disabled> Motors</label>
-            <label class="tb-layer-chip opacity-50" title="Prepared — not fully implemented"><input type="checkbox" id="tb-layer-pe" disabled> PE</label>
-            <label class="tb-layer-chip opacity-50" title="Prepared — not fully implemented"><input type="checkbox" id="tb-layer-area" disabled> Area</label>
-            <label class="tb-layer-chip opacity-50" title="Prepared — not fully implemented"><input type="checkbox" id="tb-layer-safety" disabled> Safety</label>
-            <label class="tb-layer-chip opacity-50" title="Prepared — not fully implemented"><input type="checkbox" id="tb-layer-controller" disabled> Controller</label>
-            <label class="tb-layer-chip opacity-50" title="Prepared — not fully implemented"><input type="checkbox" id="tb-layer-tracking" disabled> Tracking</label>
-          </div>
+          <details id="tb-fit-menu" class="relative">
+            <summary class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400 cursor-pointer list-none" title="More fit options">▾</summary>
+            <div class="absolute right-0 mt-1 z-40 min-w-[160px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-1">
+              <button type="button" id="tb-fit-visible" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Visible (main cluster)</button>
+              <button type="button" id="tb-fit-all" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit All (incl. outliers)</button>
+              <button type="button" id="tb-fit-area" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Area</button>
+              <button type="button" id="tb-fit-site" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Site</button>
+            </div>
+          </details>
           <button type="button" id="tb-undo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
           <button type="button" id="tb-redo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Redo (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
-          <button type="button" id="tb-apply-autogen" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-800/60 text-emerald-300" title="Push Transport areas + bound P### + merges into PLC Autogen workbook">
+          <button type="button" id="tb-apply-autogen" class="btn-ghost text-xs px-3 py-1.5 rounded-lg border border-emerald-500/80 text-emerald-200 font-bold bg-emerald-950/40" title="Persist approved Transport topology, Area, ES Zone, PE roles into the Autogen workbook. Presentation/debug state is ignored.">
             <i class="fa-solid fa-file-import mr-1"></i>Apply to Autogen
           </button>
-          <button type="button" id="tb-wizard" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/50 text-sky-300" title="Step-by-step transport build assist">
-            <i class="fa-solid fa-hat-wizard mr-1"></i>Wizard
+          <button type="button" id="tb-goto-build-plc" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-amber-600/70 text-amber-200 font-semibold hidden" title="Open PLC Autogen to Build PLC">
+            <i class="fa-solid fa-microchip mr-1"></i>Build PLC
           </button>
-          <button type="button" id="tb-open-exports" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Open exports/transport-poc">
-            <i class="fa-solid fa-folder-open"></i>
-          </button>
-          <button type="button" id="tb-clear-canvas" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg text-slate-500">Clear canvas</button>
+          <details id="tb-advanced-menu" class="relative">
+            <summary class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-400 cursor-pointer list-none" title="Advanced / debug controls">
+              <i class="fa-solid fa-sliders mr-1"></i>Advanced
+            </summary>
+            <div class="absolute right-0 mt-1 z-40 min-w-[220px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-2 space-y-1">
+              <label class="flex items-center gap-2 text-[11px] text-slate-300 px-1 py-1">
+                <input type="checkbox" id="tb-advanced-debug" class="rounded border-slate-600 bg-slate-900">
+                Geometry debug view
+              </label>
+              <label class="flex items-center gap-2 text-[11px] text-slate-300 px-1 py-1" title="Presentation-only lane separation for stacked bodies">
+                <input type="checkbox" id="tb-lane-separate" class="rounded border-slate-600 bg-slate-900" checked>
+                Separate stacked labels/bodies
+              </label>
+              <div class="border-t border-slate-800 my-1"></div>
+              <button type="button" id="tb-build-chain" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Build Chain…</button>
+              <button type="button" id="tb-continue-run" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Continue Run</button>
+              <button type="button" id="tb-auto-layout" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Auto Layout (topology)</button>
+              <label class="flex items-center gap-2 text-[11px] text-slate-400 px-2 py-1">
+                <input type="checkbox" id="tb-auto-connect" class="rounded border-slate-600 bg-slate-900"> Auto Connect New
+              </label>
+              <div class="border-t border-slate-800 my-1"></div>
+              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Debug layers</div>
+              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-physical"> Physical debug</label>
+              <label class="tb-layer-chip opacity-50 mx-1" title="Prepared"><input type="checkbox" id="tb-layer-motors" disabled> Motors</label>
+              <label class="tb-layer-chip opacity-50 mx-1" title="Prepared"><input type="checkbox" id="tb-layer-pe" disabled> PE</label>
+              <label class="tb-layer-chip opacity-50 mx-1" title="Prepared"><input type="checkbox" id="tb-layer-area" disabled> Area</label>
+              <label class="tb-layer-chip opacity-50 mx-1" title="Prepared"><input type="checkbox" id="tb-layer-safety" disabled> Safety</label>
+              <div class="border-t border-slate-800 my-1"></div>
+              <button type="button" id="tb-area-rename" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Rename area</button>
+              <button type="button" id="tb-area-delete" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-red-300">Delete area</button>
+              <button type="button" id="tb-wizard" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Wizard</button>
+              <button type="button" id="tb-open-exports" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Open exports</button>
+              <button type="button" id="tb-clear-canvas" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-500">Clear canvas</button>
+            </div>
+          </details>
         </div>
       </div>
       <!-- Build Context (future nodes inherit Area + ES Zone) -->

@@ -1,0 +1,841 @@
+{
+  "generated_at": "2026-09-12T06:46:05.936700+00:00",
+  "machine": "ORNCCP2",
+  "source_of_truth": "CURRENT RUN + workbook (finished PLC areas never copied)",
+  "run_area_es_recoverability": {
+    "recoverable_from_run": false,
+    "likely": "little",
+    "area_like_files": [
+      "workspace\\active\\RUN\\FORTNA\\CombinedJamZones.asc",
+      "workspace\\active\\RUN\\FORTNA\\CombinedJamZones.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\DsmArea.asc",
+      "workspace\\active\\RUN\\FORTNA\\EStop.asc",
+      "workspace\\active\\RUN\\FORTNA\\EnergyZone.asc",
+      "workspace\\active\\RUN\\FORTNA\\Jamzones.asc",
+      "workspace\\active\\RUN\\FORTNA\\MergeStopOutputs.asc",
+      "workspace\\active\\RUN\\FORTNA\\MergeStopOutputs.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\ScnScanZone.asc",
+      "workspace\\active\\RUN\\FORTNA\\ScnScanZone.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\ScnZoneErrIO.asc",
+      "workspace\\active\\RUN\\FORTNA\\ScnZoneErrIO.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\SrtZoneLane.asc",
+      "workspace\\active\\RUN\\FORTNA\\SrtZoneLane.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\StartStopZones.asc",
+      "workspace\\active\\RUN\\FORTNA\\ZoneStates.asc",
+      "workspace\\active\\RUN\\FORTNA\\ZprGapperZone.asc",
+      "workspace\\active\\RUN\\FORTNA\\ZprGapperZone.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\ZprZoneType.asc",
+      "workspace\\active\\RUN\\FORTNA\\old.CombinedJamZones.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\old.EStop.asc",
+      "workspace\\active\\RUN\\FORTNA\\old.Jamzones.asc",
+      "workspace\\active\\RUN\\FORTNA\\old.MergeStopOutputs.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\old.ScnScanZone.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\old.ScnZoneErrIO.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\old.SrtZoneLane.asc.ORNCCP2",
+      "workspace\\active\\RUN\\FORTNA\\old.StartStopZones.asc",
+      "workspace\\active\\RUN\\FORTNA\\old.ZprGapperZone.asc.ORNCCP2"
+    ],
+    "conveyor_asc_area_columns": [],
+    "nonzero_area_like_values_sampled": 0,
+    "sample_values": [],
+    "note": "Greensboro CP2 RUN does not provide finished ModuleB/ModuleC/Trash area names. Machine-default ORNCCP2_Area / ORNCCP2_ESZone1 are placeholders."
+  },
+  "counts": {
+    "conveyors_evaluated": 65,
+    "area_confirmed_engineer": 0,
+    "area_required": 65,
+    "es_confirmed_engineer": 0,
+    "es_zone_required": 65
+  },
+  "area_confirmed": [],
+  "area_required": [
+    {
+      "conveyor": "P100",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1000",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1001",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1002",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1004",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1005",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1006",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1007",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1008",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P101",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1010",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1011",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1014",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1015",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1016",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P1018",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P123",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P124",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P126",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P128",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P130",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P132",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P134",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P136",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P136A",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P138",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P139",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P140",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P142",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P144",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P145",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P146",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P148",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P150",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P150A",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P215",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P220",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P220A",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P222",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P226",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P228",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P229",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P230",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P232",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P233",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P234",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P236",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P238",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P240",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P242",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P309",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P310",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P312",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P314",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P316",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P317",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P318",
+      "status": "AREA REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P320",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P322",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P324",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P400",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P402",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P404",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P406",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    },
+    {
+      "conveyor": "P408",
+      "status": "AREA REQUIRED",
+      "current_value": "ORNCCP2_Area",
+      "reason": "Machine-default / placeholder area \u2014 not recovered from RUN Area table"
+    }
+  ],
+  "es_confirmed": [],
+  "es_zone_required": [
+    {
+      "conveyor": "P100",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1000",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1001",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1002",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1004",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1005",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1006",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1007",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1008",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P101",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1010",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1011",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1014",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1015",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1016",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P1018",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P123",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P124",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P126",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P128",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P130",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P132",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P134",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P136",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P136A",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P138",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P139",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P140",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P142",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P144",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P145",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P146",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P148",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P150",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P150A",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P215",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P220",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P220A",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P222",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P226",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P228",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P229",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P230",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P232",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P233",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P234",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P236",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P238",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P240",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P242",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P309",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P310",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P312",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P314",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P316",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P317",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P318",
+      "status": "ES ZONE REQUIRED",
+      "current_value": null,
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P320",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P322",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P324",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P400",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P402",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P404",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P406",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    },
+    {
+      "conveyor": "P408",
+      "status": "ES ZONE REQUIRED",
+      "current_value": "ORNCCP2_ESZone1",
+      "reason": "Machine-default / placeholder ES zone \u2014 not confirmed RUN safety mapping"
+    }
+  ],
+  "do_not_confirm": [
+    "ORNCCP2_Imported_ESZone1",
+    "ORNCCP2_ESZone1 (machine default placeholder)",
+    "ORNCCP2_Area (machine default placeholder)"
+  ]
+}

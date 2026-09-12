@@ -160,9 +160,12 @@
     },
     metrics: null,
     physicalLayout: false,
-    // Site layers — only Physical fully implemented this pass
+    // Clean schematic is the normal view. Geometry debug is Advanced-only.
+    viewMode: 'schematic', // schematic | geom-debug
+    laneSeparate: true, // presentation-only offsets for stacked bodies
+    // Site layers — debug only (not required for normal workflow)
     layers: {
-      physical: true,
+      physical: false,
       motors: false,
       photoeyes: false,
       area: false,
@@ -170,6 +173,7 @@
       controller: false,
       tracking: false,
     },
+    workflow: { import: false, autobuild: false, review: true, apply: false, build: false },
   };
 
   function $(id) {
@@ -1409,24 +1413,93 @@
     return results;
   }
 
+  /**
+   * Presentation-only lane separation for stacked bodies.
+   * Never mutates sourceX/Y/pathCanvas engineering geometry — only returns dx/dy.
+   */
+  function computePresentationOffsets(nodes) {
+    const offsets = {};
+    (nodes || []).forEach((n) => { offsets[n.id] = { dx: 0, dy: 0 }; });
+    if (!tb.laneSeparate) return offsets;
+    const list = (nodes || []).filter(isSchematicNode);
+    const groups = [];
+    const used = new Set();
+    const keyOf = (n) => {
+      const e = n.entryCanvas;
+      const x = e ? e.x : Number(n.x) || 0;
+      const y = e ? e.y : Number(n.y) || 0;
+      return `${Math.round(x / 8)}_${Math.round(y / 8)}_${Math.round(Number(n.sourceAngle) || Number(n.rotation) || 0)}`;
+    };
+    list.forEach((n) => {
+      if (used.has(n.id)) return;
+      const k = keyOf(n);
+      const group = list.filter((o) => !used.has(o.id) && keyOf(o) === k);
+      group.forEach((o) => used.add(o.id));
+      if (group.length > 1) groups.push(group);
+    });
+    const laneGap = 14; // canvas px — visual only
+    groups.forEach((group) => {
+      group.sort((a, b) => String(a.conveyorTag || '').localeCompare(String(b.conveyorTag || '')));
+      group.forEach((n, i) => {
+        const ang = ((Number(n.sourceAngle) || Number(n.rotation) || 0) * Math.PI) / 180;
+        // Offset perpendicular to flow (screen Y already flipped in canvas coords → use +x side)
+        const nx = -Math.sin(ang);
+        const ny = Math.cos(ang);
+        const shift = (i - (group.length - 1) / 2) * laneGap;
+        offsets[n.id] = { dx: nx * shift, dy: -ny * shift, stackIndex: i, stackSize: group.length };
+      });
+    });
+    tb._presentationOffsets = offsets;
+    return offsets;
+  }
+
+  function applyPresOffset(pt, off) {
+    if (!pt) return pt;
+    const o = off || { dx: 0, dy: 0 };
+    return { x: pt.x + (o.dx || 0), y: pt.y + (o.dy || 0) };
+  }
+
+  function offsetPathD(pathCanvas, off) {
+    if (!pathCanvas || !pathCanvas.length) return '';
+    const shifted = pathCanvas.map((cmd) => {
+      const c = { ...cmd };
+      if (c.x != null) c.x = Number(c.x) + (off.dx || 0);
+      if (c.y != null) c.y = Number(c.y) + (off.dy || 0);
+      if (c.center) {
+        c.center = {
+          x: Number(c.center.x) + (off.dx || 0),
+          y: Number(c.center.y) + (off.dy || 0),
+        };
+      }
+      return c;
+    });
+    return schematicPathD(shifted);
+  }
+
   function drawSchematic(area) {
     const svg = $('tb-schematic');
     if (!svg) return;
-    if (!(tb.layers?.physical !== false)) {
-      svg.innerHTML = '';
-      return;
-    }
+    // Clean schematic is always drawn in normal mode. Advanced "Physical debug"
+    // only adds extra cues — it does not replace the schematic.
     const nodes = (area?.nodes || []).filter(isSchematicNode);
     const lod = detailLevel();
+    const offsets = computePresentationOffsets(nodes);
+    const debug = tb.viewMode === 'geom-debug' || !!tb.layers?.physical;
     let html = '';
     const labelCandidates = [];
     nodes.forEach((n) => {
-      let d = schematicPathD(n.pathCanvas);
+      const off = offsets[n.id] || { dx: 0, dy: 0 };
+      let d = offsetPathD(n.pathCanvas, off);
       if (!d && n.entryCanvas && n.exitCanvas) {
-        d = `M ${n.entryCanvas.x} ${n.entryCanvas.y} L ${n.exitCanvas.x} ${n.exitCanvas.y}`;
+        const a = applyPresOffset(n.entryCanvas, off);
+        const b = applyPresOffset(n.exitCanvas, off);
+        d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
       }
       if (!d && n.arcSamplesCanvas?.length) {
-        d = n.arcSamplesCanvas.map((p, i) => `${i ? 'L' : 'M'} ${p.x} ${p.y}`).join(' ');
+        d = n.arcSamplesCanvas.map((p, i) => {
+          const q = applyPresOffset(p, off);
+          return `${i ? 'L' : 'M'} ${q.x} ${q.y}`;
+        }).join(' ');
       }
       if (!d) return;
       const rk = String(n.renderKind || n.equipmentType || 'unknown').toLowerCase();
@@ -1437,19 +1510,23 @@
       if (sel) cls += ' selected';
       if (amb) cls += ' tb-ambiguous';
       const tag = (n.conveyorTag || n.label || '').trim() || 'P???';
-      const mid = n.entryCanvas && n.exitCanvas
+      const mid0 = n.entryCanvas && n.exitCanvas
         ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
+      const mid = applyPresOffset(mid0, off);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tag)}</title></path>`;
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
-      // Site overview: P-tag only. Detail/inspector hold motor/PE/Area/ES.
-      if (lod === 'overview' || lod === 'mid' || sel) {
+      // Site overview: P-tag only (+ AREA/ES required badges in debug/close)
+      if (lod === 'overview' || lod === 'mid' || sel || lod === 'close') {
         const len = Number(n.length) || (n.entryCanvas && n.exitCanvas
           ? Math.hypot(n.exitCanvas.x - n.entryCanvas.x, n.exitCanvas.y - n.entryCanvas.y)
           : 0);
+        let labelTag = tag;
+        if (n.areaRequired) labelTag += ' · AREA?';
+        if (n.esZoneRequired) labelTag += ' · ES?';
         labelCandidates.push({
           id: n.id,
-          tag,
+          tag: labelTag,
           x: mid.x,
           y: mid.y,
           selected: sel,
@@ -1469,8 +1546,12 @@
       const a = (area.nodes || []).find((n) => n.id === w.from);
       const b = (area.nodes || []).find((n) => n.id === w.to);
       if (!a?.exitCanvas || !b?.entryCanvas) return;
-      const mx = (a.exitCanvas.x + b.entryCanvas.x) / 2;
-      const my = (a.exitCanvas.y + b.entryCanvas.y) / 2;
+      const oa = offsets[a.id] || { dx: 0, dy: 0 };
+      const ob = offsets[b.id] || { dx: 0, dy: 0 };
+      const ax = applyPresOffset(a.exitCanvas, oa);
+      const bx = applyPresOffset(b.entryCanvas, ob);
+      const mx = (ax.x + bx.x) / 2;
+      const my = (ax.y + bx.y) / 2;
       html += `<text class="tb-mate-mark" x="${mx}" y="${my}" title="EXIT ▶◀ ENTRY">▶◀</text>`;
     });
     svg.innerHTML = html;
@@ -1975,9 +2056,15 @@
 
     ensureCanvasExtents(area);
     applyViewportZoom();
+    const canvas = $('tb-canvas');
+    if (canvas) {
+      canvas.classList.add('tb-clean-schematic');
+      canvas.classList.toggle('tb-geom-debug', tb.viewMode === 'geom-debug' || !!tb.layers?.physical);
+    }
     drawSchematic(area);
     drawWires();
     renderInspector();
+    setWorkflowStep(tb.workflow?.apply ? 'build' : (tb.workflow?.autobuild ? 'review' : 'review'));
     renderTopologyTable();
     renderInventoryPanel();
     renderValidationPanel();
@@ -2799,14 +2886,84 @@
     return made;
   }
 
-  async function applyMergesToAutogenUi() {
-    ensurePlaceholderConveyorTags();
-    const graph = {
+  /**
+   * Canonical Apply payload — topology + Area/ES/PE/relationships only.
+   * Physical/debug presentation fields (pathCanvas, view, layers, presentationOffset)
+   * are intentionally excluded so render state cannot affect Autogen.
+   */
+  function buildCanonicalApplyGraph() {
+    (tb.areas || []).forEach((area) => {
+      syncWiresFromDownstream(area);
+      syncDownstreamFromWires(area);
+    });
+    const areas = (tb.areas || []).map((area) => ({
+      id: area.id,
+      name: area.name || '',
+      nodes: (area.nodes || []).map((n) => {
+        const devices = (n.devices || []).map((d) => ({
+          id: d.id,
+          kind: d.kind,
+          tag: d.tag || d.name || '',
+          name: d.name || d.tag || '',
+          roles: Array.isArray(d.roles) ? d.roles.slice() : [],
+          rolesManual: !!d.rolesManual,
+          driveType: d.driveType || undefined,
+        }));
+        return {
+          id: n.id,
+          kind: n.kind,
+          label: n.label || '',
+          conveyorTag: n.conveyorTag || '',
+          downstream: n.downstream || '',
+          terminal: !!n.terminal,
+          asMerge: !!n.asMerge,
+          mergeConfirmed: !!n.mergeConfirmed,
+          mergeDetected: !!n.mergeDetected,
+          mergeGenSupported: n.mergeGenSupported,
+          inPorts: n.inPorts,
+          safetyZone: n.safetyZone || '',
+          areaRequired: !!n.areaRequired,
+          esZoneRequired: !!n.esZoneRequired,
+          pe_a: n.pe_a || '',
+          pe_b: n.pe_b || '',
+          pe_c: n.pe_c || '',
+          jam_pe: n.jam_pe || '',
+          allow_undefined_pe: !!n.allow_undefined_pe,
+          devices,
+          placeholderTag: !!n.placeholderTag,
+        };
+      }),
+      wires: (area.wires || []).map((w) => ({
+        id: w.id,
+        from: w.from,
+        to: w.to,
+        toPort: w.toPort || 'in',
+      })),
+    }));
+    return {
       version: 1,
       exportedAt: new Date().toISOString(),
-      areas: tb.areas,
+      applyMode: 'canonical',
+      areas,
+      activeAreaId: tb.activeAreaId,
     };
-    status('Applying Transport areas + conveyors + merges → Autogen…');
+  }
+
+  function setWorkflowStep(step, { done } = {}) {
+    if (!tb.workflow) tb.workflow = {};
+    if (done) tb.workflow[step] = true;
+    document.querySelectorAll('#tb-workflow-strip .tb-wf-step').forEach((el) => {
+      const k = el.getAttribute('data-wf');
+      el.classList.toggle('tb-wf-done', !!tb.workflow[k] && k !== step);
+      el.classList.toggle('tb-wf-active', k === step);
+    });
+  }
+
+  async function applyMergesToAutogenUi() {
+    ensurePlaceholderConveyorTags();
+    const graph = buildCanonicalApplyGraph();
+    status('Applying Transport → Autogen workbook (canonical topology only)…');
+    setWorkflowStep('apply');
     try {
       let res;
       if (typeof window.applyTransportMergesToAutogen === 'function') {
@@ -2824,23 +2981,39 @@
         status(`Apply failed: ${res?.error || 'unknown'}`);
         return;
       }
+      tb.workflow.apply = true;
+      setWorkflowStep('build', { done: true });
+      $('tb-goto-build-plc')?.classList.remove('hidden');
       const areas = (res.areas_applied || []).join(', ') || '(none)';
       const warn = [
         ...(res.area_warnings || []),
-        'Note: wires connect flow only — each piece still needs a P### tag (placeholders like Merge5_C1 were auto-assigned if unbound).',
-        'Replace placeholders with real RUN tags, then Apply again before Generate.',
+        'Presentation / geometry-debug state was NOT applied.',
+        'Replace any placeholder tags with real P### before Generate if needed.',
       ].join('\n');
-      await showInfo(
+      const go = await askYesNo(
         'Applied to Autogen',
-        `${res.summary || 'Done'}\n\n`
-          + `Areas in workbook:\n${areas}\n\n`
-          + `1) PLC Autogen site table — conveyors show those area names\n`
-          + `2) Generate now (workbook reloads Apply data so Merge5 is not wiped)\n`
-          + `3) If merges: keep Program pack · Merge ON\n\n`
-          + `Workbook: ${res.workbook_path || 'workspace/autogen_workbook.json'}`,
-        warn || undefined
+        `${res.summary || 'Transport applied to workbook.'}\n\n`
+          + `Areas: ${areas}\n`
+          + `Workbook: ${res.workbook_path || 'workspace/autogen_workbook.json'}\n\n`
+          + 'Next step: Build PLC (Export L5X Package) on the PLC Autogen tab.\n\n'
+          + 'Open PLC Autogen now?'
       );
-      status(`Applied ${res.summary || ''} → Autogen — Generate when ready`);
+      status(`Applied → Autogen — ${go ? 'opening Build PLC' : 'ready for Build PLC'}`);
+      if (go) {
+        try {
+          if (typeof window.activateTab === 'function') window.activateTab('autogen');
+          else {
+            document.querySelector('[data-tab="autogen"]')?.click();
+          }
+          setTimeout(() => {
+            const btn = $('btn-autogen-from-run');
+            if (btn) {
+              btn.classList.add('ring-2', 'ring-amber-400');
+              btn.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          }, 200);
+        } catch (_) { /* ignore */ }
+      }
     } catch (err) {
       await showInfo('Apply error', String(err?.message || err));
       status(`Apply error: ${err?.message || err}`);
@@ -3583,6 +3756,10 @@
     placeSchematicLabels,
     drawSchematic,
     schematicPathD,
+    buildCanonicalApplyGraph,
+    applyMergesToAutogenUi,
+    setWorkflowStep,
+    computePresentationOffsets,
   };
 
   if (document.readyState === 'loading') {
