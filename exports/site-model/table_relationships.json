@@ -1,0 +1,1316 @@
+{
+  "generated_at": "2026-09-12T04:34:07.708728+00:00",
+  "source_of_truth": "RUN only",
+  "tables": [
+    {
+      "file": "Conveyor.asc",
+      "category_hint": "physical+devices",
+      "headers": [
+        "IO_Name",
+        "General_Description",
+        "IO_Address_Word",
+        "IO_Address_Bit",
+        "Device_Description",
+        "Part_Number",
+        "IO_Module_Type",
+        "Electrical Drawing Page No.",
+        "Contact_Type",
+        "Recomended_Spares",
+        "Motor",
+        "Belt_Info",
+        "Layer",
+        "X_cord",
+        "Y_cord",
+        "Width",
+        "Length",
+        "Angle",
+        "Type",
+        "c",
+        "b",
+        "Good_color",
+        "Bad_color",
+        "Font",
+        "Underline",
+        "Logic_Help_Num",
+        "Gen_Flag",
+        "Bitstate",
+        "Was_Bitstate",
+        "Drawstate",
+        "Was_Drawstate",
+        "Trigger1",
+        "Trigger2",
+        "Trigger3",
+        "Trigger4",
+        "ProcNum",
+        "Speed",
+        "Machine_Name",
+        "TriggerLink_Name",
+        "TriggerLink_NDX ",
+        "Disable I/O",
+        "Overide I/O",
+        "Drive",
+        "NoseOver",
+        "Infeed_Elevation",
+        "Discharge_Elevation",
+        "Belt_Width",
+        "Infeed_Tangent",
+        "Discharge_Tangent",
+        "Roller_Centers",
+        "Tapered_Rollers",
+        "Supports",
+        "Inside_Radius",
+        "Price",
+        "Default Colors",
+        "In Motor Chain",
+        "Important_IO",
+        "ErrLink",
+        "ErrTime",
+        "Gen_Security"
+      ],
+      "row_count": 6000,
+      "key_fields_present": [
+        "IO_Name",
+        "Type",
+        "X_cord",
+        "Y_cord",
+        "Motor",
+        "Machine_Name"
+      ],
+      "likely_foreign_keys": [
+        "IO_Module_Type",
+        "Contact_Type",
+        "Motor",
+        "Type",
+        "Speed",
+        "Machine_Name",
+        "Tapered_Rollers",
+        "In Motor Chain"
+      ],
+      "repeated_tag_samples": [
+        [
+          "P100",
+          1
+        ],
+        [
+          "P102",
+          1
+        ],
+        [
+          "P104",
+          1
+        ],
+        [
+          "P106",
+          1
+        ],
+        [
+          "P108",
+          1
+        ],
+        [
+          "P110",
+          1
+        ],
+        [
+          "P112",
+          1
+        ],
+        [
+          "P114",
+          1
+        ],
+        [
+          "P116",
+          1
+        ],
+        [
+          "P118",
+          1
+        ],
+        [
+          "P120",
+          1
+        ],
+        [
+          "P101",
+          1
+        ],
+        [
+          "P103",
+          1
+        ],
+        [
+          "P124",
+          1
+        ],
+        [
+          "P126",
+          1
+        ]
+      ],
+      "describes": [
+        "physical geometry",
+        "device inventory",
+        "weak controller hints"
+      ]
+    },
+    {
+      "file": "Convpath.asc",
+      "category_hint": "tracking_unpopulated",
+      "headers": [
+        "Piece",
+        "Input",
+        "Output",
+        "PE_at",
+        "PEname"
+      ],
+      "row_count": 1000,
+      "key_fields_present": [
+        "Piece",
+        "Input",
+        "Output",
+        "PE_at",
+        "PEname"
+      ],
+      "likely_foreign_keys": [
+        "Input",
+        "Output",
+        "PE_at",
+        "PEname"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "tracking (unpopulated on this RUN)"
+      ]
+    },
+    {
+      "file": "Pathsets.asc",
+      "category_hint": "tracking_unpopulated",
+      "headers": [
+        "Name",
+        "Current_Path #",
+        "Jump_Path #",
+        "Pth1",
+        "Pth2",
+        "Pth3",
+        "Pth4",
+        "Pth5",
+        "Pth6",
+        "Pth7",
+        "Pth8",
+        "Pth9",
+        "Pth10",
+        "Distance",
+        "Number of Diverts",
+        "Divert Solenoid",
+        "LaneType"
+      ],
+      "row_count": 24,
+      "key_fields_present": [
+        "Name",
+        "Pth1",
+        "Pth2",
+        "Divert Solenoid"
+      ],
+      "likely_foreign_keys": [
+        "LaneType"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "tracking (unpopulated on this RUN)"
+      ]
+    },
+    {
+      "file": "Mtrchain.asc",
+      "category_hint": "control topology",
+      "headers": [
+        "Motor_Name",
+        "Motor_Ndx",
+        "Timer_Name",
+        "Timer_Preset",
+        "Motor_Chained1",
+        "Motor_Chained2",
+        "Motor_Chained3",
+        "Motor_Chained4",
+        "Motor_Chained5",
+        "Motor_Chained6",
+        "Motor_Chained7",
+        "Motor_Chained8",
+        "Motor_Chained9",
+        "Motor_Chained10",
+        "Motor_Aux",
+        "RUN Timer_Name",
+        "GoUntil",
+        "Enabled",
+        "Horn",
+        "ResetHorn",
+        "Heater Bit",
+        "AutoSelectHtr",
+        "Heater Error",
+        "Heater Debounce",
+        "Debounce Value",
+        "Stop Zone",
+        "StopState",
+        "ForceAux",
+        "pStateFrcAux"
+      ],
+      "row_count": 400,
+      "key_fields_present": [
+        "Motor_Name",
+        "Motor_Chained1",
+        "Motor_Aux"
+      ],
+      "likely_foreign_keys": [
+        "Motor_Name",
+        "Motor_Ndx",
+        "Motor_Chained1",
+        "Motor_Chained2",
+        "Motor_Chained3",
+        "Motor_Chained4",
+        "Motor_Chained5",
+        "Motor_Chained6",
+        "Motor_Chained7",
+        "Motor_Chained8",
+        "Motor_Chained9",
+        "Motor_Chained10",
+        "Motor_Aux",
+        "Stop Zone"
+      ],
+      "repeated_tag_samples": [
+        [
+          "VFD414_AUX",
+          5
+        ],
+        [
+          "VFD509",
+          3
+        ],
+        [
+          "M116",
+          2
+        ],
+        [
+          "M214",
+          2
+        ],
+        [
+          "M408",
+          2
+        ],
+        [
+          "M212",
+          2
+        ],
+        [
+          "M206",
+          2
+        ],
+        [
+          "M202",
+          2
+        ],
+        [
+          "M200",
+          2
+        ],
+        [
+          "M114",
+          2
+        ],
+        [
+          "M110",
+          2
+        ],
+        [
+          "M106",
+          2
+        ],
+        [
+          "M102",
+          2
+        ],
+        [
+          "M100",
+          2
+        ],
+        [
+          "M304",
+          2
+        ]
+      ],
+      "describes": [
+        "control topology (motor latch/chain)"
+      ]
+    },
+    {
+      "file": "Jamzones.asc",
+      "category_hint": "jam/full logic",
+      "headers": [
+        "Zone Name",
+        "Start Request Flag",
+        "Stop Request Flag",
+        "Latch Bit",
+        "Jammed Bit",
+        "Start Stop Timer",
+        "Zone Owner ",
+        "Enable Bit",
+        "Start Button",
+        "Stop Button",
+        "Reset Button",
+        "StartStopZone",
+        "JamEnableDontDelay"
+      ],
+      "row_count": 100,
+      "key_fields_present": [
+        "Zone Name",
+        "Zone Owner ",
+        "Latch Bit"
+      ],
+      "likely_foreign_keys": [
+        "Zone Name",
+        "Zone Owner ",
+        "StartStopZone"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "jam/full logic"
+      ]
+    },
+    {
+      "file": "Jamcheck.asc",
+      "category_hint": "jam/full logic",
+      "headers": [
+        "Desc",
+        "Sensor_Name",
+        "Timer_Name",
+        "Timer_Preset",
+        "Error_Name",
+        "Conveyor_Name",
+        "Zone",
+        "Jam_Owner",
+        "Jam_State",
+        "Motor Under Jam Eye",
+        "Sent",
+        "ClearErrorWithJam",
+        "ClearJamSignal",
+        "RequireL2Reset",
+        "L2_Jam_State",
+        "L2_ClearJamSignal"
+      ],
+      "row_count": 600,
+      "key_fields_present": [
+        "Sensor_Name",
+        "Conveyor_Name",
+        "Jam_Owner",
+        "Zone"
+      ],
+      "likely_foreign_keys": [
+        "Sensor_Name",
+        "Conveyor_Name",
+        "Zone",
+        "Jam_Owner",
+        "Motor Under Jam Eye"
+      ],
+      "repeated_tag_samples": [
+        [
+          "VFD508_AUX",
+          9
+        ],
+        [
+          "VFD506_AUX",
+          8
+        ],
+        [
+          "VFD414_AUX",
+          6
+        ],
+        [
+          "VFD510_AUX",
+          6
+        ],
+        [
+          "PE414_J",
+          3
+        ],
+        [
+          "PE414A_J",
+          3
+        ],
+        [
+          "PE414B_J",
+          3
+        ],
+        [
+          "PE414C_J",
+          3
+        ],
+        [
+          "PE414D_J",
+          3
+        ],
+        [
+          "PE446_J",
+          3
+        ],
+        [
+          "VFD424_AUX",
+          3
+        ],
+        [
+          "PE500_J",
+          3
+        ],
+        [
+          "PE508_J",
+          3
+        ],
+        [
+          "PE600F_J",
+          3
+        ],
+        [
+          "PE600G_J",
+          3
+        ]
+      ],
+      "describes": [
+        "jam/full logic"
+      ]
+    },
+    {
+      "file": "Fulljam.asc",
+      "category_hint": "jam/full logic",
+      "headers": [
+        "Name",
+        "Sensor_Name",
+        "Enabled",
+        "Timer_Name",
+        "Timer_Preset",
+        "Clr_Timer_Name",
+        "Clr_Timer_Preset",
+        "Error_Name",
+        "Conveyor_Name",
+        "Motor Under Jam Eye",
+        "Response IO",
+        "DisableBit",
+        "Invert",
+        "ReSound Horn",
+        "Status",
+        "Owner",
+        "Sent",
+        "pClrTmDone"
+      ],
+      "row_count": 200,
+      "key_fields_present": [
+        "Sensor_Name",
+        "Conveyor_Name",
+        "Owner",
+        "Response IO"
+      ],
+      "likely_foreign_keys": [
+        "Sensor_Name",
+        "Conveyor_Name",
+        "Motor Under Jam Eye",
+        "Response IO",
+        "Owner"
+      ],
+      "repeated_tag_samples": [
+        [
+          "PE714_JF",
+          3
+        ],
+        [
+          "PE438_JF",
+          3
+        ],
+        [
+          "PE434_JF",
+          3
+        ],
+        [
+          "PE820_JF",
+          3
+        ],
+        [
+          "PE806_JF",
+          3
+        ],
+        [
+          "PE428_JF",
+          3
+        ],
+        [
+          "PE208_JF",
+          3
+        ],
+        [
+          "PE204_JF",
+          3
+        ],
+        [
+          "PE108_JF",
+          3
+        ],
+        [
+          "PE104_JF",
+          3
+        ],
+        [
+          "PE126_JF",
+          3
+        ],
+        [
+          "PE238_JF",
+          3
+        ],
+        [
+          "PE142_JF",
+          3
+        ],
+        [
+          "PE210A_JF",
+          3
+        ],
+        [
+          "PE226_JF",
+          2
+        ]
+      ],
+      "describes": [
+        "jam/full logic"
+      ]
+    },
+    {
+      "file": "Fullline.asc",
+      "category_hint": "jam/full logic",
+      "headers": [
+        "Desc",
+        "Sensor_Name",
+        "Timer_Name",
+        "Timer_Preset",
+        "Clr_Timer_Name",
+        "Clr_Timer_Preset",
+        "Error_Name",
+        "Conveyor_Name",
+        "DontFireResponse",
+        "Response IO",
+        "Invert",
+        "Go Until",
+        "ReSound Horn",
+        "NoGap",
+        "Status",
+        "Sent",
+        "FullClearOutput",
+        "FullClearACTION",
+        "FullClearBIT"
+      ],
+      "row_count": 300,
+      "key_fields_present": [
+        "Sensor_Name",
+        "Conveyor_Name",
+        "Response IO"
+      ],
+      "likely_foreign_keys": [
+        "Sensor_Name",
+        "Conveyor_Name",
+        "DontFireResponse",
+        "Response IO",
+        "FullClearOutput"
+      ],
+      "repeated_tag_samples": [
+        [
+          "EZPE212_F1",
+          3
+        ],
+        [
+          "EZPE212_F2",
+          3
+        ],
+        [
+          "EZPE304_F",
+          3
+        ],
+        [
+          "EZPE418_F",
+          3
+        ],
+        [
+          "EZPE442_F",
+          3
+        ],
+        [
+          "EZPE450_F",
+          3
+        ],
+        [
+          "EZPE456_F",
+          3
+        ],
+        [
+          "EZPE530_F1",
+          3
+        ],
+        [
+          "EZPE530_F2",
+          3
+        ],
+        [
+          "EZPE536_F",
+          3
+        ],
+        [
+          "EZPE542_F",
+          3
+        ],
+        [
+          "EZPE602F_F",
+          3
+        ],
+        [
+          "EZPE602G_F",
+          3
+        ],
+        [
+          "EZPE602H_F",
+          3
+        ],
+        [
+          "EZPE602I_F",
+          3
+        ]
+      ],
+      "describes": [
+        "jam/full logic"
+      ]
+    },
+    {
+      "file": "Merges.asc",
+      "category_hint": "merge logic",
+      "headers": [
+        "Merge Table Name",
+        "Valid",
+        "Number of Inducts",
+        "Operable Input",
+        "Procnum",
+        "Presense_Eye1",
+        "Release_IO1",
+        "Myturn1",
+        "Priority1",
+        "Full_Timer_Name1",
+        "Clr_Timer_Name1",
+        "Clr_Timer_Preset1",
+        "Run_Timer_Name1",
+        "Run_Timer_Preset1",
+        "Prs_Timer_Name1",
+        "Prs_Timer_Preset1",
+        "Presense_Eye2",
+        "Release_IO2",
+        "Myturn2",
+        "Priority2",
+        "Full_Timer_Name2",
+        "Clr_Timer_Name2",
+        "Clr_Timer_Preset2",
+        "Run_Timer_Name2",
+        "Run_Timer_Preset2",
+        "Prs_Timer_Name2",
+        "Prs_Timer_Preset2",
+        "Presense_Eye3",
+        "Release_IO3",
+        "Myturn3",
+        "Priority3",
+        "Full_Timer_Name3",
+        "Clr_Timer_Name3",
+        "Clr_Timer_Preset3",
+        "Run_Timer_Name3",
+        "Run_Timer_Preset3",
+        "Prs_Timer_Name3",
+        "Prs_Timer_Preset3",
+        "Presense_Eye4",
+        "Release_IO4",
+        "Myturn4",
+        "Priority4",
+        "Full_Timer_Name4",
+        "Clr_Timer_Name4",
+        "Clr_Timer_Preset4",
+        "Run_Timer_Name4",
+        "Run_Timer_Preset4",
+        "Prs_Timer_Name4",
+        "Prs_Timer_Preset4",
+        "Presense_Eye5",
+        "Release_IO5",
+        "Myturn5",
+        "Priority5",
+        "Full_Timer_Name5",
+        "Clr_Timer_Name5",
+        "Clr_Timer_Preset5",
+        "Run_Timer_Name5",
+        "Run_Timer_Preset5",
+        "Prs_Timer_Name5",
+        "Prs_Timer_Preset5"
+      ],
+      "row_count": 10,
+      "key_fields_present": [
+        "Merge Table Name",
+        "Valid",
+        "Presense_Eye1"
+      ],
+      "likely_foreign_keys": [
+        "Merge Table Name",
+        "Operable Input"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeBoss.asc",
+      "category_hint": "merge logic",
+      "headers": [
+        "Name",
+        "Process",
+        "Owner",
+        "CurrInput",
+        "NumInputs",
+        "OperableInput",
+        "Valid",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "IsSwitchDelay",
+        "pStatus"
+      ],
+      "row_count": 10,
+      "key_fields_present": [
+        "Name",
+        "Owner",
+        "NumInputs",
+        "OperableInput"
+      ],
+      "likely_foreign_keys": [
+        "Owner",
+        "CurrInput",
+        "NumInputs",
+        "OperableInput"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeBoss.asc.ORNCCP2",
+      "category_hint": "merge logic",
+      "headers": [
+        "Name",
+        "Process",
+        "Owner",
+        "CurrInput",
+        "NumInputs",
+        "OperableInput",
+        "Valid",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "IsSwitchDelay",
+        "pStatus"
+      ],
+      "row_count": 10,
+      "key_fields_present": [
+        "Name",
+        "Owner",
+        "NumInputs",
+        "OperableInput"
+      ],
+      "likely_foreign_keys": [
+        "Owner",
+        "CurrInput",
+        "NumInputs",
+        "OperableInput"
+      ],
+      "repeated_tag_samples": [
+        [
+          "M406_AUX",
+          1
+        ],
+        [
+          "M400_AUX",
+          1
+        ]
+      ],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeInputs.asc",
+      "category_hint": "merge logic",
+      "headers": [
+        "Name",
+        "MergeBoss",
+        "Valid",
+        "MyTurn",
+        "Index",
+        "CalcPriority",
+        "MergeRoute",
+        "IsClear",
+        "RanEnough",
+        "Presense",
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "ReleaseIO",
+        "DontFireRelease",
+        "Priority",
+        "FullClearTimerName",
+        "ClrTimerName",
+        "ClrTimerPreset",
+        "RunTimerName",
+        "RunTimerPreset",
+        "LnClrTimerName",
+        "LnClrTimerPreset",
+        "RlsDelayTimerName",
+        "RlsDelayTimerPreset",
+        "LaneLatch",
+        "InputDisabled",
+        "InvertDisable",
+        "LnClear",
+        "LatchOffTimer",
+        "RunOffTimerFlag",
+        "PitchTimerName",
+        "PitchFlag",
+        "RouteDisable",
+        "pLastRunSec",
+        "pLastRunMSec"
+      ],
+      "row_count": 15,
+      "key_fields_present": [
+        "Name",
+        "MergeBoss",
+        "Presense",
+        "MergeRoute"
+      ],
+      "likely_foreign_keys": [
+        "MergeBoss",
+        "MergeRoute",
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "InputDisabled"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeInputs.asc.ORNCCP2",
+      "category_hint": "merge logic",
+      "headers": [
+        "Name",
+        "MergeBoss",
+        "Valid",
+        "MyTurn",
+        "Index",
+        "CalcPriority",
+        "MergeRoute",
+        "IsClear",
+        "RanEnough",
+        "Presense",
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "ReleaseIO",
+        "DontFireRelease",
+        "Priority",
+        "FullClearTimerName",
+        "ClrTimerName",
+        "ClrTimerPreset",
+        "RunTimerName",
+        "RunTimerPreset",
+        "LnClrTimerName",
+        "LnClrTimerPreset",
+        "RlsDelayTimerName",
+        "RlsDelayTimerPreset",
+        "LaneLatch",
+        "InputDisabled",
+        "InvertDisable",
+        "LnClear",
+        "LatchOffTimer",
+        "RunOffTimerFlag",
+        "PitchTimerName",
+        "PitchFlag",
+        "RouteDisable",
+        "pLastRunSec",
+        "pLastRunMSec"
+      ],
+      "row_count": 15,
+      "key_fields_present": [
+        "Name",
+        "MergeBoss",
+        "Presense",
+        "MergeRoute"
+      ],
+      "likely_foreign_keys": [
+        "MergeBoss",
+        "MergeRoute",
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "InputDisabled"
+      ],
+      "repeated_tag_samples": [
+        [
+          "PE404_P",
+          1
+        ],
+        [
+          "M404",
+          1
+        ],
+        [
+          "PE138_P",
+          1
+        ],
+        [
+          "M138",
+          1
+        ],
+        [
+          "EZPE136_P1",
+          1
+        ],
+        [
+          "PE314_P",
+          1
+        ],
+        [
+          "M314",
+          1
+        ],
+        [
+          "EZPE242_P",
+          1
+        ],
+        [
+          "EZPE150_P2",
+          1
+        ],
+        [
+          "EZPE150_P1",
+          1
+        ],
+        [
+          "PE322_P",
+          1
+        ],
+        [
+          "M322",
+          1
+        ]
+      ],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "EStop.asc",
+      "category_hint": "safety",
+      "headers": [
+        "Desc",
+        "Part",
+        "Error"
+      ],
+      "row_count": 250,
+      "key_fields_present": [
+        "Part",
+        "Error"
+      ],
+      "likely_foreign_keys": [],
+      "repeated_tag_samples": [],
+      "describes": [
+        "safety / estop parts list"
+      ]
+    },
+    {
+      "file": "FORTNADT.asc",
+      "category_hint": "IO bit image",
+      "headers": [
+        "Bits_On_Off",
+        "Forced_On",
+        "Forced_Off",
+        "Inverted",
+        "HiBank",
+        "LoBank",
+        "Machine",
+        "Granularity",
+        "Countdown",
+        "InOut",
+        "Important",
+        "RecvBucket1",
+        "RecvBucket2",
+        "Was_IO",
+        "CheckedCount"
+      ],
+      "row_count": 3072,
+      "key_fields_present": [
+        "Machine",
+        "HiBank",
+        "LoBank",
+        "Bits_On_Off"
+      ],
+      "likely_foreign_keys": [
+        "Machine"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "controller IO bit image / runtime DT"
+      ]
+    },
+    {
+      "file": "CTRLDT.asc",
+      "category_hint": "IO bit image",
+      "headers": [
+        "\"Bits_On_Off\""
+      ],
+      "row_count": 3072,
+      "key_fields_present": [],
+      "likely_foreign_keys": [],
+      "repeated_tag_samples": [],
+      "describes": [
+        "controller IO bit image / runtime DT"
+      ]
+    },
+    {
+      "file": "GUIDT.asc",
+      "category_hint": "IO bit image",
+      "headers": [
+        "\"Bits_On_Off\""
+      ],
+      "row_count": 3072,
+      "key_fields_present": [],
+      "likely_foreign_keys": [],
+      "repeated_tag_samples": [],
+      "describes": [
+        "controller IO bit image / runtime DT"
+      ]
+    },
+    {
+      "file": "MergeActionPop.asc",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "\"ActionName\""
+      ],
+      "row_count": 50,
+      "key_fields_present": [],
+      "likely_foreign_keys": [],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeExtras.asc",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "LaneDisable1",
+        "LaneDisable2",
+        "LaneDisable3",
+        "LaneDisable4",
+        "LaneDisable5",
+        "LaneLatch1",
+        "LaneLatch2",
+        "LaneLatch3",
+        "LaneLatch4",
+        "LaneLatch5"
+      ],
+      "row_count": 10,
+      "key_fields_present": [],
+      "likely_foreign_keys": [],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeNotBusy.asc",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "MergeRoute",
+        "NotBusyRoute"
+      ],
+      "row_count": 30,
+      "key_fields_present": [],
+      "likely_foreign_keys": [
+        "MergeRoute"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeNotBusy.asc.ORNCCP2",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "MergeRoute",
+        "NotBusyRoute"
+      ],
+      "row_count": 30,
+      "key_fields_present": [],
+      "likely_foreign_keys": [
+        "MergeRoute"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeRoute.asc",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "MergeInputs",
+        "MergeOutputs",
+        "RouteBusy",
+        "RouteRequested",
+        "Priority",
+        "OutDisabled",
+        "InvertOutDisable"
+      ],
+      "row_count": 15,
+      "key_fields_present": [],
+      "likely_foreign_keys": [
+        "MergeInputs",
+        "MergeOutputs"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeRoute.asc.ORNCCP2",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "MergeInputs",
+        "MergeOutputs",
+        "RouteBusy",
+        "RouteRequested",
+        "Priority",
+        "OutDisabled",
+        "InvertOutDisable"
+      ],
+      "row_count": 15,
+      "key_fields_present": [],
+      "likely_foreign_keys": [
+        "MergeInputs",
+        "MergeOutputs"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeRunOutputs.asc",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "MergeRoute",
+        "Output",
+        "Action"
+      ],
+      "row_count": 15,
+      "key_fields_present": [],
+      "likely_foreign_keys": [
+        "MergeRoute",
+        "Output"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeRunOutputs.asc.ORNCCP2",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "MergeRoute",
+        "Output",
+        "Action"
+      ],
+      "row_count": 15,
+      "key_fields_present": [],
+      "likely_foreign_keys": [
+        "MergeRoute",
+        "Output"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeState.asc",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "\"StateName\""
+      ],
+      "row_count": 50,
+      "key_fields_present": [],
+      "likely_foreign_keys": [],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic"
+      ]
+    },
+    {
+      "file": "MergeStopOutputs.asc",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "MergeRoute",
+        "Output",
+        "Action"
+      ],
+      "row_count": 15,
+      "key_fields_present": [],
+      "likely_foreign_keys": [
+        "MergeRoute",
+        "Output"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic",
+        "safety / estop parts list"
+      ]
+    },
+    {
+      "file": "MergeStopOutputs.asc.ORNCCP2",
+      "category_hint": "merge_or_jam_variant",
+      "headers": [
+        "Name",
+        "MergeRoute",
+        "Output",
+        "Action"
+      ],
+      "row_count": 15,
+      "key_fields_present": [],
+      "likely_foreign_keys": [
+        "MergeRoute",
+        "Output"
+      ],
+      "repeated_tag_samples": [],
+      "describes": [
+        "merge logic",
+        "safety / estop parts list"
+      ]
+    }
+  ],
+  "summary": {
+    "physical_topology_direct": "No populated Convpath/Pathsets P\u2192P graph found. Conveyor.asc has geometry, not successor links.",
+    "control_topology": "Mtrchain, Jamcheck/Fulljam/Fullline Response IO, MergeInputs ReleaseIO",
+    "controller_ownership": "Machine_Name on some rows; Jam_Owner / MergeBoss Owner / PE IO scoping"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "generated_at": "2026-09-12T04:34:07.708749+00:00",
+  "source_of_truth": "RUN only",
+  "question": "Can Convpath encode ordered conveyor paths like P132\u2192P134\u2192P136\u2192P138?",
+  "file": "FORTNA/Convpath.asc",
+  "headers": [
+    "Piece",
+    "Input",
+    "Output",
+    "PE_at",
+    "PEname"
+  ],
+  "row_count": 1000,
+  "schema_interpretation": {
+    "Piece": "Likely tracking piece / carton identity slot (not conveyor tag in this RUN)",
+    "Input": "Likely numeric/slot input \u2014 not populated with P-tags here",
+    "Output": "Likely numeric/slot output \u2014 not populated with P-tags here",
+    "PE_at": "Photoeye position along path (numeric)",
+    "PEname": "Photoeye name along path"
+  },
+  "non_placeholder_rows": 0,
+  "placeholder_rows": 0,
+  "p_to_p_edges_found": 0,
+  "p_to_p_edge_samples": [],
+  "example_rows_first_nonempty_looking": [],
+  "pathsets": {
+    "exists": true,
+    "headers": [
+      "Name",
+      "Current_Path #",
+      "Jump_Path #",
+      "Pth1",
+      "Pth2",
+      "Pth3",
+      "Pth4",
+      "Pth5",
+      "Pth6",
+      "Pth7",
+      "Pth8",
+      "Pth9",
+      "Pth10",
+      "Distance",
+      "Number of Diverts",
+      "Divert Solenoid",
+      "LaneType"
+    ],
+    "row_count": 24,
+    "rows_with_any_name_or_path": 0,
+    "rows_with_real_path_data": 0,
+    "samples": []
+  },
+  "answer": "NO \u2014 On this RUN, Convpath.asc does not encode ordered conveyor topology. All 1000 rows are placeholders (Piece=INVALID, Input/Output=0.000). Zero P\u2192P edges were found. Pathsets.asc likewise has no real Pth1..Pth10 conveyor sequences. Therefore a sequence like P132\u2192P134\u2192P136\u2192P138 cannot be derived from Convpath without geometry inference or engineer input.",
+  "what_convpath_appears_to_be": "A tracking / piece-path slot table (Piece + PE_at/PEname) intended for carton tracking along a path, not a static conveyor-to-conveyor downstream graph. In this archive it is unpopulated."
+}
