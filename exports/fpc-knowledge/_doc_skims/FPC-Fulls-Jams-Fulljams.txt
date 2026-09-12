@@ -1,0 +1,159 @@
+
+
+FortnaPlus ControlFulls, Jams and Full-jams
+
+Document Revision: 2.0
+Date: 27-Jan-2023
+
+Revision
+Date
+Author
+Revision Summary
+1.0
+Unknown
+B C Conklin
+New document
+1.1
+17-Mar-2015
+B C Conklin
+Add Fullline_DontFireResponse column
+2.0
+27-Jan-2023
+T R Kremser
+Combine the Fulls, Jams and Fulljam documents.
+
+Table of Contents
+ TOC \o "1-3" \h \z \u Glossary of Terms PAGEREF _Toc125703074 \h 4
+1.Overview PAGEREF _Toc125703075 \h 5
+2.Terminology PAGEREF _Toc125703076 \h 5
+3.Full Detection PAGEREF _Toc125703077 \h 6
+3.1.An Alternate Use for the Full Logic PAGEREF _Toc125703078 \h 8
+4.Jam Detection PAGEREF _Toc125703079 \h 9
+4.1.Automatically Clearing a Jam Error PAGEREF _Toc125703080 \h 10
+4.2.Clearing a Jam Error with a Pushbutton PAGEREF _Toc125703081 \h 11
+4.3.Requiring a Privileged User to Clear a Jam Error PAGEREF _Toc125703082 \h 11
+5.Full-Jams PAGEREF _Toc125703083 \h 11
+
+Confidential/Proprietary Statement
+This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.  It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document.  Fortna Material Handling reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order.
+
+Glossary of Terms
+AC – Automation Controller
+FPC – FortnaPlus Control
+UPS – Uninterruptible Power Supply
+
+Overview
+Detection and handling of full and jam conditions are very important to the proper operation of conveyor systems.  They use similar methodologies, so they are both described in this document.  Full-jams are a hybrid of the two that may be appropriate for use in certain circumstances, and are also described here.
+Fulls, Jams and Full-jams all use photoeyes to detect the presence of containers, and timers to determine when a condition has occurred that requires the line to stop.  Fulls are expected to resolve on their own, so the line will restart automatically once the photoeye is unblocked.  Jams require operator intervention to restart the line, as they are intended to detect situations that could lead to unsafe conditions or to equipment or product damage if the line continues to run or if it is restarted without corrective action.  Full-jams are a way to detect that operator intervention has occurred and allow the line to restart without need to push a button.  Full-jams are used when the conveyor layout makes it difficult for the operator to access an AC to perform the restart.
+Each of these control types is configured using its own table.  The configuration defines the sensors and timers needed to detect the condition, and how the conveyor display will present the condition to the operator, including error messages and screen colors / blink patterns.
+Terminology
+Each of these control types requires photoeyes and timers.  We name them based on their primary intended use.
+Per our naming convention, photoeye names begin with “PE”, are followed by a number associated with the conveyor section or motor, and then a suffix to indicate their intended use.
+“Full eyes” are photoeyes intended for use in detecting full conditions.  Names will end with “_F”.  Example:  PE4127_F.
+“Jam eyes” are photoeyes intended for use in detecting jams.  Names will end with “_J”.  Example:  PE230_J.
+“Full-jam eyes” are photoeyes intended for use in detecting full-jams.  Names may be the same as for full eyes, or they may include “_JF” or “_FJ” within the name.  Example:  PE106_JF_F.
+Note:  One physical photoeye could potentially be used for more than one of these functions.  There is no requirement that the sensors follow the naming conventions – any sensor, or any input signal could potentially be used.
+Timer names begin with “tm”.  Timer names for fulls and jams will follow this convention, with the rest of the name being the name of the photoeye.  A “full timer” or “jam timer” triggers the condition.  For fulls, a “clear timer” is also required (see below).  Clear timer names will begin with “tmfc”.  Full-jams expand on this with the full-jam timer name beginning with “tmfj” and the clear timer name beginning with “tmfjc”.
+To continue the example, the timers for full eye PE4127_F would be tmPE4127_F for the full timer, and tmfcPE4127_F for the full-clear timer.
+Our jam example would use tmPE230_J for the jam timer.
+Our full-clear example would use tmPE106_JF_F or tmfjPE106_JF_F for the full-jam timer and tmfjcPE106_JF_F for the full-jam clear timer.
+IO input and output devices and conveyor parts are displayed in RED when OFF, or GREEN when ON.  Parts displayed with a yellow background are in a forced state.  Use the Insert and Delete keys to force parts ON or OFF, or to clear a force.
+Timers are displayed in RED when not running or when running but not expired, or in GREEN while timing.
+Full Detection
+Full detection is configured using table Fullline (Configuration Menu | Standard Controls | Full Detection).  It is used to stop upstream conveyor sections when containers block full eyes for too long.  A full timer is started whenever a full eye is blocked.  If the full eye is unblocked before the timer expires, the conveyor continues to run and the full timer resets.  If the full timer expires while the full eye is still blocked, a full condition is raised, and the conveyor section is stopped.
+Downstream activity will eventually clear the blockage and allow the container to move.  When the full eye is unblocked, a second timer, the full-clear timer, begins to run.  Once the full-clear timer expires, the conveyor section restarts without intervention.
+Full timers show in RED when not done – when nothing is in front of the full eye, or while the full eye is blocked, and the timer is still running.  If it expires (is done), it will show GREEN, and a full condition is declared.
+When the full eye is unblocked, the full-clear timer will turn RED as it starts timing.  When it completes, it will turn GREEN and the conveyor section will start.
+The full timer should be set to allow the longest container to pass without expiring while the conveyor is running normally.  A good starting point might be 5 seconds.    The full-clear timer should be set to allow sufficient space to be created downstream before starting the conveyor section again.
+Fullline Table
+Field
+Type
+Description
+Desc
+String
+Enter a unique name.
+Sensor_Name
+PopUp
+Choose the IO input part that will signal a full condition.  Usually, a photoeye.
+Timer_Name
+PopUp
+Choose the timer that will measure how long Sensor_Name has been blocked.  When it has been blocked for the time defined in Timer_Preset, Response IO and FullClearOutput will be set to their OFF states, considering Invert and FullClearACTION.  Usually, the upstream conveyor section will be stopped when this occurs.
+Timer_Preset
+Float
+Enter the time for Timer_Name.  A full condition will be declared if Sensor_Name is ON for this amount of time.
+Clr_Timer_Name
+PopUp
+Choose the timer that will determine how long before Response IO and FullClearOutput are restored to their ON states (considering Invert and FullClearACTION) after Sensor_Name goes OFF while in a full condition.
+Clr_Timer_Preset
+Float
+Enter the time for Clr_Timer_Name.  This is how long to wait after the full condition clears before restarting the upstream conveyor section.
+Error_Name
+PopUp
+Choose an error from table Errors that will be raised when a full condition occurs.  It will be visible on the F10-1 screen while it is active.
+Conveyor_Name
+PopUp
+Choose a conveyor part.  It will be rendered in the appropriate color to match its state.  Usually, a “P” part is used for maximum visual impact.  The part is normally shown in YELLOW for a full condition.
+DontFireResponse
+Y/N
+This determines how Response IO will be treated:
+N = Use both FIRE / UNFIRE and ENABLE / DISABLE.
+Y = Use only ENABLE / DISABLE.  Do not FIRE / UNFIRE.
+Note that if Response IO is defined as Conveyor_Type = “MOTOR”, it will use only ENABLE / DISABLE regardless of this setting.
+Response IO
+PopUp
+Choose the conveyor IO output that will be deactivated when a full condition occurs.  Note that if the selected part is defined as Conveyor_Type = “MOTOR”, it will use only ENABLE / DISABLE, not FIRE / UNFIRE.  Fulls use bit 15.
+Invert
+Y/N
+Invert the sense of the response when a full condition occurs.
+N = Response IO is deactivated when a full condition occurs.
+Y = Response IO is activated when a full condition occurs.
+See the prior two fields.
+Go Until
+PopUp
+Optional.  Choose an IO input part that will detect the presence of containers.  Using this allows the Response IO motor to run until a container is detected by this input.
+ReSound Horn
+PopUp
+Optional.   A horn selected here will sound each time before the Response IO motor is restarted.
+If a horn is not needed, choose “N/A”.  “No Horn” can cause problems in some older versions.
+NoGap
+Y/N
+Not used.
+Status
+Y/N
+Set by the software:
+N = Not in a full condition.
+Y = A full condition has been declared for this row.
+Sent
+Int
+Set by the software to track when the current state of this row has been sent to the other ACs.
+FullClearOutput
+PopUp
+Optional.  Choose an IO output part that will be activated while in a not full condition.  FullClearACTION defines what activated means.
+FullClearACTION
+PopUp
+Choose the action to take on FullClearOutput.
+FullClearBIT
+Int
+If FullClearACTION is ENABLE or DISABLE, set the bit to use.
+
+An Alternate Use for the Full Logic
+The Fullline logic can also be used to move containers downstream on a transfer spur.  In this case, we use a brief pulse generated by the transfer logic to run the spur for a longer period.
+When a container is diverted at a transfer, the transfer logic creates a brief pulse that kicks the container off the transfer bed.  We can use that pulse in Fullline_Sensor_Name with a Fullline_Timer_Preset that is short enough to trigger the full logic.  The spur motor is used in Fullline_FullClearOutput field to run the spur, with Fullline_FullClearACTION = UNFIRE.  The output will turn ON while the full-clear timer is timing – the opposite of the normal full behavior.  The Clr_Timer_Preset can then be set to run the spur for as long as required.
+If additional containers arrive while the full-clear timer is still running, the timer will be reset, so the spur will continue to run until the full interval has elapsed after the last container.
+
+Jam Detection
+Jam detection photoeyes are located at merge points, divert point, curves, or anywhere where it is likely that containers could interfere with each other or get caught on the conveyor hardware and obstruct the path.
+A jam timer is used to detect containers that fail to pass the jam eye in the expected time, in the same fashion as for full detection.  For jams, however, the assumption is intervention will be required to clear the path before the conveyor can be restarted.
+When a container blocks the jam eye, the jam timer starts running.  Normally, the container will pass the eye before the jam timer completes.  The jam timer resets when the jam eye is unblocked.  If the jam eye remains blocked until the jam timer expires, a jam error is raised, and the jam zone is stopped.
+Note:  The jam timer will only run while the conveyor section is being told to run.  If a container stops in front of a jam eye when the jam zone has been stopped for other reasons, a jam will not occur.
+When a jam occurs:
+The line stops.
+The error status bar on the FPC screen turns RED, and a jam error is raised.
+The jam eye flashes RED / WHITE on the FPC main conveyor screen.
+The jam condition must be manually cleared.
+A pushbutton or the Start / Stop screen must be used to restart the conveyor.
+Jam detection is configured using table Jamcheck (Configuration Menu | Standard Controls | Jam Detection).
+Jamcheck Table
+Field
+Type
+Description

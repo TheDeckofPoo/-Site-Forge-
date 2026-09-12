@@ -879,6 +879,501 @@ def _encoders_from_discovery(
     return out, rels
 
 
+# Sorter static config vs runtime track tables (FPC-Sorter-Control-Module).
+SORTER_STATIC_TABLES = {
+    "Sorters.asc",
+    "SrtAppControl.asc",
+    "SrtScanBoss.asc",
+    "SrtZoneLane.asc",
+    "SrtLaneNotAvail.asc",
+    "SrtBadGapCnfg.asc",
+    "SrtRndRobin.asc",
+    "SrtHrtBeat.asc",
+    "SrtSimConfig.asc",
+    "SrtCommMsgMatch.asc",
+}
+SORTER_RUNTIME_TABLES = {
+    "SrtTrack1.asc",
+    "SrtTrack2.asc",
+    "SrtTrack3.asc",
+    "SrtTrack4.asc",
+    "SrtTrack5.asc",
+    "XfrTrack.asc",
+    "MsgTrack.asc",
+    "SrtScanSts.asc",
+}
+
+
+def _blank(v: Any) -> bool:
+    s = _clean(v)
+    return (not s) or s.upper() in {"N/A", "INVALID", "NONE", "0", "0.000"}
+
+
+def _add_rel(
+    rels: list[dict[str, Any]],
+    *,
+    frm: str,
+    to: str,
+    kind: str,
+    table: str,
+    provenance: str = PROV_RUN_EXPLICIT,
+) -> None:
+    frm_n, to_n = _clean(frm), _clean(to)
+    if not frm_n or not to_n:
+        return
+    rels.append(
+        {
+            "from": frm_n,
+            "to": to_n,
+            "kind": kind,
+            "source_table": table,
+            "provenance": provenance,
+        }
+    )
+
+
+def _tag_evidence(
+    evidence_by_name: dict[str, list[dict[str, Any]]],
+    name: str,
+    kind: str,
+    **extra: Any,
+) -> None:
+    nn = normalize_name(name)
+    if not nn:
+        return
+    evidence_by_name.setdefault(nn, []).append({"kind": kind, **extra})
+
+
+def harvest_cross_table_evidence(
+    run_dir: Path,
+    machine: str,
+) -> dict[str, Any]:
+    """Harvest cross-table participation links for activity scoring.
+
+    Semantics from FPC-Motor-Startup-Chains, FPC-Fulls-Jams-Fulljams,
+    FPC-StartStopZones; facts from RUN ASC only.
+    """
+    fortna = run_dir / "FORTNA"
+    relationships: list[dict[str, Any]] = []
+    evidence_by_name: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    startstop_zones: list[dict[str, Any]] = []
+    jam_zones: list[dict[str, Any]] = []
+    table_stats: dict[str, Any] = {}
+    sorter_static_active = 0
+    sorter_runtime_active = 0
+
+    def _merged_rows(stem: str) -> list[dict[str, Any]]:
+        if not fortna.is_dir():
+            return []
+        merged = merge_table_rows(fortna, stem, machine)
+        table_stats[stem] = {
+            "resolution": merged.get("resolution"),
+            "counts": merged.get("counts"),
+            "paths": merged.get("paths"),
+        }
+        return list(merged.get("rows") or [])
+
+    # --- Mtrchain (FPC-Motor-Startup-Chains) ---
+    for item in _merged_rows("Mtrchain.asc"):
+        row = item.get("row") or {}
+        motor = _clean(row.get("Motor_Name") or row.get("Motor_Ndx"))
+        if _blank(motor):
+            continue
+        _tag_evidence(evidence_by_name, motor, "mtrchain", detail="Motor_Name")
+        aux = _clean(row.get("Motor_Aux"))
+        if not _blank(aux):
+            _tag_evidence(evidence_by_name, aux, "mtrchain_aux", detail=motor)
+            _add_rel(relationships, frm=aux, to=motor, kind="mtrchain_aux", table="Mtrchain.asc")
+        stop_zone = _clean(row.get("Stop Zone") or row.get("StopZone"))
+        if not _blank(stop_zone):
+            _tag_evidence(evidence_by_name, stop_zone, "mtrchain_stop_zone", detail=motor)
+            _add_rel(
+                relationships,
+                frm=motor,
+                to=stop_zone,
+                kind="mtrchain_stop_zone",
+                table="Mtrchain.asc",
+            )
+        for i in range(1, 11):
+            chained = _clean(row.get(f"Motor_Chained{i}"))
+            if _blank(chained):
+                continue
+            _tag_evidence(evidence_by_name, chained, "mtrchain", detail=motor)
+            _add_rel(relationships, frm=motor, to=chained, kind="mtrchain", table="Mtrchain.asc")
+
+    # --- StartStopZones + Jamzones (FPC-StartStopZones) ---
+    for item in _merged_rows("StartStopZones.asc"):
+        row = item.get("row") or {}
+        name = _clean(row.get("Zone Name") or row.get("Name"))
+        if _blank(name):
+            continue
+        obj = make_object(
+            "startstop_zone",
+            name,
+            source_table="StartStopZones.asc",
+            source_row=item.get("source_row"),
+            source_scope=item.get("source_scope") or SCOPE_BASE_ONLY,
+            active_state=ACTIVE_LIKELY,
+            inclusion=AVAILABLE,
+            confidence="MEDIUM",
+            provenance=item.get("provenance") or PROV_RUN_EXPLICIT,
+            evidence=[{"kind": "startstop_link"}],
+            generation_state=GEN_CFG,
+            state=_clean(row.get("State")),
+        ).to_dict()
+        startstop_zones.append(obj)
+        _tag_evidence(evidence_by_name, name, "startstop_link")
+
+    for item in _merged_rows("Jamzones.asc"):
+        row = item.get("row") or {}
+        name = _clean(row.get("Zone Name") or row.get("Name"))
+        if _blank(name):
+            continue
+        latch = _clean(row.get("Latch Bit") or row.get("LatchBit"))
+        jammed = _clean(row.get("Jammed Bit") or row.get("JammedBit"))
+        enable = _clean(row.get("Enable Bit") or row.get("EnableBit"))
+        ssz = _clean(row.get("StartStopZone"))
+        owner = _clean(row.get("Zone Owner ") or row.get("Zone Owner") or row.get("ZoneOwner"))
+        linked = [x for x in (latch, jammed, enable) if not _blank(x)]
+        obj = make_object(
+            "jam_zone",
+            name,
+            source_table="Jamzones.asc",
+            source_row=item.get("source_row"),
+            source_scope=item.get("source_scope") or SCOPE_BASE_ONLY,
+            active_state=ACTIVE_CONFIRMED if linked else ACTIVE_LIKELY,
+            inclusion=INCLUDED
+            if (not owner or owner.upper() == machine.upper())
+            else AVAILABLE,
+            confidence="HIGH" if linked else "MEDIUM",
+            provenance=item.get("provenance") or PROV_RUN_EXPLICIT,
+            evidence=[{"kind": "jamzone_link"}],
+            generation_state=GEN_CFG,
+            latch_bit=latch or None,
+            jammed_bit=jammed or None,
+            enable_bit=enable or None,
+            startstop_zone=ssz or None,
+            zone_owner=owner or None,
+            linked_names=linked,
+        ).to_dict()
+        jam_zones.append(obj)
+        _tag_evidence(evidence_by_name, name, "jamzone_link")
+        for ref in linked:
+            _tag_evidence(evidence_by_name, ref, "jamzone_link", detail=name)
+            _add_rel(relationships, frm=name, to=ref, kind="jamzone_link", table="Jamzones.asc")
+        if ssz:
+            # StartStopZone may list multiple comma-separated zone names
+            for part in re.split(r"[,;]+", ssz):
+                part = _clean(part)
+                if _blank(part):
+                    continue
+                _tag_evidence(evidence_by_name, part, "startstop_link", detail=name)
+                _add_rel(
+                    relationships,
+                    frm=part,
+                    to=name,
+                    kind="startstop_link",
+                    table="Jamzones.asc",
+                )
+            # Latch Bit seeds Mtrchain Motor_Aux (doc linkage)
+            if latch:
+                _add_rel(
+                    relationships,
+                    frm=name,
+                    to=latch,
+                    kind="jamzone_latch_to_mtrchain",
+                    table="Jamzones.asc",
+                )
+
+    # --- Jamcheck / Fullline / Fulljam (FPC-Fulls-Jams-Fulljams) ---
+    for item in _merged_rows("Jamcheck.asc"):
+        row = item.get("row") or {}
+        sensor = _clean(row.get("Sensor_Name") or row.get("Desc"))
+        conv = _clean(row.get("Conveyor_Name"))
+        zone = _clean(row.get("Zone") or row.get("Zones"))
+        motor = _clean(row.get("Motor Under Jam Eye"))
+        if _blank(sensor):
+            continue
+        _tag_evidence(evidence_by_name, sensor, "jamcheck_link")
+        _tag_evidence(evidence_by_name, sensor, "jam_link")
+        if conv:
+            _tag_evidence(evidence_by_name, conv, "jam_link", detail=sensor)
+            _add_rel(relationships, frm=sensor, to=conv, kind="jam_link", table="Jamcheck.asc")
+        if zone:
+            _tag_evidence(evidence_by_name, zone, "jamzone_link", detail=sensor)
+            _add_rel(relationships, frm=sensor, to=zone, kind="jamcheck_link", table="Jamcheck.asc")
+        if motor:
+            _tag_evidence(evidence_by_name, motor, "jam_link", detail=sensor)
+            _add_rel(relationships, frm=sensor, to=motor, kind="jam_link", table="Jamcheck.asc")
+
+    for item in _merged_rows("Fullline.asc"):
+        row = item.get("row") or {}
+        sensor = _clean(row.get("Sensor_Name") or row.get("Desc"))
+        conv = _clean(row.get("Conveyor_Name"))
+        response = _clean(row.get("Response IO") or row.get("Response_IO"))
+        if _blank(sensor):
+            continue
+        _tag_evidence(evidence_by_name, sensor, "fullline_link")
+        _tag_evidence(evidence_by_name, sensor, "full_link")
+        if conv:
+            _tag_evidence(evidence_by_name, conv, "full_link", detail=sensor)
+            _add_rel(relationships, frm=sensor, to=conv, kind="full_link", table="Fullline.asc")
+        if response:
+            _tag_evidence(evidence_by_name, response, "full_link", detail=sensor)
+            _add_rel(
+                relationships, frm=sensor, to=response, kind="fullline_link", table="Fullline.asc"
+            )
+
+    for item in _merged_rows("Fulljam.asc"):
+        row = item.get("row") or {}
+        sensor = _clean(row.get("Sensor_Name") or row.get("Name") or row.get("Desc"))
+        enabled = _clean(row.get("Enabled")).upper()
+        if _blank(sensor):
+            continue
+        if enabled in {"N", "NO"} and _blank(row.get("Conveyor_Name")):
+            continue
+        conv = _clean(row.get("Conveyor_Name"))
+        response = _clean(row.get("Response IO") or row.get("Response_IO"))
+        _tag_evidence(evidence_by_name, sensor, "fulljam_link")
+        if conv:
+            _tag_evidence(evidence_by_name, conv, "fulljam_link", detail=sensor)
+            _add_rel(relationships, frm=sensor, to=conv, kind="fulljam_link", table="Fulljam.asc")
+        if response:
+            _tag_evidence(evidence_by_name, response, "fulljam_link", detail=sensor)
+            _add_rel(
+                relationships, frm=sensor, to=response, kind="fulljam_link", table="Fulljam.asc"
+            )
+
+    # --- Convpath ---
+    for item in _merged_rows("Convpath.asc"):
+        row = item.get("row") or {}
+        piece = _clean(row.get("Piece"))
+        inp = _clean(row.get("Input"))
+        outp = _clean(row.get("Output"))
+        pe = _clean(row.get("PEname") or row.get("PE_at"))
+        nodes = [x for x in (piece, inp, outp, pe) if not _blank(x) and not x.replace(".", "").isdigit()]
+        if len(nodes) < 2:
+            continue
+        for n in nodes:
+            _tag_evidence(evidence_by_name, n, "convpath_link")
+            _tag_evidence(evidence_by_name, n, "path_link")
+        _add_rel(
+            relationships,
+            frm=nodes[0],
+            to=nodes[1],
+            kind="path_link",
+            table="Convpath.asc",
+            provenance=PROV_RUN_DERIVED,
+        )
+
+    # --- SawLane / SawMerge / HSSaw* ---
+    for item in _merged_rows("SawMerge.asc"):
+        row = item.get("row") or {}
+        name = _clean(row.get("Name"))
+        if _blank(name):
+            continue
+        _tag_evidence(evidence_by_name, name, "saw_merge")
+        motor_io = _clean(row.get("MotorIO"))
+        if motor_io:
+            _tag_evidence(evidence_by_name, motor_io, "saw_merge", detail=name)
+            _add_rel(relationships, frm=name, to=motor_io, kind="saw_merge", table="SawMerge.asc")
+
+    for item in _merged_rows("SawLane.asc"):
+        row = item.get("row") or {}
+        name = _clean(row.get("Name"))
+        if _blank(name):
+            continue
+        _tag_evidence(evidence_by_name, name, "saw_lane")
+        merge = _clean(row.get("SawMerge"))
+        pe = _clean(row.get("PhotoEyeIO"))
+        # Conveyor often encoded in lane name; also ApproachUP/CollisionUP/LaneIN
+        for col, kind in (
+            ("ApproachUP", "saw_lane"),
+            ("CollisionUP", "saw_lane"),
+            ("LaneIN", "saw_lane"),
+            ("DisableIO", "saw_lane"),
+        ):
+            val = _clean(row.get(col))
+            if val:
+                _tag_evidence(evidence_by_name, val, kind, detail=name)
+                _add_rel(relationships, frm=name, to=val, kind="saw_lane", table="SawLane.asc")
+        if merge:
+            _tag_evidence(evidence_by_name, merge, "saw_merge", detail=name)
+            _add_rel(relationships, frm=name, to=merge, kind="saw_lane", table="SawLane.asc")
+        if pe:
+            _tag_evidence(evidence_by_name, pe, "saw_lane", detail=name)
+            _add_rel(relationships, frm=name, to=pe, kind="saw_lane", table="SawLane.asc")
+        # P-tag embedded in lane name (e.g. LANE_0_P219) — supporting only
+        for m in re.findall(r"(P\d{2,4}[A-Za-z]?)", name, flags=re.I):
+            _tag_evidence(evidence_by_name, m, "saw_lane", detail=name)
+            _add_rel(relationships, frm=name, to=m, kind="saw_lane", table="SawLane.asc")
+
+    for stem, kind in (
+        ("HSSawMerge.asc", "hssaw_merge"),
+        ("HSSawLane.asc", "hssaw_lane"),
+        ("HSSawParm.asc", "hssaw_link"),
+    ):
+        for item in _merged_rows(stem):
+            row = item.get("row") or {}
+            name = _clean(row.get("Name") or row.get("Desc"))
+            if _blank(name):
+                continue
+            _tag_evidence(evidence_by_name, name, kind)
+            _tag_evidence(evidence_by_name, name, "hssaw_link")
+            for col in row:
+                val = _clean(row.get(col))
+                if _blank(val) or val == name:
+                    continue
+                if re.match(r"^(?:P|M|PE|EZPE|VFD|ENC)\d", val, re.I):
+                    _tag_evidence(evidence_by_name, val, "hssaw_link", detail=name)
+                    _add_rel(relationships, frm=name, to=val, kind="hssaw_link", table=stem)
+
+    # --- Sorter tables (static vs runtime) ---
+    for stem in sorted(SORTER_STATIC_TABLES | SORTER_RUNTIME_TABLES):
+        rows = _merged_rows(stem)
+        active = 0
+        for item in rows:
+            row = item.get("row") or {}
+            name = _clean(
+                row.get("Sorter Name")
+                or row.get("Name")
+                or row.get("HostZone")
+                or row.get("AppSorter")
+                or row.get("ConfirmScan")
+            )
+            if _blank(name):
+                continue
+            active += 1
+            if stem in SORTER_STATIC_TABLES:
+                _tag_evidence(evidence_by_name, name, "sorter_static", table=stem)
+                _tag_evidence(evidence_by_name, name, "sorter_table", table=stem)
+            else:
+                _tag_evidence(evidence_by_name, name, "sorter_runtime", table=stem)
+        if stem in SORTER_STATIC_TABLES:
+            sorter_static_active += active
+        else:
+            sorter_runtime_active += active
+
+    # --- Configio / IOCard / FORTNADT I/O assignment ---
+    for item in _merged_rows("Configio.asc"):
+        row = item.get("row") or {}
+        desc = _clean(row.get("Desc"))
+        word = _clean(row.get("Octal_Word"))
+        if _blank(desc):
+            continue
+        _tag_evidence(
+            evidence_by_name,
+            desc,
+            "configio_link",
+            octal_word=word,
+            bank=_clean(row.get("Bank")),
+        )
+        if word:
+            _tag_evidence(evidence_by_name, f"WORD_{word}", "io_assignment", detail=desc)
+
+    for item in _merged_rows("IOCard.asc"):
+        row = item.get("row") or {}
+        name = _clean(row.get("Name") or row.get("Desc"))
+        if _blank(name):
+            continue
+        _tag_evidence(evidence_by_name, name, "iocard_link")
+
+    # FORTNADT: row index ≈ decimal word; Machine column = ownership
+    fortnadt_path = fortna / "FORTNADT.asc"
+    fortnadt_owned = 0
+    if fortnadt_path.is_file():
+        try:
+            _h, frows = read_asc(fortnadt_path)
+            for idx, row in enumerate(frows):
+                owner = _clean(row.get("Machine"))
+                if owner.upper() == machine.upper():
+                    fortnadt_owned += 1
+                    _tag_evidence(
+                        evidence_by_name,
+                        f"WORD_{idx}",
+                        "fortnadt_link",
+                        machine=owner,
+                    )
+                    _tag_evidence(
+                        evidence_by_name,
+                        f"WORD_{idx}",
+                        "io_assignment",
+                        machine=owner,
+                    )
+        except Exception as exc:  # noqa: BLE001
+            table_stats["FORTNADT.asc"] = {"error": str(exc)}
+        else:
+            table_stats["FORTNADT.asc"] = {
+                "resolution": "base_only",
+                "owned_words": fortnadt_owned,
+            }
+
+    return {
+        "relationships": relationships,
+        "evidence_by_name": dict(evidence_by_name),
+        "operational_groups": {
+            "startstop_zones": startstop_zones,
+            "jam_zones": jam_zones,
+            "doc_refs": [
+                "FPC-StartStopZones",
+                "FPC-Motor-Startup-Chains",
+                "FPC-Fulls-Jams-Fulljams",
+            ],
+        },
+        "table_stats": table_stats,
+        "sorter_table_classes": {
+            "static_active_rows": sorter_static_active,
+            "runtime_active_rows": sorter_runtime_active,
+            "static_tables": sorted(SORTER_STATIC_TABLES),
+            "runtime_tables": sorted(SORTER_RUNTIME_TABLES),
+        },
+    }
+
+
+def apply_cross_table_evidence(
+    model: SiteModel,
+    harvest: dict[str, Any],
+) -> None:
+    """Attach harvested evidence onto matching SiteModel objects; extend relationships."""
+    evidence_by_name: dict[str, list[dict[str, Any]]] = harvest.get("evidence_by_name") or {}
+    model.relationships.extend(harvest.get("relationships") or [])
+    model.operational_groups = harvest.get("operational_groups") or model.operational_groups or {}
+    for stem, stats in (harvest.get("table_stats") or {}).items():
+        model.table_resolutions.setdefault(stem, stats)
+
+    buckets = [
+        model.equipment,
+        model.motors,
+        model.vfds,
+        model.photoeyes,
+        model.encoders,
+        model.sawtooth_merges,
+        model.sorters,
+        model.estop_zones,
+        model.controllers,
+    ]
+    for bucket in buckets:
+        for obj in bucket:
+            nn = normalize_name(obj.get("normalized_name") or obj.get("raw_name") or "")
+            extra = evidence_by_name.get(nn) or []
+            if not extra:
+                continue
+            evid = list(obj.get("evidence") or [])
+            seen = {(e.get("kind"), e.get("detail"), e.get("table")) for e in evid}
+            for e in extra:
+                key = (e.get("kind"), e.get("detail"), e.get("table"))
+                if key in seen:
+                    continue
+                evid.append(e)
+                seen.add(key)
+            obj["evidence"] = evid
+
+    # Annotate sorter static vs runtime classification on sorter objects
+    for s in model.sorters:
+        s.setdefault("evidence", []).append({"kind": "sorter_static", "table": "Sorters.asc"})
+        s["sorter_table_class"] = "static_config"
+
+
 def build_subsystems(
     model: SiteModel,
     *,
@@ -972,10 +1467,14 @@ def discover(
     model.controllers = _load_controllers(run_dir, machine)
     model.estop_zones = _load_estop_zones(run_dir, machine)
 
+    # Cross-table harvest always runs (even when Conveyor.asc is absent).
+    harvest = harvest_cross_table_evidence(run_dir, machine)
+
     saw_raw: dict[str, Any] = {}
     vfd_raw: dict[str, Any] | None = None
     semantics: dict[str, Any] = {}
     has_saw = _has_sawtooth_evidence(run_dir, machine)
+    conveyor_missing = not any(fortna.glob("Conveyor.asc*"))
 
     if has_saw:
         merges, saw_rels, saw_raw, semantics = _build_sawtooth(run_dir, machine)
@@ -989,10 +1488,17 @@ def discover(
                 "paths": merged["paths"],
             }
         if discover_vfd is not None:
-            vfd_raw = discover_vfd(run_dir, machine, saw_raw)
-        enc_objs, enc_rels = _encoders_from_discovery(run_dir, machine, saw_raw, vfd_raw)
-        model.encoders = enc_objs
-        model.relationships.extend(enc_rels)
+            try:
+                vfd_raw = discover_vfd(run_dir, machine, saw_raw)
+            except FileNotFoundError as exc:
+                model.notes.append(f"VFD discovery skipped (incomplete RUN): {exc}")
+                vfd_raw = None
+        try:
+            enc_objs, enc_rels = _encoders_from_discovery(run_dir, machine, saw_raw, vfd_raw)
+            model.encoders = enc_objs
+            model.relationships.extend(enc_rels)
+        except FileNotFoundError as exc:
+            model.notes.append(f"Encoder discovery skipped (incomplete RUN): {exc}")
     else:
         model.notes.append(
             "No active SawMerge/SawLane evidence for this machine — sawtooth_merges left empty (not faked)"
@@ -1007,25 +1513,60 @@ def discover(
                 ),
             }
 
-    equipment, eq_rels, table_res = _equipment_from_cp_discovery(
-        run_dir, machine, saw_raw if has_saw else (saw_raw or {})
-    )
-    # When no sawtooth, still run equipment discovery with empty saw dict
-    if not equipment and discover_equipment is not None:
-        empty_saw = saw_raw or {
-            "merges": [],
-            "lanes": [],
-            "counts": {"merges": 0, "lanes": 0},
-            "sources": {},
-        }
-        equipment, eq_rels, table_res = _equipment_from_cp_discovery(run_dir, machine, empty_saw)
+    equipment: list[dict[str, Any]] = []
+    eq_rels: list[dict[str, Any]] = []
+    table_res: dict[str, Any] = {}
+    if conveyor_missing:
+        model.notes.append(
+            "Conveyor.asc absent — incomplete RUN; equipment/transport left empty "
+            "(fail closed; no site content invented)"
+        )
+        model.unresolved.append(
+            {
+                "kind": "incomplete_run",
+                "detail": "Conveyor.asc missing",
+                "machine": machine,
+                "provenance": PROV_UNKNOWN,
+            }
+        )
+    else:
+        try:
+            equipment, eq_rels, table_res = _equipment_from_cp_discovery(
+                run_dir, machine, saw_raw if has_saw else (saw_raw or {})
+            )
+            # When no sawtooth, still run equipment discovery with empty saw dict
+            if not equipment and discover_equipment is not None:
+                empty_saw = saw_raw or {
+                    "merges": [],
+                    "lanes": [],
+                    "counts": {"merges": 0, "lanes": 0},
+                    "sources": {},
+                }
+                equipment, eq_rels, table_res = _equipment_from_cp_discovery(
+                    run_dir, machine, empty_saw
+                )
+        except FileNotFoundError as exc:
+            model.notes.append(f"Equipment discovery failed closed: {exc}")
+            model.unresolved.append(
+                {
+                    "kind": "incomplete_run",
+                    "detail": str(exc),
+                    "machine": machine,
+                    "provenance": PROV_UNKNOWN,
+                }
+            )
 
     model.equipment = equipment
     model.relationships.extend(eq_rels)
     model.table_resolutions.update(table_res)
 
     owned = {normalize_name(e.get("normalized_name")) for e in model.equipment}
-    motors, vfds, photoeyes, dev_rels = _devices_from_conveyor(run_dir, machine, owned)
+    motors: list[dict] = []
+    vfds: list[dict] = []
+    photoeyes: list[dict] = []
+    dev_rels: list[dict] = []
+    if not conveyor_missing:
+        motors, vfds, photoeyes, dev_rels = _devices_from_conveyor(run_dir, machine, owned)
     # Prefer VFD discovery doc bases when present
     if vfd_raw and isinstance(vfd_raw.get("by_base"), dict) and vfd_raw["by_base"]:
         vfds = []
@@ -1063,7 +1604,17 @@ def discover(
     model.photoeyes = photoeyes
     model.relationships.extend(dev_rels)
 
-    model.transport = _discover_transport(run_dir, machine, owned)
+    if conveyor_missing:
+        model.transport = {
+            "provenance": PROV_UNKNOWN,
+            "visual_freeze": True,
+            "nodes": [],
+            "edges": [],
+            "metrics": {},
+            "note": "Incomplete RUN — transport skipped (no Conveyor.asc)",
+        }
+    else:
+        model.transport = _discover_transport(run_dir, machine, owned)
     if not (model.transport.get("nodes") or []) and model.equipment:
         # Fill transport nodes from discovered equipment geometry (still data-only)
         model.transport["nodes"] = [
@@ -1089,6 +1640,13 @@ def discover(
     model.tracking_systems = tracking
     model.wcs_interfaces = wcs
 
+    # Attach cross-table evidence + operational_groups before classification.
+    apply_cross_table_evidence(model, harvest)
+    model.notes.append(
+        "Cross-table activity evidence harvested from Mtrchain/Jam*/Full*/Saw*/"
+        "Sorter/Configio/FORTNADT/IOCard/StartStopZones (docs=semantics, RUN=facts)"
+    )
+
     # Areas: RUN has no reliable Area table in current archives → default Area_1
     model.areas = []
     ensure_default_area(model)
@@ -1101,6 +1659,7 @@ def discover(
     apply_engineer_overrides(model, overrides)
 
     site_dict = model.to_dict()
+    site_dict["sorter_table_classes"] = harvest.get("sorter_table_classes") or {}
     activity = classify_site_model(site_dict, machine)
     # sync classified buckets back onto model dict (classify mutates lists in site_dict)
     subsystems = build_subsystems(
@@ -1118,11 +1677,17 @@ def discover(
             tracking_systems=site_dict.get("tracking_systems") or [],
             wcs_interfaces=site_dict.get("wcs_interfaces") or [],
             areas=site_dict.get("areas") or [],
+            operational_groups=site_dict.get("operational_groups") or {},
         ),
         saw_raw=saw_raw,
         vfd_raw=vfd_raw,
         semantics=semantics,
     )
+    subsystems["operational_groups"] = {
+        "startstop_zones": len((site_dict.get("operational_groups") or {}).get("startstop_zones") or []),
+        "jam_zones": len((site_dict.get("operational_groups") or {}).get("jam_zones") or []),
+    }
+    subsystems["sorter_table_classes"] = harvest.get("sorter_table_classes") or {}
     # Refresh counts after classification
     site_dict["counts"] = SiteModel(
         machine_scope=machine,
@@ -1140,6 +1705,7 @@ def discover(
         sorters=site_dict.get("sorters") or [],
         tracking_systems=site_dict.get("tracking_systems") or [],
         wcs_interfaces=site_dict.get("wcs_interfaces") or [],
+        operational_groups=site_dict.get("operational_groups") or {},
         relationships=site_dict.get("relationships") or [],
         unresolved=site_dict.get("unresolved") or [],
     ).counts()
@@ -1158,6 +1724,8 @@ def discover(
         "activity_counts": activity.get("counts"),
         "change_report_status": report.get("status"),
         "has_sawtooth": has_saw,
+        "incomplete_run": conveyor_missing,
+        "cross_table_relationships": len(harvest.get("relationships") or []),
     }
 
 

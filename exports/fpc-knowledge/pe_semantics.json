@@ -1,0 +1,292 @@
+{
+  "generated_at": "2026-09-12T19:07:05.678690+00:00",
+  "source_of_truth": "RUN Conveyor.asc Type=PHOTOCELL + PeList/PeDisplay headers + training docs",
+  "schema_sources": [
+    "workspace/cp4-run/RUN/FORTNA/Conveyor.asc",
+    "workspace/active/RUN/FORTNA/Conveyor.asc"
+  ],
+  "photocell_row_count": 384,
+  "naming": {
+    "pattern": "Typically EZPE###_<ROLE> or PE###_<ROLE> in IO_Name",
+    "role_suffixes": [
+      {
+        "suffix": "F",
+        "count": 108,
+        "samples": [
+          "EZPE116_F",
+          "EZPE304_F",
+          "EZPE418_F",
+          "EZPE442_F",
+          "EZPE450_F"
+        ],
+        "meaning": "Full photoeye",
+        "confidence": "HIGH",
+        "evidence": "Common _F suffix; Fullline/Fulljam Sensor_Name; SawLane.ReserveTM tmfc*_F"
+      },
+      {
+        "suffix": "P",
+        "count": 106,
+        "samples": [
+          "EZPE116_P",
+          "EZPE214_P",
+          "EZPE304_P",
+          "EZPE408_P",
+          "EZPE418_P"
+        ],
+        "meaning": "Presence photoeye",
+        "confidence": "HIGH",
+        "evidence": "Common Conveyor PHOTOCELL suffix _P; used as presence in merge/full logic"
+      },
+      {
+        "suffix": "J",
+        "count": 84,
+        "samples": [
+          "PE308_J",
+          "PE414_J",
+          "PE414A_J",
+          "PE414B_J",
+          "PE414C_J"
+        ],
+        "meaning": "Jam photoeye",
+        "confidence": "HIGH",
+        "evidence": "Common _J suffix; Jamcheck.Sensor_Name typically jam PE"
+      },
+      {
+        "suffix": "JF",
+        "count": 40,
+        "samples": [
+          "PE104_JF",
+          "PE108_JF",
+          "PE204_JF",
+          "PE208_JF",
+          "PE428_JF"
+        ],
+        "meaning": "Combined jam/full photoeye",
+        "confidence": "MEDIUM",
+        "evidence": "Observed _JF suffix on PHOTOCELL rows"
+      },
+      {
+        "suffix": "I",
+        "count": 12,
+        "samples": [
+          "PE504_I",
+          "PE506_I",
+          "PE508_I",
+          "PE424_I",
+          "PE509_I"
+        ],
+        "meaning": "Induct / infeed photoeye (site naming)",
+        "confidence": "MEDIUM",
+        "evidence": "Observed _I suffix; confirm per row General_Description"
+      },
+      {
+        "suffix": "F1",
+        "count": 8,
+        "samples": [
+          "EZPE212_F1",
+          "EZPE530_F1",
+          "EZPE136_F1",
+          "EZPE150_F1",
+          "EZPE212_F1"
+        ],
+        "meaning": "Full photoeye channel/instance 1",
+        "confidence": "MEDIUM",
+        "evidence": "Observed _F1/_F2 multi-full eyes on one conveyor"
+      },
+      {
+        "suffix": "F2",
+        "count": 8,
+        "samples": [
+          "EZPE212_F2",
+          "EZPE530_F2",
+          "EZPE136_F2",
+          "EZPE150_F2",
+          "EZPE212_F2"
+        ],
+        "meaning": "Full photoeye channel/instance 2",
+        "confidence": "MEDIUM",
+        "evidence": "Observed _F1/_F2 multi-full eyes on one conveyor"
+      },
+      {
+        "suffix": "P1",
+        "count": 8,
+        "samples": [
+          "EZPE212_P1",
+          "EZPE530_P1",
+          "EZPE136_P1",
+          "EZPE150_P1",
+          "EZPE212_P1"
+        ],
+        "meaning": "Presence photoeye instance 1",
+        "confidence": "MEDIUM",
+        "evidence": "Observed _P1/_P2 suffixes"
+      },
+      {
+        "suffix": "P2",
+        "count": 6,
+        "samples": [
+          "EZPE530_P2",
+          "EZPE136_P2",
+          "EZPE150_P2",
+          "EZPE530_P2",
+          "EZPE136_P2"
+        ],
+        "meaning": "Presence photoeye instance 2",
+        "confidence": "MEDIUM",
+        "evidence": "Observed _P1/_P2 suffixes"
+      },
+      {
+        "suffix": "FDD",
+        "count": 2,
+        "samples": [
+          "PE814_FDD",
+          "PE814_FDD"
+        ],
+        "meaning": "Unspecified PE role \u2014 use General_Description / jam-full table links",
+        "confidence": "LOW",
+        "evidence": "Observed on RUN PHOTOCELL rows; no catalog claim beyond presence"
+      },
+      {
+        "suffix": "FDJ",
+        "count": 2,
+        "samples": [
+          "PE814_FDJ",
+          "PE814_FDJ"
+        ],
+        "meaning": "Unspecified PE role \u2014 use General_Description / jam-full table links",
+        "confidence": "LOW",
+        "evidence": "Observed on RUN PHOTOCELL rows; no catalog claim beyond presence"
+      }
+    ]
+  },
+  "status_reporting_tables": {
+    "PeList": {
+      "headers": [
+        "Name",
+        "ConveyorRec",
+        "IntentionallyForced",
+        "pLastTransitionSec",
+        "pLastTransitionNSec"
+      ],
+      "purpose": "PE list status / force tracking tied to ConveyorRec",
+      "document_sources": [
+        "FPC-Photoeye-Status-Reporting"
+      ]
+    },
+    "PeDisplay": {
+      "headers": [
+        "Description",
+        "ConveyorRec",
+        "Duration",
+        "Location"
+      ],
+      "purpose": "PE display descriptors tied to ConveyorRec",
+      "document_sources": [
+        "FPC-Photoeye-Status-Reporting"
+      ]
+    }
+  },
+  "links_to_safety_tables": [
+    {
+      "table": "Jamcheck",
+      "field": "Sensor_Name",
+      "role": "jam PE"
+    },
+    {
+      "table": "Fullline",
+      "field": "Sensor_Name",
+      "role": "full PE"
+    },
+    {
+      "table": "Fulljam",
+      "field": "Sensor_Name",
+      "role": "full-jam PE"
+    },
+    {
+      "table": "SawLane",
+      "field": "PhotoEyeIO",
+      "role": "lane PE"
+    },
+    {
+      "table": "HSSawLane",
+      "field": "LanePE",
+      "role": "HS lane PE"
+    }
+  ],
+  "rules": [
+    "One physical photoeye may serve multiple functions.",
+    "Naming conventions are not mandatory.",
+    "Never resolve PE role solely from finished PLC.",
+    "Never bind PE to conveyor by shared digits alone."
+  ],
+  "finished_plc_used": false,
+  "document_sources": [
+    "docs/training/FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+    "docs/training/FPC Docs 3/FPC-StartStopZones.docx",
+    "docs/training/FPC Docs 3/FPC-Photoeye-Status-Reporting.docx"
+  ],
+  "naming_conventions": {
+    "confidence": "HIGH",
+    "note": "Conventions are documentation defaults \u2014 any input may be used; do not require suffix match.",
+    "full_eye_suffix": [
+      "_F"
+    ],
+    "jam_eye_suffix": [
+      "_J"
+    ],
+    "fulljam_eye_patterns": [
+      "_JF",
+      "_FJ",
+      "_JF_F"
+    ],
+    "examples_from_docs": [
+      "PE4127_F",
+      "PE230_J",
+      "PE106_JF_F"
+    ]
+  },
+  "roles": [
+    {
+      "role": "full",
+      "table": "Fullline",
+      "behavior": "Stop upstream when sensor blocked beyond full timer; auto-restart after clear timer",
+      "provenance_rule": "RUN_EXPLICIT when Fullline row names sensor; suffix only SUGGESTED",
+      "confidence": "HIGH"
+    },
+    {
+      "role": "jam",
+      "table": "Jamcheck + Jamzones",
+      "behavior": "Requires operator intervention to restart",
+      "provenance_rule": "RUN_EXPLICIT via Jamcheck.Zones \u2192 Jamzones",
+      "confidence": "HIGH"
+    },
+    {
+      "role": "fulljam",
+      "table": "Fulljam",
+      "behavior": "Hybrid: detect operator intervention and allow restart without pushbutton",
+      "provenance_rule": "RUN_EXPLICIT via Fulljam row",
+      "confidence": "HIGH"
+    },
+    {
+      "role": "detection_pe",
+      "table": "Conveyor / SawLane.PhotoEyeIO",
+      "behavior": "Presence/detection for merge lane or conveyor control",
+      "provenance_rule": "RUN_EXPLICIT relationship; never number-match conveyor to PE",
+      "confidence": "HIGH"
+    },
+    {
+      "role": "reserve_pe",
+      "table": "SawLane.ReserveTM \u2192 Fullline clear timer / sensor",
+      "behavior": "Reservation clear timing for sawtooth; may sit on upstream conveyor",
+      "provenance_rule": "RUN_EXPLICIT ReserveTM; do not equate to lane detection PE by digits",
+      "confidence": "HIGH"
+    },
+    {
+      "role": "scan_trigger_pe",
+      "table": "Scanner / trigger configuration",
+      "behavior": "Scanner trigger when documented",
+      "provenance_rule": "DOCUMENTED_RELATIONSHIP + RUN when present",
+      "confidence": "MEDIUM"
+    }
+  ]
+}

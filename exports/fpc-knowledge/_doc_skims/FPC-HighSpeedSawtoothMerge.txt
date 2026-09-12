@@ -1,0 +1,192 @@
+
+
+FortnaPlus ControlHigh-Speed Sawtooth Merge Module
+
+Document Revision: 1.2
+Date: 25-Aug-2022
+
+Revision
+Date
+Author
+Revision Summary
+1.0
+24-Mar-2014
+B C Conklin
+New document
+1.1
+01-Jul-2022
+T R Kremser
+Update and general refresh
+1.2
+25-Aug-2022
+T R Kremser
+Incorporate the information from the High Speed Sawtooth Merge Test Plan document.
+
+Table of Contents
+ TOC \o "1-3" \h \z \u Glossary of Terms PAGEREF _Toc112322413 \h 4
+1.High-Speed Sawtooth Merge Concept PAGEREF _Toc112322414 \h 5
+2.High-Speed Sawtooth Merge Features PAGEREF _Toc112322415 \h 7
+2.1.Reservation Re-use PAGEREF _Toc112322416 \h 7
+2.2.Opportunistic Feeding PAGEREF _Toc112322417 \h 8
+3.High-Speed Sawtooth Merge Design Concerns PAGEREF _Toc112322418 \h 9
+4.Merge Shifter Lane Layout PAGEREF _Toc112322419 \h 9
+5.Configuring the Shifter PAGEREF _Toc112322420 \h 10
+6.Configuring Lane and Merge Induct Points PAGEREF _Toc112322421 \h 11
+7.High-Speed Sawtooth Merge Table Relationships PAGEREF _Toc112322422 \h 11
+8.The HSSawMerge Table PAGEREF _Toc112322423 \h 13
+9.The HSSawLane Table PAGEREF _Toc112322424 \h 14
+10.The HSSawParm Table PAGEREF _Toc112322425 \h 19
+11.The HSSawSim Table PAGEREF _Toc112322426 \h 21
+12.High-Speed Sawtooth Merge Configuration Example PAGEREF _Toc112322427 \h 22
+12.1.Merge and Lane Setup PAGEREF _Toc112322428 \h 23
+12.2.Merge Belt Induction Configuration – Feeding Into the End PAGEREF _Toc112322429 \h 25
+12.3.Induction Point Adjustments PAGEREF _Toc112322430 \h 27
+12.4.Example with Inch-and-Store PAGEREF _Toc112322431 \h 28
+13.High-Speed Sawtooth Merge Test Plan PAGEREF _Toc112322432 \h 29
+13.1.HSSawMerge Table PAGEREF _Toc112322433 \h 29
+13.2.HSSawLane Table PAGEREF _Toc112322434 \h 29
+13.3.HSSawParm Table PAGEREF _Toc112322435 \h 31
+13.4.Miscellaneous Testing Items PAGEREF _Toc112322436 \h 31
+
+Confidential/Proprietary Statement
+This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.  It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document.  Fortna Material Handling reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order.
+
+Glossary of Terms
+AC – Automation Controller
+FPC – FortnaPlus Control
+UPS – Uninterruptible Power Supply
+PE – Photoeye
+
+High-Speed Sawtooth Merge Concept
+When two or more sections of conveyor merge into one, precise timing is required to provide a smooth convergence and to maintain the desired spacing between containers.  The High-Speed Sawtooth Merge module provides support for:
+Multiple overlapping induction points
+Different feed and discharge speeds
+Adjustments for merge induct location based on the lane speeds at the instant of merging
+An unlimited number of reservation sizes based on timers, rate points or IO for controlling the size of induct slugs from each lane
+The High-Speed Sawtooth Merge control logic uses one standard shifter linked to a merge belt.  The shifter tracks both reservations and space allocated for actual containers.  The standard shifter logic, in combination with the High-Speed Sawtooth Merge logic, provides coordinated and efficient merging of multiple lanes.
+The High Speed Sawtooth Merge can feed each lane at two different speeds.  The slower speed is typically used when the lane is not full, and product is flowing up to the presence PE.  The faster speed is used to discharge a lane when the lane is merging.
+Each lane can be configured with parameters that define a reservation size, reservation total, reservation space, slug gap, priority, and speed, and will enable/disable IO based on the selected signals.  The logic will determine which parameters to use based on the state of the selected signals and the order of the table entries.
+The lane parameters are stored in a separate table (HSSawParm), where each lane may have one or more records to define its control conditions.
+The logic allocates space for each lane based on the “active” parameter set, and the status of the lane.  This provides the ability to change the amount of time allocated for a lane based on additional conditions.
+The following is a list of the signals that can make a parameter set “Active”:
+The lane PE is ON (at least one container is present)
+The “At Least One” parameter set is used
+The full timer is Done or Not Done
+If Done, the “Done” parameter set is used
+If Not Done, the “Not Done” parameter set is used
+The priority input signal is ON or OFF
+If ON, the ON parameter set is used
+If OFF, the OFF parameter set is used
+The Rate is Low or High
+If Rate is Low, the Low parameter set is used
+If Rate is High, the High parameter set is used
+The logic will scan the HSSawParm table to determine the parameter set to use.
+ResrvInches - Reservation size required, in inches.  The lane will only feed if a reservation is found of the correct size.  Different parameter sets can have different reservation size requirements.  Smaller reservation sizes are usually required for normal operation than for a full condition.  If the lane changes state and goes full, the lane must wait for a reservation of sufficient size.
+ResrvTotal – The total amount of space required before the lane completes its turn.  If ReservInches is set to 50 inches and ResrvTotal is set to 50 inches, the turn will complete with one reservation of 50 inches.  If ResrvInches is set to 50 inches and ResrvTotal is set to 100, the turn will complete once two reservations of 50 inches are created.  The lane will remain the highest priority lane (waiting for space to insert a reservation) as long as the other lanes are at the same Priority.
+ResrvSpacing – If ReservTotal is larger than ResrvInches, multiple reservations will be created.  ResrvSpacing is the minimum spacing between reservations.
+MaxCartonLen – When a reservation is created, the reservation length is computed as follows:  (ResrvInches + MaxCartonLen + SlugGap).
+SlugGap – Sets the amount of space needed to prevent jams between slugs as they are released from different lanes.
+Priority – Arbitrary units.  A larger value means higher priority.  Set this to the same value for all lanes to allow round-robin operation.  If all the lanes have the same Priority value, a lane gets more time to feed if ResrvInches is set to a larger value (such as when a lane goes full).  During operation, if the Priority value is increased, it will take effect when a new reservation is created – it does not alter reservation space that has already been allocated.  In cases where there is enough space to allocate reservations, changing the Priority value does not affect which lane is allocated space next.
+LaneSpeed - Choose Slow or Fast for this parameter set.
+Enable - Choose Disable or Enable.  If Disable is selected, the lane will be disabled when the parameter set is activated.  If Enable is selected, the state will be set to enabled.
+Override - Select N if the software needs to continue to process additional records for the lane.  Select Y to use the parameters entered and stop processing any other parameters.
+If the logic finds that there is space on the merge shifter (the space between the start of the shifter and the lane induction point), and the highest-priority lane needs a reservation, the logic will create a reservation for the lane.
+A lane will feed into the reservation space until the reservation space remaining is less than the SlugGap plus the MaxCartonLen.
+If the remaining space in the reservation is less than SlugGap plus MaxCartonLen, but greater than SlugGap, the logic will start looking for a gap on the infeed lane.  When a gap is found, feeding will stop.
+If the remaining reservation space is less than SlugGap, the lane will stop feeding and a jam event will occur.
+The next lane to be assigned a reservation is determined by the following logic:
+Find a lane that has not been allocated the required space (space allocated is less than ResrvTotal).
+Find the lane with the highest priority.
+If the Priority value is the same, find the lane with the oldest feed time (the oldest time stamp is not updated until the lane has completed its reservation (until it has been allocated its ResrvTotal).
+
+High-Speed Sawtooth Merge Features
+The High-Speed Sawtooth Merge configuration is more complex than a standard sawtooth merge, adding the ability to run the merge at two speeds.  The merge also includes features to manage the priority and slug size based on a variety of inputs.
+
+Reservation Re-use
+High-Speed Sawtooth Merge reservations are made available for re-use by other lanes at the largest lane induct point.  As a reservation reaches the largest lane induct point, the software will look at the shift register and if the reservation is allocated to the lane, will change the reservation into available space.
+Note: The largest lane induct point is calculated from the lane induct table using the largest value entered.
+
+Lane Induct Point
+“Slug Gap” plus “Max Carton Len”
+Merge Shift Register Re-Use Example
+Area Available for Reservation
+
+Largest Lane Induct Point - At the largest induct point the reservation is converted into unused space.  The space may be used by downstream lanes.
+
+Lane Induct Point
+“Slug Gap” plus “Max Carton Len”
+Merge Shift Register Re-Use Example
+Area Available for Reservation
+
+Largest Lane Induct Point - At the largest induct point the reservation is converted into unused space.  The space may be used by downstream lanes.
+
+Opportunistic Feeding
+In this example, Lane 2 is configured to feed individual containers at Slow speed if none of the other lanes have product or if there is unused space at the infeed point.  If Lane 2 is Full, it feeds a 30-foot slug (at the Fast speed).
+Create an entry in the Fullline table for the Full photoeye associated with the lane.
+Create an entry in table HSSawParm to feed individuals:
+Name = “Lane 2 – Singles”
+Type = “Timer Dn”
+Timer:  Select the “Clear” timer for the lane.
+ReservInches = 2 (minimum value)
+ResrvTotal = 2 (minimum value)
+ResrvSpacing = 0
+MaxCartonLen = 20
+SlugGap = 18
+Priority = 0 (all other entries will get Priority = 10)
+LaneSpeed = “Slow”
+ Create an entry in table HSSawParm to feed a slug:
+Name = “Lane 2 – Full Slug”
+Type = “Timer Not Dn”
+Timer:  Select the “Clear” timer for the lane.
+ReservInches = 360 (30 feet, in inches)
+ResrvTotal = 360
+ResrvSpacing = 0
+MaxCartonLen = 20
+SlugGap = 18
+Priority = 10
+LaneSpeed = “Fast”
+The parameter set “Lane 2 – Singles” will be active when the Clear timer is done (the lane is NOT full).  This parameter set has a priority less than all other lanes.  It will only get a reservation if no other lanes need the reservation space, or if opportunistic space is available.
+When the lane becomes full, the parameter set “Lane 2 – Full Slug” will become active.  This parameter set changes the priority and will feed a 30-foot slug instead of a single container.
+
+High-Speed Sawtooth Merge Design Concerns
+To maximize throughput, the configure the merge to feed the maximum size slug (A slug that triggers the Full PE), at the fast speed.
+The throughput is constrained by the slug feed time from each lane.
+
+Merge Shifter Lane Layout
+The diagram, below, shows accumulation, brake-meter, inch and store, and slug belts feeding into a merge.  The shifter is also depicted with the induct point and a reservation (allocated space) for the lane.
+
+Lane Conveyor
+Merge Shifter
+Induct PE
+Brake-Meter Belt
+Accumulation Section
+Reservations
+Merge Slave Section
+Merge Conveyor
+In-feed Lane
+Reflected Induct Point
+Induct Photoeye
+High Speed Merge Example
+Gapping Photoeye
+Reflected Induct Point
+
+Inch-Store Photoeye
+ 
+ 
+ 
+ 
+ 
+ 
+Reservation
+
+Lane Conveyor
+Merge Shifter
+Induct PE
+Brake-Meter Belt
+Accumulation Section
+Reservations
+Merge Slave Section
+Merge Conveyor
+In-feed Lane
+Reflected Induct Point
+Induct Photoeye

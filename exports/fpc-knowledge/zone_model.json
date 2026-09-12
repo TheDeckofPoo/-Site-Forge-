@@ -1,0 +1,105 @@
+{
+  "generated_at": "2026-09-12T19:04:17.678858+00:00",
+  "source_of_truth": "RUN schemas + training docs (FPC-StartStopZones, CombinedJamZones)",
+  "note": "Zone kinds are distinct. Do not conflate Engineering Area, StartStop, EStop, Jam, and Sorter/Tracking zones.",
+  "zone_kinds": [
+    {
+      "kind": "EngineeringArea",
+      "definition": "PLC/generation area grouping for equipment. Often NOT present as a reliable RUN geometry/area table; may require ENGINEER_CONFIGURED_REQUIRED default Area_1.",
+      "run_tables": [],
+      "provenance": "ENGINEER_CONFIGURED_REQUIRED when absent from RUN",
+      "confidence": "MEDIUM"
+    },
+    {
+      "kind": "StartStopZone",
+      "definition": "Start/stop island with request flags and owners; referenced by Jamzones.",
+      "run_tables": [
+        "StartStopZones",
+        "Jamzones"
+      ],
+      "key_fields": {
+        "StartStopZones": [
+          "Zone Name",
+          "StartReqFlag",
+          "StopReqFlag",
+          "State"
+        ],
+        "Jamzones": [
+          "Zone Name",
+          "StartStopZone",
+          "Start Request Flag",
+          "Stop Request Flag"
+        ]
+      },
+      "provenance": "RUN_EXPLICIT",
+      "confidence": "HIGH"
+    },
+    {
+      "kind": "EStopZone",
+      "definition": "E-stop circuit/device entries distinct from start/stop and jam zones.",
+      "run_tables": [
+        "EStop"
+      ],
+      "key_fields": {
+        "EStop": [
+          "Desc",
+          "Part",
+          "Error"
+        ]
+      },
+      "provenance": "RUN_EXPLICIT when EStop.asc present",
+      "confidence": "MEDIUM"
+    },
+    {
+      "kind": "JamZone",
+      "definition": "Jam ownership zone for Jamcheck / encoder jamzone / combined jam enables.",
+      "run_tables": [
+        "Jamzones",
+        "Jamcheck",
+        "CombinedJamZones",
+        "Fulljam"
+      ],
+      "key_fields": {
+        "Jamzones": [
+          "Zone Name",
+          "Latch Bit",
+          "Jammed Bit",
+          "Enable Bit"
+        ],
+        "Jamcheck": [
+          "Sensor_Name",
+          "Zone",
+          "Conveyor_Name",
+          "Timer_Name"
+        ]
+      },
+      "provenance": "RUN_EXPLICIT",
+      "confidence": "HIGH"
+    },
+    {
+      "kind": "SorterTrackingZone",
+      "definition": "HostZone / ScanZoneID / XfrZoneID on track and zone-lane tables \u2014 logical host zones for sortation/transfer, not StartStop islands.",
+      "run_tables": [
+        "SrtZoneLane",
+        "SrtTrack",
+        "SrtScanBoss",
+        "XfrTrack"
+      ],
+      "key_fields": {
+        "SrtZoneLane": [
+          "Name",
+          "HostZone",
+          "Lane",
+          "AppSorter"
+        ],
+        "SrtTrack": [
+          "HostZone",
+          "ScanZoneID",
+          "SorterLane"
+        ]
+      },
+      "provenance": "RUN_EXPLICIT + RUNTIME_DATA",
+      "confidence": "HIGH"
+    }
+  ]
+}

@@ -1,0 +1,165 @@
+{
+  "generated_at": "2026-09-12T19:04:17.764676+00:00",
+  "source_of_truth": "RUN Machine/MsgMap/MsgWCS/WCSEvents/MsgTrack schemas",
+  "document_sources": [
+    "FPC-Machine-MsgMap-Configuraton",
+    "FPC-OpenNMS-Configuration"
+  ],
+  "layers": [
+    {
+      "layer": "endpoint",
+      "table": "Machine",
+      "role": "Peers/controllers/hosts with protocol and port",
+      "headers": [
+        "Machine_Name",
+        "Status",
+        "Error",
+        "Machine_Index",
+        "Machine_Pid",
+        "Connection_Type",
+        "Communication_Protocol",
+        "Machine_Port",
+        "Transmit_Retry",
+        "Offline",
+        "Process",
+        "UseDB",
+        "IgnoreDupes",
+        "NoCircbuff",
+        "CircSize",
+        "Trig_Size",
+        "Trig_InterChar",
+        "Trig_Timeout",
+        "Trig_MsgEndChar",
+        "Log File",
+        "Log Length",
+        "NumCbItems",
+        "LastMsgAttempts",
+        "MaxAttempts",
+        "StripNulls",
+        "TimerId",
+        "RetryCount",
+        "MaxRetries",
+        "FortnaMachine",
+        "NeedACK",
+        "LogLevel",
+        "Username",
+        "Password",
+        "CloseDelay(ms)",
+        "OpenTimeout(ms)",
+        "DontSetNeedAck",
+        "pCBuff",
+        "pCBuffLen",
+        "pCBMaxLen",
+        "pCTimeout",
+        "pCharSet",
+        "pSendSequence",
+        "pRecvSequence"
+      ],
+      "static_or_runtime": "static"
+    },
+    {
+      "layer": "message_routing",
+      "table": "MsgMap",
+      "role": "Binds Message_Name to Machine_Name + Menu_Name queue",
+      "headers": [
+        "Message_Name",
+        "Machine_Name",
+        "Recv_Msg_Type",
+        "Send_Msg_Type",
+        "Ack_Msg_Type",
+        "Menu_Name",
+        "Low_Cursor",
+        "High_Cursor",
+        "Stat_Cursor",
+        "Last_Record",
+        "Low_Head",
+        "High_Head",
+        "Key_Cursor",
+        "Id",
+        "LastId",
+        "Record",
+        "Delimiter",
+        "FieldLength",
+        "AckLen",
+        "CheckFile",
+        "pMsgType"
+      ],
+      "static_or_runtime": "static"
+    },
+    {
+      "layer": "wcs_event_catalog",
+      "table": "WCSEvents",
+      "role": "EventName enable + destination/category/service",
+      "headers": [
+        "EventName",
+        "WCSEnable",
+        "WCSDestination",
+        "WCSCategory",
+        "WCSService",
+        "WCSMachProc",
+        "WCSLastTime",
+        "NMSEnable",
+        "NMSLastTime"
+      ],
+      "static_or_runtime": "static"
+    },
+    {
+      "layer": "wcs_out_queue",
+      "table": "MsgWCS",
+      "role": "Outbound WCS messages (MsgText/Destination)",
+      "headers": [
+        "MsgText",
+        "Destination",
+        "TxStat",
+        "DbKey",
+        "DbTime",
+        "iDbTime"
+      ],
+      "static_or_runtime": "runtime"
+    },
+    {
+      "layer": "tracking_msg_queue",
+      "table": "MsgTrack",
+      "role": "Tracking message queue (often empty)",
+      "headers": [],
+      "static_or_runtime": "runtime",
+      "note": "Header unavailable (empty or missing ASC). Semantics from docs/catalog only; no invented fields claimed as RUN-present."
+    }
+  ],
+  "edges": [
+    {
+      "from": "MsgMap",
+      "to": "Machine",
+      "via": "Machine_Name",
+      "edge_type": "EXPLICIT_REFERENCE"
+    },
+    {
+      "from": "MsgMap",
+      "to": "MsgWCS",
+      "via": "Menu_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "WCSEvents",
+      "to": "MsgWCS",
+      "via": "WCSDestination",
+      "edge_type": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "SrtAppControl",
+      "to": "MsgMap",
+      "via": "CrrMsgTable/DcmMsgTable",
+      "edge_type": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "XfRouteBoss",
+      "to": "MsgMap",
+      "via": "CrrMsgTable/\u2026",
+      "edge_type": "OPTIONAL_RELATIONSHIP"
+    }
+  ],
+  "generation_policy": {
+    "wcs_plc": "NOT_SUPPORTED until complete generic library path exists",
+    "discovery": "Inventory endpoints, maps, and active queues only"
+  }
+}

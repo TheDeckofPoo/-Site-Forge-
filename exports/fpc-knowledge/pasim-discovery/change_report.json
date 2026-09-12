@@ -1,17 +1,10 @@
 {
-  "generated_at": "2026-09-12T19:06:48.651133+00:00",
-  "baseline": "2026-09-12T17:05:29.420451+00:00",
+  "generated_at": "2026-09-12T19:07:06.675889+00:00",
+  "baseline": "2026-09-12T19:06:47.479504+00:00",
   "status": "COMPARED",
   "added": [],
   "removed": [],
-  "changed_inclusion": [
-    {
-      "bucket": "areas",
-      "canonical_id": "area:AREA_1",
-      "from": "AVAILABLE",
-      "to": "INCLUDED"
-    }
-  ],
+  "changed_inclusion": [],
   "count_delta": {
     "areas": 0,
     "controllers": 0,
@@ -19,14 +12,14 @@
     "equipment": 0,
     "equipment_included": 0,
     "estop_zones": 0,
-    "jam_zones": 27,
+    "jam_zones": 0,
     "motors": 0,
     "photoeyes": 0,
-    "relationships": 804,
+    "relationships": 0,
     "sawtooth_lanes": 0,
     "sawtooth_merges": 0,
     "sorters": 0,
-    "startstop_zones": 8,
+    "startstop_zones": 0,
     "tracking_systems": 0,
     "transport_edges": 0,
     "transport_nodes": 0,

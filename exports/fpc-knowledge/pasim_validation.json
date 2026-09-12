@@ -1,0 +1,179 @@
+{
+  "generated_at": "2026-09-12T19:07:06.717297+00:00",
+  "finished_plc_used": false,
+  "archive": {
+    "path": "docs/training/P&A Documents/PASIM1-RUN.tar.gz",
+    "exists": true,
+    "file_count": 24,
+    "asc_table_count": 0,
+    "has_fortna_menu": true,
+    "has_binaries": true,
+    "note": "PASIM1-RUN.tar.gz is a runtime/binary + menu shell without ASC configuration tables"
+  },
+  "extract_path": "workspace/pasim1-run/RUN",
+  "discovery": {
+    "ran": true,
+    "ok": true,
+    "result": {
+      "out_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\fpc-knowledge\\pasim-discovery",
+      "counts": {
+        "controllers": 0,
+        "areas": 1,
+        "equipment": 0,
+        "equipment_included": 0,
+        "motors": 0,
+        "vfds": 0,
+        "photoeyes": 0,
+        "encoders": 0,
+        "estop_zones": 0,
+        "sawtooth_merges": 0,
+        "sawtooth_lanes": 0,
+        "sorters": 0,
+        "tracking_systems": 0,
+        "wcs_interfaces": 0,
+        "startstop_zones": 0,
+        "jam_zones": 0,
+        "relationships": 0,
+        "unresolved": 1,
+        "transport_nodes": 0,
+        "transport_edges": 0
+      },
+      "activity_counts": {
+        "by_active_state": {
+          "ACTIVE_LIKELY": 1
+        },
+        "by_inclusion": {
+          "INCLUDED": 1
+        }
+      },
+      "change_report_status": "COMPARED",
+      "has_sawtooth": false,
+      "incomplete_run": true,
+      "cross_table_relationships": 0
+    },
+    "incomplete_run": true
+  },
+  "validation": {
+    "ok": true,
+    "checks": [
+      {
+        "name": "discovery_runs",
+        "ok": true,
+        "detail": {
+          "ran": true,
+          "ok": true,
+          "result": {
+            "out_dir": "C:\\dev\\worktree\\FortnaPlus\\exports\\fpc-knowledge\\pasim-discovery",
+            "counts": {
+              "controllers": 0,
+              "areas": 1,
+              "equipment": 0,
+              "equipment_included": 0,
+              "motors": 0,
+              "vfds": 0,
+              "photoeyes": 0,
+              "encoders": 0,
+              "estop_zones": 0,
+              "sawtooth_merges": 0,
+              "sawtooth_lanes": 0,
+              "sorters": 0,
+              "tracking_systems": 0,
+              "wcs_interfaces": 0,
+              "startstop_zones": 0,
+              "jam_zones": 0,
+              "relationships": 0,
+              "unresolved": 1,
+              "transport_nodes": 0,
+              "transport_edges": 0
+            },
+            "activity_counts": {
+              "by_active_state": {
+                "ACTIVE_LIKELY": 1
+              },
+              "by_inclusion": {
+                "INCLUDED": 1
+              }
+            },
+            "change_report_status": "COMPARED",
+            "has_sawtooth": false,
+            "incomplete_run": true,
+            "cross_table_relationships": 0
+          },
+          "incomplete_run": true
+        }
+      },
+      {
+        "name": "no_greensboro_ornccp_contamination",
+        "ok": true,
+        "detail": {
+          "contaminated_names": [],
+          "pasim_text_has_ornccp": false,
+          "pasim_text_has_greensboro": false
+        }
+      },
+      {
+        "name": "sawtooth_only_if_evidenced",
+        "ok": true,
+        "detail": {
+          "sawtooth_present": false,
+          "asc_in_tar": 0
+        }
+      },
+      {
+        "name": "sorter_only_if_evidenced",
+        "ok": true,
+        "detail": {
+          "sorter_present": false,
+          "asc_in_tar": 0
+        }
+      },
+      {
+        "name": "print_apply_tables_noted",
+        "ok": true,
+        "detail": {
+          "pna_doc_count": 16,
+          "samples": [
+            "docs/training/P&A Documents/Block Diagram.doc",
+            "docs/training/P&A Documents/FPC-PNA-ConfigurationChecklist.docx",
+            "docs/training/P&A Documents/FPC-PNA-Label-Accuracy-Spreadsheet.xlsx",
+            "docs/training/P&A Documents/FPC-PNA-Operators-Screen.docx",
+            "docs/training/P&A Documents/FPC-PNA-Print-Apply-Configuration.docx",
+            "docs/training/P&A Documents/FPC-PNA-PrintApplyFallback.docx",
+            "docs/training/P&A Documents/FPC-PNA-PrintApplySimulation.docx",
+            "docs/training/P&A Documents/FPC-PNA-TestPlan-Sorter.docx"
+          ]
+        }
+      },
+      {
+        "name": "finished_plc_not_used",
+        "ok": true,
+        "detail": "Discovery path is RUN-only"
+      }
+    ]
+  },
+  "print_apply_related": {
+    "training_docs": [
+      "docs/training/P&A Documents/Block Diagram.doc",
+      "docs/training/P&A Documents/FPC-PNA-ConfigurationChecklist.docx",
+      "docs/training/P&A Documents/FPC-PNA-Label-Accuracy-Spreadsheet.xlsx",
+      "docs/training/P&A Documents/FPC-PNA-Operators-Screen.docx",
+      "docs/training/P&A Documents/FPC-PNA-Print-Apply-Configuration.docx",
+      "docs/training/P&A Documents/FPC-PNA-PrintApplyFallback.docx",
+      "docs/training/P&A Documents/FPC-PNA-PrintApplySimulation.docx",
+      "docs/training/P&A Documents/FPC-PNA-TestPlan-Sorter.docx",
+      "docs/training/P&A Documents/FPC-PNA-Transfer-PrintAndApply.docx",
+      "docs/training/P&A Documents/FPC-PNA-ZebraPrintEngineAutomaticDisconnect.docx",
+      "docs/training/P&A Documents/FPC-PNA-ZebraPrinterConfiguration.docx",
+      "docs/training/P&A Documents/FRD_PrintApplyFallback20110518.docx",
+      "docs/training/P&A Documents/InkJet_IDD20121217.docx",
+      "docs/training/P&A Documents/Print Apply McKesson Issues 20140605.docx",
+      "docs/training/P&A Documents/PrintApplyDesign (Conv Design Layout).docx",
+      "docs/training/P&A Documents/Scanner Box Dimensions Configuration.doc"
+    ],
+    "note": "P&A semantics from training docs; PASIM tar has no ASC Print&Apply tables"
+  },
+  "recommendations": [
+    "Treat PASIM1-RUN.tar.gz as OUT_OF_SCOPE for full SiteModel population until ASC-bearing RUN is provided",
+    "Use P&A Documents for Print&Apply semantic knowledge separately from Sawtooth/Sorter compilers"
+  ]
+}

@@ -1,0 +1,561 @@
+{
+  "machine_scope": "PASIM1",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\pasim1-run\\RUN",
+  "generated_at": "2026-09-12T19:07:06.671183+00:00",
+  "source_of_truth": "RUN + engineer overrides only \u2014 finished PLC not read; sorter/WCS generation not faked",
+  "controllers": [],
+  "areas": [
+    {
+      "canonical_id": "area:AREA_1",
+      "kind": "area",
+      "source_table": "",
+      "source_row": null,
+      "source_scope": "engineer",
+      "raw_name": "Area_1",
+      "normalized_name": "AREA_1",
+      "active_state": "ACTIVE_LIKELY",
+      "inclusion": "INCLUDED",
+      "confidence": "LOW",
+      "provenance": "ENGINEER_CONFIGURED_REQUIRED",
+      "evidence": [
+        {
+          "kind": "default_area",
+          "note": "No reliable Area table/rows from RUN; Area_1 is engineer-configured required placeholder"
+        }
+      ],
+      "engineer_override": null,
+      "generation_state": "CONFIGURATION_REQUIRED",
+      "area_id": null,
+      "es_zone_id": null,
+      "run_derived": false,
+      "default_area": true,
+      "activity_score": 0,
+      "activity_score_breakdown": {}
+    }
+  ],
+  "equipment": [],
+  "transport": {
+    "provenance": "UNKNOWN",
+    "visual_freeze": true,
+    "nodes": [],
+    "edges": [],
+    "metrics": {},
+    "note": "Incomplete RUN \u2014 transport skipped (no Conveyor.asc)"
+  },
+  "motors": [],
+  "vfds": [],
+  "photoeyes": [],
+  "encoders": [],
+  "estop_zones": [],
+  "sawtooth_merges": [],
+  "sorters": [],
+  "tracking_systems": [],
+  "wcs_interfaces": [],
+  "operational_groups": {
+    "startstop_zones": [],
+    "jam_zones": [],
+    "doc_refs": [
+      "FPC-StartStopZones",
+      "FPC-Motor-Startup-Chains",
+      "FPC-Fulls-Jams-Fulljams"
+    ]
+  },
+  "relationships": [],
+  "unresolved": [
+    {
+      "kind": "incomplete_run",
+      "detail": "Conveyor.asc missing",
+      "machine": "PASIM1",
+      "provenance": "UNKNOWN"
+    }
+  ],
+  "table_resolutions": {
+    "SawMerge.asc": {
+      "resolution": "missing",
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      },
+      "active_named": 0
+    },
+    "SawLane.asc": {
+      "resolution": "missing",
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      },
+      "active_named": 0
+    },
+    "Sorters.asc": {
+      "resolution": "missing",
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      },
+      "active_named": 0
+    },
+    "Mtrchain.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "StartStopZones.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "Jamzones.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "Jamcheck.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "Fullline.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "Fulljam.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "Convpath.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "HSSawMerge.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "HSSawLane.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "HSSawParm.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "MsgTrack.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtAppControl.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtBadGapCnfg.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtCommMsgMatch.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtHrtBeat.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtLaneNotAvail.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtRndRobin.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtScanBoss.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtScanSts.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtSimConfig.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtTrack1.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtTrack2.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtTrack3.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtTrack4.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtTrack5.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "SrtZoneLane.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "XfrTrack.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "Configio.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    },
+    "IOCard.asc": {
+      "resolution": "missing",
+      "counts": {
+        "merged": 0,
+        "overlay_input": 0,
+        "base_input": 0,
+        "historical": 0
+      },
+      "paths": {
+        "base": null,
+        "overlay": null,
+        "historical": []
+      }
+    }
+  },
+  "notes": [
+    "No active SawMerge/SawLane evidence for this machine \u2014 sawtooth_merges left empty (not faked)",
+    "Conveyor.asc absent \u2014 incomplete RUN; equipment/transport left empty (fail closed; no site content invented)",
+    "Cross-table activity evidence harvested from Mtrchain/Jam*/Full*/Saw*/Sorter/Configio/FORTNADT/IOCard/StartStopZones (docs=semantics, RUN=facts)",
+    "Area_1 assigned as ENGINEER_CONFIGURED_REQUIRED default \u2014 not claimed as RUN-derived"
+  ],
+  "counts": {
+    "controllers": 0,
+    "areas": 1,
+    "equipment": 0,
+    "equipment_included": 0,
+    "motors": 0,
+    "vfds": 0,
+    "photoeyes": 0,
+    "encoders": 0,
+    "estop_zones": 0,
+    "sawtooth_merges": 0,
+    "sawtooth_lanes": 0,
+    "sorters": 0,
+    "tracking_systems": 0,
+    "wcs_interfaces": 0,
+    "startstop_zones": 0,
+    "jam_zones": 0,
+    "relationships": 0,
+    "unresolved": 1,
+    "transport_nodes": 0,
+    "transport_edges": 0
+  },
+  "sorter_table_classes": {
+    "static_active_rows": 0,
+    "runtime_active_rows": 0,
+    "static_tables": [
+      "Sorters.asc",
+      "SrtAppControl.asc",
+      "SrtBadGapCnfg.asc",
+      "SrtCommMsgMatch.asc",
+      "SrtHrtBeat.asc",
+      "SrtLaneNotAvail.asc",
+      "SrtRndRobin.asc",
+      "SrtScanBoss.asc",
+      "SrtSimConfig.asc",
+      "SrtZoneLane.asc"
+    ],
+    "runtime_tables": [
+      "MsgTrack.asc",
+      "SrtScanSts.asc",
+      "SrtTrack1.asc",
+      "SrtTrack2.asc",
+      "SrtTrack3.asc",
+      "SrtTrack4.asc",
+      "SrtTrack5.asc",
+      "XfrTrack.asc"
+    ]
+  }
+}

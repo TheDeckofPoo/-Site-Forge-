@@ -1,0 +1,1569 @@
+{
+  "generated_at": "2026-09-12T19:04:17.678839+00:00",
+  "source_of_truth": "RUN ASC headers + training docs (no finished PLC)",
+  "edge_types": [
+    "EXPLICIT_REFERENCE",
+    "DOCUMENTED_RELATIONSHIP",
+    "DERIVED_RELATIONSHIP",
+    "OPTIONAL_RELATIONSHIP",
+    "RUNTIME_DATA"
+  ],
+  "node_count": 40,
+  "edge_count": 156,
+  "nodes": [
+    {
+      "id": "Conveyor",
+      "subsystem": "transport_io",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc"
+    },
+    {
+      "id": "FORTNADT",
+      "subsystem": "io_runtime",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/FORTNADT.asc"
+    },
+    {
+      "id": "Configio",
+      "subsystem": "io_map",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Configio.asc"
+    },
+    {
+      "id": "IOCard",
+      "subsystem": "io_hardware",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/IOCard.asc"
+    },
+    {
+      "id": "Jamzones",
+      "subsystem": "area_safety",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Jamzones.asc"
+    },
+    {
+      "id": "Jamcheck",
+      "subsystem": "area_safety",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Jamcheck.asc"
+    },
+    {
+      "id": "Fulljam",
+      "subsystem": "area_safety",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Fulljam.asc"
+    },
+    {
+      "id": "Fullline",
+      "subsystem": "area_safety",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Fullline.asc"
+    },
+    {
+      "id": "Mtrchain",
+      "subsystem": "motor_control",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "id": "StartStopZones",
+      "subsystem": "area_safety",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/StartStopZones.asc"
+    },
+    {
+      "id": "EStop",
+      "subsystem": "area_safety",
+      "confidence": "MEDIUM",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/EStop.asc"
+    },
+    {
+      "id": "Convpath",
+      "subsystem": "tracking",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Convpath.asc"
+    },
+    {
+      "id": "SawLane",
+      "subsystem": "sawtooth",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SawLane.asc"
+    },
+    {
+      "id": "SawMerge",
+      "subsystem": "sawtooth",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SawMerge.asc"
+    },
+    {
+      "id": "HSSawLane",
+      "subsystem": "sawtooth_hs",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawLane.asc"
+    },
+    {
+      "id": "HSSawMerge",
+      "subsystem": "sawtooth_hs",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawMerge.asc"
+    },
+    {
+      "id": "HSSawParm",
+      "subsystem": "sawtooth_hs",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawParm.asc"
+    },
+    {
+      "id": "HSSawState",
+      "subsystem": "sawtooth_hs",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawState.asc"
+    },
+    {
+      "id": "HSSawSim",
+      "subsystem": "sawtooth_hs",
+      "confidence": "MEDIUM",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawSim.asc"
+    },
+    {
+      "id": "Merges",
+      "subsystem": "merge_legacy",
+      "confidence": "MEDIUM",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Merges.asc"
+    },
+    {
+      "id": "SimpleMerge",
+      "subsystem": "merge",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SimpleMerge.asc"
+    },
+    {
+      "id": "MergeBoss",
+      "subsystem": "merge",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MergeBoss.asc"
+    },
+    {
+      "id": "MergeInputs",
+      "subsystem": "merge",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MergeInputs.asc"
+    },
+    {
+      "id": "MergeRoute",
+      "subsystem": "merge",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MergeRoute.asc"
+    },
+    {
+      "id": "ZipperMerge",
+      "subsystem": "merge_zipper",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/ZipperMerge.asc"
+    },
+    {
+      "id": "ZipperLane",
+      "subsystem": "merge_zipper",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/ZipperLane.asc"
+    },
+    {
+      "id": "Sorters",
+      "subsystem": "sorter",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Sorters.asc"
+    },
+    {
+      "id": "SrtAppControl",
+      "subsystem": "sorter",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SrtAppControl.asc"
+    },
+    {
+      "id": "SrtScanBoss",
+      "subsystem": "sorter",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SrtScanBoss.asc"
+    },
+    {
+      "id": "SrtZoneLane",
+      "subsystem": "sorter",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SrtZoneLane.asc"
+    },
+    {
+      "id": "SrtTrack",
+      "subsystem": "sorter_runtime",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SrtTrack1.asc"
+    },
+    {
+      "id": "XfrTrack",
+      "subsystem": "transfer_runtime",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/XfrTrack.asc"
+    },
+    {
+      "id": "XfRouteTable",
+      "subsystem": "transfer",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/XfRouteTable.asc"
+    },
+    {
+      "id": "XfRouteBoss",
+      "subsystem": "transfer",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/XfRouteBoss.asc"
+    },
+    {
+      "id": "Machine",
+      "subsystem": "communications",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Machine.asc"
+    },
+    {
+      "id": "MsgMap",
+      "subsystem": "communications",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MsgMap.asc"
+    },
+    {
+      "id": "MsgTrack",
+      "subsystem": "communications_runtime",
+      "confidence": "LOW",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MsgTrack.asc"
+    },
+    {
+      "id": "MsgWCS",
+      "subsystem": "communications_runtime",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MsgWCS.asc"
+    },
+    {
+      "id": "WCSEvents",
+      "subsystem": "communications",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/WCSEvents.asc"
+    },
+    {
+      "id": "Encoders",
+      "subsystem": "sorter",
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Encoders.asc"
+    }
+  ],
+  "edges": [
+    {
+      "from": "Conveyor",
+      "to": "Conveyor",
+      "via_field": "Motor",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "Motor IO_Name in same table",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Conveyor",
+      "to": "Conveyor",
+      "via_field": "Drive",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "Drive / VFD IO_Name when present",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Conveyor",
+      "to": "Machine",
+      "via_field": "Machine_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Conveyor",
+      "to": "Mtrchain",
+      "via_field": "In Motor Chain",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "Flag that motor participates in a chain",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "Conveyor",
+      "to": "IOCard",
+      "via_field": "IO_Module_Type",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Conveyor",
+      "to": "convtype",
+      "via_field": "Type",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "Lookup of conveyor type vocabulary",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "FORTNADT",
+      "to": "Machine",
+      "via_field": "Machine",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "FORTNADT",
+      "to": "Configio",
+      "via_field": "HiBank",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "Bank coordinates align with Configio",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "FORTNADT",
+      "to": "Configio",
+      "via_field": "LoBank",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "Configio",
+      "to": "IOCard",
+      "via_field": "Interface",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Interface name ties to IOCard / adapter",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Configio",
+      "to": "Conveyor",
+      "via_field": "Desc",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "Often matches Conveyor IO_Name",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "Configio",
+      "to": "Machine",
+      "via_field": "Process",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "IOCard",
+      "to": "Machine",
+      "via_field": "Machine",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "IOCard",
+      "to": "Configio",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Configio.Interface / card binding",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Jamzones",
+      "to": "StartStopZones",
+      "via_field": "StartStopZone",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Jamzones",
+      "to": "Jamcheck",
+      "via_field": "Zone Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Jamcheck.Zone references this name",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Jamzones",
+      "to": "Encoders",
+      "via_field": "Zone Name",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "Encoders.Jamzone may match zone name",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Jamcheck",
+      "to": "Conveyor",
+      "via_field": "Sensor_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "PHOTOCELL IO_Name",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Jamcheck",
+      "to": "Conveyor",
+      "via_field": "Conveyor_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Jamcheck",
+      "to": "Jamzones",
+      "via_field": "Zone",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Jamcheck",
+      "to": "Conveyor",
+      "via_field": "Motor Under Jam Eye",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "Motor IO under jam PE",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Jamcheck",
+      "to": "Errors",
+      "via_field": "Error_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Fulljam",
+      "to": "Conveyor",
+      "via_field": "Sensor_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Fulljam",
+      "to": "Conveyor",
+      "via_field": "Conveyor_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Fulljam",
+      "to": "Conveyor",
+      "via_field": "Motor Under Jam Eye",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Fulljam",
+      "to": "Errors",
+      "via_field": "Error_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Fulljam",
+      "to": "Conveyor",
+      "via_field": "Response IO",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Fullline",
+      "to": "Conveyor",
+      "via_field": "Sensor_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Fullline",
+      "to": "Conveyor",
+      "via_field": "Conveyor_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Fullline",
+      "to": "SawLane",
+      "via_field": "Clr_Timer_Name",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "SawLane.ReserveTM often references tmfc* clear timers",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "Fullline",
+      "to": "Errors",
+      "via_field": "Error_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Fullline",
+      "to": "Conveyor",
+      "via_field": "Response IO",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained1",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained2",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained3",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained4",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained5",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained6",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained7",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained8",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained9",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Chained10",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "Conveyor",
+      "via_field": "Motor_Aux",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Mtrchain",
+      "to": "StartStopZones",
+      "via_field": "Stop Zone",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "StartStopZones",
+      "to": "Jamzones",
+      "via_field": "Zone Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Jamzones.StartStopZone \u2192 this name",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "EStop",
+      "to": "Errors",
+      "via_field": "Error",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "EStop",
+      "to": "Conveyor",
+      "via_field": "Part",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "Part may name related equipment when used",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Convpath",
+      "to": "Conveyor",
+      "via_field": "PEname",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "PE name when populated",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Convpath",
+      "to": "Conveyor",
+      "via_field": "PE_at",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Convpath",
+      "to": "Conveyor",
+      "via_field": "Input",
+      "edge_type": "RUNTIME_DATA",
+      "note": "Runtime path metrics \u2014 not static FK",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "Convpath",
+      "to": "Conveyor",
+      "via_field": "Output",
+      "edge_type": "RUNTIME_DATA",
+      "note": "",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "SawLane",
+      "to": "SawMerge",
+      "via_field": "SawMerge",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SawLane",
+      "to": "Conveyor",
+      "via_field": "PhotoEyeIO",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SawLane",
+      "to": "Conveyor",
+      "via_field": "DisableIO",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SawLane",
+      "to": "Fullline",
+      "via_field": "ReserveTM",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "Often tmfc* clear timer from Fullline",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "SawLane",
+      "to": "Conveyor",
+      "via_field": "LaneIN",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "SawLane",
+      "to": "Conveyor",
+      "via_field": "EndOfWave_PE",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "SawMerge",
+      "to": "Conveyor",
+      "via_field": "MotorIO",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SawMerge",
+      "to": "Conveyor",
+      "via_field": "ReserveIN",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SawMerge",
+      "to": "SawLane",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "SawLane.SawMerge \u2192 this Name",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "SawMerge",
+      "to": "Sorters",
+      "via_field": "Name",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "Sorter name may match merge process",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "HSSawLane",
+      "to": "HSSawMerge",
+      "via_field": "SawMerge",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "HSSawLane",
+      "to": "SawMerge",
+      "via_field": "SawMerge",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "May reference classic merge name",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "HSSawLane",
+      "to": "Conveyor",
+      "via_field": "LanePE",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "HSSawLane",
+      "to": "HSSawParm",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "HSSawParm.SawLane \u2192 lane",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "HSSawMerge",
+      "to": "Conveyor",
+      "via_field": "MergeRunIO",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "HSSawMerge",
+      "to": "Conveyor",
+      "via_field": "MergeInduct",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "HSSawMerge",
+      "to": "Machine",
+      "via_field": "ControlMachine",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "HSSawMerge",
+      "to": "HSSawLane",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "HSSawParm",
+      "to": "HSSawLane",
+      "via_field": "SawLane",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "HSSawParm",
+      "to": "Conveyor",
+      "via_field": "InputSignal",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "HSSawState",
+      "to": "HSSawLane",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "HSSawLane.pLaneState display vocabulary",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "HSSawSim",
+      "to": "HSSawLane",
+      "via_field": "SawLane",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Merges",
+      "to": "Conveyor",
+      "via_field": "Presense_Eye1",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Merges",
+      "to": "Conveyor",
+      "via_field": "Release_IO1",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Merges",
+      "to": "Conveyor",
+      "via_field": "Presense_Eye2",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Merges",
+      "to": "Conveyor",
+      "via_field": "Release_IO2",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SimpleMerge",
+      "to": "Conveyor",
+      "via_field": "MainLineRun",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SimpleMerge",
+      "to": "Conveyor",
+      "via_field": "LaneRun",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SimpleMerge",
+      "to": "Conveyor",
+      "via_field": "MainLinePresence",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SimpleMerge",
+      "to": "Conveyor",
+      "via_field": "LanePresence",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SimpleMerge",
+      "to": "Machine",
+      "via_field": "Machine",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "MergeBoss",
+      "to": "MergeInputs",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "MergeBoss",
+      "to": "Machine",
+      "via_field": "Owner",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "MergeInputs",
+      "to": "MergeBoss",
+      "via_field": "MergeBoss",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "MergeInputs",
+      "to": "MergeRoute",
+      "via_field": "MergeRoute",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "MergeInputs",
+      "to": "Conveyor",
+      "via_field": "Presense",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "MergeInputs",
+      "to": "Conveyor",
+      "via_field": "ReleaseIO",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "MergeInputs",
+      "to": "Conveyor",
+      "via_field": "LaneReadyInput1",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "MergeInputs",
+      "to": "Fullline",
+      "via_field": "FullClearTimerName",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "MergeRoute",
+      "to": "MergeInputs",
+      "via_field": "MergeInputs",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "MergeRoute",
+      "to": "Conveyor",
+      "via_field": "MergeOutputs",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "ZipperMerge",
+      "to": "Conveyor",
+      "via_field": "MergeMtr",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "ZipperMerge",
+      "to": "Conveyor",
+      "via_field": "MergeInduct",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "ZipperMerge",
+      "to": "Conveyor",
+      "via_field": "MergeRunIO",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "ZipperMerge",
+      "to": "Machine",
+      "via_field": "ControlMachine",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "ZipperMerge",
+      "to": "ZipperLane",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "ZipperLane",
+      "to": "ZipperMerge",
+      "via_field": "ZipperMerge",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "ZipperLane",
+      "to": "Conveyor",
+      "via_field": "AccumIO",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "ZipperLane",
+      "to": "Conveyor",
+      "via_field": "EnableIO",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "ZipperLane",
+      "to": "Conveyor",
+      "via_field": "PreMergeInduct",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "ZipperLane",
+      "to": "Fullline",
+      "via_field": "FullClearTimer",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "Sorters",
+      "to": "Encoders",
+      "via_field": "Encoder ioName",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Sorters",
+      "to": "Machine",
+      "via_field": "Machine",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Sorters",
+      "to": "Conveyor",
+      "via_field": "DivertEnableIO",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Sorters",
+      "to": "SrtAppControl",
+      "via_field": "Sorter Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Sorters",
+      "to": "SrtZoneLane",
+      "via_field": "Sorter Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "SrtAppControl",
+      "to": "Machine",
+      "via_field": "ControlMachine",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SrtAppControl",
+      "to": "Conveyor",
+      "via_field": "SorterCnvMtr",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SrtAppControl",
+      "to": "Sorters",
+      "via_field": "AvailAppSorter",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "SrtAppControl",
+      "to": "MsgMap",
+      "via_field": "CrrMsgTable",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "SrtAppControl",
+      "to": "SrtScanBoss",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "SrtScanBoss",
+      "to": "SrtAppControl",
+      "via_field": "AppSorter",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SrtScanBoss",
+      "to": "ScnScanZone",
+      "via_field": "ScanZone",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "SrtScanBoss",
+      "to": "SrtZoneLane",
+      "via_field": "Lane",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "SrtZoneLane",
+      "to": "SrtAppControl",
+      "via_field": "AppSorter",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "SrtZoneLane",
+      "to": "Fullline",
+      "via_field": "FullClearTimer",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "SrtZoneLane",
+      "to": "Conveyor",
+      "via_field": "LaneEnableSignal",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "SrtZoneLane",
+      "to": "SrtTrack1",
+      "via_field": "Name",
+      "edge_type": "RUNTIME_DATA",
+      "note": "SrtTrack*.SrtZoneLaneRec runtime link",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "SrtTrack",
+      "to": "SrtAppControl",
+      "via_field": "SrtAppRec",
+      "edge_type": "RUNTIME_DATA",
+      "note": "",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "SrtTrack",
+      "to": "SrtZoneLane",
+      "via_field": "SrtZoneLaneRec",
+      "edge_type": "RUNTIME_DATA",
+      "note": "",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "SrtTrack",
+      "to": "SrtZoneLane",
+      "via_field": "SorterLane",
+      "edge_type": "RUNTIME_DATA",
+      "note": "",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "SrtTrack",
+      "to": "SrtScanBoss",
+      "via_field": "ScanZoneID",
+      "edge_type": "RUNTIME_DATA",
+      "note": "",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "XfrTrack",
+      "to": "XfRouteBoss",
+      "via_field": "RouteBossRec",
+      "edge_type": "RUNTIME_DATA",
+      "note": "",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "XfrTrack",
+      "to": "XfRouteTable",
+      "via_field": "RouteTableRec",
+      "edge_type": "RUNTIME_DATA",
+      "note": "",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "XfrTrack",
+      "to": "SrtAppControl",
+      "via_field": "SrtAppRec",
+      "edge_type": "RUNTIME_DATA",
+      "note": "",
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "XfRouteTable",
+      "to": "XfRouteBoss",
+      "via_field": "BossRecord",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "XfRouteTable",
+      "to": "Conveyor",
+      "via_field": "ErrorIO",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "XfRouteBoss",
+      "to": "Conveyor",
+      "via_field": "XferCnvMtr",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "XfRouteBoss",
+      "to": "XfRouteTable",
+      "via_field": "Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "XfRouteBoss",
+      "to": "ScnScanZone",
+      "via_field": "ScanZone",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "XfRouteBoss",
+      "to": "MsgMap",
+      "via_field": "CrrMsgTable",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Machine",
+      "to": "MsgMap",
+      "via_field": "Machine_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "MsgMap.Machine_Name \u2192 this",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Machine",
+      "to": "Conveyor",
+      "via_field": "Machine_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Machine",
+      "to": "IOCard",
+      "via_field": "Machine_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "MsgMap",
+      "to": "Machine",
+      "via_field": "Machine_Name",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "MsgMap",
+      "to": "MsgWCS",
+      "via_field": "Menu_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "WCS_EVENT often maps Menu_Name=MsgWCS",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "MsgMap",
+      "to": "MsgTrack",
+      "via_field": "Menu_Name",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "MsgTrack",
+      "to": "MsgMap",
+      "via_field": "Menu_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Referenced from MsgMap when used",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "MsgWCS",
+      "to": "WCSEvents",
+      "via_field": "Destination",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "Topics align with WCSDestination",
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "MsgWCS",
+      "to": "MsgMap",
+      "via_field": "Menu_Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "WCSEvents",
+      "to": "MsgWCS",
+      "via_field": "WCSDestination",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "WCSEvents",
+      "to": "Machine",
+      "via_field": "WCSMachProc",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "WCSEvents",
+      "to": "MsgMap",
+      "via_field": "EventName",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Encoders",
+      "to": "Conveyor",
+      "via_field": "Encoder I/O",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Encoders",
+      "to": "Conveyor",
+      "via_field": "EnableBit",
+      "edge_type": "EXPLICIT_REFERENCE",
+      "note": "",
+      "provenance": "RUN_HEADER"
+    },
+    {
+      "from": "Encoders",
+      "to": "Jamzones",
+      "via_field": "Jamzone",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "",
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    },
+    {
+      "from": "Encoders",
+      "to": "Sorters",
+      "via_field": "Encoder Name",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Sorters.Encoder ioName",
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Jamzones",
+      "to": "StartStopZones",
+      "via_field": "StartStopZone",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Training: StartStopZones + Jamzones configured together",
+      "document_sources": [
+        {
+          "title": "FPC-StartStopZones",
+          "file": "FPC Docs 3/FPC-StartStopZones.docx",
+          "id": "fpc-startstopzones",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "CombinedJamZones",
+      "to": "Jamzones",
+      "via_field": "JamEnableCombined",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Combined jam enable aggregates jam zones",
+      "document_sources": [
+        {
+          "title": "CombinedJamZones",
+          "file": "docs/training/FPC Documents 1/CombinedJamZones.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "SawLane",
+      "to": "SawMerge",
+      "via_field": "SawMerge",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "Lane belongs to merge boss",
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "HSSawLane",
+      "to": "HSSawMerge",
+      "via_field": "SawMerge",
+      "edge_type": "DOCUMENTED_RELATIONSHIP",
+      "note": "HS lane belongs to HS merge",
+      "document_sources": [
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "provenance": "DOCUMENTED_RELATIONSHIP"
+    },
+    {
+      "from": "Sorters",
+      "to": "SrtTrack",
+      "via_field": "Data LowRec,Data HighRec,Buffer LowRec,Buffer HighRec",
+      "edge_type": "RUNTIME_DATA",
+      "note": "Sorter record ranges index into track/buffer menus",
+      "document_sources": [
+        {
+          "title": "FPC-Shifter-And-Sorter-Configuration",
+          "file": "FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": "fpc-shifter-and-sorter-configuration",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "provenance": "RUNTIME_DATA"
+    },
+    {
+      "from": "MsgMap",
+      "to": "WCSEvents",
+      "via_field": "Message_Name",
+      "edge_type": "DERIVED_RELATIONSHIP",
+      "note": "WCS_EVENT message name pairs with WCSEvents catalog",
+      "document_sources": [
+        {
+          "title": "FPC-Machine-MsgMap-Configuraton",
+          "file": "FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+          "id": "fpc-machine-msgmap-configuraton",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "provenance": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "Conveyor",
+      "to": "PeList",
+      "via_field": "IO_Name",
+      "edge_type": "OPTIONAL_RELATIONSHIP",
+      "note": "PeList/PeDisplay reference conveyor records for PE status reporting",
+      "document_sources": [
+        {
+          "title": "FPC-Photoeye-Status-Reporting",
+          "file": "FPC-Docs 2/FPC-Photoeye-Status-Reporting.docx",
+          "id": "fpc-photoeye-status-reporting",
+          "category": "FPC Docs 2",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "provenance": "OPTIONAL_RELATIONSHIP"
+    }
+  ]
+}

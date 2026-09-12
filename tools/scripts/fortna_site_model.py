@@ -391,12 +391,16 @@ class SiteModel:
     sorters: list[dict[str, Any]] = field(default_factory=list)
     tracking_systems: list[dict[str, Any]] = field(default_factory=list)
     wcs_interfaces: list[dict[str, Any]] = field(default_factory=list)
+    # Optional operational groups from StartStopZones / Jamzones (FPC-StartStopZones).
+    # Empty by default; discovery may populate without breaking older consumers.
+    operational_groups: dict[str, Any] = field(default_factory=dict)
     relationships: list[dict[str, Any]] = field(default_factory=list)
     unresolved: list[dict[str, Any]] = field(default_factory=list)
     table_resolutions: dict[str, Any] = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)
 
     def counts(self) -> dict[str, int]:
+        og = self.operational_groups or {}
         return {
             "controllers": len(self.controllers),
             "areas": len(self.areas),
@@ -412,6 +416,8 @@ class SiteModel:
             "sorters": len(self.sorters),
             "tracking_systems": len(self.tracking_systems),
             "wcs_interfaces": len(self.wcs_interfaces),
+            "startstop_zones": len(og.get("startstop_zones") or []),
+            "jam_zones": len(og.get("jam_zones") or []),
             "relationships": len(self.relationships),
             "unresolved": len(self.unresolved),
             "transport_nodes": len((self.transport or {}).get("nodes") or []),

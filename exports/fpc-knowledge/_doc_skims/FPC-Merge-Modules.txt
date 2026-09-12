@@ -1,0 +1,234 @@
+
+
+FortnaPlus ControlMerge Modules
+
+Document Revision: 1.5
+Date: 10-May-2022
+
+Revision
+Date
+Author
+Revision Summary
+1.1
+17-May-2013
+B C Conklin
+Updates with table of contents
+1.3
+02-Jan-2014
+B C Conklin
+Updated simulation
+1.4
+27-Jan-2015
+B C Conklin
+Added End-of-Wave buttons and lights
+1.5
+16-Jun-2022
+T R Kremser
+Update and general refresh
+
+Table of Contents
+ TOC \o "1-3" \h \z \u Glossary of Terms PAGEREF _Toc106285311 \h 5
+1.Merge Control PAGEREF _Toc106285312 \h 6
+2.Simple Merge PAGEREF _Toc106285313 \h 6
+2.1.SimpleMerge Table PAGEREF _Toc106285314 \h 6
+3.Multiple Input Lane Merge (New Merge) PAGEREF _Toc106285315 \h 8
+3.1.MergeBoss Table PAGEREF _Toc106285316 \h 8
+3.2.MergeInputs Table PAGEREF _Toc106285317 \h 9
+3.3.MergeRoute Table PAGEREF _Toc106285318 \h 12
+3.4.MergeNotBusy Table PAGEREF _Toc106285319 \h 13
+3.5.MergeRunOutputs Table PAGEREF _Toc106285320 \h 14
+3.6.MergeStopOutputs Table PAGEREF _Toc106285321 \h 15
+3.7.Three-to-One Merge Example PAGEREF _Toc106285322 \h 16
+3.8.Three-to-Two Merge Example PAGEREF _Toc106285323 \h 17
+3.9.Two-to-Two Merge Example PAGEREF _Toc106285324 \h 18
+4.Sawtooth Merge PAGEREF _Toc106285325 \h 20
+4.1.Reservation Configuration Options PAGEREF _Toc106285326 \h 22
+4.2.Configuring the Shifter PAGEREF _Toc106285327 \h 23
+4.3.Induct Lane Configuration PAGEREF _Toc106285328 \h 24
+4.4.Induct Lane Tuning PAGEREF _Toc106285329 \h 25
+4.5.Tuning Between Lanes PAGEREF _Toc106285330 \h 26
+4.6.SawMerge Table PAGEREF _Toc106285331 \h 27
+4.7.SawLane Table PAGEREF _Toc106285332 \h 29
+4.8.Saw Merge End-Of-Wave Feature PAGEREF _Toc106285333 \h 32
+5.High-Speed Sawtooth Merge PAGEREF _Toc106285334 \h 32
+6.Zipper Merge PAGEREF _Toc106285335 \h 33
+6.1.Zipper Merge Theory and Examples PAGEREF _Toc106285336 \h 33
+6.2.Zipper Merge Design Constraints – Gapping Requirements PAGEREF _Toc106285337 \h 34
+6.2.1.Servo-Gapper Example Design – 3-to-1 Merge PAGEREF _Toc106285338 \h 35
+6.3.Standard Zipper Merge PAGEREF _Toc106285339 \h 36
+6.3.1.Example:  Standard with Brake-Meter Belt PAGEREF _Toc106285340 \h 37
+6.3.2.Example:  Standard with Scale PAGEREF _Toc106285341 \h 39
+6.4.Sawtooth Zipper Merge PAGEREF _Toc106285342 \h 40
+6.4.1.Control Logic PAGEREF _Toc106285343 \h 42
+6.4.2.Reservation Logic PAGEREF _Toc106285344 \h 43
+6.4.3.Enhanced Throughput Logic PAGEREF _Toc106285345 \h 44
+6.4.4.Example With Scale PAGEREF _Toc106285346 \h 45
+6.4.5.Example Without Scale PAGEREF _Toc106285347 \h 45
+6.5.Zipper Merge Tables PAGEREF _Toc106285348 \h 46
+6.5.1.ZipperMerge Table PAGEREF _Toc106285349 \h 46
+6.5.2.ZipperLane Table PAGEREF _Toc106285350 \h 48
+6.5.3.Zipper Speed Control Settings PAGEREF _Toc106285351 \h 55
+6.5.4.ServoGapper Table PAGEREF _Toc106285352 \h 56
+6.5.5.ZprSimConfig Table PAGEREF _Toc106285353 \h 57
+6.5.6.ZipperErrLog Table PAGEREF _Toc106285354 \h 58
+6.5.7.ZprIOAction Table PAGEREF _Toc106285355 \h 58
+6.5.8.ZprStatusMsgs Table PAGEREF _Toc106285356 \h 58
+6.6.Zipper Merge Operation and Tuning PAGEREF _Toc106285357 \h 58
+6.6.1.Setup for Standard Logic PAGEREF _Toc106285358 \h 60
+6.6.2.Setup for Sawtooth Logic PAGEREF _Toc106285359 \h 64
+6.6.3.Verify Reservation Size and Gap PAGEREF _Toc106285360 \h 64
+6.6.4.Verify Brake-Meter Configuration PAGEREF _Toc106285361 \h 65
+6.6.5.Verify the Merge Shifter Configuration PAGEREF _Toc106285362 \h 66
+6.6.6.Recovering after a Photoeye Repair PAGEREF _Toc106285363 \h 67
+6.7.Zipper Merge Tick Gapper PAGEREF _Toc106285364 \h 67
+6.7.1.Example Accumulation Tick Gapper with Three Zones PAGEREF _Toc106285365 \h 68
+6.7.2.Example Accumulation Tick Gapper with One Zone, GoTo Type PAGEREF _Toc106285366 \h 69
+6.7.3.ZprTickGapper Table PAGEREF _Toc106285367 \h 71
+6.7.4.ZprGapperZone Table PAGEREF _Toc106285368 \h 72
+
+Confidential/Proprietary Statement
+This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.  It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document.  Fortna Material Handling reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order.
+
+Glossary of Terms
+AC – Automation Controller
+FPC – FortnaPlus Control
+PE – Photo Eye.  A device used to detect the presence of a container using a beam of light.
+SSV – Solenoid Valve.  An output used to activate an actuator.
+CPN – A generic term for an AC.  We once called “Automation Controllers” “Control Panels”, hence the “CP”, and the “N” is as in:  “The n-th one”.  Yeah, so now you know 😊
+
+Merge Control
+When two or more sections of conveyor merge into one, precise timing is required to provide a smooth convergence and to maintain the desired spacing between containers.  FortnaPlus supports several merge variants to match hardware configurations for various application requirements.
+Simple Merge
+The Simple Merge module is used to control a single merge lane entering a main line.  Both the main line and the merge lane run at a fixed speed.  Each requires a presence PE.  The main line must have sufficient space between containers to allow containers to flow from the merge lane.  Containers are allowed to flow from the merge lane when:
+The main line is running
+The main line presence signal is OFF (Nothing is present on the main line)
+The merge lane presence signal is ON (A container is present on the merge lane)
+The FullClear timer for the main line presence signal has timed out, indicating space is available to accept a container from the merge lane.
+Main Line
+Merging Lane
+Lane Presence PE
+Main Line Presence PE
+Length of the longest container or tote
+Main Line
+Merging Lane
+Lane Presence PE
+Main Line Presence PE
+Length of the longest container or tote
+
+Note:  The main line presence PE must be located far enough upstream to allow the largest possible container to feed from the merge lane.
+SimpleMerge Table
+For Simple Merge merges, all configuration is done using a single table:  SimpleMerge (Configuration Menu | Merge Utilities | Simple Merge).
+SimpleMerge Table
+Field
+Type
+Description
+Name
+String
+Define a unique name for the merge.
+MainLineRun
+PopUp
+Choose the run signal for the main line.
+ClearTimer
+PopUp
+Choose the retentive Full-Clear timer that defines the interval to hold the feed lane once the MainLinePresence sensor goes off.  The timer will be created automatically at startup if the Name and LanePresence fields are populated.
+MainLinePresence
+PopUp
+Choose the signal that indicates a container is present on the main line.  When this signal is ON, and until ClearTimer has expired, the merge lane will hold.  This is the PE across the main line.
+LanePresence
+PopUp
+Choose the signal that indicates the merge lane has a container present.  This is the PE across the merge lane.
+LaneRun
+PopUp
+Choose the signal that will be disabled when the main line has a container present.  This is the motor for the merge lane.
+DontFireLaneRun
+Y/N
+N = The LaneRun output will be fired as well as enabled when started and unfired and disabled when stopped.
+Y = The LaneRun output will be enabled / disabled only.  Use this when the motor will be controlled by motor chains as a GoTo.
+Machine
+PopUp
+Choose the AC that will control this entry.
+Error
+Int
+Interpret the code number show in this field as follows:
+0 – No error detected1 – Not controlled by this Machine2 – ClearTimer is not defined3 – LaneRun is not defined4 – MainLinePresence is not defined5 – LanePresence is not defined
+pRun
+Int
+Set by the software.  0 = LaneRun is being set to OFF.  1 = LaneRun is being set to ON.  Only meaningful if Error = 0
+NoGap
+Y/N
+Determines if containers on the merge lane are allowed to advance to the LanePresence PE or not when the main line is running and has containers present.
+N = Containers may proceed to the LanePresence PE even if the MainLinePresence PE is blocked or ClearTimer has not timed out.  The merge lane will stop when a container arrives at the LanePresence PE and wait for the main line to clear.  There must be a gap between containers on the merge lane for this to work effectively.
+Y = The merge lane may run only when the main line is clear.  This is useful if there is no gap between the containers on the merge lane.
+LaneGoto
+Y/N
+N = The merge lane will stop when the main line stops.
+Y = The LanePresence PE will act as a GoTo eye, even if the main line is stopped.  This allows the containers on the merge lane to advance to the LanePresence PE regardless of the state of the main line.
+
+Multiple Input Lane Merge (New Merge)
+The New Merge module can be used with a variety of hardware configurations, such as Two-to-One, Three-to-One, or Three-to-Two layouts.  Configuration tables are used to define the input points, routes, and output signals required.  Each possible route from an input lane to an output lane is explicitly defined.  “Not Busy” routes must be defined.
+MergeBoss Table
+Each New Merge needs a MergeBoss entry (Configuration Menu | Merge Utilities | New Merges | Merge Boss).
+
+MergeBoss Table
+Field
+Type
+Description
+Name
+String
+Enter a unique name to describe the merge
+Process
+PopUp
+Choose the CTRL process to activate this merge
+Owner
+PopUp
+Choose the AC that owns this merge
+CurrInput
+Int
+Set by the software.  Indicates the next input lane that will feed.  The input lane must have all the required signals and it must be the highest priority lane (lowest numerical value) to be assigned a route.  See MergeInputs_Index.
+NumInputs
+Int
+Set by the software at startup.  Indicates the number of input lanes associated with this merge.
+OperableInput
+PopUp
+Choose the signal that indicates the merge is able to run.  This is usually the motor for the merge belt.  If the signal is OFF the merge software will disable the MergeInputs_ReleaseIO and hold its timers.
+Valid
+Y/N
+Set by the software – only at startup.  N indicates input lane configuration errors have been detected.  The pStatus field indicates the specific error detected.  Y indicates no error has been detected.
+SwitchDelayTimer
+PopUp
+Optional.  Choose a timer and set SwitchDelayTimerPreset to a non-zero value to limit the rate at which the merge can switch to another input-to-output configuration.  This is useful for merge hardware with a large “cost” associated with changing state, such as large plow arms.  The merge will hold in the “Waiting Switch” state until the timer expires.
+SwitchDelayTimerPreset
+Float
+Preset value for use with SwitchDelayTimer.  Enter a time value, in seconds.
+IsSwitchDelay
+Int
+Set by the software.  Tracks the state of the SwitchDelayTimer.
+pStatus
+String
+Used by the software to show the state of the merge logic.
+
+MergeInputs Table
+Each input line requires an entry in table MergeInputs (Configuration Menu | Merge Utilities | New Merges | Merge Inputs).
+
+MergeInputs Table
+Field
+Type
+Description
+Name
+String
+Enter a unique name to describe the input line for this merge
+MergeBoss
+PopUp
+Choose the MergeBoss entry associated with this input line
+Valid
+Y/N
+Set by the software at startup if Presense, ReleaseIO, ClrTimerName, RunTimerName, FullTimerName and LnClrTimerName and all associated timer preset values are properly defined.  The merge will not function until this field displays Y.  If N, check the MergeBoss_pStatus column and the CTRL log for error messages.
+MyTurn
+PopUp
+Set by the software.  Indicates the status of this input lane.
+Stopped – The lane is stopped.
+Waiting Route – The lane is waiting for a route to become available.  Usually, an input lane will be in this state while waiting for another container to complete its route, but it could also be due to a needed route or lane being disabled.
+Waiting Release – The lane is waiting for the timer in RlsDelayTimerName to complete.
+Running – The lane is running.
+Waiting Switch – The lane has completed its run time.  Waiting for MergeBoss_SwitchDelayTimer to complete.
+Waiting Gap – 

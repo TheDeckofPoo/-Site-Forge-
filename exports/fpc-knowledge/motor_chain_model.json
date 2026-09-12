@@ -1,0 +1,243 @@
+{
+  "generated_at": "2026-09-12T19:04:17.764533+00:00",
+  "source_of_truth": "RUN Mtrchain.asc (+ overlay merge when machine set)",
+  "document_sources": [
+    "FPC-Motor-Startup-Chains"
+  ],
+  "schema_headers": [
+    "Motor_Name",
+    "Motor_Ndx",
+    "Timer_Name",
+    "Timer_Preset",
+    "Motor_Chained1",
+    "Motor_Chained2",
+    "Motor_Chained3",
+    "Motor_Chained4",
+    "Motor_Chained5",
+    "Motor_Chained6",
+    "Motor_Chained7",
+    "Motor_Chained8",
+    "Motor_Chained9",
+    "Motor_Chained10",
+    "Motor_Aux",
+    "RUN Timer_Name",
+    "GoUntil",
+    "Enabled",
+    "Horn",
+    "ResetHorn",
+    "Heater Bit",
+    "AutoSelectHtr",
+    "Heater Error",
+    "Heater Debounce",
+    "Debounce Value",
+    "Stop Zone",
+    "StopState",
+    "ForceAux",
+    "pStateFrcAux"
+  ],
+  "schema_sources": [
+    "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc",
+    "workspace/active/RUN/FORTNA/Mtrchain.asc"
+  ],
+  "active_chain_heads_sampled": 352,
+  "fields": {
+    "head": "Motor_Name",
+    "followers": [
+      "Motor_Chained1",
+      "Motor_Chained2",
+      "Motor_Chained3",
+      "Motor_Chained4",
+      "Motor_Chained5",
+      "Motor_Chained6",
+      "Motor_Chained7",
+      "Motor_Chained8",
+      "Motor_Chained9",
+      "Motor_Chained10"
+    ],
+    "aux": "Motor_Aux",
+    "timer": [
+      "Timer_Name",
+      "Timer_Preset",
+      "RUN Timer_Name"
+    ],
+    "stop": "Stop Zone"
+  },
+  "rules": [
+    "Motor_Name and Motor_Chained* reference Conveyor.asc motor/VFD IO_Name values",
+    "Explicit Mtrchain edges beat P-number ordering for startup topology",
+    "Stop Zone may reference StartStopZones when populated"
+  ],
+  "samples": [
+    {
+      "Motor_Name": "M116",
+      "Motor_Chained": [
+        "P116"
+      ],
+      "Motor_Aux": "LATCH_CP4_ACCUM",
+      "Timer_Name": "tmLATCH_4CR2_ACCUM",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M214",
+      "Motor_Chained": [
+        "P214"
+      ],
+      "Motor_Aux": "LATCH_CP4_ACCUM",
+      "Timer_Name": "tmLATCH_4CR2_ACCUM",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M408",
+      "Motor_Chained": [
+        "P408"
+      ],
+      "Motor_Aux": "LATCH_CP4_ACCUM",
+      "Timer_Name": "tmLATCH_4CR2_ACCUM",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M212",
+      "Motor_Chained": [
+        "P212",
+        "SSVEZPE212_P1"
+      ],
+      "Motor_Aux": "LATCH_BIN_MERGE",
+      "Timer_Name": "tmLATCH_BIN_MERGE",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M206",
+      "Motor_Chained": [
+        "P206",
+        "P208"
+      ],
+      "Motor_Aux": "M209_AUX",
+      "Timer_Name": "tmM209_AUX",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M202",
+      "Motor_Chained": [
+        "P202",
+        "P204"
+      ],
+      "Motor_Aux": "M206_AUX",
+      "Timer_Name": "tmM206",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M200",
+      "Motor_Chained": [
+        "P200"
+      ],
+      "Motor_Aux": "M202_AUX",
+      "Timer_Name": "tmM202",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M114",
+      "Motor_Chained": [
+        "P114",
+        "P112"
+      ],
+      "Motor_Aux": "LATCH_BIN_MOD",
+      "Timer_Name": "tmLATCH_BIN_MOD",
+      "Stop Zone": "",
+      "Enabled": "M116_AUX",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M110",
+      "Motor_Chained": [
+        "P110"
+      ],
+      "Motor_Aux": "M114_AUX",
+      "Timer_Name": "tmM114",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M106",
+      "Motor_Chained": [
+        "P106",
+        "P108"
+      ],
+      "Motor_Aux": "M110_AUX",
+      "Timer_Name": "tmM110",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M102",
+      "Motor_Chained": [
+        "P102",
+        "P104"
+      ],
+      "Motor_Aux": "M106_AUX",
+      "Timer_Name": "tmM106",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M100",
+      "Motor_Chained": [
+        "P100"
+      ],
+      "Motor_Aux": "M102_AUX",
+      "Timer_Name": "tmM102",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M304",
+      "Motor_Chained": [
+        "P304"
+      ],
+      "Motor_Aux": "LATCH_BIN_MOD",
+      "Timer_Name": "tmLATCH_BIN_MOD",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "M302",
+      "Motor_Chained": [
+        "P302"
+      ],
+      "Motor_Aux": "M304_AUX",
+      "Timer_Name": "tmM304",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    },
+    {
+      "Motor_Name": "CR305",
+      "Motor_Chained": [
+        "P305"
+      ],
+      "Motor_Aux": "M302_AUX",
+      "Timer_Name": "tmM302",
+      "Stop Zone": "",
+      "Enabled": "",
+      "source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc"
+    }
+  ]
+}

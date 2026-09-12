@@ -1,0 +1,152 @@
+
+
+FortnaPlus ControlStart Stop Zones
+
+Start Stop Zones
+
+Document Revision: 1.2
+Date: 14-Jan-2021
+
+Revision
+Date
+Author
+Revision Summary
+1.0
+16-Mar-2016
+B C Conklin
+New document
+1.1
+09-Jul-2020
+T R Kremser
+Updates and general refresh
+1.2
+14-Jan-2021
+T R Kremser
+Add Start/Stop examples
+
+Table of Contents
+ TOC \o "1-3" \h \z \u 1.Start/Stop Zones PAGEREF _Toc61533820 \h 4
+2.Configuring Start/Stop Zones PAGEREF _Toc61533821 \h 5
+3.Disabling Start/Stop Zones PAGEREF _Toc61533822 \h 6
+4.Start/Stop Zone Security PAGEREF _Toc61533823 \h 7
+5.The StartStopZones Table PAGEREF _Toc61533824 \h 7
+6.The Jamzones Table PAGEREF _Toc61533825 \h 7
+7.The Jamcheck Table (Jam Detection) PAGEREF _Toc61533826 \h 9
+8.Combined Jam Zones PAGEREF _Toc61533827 \h 11
+9.Zone States PAGEREF _Toc61533828 \h 13
+10.The Start/Stop Window PAGEREF _Toc61533829 \h 14
+10.1.Example Start/Stop Status Screenshots PAGEREF _Toc61533830 \h 15
+
+Confidential/Proprietary Statement
+This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.  It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document.  Fortna Material Handling reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order.
+
+Start/Stop Zones
+Start/Stop Zones are configured in table StartStopZones to define functional areas of a conveyor system that the user will start and stop together.  Start/Stop Zones can have one or more jam zones.
+Typical Start/Stop Zones:
+Receiving
+Picking
+Print Apply
+Shipping
+Jam zones are configured in table Jamzones to define sections of conveyor that will stop together if a jam occurs.
+Each jam zone requires an Enable Bit to define when all conditions are met to allow the zone to run.  There may be many individual inputs that define the enable conditions, including E-Stops, Air Pressure indicators, Interlocks, and other inputs.  The CombinedJamZones and CombinedEnableBits tables can be used to make it easier to gather all the enable conditions into a single enable signal.
+Each jam zone requires input signals to indicate jams.  These are defined in table Jamcheck.  Any number of input devices (usually photo eyes – a.k.a., Jam Eyes) can be defined there and linked to a Jamzones entry via the Zones column in table Jamcheck.  In addition, a memory bit can be added to the Jammed Bit column of the Jamzones table to indicate directly to another module that a jam zone is in a “jammed” state.
+Jamzones are tied to “Motor Startup Chains” (table Mtrchain) by use of a memory bit called a “Latch Bit”.  The Jamzones_Latch Bit is used to link the jam zone entry to the motor chain entry in Mtrchain_Motor_Aux to define the beginning of the motor chain.  When the jam zone is successfully started, the Latch Bit will be set, allowing the first motor to start, and initiating the startup chain.  A similar concept can also be used to stop an entire jam zone by selecting it in the Mtrchain_Stop Zone column.  This allows a motor overload error to signal that a stop is needed.
+
+Configuring Start/Stop Zones
+Define the following to set up the conditions for a start/stop zone to start and to detect jams.
+Create a memory bit to use as the “Enable Bit” and use it to link Jamzones_Enable Bit and CombinedJamZones_JamEnableCombined.  See the section on  REF _Ref45181990 \h Combined Jam Zones for detail.
+In the Jamzones table, select a memory bit in column Latch Bit.  Select the same memory bit in table Mtrchain column Motor_Aux.  The Latch Bit is the output of the jam zone and serves as the first “motor” input to initiate the motor chain.
+Create a timer for Jamzones_Start Stop Timer.  It will be used to limit how often the zone may be started, as a sort of “debounce” for physical pushbuttons or the on-screen buttons.  This helps protect the hardware from spurious inputs.
+If needed, create a memory bit for Jamzones_Jammed Bit.  This bit will be set by the software to indicate that the jam zone is in a jammed state and can be used as an output to signal other modules.  [The bit is also fired if a power supply signal goes OFF.]
+The software uses the list of Jam Zones to create the “Start/Stop Window”.  Each jam zone is represented in the “Start/Stop Window” by a small square box beneath the status line for each Start/Stop zone.  The state of the jam zone is indicated by the color and in the description found in the second column displayed for each line.  Refer to the section on  REF _Ref45025017 \h Zone States, below, for details on the information displayed.
+
+Disabling Start/Stop Zones
+By default, all Start/Stop Zones can be controlled from the Start/Stop Window on any Automation Controller.  In some applications, it is desirable or required that certain zones be accessible only from the Automation Controller in closest physical proximity to the zone.
+Option 1 – Older Systems that do not have the StartOwnerCtl column in the StartStopZones table.
+The Start request is sent to other nodes if the Jamzones_Latch Bit is OFF, and the Jamzones Enable Bit is ON.
+The Stop request is sent to other nodes if the Jamzones_Latch Bit is ON.
+It is always desirable, for safety, to allow anyone to stop a zone.  If you want to disable sending the Start request but continue to send the Stop request, change the Jamzones_Enable Bit to be the “NEVERON” part on the nodes where the Start request is to be disabled.
+Option 2 – Newer Systems with the StartOwnerCtl column in the StartStopZones table.
+The Start request is sent to other nodes if the StartOwnerCtl column is NOT selected in the StartStopZones table.
+If the jam zone is “owned” by the Automation Controller (set the owner in Jamzones_Zone Owner), the Start request is sent to other nodes regardless of the status of StartOwnerCtl.
+The Start request is NOT sent to other nodes if the StartOwnerCtl column is selected in the StartStopZones table.
+
+The Stop request is sent to other nodes if the StopOwnerCtl column is NOT selected in the StartStopZones table.
+If the jam zone is “owned” by the Automation Controller (set the owner in Jamzones_Zone Owner), the Stop request is sent to other nodes regardless of the status of StoptOwnerCtl.
+The Stop request is NOT sent to other nodes if the StartOwnerCtl column is selected in the StartStopZones table.  It is always desirable, for safety, to allow anyone to stop a zone.
+Using these features will make the Jamzones configuration unique for each node.  Do not distribute the Start/Stop configuration to all nodes.
+Start/Stop Zone Security
+Start/Stop Zone security is controlled by the security settings of the following two functions found in Administration Menu | Set Security Levels:
+Startstop – Controls a user’s ability to open the Start/Stop Window.
+Startstop Security – Controls a user’s ability to access the Start All button on the main menu bar.  The Stop All button on the main menu bar is always accessible, for safety.
+Double-click the Security_Level field to open the Role Editor window.  Select roles that will be allowed to access each item.  If the user’s privileges overlap the item’s privileges on at least one role, access will be granted.  If no roles are selected (field value of zero), access is granted to all users.
+The StartStopZones Table
+The StartStopZones table defines sections of the conveyor that will be started and stopped by the user as one unit.  Each start/stop zone entry can be linked to multiple jam zones.  Usually, all the hardware in a start/stop zone is controlled by a single control panel.  The name of the start stop zone is displayed in the Start/Stop Window along with the state of the zone.
+StartStopZones Table
+FIELD
+DESCRIPTION
+Zone Name
+Choose a unique name for the start/stop zone.  This name will be displayed in the Stop/Start Window.
+StartReqFlag
+Controlled by the software.  Indicates a start request has been made.
+StopReqFlag
+Controlled by the software.  Indicates a stop request has been made.
+State
+Controlled by the software.  Indicates the current state of the zone.
+WasState
+Controlled by the software.  Indicates the previous state of the zone.
+StartOwnerCtl
+Determines which ACs can start a zone.  See  REF _Ref45025659 \h Disabling Start/Stop Zones
+StopOwnerCtl
+Determines which ACs can stop a zone.  See  REF _Ref45025668 \h Disabling Start/Stop Zones
+The Jamzones Table
+The Jamzones table contains a list of jam zones or areas of a conveyor to operate together as a unit.  All the equipment in a jam zone will stop together when a jam is detected, or an E-Stop is activated.
+
+Jamzones Table
+FIELD
+TYPE
+DESCRIPTION
+Zone Name
+String
+Choose a unique identifier for the jam zone.
+Start Request Flag
+Y/N
+Used by the software to initiate a “Start Request” for the jam zone.  Messages are sent to all the other Automation Controllers defined in the Machine table for the same jam zone.  When a “Start Request” is processed, any active jams are reset.
+Stop Request Flag
+Y/N
+Used by the software to initiate a “Stop Request” for the jam zone.
+Latch Bit
+PopUp
+Select a memory bit from the Conveyor table to control this zone.  The state of this bit indicates if the zone is running or stopped.  The machine that owns the jam zone will turn the bit ON or OFF if the jam zone is being started through the Request Flag, or if the Jammed Bit is OFF and the Enable Bit is ON.
+Jammed Bit
+PopUp
+Select a memory bit from the Conveyor table to indicate a jam on this zone.  The software will turn this bit ON or OFF to reflect the jam state of the zone.  The bit is also fired if a Power Supply Signal goes OFF.
+Start Stop Timer
+PopUp
+Select the timer that will be used to delay successive starts of the zone. The timer is used to debounce the buttons. The timer is required for each Jam Zone.
+Zone Owner
+PopUp
+Select the machine controlling the zone.  Only the machine that owns the jam zone sends “Start Request” events to other machines.
+Enable Bit
+PopUp
+Select the memory bit that has been created and named for this zone.  It indicates if the zone can be started.
+Start Button
+PopUp
+Select the part that represents the start pushbutton on the panel.  The “Start Button” initiates a “Start Request”.
+Stop Button
+PopUp
+Select the part that represents the stop pushbutton on the panel.  The “Stop Button” initiates a “Stop Request”.
+Reset Button
+PopUp
+Select the part that represents a reset pushbutton on the panel.  The “Reset Button” will activate a “Start Request” if the Jammed Bit is ON.
+StartStopZone
+PopUp
+Select the associated start/stop zone from the StartStopZones table that controls this jam zone.  Start events from the Start/Stop Window (button clicks) will be directed to the Jamzones table entries associated with the start/stop zone.
+JamEnableDontDelay
+Y/N
+Choose Y to act upon “Start Request” events immediately.  In other words, to skip the Start Stop Timer in the start/stop sequence.
+This feature was added in Version 10.95 when the Start Stop Timer was included in the start stop sequence.  Prior versions did not include the timer in the start stop sequence when a jam or loss of enable caused the zone to stop, so to duplicate the older behavior, set this field to Y.
+The Jamcheck Table (Jam Detection)
+The Jamcheck table is used to control detection of conveyor jams, to update the colors of the jammed conveyor on-screen, and to trigger jam errors.
+The Jamcheck table is used to configure inputs, usually from photo eyes, that will detect when a jam occurs.  When a jam is detected, the resulting error causes the jam zone to stop.
+Jam photo eyes are selected in the column Sensor_Name.  When the photo eye becomes blocked the timer in the column Timer_Name begins timing.  If the timer runs to completion, an Error is triggered.  Timers used for jam detection are prefixed with “tm” and include the name of the photo eye, usually endin

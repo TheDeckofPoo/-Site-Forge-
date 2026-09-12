@@ -1,6 +1,8 @@
 {
-  "generated": "2026-09-12T15:08:13",
+  "generated_at": "2026-09-12T19:07:05.677128+00:00",
+  "finished_plc_used": false,
   "docs_root": "C:\\dev\\worktree\\FortnaPlus\\docs\\training",
+  "index_path": "docs-index/documents.json",
   "count": 101,
   "documents": [
     {
@@ -117,7 +119,8 @@
         "scanner"
       ],
       "summary": "FortnaPlus ControlSorter Control Module Document Revision: 1.8 Date: 25-Nov-2020 Revision Date Author Revision Summary 1.2 04/18/2013 B C Conklin Added SrtSimConfig SimCrrCsu notes 1.3 04/22/2013 P Rotter Added description of external simulation scan list feature 1.4 06/17/2013 T R Kremser Add information about SrtFPLite protocol 1.5 12/03/2013 B C Conklin Updated the options for Dynamic Re-assignment and Sorter Stops when lanes are full. 1.6 02/26/2014 B C Conklin Updated SrtScanBoss to add a feature to modify the CRR Message based on a Tote PE. Added Update Point to collect the carton length",
-      "size": 288751
+      "size": 288751,
+      "skim": "exports/fpc-knowledge/_doc_skims/FPC-Sorter-Control-Module.txt"
     },
     {
       "id": "fpc-sorter-test-setup",
@@ -193,7 +196,8 @@
         "machine"
       ],
       "summary": "FortnaPlus ControlStart Stop Zones Start Stop Zones Document Revision: 1.2 Date: 14-Jan-2021 Revision Date Author Revision Summary 1.0 16-Mar-2016 B C Conklin New document 1.1 09-Jul-2020 T R Kremser Updates and general refresh 1.2 14-Jan-2021 T R Kremser Add Start/Stop examples Table of Contents 1.Start/Stop Zones4 2.Configuring Start/Stop Zones5 3.Disabling Start/Stop Zones6 4.Start/Stop Zone Security7 5.The StartStopZones Table7 6.The Jamzones Table7 7.The Jamcheck Table (Jam Detection)9 8.Combined Jam Zones11 9.Zone States13 10.The Start/Stop Window14 10.1.Example Start/Stop Status Screens",
-      "size": 326207
+      "size": 326207,
+      "skim": "exports/fpc-knowledge/_doc_skims/FPC-StartStopZones.txt"
     },
     {
       "id": "fpc-the-viewio-screen-and-fortnadt-table",
@@ -209,7 +213,8 @@
         "io"
       ],
       "summary": "FortnaPlus ControlUsing the View I/O Screen Document Revision: 1.1 Date: 05-Jan-2021 Revision Date Author Revision Summary 1.0 27-Jul-2018 B C Conklin New document 1.1 05-Jan-2021 T R Kremser Updates and general refresh Table of Contents 1.Purpose4 2.Navigation4 3.Screen Features Details5 4.IO Saved States8 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc. It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in par",
-      "size": 135943
+      "size": 135943,
+      "skim": "exports/fpc-knowledge/_doc_skims/FPC-The-ViewIO-Screen-and-FORTNADT-Table.txt"
     },
     {
       "id": "fpc-timers",
@@ -808,7 +813,8 @@
         "machine"
       ],
       "summary": "FortnaPlus ControlFulls, Jams and Full-jams Document Revision: 2.0 Date: 27-Jan-2023 Revision Date Author Revision Summary 1.0 Unknown B C Conklin New document 1.1 17-Mar-2015 B C Conklin Add Fullline_DontFireResponse column 2.0 27-Jan-2023 T R Kremser Combine the Fulls, Jams and Fulljam documents. Table of Contents Glossary of Terms4 1.Overview5 2.Terminology5 3.Full Detection6 3.1.An Alternate Use for the Full Logic8 4.Jam Detection9 4.1.Automatically Clearing a Jam Error10 4.2.Clearing a Jam Error with a Pushbutton11 4.3.Requiring a Privileged User to Clear a Jam Error11 5.Full-Jams11 Confi",
-      "size": 92249
+      "size": 92249,
+      "skim": "exports/fpc-knowledge/_doc_skims/FPC-Fulls-Jams-Fulljams.txt"
     },
     {
       "id": "fpc-gapping-modules",
@@ -840,7 +846,8 @@
         "scanner"
       ],
       "summary": "FortnaPlus ControlHigh-Speed Sawtooth Merge Module Document Revision: 1.2 Date: 25-Aug-2022 Revision Date Author Revision Summary 1.0 24-Mar-2014 B C Conklin New document 1.1 01-Jul-2022 T R Kremser Update and general refresh 1.2 25-Aug-2022 T R Kremser Incorporate the information from the High Speed Sawtooth Merge Test Plan document. Table of Contents Glossary of Terms4 1.High-Speed Sawtooth Merge Concept5 2.High-Speed Sawtooth Merge Features7 2.1.Reservation Re-use7 2.2.Opportunistic Feeding8 3.High-Speed Sawtooth Merge Design Concerns9 4.Merge Shifter Lane Layout9 5.Configuring the Shifter1",
-      "size": 218255
+      "size": 218255,
+      "skim": "exports/fpc-knowledge/_doc_skims/FPC-HighSpeedSawtoothMerge.txt"
     },
     {
       "id": "fpc-horncontrolmodule",
@@ -957,7 +964,8 @@
         "machine"
       ],
       "summary": "FortnaPlus ControlMerge Modules Document Revision: 1.5 Date: 10-May-2022 Revision Date Author Revision Summary 1.1 17-May-2013 B C Conklin Updates with table of contents 1.3 02-Jan-2014 B C Conklin Updated simulation 1.4 27-Jan-2015 B C Conklin Added End-of-Wave buttons and lights 1.5 16-Jun-2022 T R Kremser Update and general refresh Table of Contents Glossary of Terms5 1.Merge Control6 2.Simple Merge6 2.1.SimpleMerge Table6 3.Multiple Input Lane Merge (New Merge)8 3.1.MergeBoss Table8 3.2.MergeInputs Table9 3.3.MergeRoute Table12 3.4.MergeNotBusy Table13 3.5.MergeRunOutputs Table14 3.6.Merge",
-      "size": 784752
+      "size": 784752,
+      "skim": "exports/fpc-knowledge/_doc_skims/FPC-Merge-Modules.txt"
     },
     {
       "id": "fpc-missing-pin-detection",
@@ -999,7 +1007,8 @@
         "sorter"
       ],
       "summary": "FortnaPlus ControlMotor Startup Chains Document Revision: 1.4 Date: 20-Jan-2023 Revision Date Author Revision Summary 1.0 18-Apr-2013 B C Conklin New document 1.1 06-Apr-2015 B C Conklin Added required descriptions 1.2 13-Nov-2017 T R Kremser Added AutoSelectHtr feature 1.3 20-Jan-2023 T R Kremser Update and general refresh Table of Contents Glossary of Terms4 1.Motor Chains5 2.The Mtrchain Table6 3.Creating a Motor Chain8 4.Motor Chain Colors9 Confidential/Proprietary Statement This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.",
-      "size": 82707
+      "size": 82707,
+      "skim": "exports/fpc-knowledge/_doc_skims/FPC-Motor-Startup-Chains.txt"
     },
     {
       "id": "fpc-mysql-database-information",
@@ -1503,5 +1512,15 @@
       "summary": "",
       "size": 20922683
     }
-  ]
+  ],
+  "skims": {
+    "FPC-Fulls-Jams-Fulljams": "exports/fpc-knowledge/_doc_skims/FPC-Fulls-Jams-Fulljams.txt",
+    "FPC-HighSpeedSawtoothMerge": "exports/fpc-knowledge/_doc_skims/FPC-HighSpeedSawtoothMerge.txt",
+    "FPC-Merge-Modules": "exports/fpc-knowledge/_doc_skims/FPC-Merge-Modules.txt",
+    "FPC-Motor-Startup-Chains": "exports/fpc-knowledge/_doc_skims/FPC-Motor-Startup-Chains.txt",
+    "FPC-Sorter-Control-Module": "exports/fpc-knowledge/_doc_skims/FPC-Sorter-Control-Module.txt",
+    "FPC-StartStopZones": "exports/fpc-knowledge/_doc_skims/FPC-StartStopZones.txt",
+    "FPC-The-ViewIO-Screen-and-FORTNADT-Table": "exports/fpc-knowledge/_doc_skims/FPC-The-ViewIO-Screen-and-FORTNADT-Table.txt"
+  },
+  "policy": "Training docs = semantics; RUN ASC = facts"
 }

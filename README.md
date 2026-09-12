@@ -112,9 +112,14 @@ docs/             Policy + engineering models
 | `docs/UX_PRINCIPLES.md` | Simple by default |
 | `docs/RUN_DISCOVERY_MODEL.md` | Canonical discovery model |
 | `docs/RUN_TABLE_PRECEDENCE.md` | Base vs controller ASC overlays |
+| `docs/FPC_TRAINING_DOCUMENT_INDEX.md` | FortnaPlus training corpus index |
+| `docs/FORTNAPLUS_TABLE_REFERENCE.md` | ASC table semantics knowledge base |
 | `docs/TRANSPORT_FREEZE_GATE.md` | Transport demo-ready freeze |
 | `docs/SAWTOOTH_CONTROL_MODEL.md` | Sawtooth semantics |
 | `docs/SORTER_COMPILER_MODEL.md` | Sorter discovery / support boundary |
+| `docs/SORTER_GENERATION_ROADMAP.md` | What is / is not generatable for sorter |
+
+Training documents under `docs/training/` inform **generic** FortnaPlus table semantics. They do **not** replace the current RUN as site truth, and finished PLCs remain validation-only.
 
 ---
 

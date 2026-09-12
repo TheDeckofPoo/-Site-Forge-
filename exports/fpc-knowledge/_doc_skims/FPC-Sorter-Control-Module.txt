@@ -1,0 +1,177 @@
+
+
+FortnaPlus ControlSorter Control Module
+
+Document Revision: 1.8
+Date: 25-Nov-2020
+
+Revision
+Date
+Author
+Revision Summary
+1.2
+04/18/2013
+B C Conklin
+Added SrtSimConfig SimCrrCsu notes
+1.3
+04/22/2013
+P Rotter
+Added description of external simulation scan list feature
+1.4
+06/17/2013
+T R Kremser
+Add information about SrtFPLite protocol
+1.5
+12/03/2013
+B C Conklin
+Updated the options for Dynamic Re-assignment and Sorter Stops when lanes are full.
+1.6
+02/26/2014
+B C Conklin
+Updated SrtScanBoss to add a feature to modify the CRR Message based on a Tote PE.
+Added Update Point to collect the carton length.
+1.7
+16-Nov-2020
+T R Kremser
+Describe the CONCAT scans feature.
+1.8
+25-Nov-2020
+T R Kremser
+Updates and general refresh
+
+Table of Contents
+ TOC \o "1-3" \h \z \u 1.Sorter Control PAGEREF _Toc57194728 \h 4
+2.Activating the Module PAGEREF _Toc57194729 \h 4
+3.The Sorter Application Configuration Table – Top Level PAGEREF _Toc57194730 \h 4
+4.The Destination Lane Configuration Table PAGEREF _Toc57194731 \h 8
+5.The Scan Exceptions Configuration Table PAGEREF _Toc57194732 \h 11
+6.The Lane Not Avail Configuration Table PAGEREF _Toc57194733 \h 16
+6.1.Option 1 – Stop or reassign on sorters without recirculation – No update points needed PAGEREF _Toc57194734 \h 16
+6.2.Option 2 – Stop or reassign on sorters without recirculation – Update points for each divert PAGEREF _Toc57194735 \h 18
+6.3.Option 3 – Dynamically reassign on sorters with recirculation PAGEREF _Toc57194736 \h 20
+7.The Bad Gap Configuration Table PAGEREF _Toc57194737 \h 24
+8.The Round Robin Config Table PAGEREF _Toc57194738 \h 25
+9.Sorter Tracking Tables PAGEREF _Toc57194739 \h 25
+10.Message Interface Configuration Example PAGEREF _Toc57194740 \h 29
+11.CommCore Interface PAGEREF _Toc57194741 \h 30
+11.1.Status and Error Messages PAGEREF _Toc57194742 \h 30
+11.2.FPC Message Tables PAGEREF _Toc57194743 \h 32
+11.2.1.CRR – Container Route Request PAGEREF _Toc57194744 \h 33
+11.2.2.CSM – Container Scan Message PAGEREF _Toc57194745 \h 35
+11.2.3.CSU – Container Status Update PAGEREF _Toc57194746 \h 35
+11.2.4.DCM – Divert Confirm Message PAGEREF _Toc57194747 \h 36
+11.2.5.RHS – Request Host Status PAGEREF _Toc57194748 \h 37
+12.Sorter Simulation PAGEREF _Toc57194749 \h 38
+
+Confidential/Proprietary Statement
+This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.  It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document.  Fortna Material Handling reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order.
+
+Sorter Control
+The Sorter Control Module uses standardized tracking control functions (shifter / sorter), along with specific sorter logic to provide scanner input and error processing, container tracking, and management of full conditions, bad gap processing and WCS interface management.
+Multiple sorters may be configured within a single AC.
+Activating the Module
+The sorter module is activated in several separate portions as “Batch jobs” using table Batches:
+Srt App SERV – Required to run the SERV portion for managing messages to and from the WCS business logic layer (CommCore).
+Srt App CTRL – Required to run the CTRL portion for managing hardware control logic.
+Srt Sim SORT – Required to run the simulation features using the SORT process.
+The various tables required to configure and use these features are described below.
+The Sorter Application Configuration Table – Top Level
+The “App Sorter Configuration” or SrtAppConfig table is the top-level definition of a sorter.  It creates the logical representation of the sorter entity.  Other tables are used to define details about the physical and logical characteristics of the sorter.  They will all reference the entry in SrtAppConfig.  This top-level table is used to define the interface to CommCore, how containers with no valid destination are to be handled, the amount of log file detail and the motor that controls the main sorter.
+
+SrtAppConfig Table
+Field
+Type
+Value or Description
+Name
+String
+Enter a descriptive name for the sorter.
+Status
+String
+Indicates the current status of the Sorter including any configuration errors detected.
+MtrStatus
+String
+Indicates the current status of the sorter motor, based on the lane full processing logic.  The motor may be stopped by other logic that is not included in the StrAppConfig status.
+SendAvailStatus
+Y/N
+Set to Y to include the list of unavailable lanes in the CRR Message.  CommCore can use the list to assist in making routing decisions.  The unavailable lanes will appear as a comma-separated list in the sZone1 field of the CRR message (column Dat12).  Set to N for a CRR message that does not include the list of unavailable lanes.  A lane is unavailable if it is full or disabled.
+AvailAppSorter
+Int
+This field may be used to report the list of unavailable lanes from a different sorter via the CRR message.  A value of 0 will report the unavailable lanes for this sorter.  If the unavailable lanes status from another sorter defined on this AC is needed, set the value to the row number in this table of the desired sorter.
+For example, if routing to the shipping sorter from the picking sorter may only occur when the shipping zone is not full, the status of the shipping sorter is needed to route the container to the correct location.
+ErrConfig
+PopUp
+Select the error processing method for the sorter.  This will determine how a container will be handled if the destination lane or lanes is/are not available because they are full or disabled.
+N/A:  The conveyor will not be stopped, and cartons will not be dynamically re-assigned.
+Stop if Not Avail, Single lane assigned:  For applications where the sorter needs to stop if the lane is unavailable.  Also set AssignIfFull to Y.  The sorter will stop when the container reaches the window defined by the SrtLaneNotAvail table.
+Stop if Not Avail, Multiple lanes assigned:  For applications where the sorter needs to stop if none of the assigned lanes are available.  The sorter is stopped to wait for one of the lanes to become available.  Once a destination becomes available, the container will be assigned, and the conveyor will start.  Note: The SrtLaneNotAvail table must have at least one entry for this sorter or the sorter motor will not be stopped.  In addition, the sorter will be stopped if a container is in transit to a lane and the lane is no longer available and the container cannot be re-assigned to a different destination.  The SrtZoneLane table can be configured to define the type of lane (TwoSidedShoe) and the side of the sorter the lane is on (RightSideDivert).  Some reassignments may not be physically possible.
+Reassign and Recirc:  For applications where the sorter has recirculation and containers are assigned to multiple destinations. Containers will be dynamically reassigned to down-stream lanes if the current assignment becomes unavailable.  The SrtZoneLane table can be configured to define the type of lane (TwoSidedShoe) and the side of the sorter the lane is on (RightSideDivert).  Some reassignments may not be physically possible.
+LogLevel
+PopUp
+Select the log level for the sorter.  Level 2 is a good choice.
+CartonIdUpdate
+Radio
+Select this to change the ConfirmScan value in the tracking table to the string received in the CSM or CRR response message.  Deselect this to leave the ConfirmScan string unchanged.  This feature may be used if the CartonID string must be parsed by CommCore and returned as a new string.
+This feature may be tested using a CRR message and the “SrtTest” or “SrtTestSeq” protocol.  These protocols simulate CommCore.  If the SendTestCRR table, Param1 column, Row 1, is set to the “CartonIdUpdate1” string, the first parameter of a comma-delimited string will be returned.  If the column is set to the “CartonIdUpdate2” string, the second parameter of a comma delimited string will be returned.
+CrrMsgTable
+PopUp
+Select the table to use for CRR messages.  Each sorter should use its own separate message table to prevent delays in processing sorter lane assignment.  Select the MsgCR1 table for the 1st sorter.  Nine tables are available to choose from.
+DcmMsgTable
+PopUp
+Select the table to use for DCM messages.  Start with the MsgDC1 table.
+CsuMsgTable
+PopUp
+Select the table to use for CSU messages.  It is OK to share the MsgDC1 table for this use.  If the CommCore configuration expects CSU messages on the same port as DCM messages, use MsgDC1, otherwise choose another table such as one of the MsgGP tables not in use elsewhere.
+CsmMsgTable
+PopUp
+Select the table to use for CSM messages.  Each sorter should use its own separate message table to prevent delays in processing sorter lane assignment.  Select the MsgGP1 table for the 1st Sorter on this PC.  CSM Messages are only sent if the SendCRRUpdatePt is selected in the SrtScanBoss table for the sorter.  This feature is used in applications where the scan event needs to send a CSM first, then later send a CRR.  The CSM is sent at the scan update point, the CRR is sent at the update point selected in the SendCRRUpdatePt column.  This is done to give CommCore time to retrieve routing information from the customer’s host system.
+SecondCrrMsgTable
+PopUp
+This is used if a second scan point is designated on a sorter.  It is activated if SrtScanBoss_SecondScanZone is populated.  Choose a message table to handle the second CRR messages.
+SecondDcmMsgTable
+PopUp
+This is used if a second scan point is designated on a sorter.  It is activated if SrtScanBoss_SecondScanZone is populated.  Choose a message table to handle the second DCM messages.
+SecondCsuMsgTable
+PopUp
+This is used if a second scan point is designated on a sorter.  It is activated if SrtScanBoss_SecondScanZone is populated.  Choose a message table to handle the second CSU messages.
+ControlMachine
+PopUp
+Select the AC that controls this sorter.
+SorterCnvMtr
+PopUp
+If a motor is selected here, and the Stop if Not Avail option is selected in the ErrConfig field, the system will be able to start and stop the conveyor.  Similarly, the scan errors tables ScnDeviceErrIO and/or ScnZoneErrIO can be configured to stop the AppSorter when an error occurs.
+MtrACTION
+PopUp
+Select the action required to run the conveyor under normal conditions.  The control logic will use the inverse when it needs to stop the conveyor.
+MtrBIT
+Int
+If Enable/Disable is chosen for MtrACTION, enter the bit number here to use for the disable.
+NotAvailErrSig
+PopUp
+Select a memory bit that is configured in the Errors table to indicate the sorter has stopped because a lane is not available.
+NotAvailACTION
+PopUp
+Select the action required to activate the NotAvailErrSig error.
+NotAvailBIT
+Int
+If Enable/Disable is chosen for NotAvailACTION, enter the bit number here to use for the disable.
+ScanErrSig
+PopUp
+Select a memory bit that is configured in the Errors table to indicate the sorter has stopped because a scan error has occurred.
+ScanACTION
+PopUp
+Select the action required to activate the ScanErrSig error.
+ScanBIT
+Int
+If Enable/Disable is chosen for ScanACTION, enter the bit number here to use for the disable.
+DataErrLight
+PopUp
+Select a beacon light output or a memory bit that is configured in the Errors table to indicate that a data error has occurred.
+DataACTION
+PopUp
+Select the action required to activate the DataErrLight error.
+DataBIT
+Int
+If Enable/Disable is chosen for DataACTION, enter the bit number here to use for the disable.
+MtrMinStopTime
+PopUp
+Select a timer that will ensure the sorter motor in SorterCnvMtr stays stopped for a minimum amount of time when a lane is not available or when scan errors occur.  This delay is used to protect the sorter hardware by ensuring that the sorter comes to a complete stop whe

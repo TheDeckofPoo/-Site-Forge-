@@ -1,0 +1,375 @@
+{
+  "generated_at": "2026-09-12T19:04:17.801039+00:00",
+  "source_of_truth": "RUN Saw* + HSSaw* headers/rows + FPC-HighSpeedSawtoothMerge / FPC-Merge-Modules",
+  "document_sources": [
+    {
+      "title": "FPC-HighSpeedSawtoothMerge",
+      "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+      "id": "fpc-highspeedsawtoothmerge",
+      "category": "FPC Documents 1",
+      "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+    },
+    {
+      "title": "FPC-Merge-Modules",
+      "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+      "id": "fpc-merge-modules",
+      "category": "FPC Documents 1",
+      "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+    }
+  ],
+  "mode": "classic_sawtooth",
+  "classic": {
+    "tables": [
+      "SawMerge",
+      "SawLane",
+      "SawState"
+    ],
+    "merges": [
+      {
+        "Name": "SAWTOOTH_MERGE",
+        "MotorIO": "VFD414_AUX",
+        "ReserveIN": "SAW_RESERVATION",
+        "LaneEnableDelayTM": "tmSawMerge_DLY"
+      }
+    ],
+    "lanes_sample": [
+      {
+        "Name": "LANE_0_P219",
+        "SawMerge": "SAWTOOTH_MERGE",
+        "PhotoEyeIO": "PE219_P",
+        "ReserveTM": "tmfcEZPE217_F",
+        "AllowedToRun": "Y",
+        "pState": "IDLE"
+      },
+      {
+        "Name": "LANE_1_P408",
+        "SawMerge": "SAWTOOTH_MERGE",
+        "PhotoEyeIO": "PE410_P",
+        "ReserveTM": "tmfcEZPE408_F",
+        "AllowedToRun": "Y",
+        "pState": "IDLE"
+      },
+      {
+        "Name": "LANE_3_P116",
+        "SawMerge": "SAWTOOTH_MERGE",
+        "PhotoEyeIO": "PE118_P",
+        "ReserveTM": "tmfcEZPE116_F",
+        "AllowedToRun": "Y",
+        "pState": "IDLE"
+      },
+      {
+        "Name": "LANE_4_P214",
+        "SawMerge": "SAWTOOTH_MERGE",
+        "PhotoEyeIO": "PE216_P",
+        "ReserveTM": "tmfcEZPE212_F1",
+        "AllowedToRun": "Y",
+        "pState": "IDLE"
+      },
+      {
+        "Name": "LANE_5_P832",
+        "SawMerge": "SAWTOOTH_MERGE",
+        "PhotoEyeIO": "PE834_P",
+        "ReserveTM": "tmfcEZPE832_F",
+        "AllowedToRun": "Y",
+        "pState": "WAITING"
+      }
+    ],
+    "state_vocab_table": "SawState",
+    "active_lanes": 5,
+    "active_merges": 1
+  },
+  "high_speed": {
+    "tables": [
+      "HSSawMerge",
+      "HSSawLane",
+      "HSSawParm",
+      "HSSawState",
+      "HSSawSim"
+    ],
+    "active_lanes": 0,
+    "active_merges": 0,
+    "state_vocab_table": "HSSawState",
+    "upgrade_rule": "Use HSSaw* field semantics only when active named rows exist; table presence alone does not imply HS control is configured.",
+    "features_from_docs": [
+      "Reservation re-use",
+      "Opportunistic feeding (HSSawLane.Opportunistic)",
+      "Slow/Fast/Accum speed actions"
+    ]
+  },
+  "table_schemas": {
+    "SawLane": {
+      "headers": [
+        "Name",
+        "pStatus",
+        "SawMerge",
+        "ApproachUP",
+        "CollisionUP",
+        "LaneIN",
+        "LaneNdx",
+        "PhotoEyeIO",
+        "DisableIO",
+        "DisableBit",
+        "pLastRunTime",
+        "pState",
+        "TimeSlice",
+        "pSlicesRemaining",
+        "AllowedToRun",
+        "SliceSeconds",
+        "ReserveWhen",
+        "ReserveSeconds",
+        "ReserveFLAG",
+        "ReserveTM",
+        "ReserveRATE",
+        "MaxSlicesInTransit",
+        "AllowedInput",
+        "AllowedInvert",
+        "AllowedRatePop",
+        "pEnabled",
+        "EndOfWave_PE",
+        "EOW_PB",
+        "EOW_PB_Toggle",
+        "EOW_EnablePB",
+        "EOW_Light",
+        "EOW_EnableLt",
+        "EOW_LaneNotReq",
+        "EndOfWave_Error",
+        "pEOW_State",
+        "pEOW_Status",
+        "pEOW_Latch"
+      ],
+      "sources": [
+        "workspace/cp4-run/RUN/FORTNA/SawLane.asc",
+        "workspace/active/RUN/FORTNA/SawLane.asc"
+      ],
+      "active_named": 5,
+      "row_count": 50
+    },
+    "SawMerge": {
+      "headers": [
+        "Name",
+        "pStatus",
+        "MotorIO",
+        "ReserveIN",
+        "LogMe",
+        "LaneEnableDelayTM",
+        "EOW_RelAllPB",
+        "EOW_FndAllLt",
+        "EOW_AutoRel",
+        "pSliceSeconds",
+        "pSliceStartTime",
+        "pTotalTimeSlice",
+        "pTotalSlicesRemaining",
+        "pCurrentLane"
+      ],
+      "sources": [
+        "workspace/cp4-run/RUN/FORTNA/SawMerge.asc",
+        "workspace/active/RUN/FORTNA/SawMerge.asc"
+      ],
+      "active_named": 1,
+      "row_count": 10
+    },
+    "SawState": {
+      "headers": [
+        "\"Name\""
+      ],
+      "sources": [
+        "workspace/cp4-run/RUN/FORTNA/SawState.asc",
+        "workspace/active/RUN/FORTNA/SawState.asc"
+      ],
+      "active_named": 0,
+      "row_count": 10
+    },
+    "HSSawLane": {
+      "headers": [
+        "Name",
+        "Enabled",
+        "Opportunistic",
+        "OpportunSingle",
+        "SawMerge",
+        "pStatus1",
+        "pStatus2",
+        "pLaneState",
+        "LanePE",
+        "FeedCompleteTM",
+        "EnableDelayTM",
+        "LaneSlow",
+        "SlowAction",
+        "SlowBit",
+        "LaneFast",
+        "FastAction",
+        "FastBit",
+        "SlowOrFast",
+        "SlowOrFastAction",
+        "SlowOrFastBit",
+        "AccumFast",
+        "AccumAction",
+        "AccumBit",
+        "BoxPresentOut",
+        "LaneInduct",
+        "GapError",
+        "ResetGapError",
+        "GapErrMtr",
+        "ErrMtrAction",
+        "ErrMtrBit",
+        "RunSlowOffset",
+        "StopFastOffset",
+        "RunFastOffset",
+        "ReAssignLane",
+        "pResrvReqTicks",
+        "pResrvTtl",
+        "pTicksFeed",
+        "pGapTicks",
+        "pInductLocRel",
+        "pInductLoc",
+        "pInductLrge",
+        "pLatchPE",
+        "pParamRecord",
+        "pLastRunSec",
+        "pLastRunMSec",
+        "pDelaySpace",
+        "pGapSpaceFnd",
+        "pPriorState",
+        "pGapErrOn",
+        "pOpporStart",
+        "pOpporEnd",
+        "pOppRstStart",
+        "pOppRstEnd",
+        "pOppAvail",
+        "pOppNeed"
+      ],
+      "sources": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawLane.asc",
+        "workspace/active/RUN/FORTNA/HSSawLane.asc"
+      ],
+      "active_named": 0,
+      "row_count": 50
+    },
+    "HSSawMerge": {
+      "headers": [
+        "Name",
+        "CreateResrv",
+        "pStatus",
+        "MergeRunIO",
+        "MergeInduct",
+        "TimeBasedEncoder",
+        "LogLevel",
+        "ControlMachine",
+        "pHighestPriority",
+        "pCurrentLane",
+        "pStartLocation",
+        "pEndLocation",
+        "pResrvSize",
+        "pLastEncCnt",
+        "pSimOn",
+        "pSimEncTmr"
+      ],
+      "sources": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawMerge.asc",
+        "workspace/active/RUN/FORTNA/HSSawMerge.asc"
+      ],
+      "active_named": 0,
+      "row_count": 10
+    },
+    "HSSawParm": {
+      "headers": [
+        "Name",
+        "SawLane",
+        "pStatus",
+        "Type",
+        "Timer",
+        "InputSignal",
+        "RateRecord",
+        "ResrvInches",
+        "ResrvTotal",
+        "ResrvSpacing",
+        "MaxCartonLen",
+        "SlugGap",
+        "Priority",
+        "LaneSpeed",
+        "Enable",
+        "Override"
+      ],
+      "sources": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawParm.asc",
+        "workspace/active/RUN/FORTNA/HSSawParm.asc"
+      ],
+      "active_named": 0,
+      "row_count": 50
+    },
+    "HSSawState": {
+      "headers": [
+        "\"Name\""
+      ],
+      "sources": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawState.asc",
+        "workspace/active/RUN/FORTNA/HSSawState.asc"
+      ],
+      "active_named": 0,
+      "row_count": 10
+    },
+    "HSSawSim": {
+      "headers": [
+        "Name",
+        "EnableSrt",
+        "CreateBoxes",
+        "pStatus",
+        "SawLane",
+        "CreateSorterTmr",
+        "LengthInches",
+        "GapInches",
+        "pStateForcePE",
+        "pCurrLength",
+        "pCurrGap"
+      ],
+      "sources": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawSim.asc",
+        "workspace/active/RUN/FORTNA/HSSawSim.asc"
+      ],
+      "active_named": 0,
+      "row_count": 50
+    }
+  },
+  "relationships": [
+    {
+      "from": "SawLane",
+      "to": "SawMerge",
+      "via": "SawMerge",
+      "edge_type": "EXPLICIT_REFERENCE"
+    },
+    {
+      "from": "SawLane",
+      "to": "Conveyor",
+      "via": "PhotoEyeIO",
+      "edge_type": "EXPLICIT_REFERENCE"
+    },
+    {
+      "from": "SawLane",
+      "to": "Fullline",
+      "via": "ReserveTM",
+      "edge_type": "DERIVED_RELATIONSHIP"
+    },
+    {
+      "from": "SawMerge",
+      "to": "Conveyor",
+      "via": "MotorIO",
+      "edge_type": "EXPLICIT_REFERENCE"
+    },
+    {
+      "from": "HSSawLane",
+      "to": "HSSawMerge",
+      "via": "SawMerge",
+      "edge_type": "EXPLICIT_REFERENCE"
+    },
+    {
+      "from": "HSSawParm",
+      "to": "HSSawLane",
+      "via": "SawLane",
+      "edge_type": "EXPLICIT_REFERENCE"
+    }
+  ],
+  "generation_implications": [
+    "Active classic SawLane+SawMerge \u2192 populate sawtooth_merges in SiteModel",
+    "HS tables upgrade parameter/FSM vocabulary when active",
+    "Do not map RUN pState labels to library diLaneMode without explicit evidence"
+  ]
+}

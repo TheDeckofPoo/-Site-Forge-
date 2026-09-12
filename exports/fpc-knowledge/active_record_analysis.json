@@ -1,0 +1,209 @@
+{
+  "generated_at": "2026-09-12T19:07:06.582229+00:00",
+  "finished_plc_used": false,
+  "note": "Sample active-record analysis for CP4 (full ASC RUN) + PASIM (binary shell)",
+  "samples": {
+    "cp4": {
+      "present": true,
+      "machine": "ORNCCP4",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+      "incomplete_run": false,
+      "cross_table_edges": 804,
+      "tables": {
+        "Mtrchain.asc": {
+          "active_named_rows": 176,
+          "sample_names": [
+            "M116",
+            "M214",
+            "M408",
+            "M212",
+            "M206"
+          ]
+        },
+        "Jamzones.asc": {
+          "active_named_rows": 27,
+          "sample_names": [
+            "CP4 TAKEAWAY",
+            "CITY COUNTER",
+            "CP1 ACCUM",
+            "SAWTOOTH MERGE",
+            "CP4 ACCUM"
+          ]
+        },
+        "Jamcheck.asc": {
+          "active_named_rows": 17,
+          "sample_names": [
+            "PE308_J",
+            "PE414_J",
+            "PE446_J",
+            "PE500_J",
+            "PE508_J"
+          ]
+        },
+        "Fullline.asc": {
+          "active_named_rows": 61,
+          "sample_names": [
+            "EZPE116_F",
+            "EZPE212_F1",
+            "EZPE212_F2",
+            "EZPE304_F",
+            "EZPE418_F"
+          ]
+        },
+        "Fulljam.asc": {
+          "active_named_rows": 20,
+          "sample_names": [
+            "PE714_JF",
+            "PE438_JF",
+            "PE434_JF",
+            "PE820_JF",
+            "PE806_JF"
+          ]
+        },
+        "StartStopZones.asc": {
+          "active_named_rows": 8,
+          "sample_names": [
+            "BIN MODULE A",
+            "CARTON FLOW MODULE B",
+            "CARTON FLOW MODULE C",
+            "SAWTOOTH, CITY, DANCE",
+            "RED ROOM"
+          ]
+        },
+        "SawLane.asc": {
+          "active_named_rows": 5,
+          "sample_names": [
+            "LANE_0_P219",
+            "LANE_1_P408",
+            "LANE_3_P116",
+            "LANE_4_P214",
+            "LANE_5_P832"
+          ]
+        },
+        "SawMerge.asc": {
+          "active_named_rows": 1,
+          "sample_names": [
+            "SAWTOOTH_MERGE"
+          ]
+        },
+        "Sorters.asc": {
+          "active_named_rows": 1,
+          "sample_names": [
+            "SAWTOOTH_MERGE"
+          ]
+        },
+        "Conveyor.asc": {
+          "active_named_rows": 1431,
+          "sample_names": [
+            "ALWAYSON",
+            "NEVERON",
+            "FPBLUE",
+            "OREILLY",
+            "P100"
+          ]
+        }
+      },
+      "sorter_table_classes": {
+        "static_active_rows": 5,
+        "runtime_active_rows": 98,
+        "static_tables": [
+          "Sorters.asc",
+          "SrtAppControl.asc",
+          "SrtBadGapCnfg.asc",
+          "SrtCommMsgMatch.asc",
+          "SrtHrtBeat.asc",
+          "SrtLaneNotAvail.asc",
+          "SrtRndRobin.asc",
+          "SrtScanBoss.asc",
+          "SrtSimConfig.asc",
+          "SrtZoneLane.asc"
+        ],
+        "runtime_tables": [
+          "MsgTrack.asc",
+          "SrtScanSts.asc",
+          "SrtTrack1.asc",
+          "SrtTrack2.asc",
+          "SrtTrack3.asc",
+          "SrtTrack4.asc",
+          "SrtTrack5.asc",
+          "XfrTrack.asc"
+        ]
+      }
+    },
+    "pasim": {
+      "present": true,
+      "machine": "PASIM1",
+      "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\pasim1-run\\RUN",
+      "incomplete_run": true,
+      "cross_table_edges": 0,
+      "tables": {
+        "Mtrchain.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "Jamzones.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "Jamcheck.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "Fullline.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "Fulljam.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "StartStopZones.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "SawLane.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "SawMerge.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "Sorters.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        },
+        "Conveyor.asc": {
+          "active_named_rows": 0,
+          "sample_names": []
+        }
+      },
+      "sorter_table_classes": {
+        "static_active_rows": 0,
+        "runtime_active_rows": 0,
+        "static_tables": [
+          "Sorters.asc",
+          "SrtAppControl.asc",
+          "SrtBadGapCnfg.asc",
+          "SrtCommMsgMatch.asc",
+          "SrtHrtBeat.asc",
+          "SrtLaneNotAvail.asc",
+          "SrtRndRobin.asc",
+          "SrtScanBoss.asc",
+          "SrtSimConfig.asc",
+          "SrtZoneLane.asc"
+        ],
+        "runtime_tables": [
+          "MsgTrack.asc",
+          "SrtScanSts.asc",
+          "SrtTrack1.asc",
+          "SrtTrack2.asc",
+          "SrtTrack3.asc",
+          "SrtTrack4.asc",
+          "SrtTrack5.asc",
+          "XfrTrack.asc"
+        ]
+      }
+    }
+  }
+}

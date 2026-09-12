@@ -1,0 +1,5753 @@
+{
+  "generated_at": "2026-09-12T19:04:18.009575+00:00",
+  "source_of_truth": "RUN ASC schemas + optional training doc inventory",
+  "finished_plc_used": false,
+  "run_dirs": [
+    "workspace/cp4-run/RUN",
+    "workspace/active/RUN"
+  ],
+  "machine_scope": "ORNCCP4",
+  "training_docs": {
+    "available": true,
+    "count": 179,
+    "md_index_present": true,
+    "sources": [
+      {
+        "kind": "docs-index",
+        "path": "docs-index/documents.json"
+      },
+      {
+        "kind": "document_inventory",
+        "path": "exports/fpc-knowledge/document_inventory.json"
+      },
+      {
+        "kind": "training_index_md",
+        "path": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+      }
+    ]
+  },
+  "table_count": 40,
+  "tables": [
+    {
+      "table_name": "Conveyor",
+      "subsystem": "transport_io",
+      "purpose": "Primary plant equipment / device table: mechanical conveyors (STRAIGHT/CURVE/BELT/\u2026), motors, photocells, beacons, and related I/O with geometry and controller ownership.",
+      "row_semantics": "One row per named IO_Name. Type discriminates device class (conveyor geometry vs MOTOR vs PHOTOCELL vs BEACON). Geometry fields apply to mechanical conveyors; Motor / Drive link ownership; Machine_Name scopes controller.",
+      "key_fields": [
+        "IO_Name",
+        "Type",
+        "Motor",
+        "Drive",
+        "Machine_Name",
+        "X_cord",
+        "Y_cord",
+        "Length",
+        "Width",
+        "Angle",
+        "IO_Address_Word",
+        "IO_Address_Bit",
+        "In Motor Chain"
+      ],
+      "identity_fields": [
+        "IO_Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Motor",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": "Motor IO_Name in same table"
+        },
+        {
+          "field": "Drive",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": "Drive / VFD IO_Name when present"
+        },
+        {
+          "field": "Machine_Name",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "In Motor Chain",
+          "target_table": "Mtrchain",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": "Flag that motor participates in a chain"
+        },
+        {
+          "field": "IO_Module_Type",
+          "target_table": "IOCard",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Type",
+          "target_table": "convtype",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": "Lookup of conveyor type vocabulary"
+        }
+      ],
+      "references": [
+        "convtype",
+        "Machine",
+        "Mtrchain",
+        "IOCard"
+      ],
+      "active_row_rules": [
+        "IO_Name present and not placeholder (N/A, INVALID, NONE, ===\u2026===)",
+        "Type not INVALID (supporting; mechanical conveyors use CONVEYOR_TYPES)"
+      ],
+      "inactive_row_rules": [
+        "IO_Name blank / placeholder",
+        "Type=INVALID with no usable identity",
+        "Rows only in old.Conveyor.asc* \u2192 HISTORICAL_OR_STALE"
+      ],
+      "optional_feature_rules": [
+        "NoseOver / Infeed_Tangent / Discharge_Tangent are equipment features, not topology FKs",
+        "Disable I/O / Overide I/O optional force paths"
+      ],
+      "controller_scope_behavior": "Prefer Conveyor.asc.<CONTROLLER> overlay when present; else base Conveyor.asc. Machine_Name further filters ownership; unknown ownership does not delete the row.",
+      "generation_implications": [
+        "Mechanical conveyors (CONVEYOR_TYPES) feed Transport / area PLC generation when INCLUDED",
+        "PHOTOCELL rows seed PE logic; MOTOR/VFD rows seed motor chains and drives",
+        "Geometry alone does not prove conveyor successor topology"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-ConveyorPartsManagement",
+          "file": "FPC Documents 1/FPC-ConveyorPartsManagement.docx",
+          "id": "fpc-conveyorpartsmanagement",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-Photoeye-Status-Reporting",
+          "file": "FPC-Docs 2/FPC-Photoeye-Status-Reporting.docx",
+          "id": "fpc-photoeye-status-reporting",
+          "category": "FPC Docs 2",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-Motor-Speed-Control",
+          "file": "FPC Documents 1/FPC-Motor-Speed-Control.docx",
+          "id": "fpc-motor-speed-control",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC High-Speed Sawtooth Merge",
+          "file": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Motor Startup Chains",
+          "file": "docs/training/FPC Documents 1/FPC-Motor-Startup-Chains.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Shifter And Sorter Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Fulls, Jams and Fulljams",
+          "file": "docs/training/FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Start/Stop Zones",
+          "file": "docs/training/FPC Docs 3/FPC-StartStopZones.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Gapping Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Gapping-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Disable Bits",
+          "file": "docs/training/FPC Documents 1/FPC-Disable-Bits.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC FastIO Configuration",
+          "file": "docs/training/FPC Documents 1/FPC-FastIO-Configuration.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC IOCard Interfaces",
+          "file": "docs/training/FPC Documents 1/FPC-IOCard-Interfaces.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC View I/O Screen and FORTNADT Table",
+          "file": "docs/training/FPC Docs 3/FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Motor Speed Control",
+          "file": "docs/training/FPC Documents 1/FPC-Motor-Speed-Control.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Photoeye Status Reporting",
+          "file": "docs/training/FPC-Docs 2/FPC-Photoeye-Status-Reporting.docx",
+          "id": null,
+          "category": "FPC-Docs 2",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "Unit Sorter Control Software V1 rev25 DDD",
+          "file": "docs/training/FPC Docs 3/Unit Sorter Control Software V1 rev25 DDD.doc",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC New Transfers",
+          "file": "docs/training/FPC Documents 1/FPC-New-Transfers.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "CombinedJamZones",
+          "file": "docs/training/FPC Documents 1/CombinedJamZones.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC INITERRORS Autogeneration for Jam Full EStop FullJam",
+          "file": "docs/training/FPC Documents 1/FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc",
+      "schema_headers": [
+        "IO_Name",
+        "General_Description",
+        "IO_Address_Word",
+        "IO_Address_Bit",
+        "Device_Description",
+        "Part_Number",
+        "IO_Module_Type",
+        "Electrical Drawing Page No.",
+        "Contact_Type",
+        "Recomended_Spares",
+        "Motor",
+        "Belt_Info",
+        "Layer",
+        "X_cord",
+        "Y_cord",
+        "Width",
+        "Length",
+        "Angle",
+        "Type",
+        "c",
+        "b",
+        "Good_color",
+        "Bad_color",
+        "Font",
+        "Underline",
+        "Logic_Help_Num",
+        "Gen_Flag",
+        "Bitstate",
+        "Was_Bitstate",
+        "Drawstate",
+        "Was_Drawstate",
+        "Trigger1",
+        "Trigger2",
+        "Trigger3",
+        "Trigger4",
+        "ProcNum",
+        "Speed",
+        "Machine_Name",
+        "TriggerLink_Name",
+        "TriggerLink_NDX ",
+        "Disable I/O",
+        "Overide I/O",
+        "Drive",
+        "NoseOver",
+        "Infeed_Elevation",
+        "Discharge_Elevation",
+        "Belt_Width",
+        "Infeed_Tangent",
+        "Discharge_Tangent",
+        "Roller_Centers",
+        "Tapered_Rollers",
+        "Supports",
+        "Inside_Radius",
+        "Price",
+        "Default Colors",
+        "In Motor Chain",
+        "Important_IO",
+        "ErrLink",
+        "ErrTime",
+        "Gen_Security"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Conveyor.asc",
+        "workspace/active/RUN/FORTNA/Conveyor.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        6000,
+        6000
+      ],
+      "active_row_count_samples": [
+        1431,
+        1428
+      ]
+    },
+    {
+      "table_name": "FORTNADT",
+      "subsystem": "io_runtime",
+      "purpose": "Runtime bit/force state for View I/O \u2014 live forced-on/off and bank state per I/O point.",
+      "row_semantics": "Indexed parallel to I/O points (not a named equipment table). Tracks Bits_On_Off, Forced_On/Off, Inverted, bank, Machine, InOut.",
+      "key_fields": [
+        "Bits_On_Off",
+        "Forced_On",
+        "Forced_Off",
+        "Inverted",
+        "HiBank",
+        "LoBank",
+        "Machine",
+        "InOut"
+      ],
+      "identity_fields": [],
+      "relationship_fields": [
+        {
+          "field": "Machine",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "HiBank",
+          "target_table": "Configio",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": "Bank coordinates align with Configio"
+        },
+        {
+          "field": "LoBank",
+          "target_table": "Configio",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Configio",
+        "Machine"
+      ],
+      "active_row_rules": [
+        "Row slot corresponding to a configured Configio / Conveyor I/O point"
+      ],
+      "inactive_row_rules": [
+        "Unused bank slots with no Configio mapping"
+      ],
+      "optional_feature_rules": [
+        "Forced_On / Forced_Off are operator/debug overrides"
+      ],
+      "controller_scope_behavior": "Machine column scopes which controller owns the bit image.",
+      "generation_implications": [
+        "Not a PLC generation source table; HMI/runtime diagnostic only"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-The-ViewIO-Screen-and-FORTNADT-Table",
+          "file": "FPC Docs 3/FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx",
+          "id": "fpc-the-viewio-screen-and-fortnadt-table",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Disable Bits",
+          "file": "docs/training/FPC Documents 1/FPC-Disable-Bits.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC IOCard Interfaces",
+          "file": "docs/training/FPC Documents 1/FPC-IOCard-Interfaces.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC View I/O Screen and FORTNADT Table",
+          "file": "docs/training/FPC Docs 3/FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/FORTNADT.asc",
+      "schema_headers": [
+        "Bits_On_Off",
+        "Forced_On",
+        "Forced_Off",
+        "Inverted",
+        "HiBank",
+        "LoBank",
+        "Machine",
+        "Granularity",
+        "Countdown",
+        "InOut",
+        "Important",
+        "RecvBucket1",
+        "RecvBucket2",
+        "Was_IO",
+        "CheckedCount"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/FORTNADT.asc",
+        "workspace/active/RUN/FORTNA/FORTNADT.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        3072,
+        3072
+      ],
+      "active_row_count_samples": [
+        143,
+        143
+      ]
+    },
+    {
+      "table_name": "Configio",
+      "subsystem": "io_map",
+      "purpose": "I/O point configuration map: bank/word/bit, direction, interface, and process ownership.",
+      "row_semantics": "One configured I/O description per Desc (or bank/word coordinate).",
+      "key_fields": [
+        "Desc",
+        "Bank",
+        "Octal_Word",
+        "LoHi",
+        "In_Out",
+        "I_O_Type",
+        "Interface",
+        "Process",
+        "Status"
+      ],
+      "identity_fields": [
+        "Desc"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Interface",
+          "target_table": "IOCard",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "Interface name ties to IOCard / adapter"
+        },
+        {
+          "field": "Desc",
+          "target_table": "Conveyor",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": "Often matches Conveyor IO_Name"
+        },
+        {
+          "field": "Process",
+          "target_table": "Machine",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "IOCard",
+        "Conveyor",
+        "FORTNADT"
+      ],
+      "active_row_rules": [
+        "Desc present and not placeholder",
+        "Bank/Octal_Word assigned"
+      ],
+      "inactive_row_rules": [
+        "Blank Desc with no bank assignment"
+      ],
+      "optional_feature_rules": [
+        "Granularity / Countdown optional timing"
+      ],
+      "controller_scope_behavior": "May appear as Configio.asc.<CONTROLLER>; overlay wins collisions.",
+      "generation_implications": [
+        "Feeds IO_MAP / module addressing when generating PLC I/O"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-IOCard-Interfaces",
+          "file": "FPC Documents 1/FPC-IOCard-Interfaces.docx",
+          "id": "fpc-iocard-interfaces",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-FastIO-Configuration",
+          "file": "FPC Documents 1/FPC-FastIO-Configuration.docx",
+          "id": "fpc-fastio-configuration",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC FastIO Configuration",
+          "file": "docs/training/FPC Documents 1/FPC-FastIO-Configuration.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC IOCard Interfaces",
+          "file": "docs/training/FPC Documents 1/FPC-IOCard-Interfaces.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC View I/O Screen and FORTNADT Table",
+          "file": "docs/training/FPC Docs 3/FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Configio.asc",
+      "schema_headers": [
+        "Desc",
+        "Bank",
+        "Octal_Word",
+        "LoHi",
+        "In_Out",
+        "I_O_Type",
+        "Interface",
+        "Granularity",
+        "Countdown",
+        "Status",
+        "Process"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Configio.asc",
+        "workspace/active/RUN/FORTNA/Configio.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        400,
+        400
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "IOCard",
+      "subsystem": "io_hardware",
+      "purpose": "Physical / logical I/O card and adapter inventory (RIO, EtherNet/IP ABS, Optomux, etc.).",
+      "row_semantics": "One row per named card/adapter with Type, ports, machine, and ABS network fields.",
+      "key_fields": [
+        "Name",
+        "Desc",
+        "Type",
+        "Machine",
+        "BasePort",
+        "ABS_IP",
+        "ABS_HostName",
+        "CardNode",
+        "Status",
+        "Process"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Machine",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Name",
+          "target_table": "Configio",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "Configio.Interface / card binding"
+        }
+      ],
+      "references": [
+        "Machine",
+        "Configio",
+        "ABS_EIP_ADAPTERS",
+        "KTX_RIO_ADAPTERS"
+      ],
+      "active_row_rules": [
+        "Name present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Name",
+        "historical old.* copies"
+      ],
+      "optional_feature_rules": [
+        "ABS_* fields apply to EtherNet/IP adapters only",
+        "ErrorOutput / ErrorACTION / ErrorBIT optional fault signaling"
+      ],
+      "controller_scope_behavior": "Machine column + optional overlay files scope ownership.",
+      "generation_implications": [
+        "Defines adapter inventory for I/O mapping; does not invent module catalog entries"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-IOCard-Interfaces",
+          "file": "FPC Documents 1/FPC-IOCard-Interfaces.docx",
+          "id": "fpc-iocard-interfaces",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC IOCard Interfaces",
+          "file": "docs/training/FPC Documents 1/FPC-IOCard-Interfaces.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/IOCard.asc",
+      "schema_headers": [
+        "Name",
+        "Desc",
+        "Type",
+        "BasePort",
+        "ResetPort",
+        "pStatus",
+        "InputMenu",
+        "OutputMenu",
+        "Status",
+        "Process",
+        "IntAddr",
+        "Error",
+        "InputPtr",
+        "OutputPtr",
+        "MaxInput",
+        "MaxOutput",
+        "CurrMsg",
+        "IntrpPort",
+        "CardState",
+        "IntrrAddr",
+        "ConfigMode",
+        "TimeLastCmd",
+        "SerialNumber",
+        "NumMsgs",
+        "LoopCnt",
+        "InputCnt",
+        "Machine",
+        "BAUD",
+        "ReqRacks",
+        "CardNode",
+        "TNS",
+        "InitStatus",
+        "LinkState",
+        "StatusByte",
+        "ErrorByte",
+        "LEDStatus",
+        "WDCnt",
+        "BlockCnt",
+        "ReturnState",
+        "RtnStatus",
+        "OmuxName",
+        "OmuxPid",
+        "PCIDeviceIndex",
+        "NodeIndex",
+        "SlotIndex",
+        "TypeIndex",
+        "PCI",
+        "LogLevel",
+        "ErrorOutput",
+        "ErrorACTION",
+        "ErrorBIT",
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5",
+        "P6",
+        "RunDelay",
+        "pRunDelayTmr",
+        "ABS_IP",
+        "ABS_Mask",
+        "ABS_Gateway",
+        "ABS_DNS1",
+        "ABS_DNS2",
+        "ABS_HostName",
+        "ABS_Domain",
+        "ABS_UCMM_TIMEOUT",
+        "ABS_AutoNeg",
+        "ABS_UpdateCfg",
+        "pLastStatusReg",
+        "pCmdInProgress",
+        "pInitCount",
+        "pBaseSize",
+        "pIntrSize"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/IOCard.asc",
+        "workspace/active/RUN/FORTNA/IOCard.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        20,
+        20
+      ],
+      "active_row_count_samples": [
+        10,
+        10
+      ]
+    },
+    {
+      "table_name": "Jamzones",
+      "subsystem": "area_safety",
+      "purpose": "Jam / start-stop zone definitions linking request flags, buttons, and StartStopZones.",
+      "row_semantics": "One named Zone Name owning jam latch/jammed bits and optional StartStopZone link.",
+      "key_fields": [
+        "Zone Name",
+        "Start Request Flag",
+        "Stop Request Flag",
+        "Latch Bit",
+        "Jammed Bit",
+        "Enable Bit",
+        "StartStopZone",
+        "Zone Owner ",
+        "Start Button",
+        "Stop Button",
+        "Reset Button"
+      ],
+      "identity_fields": [
+        "Zone Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "StartStopZone",
+          "target_table": "StartStopZones",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Zone Name",
+          "target_table": "Jamcheck",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "Jamcheck.Zone references this name"
+        },
+        {
+          "field": "Zone Name",
+          "target_table": "Encoders",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": "Encoders.Jamzone may match zone name"
+        }
+      ],
+      "references": [
+        "StartStopZones",
+        "Jamcheck",
+        "CombinedJamZones"
+      ],
+      "active_row_rules": [
+        "Zone Name present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Zone Name",
+        "old.Jamzones.asc* historical"
+      ],
+      "optional_feature_rules": [
+        "JamEnableDontDelay optional start behavior"
+      ],
+      "controller_scope_behavior": "Base + optional controller overlay; Zone Owner may name owning process.",
+      "generation_implications": [
+        "Jam zone membership drives area safety / jam program grouping"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-StartStopZones",
+          "file": "FPC Docs 3/FPC-StartStopZones.docx",
+          "id": "fpc-startstopzones",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-Fulls-Jams-Fulljams",
+          "file": "FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": "fpc-fulls-jams-fulljams",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "CombinedJamZones",
+          "file": "docs/training/FPC Documents 1/CombinedJamZones.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Motor Startup Chains",
+          "file": "docs/training/FPC Documents 1/FPC-Motor-Startup-Chains.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Shifter And Sorter Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Fulls, Jams and Fulljams",
+          "file": "docs/training/FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Start/Stop Zones",
+          "file": "docs/training/FPC Docs 3/FPC-StartStopZones.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Jamzones.asc",
+      "schema_headers": [
+        "Zone Name",
+        "Start Request Flag",
+        "Stop Request Flag",
+        "Latch Bit",
+        "Jammed Bit",
+        "Start Stop Timer",
+        "Zone Owner ",
+        "Enable Bit",
+        "Start Button",
+        "Stop Button",
+        "Reset Button",
+        "StartStopZone",
+        "JamEnableDontDelay"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Jamzones.asc",
+        "workspace/active/RUN/FORTNA/Jamzones.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        100,
+        100
+      ],
+      "active_row_count_samples": [
+        27,
+        27
+      ]
+    },
+    {
+      "table_name": "Jamcheck",
+      "subsystem": "area_safety",
+      "purpose": "Jam detection points: sensor PE, timer, error, conveyor, and jam zone ownership.",
+      "row_semantics": "One jam check per Desc/Sensor_Name linking a PE timer to Conveyor_Name and Zone.",
+      "key_fields": [
+        "Desc",
+        "Sensor_Name",
+        "Timer_Name",
+        "Timer_Preset",
+        "Error_Name",
+        "Conveyor_Name",
+        "Zone",
+        "Jam_Owner",
+        "Motor Under Jam Eye"
+      ],
+      "identity_fields": [
+        "Desc",
+        "Sensor_Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Sensor_Name",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": "PHOTOCELL IO_Name"
+        },
+        {
+          "field": "Conveyor_Name",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Zone",
+          "target_table": "Jamzones",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor Under Jam Eye",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": "Motor IO under jam PE"
+        },
+        {
+          "field": "Error_Name",
+          "target_table": "Errors",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Conveyor",
+        "Jamzones",
+        "Errors"
+      ],
+      "active_row_rules": [
+        "Sensor_Name or Desc present and not placeholder",
+        "Timer_Name assigned for armed jam checks"
+      ],
+      "inactive_row_rules": [
+        "Blank Sensor_Name and Desc",
+        "old.Jamcheck.asc*"
+      ],
+      "optional_feature_rules": [
+        "ClearErrorWithJam / ClearJamSignal / RequireL2Reset optional clear policy"
+      ],
+      "controller_scope_behavior": "Overlay preferred; Jam_Owner may imply process/controller.",
+      "generation_implications": [
+        "Generates jam timer / PE monitoring when INCLUDED"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Fulls-Jams-Fulljams",
+          "file": "FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": "fpc-fulls-jams-fulljams",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-StartStopZones",
+          "file": "FPC Docs 3/FPC-StartStopZones.docx",
+          "id": "fpc-startstopzones",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Fulls, Jams and Fulljams",
+          "file": "docs/training/FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Start/Stop Zones",
+          "file": "docs/training/FPC Docs 3/FPC-StartStopZones.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Jamcheck.asc",
+      "schema_headers": [
+        "Desc",
+        "Sensor_Name",
+        "Timer_Name",
+        "Timer_Preset",
+        "Error_Name",
+        "Conveyor_Name",
+        "Zone",
+        "Jam_Owner",
+        "Jam_State",
+        "Motor Under Jam Eye",
+        "Sent",
+        "ClearErrorWithJam",
+        "ClearJamSignal",
+        "RequireL2Reset",
+        "L2_Jam_State",
+        "L2_ClearJamSignal"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Jamcheck.asc",
+        "workspace/active/RUN/FORTNA/Jamcheck.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        600,
+        600
+      ],
+      "active_row_count_samples": [
+        54,
+        54
+      ]
+    },
+    {
+      "table_name": "Fulljam",
+      "subsystem": "area_safety",
+      "purpose": "Full-jam detection: sustained full condition that escalates to jam/error response.",
+      "row_semantics": "Named full-jam sensor with set/clear timers, conveyor, motor-under-eye, owner.",
+      "key_fields": [
+        "Name",
+        "Sensor_Name",
+        "Enabled",
+        "Timer_Name",
+        "Clr_Timer_Name",
+        "Error_Name",
+        "Conveyor_Name",
+        "Motor Under Jam Eye",
+        "Response IO",
+        "Owner"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Sensor_Name",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Conveyor_Name",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor Under Jam Eye",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Error_Name",
+          "target_table": "Errors",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Response IO",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Conveyor",
+        "Errors",
+        "Fullline",
+        "Jamcheck"
+      ],
+      "active_row_rules": [
+        "Name or Sensor_Name present",
+        "Enabled indicates armed when used"
+      ],
+      "inactive_row_rules": [
+        "Blank Name and Sensor_Name",
+        "old.Fulljam.asc*"
+      ],
+      "optional_feature_rules": [
+        "DisableBit / Invert / ReSound Horn optional"
+      ],
+      "controller_scope_behavior": "Owner + overlay scope.",
+      "generation_implications": [
+        "Full-jam logic pairs with Fullline clear timers; INITERRORS may autogen errors"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Fulls-Jams-Fulljams",
+          "file": "FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": "fpc-fulls-jams-fulljams",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam",
+          "file": "FPC Documents 1/FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam.docx",
+          "id": "fpc-initerrors-autogeneration-for-jam-full-estop-fulljam",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Motor Startup Chains",
+          "file": "docs/training/FPC Documents 1/FPC-Motor-Startup-Chains.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Fulls, Jams and Fulljams",
+          "file": "docs/training/FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Fulljam.asc",
+      "schema_headers": [
+        "Name",
+        "Sensor_Name",
+        "Enabled",
+        "Timer_Name",
+        "Timer_Preset",
+        "Clr_Timer_Name",
+        "Clr_Timer_Preset",
+        "Error_Name",
+        "Conveyor_Name",
+        "Motor Under Jam Eye",
+        "Response IO",
+        "DisableBit",
+        "Invert",
+        "ReSound Horn",
+        "Status",
+        "Owner",
+        "Sent",
+        "pClrTmDone"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Fulljam.asc",
+        "workspace/active/RUN/FORTNA/Fulljam.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        200,
+        200
+      ],
+      "active_row_count_samples": [
+        20,
+        20
+      ]
+    },
+    {
+      "table_name": "Fullline",
+      "subsystem": "area_safety",
+      "purpose": "Line-full / accumulation full detection with set/clear timers and response I/O.",
+      "row_semantics": "One full point per Desc/Sensor_Name; Clr_Timer_* used by sawtooth ReserveTM links.",
+      "key_fields": [
+        "Desc",
+        "Sensor_Name",
+        "Timer_Name",
+        "Clr_Timer_Name",
+        "Clr_Timer_Preset",
+        "Error_Name",
+        "Conveyor_Name",
+        "Response IO",
+        "DontFireResponse",
+        "FullClearOutput"
+      ],
+      "identity_fields": [
+        "Desc",
+        "Sensor_Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Sensor_Name",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Conveyor_Name",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Clr_Timer_Name",
+          "target_table": "SawLane",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": "SawLane.ReserveTM often references tmfc* clear timers"
+        },
+        {
+          "field": "Error_Name",
+          "target_table": "Errors",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Response IO",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Conveyor",
+        "Errors",
+        "Fulljam",
+        "SawLane"
+      ],
+      "active_row_rules": [
+        "Sensor_Name or Desc present",
+        "Timer_Name assigned when armed"
+      ],
+      "inactive_row_rules": [
+        "Blank identity",
+        "old.Fullline.asc*"
+      ],
+      "optional_feature_rules": [
+        "DontFireResponse / NoGap / FullClear* optional behaviors"
+      ],
+      "controller_scope_behavior": "Base + overlay; no Greensboro-specific rules.",
+      "generation_implications": [
+        "Full PE timers feed accumulation and sawtooth reservation timing"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Fulls-Jams-Fulljams",
+          "file": "FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": "fpc-fulls-jams-fulljams",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC High-Speed Sawtooth Merge",
+          "file": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Motor Startup Chains",
+          "file": "docs/training/FPC Documents 1/FPC-Motor-Startup-Chains.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Fulls, Jams and Fulljams",
+          "file": "docs/training/FPC Documents 1/FPC-Fulls-Jams-Fulljams.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Gapping Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Gapping-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Disable Bits",
+          "file": "docs/training/FPC Documents 1/FPC-Disable-Bits.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Fullline.asc",
+      "schema_headers": [
+        "Desc",
+        "Sensor_Name",
+        "Timer_Name",
+        "Timer_Preset",
+        "Clr_Timer_Name",
+        "Clr_Timer_Preset",
+        "Error_Name",
+        "Conveyor_Name",
+        "DontFireResponse",
+        "Response IO",
+        "Invert",
+        "Go Until",
+        "ReSound Horn",
+        "NoGap",
+        "Status",
+        "Sent",
+        "FullClearOutput",
+        "FullClearACTION",
+        "FullClearBIT"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Fullline.asc",
+        "workspace/active/RUN/FORTNA/Fullline.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        300,
+        300
+      ],
+      "active_row_count_samples": [
+        61,
+        61
+      ]
+    },
+    {
+      "table_name": "Mtrchain",
+      "subsystem": "motor_control",
+      "purpose": "Motor startup chains: ordered downstream motors that start after a lead motor/timer.",
+      "row_semantics": "One chain head Motor_Name with Motor_Chained1..10 followers, aux, stop zone, heater options.",
+      "key_fields": [
+        "Motor_Name",
+        "Motor_Ndx",
+        "Timer_Name",
+        "Timer_Preset",
+        "Motor_Chained1",
+        "Motor_Chained2",
+        "Motor_Aux",
+        "Enabled",
+        "Stop Zone",
+        "Horn"
+      ],
+      "identity_fields": [
+        "Motor_Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Motor_Name",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained1",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained2",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained3",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained4",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained5",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained6",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained7",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained8",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained9",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Chained10",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Motor_Aux",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Stop Zone",
+          "target_table": "StartStopZones",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Conveyor",
+        "StartStopZones"
+      ],
+      "active_row_rules": [
+        "Motor_Name present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Motor_Name",
+        "old.Mtrchain.asc*"
+      ],
+      "optional_feature_rules": [
+        "Heater Bit / AutoSelectHtr optional",
+        "ForceAux / GoUntil optional runtime aids"
+      ],
+      "controller_scope_behavior": "Overlay wins; chains may cross conveyors owned by one controller.",
+      "generation_implications": [
+        "Explicit RUN motor topology for startup sequencing \u2014 prefer over P-number order"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Motor-Startup-Chains",
+          "file": "FPC Documents 1/FPC-Motor-Startup-Chains.docx",
+          "id": "fpc-motor-startup-chains",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Motor Startup Chains",
+          "file": "docs/training/FPC Documents 1/FPC-Motor-Startup-Chains.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Start/Stop Zones",
+          "file": "docs/training/FPC Docs 3/FPC-StartStopZones.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc",
+      "schema_headers": [
+        "Motor_Name",
+        "Motor_Ndx",
+        "Timer_Name",
+        "Timer_Preset",
+        "Motor_Chained1",
+        "Motor_Chained2",
+        "Motor_Chained3",
+        "Motor_Chained4",
+        "Motor_Chained5",
+        "Motor_Chained6",
+        "Motor_Chained7",
+        "Motor_Chained8",
+        "Motor_Chained9",
+        "Motor_Chained10",
+        "Motor_Aux",
+        "RUN Timer_Name",
+        "GoUntil",
+        "Enabled",
+        "Horn",
+        "ResetHorn",
+        "Heater Bit",
+        "AutoSelectHtr",
+        "Heater Error",
+        "Heater Debounce",
+        "Debounce Value",
+        "Stop Zone",
+        "StopState",
+        "ForceAux",
+        "pStateFrcAux"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Mtrchain.asc",
+        "workspace/active/RUN/FORTNA/Mtrchain.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        400,
+        400
+      ],
+      "active_row_count_samples": [
+        176,
+        176
+      ]
+    },
+    {
+      "table_name": "StartStopZones",
+      "subsystem": "area_safety",
+      "purpose": "Start/stop zone state machine rows (request flags, owners) referenced by Jamzones.",
+      "row_semantics": "One Zone Name with StartReqFlag/StopReqFlag and owner controls.",
+      "key_fields": [
+        "Zone Name",
+        "StartReqFlag",
+        "StopReqFlag",
+        "State",
+        "StartOwnerCtl",
+        "StopOwnerCtl"
+      ],
+      "identity_fields": [
+        "Zone Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Zone Name",
+          "target_table": "Jamzones",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "Jamzones.StartStopZone \u2192 this name"
+        }
+      ],
+      "references": [
+        "Jamzones",
+        "ZoneStates"
+      ],
+      "active_row_rules": [
+        "Zone Name present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Zone Name",
+        "old.StartStopZones.asc*"
+      ],
+      "optional_feature_rules": [],
+      "controller_scope_behavior": "Base + overlay; owners name controlling process bits.",
+      "generation_implications": [
+        "Groups conveyors into start/stop islands for area PLC"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-StartStopZones",
+          "file": "FPC Docs 3/FPC-StartStopZones.docx",
+          "id": "fpc-startstopzones",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Start/Stop Zones",
+          "file": "docs/training/FPC Docs 3/FPC-StartStopZones.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/StartStopZones.asc",
+      "schema_headers": [
+        "Zone Name",
+        "StartReqFlag",
+        "StopReqFlag",
+        "State",
+        "WasState",
+        "StartOwnerCtl",
+        "StopOwnerCtl"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/StartStopZones.asc",
+        "workspace/active/RUN/FORTNA/StartStopZones.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        20,
+        20
+      ],
+      "active_row_count_samples": [
+        8,
+        8
+      ]
+    },
+    {
+      "table_name": "EStop",
+      "subsystem": "area_safety",
+      "purpose": "E-stop device / circuit inventory (Desc/Part) with linked Error name.",
+      "row_semantics": "One E-stop Desc or Part entry; Error ties to Errors table when populated.",
+      "key_fields": [
+        "Desc",
+        "Part",
+        "Error"
+      ],
+      "identity_fields": [
+        "Desc",
+        "Part"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Error",
+          "target_table": "Errors",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Part",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": "Part may name related equipment when used"
+        }
+      ],
+      "references": [
+        "Errors"
+      ],
+      "active_row_rules": [
+        "Desc or Part present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Desc and Part",
+        "old.EStop.asc*"
+      ],
+      "optional_feature_rules": [],
+      "controller_scope_behavior": "Present when site configures E-stop table; overlay optional.",
+      "generation_implications": [
+        "E-stop zones are distinct from StartStop and Jam zones",
+        "INITERRORS may autogen related errors"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam",
+          "file": "FPC Documents 1/FPC-INITERRORS-Autogeneration-for-Jam-Full-EStop-FullJam.docx",
+          "id": "fpc-initerrors-autogeneration-for-jam-full-estop-fulljam",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "MEDIUM",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/EStop.asc",
+      "schema_headers": [
+        "Desc",
+        "Part",
+        "Error"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/EStop.asc",
+        "workspace/active/RUN/FORTNA/EStop.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        250,
+        250
+      ],
+      "active_row_count_samples": [
+        91,
+        91
+      ]
+    },
+    {
+      "table_name": "Convpath",
+      "subsystem": "tracking",
+      "purpose": "Carton/piece path tracking slots (Piece + PE_at/PEname). Not a static conveyor successor graph.",
+      "row_semantics": "Slot rows for tracked pieces. On many RUNs rows are placeholders (Piece=INVALID, Input/Output=0) \u2014 do not treat as P\u2192P topology.",
+      "key_fields": [
+        "Piece",
+        "Input",
+        "Output",
+        "PE_at",
+        "PEname"
+      ],
+      "identity_fields": [
+        "Piece"
+      ],
+      "relationship_fields": [
+        {
+          "field": "PEname",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": "PE name when populated"
+        },
+        {
+          "field": "PE_at",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Input",
+          "target_table": "Conveyor",
+          "edge_type": "RUNTIME_DATA",
+          "note": "Runtime path metrics \u2014 not static FK"
+        },
+        {
+          "field": "Output",
+          "target_table": "Conveyor",
+          "edge_type": "RUNTIME_DATA",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Conveyor",
+        "Pathsets"
+      ],
+      "active_row_rules": [
+        "Piece present and not INVALID/placeholder"
+      ],
+      "inactive_row_rules": [
+        "Piece=INVALID / blank",
+        "Input/Output zero placeholders"
+      ],
+      "optional_feature_rules": [],
+      "controller_scope_behavior": "Usually base-only shared tracking table.",
+      "generation_implications": [
+        "Do not derive Transport topology from Convpath unless active named pieces exist",
+        "Physical topology remains engineer/geometry when Convpath unpopulated"
+      ],
+      "document_sources": [],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Convpath.asc",
+      "schema_headers": [
+        "Piece",
+        "Input",
+        "Output",
+        "PE_at",
+        "PEname"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Convpath.asc",
+        "workspace/active/RUN/FORTNA/Convpath.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        1000,
+        1000
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "SawLane",
+      "subsystem": "sawtooth",
+      "purpose": "Classic sawtooth merge lane configuration (PE, reserve timing, EOW, merge parent).",
+      "row_semantics": "One named lane linked to SawMerge with PhotoEyeIO, ReserveTM, slice timing, EOW I/O.",
+      "key_fields": [
+        "Name",
+        "SawMerge",
+        "PhotoEyeIO",
+        "DisableIO",
+        "SliceSeconds",
+        "ReserveWhen",
+        "ReserveSeconds",
+        "ReserveTM",
+        "AllowedToRun",
+        "LaneIN",
+        "ApproachUP",
+        "CollisionUP",
+        "pState"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "SawMerge",
+          "target_table": "SawMerge",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "PhotoEyeIO",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "DisableIO",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "ReserveTM",
+          "target_table": "Fullline",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": "Often tmfc* clear timer from Fullline"
+        },
+        {
+          "field": "LaneIN",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "EndOfWave_PE",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "SawMerge",
+        "Conveyor",
+        "Fullline",
+        "SawState"
+      ],
+      "active_row_rules": [
+        "Name present and not placeholder",
+        "SawMerge linked for active lanes"
+      ],
+      "inactive_row_rules": [
+        "Blank Name",
+        "AllowedToRun/explicit disable without merge link"
+      ],
+      "optional_feature_rules": [
+        "EOW_* fields optional End-of-Wave feature",
+        "ReserveFLAG / ReserveRATE optional reservation modes"
+      ],
+      "controller_scope_behavior": "Strongly controller-overlaid (SawLane.asc.<CONTROLLER>).",
+      "generation_implications": [
+        "Active SawLane+SawMerge \u2192 sawtooth_merges discovery; library path still feature-gated"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC High-Speed Sawtooth Merge",
+          "file": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SawLane.asc",
+      "schema_headers": [
+        "Name",
+        "pStatus",
+        "SawMerge",
+        "ApproachUP",
+        "CollisionUP",
+        "LaneIN",
+        "LaneNdx",
+        "PhotoEyeIO",
+        "DisableIO",
+        "DisableBit",
+        "pLastRunTime",
+        "pState",
+        "TimeSlice",
+        "pSlicesRemaining",
+        "AllowedToRun",
+        "SliceSeconds",
+        "ReserveWhen",
+        "ReserveSeconds",
+        "ReserveFLAG",
+        "ReserveTM",
+        "ReserveRATE",
+        "MaxSlicesInTransit",
+        "AllowedInput",
+        "AllowedInvert",
+        "AllowedRatePop",
+        "pEnabled",
+        "EndOfWave_PE",
+        "EOW_PB",
+        "EOW_PB_Toggle",
+        "EOW_EnablePB",
+        "EOW_Light",
+        "EOW_EnableLt",
+        "EOW_LaneNotReq",
+        "EndOfWave_Error",
+        "pEOW_State",
+        "pEOW_Status",
+        "pEOW_Latch"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/SawLane.asc",
+        "workspace/active/RUN/FORTNA/SawLane.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        50,
+        50
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "SawMerge",
+      "subsystem": "sawtooth",
+      "purpose": "Classic sawtooth merge collector / boss (motor, reservation input, slice timing).",
+      "row_semantics": "One named merge with MotorIO, ReserveIN, LaneEnableDelayTM, live slice status.",
+      "key_fields": [
+        "Name",
+        "MotorIO",
+        "ReserveIN",
+        "LaneEnableDelayTM",
+        "pSliceSeconds",
+        "EOW_RelAllPB",
+        "EOW_AutoRel"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "MotorIO",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "ReserveIN",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Name",
+          "target_table": "SawLane",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "SawLane.SawMerge \u2192 this Name"
+        },
+        {
+          "field": "Name",
+          "target_table": "Sorters",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": "Sorter name may match merge process"
+        }
+      ],
+      "references": [
+        "SawLane",
+        "Conveyor",
+        "Sorters",
+        "Encoders"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "MotorIO or ReserveIN assigned for active merges"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "EOW_* optional",
+        "LogMe debug"
+      ],
+      "controller_scope_behavior": "Controller overlay preferred.",
+      "generation_implications": [
+        "Collector motor/enable path for sawtooth PLC when generation supported"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC High-Speed Sawtooth Merge",
+          "file": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SawMerge.asc",
+      "schema_headers": [
+        "Name",
+        "pStatus",
+        "MotorIO",
+        "ReserveIN",
+        "LogMe",
+        "LaneEnableDelayTM",
+        "EOW_RelAllPB",
+        "EOW_FndAllLt",
+        "EOW_AutoRel",
+        "pSliceSeconds",
+        "pSliceStartTime",
+        "pTotalTimeSlice",
+        "pTotalSlicesRemaining",
+        "pCurrentLane"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/SawMerge.asc",
+        "workspace/active/RUN/FORTNA/SawMerge.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        10,
+        10
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "HSSawLane",
+      "subsystem": "sawtooth_hs",
+      "purpose": "High-speed sawtooth lane FSM: slow/fast/accum I/O, LanePE, opportunistic feed, offsets.",
+      "row_semantics": "Named HS lane under HSSawMerge/SawMerge with LanePE and speed action bits.",
+      "key_fields": [
+        "Name",
+        "Enabled",
+        "SawMerge",
+        "LanePE",
+        "LaneSlow",
+        "LaneFast",
+        "AccumFast",
+        "Opportunistic",
+        "RunSlowOffset",
+        "StopFastOffset",
+        "RunFastOffset",
+        "pLaneState"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "SawMerge",
+          "target_table": "HSSawMerge",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "SawMerge",
+          "target_table": "SawMerge",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": "May reference classic merge name"
+        },
+        {
+          "field": "LanePE",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Name",
+          "target_table": "HSSawParm",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "HSSawParm.SawLane \u2192 lane"
+        }
+      ],
+      "references": [
+        "HSSawMerge",
+        "HSSawParm",
+        "HSSawState",
+        "Conveyor"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "Enabled when site uses HS module"
+      ],
+      "inactive_row_rules": [
+        "Blank Name",
+        "Enabled off with no I/O"
+      ],
+      "optional_feature_rules": [
+        "Opportunistic / OpportunSingle optional feed modes",
+        "GapError / ResetGapError optional"
+      ],
+      "controller_scope_behavior": "Often empty of active named rows even when table present.",
+      "generation_implications": [
+        "HS path is optional upgrade over classic SawLane; only use when active rows exist"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC High-Speed Sawtooth Merge",
+          "file": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawLane.asc",
+      "schema_headers": [
+        "Name",
+        "Enabled",
+        "Opportunistic",
+        "OpportunSingle",
+        "SawMerge",
+        "pStatus1",
+        "pStatus2",
+        "pLaneState",
+        "LanePE",
+        "FeedCompleteTM",
+        "EnableDelayTM",
+        "LaneSlow",
+        "SlowAction",
+        "SlowBit",
+        "LaneFast",
+        "FastAction",
+        "FastBit",
+        "SlowOrFast",
+        "SlowOrFastAction",
+        "SlowOrFastBit",
+        "AccumFast",
+        "AccumAction",
+        "AccumBit",
+        "BoxPresentOut",
+        "LaneInduct",
+        "GapError",
+        "ResetGapError",
+        "GapErrMtr",
+        "ErrMtrAction",
+        "ErrMtrBit",
+        "RunSlowOffset",
+        "StopFastOffset",
+        "RunFastOffset",
+        "ReAssignLane",
+        "pResrvReqTicks",
+        "pResrvTtl",
+        "pTicksFeed",
+        "pGapTicks",
+        "pInductLocRel",
+        "pInductLoc",
+        "pInductLrge",
+        "pLatchPE",
+        "pParamRecord",
+        "pLastRunSec",
+        "pLastRunMSec",
+        "pDelaySpace",
+        "pGapSpaceFnd",
+        "pPriorState",
+        "pGapErrOn",
+        "pOpporStart",
+        "pOpporEnd",
+        "pOppRstStart",
+        "pOppRstEnd",
+        "pOppAvail",
+        "pOppNeed"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawLane.asc",
+        "workspace/active/RUN/FORTNA/HSSawLane.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        50,
+        50
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "HSSawMerge",
+      "subsystem": "sawtooth_hs",
+      "purpose": "High-speed sawtooth merge boss: reservation creation, induct, encoder mode, control machine.",
+      "row_semantics": "Named HS merge with MergeRunIO, MergeInduct, TimeBasedEncoder, ControlMachine.",
+      "key_fields": [
+        "Name",
+        "CreateResrv",
+        "MergeRunIO",
+        "MergeInduct",
+        "TimeBasedEncoder",
+        "ControlMachine",
+        "pCurrentLane"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "MergeRunIO",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "MergeInduct",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "ControlMachine",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Name",
+          "target_table": "HSSawLane",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "HSSawLane",
+        "HSSawParm",
+        "Machine",
+        "Conveyor"
+      ],
+      "active_row_rules": [
+        "Name present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "pSimOn simulation"
+      ],
+      "controller_scope_behavior": "ControlMachine scopes HS merge.",
+      "generation_implications": [
+        "When active, upgrades sawtooth model beyond classic SawMerge fields"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC High-Speed Sawtooth Merge",
+          "file": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawMerge.asc",
+      "schema_headers": [
+        "Name",
+        "CreateResrv",
+        "pStatus",
+        "MergeRunIO",
+        "MergeInduct",
+        "TimeBasedEncoder",
+        "LogLevel",
+        "ControlMachine",
+        "pHighestPriority",
+        "pCurrentLane",
+        "pStartLocation",
+        "pEndLocation",
+        "pResrvSize",
+        "pLastEncCnt",
+        "pSimOn",
+        "pSimEncTmr"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawMerge.asc",
+        "workspace/active/RUN/FORTNA/HSSawMerge.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        10,
+        10
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "HSSawParm",
+      "subsystem": "sawtooth_hs",
+      "purpose": "Per-lane HS parameters: reservation inches/spacing, slug gap, priority, speed, enable.",
+      "row_semantics": "Parameter set named and linked to SawLane.",
+      "key_fields": [
+        "Name",
+        "SawLane",
+        "Type",
+        "ResrvInches",
+        "ResrvTotal",
+        "ResrvSpacing",
+        "MaxCartonLen",
+        "SlugGap",
+        "Priority",
+        "LaneSpeed",
+        "Enable"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "SawLane",
+          "target_table": "HSSawLane",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "InputSignal",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "HSSawLane",
+        "HSSawMerge"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "SawLane linked",
+        "Enable when used"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "Override optional"
+      ],
+      "controller_scope_behavior": "Follows HS lane/merge controller scope.",
+      "generation_implications": [
+        "Parameter source for HS reservation geometry"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC High-Speed Sawtooth Merge",
+          "file": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawParm.asc",
+      "schema_headers": [
+        "Name",
+        "SawLane",
+        "pStatus",
+        "Type",
+        "Timer",
+        "InputSignal",
+        "RateRecord",
+        "ResrvInches",
+        "ResrvTotal",
+        "ResrvSpacing",
+        "MaxCartonLen",
+        "SlugGap",
+        "Priority",
+        "LaneSpeed",
+        "Enable",
+        "Override"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawParm.asc",
+        "workspace/active/RUN/FORTNA/HSSawParm.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        50,
+        50
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "HSSawState",
+      "subsystem": "sawtooth_hs",
+      "purpose": "Lookup vocabulary for HS lane FSM state display names.",
+      "row_semantics": "One Name per state label (e.g. Stopped, Wait PE On, Feed Slow).",
+      "key_fields": [],
+      "identity_fields": [],
+      "relationship_fields": [
+        {
+          "field": "Name",
+          "target_table": "HSSawLane",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "HSSawLane.pLaneState display vocabulary"
+        }
+      ],
+      "references": [
+        "HSSawLane"
+      ],
+      "active_row_rules": [
+        "Name present"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [],
+      "controller_scope_behavior": "Shared lookup; not controller-overlaid typically.",
+      "generation_implications": [
+        "Display/state labels only \u2014 not control logic source"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawState.asc",
+      "schema_headers": [
+        "\"Name\""
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawState.asc",
+        "workspace/active/RUN/FORTNA/HSSawState.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        10,
+        10
+      ],
+      "active_row_count_samples": [
+        9,
+        9
+      ]
+    },
+    {
+      "table_name": "HSSawSim",
+      "subsystem": "sawtooth_hs",
+      "purpose": "HS sawtooth simulation rows (create boxes, length/gap, force PE).",
+      "row_semantics": "Named sim profile linked to SawLane.",
+      "key_fields": [
+        "Name",
+        "EnableSrt",
+        "CreateBoxes",
+        "SawLane",
+        "LengthInches",
+        "GapInches"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "SawLane",
+          "target_table": "HSSawLane",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        }
+      ],
+      "references": [
+        "HSSawLane"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "EnableSrt/CreateBoxes when simulating"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [],
+      "controller_scope_behavior": "Test/sim only.",
+      "generation_implications": [
+        "Simulation aid \u2014 not production PLC generation input"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC High-Speed Sawtooth Merge",
+          "file": "docs/training/FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "MEDIUM",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/HSSawSim.asc",
+      "schema_headers": [
+        "Name",
+        "EnableSrt",
+        "CreateBoxes",
+        "pStatus",
+        "SawLane",
+        "CreateSorterTmr",
+        "LengthInches",
+        "GapInches",
+        "pStateForcePE",
+        "pCurrLength",
+        "pCurrGap"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/HSSawSim.asc",
+        "workspace/active/RUN/FORTNA/HSSawSim.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        50,
+        50
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "Merges",
+      "subsystem": "merge_legacy",
+      "purpose": "Legacy multi-induct merge table (Presence/Release/Priority/timers per induct 1..5).",
+      "row_semantics": "One Merge Table Name with up to five induct columns.",
+      "key_fields": [
+        "Merge Table Name",
+        "Valid",
+        "Number of Inducts",
+        "Operable Input",
+        "Presense_Eye1",
+        "Release_IO1",
+        "Priority1"
+      ],
+      "identity_fields": [
+        "Merge Table Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Presense_Eye1",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Release_IO1",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Presense_Eye2",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Release_IO2",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Conveyor",
+        "SimpleMerge",
+        "MergeBoss"
+      ],
+      "active_row_rules": [
+        "Merge Table Name present",
+        "Valid when used"
+      ],
+      "inactive_row_rules": [
+        "Blank name"
+      ],
+      "optional_feature_rules": [
+        "Inducts 2..5 optional"
+      ],
+      "controller_scope_behavior": "May be unused when MergeBoss/SimpleMerge preferred.",
+      "generation_implications": [
+        "Legacy; prefer MergeBoss/Inputs/Route when present"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "MEDIUM",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Merges.asc",
+      "schema_headers": [
+        "Merge Table Name",
+        "Valid",
+        "Number of Inducts",
+        "Operable Input",
+        "Procnum",
+        "Presense_Eye1",
+        "Release_IO1",
+        "Myturn1",
+        "Priority1",
+        "Full_Timer_Name1",
+        "Clr_Timer_Name1",
+        "Clr_Timer_Preset1",
+        "Run_Timer_Name1",
+        "Run_Timer_Preset1",
+        "Prs_Timer_Name1",
+        "Prs_Timer_Preset1",
+        "Presense_Eye2",
+        "Release_IO2",
+        "Myturn2",
+        "Priority2",
+        "Full_Timer_Name2",
+        "Clr_Timer_Name2",
+        "Clr_Timer_Preset2",
+        "Run_Timer_Name2",
+        "Run_Timer_Preset2",
+        "Prs_Timer_Name2",
+        "Prs_Timer_Preset2",
+        "Presense_Eye3",
+        "Release_IO3",
+        "Myturn3",
+        "Priority3",
+        "Full_Timer_Name3",
+        "Clr_Timer_Name3",
+        "Clr_Timer_Preset3",
+        "Run_Timer_Name3",
+        "Run_Timer_Preset3",
+        "Prs_Timer_Name3",
+        "Prs_Timer_Preset3",
+        "Presense_Eye4",
+        "Release_IO4",
+        "Myturn4",
+        "Priority4",
+        "Full_Timer_Name4",
+        "Clr_Timer_Name4",
+        "Clr_Timer_Preset4",
+        "Run_Timer_Name4",
+        "Run_Timer_Preset4",
+        "Prs_Timer_Name4",
+        "Prs_Timer_Preset4",
+        "Presense_Eye5",
+        "Release_IO5",
+        "Myturn5",
+        "Priority5",
+        "Full_Timer_Name5",
+        "Clr_Timer_Name5",
+        "Clr_Timer_Preset5",
+        "Run_Timer_Name5",
+        "Run_Timer_Preset5",
+        "Prs_Timer_Name5",
+        "Prs_Timer_Preset5"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Merges.asc",
+        "workspace/active/RUN/FORTNA/Merges.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        10,
+        10
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "SimpleMerge",
+      "subsystem": "merge",
+      "purpose": "Two-way simple merge: mainline vs lane presence/run with clear timer.",
+      "row_semantics": "Named simple merge with MainLineRun, LaneRun, presence eyes, Machine.",
+      "key_fields": [
+        "Name",
+        "MainLineRun",
+        "ClearTimer",
+        "MainLinePresence",
+        "LanePresence",
+        "LaneRun",
+        "Machine",
+        "NoGap"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "MainLineRun",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "LaneRun",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "MainLinePresence",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "LanePresence",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Machine",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Conveyor",
+        "Machine",
+        "MergeBoss"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "MainLineRun or LaneRun assigned"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "DontFireLaneRun / NoGap / LaneGoto optional"
+      ],
+      "controller_scope_behavior": "Machine scopes merge.",
+      "generation_implications": [
+        "Simple merge PLC pattern when INCLUDED"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SimpleMerge.asc",
+      "schema_headers": [
+        "Name",
+        "MainLineRun",
+        "ClearTimer",
+        "MainLinePresence",
+        "LanePresence",
+        "LaneRun",
+        "DontFireLaneRun",
+        "Machine",
+        "Error",
+        "pRun",
+        "NoGap",
+        "LaneGoto"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/SimpleMerge.asc",
+        "workspace/active/RUN/FORTNA/SimpleMerge.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        25,
+        25
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "MergeBoss",
+      "subsystem": "merge",
+      "purpose": "Multi-input merge boss: owns inputs count, operable input, switch delay.",
+      "row_semantics": "Named boss; MergeInputs rows reference MergeBoss name.",
+      "key_fields": [
+        "Name",
+        "Process",
+        "Owner",
+        "CurrInput",
+        "NumInputs",
+        "OperableInput",
+        "Valid",
+        "SwitchDelayTimer"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Name",
+          "target_table": "MergeInputs",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Owner",
+          "target_table": "Machine",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "MergeInputs",
+        "MergeRoute"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "Valid when used"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "IsSwitchDelay optional"
+      ],
+      "controller_scope_behavior": "Controller overlay common.",
+      "generation_implications": [
+        "Parent of MergeInputs/Route graph"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MergeBoss.asc",
+      "schema_headers": [
+        "Name",
+        "Process",
+        "Owner",
+        "CurrInput",
+        "NumInputs",
+        "OperableInput",
+        "Valid",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "IsSwitchDelay",
+        "pStatus"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/MergeBoss.asc",
+        "workspace/active/RUN/FORTNA/MergeBoss.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        10,
+        10
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "MergeInputs",
+      "subsystem": "merge",
+      "purpose": "Per-input lane under a MergeBoss: presence, release I/O, timers, MergeRoute link.",
+      "row_semantics": "Named input with MergeBoss FK and optional MergeRoute.",
+      "key_fields": [
+        "Name",
+        "MergeBoss",
+        "Valid",
+        "Index",
+        "MergeRoute",
+        "Presense",
+        "ReleaseIO",
+        "Priority",
+        "FullClearTimerName",
+        "RunTimerName"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "MergeBoss",
+          "target_table": "MergeBoss",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "MergeRoute",
+          "target_table": "MergeRoute",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Presense",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "ReleaseIO",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "LaneReadyInput1",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "FullClearTimerName",
+          "target_table": "Fullline",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "MergeBoss",
+        "MergeRoute",
+        "Conveyor"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "MergeBoss linked",
+        "Valid when used"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "LaneReadyInput2 / PitchTimer / RouteDisable optional"
+      ],
+      "controller_scope_behavior": "Follows MergeBoss overlay.",
+      "generation_implications": [
+        "Lane arbitration inputs for multi-merge"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MergeInputs.asc",
+      "schema_headers": [
+        "Name",
+        "MergeBoss",
+        "Valid",
+        "MyTurn",
+        "Index",
+        "CalcPriority",
+        "MergeRoute",
+        "IsClear",
+        "RanEnough",
+        "Presense",
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "ReleaseIO",
+        "DontFireRelease",
+        "Priority",
+        "FullClearTimerName",
+        "ClrTimerName",
+        "ClrTimerPreset",
+        "RunTimerName",
+        "RunTimerPreset",
+        "LnClrTimerName",
+        "LnClrTimerPreset",
+        "RlsDelayTimerName",
+        "RlsDelayTimerPreset",
+        "LaneLatch",
+        "InputDisabled",
+        "InvertDisable",
+        "LnClear",
+        "LatchOffTimer",
+        "RunOffTimerFlag",
+        "PitchTimerName",
+        "PitchFlag",
+        "RouteDisable",
+        "pLastRunSec",
+        "pLastRunMSec"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/MergeInputs.asc",
+        "workspace/active/RUN/FORTNA/MergeInputs.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        15,
+        15
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "MergeRoute",
+      "subsystem": "merge",
+      "purpose": "Merge route binding inputs to outputs with busy/request/priority.",
+      "row_semantics": "Named route linking MergeInputs and MergeOutputs signals.",
+      "key_fields": [
+        "Name",
+        "MergeInputs",
+        "MergeOutputs",
+        "RouteBusy",
+        "RouteRequested",
+        "Priority"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "MergeInputs",
+          "target_table": "MergeInputs",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "MergeOutputs",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "MergeInputs",
+        "MergeBoss"
+      ],
+      "active_row_rules": [
+        "Name present"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "OutDisabled / InvertOutDisable optional"
+      ],
+      "controller_scope_behavior": "With merge boss overlay.",
+      "generation_implications": [
+        "Route enable graph for multi-merge"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MergeRoute.asc",
+      "schema_headers": [
+        "Name",
+        "MergeInputs",
+        "MergeOutputs",
+        "RouteBusy",
+        "RouteRequested",
+        "Priority",
+        "OutDisabled",
+        "InvertOutDisable"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/MergeRoute.asc",
+        "workspace/active/RUN/FORTNA/MergeRoute.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        15,
+        15
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "ZipperMerge",
+      "subsystem": "merge_zipper",
+      "purpose": "Zipper merge boss: turn-based reservation, merge motor, speed, induct.",
+      "row_semantics": "Named zipper merge with MergeMtr, MergeInduct, MergeRunIO, ControlMachine.",
+      "key_fields": [
+        "Name",
+        "MergeType",
+        "MergeInduct",
+        "MergeMtr",
+        "MergeRunIO",
+        "ControlMachine",
+        "MergeSpdFtPerMin",
+        "MergeTicksPerInch",
+        "GapType"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "MergeMtr",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "MergeInduct",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "MergeRunIO",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "ControlMachine",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Name",
+          "target_table": "ZipperLane",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "ZipperLane",
+        "Machine",
+        "Conveyor"
+      ],
+      "active_row_rules": [
+        "Name present"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "CreateResrvFlag / MergeJamUpdate optional"
+      ],
+      "controller_scope_behavior": "ControlMachine scoped.",
+      "generation_implications": [
+        "Distinct from sawtooth; only generate when Zipper* rows active"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/ZipperMerge.asc",
+      "schema_headers": [
+        "Name",
+        "CreateResrvFlag",
+        "pStatus",
+        "MergeType",
+        "LogLevel",
+        "MergeInduct",
+        "MergeMtr",
+        "MergeMtrAction",
+        "MtrBit",
+        "ControlMachine",
+        "MergeSpdFtPerMin",
+        "ErrorSignal",
+        "MergeTicksPerInch",
+        "GapType",
+        "MergeRunIO",
+        "LaneMergeDlyTM",
+        "MergeJamUpdate",
+        "pLastEncCnt",
+        "pTotalTurns",
+        "pCurrentCycle",
+        "pCurrResrvLane",
+        "pCurrResrvLen",
+        "pLastLaneAssgn",
+        "pMergeJamState"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/ZipperMerge.asc",
+        "workspace/active/RUN/FORTNA/ZipperMerge.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        20,
+        20
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "ZipperLane",
+      "subsystem": "merge_zipper",
+      "purpose": "Zipper lane under ZipperMerge: turns, reservation lengths, meter/pre speeds, accum I/O.",
+      "row_semantics": "Named lane with ZipperMerge FK and extensive meter/merge parameters.",
+      "key_fields": [
+        "Name",
+        "Enabled",
+        "ZipperMerge",
+        "Turns",
+        "ResrvLenInches",
+        "MeterSpdFtPerMin",
+        "AccumIO",
+        "FullClearTimer",
+        "PreMergeInduct"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "ZipperMerge",
+          "target_table": "ZipperMerge",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "AccumIO",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "EnableIO",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "PreMergeInduct",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "FullClearTimer",
+          "target_table": "Fullline",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "ZipperMerge",
+        "Conveyor"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "Enabled when used",
+        "ZipperMerge linked"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "UseSpdFeedBack / AdjustForDrift optional"
+      ],
+      "controller_scope_behavior": "Follows ZipperMerge ControlMachine.",
+      "generation_implications": [
+        "Lane parameters for zipper merge generation"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Merge-Modules",
+          "file": "FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": "fpc-merge-modules",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Merge Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Merge-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Gapping Modules",
+          "file": "docs/training/FPC Documents 1/FPC-Gapping-Modules.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Motor Speed Control",
+          "file": "docs/training/FPC Documents 1/FPC-Motor-Speed-Control.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/ZipperLane.asc",
+      "schema_headers": [
+        "Name",
+        "Enabled",
+        "EnableIO",
+        "InvrtEnableIO",
+        "pStatus1",
+        "pStatus2",
+        "pAccumState",
+        "pLaneState",
+        "ZipperMerge",
+        "Turns",
+        "SkipTurns",
+        "FullTurns",
+        "MeterTicksPerInch",
+        "PreTicksPerInch",
+        "ResrvLenInches",
+        "ResrvGapInches",
+        "MergeGapInches",
+        "MergeMinLenInches",
+        "PreMergeGapType",
+        "PreGapInches",
+        "StopInches",
+        "AccelMilliSec",
+        "DecelMilliSec",
+        "MinPercent",
+        "TargetPercent",
+        "MaxPercent",
+        "NoReservPercent",
+        "MeterSpdFtPerMin",
+        "BrakeMeterMtr",
+        "AccumIO",
+        "StopAction",
+        "AccumBit",
+        "InductStuckErr",
+        "StuckAction",
+        "StuckBit",
+        "FullClearTimer",
+        "LaneMergeDlyTM",
+        "BrakeMeterUpdate",
+        "PreMergeInduct",
+        "MergeUpdate",
+        "SpdControl",
+        "UseSpdFeedBack",
+        "Gain",
+        "SpdFactor",
+        "MaxErrorTicks",
+        "SlowLenAdjTicks",
+        "AdjustForDrift",
+        "MaxAdjustDrift",
+        "ReAssignLane",
+        "AccelRate",
+        "DecelRate",
+        "pMeterLocation",
+        "pMergeLocation",
+        "pMeterBoxLength",
+        "pPreMergeCurrGap",
+        "pPreMergeMaxSpeed",
+        "pMergeRsvLenReq",
+        "pMergeRsvLenFnd",
+        "pMergeTargetLoc",
+        "pMergeReservLoc",
+        "pMergeMaxSpeed",
+        "pPreMergeErr",
+        "pMergeError",
+        "pSpeed1",
+        "pSpeed2",
+        "pSpeed3",
+        "pSpdFdBack",
+        "pStopTicks",
+        "pLastMeterIndx",
+        "pReservLenTicks",
+        "pReservGapTicks",
+        "pEncRatioMerge",
+        "pEncRatioPreMerge",
+        "pSpeedRatio",
+        "pCurrentTtl",
+        "pCurrentTurn",
+        "pCurrentSkip",
+        "pLastEncPre",
+        "pLastEncMeter",
+        "pGapTicksPreMerge",
+        "pRatioCombined",
+        "pGapTicksMerge",
+        "pMinLenMerge",
+        "pLanePriority",
+        "pCreateRsvTarget",
+        "pCreateRsvLenReq",
+        "pCreateRsvFndTrg",
+        "pCreateRsvLenFnd",
+        "pSqrRootAdjTicks",
+        "pSqrRootStopTicks",
+        "pSqrRootDistTicks",
+        "pLastMergeNdx",
+        "pLastMergeSpd",
+        "pLastAdjTicks",
+        "pDriftAdjust",
+        "pInductPEStuck",
+        "pLastInvSpd"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/ZipperLane.asc",
+        "workspace/active/RUN/FORTNA/ZipperLane.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        20,
+        20
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "Sorters",
+      "subsystem": "sorter",
+      "purpose": "Sorter entity definition: encoder binding, shift buffers, divert enable, machine.",
+      "row_semantics": "One Sorter Name with Encoder ioName/tmName and record-range cursors into track tables.",
+      "key_fields": [
+        "Sorter Name",
+        "Encoder ioName",
+        "Encoder tmName",
+        "Encoder Type",
+        "Machine",
+        "Max Cartons",
+        "DivertEnableIO",
+        "Dump NDX",
+        "ShiftOnOff"
+      ],
+      "identity_fields": [
+        "Sorter Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Encoder ioName",
+          "target_table": "Encoders",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Machine",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "DivertEnableIO",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Sorter Name",
+          "target_table": "SrtAppControl",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Sorter Name",
+          "target_table": "SrtZoneLane",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Encoders",
+        "Machine",
+        "SrtAppControl",
+        "SrtTrack1"
+      ],
+      "active_row_rules": [
+        "Sorter Name present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Sorter Name"
+      ],
+      "optional_feature_rules": [
+        "RecircRate* optional recirculation management",
+        "Trig* window/trigger options"
+      ],
+      "controller_scope_behavior": "Sorters.asc.<CONTROLLER> overlay preferred.",
+      "generation_implications": [
+        "Discovery-only until complete generic sorter library path exists",
+        "Tracking/WCS generation NOT_SUPPORTED by policy"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Shifter-And-Sorter-Configuration",
+          "file": "FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": "fpc-shifter-and-sorter-configuration",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-Sorter-Control-Module",
+          "file": "FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": "fpc-sorter-control-module",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-SorterConfigurationChecklist",
+          "file": "FPC Docs 3/FPC-SorterConfigurationChecklist.docx",
+          "id": "fpc-sorterconfigurationchecklist",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Control Module",
+          "file": "docs/training/FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Shifter And Sorter Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "Unit Sorter Control Software V1 rev25 DDD",
+          "file": "docs/training/FPC Docs 3/Unit Sorter Control Software V1 rev25 DDD.doc",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC New Transfers",
+          "file": "docs/training/FPC Documents 1/FPC-New-Transfers.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Sorters.asc",
+      "schema_headers": [
+        "Sorter Name",
+        "Encoder ioName",
+        "Encoder tmName",
+        "Encoder Type",
+        "pStatus",
+        "Max Cartons",
+        "Max Verify Buffer",
+        "Dump NDX",
+        "Dump OUT",
+        "Dump IN",
+        "UseFirstShifterNdx",
+        "LastNdx",
+        "OK",
+        "ShiftOnOff",
+        "Machine",
+        "ManualShift",
+        "Shifted",
+        "Data LowRec",
+        "Data HighRec",
+        "Buffer LowRec",
+        "Buffer HighRec",
+        "Inpoints LowRec",
+        "Inpoints HighRec",
+        "Updates LowRec",
+        "Updates HighRec",
+        "Outpoints LowRec",
+        "Outpoints HighRec",
+        "ShiftCnt",
+        "TrigOnOnly",
+        "TrigOnOff",
+        "TrigTransOn",
+        "TrigTransOff",
+        "TrigWndwTicks",
+        "DivertEnableIO",
+        "InvertEnableIO",
+        "RecircRate",
+        "CntRecircWhenFull",
+        "RecircRateUpdPt",
+        "pDumpFrom",
+        "pDumpOffset",
+        "pLastDumpLoc",
+        "pFirstShifter",
+        "pLastShifter",
+        "pMaxNdx"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Sorters.asc",
+        "workspace/active/RUN/FORTNA/Sorters.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        12,
+        12
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "SrtAppControl",
+      "subsystem": "sorter",
+      "purpose": "Application sorter control: motor status, host msg tables, scan/data error signaling.",
+      "row_semantics": "Named app sorter control with ControlMachine and message table bindings.",
+      "key_fields": [
+        "Name",
+        "AvailAppSorter",
+        "ControlMachine",
+        "SorterCnvMtr",
+        "CrrMsgTable",
+        "DcmMsgTable",
+        "ErrConfig",
+        "LogLevel"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "ControlMachine",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "SorterCnvMtr",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "AvailAppSorter",
+          "target_table": "Sorters",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "CrrMsgTable",
+          "target_table": "MsgMap",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Name",
+          "target_table": "SrtScanBoss",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Sorters",
+        "Machine",
+        "SrtScanBoss",
+        "MsgMap"
+      ],
+      "active_row_rules": [
+        "Name present"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "Second* msg tables optional tandem scanners"
+      ],
+      "controller_scope_behavior": "ControlMachine scoped.",
+      "generation_implications": [
+        "App control skeleton for sorter discovery"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Sorter-Control-Module",
+          "file": "FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": "fpc-sorter-control-module",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Control Module",
+          "file": "docs/training/FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Configuration Checklist",
+          "file": "docs/training/FPC Docs 3/FPC-SorterConfigurationChecklist.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SrtAppControl.asc",
+      "schema_headers": [
+        "Name",
+        "Status",
+        "MtrStatus",
+        "SendAvailStatus",
+        "AvailAppSorter",
+        "ErrConfig",
+        "LogLevel",
+        "CartonIdUpdate",
+        "CrrMsgTable",
+        "DcmMsgTable",
+        "CsuMsgTable",
+        "CsmMsgTable",
+        "SecondCrrMsgTable",
+        "SecondDcmMsgTable",
+        "SecondCsuMsgTable",
+        "ControlMachine",
+        "SorterCnvMtr",
+        "MtrACTION",
+        "MtrBIT",
+        "NotAvailErrSig",
+        "NotAvailACTION",
+        "NotAvailBIT",
+        "ScanErrSig",
+        "ScanACTION",
+        "ScanBIT",
+        "DataErrLight",
+        "DataACTION",
+        "DataBIT",
+        "MtrMinStopTime",
+        "SndShipInCRR",
+        "SndPackInCRR",
+        "pErrorFlag",
+        "pResetFault",
+        "pMaxResponse",
+        "pGrtHalfSecond",
+        "pGrtQtrSecond",
+        "pNumSamples",
+        "pTrigError",
+        "pErrDesc",
+        "pScanError",
+        "pDataError",
+        "pWrkScanError",
+        "pWrkDataError"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/SrtAppControl.asc",
+        "workspace/active/RUN/FORTNA/SrtAppControl.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        10,
+        10
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "SrtScanBoss",
+      "subsystem": "sorter",
+      "purpose": "Scan zone boss: links AppSorter, ScanZone, update points, lane assignment hooks.",
+      "row_semantics": "Named scan boss under an AppSorter with scan error/conflict handling.",
+      "key_fields": [
+        "Name",
+        "AppSorter",
+        "ScanZone",
+        "AssignUpdatePt",
+        "Lane",
+        "SpcLane",
+        "TooLateUpdatePt",
+        "SendCRRUpdatePt"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "AppSorter",
+          "target_table": "SrtAppControl",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "ScanZone",
+          "target_table": "ScnScanZone",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Lane",
+          "target_table": "SrtZoneLane",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "SrtAppControl",
+        "SrtZoneLane",
+        "Scanners"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "AppSorter linked"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "Tote* / SecondScanZone optional"
+      ],
+      "controller_scope_behavior": "Follows app sorter machine.",
+      "generation_implications": [
+        "Scan assignment points \u2014 not divert IO map"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Sorter-Control-Module",
+          "file": "FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": "fpc-sorter-control-module",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-Scanner-Control-Configuration",
+          "file": "FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+          "id": "fpc-scanner-control-configuration",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Control Module",
+          "file": "docs/training/FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Scanner Control Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Configuration Checklist",
+          "file": "docs/training/FPC Docs 3/FPC-SorterConfigurationChecklist.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SrtScanBoss.asc",
+      "schema_headers": [
+        "Name",
+        "ErrorMsg",
+        "ScanStatus",
+        "AppSorter",
+        "ScanZone",
+        "AssignUpdatePt",
+        "ScanError",
+        "ScanConflict",
+        "CommErr",
+        "SpcLane",
+        "Lane",
+        "TooLateUpdatePt",
+        "SendCRRUpdatePt",
+        "LengthUpdatePt",
+        "TooTallUpdatePt",
+        "TooTallSignal",
+        "SecondCRRUpdPt",
+        "SecondScanZone",
+        "SecondChkDiverted",
+        "ToteUpdatePt",
+        "ToteSignal",
+        "ToteUpdErrOnly",
+        "ToteErr",
+        "ToteErrMsg",
+        "ToteID",
+        "ToteUpdCSMAlso",
+        "pToteTrkMnu",
+        "pToteTrkIndx",
+        "pToteFound"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/SrtScanBoss.asc",
+        "workspace/active/RUN/FORTNA/SrtScanBoss.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        12,
+        12
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "SrtZoneLane",
+      "subsystem": "sorter",
+      "purpose": "Host zone \u2192 sorter lane assignment with full-clear timer and enable signals.",
+      "row_semantics": "Named zone-lane row under AppSorter with HostZone and Lane.",
+      "key_fields": [
+        "Name",
+        "Enabled",
+        "AppSorter",
+        "Lane",
+        "HostZone",
+        "FullClearTimer",
+        "LaneEnableSignal",
+        "RndRobinEnabled"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "AppSorter",
+          "target_table": "SrtAppControl",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "FullClearTimer",
+          "target_table": "Fullline",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "LaneEnableSignal",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Name",
+          "target_table": "SrtTrack1",
+          "edge_type": "RUNTIME_DATA",
+          "note": "SrtTrack*.SrtZoneLaneRec runtime link"
+        }
+      ],
+      "references": [
+        "SrtAppControl",
+        "Sorters",
+        "Fullline"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "Enabled when assigned"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "AssignIfFull / AssignLaneZero / TwoSidedShoe optional policies"
+      ],
+      "controller_scope_behavior": "App sorter machine scope.",
+      "generation_implications": [
+        "Static lane assignment; divert IO still engineer-required"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Sorter-Control-Module",
+          "file": "FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": "fpc-sorter-control-module",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Control Module",
+          "file": "docs/training/FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Shifter And Sorter Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Configuration Checklist",
+          "file": "docs/training/FPC Docs 3/FPC-SorterConfigurationChecklist.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SrtZoneLane.asc",
+      "schema_headers": [
+        "Name",
+        "Enabled",
+        "Status",
+        "AppSorter",
+        "AssignIfFull",
+        "AssignLaneZero",
+        "Lane",
+        "FullClearTimer",
+        "LaneEnableSignal",
+        "HostZone",
+        "RestoreLane",
+        "RndRobinEnabled",
+        "AvailForAssign",
+        "AssignIfNotEnabled",
+        "DSRRequest",
+        "TwoSidedShoe",
+        "RightSideDivert",
+        "ResetExpected"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/SrtZoneLane.asc",
+        "workspace/active/RUN/FORTNA/SrtZoneLane.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        300,
+        300
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "SrtTrack",
+      "subsystem": "sorter_runtime",
+      "purpose": "Runtime carton tracking slot tables SrtTrack1..5 \u2014 confirm scan, host zone, sorter lane, dimensions. Not static topology.",
+      "row_semantics": "Named-slot or indexed carton records with ConfirmScan, ScanZoneID, SorterLane, SrtAppRec. Numeric empty slots are inactive.",
+      "key_fields": [
+        "Name",
+        "ConfirmScan",
+        "HostZone",
+        "ScanZoneID",
+        "SorterLane",
+        "SrtAppRec",
+        "SrtZoneLaneRec",
+        "Status",
+        "Length",
+        "Width",
+        "Height"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "SrtAppRec",
+          "target_table": "SrtAppControl",
+          "edge_type": "RUNTIME_DATA",
+          "note": ""
+        },
+        {
+          "field": "SrtZoneLaneRec",
+          "target_table": "SrtZoneLane",
+          "edge_type": "RUNTIME_DATA",
+          "note": ""
+        },
+        {
+          "field": "SorterLane",
+          "target_table": "SrtZoneLane",
+          "edge_type": "RUNTIME_DATA",
+          "note": ""
+        },
+        {
+          "field": "ScanZoneID",
+          "target_table": "SrtScanBoss",
+          "edge_type": "RUNTIME_DATA",
+          "note": ""
+        }
+      ],
+      "references": [
+        "SrtAppControl",
+        "SrtZoneLane",
+        "SrtScanBoss",
+        "MsgTrack"
+      ],
+      "active_row_rules": [
+        "Name present and not placeholder",
+        "ConfirmScan / HostZone / ScanZoneID evidence of live track slot"
+      ],
+      "inactive_row_rules": [
+        "Blank/numeric-only empty slots"
+      ],
+      "optional_feature_rules": [
+        "P&A verify fields (VerRF/VerSKU) optional"
+      ],
+      "controller_scope_behavior": "Shared runtime menus; sized per sorter docs.",
+      "generation_implications": [
+        "Proves tracking activity; does NOT define divert output maps",
+        "classification=RUNTIME_DATA"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Sorter-Control-Module",
+          "file": "FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": "fpc-sorter-control-module",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-Scanner-Control-Configuration",
+          "file": "FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+          "id": "fpc-scanner-control-configuration",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Control Module",
+          "file": "docs/training/FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Scanner Control Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/SrtTrack1.asc",
+      "schema_headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "TooTall",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus",
+        "PaProcFlag",
+        "PaProcUpd",
+        "ExptRF",
+        "ExptSKU",
+        "ExptLPN",
+        "VerRF",
+        "VerSKU",
+        "VerLPN",
+        "CurrSpeed",
+        "Height",
+        "Width",
+        "Length",
+        "TooShort",
+        "SendUpdPrt",
+        "Scale",
+        "ConfirmTote",
+        "Param1",
+        "Param2",
+        "Param3",
+        "Param4",
+        "Param5",
+        "ConfirmShip",
+        "ConfirmPack",
+        "CombShip",
+        "CombPack",
+        "CombShipSts",
+        "CombPackSts",
+        "pVerifyErr",
+        "pPAPassThru",
+        "pPNAExempt",
+        "pPNAZoneCleared",
+        "DCMReq",
+        "SrtSimRecord",
+        "ToteFound",
+        "LRMSent",
+        "LVMSent",
+        "UUID"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/SrtTrack1.asc",
+        "workspace/active/RUN/FORTNA/SrtTrack1.asc",
+        "workspace/cp4-run/RUN/FORTNA/SrtTrack2.asc",
+        "workspace/active/RUN/FORTNA/SrtTrack2.asc",
+        "workspace/cp4-run/RUN/FORTNA/SrtTrack3.asc",
+        "workspace/active/RUN/FORTNA/SrtTrack3.asc",
+        "workspace/cp4-run/RUN/FORTNA/SrtTrack4.asc",
+        "workspace/active/RUN/FORTNA/SrtTrack4.asc",
+        "workspace/cp4-run/RUN/FORTNA/SrtTrack5.asc",
+        "workspace/active/RUN/FORTNA/SrtTrack5.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ],
+      "active_row_count_samples": [
+        98,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "member_tables": [
+        "SrtTrack1",
+        "SrtTrack2",
+        "SrtTrack3",
+        "SrtTrack4",
+        "SrtTrack5"
+      ]
+    },
+    {
+      "table_name": "XfrTrack",
+      "subsystem": "transfer_runtime",
+      "purpose": "Transfer tracking runtime slots (scan confirm, route boss/table rec, XfrZoneID).",
+      "row_semantics": "Parallel to SrtTrack for transfer path; RouteBossRec / RouteTableRec runtime links.",
+      "key_fields": [
+        "Name",
+        "ConfirmScan",
+        "HostZone",
+        "RouteBossRec",
+        "RouteTableRec",
+        "XfrZoneID",
+        "SorterLane",
+        "Status"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "RouteBossRec",
+          "target_table": "XfRouteBoss",
+          "edge_type": "RUNTIME_DATA",
+          "note": ""
+        },
+        {
+          "field": "RouteTableRec",
+          "target_table": "XfRouteTable",
+          "edge_type": "RUNTIME_DATA",
+          "note": ""
+        },
+        {
+          "field": "SrtAppRec",
+          "target_table": "SrtAppControl",
+          "edge_type": "RUNTIME_DATA",
+          "note": ""
+        }
+      ],
+      "references": [
+        "XfRouteBoss",
+        "XfRouteTable",
+        "MsgTrack"
+      ],
+      "active_row_rules": [
+        "Name present with ConfirmScan/HostZone/route evidence"
+      ],
+      "inactive_row_rules": [
+        "Empty slots"
+      ],
+      "optional_feature_rules": [
+        "P&A verify flags optional"
+      ],
+      "controller_scope_behavior": "Runtime shared.",
+      "generation_implications": [
+        "RUNTIME_DATA \u2014 transfer divert maps still engineer/config"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-New-Transfers",
+          "file": "FPC Documents 1/FPC-New-Transfers.docx",
+          "id": "fpc-new-transfers",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-Transfer-Configuration-Example",
+          "file": "FPC Docs 3/FPC-Transfer-Configuration-Example.docx",
+          "id": "fpc-transfer-configuration-example",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Scanner Control Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC New Transfers",
+          "file": "docs/training/FPC Documents 1/FPC-New-Transfers.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/XfrTrack.asc",
+      "schema_headers": [
+        "Name",
+        "ConfirmScan",
+        "ScanQty",
+        "Status",
+        "ErrorMsg",
+        "HostZone",
+        "ConfirmTote",
+        "CombScan",
+        "CombScanSts",
+        "CombTote",
+        "CombToteSts",
+        "CombSKU",
+        "CombSKUSts",
+        "Z1",
+        "Z2",
+        "Z3",
+        "Z4",
+        "Z5",
+        "Z6",
+        "Z7",
+        "Z8",
+        "Z9",
+        "Z10",
+        "ScanZoneID",
+        "ScanZoneIndx",
+        "SorterLane",
+        "SrtAppRec",
+        "Shifter",
+        "Ndx",
+        "ProcFlag",
+        "ProcUpd",
+        "SrtZoneLaneRec",
+        "CommSent",
+        "TooLate",
+        "SendCRRTrigger",
+        "ElapsedTime",
+        "CommSentSec",
+        "CommSentMSec",
+        "TimeStamp",
+        "TampStatus",
+        "PaProcFlag",
+        "PaProcUpd",
+        "ExptRF",
+        "ExptSKU",
+        "ExptLPN",
+        "VerRF",
+        "VerSKU",
+        "VerLPN",
+        "CurrSpeed",
+        "Height",
+        "Width",
+        "Length",
+        "TooShort",
+        "SendUpdPrt",
+        "pVerifyErr",
+        "LastTree",
+        "RouteBossRec",
+        "EmptyConfirm",
+        "pConfirmTrig",
+        "RouteTableRec",
+        "Param1",
+        "Param2",
+        "Param3",
+        "Param4",
+        "Param5",
+        "ConfirmShip",
+        "ConfirmPack",
+        "CombShip",
+        "CombPack",
+        "CombShipSts",
+        "CombPackSts",
+        "ESMInductTime",
+        "pTimeOutFlag",
+        "DCMStatus",
+        "XfrZoneID",
+        "pVerifyFlagTop",
+        "pVerifyFlagLeft",
+        "pVerifyFlagRight",
+        "pVerifyFlagFront",
+        "pInitialTrkIndx",
+        "pPNAExempt",
+        "LRMSent",
+        "LVMSent",
+        "UUID"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/XfrTrack.asc",
+        "workspace/active/RUN/FORTNA/XfrTrack.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        100,
+        100
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "XfRouteTable",
+      "subsystem": "transfer",
+      "purpose": "Transfer route table: host route string \u2192 Route under a BossRecord.",
+      "row_semantics": "Named route row with Enabled, BossRecord, HostRouteStr, error I/O.",
+      "key_fields": [
+        "Name",
+        "Enabled",
+        "BossRecord",
+        "HostRouteStr",
+        "Route",
+        "ErrorIO",
+        "MaximumErrors"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "BossRecord",
+          "target_table": "XfRouteBoss",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "ErrorIO",
+          "target_table": "Conveyor",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "XfRouteBoss",
+        "XfrTrack"
+      ],
+      "active_row_rules": [
+        "Name present",
+        "Enabled when used"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "DSRRequest / AutoResetCons optional"
+      ],
+      "controller_scope_behavior": "Boss/machine scoped.",
+      "generation_implications": [
+        "Static transfer routes \u2014 still not full divert PLC map"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-New-Transfers",
+          "file": "FPC Documents 1/FPC-New-Transfers.docx",
+          "id": "fpc-new-transfers",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC New Transfers",
+          "file": "docs/training/FPC Documents 1/FPC-New-Transfers.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/XfRouteTable.asc",
+      "schema_headers": [
+        "Name",
+        "Enabled",
+        "BossRecord",
+        "HostRouteStr",
+        "Route",
+        "NewRoute",
+        "AutoResetCons",
+        "MaximumErrors",
+        "ErrorIO",
+        "ErrorACTION",
+        "ErrorBIT",
+        "ErrorSignal",
+        "ResetCons",
+        "ResetConsSignal",
+        "HRTotalDiverted",
+        "HRFullAborts",
+        "HRXfrResets",
+        "DSRRequest",
+        "pRouteFull",
+        "pConsecErrors"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/XfRouteTable.asc",
+        "workspace/active/RUN/FORTNA/XfRouteTable.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        25,
+        25
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "XfRouteBoss",
+      "subsystem": "transfer",
+      "purpose": "Transfer route boss: scan zone, msg tables, conveyor motor, error signaling.",
+      "row_semantics": "Named boss controlling transfer scan/route decisioning.",
+      "key_fields": [
+        "Name",
+        "ScanZone",
+        "XferCnvMtr",
+        "CrrMsgTable",
+        "AvailTransfer",
+        "SystemRun",
+        "LogLevel"
+      ],
+      "identity_fields": [
+        "Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "XferCnvMtr",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Name",
+          "target_table": "XfRouteTable",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "ScanZone",
+          "target_table": "ScnScanZone",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "CrrMsgTable",
+          "target_table": "MsgMap",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "XfRouteTable",
+        "XfrTrack",
+        "Machine",
+        "MsgMap"
+      ],
+      "active_row_rules": [
+        "Name present"
+      ],
+      "inactive_row_rules": [
+        "Blank Name"
+      ],
+      "optional_feature_rules": [
+        "ToteSensor / RunNewXfr optional"
+      ],
+      "controller_scope_behavior": "Process/machine via msg tables.",
+      "generation_implications": [
+        "Transfer discovery skeleton"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-New-Transfers",
+          "file": "FPC Documents 1/FPC-New-Transfers.docx",
+          "id": "fpc-new-transfers",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Scanner Control Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC New Transfers",
+          "file": "docs/training/FPC Documents 1/FPC-New-Transfers.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/XfRouteBoss.asc",
+      "schema_headers": [
+        "Name",
+        "Desc",
+        "pScanStatus",
+        "pXfrErrorMsg",
+        "LogLevel",
+        "ScanZone",
+        "EsmMsgTable",
+        "EssMsgTable",
+        "CrrMsgTable",
+        "CsmMsgTable",
+        "DcmMsgTable",
+        "CsuMsgTable",
+        "SendAvailStatus",
+        "AvailTransfer",
+        "Straight",
+        "CommErr",
+        "ScanError",
+        "NotDefined",
+        "NoData",
+        "RouteFull",
+        "ESMRoute",
+        "MaxWaitTime",
+        "NoScanTmr",
+        "NoRouteTmr",
+        "NoCartonTmr",
+        "ClrQueDlyTmr",
+        "DontChkNoScan",
+        "DontResetQue",
+        "DontResetRcv",
+        "NoRouteRetry",
+        "SystemRun",
+        "WaitPresence",
+        "XferCnvMtr",
+        "MtrACTION",
+        "MtrBIT",
+        "ScanErrSig",
+        "ScanACTION",
+        "ScanErrBIT",
+        "DataErrSig",
+        "DataACTION",
+        "DataBIT",
+        "RunNewXfr",
+        "CRRReadyToSend",
+        "CRRSendSense",
+        "SendOneCRR",
+        "ToteSensor",
+        "TotePresentStr",
+        "ToteAbsentStr",
+        "pProductState",
+        "pRouteTreeQue",
+        "pTrkMenuQue",
+        "pTrkIndxQue",
+        "pProcFlag",
+        "pXfrError",
+        "pGrtHalfSecond",
+        "pGrtQtrSecond",
+        "pMaxResponse",
+        "pNumSamples",
+        "pScanError",
+        "pDataError",
+        "pWrkScanError",
+        "pWrkDataError",
+        "pLastScan",
+        "pLastScanCnt",
+        "pLastScanProc",
+        "pParamConfigError",
+        "pTimeoutError",
+        "pESMAck",
+        "pTotePresent",
+        "pLastPack",
+        "pLastPackCnt",
+        "pLastPackProc"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/XfRouteBoss.asc",
+        "workspace/active/RUN/FORTNA/XfRouteBoss.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        25,
+        25
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    },
+    {
+      "table_name": "Machine",
+      "subsystem": "communications",
+      "purpose": "Communications endpoint inventory: controllers, hosts, scanners, protocols, ports.",
+      "row_semantics": "One Machine_Name with Connection_Type, Communication_Protocol, Machine_Port, Offline.",
+      "key_fields": [
+        "Machine_Name",
+        "Status",
+        "Connection_Type",
+        "Communication_Protocol",
+        "Machine_Port",
+        "Offline",
+        "Process",
+        "FortnaMachine",
+        "LogLevel"
+      ],
+      "identity_fields": [
+        "Machine_Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Machine_Name",
+          "target_table": "MsgMap",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "MsgMap.Machine_Name \u2192 this"
+        },
+        {
+          "field": "Machine_Name",
+          "target_table": "Conveyor",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Machine_Name",
+          "target_table": "IOCard",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "MsgMap",
+        "Protocol",
+        "Connect"
+      ],
+      "active_row_rules": [
+        "Machine_Name present",
+        "Offline not asserted for live endpoints"
+      ],
+      "inactive_row_rules": [
+        "Blank Machine_Name",
+        "Offline=Y when confirmed down"
+      ],
+      "optional_feature_rules": [
+        "Username/Password for TCP auth optional"
+      ],
+      "controller_scope_behavior": "Machine table lists all peers; controller overlays on other tables filter by Machine_Name.",
+      "generation_implications": [
+        "Defines peer inventory; TCP endpoints for WCS still may be engineer-required"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Machine-MsgMap-Configuraton",
+          "file": "FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+          "id": "fpc-machine-msgmap-configuraton",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Control Module",
+          "file": "docs/training/FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Shifter And Sorter Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Start/Stop Zones",
+          "file": "docs/training/FPC Docs 3/FPC-StartStopZones.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC FastIO Configuration",
+          "file": "docs/training/FPC Documents 1/FPC-FastIO-Configuration.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC IOCard Interfaces",
+          "file": "docs/training/FPC Documents 1/FPC-IOCard-Interfaces.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Machine MsgMap Configuration (Configuraton spelling)",
+          "file": "docs/training/FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Scanner Control Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Configuration Checklist",
+          "file": "docs/training/FPC Docs 3/FPC-SorterConfigurationChecklist.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "Unit Sorter Control Software V1 rev25 DDD",
+          "file": "docs/training/FPC Docs 3/Unit Sorter Control Software V1 rev25 DDD.doc",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Ctrl-F4 Table Distribution",
+          "file": "docs/training/FPC Documents 1/FPC-Ctrl-F4-Table-Distribution.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC New Transfers",
+          "file": "docs/training/FPC Documents 1/FPC-New-Transfers.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Machine.asc",
+      "schema_headers": [
+        "Machine_Name",
+        "Status",
+        "Error",
+        "Machine_Index",
+        "Machine_Pid",
+        "Connection_Type",
+        "Communication_Protocol",
+        "Machine_Port",
+        "Transmit_Retry",
+        "Offline",
+        "Process",
+        "UseDB",
+        "IgnoreDupes",
+        "NoCircbuff",
+        "CircSize",
+        "Trig_Size",
+        "Trig_InterChar",
+        "Trig_Timeout",
+        "Trig_MsgEndChar",
+        "Log File",
+        "Log Length",
+        "NumCbItems",
+        "LastMsgAttempts",
+        "MaxAttempts",
+        "StripNulls",
+        "TimerId",
+        "RetryCount",
+        "MaxRetries",
+        "FortnaMachine",
+        "NeedACK",
+        "LogLevel",
+        "Username",
+        "Password",
+        "CloseDelay(ms)",
+        "OpenTimeout(ms)",
+        "DontSetNeedAck",
+        "pCBuff",
+        "pCBuffLen",
+        "pCBMaxLen",
+        "pCTimeout",
+        "pCharSet",
+        "pSendSequence",
+        "pRecvSequence"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Machine.asc",
+        "workspace/active/RUN/FORTNA/Machine.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        52,
+        60
+      ],
+      "active_row_count_samples": [
+        7,
+        8
+      ]
+    },
+    {
+      "table_name": "MsgMap",
+      "subsystem": "communications",
+      "purpose": "Message map: binds Message_Name to Machine_Name, msg types, and Menu_Name queues.",
+      "row_semantics": "One Message_Name routing recv/send/ack types to a menu (e.g. MsgWCS).",
+      "key_fields": [
+        "Message_Name",
+        "Machine_Name",
+        "Recv_Msg_Type",
+        "Send_Msg_Type",
+        "Ack_Msg_Type",
+        "Menu_Name",
+        "Delimiter"
+      ],
+      "identity_fields": [
+        "Message_Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Machine_Name",
+          "target_table": "Machine",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Menu_Name",
+          "target_table": "MsgWCS",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "WCS_EVENT often maps Menu_Name=MsgWCS"
+        },
+        {
+          "field": "Menu_Name",
+          "target_table": "MsgTrack",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "Machine",
+        "MsgWCS",
+        "MsgTrack",
+        "WCSEvents"
+      ],
+      "active_row_rules": [
+        "Message_Name present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Message_Name"
+      ],
+      "optional_feature_rules": [
+        "CheckFile / FieldLength optional framing"
+      ],
+      "controller_scope_behavior": "MsgMap.asc.<CONTROLLER> overlay common.",
+      "generation_implications": [
+        "Comm routing skeleton; not full WCS PLC"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Machine-MsgMap-Configuraton",
+          "file": "FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+          "id": "fpc-machine-msgmap-configuraton",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Control Module",
+          "file": "docs/training/FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Machine MsgMap Configuration (Configuraton spelling)",
+          "file": "docs/training/FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+          "id": null,
+          "category": "FPC Documents 1",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Scanner Control Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Scanner-Control-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Sorter Configuration Checklist",
+          "file": "docs/training/FPC Docs 3/FPC-SorterConfigurationChecklist.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "HIGH",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MsgMap.asc",
+      "schema_headers": [
+        "Message_Name",
+        "Machine_Name",
+        "Recv_Msg_Type",
+        "Send_Msg_Type",
+        "Ack_Msg_Type",
+        "Menu_Name",
+        "Low_Cursor",
+        "High_Cursor",
+        "Stat_Cursor",
+        "Last_Record",
+        "Low_Head",
+        "High_Head",
+        "Key_Cursor",
+        "Id",
+        "LastId",
+        "Record",
+        "Delimiter",
+        "FieldLength",
+        "AckLen",
+        "CheckFile",
+        "pMsgType"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/MsgMap.asc",
+        "workspace/active/RUN/FORTNA/MsgMap.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        50,
+        50
+      ],
+      "active_row_count_samples": [
+        5,
+        5
+      ]
+    },
+    {
+      "table_name": "MsgTrack",
+      "subsystem": "communications_runtime",
+      "purpose": "Tracking message outbound/inbound queue (runtime). Often empty on RUNs.",
+      "row_semantics": "Queue rows for tracking messages when the file is populated.",
+      "key_fields": [],
+      "identity_fields": [],
+      "relationship_fields": [
+        {
+          "field": "Menu_Name",
+          "target_table": "MsgMap",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "Referenced from MsgMap when used"
+        }
+      ],
+      "references": [
+        "MsgMap",
+        "SrtTrack"
+      ],
+      "active_row_rules": [
+        "Non-empty message payload / destination when file has schema"
+      ],
+      "inactive_row_rules": [
+        "Empty file or all-blank rows"
+      ],
+      "optional_feature_rules": [],
+      "controller_scope_behavior": "Runtime queue; may be zero-byte on archive.",
+      "generation_implications": [
+        "RUNTIME_DATA; absence is normal"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Sorter-Control-Module",
+          "file": "FPC Docs 3/FPC-Sorter-Control-Module.docx",
+          "id": "fpc-sorter-control-module",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "LOW",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MsgTrack.asc",
+      "schema_headers": [],
+      "schema_sources_all": [],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [],
+      "active_row_count_samples": [],
+      "schema_note": "Header unavailable (empty or missing ASC). Semantics from docs/catalog only; no invented fields claimed as RUN-present."
+    },
+    {
+      "table_name": "MsgWCS",
+      "subsystem": "communications_runtime",
+      "purpose": "WCS outbound message queue: MsgText + Destination topic + tx status.",
+      "row_semantics": "Queue slots; Destination topic (/topic/\u2026) counts as active even when MsgText blank.",
+      "key_fields": [
+        "MsgText",
+        "Destination",
+        "TxStat",
+        "DbKey",
+        "DbTime"
+      ],
+      "identity_fields": [
+        "Destination"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Destination",
+          "target_table": "WCSEvents",
+          "edge_type": "DERIVED_RELATIONSHIP",
+          "note": "Topics align with WCSDestination"
+        },
+        {
+          "field": "Menu_Name",
+          "target_table": "MsgMap",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "MsgMap",
+        "WCSEvents",
+        "Machine"
+      ],
+      "active_row_rules": [
+        "Destination present (topic path) OR MsgText present"
+      ],
+      "inactive_row_rules": [
+        "Blank Destination and MsgText"
+      ],
+      "optional_feature_rules": [],
+      "controller_scope_behavior": "Shared queue; MsgMap selects owning machine.",
+      "generation_implications": [
+        "Proves WCS messaging activity; TCP peer still configuration",
+        "RUNTIME_DATA classification"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Machine-MsgMap-Configuraton",
+          "file": "FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+          "id": "fpc-machine-msgmap-configuraton",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/MsgWCS.asc",
+      "schema_headers": [
+        "MsgText",
+        "Destination",
+        "TxStat",
+        "DbKey",
+        "DbTime",
+        "iDbTime"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/MsgWCS.asc",
+        "workspace/active/RUN/FORTNA/MsgWCS.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        2000,
+        2000
+      ],
+      "active_row_count_samples": [
+        1999,
+        1999
+      ]
+    },
+    {
+      "table_name": "WCSEvents",
+      "subsystem": "communications",
+      "purpose": "Static WCS/NMS event \u2192 destination/category/service enable map.",
+      "row_semantics": "One EventName with WCSEnable/WCSDestination and optional NMS fields.",
+      "key_fields": [
+        "EventName",
+        "WCSEnable",
+        "WCSDestination",
+        "WCSCategory",
+        "WCSService",
+        "WCSMachProc",
+        "NMSEnable"
+      ],
+      "identity_fields": [
+        "EventName"
+      ],
+      "relationship_fields": [
+        {
+          "field": "WCSDestination",
+          "target_table": "MsgWCS",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "WCSMachProc",
+          "target_table": "Machine",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "EventName",
+          "target_table": "MsgMap",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        }
+      ],
+      "references": [
+        "MsgWCS",
+        "MsgMap",
+        "Machine",
+        "wcsAlarm",
+        "wcsSeverity"
+      ],
+      "active_row_rules": [
+        "EventName present",
+        "WCSEnable when event armed"
+      ],
+      "inactive_row_rules": [
+        "Blank EventName"
+      ],
+      "optional_feature_rules": [
+        "NMS* optional OpenNMS path"
+      ],
+      "controller_scope_behavior": "Usually base shared; enable flags select live events.",
+      "generation_implications": [
+        "Static event catalog for WCS interface discovery"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Machine-MsgMap-Configuraton",
+          "file": "FPC Documents 1/FPC-Machine-MsgMap-Configuraton.docx",
+          "id": "fpc-machine-msgmap-configuraton",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-OpenNMS-Configuration",
+          "file": "FPC-Docs 2/FPC-OpenNMS-Configuration.docx",
+          "id": "fpc-opennms-configuration",
+          "category": "FPC Docs 2",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/WCSEvents.asc",
+      "schema_headers": [
+        "EventName",
+        "WCSEnable",
+        "WCSDestination",
+        "WCSCategory",
+        "WCSService",
+        "WCSMachProc",
+        "WCSLastTime",
+        "NMSEnable",
+        "NMSLastTime"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/WCSEvents.asc",
+        "workspace/active/RUN/FORTNA/WCSEvents.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        110,
+        110
+      ],
+      "active_row_count_samples": [
+        99,
+        99
+      ]
+    },
+    {
+      "table_name": "Encoders",
+      "subsystem": "sorter",
+      "purpose": "Sorter/merge encoder devices: ticks/ft, target FPM, enable bit, jamzone.",
+      "row_semantics": "One Encoder Name with Encoder I/O, timing, speed limits, EnableBit, Jamzone.",
+      "key_fields": [
+        "Encoder Name",
+        "Encoder I/O",
+        "Encoder Timer",
+        "Ticks Per Foot",
+        "Target FPM",
+        "EnableBit",
+        "Jamzone",
+        "Tolerance_FPM",
+        "StoponError"
+      ],
+      "identity_fields": [
+        "Encoder Name"
+      ],
+      "relationship_fields": [
+        {
+          "field": "Encoder I/O",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "EnableBit",
+          "target_table": "Conveyor",
+          "edge_type": "EXPLICIT_REFERENCE",
+          "note": ""
+        },
+        {
+          "field": "Jamzone",
+          "target_table": "Jamzones",
+          "edge_type": "OPTIONAL_RELATIONSHIP",
+          "note": ""
+        },
+        {
+          "field": "Encoder Name",
+          "target_table": "Sorters",
+          "edge_type": "DOCUMENTED_RELATIONSHIP",
+          "note": "Sorters.Encoder ioName"
+        }
+      ],
+      "references": [
+        "Conveyor",
+        "Sorters",
+        "Jamzones"
+      ],
+      "active_row_rules": [
+        "Encoder Name present and not placeholder"
+      ],
+      "inactive_row_rules": [
+        "Blank Encoder Name"
+      ],
+      "optional_feature_rules": [
+        "NoSortonError / NoSortOnSpeed optional sort inhibit",
+        "DupToMemBit optional"
+      ],
+      "controller_scope_behavior": "Encoders.asc.<CONTROLLER> overlay preferred.",
+      "generation_implications": [
+        "Encoder scale/speed seeds for sorter/sawtooth when generation supported"
+      ],
+      "document_sources": [
+        {
+          "title": "FPC-Shifter-And-Sorter-Configuration",
+          "file": "FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": "fpc-shifter-and-sorter-configuration",
+          "category": "FPC Docs 3",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC-HighSpeedSawtoothMerge",
+          "file": "FPC Documents 1/FPC-HighSpeedSawtoothMerge.docx",
+          "id": "fpc-highspeedsawtoothmerge",
+          "category": "FPC Documents 1",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        },
+        {
+          "title": "FPC Shifter And Sorter Configuration",
+          "file": "docs/training/FPC Docs 3/FPC-Shifter-And-Sorter-Configuration.docx",
+          "id": null,
+          "category": "FPC Docs 3",
+          "relevance": "CRITICAL",
+          "index": "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+        }
+      ],
+      "confidence": "HIGH",
+      "schema_source": "workspace/cp4-run/RUN/FORTNA/Encoders.asc",
+      "schema_headers": [
+        "Encoder Name",
+        "Encoder I/O",
+        "Encoder Timer",
+        "Ticks Per Foot",
+        "Encoder Ticks",
+        "Calculated FPM",
+        "Target FPM",
+        "DupToMemBit",
+        "Tolerance_FPM",
+        "Delay Timer",
+        "Error",
+        "StoponError",
+        "EnableBit",
+        "Jamzone",
+        "NoSortonError",
+        "Failed",
+        "SampleSeconds",
+        "SampleTicks",
+        "Minimum_Calc_FPM",
+        "Maximum_Calc_FPM",
+        "NoSortOnSpeed",
+        "pSpeedOkay"
+      ],
+      "schema_sources_all": [
+        "workspace/cp4-run/RUN/FORTNA/Encoders.asc",
+        "workspace/active/RUN/FORTNA/Encoders.asc"
+      ],
+      "run_dirs": [
+        "workspace/cp4-run/RUN",
+        "workspace/active/RUN"
+      ],
+      "row_count_samples": [
+        25,
+        25
+      ],
+      "active_row_count_samples": [
+        0,
+        0
+      ]
+    }
+  ]
+}

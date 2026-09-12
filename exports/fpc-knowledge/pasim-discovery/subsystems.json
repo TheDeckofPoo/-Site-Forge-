@@ -1,0 +1,72 @@
+{
+  "generated_at": "2026-09-12T19:07:06.675666+00:00",
+  "machine": "PASIM1",
+  "transport": {
+    "present": false,
+    "node_count": 0,
+    "edge_count": 0,
+    "visual_freeze": true,
+    "metrics": {}
+  },
+  "sawtooth": {
+    "present": false,
+    "merges": [],
+    "counts": {
+      "merges": 0,
+      "lanes": 0
+    },
+    "config_required": [],
+    "sources": {},
+    "semantics": {},
+    "lanes": [],
+    "vfds": [],
+    "photoeyes": [],
+    "encoders": []
+  },
+  "sorter": {
+    "present": false,
+    "sorters": [],
+    "generation_state": "NOT_SUPPORTED",
+    "note": "Discovery stub only \u2014 no sorter PLC generation"
+  },
+  "tracking_wcs": {
+    "tracking_systems": [],
+    "wcs_interfaces": [],
+    "generation_state": "NOT_SUPPORTED"
+  },
+  "vfd_summary": {
+    "count": 0,
+    "bases": [],
+    "raw_counts": {}
+  },
+  "operational_groups": {
+    "startstop_zones": 0,
+    "jam_zones": 0
+  },
+  "sorter_table_classes": {
+    "static_active_rows": 0,
+    "runtime_active_rows": 0,
+    "static_tables": [
+      "Sorters.asc",
+      "SrtAppControl.asc",
+      "SrtBadGapCnfg.asc",
+      "SrtCommMsgMatch.asc",
+      "SrtHrtBeat.asc",
+      "SrtLaneNotAvail.asc",
+      "SrtRndRobin.asc",
+      "SrtScanBoss.asc",
+      "SrtSimConfig.asc",
+      "SrtZoneLane.asc"
+    ],
+    "runtime_tables": [
+      "MsgTrack.asc",
+      "SrtScanSts.asc",
+      "SrtTrack1.asc",
+      "SrtTrack2.asc",
+      "SrtTrack3.asc",
+      "SrtTrack4.asc",
+      "SrtTrack5.asc",
+      "XfrTrack.asc"
+    ]
+  }
+}

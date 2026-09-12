@@ -1,0 +1,83 @@
+{
+  "machine": "PASIM1",
+  "buckets": {
+    "by_active_state": {
+      "ACTIVE_LIKELY": [
+        "area:AREA_1"
+      ]
+    },
+    "by_inclusion": {
+      "INCLUDED": [
+        "area:AREA_1"
+      ]
+    }
+  },
+  "counts": {
+    "by_active_state": {
+      "ACTIVE_LIKELY": 1
+    },
+    "by_inclusion": {
+      "INCLUDED": 1
+    }
+  },
+  "scoring": {
+    "weights": {
+      "mtrchain": 3,
+      "mtrchain_aux": 2,
+      "mtrchain_stop_zone": 2,
+      "jam_link": 3,
+      "jamzone_link": 3,
+      "jamcheck_link": 3,
+      "full_link": 2,
+      "fullline_link": 2,
+      "fulljam_link": 2,
+      "startstop_link": 2,
+      "path_link": 2,
+      "convpath_link": 2,
+      "saw_lane": 3,
+      "saw_merge": 3,
+      "hssaw_link": 3,
+      "hssaw_lane": 3,
+      "hssaw_merge": 3,
+      "sorter_table": 2,
+      "sorter_static": 2,
+      "sorter_runtime": 1,
+      "sorter_research_integrate": 1,
+      "controller_io": 3,
+      "io_assignment": 3,
+      "configio_link": 2,
+      "fortnadt_link": 1,
+      "iocard_link": 2,
+      "pe_assignment": 2,
+      "motor_link": 2,
+      "vfd_link": 2,
+      "encoder_link": 2,
+      "ownership": 2,
+      "explicit_machine_name": 2,
+      "controller_overlay": 1,
+      "merge_link": 2,
+      "geometry_candidate": 1,
+      "numbering_hint": 0,
+      "source": 0
+    },
+    "thresholds": {
+      "ACTIVE_CONFIRMED": 5,
+      "ACTIVE_LIKELY": 3,
+      "CANDIDATE": 1
+    },
+    "doc_refs": [
+      "FPC-Fulls-Jams-Fulljams",
+      "FPC-Motor-Startup-Chains",
+      "FPC-StartStopZones"
+    ],
+    "top_scores": []
+  },
+  "rules": [
+    "Explicit RUN relationships beat numbering",
+    "Row order is supporting evidence only",
+    "INACTIVE_CONFIRMED / HISTORICAL_OR_STALE never INCLUDED",
+    "Engineer override wins when present",
+    "Cross-table participation (Mtrchain/Jam*/Full*/Saw*/Sorter/Configio) raises activity_score",
+    "Stale rows are never deleted \u2014 only INCLUDED/AVAILABLE/EXCLUDED"
+  ]
+}

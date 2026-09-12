@@ -1,0 +1,169 @@
+
+
+FortnaPlus ControlMotor Startup Chains
+
+Document Revision: 1.4
+Date: 20-Jan-2023
+
+Revision
+Date
+Author
+Revision Summary
+1.0
+18-Apr-2013
+B C Conklin
+New document
+1.1
+06-Apr-2015
+B C Conklin
+Added required descriptions
+1.2
+13-Nov-2017
+T R Kremser
+Added AutoSelectHtr feature
+1.3
+20-Jan-2023
+T R Kremser
+Update and general refresh
+
+Table of Contents
+ TOC \o "1-3" \h \z \u Glossary of Terms PAGEREF _Toc125103307 \h 4
+1.Motor Chains PAGEREF _Toc125103308 \h 5
+2.The Mtrchain Table PAGEREF _Toc125103309 \h 6
+3.Creating a Motor Chain PAGEREF _Toc125103310 \h 8
+4.Motor Chain Colors PAGEREF _Toc125103311 \h 9
+
+Confidential/Proprietary Statement
+This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.  It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document.  Fortna Material Handling reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order.
+
+Glossary of Terms
+AC – Automation Controller
+FPC – FortnaPlus Control
+UPS – Uninterruptible Power Supply
+
+Motor Chains
+Motor startup chains control the motors on the system.  They control the startup sequences, startup timing, and inter-dependencies.  They also control the display colors of the motors and their corresponding conveyor parts on the FPC screen.
+Delaying the starting of motors through the use of timers prevents electrical overloads and reduces the size of current spikes, which helps reduce electricity costs for our customers.  It also gives us the opportunity to activate warning horns before a set of motors are started, for safety.  Motor chains are also important for proper operation of the conveyor system, as they stop upstream sections when jams or full conditions occur, so containers are not fed into stopped conveyor sections.  Similarly, they ensure that the conveyor starts from the downstream end to create space for upstream containers to move into as additional conveyor sections, in turn, are started.
+Each motor circuit is designed with an auxiliary contact that is made available as an input to FPC to indicate that the motor contactor has engaged.  These contacts are used in both the Motor_Aux and Heater Bit fields within FPC – Motor_Aux to signal the next link in the motor chain, and Heater Bit to protect against motor overloads.  The auxiliary contact will not engage if the motor overload has tripped.  The use of auxiliary contact inputs ensures that motors FPC has requested to start have actually started before starting upstream motors.  The auxiliary contact of the first motor in the chain is then used to initialize the starting sequence of the next motor in the chain.
+A motor start sequence begins when the auxiliary contact of the prior motor turns ON (Motor_Aux).  The next motor will turn ON when the timer completes.  If the auxiliary contact of a motor does not come on within the specified time (Heater Debounce) a motor error (Heater Error) is activated in the Errors table.
+Motor chain features:
+The motor and conveyor part colors for the chain are updated based on the status of the motor.
+If the auxiliary contact is OFF, the motors in the motor chain are unfired unless a GoUntil signal is on for the individual motor.
+The Motor_Chained* and Motor_Aux columns are used to select parts from the Conveyor table for easy configuration of the display parts and the next motor.  Heater Bit, Enabled and GoUntil are also used to select parts from the Conveyor table.
+Timers are selected from the timemenu table for the Timer_Name and RUN Timer_Name columns.  To view the individual timer record, right-click on the down-arrow symbol next to the field.
+When creating a motor chain, enter the Motor_Name, select the motor using the Motor_Ndx field, and choose the auxiliary contact in Motor_Aux for the prior motor, then select the motor’s Heater Bit.  Note: The Motor_Name must exactly match the part name selected in Motor_Ndx.
+Use the Refresh Triggers function (Configuration Menu | Trigger Utilities | Triggers | Refresh Triggers) to automatically populate the Timer_Name fields.  The function will close the Mtrchain table.  When you re-open the table, you will see the newly-created timers in the Timer_Name fields.  The timer names are generated based on the Motor_Aux names.  The timers are created with a default Timer_Preset of 1 second that you can adjust.
+The Mtrchain Table
+The Mtrchain table (Configuration Menu | Standard Controls | Motor Startup Chains) is used to define motor startup chain configurations.
+Mtrchain Table
+Field
+Type
+Description
+Motor_Name
+String
+Enter a name for this record.  The name must match the text of the Motor_Ndx part name.  A name is required here for the motor chain to run.
+Motor_Ndx
+PopUp
+Choose the motor part that will be turned ON when the motor startup processing for this row is complete.  An entry is required here for the motor chain to run.
+Timer_Name
+PopUp
+Choose the timer that will set the delay before this entry is activated.  Use Refresh Triggers (Configuration Menu | Trigger Utilities | Refresh Triggers) to create these timers automatically once Motor_Name, Motor_Ndx, and Motor_Aux values have been defined.  The table will close when you run Refresh Triggers.  The timers will appear when you re-open the table.  An entry is required here for the motor chain to run.
+Timer_Preset
+Float
+Enter the time to use for Timer_Name.  When Refresh Triggers creates a new timer, this will be set to 1.00 seconds.  Adjust as required.
+Motor_Chained1
+PopUp
+Choose up to ten parts that will be turned ON with the motor.  You can select non-IO parts here, such as the “P” parts that appear on the conveyor display, so they will change color to reflect the state of the motor.
+Motor_Chained2
+PopUp
+
+Motor_Chained3
+PopUp
+
+Motor_Chained4
+PopUp
+
+Motor_Chained5
+PopUp
+
+Motor_Chained6
+PopUp
+
+Motor_Chained7
+PopUp
+
+Motor_Chained8
+PopUp
+
+Motor_Chained9
+PopUp
+
+Motor_Chained10
+PopUp
+
+Motor_Aux
+PopUp
+Choose the auxiliary contact for the upstream motor in the chain.  An entry is required here for the motor chain to run.
+RUN Timer_Name
+PopUp
+If needed, choose a timer here.  This timer is started once the timer in Timer_Name has completed and Motor_Ndx has turned ON.
+Note that this timer will run to completion, but it is not used in the code anywhere!  TRK.
+GoUntil
+PopUp
+If needed, choose a photoeye part here.  The intent is for the eye to be located at the end of a belt.  When a container arrives and blocks the eye, the motor is turned OFF by setting the part selected in the Enabled field to OFF.
+Enabled
+PopUp
+If needed, choose a control relay part that will be used to stop the motor.  This part must be ON for Motor_Ndx to run.  Required if GoUntil is used.
+Horn
+PopUp
+Choose a record from table horns if you want a horn to sound each time Motor_Ndx is turned ON.  Choose NO HORN (row 1) if you do not want a horn to sound – do not leave it at the default N/A setting.
+The exception to this is for Fullline and Fulljam table entries, which control the horns_isdone value directly.  For those entries, you must choose N/A here.
+Note:  The motor chain timer will not complete (time out) until the horns_isdone field is set to 1.
+ResetHorn
+Y/N
+Set this to Y to reset the horn.
+Heater Bit
+PopUp
+Choose the “motor heater” (auxiliary contact) input for the motor controlled by this row in the table.  Historically, this was a thermally-activated device that would open the circuit and disable the motor if it drew too much current.  Now it is all done electronically, but the name lives on.
+AutoSelectHtr
+Y/N
+Set this to Y to automatically populate the Heater Bit field with the AUX part that goes with the name of the Motor_Ndx part, per the naming convention.  Example:  Motor_Ndx = M1234, Heater Bit = M1234_AUX.
+When this field is set to Y, it will be checked at each FPC startup, and when Refresh Triggers is run.  You can also use the SetAutoSelectHtr and UnSetAutoSelectHtr functions from Administration Menu | Set Security Levels to set / clear this column in bulk.  Alt-K activates the function.
+Heater Error
+PopUp
+Choose an error that will be raised when the Heater Bit does not turn ON before the Heater Debounce timer expires.
+An entry will be automatically created by the Refresh Triggers function or when FPC is restarted if one is not chosen.
+Heater Debounce
+Int
+Enter the debounce value for Heater Bit and Heater Error.  If not set (0), it will be set to 300 when Refresh Triggers is run or FPC is restarted.  The value represents passes through the CTRL process, which is usually set to run every 10 mSec, for a time of 3 seconds.
+Debounce Value
+Int
+Used by the software to count passed through the CTRL process for Heater Debounce.  Each pass usually represents 10 mSec.
+Stop Zone
+PopUp
+If needed, choose a jam zone to stop if a Heater Error occurs.
+StopState
+Int
+Flag set by the software to indicate that the system is activating the stop request flag for Stop Zone.
+ForceAux
+Y/N
+Set this to Y during testing to force Heater Bit to turn ON when the motor is started regardless of the state of the auxiliary contact input.  This is useful when trying to test motor chains configurations without being connected to the hardware.
+You can use functions TurnForceAuxFlagOn and TurnForceAuxFlagOff from Administration Menu | Set Security Levels to set / clear this column in bulk for all rows with a valid Heater Bit.  Alt-K activates the function.
+pStateFrcAux
+Y/N
+Used by the software to track the state of ForceAux.
+
+Creating a Motor Chain
+Determine the required starting order of the conveyors.  This must be done so that containers will not travel from a running conveyor segment to a conveyor segment that has not yet started.
+Start with Mtrchain record 1 (do not use record 0).  Enter the name of the first motor to be started in the Motor_Name field.
+In Motor_Ndx, select the corresponding motor.
+In Motor_Aux, for the first motor in the chain, use a memory bit that is a latch bit in table Jamzones, or one that is set by a trigger.  Note that subsequent entries in the chain will use auxiliary contact input bits.
+In Motor_Chained1, choose the “P” part for the conveyor so it can control the display color of that part on the conveyor display.  This links the state of the display to the state of the motor.  For example, if the motor is named M1000, the display part might be called P1000.
+Use as many of the Motor_Chained* fields as needed to associate additional display parts with the Motor_Ndx motor state.  Often several motor starters are hard-wired together, so they will all activate together.  You can also include other parts, such as solenoids, here if they need to be activated with the motor.  Note that all parts included in this way are also sent in the messages to EV10 to control the display there.
+Create the next entry in the chain in row 2, entering the Motor_Name and choosing the Motor_Ndx, as before, for the next motor upstream.
+In Motor_Aux, choose the auxiliary contact input of the previous motor in the chain.
+No need to fill in the Timer_Name, Heater Bit and Heater Error fields.  We will use the Refresh Triggers function to do that automatically once we have entered the entire chain.
+Complete the Motor_Chained* entries, as before.
+Continue in this manner until the entire chain is defined.
+Use the Refresh Triggers function (Configuration Menu | Trigger Utilities | Refresh Triggers) to automatically populate the Timer_Name, Heater Bit and Heater Error fields.  The Mtrchain table will close when you run the function.  Re-open it to see the changes.
+Adjust the Timer_Preset values as needed.  The default value, when created, is 1.00 seconds, which is often appropriate for normal conveyor sections.  Large sorters may require more time to reach speed – perhaps 10 seconds.  Be sure 

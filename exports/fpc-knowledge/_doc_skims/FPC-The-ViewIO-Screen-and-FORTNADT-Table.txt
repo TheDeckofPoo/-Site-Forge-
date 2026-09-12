@@ -1,0 +1,128 @@
+
+
+FortnaPlus ControlUsing the View I/O Screen
+
+Document Revision: 1.1
+Date: 05-Jan-2021
+
+Revision
+Date
+Author
+Revision Summary
+1.0
+27-Jul-2018
+B C Conklin
+New document
+1.1
+05-Jan-2021
+T R Kremser
+Updates and general refresh
+
+Table of Contents
+ TOC \o "1-3" \h \z \u 1.Purpose PAGEREF _Toc60755828 \h 4
+2.Navigation PAGEREF _Toc60755829 \h 4
+3.Screen Features Details PAGEREF _Toc60755830 \h 5
+4.IO Saved States PAGEREF _Toc60755831 \h 8
+
+Confidential/Proprietary Statement
+This document contains trade secrets and information that is considered confidential and proprietary to Fortna, Inc.  It may not be duplicated, used, or disclosed outside the original recipient organization, and it may not be duplicated, in whole or in part, for any purpose other than to evaluate this document.  Fortna Material Handling reserves the right to modify this document as necessary to reflect any terms and conditions negotiated and included as part of a subsequent contract or purchase order.
+
+Purpose
+The View I/O screen is a very useful tool for debugging and observing detailed operation of FPC.  It allows you to find the current state of each input and output bit defined on the system.
+The screen shows, in one convenient view, a table organized by word and bit.  It also shows which AC owns each word, and the part name and description from the Conveyor table.  You can search by part name or word and bit to find specific IO points, and even locate a part on the system diagram.  The ON/OFF state of each bit is shown, along with the color-coded state of that bit, including whether it is forced or inverted.  Disable bits can also be viewed.  A convenient “Octal Mode” button allows instant conversion of the word and bit values on the display between Octal and Decimal notation.  The “Local I/O Only” button limits the display to parts controlled by this AC.
+
+Navigation
+Use the arrow keys to move around the screen.  The scroll bar or Page Up / Page Down keys move one screen at a time.  Enter a word and bit value in the “Go to” fields at the lower-right of the screen to jump directly to a particular bit.  Clicking on a bit will select it.
+When a bit is selected, its Part Name and Description will be shown.  If the bit is associated with a part, its Disable (Conveyor_Disable_I_O) and GoNow (Conveyor_Overide_I_O) status will be shown.  Bits with no associated part will show a Part Name of SPARE.
+Screen Features Details
+The following table describes each screen feature in detail.
+Feature
+Description
+Word Address
+The header column on the left side of the screen shows the word address value.  It can be displayed in Decimal or Octal notation based on the “Octal Mode” button.  The Word relates to the Octal_Word column in table Configio.  The information displayed in the row is taken from the FORTNADT table Bits_On_Off, Forced_On, Forced_Off and Inverted columns.  The row number in FORTNADT corresponds to the Word value in Decimal notation.
+Bit Address
+The header row at the top of the screen shows the bit value in Decimal or Octal notation based on the “Octal Mode” button.  Each word has 16 bits.  Note that the “zero” bit is on the right.
+Bit Table
+The main area of the screen shows a color-coded box for each Bit.  Each box also shows a 1 or 0 to indicate if the Bit is ON or OFF, as interpreted by FPC after all forces and inverts are applied.  Green and Red indicate normal ON and OFF states.  Yellow indicates the Bit is forced.  Blue indicates the Bit is inverted (but not forced).
+State Buttons
+The three buttons in the upper-right corner display the state and allow control of the bit selected.  Each button will show green if the attribute is selected, and grey otherwise.  Click the button to toggle the state of that attribute.
+NOTE:  Forcing IO could potentially produce a dangerous situation or damage equipment!
+NOTE:  Forces persist until removed.  If a Bit is forced and a “Save Data” is performed, it saves the force conditions also.  Forced bits will not react to any IO or program logic that would normally affect them.
+
+The “Force On” and Force Off” buttons set the Bit ON or OFF, respectively, regardless of the state set by the IO hardware.  The “Forced On” and “Forced Off” buttons will display in green, and the Bit will display in yellow, with a “1” indicating ON and “0” indicating OFF.
+The “Inverted” button flips the state of the bit with respect to the state reported by the IO hardware.  When a Bit is inverted, the Inverted button will show in green, and the Bit will be blue.  If the IO hardware indicates a bit is ON, it will be treated as OFF in FPC when inverted, and vice-versa.  The number shown on the Bit always indicates its state as interpreted by FPC.  The keyboard “+” key (not the one on the number pad) can be used to toggle “Inverted”, as well.
+If a Bit is both forced and inverted, it will display in yellow, but both the Forced and Inverted buttons will be green.
+It is generally only meaningful to alter the state of Local IO.  Integer flag #75 FLAG_PROTECTFORCE, which defaults to 1, allows bit for Remote IO to be forced.  Setting the flag to 0 prevents this.  Forces only apply on the local AC – they are not distributed.  Forcing a bit owned by a remote AC will override its state only on the local AC, and not on the owning AC.
+The State buttons are subject to user security.  It is possible to configure them so a user can view this screen, but not be allowed to alter the bit states.
+Owner
+If the word and bit values are assigned to a part in table Conveyor, the Machine_Name selected there is shown.
+Part Name
+If the word and bit values are assigned to a part in table Conveyor, the IO_Name for that part is shown.
+Description
+If the word and bit values are assigned to a part in table Conveyor, the General_Description for that part is shown.
+Disable
+If the word and bit values are assigned to a part in table Conveyor, the “Disable I/O” bit pattern for that part is shown.  You can set the value from here, as well.  Enter the bit pattern desired.  You can omit leading zeros.  A single zero clears the value.
+GoNow
+If the word and bit values are assigned to a part in table Conveyor, the “Overide I/O” bit pattern for that part is shown.  You can set the value from here, as well.  Enter the bit pattern desired.  You can omit leading zeros.  A single zero clears the value.
+Search
+Opens a dialog that will search Conveyor_IO_Name for a part.  Partial matches are supported.  The name corresponds to the “Part Name” field here.
+Screen Location
+Shows the location of the current part on the conveyor diagram.  The View I/O screen is temporarily hidden, and the conveyor diagram background color is set to black.  The diagram is scrolled and zoomed to put the part near the center, with a flashing circle around it.  Use Esc to exit the locate screen and return to the View I/O screen.
+Go to
+Type a word and bit value into the boxes.  When you hit Enter, the table will be repositioned and the desired bit will be highlighted.
+Octal Mode
+This button controls the display format for the Word and Bit headers.  Its initial state when the screen is opened is determined by the setting of the OCTAL_MODE flag (Integer Flags #101), but you can toggle the state here for instant conversion between Octal and Decimal values.  This is helpful when trying to find matching entries in tables Configio and FORTNADT.  The setting will be retained if View I/O is closed and reopened in the same session, but it does not alter the OCTAL_MODE system setting.
+Local I/O Only
+This button will restrict the displayed words to only those that are owned by this AC.  The setting is not retained when the View I/O screen is closed – it always will display all system IO when first opened.
+Help
+Opens a (somewhat outdated) help message about this screen.
+Cancel
+Close the screen.  Equivalent to the red X in the upper-right corner.
+Ownership Icons
+In the pane to the right of the Bit table, there is a column of icons that indicate word ownership.
+The green “expansion card” icon indicates the word is owned by the local AC.  The key at the bottom of the window indicates it is “Local IO”.  In the example image, above, words 200 – 203 are local IO. 
+The blue “monitor” icon indicates the word is owned by a “Remote PC”.  The Bit states will change, but at a slower speed, as the normal IO sharing is performed once per second between ACs.  If the FastIO module is used, the update time will be shorter for a small set of words.
+# Recv
+The column between the Ownership icons and the scroll bar is not normally used, and will show all zeros, but it can be activated by setting up a Batch job for InternalProcCtrl = “Check IO Recv Rate” to run on every count of the CTRL or SORT process.  It will show a value of 200 for Local IO if all is working normally – that is the update rate of the IO data by the SORT process, in samples per second – equivalent to the 5 mSec cycle time of SORT.  This can be used as a diagnostic aid if you suspect the SORT process is not keeping up with its workload.  Similarly, for “Remote PC” words, it will show 51 samples per second – the rate of the SERV process.  It displays the values from FORTNADT_RecvBucket2.
+IO Saved States
+IO points can be forced or inverted, as described above.  These states are saved as part of the configuration in table FORTNADT (file RUN/FORTNA/FORTNADT.asc).  You may inspect the FORTNADT.asc file in a saved configuration with a text editor to determine the forced/inverted state of any IO point.  Inspecting a “snapshot” in this manner can be a useful diagnostic aid.
+Each row in the FORTNADT table corresponds to a Word of IO.  Your text editor (or the FPC table display) will represent the row numbers in the file in decimal notation.  The View I/O screen and the Conveyor table may be set to display the information in Octal notation based on the setting of the Integer Flag, which is flag number 101 in the flagmnu table.  In the saved file (RUN/FORTNA/flagmnu.asc), the flag will be found on line 103, labeled as OCTAL_MODE (add 2 for the header line and row zero to “match up” the row numbers with the flag numbers).  A non-zero value indicates Octal Mode is set.  If Octal Mode is set, you must convert the Octal values for Word and Bit to Decimal to find the appropriate row in FORTNADT.
+To convert from Octal to Decimal, toggle the Octal Mode button on the View I/O screen, if available, or use a programmer’s calculator, or do it by hand, remembering that each Octal digit is a power of 8, so work from the rightmost digit toward the left.  Take the rightmost digit as is, then add 8 times the next digit, and 64 times the next, and 512 times the next.
+For example:  Word 321, bit 15 in Octal notation is:  1 + 2*8 + 3*64 = 209 Decimal for the word, and 5 + 1*8 = 13 Decimal for the bit.  Use this handy chart for the bit conversion:
+Octal Bit
+17
+16
+15
+14
+13
+12
+11
+10
+07
+06
+05
+04
+03
+02
+01
+00
+Decimal Bit
+15
+14
+13
+12
+11
+10
+09
+08
+07
+06
+05
+04
+03
+02
+01
+00
+In the FORTNADT.asc file, be sure to allow for the header line and the “zeroth” row by adding 2 to the Decimal word value to get the correct row number.
+In FORTNADT, the second column contains the bits forced on (column name Forced_On).  The third column contains the bits forced off (Forced_Off), and the third column contains inverted bits (Inverted).  The first column (Bits_On_Off) contains the On/Off state of each IO point at the moment the Save Data operation was performed.  Each value is encoded as a 16-bit binary integer, with the “zeroth” (least significant) bit on the right.
+If you are using the vi editor (vi FORTNADT.asc), you can jump directly to a row number using the “G” (Go) command.  Using our example, to go to row 211 (for word 209 Decimal or 321 Octal), hit “Esc” (to make sure you are in command mode), then type 211G.  The file will be repositioned with the cursor on row 211.  You can use “Ctrl-G” or “Esc :f” to display the current row number.  Use “Esc :q!” to exit vi without saving the file.
