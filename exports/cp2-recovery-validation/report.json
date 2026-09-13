@@ -1,0 +1,796 @@
+{
+  "generated_at": "2026-09-13T02:30:34.675543+00:00",
+  "branch_intent": "feature/cp2-recovery-validation",
+  "archive": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\inbox\\20251016-0933-OReillyGreensboro-ORNCCP2-RUN.tar.gz",
+  "product_chain": [
+    "apply_recipe import",
+    "fortna_run_workspace_discover",
+    "workspace/active/site_model.json",
+    "fortna_workbook build (fresh, no merge-existing)",
+    "fortna_autogen from-run --with-io-map --workbook"
+  ],
+  "ok": true,
+  "import": {
+    "ok": true,
+    "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+    "machine": "ORNCCP2",
+    "device_count": 1802
+  },
+  "discover": {
+    "ok": true,
+    "site_model": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\site_model.json",
+    "counts": {
+      "controllers": 11,
+      "areas": 1,
+      "equipment": 63,
+      "equipment_included": 63,
+      "motors": 116,
+      "vfds": 0,
+      "drives": 0,
+      "photoeyes": 44,
+      "encoders": 0,
+      "estop_zones": 1,
+      "sawtooth_merges": 0,
+      "sawtooth_lanes": 0,
+      "sorters": 0,
+      "tracking_systems": 2,
+      "tracking": 2,
+      "wcs_interfaces": 84,
+      "io_points": 0,
+      "motor_chains": 176,
+      "transport_paths": 0,
+      "merges": 0,
+      "scanners": 0,
+      "communications": 86,
+      "decision_traces": 44,
+      "superseded_candidates": 141,
+      "inclusion_reasons": 0,
+      "startstop_zones": 8,
+      "jam_zones": 27,
+      "engineering_areas": 1,
+      "full_groups": 79,
+      "sorter_zones": 0,
+      "og_estop_zones": 1,
+      "relationships": 1099,
+      "unresolved": 0,
+      "transport_nodes": 59,
+      "transport_edges": 28
+    },
+    "has_sawtooth": false,
+    "has_sorter": false
+  },
+  "workbook": {
+    "ok": true,
+    "path": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\autogen_workbook.json",
+    "conveyors": 35,
+    "workbook_cmd_ok": true
+  },
+  "l5x_path": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP2_recovery_validation.L5X",
+  "l5x_source_build": "C:\\Users\\curtiskricke\\SiteForge\\exports\\cp2-recovery-validation\\autogen\\OReillyGreensboro_ORNCCP2.L5X",
+  "sha256": "df09fa9e410b1ec098bf013b314bc7ac85578cb7e9ff4f0c6e139b8e51f843ce",
+  "build": {
+    "ok": true,
+    "generate_error": null,
+    "report_counts": {
+      "conveyors": 35,
+      "io_modules": 37,
+      "io_points": 236,
+      "io_map_mapped": 34,
+      "io_map_rungs": 41,
+      "pe_devices": 44,
+      "programs": [
+        "ORNCCP2_Area_Slow",
+        "ORNCCP2_Area_Fast",
+        "ORNCCP2_Area_L1",
+        "ORNCCP2_Area_L2",
+        "System",
+        "Sys",
+        "IO_MAP"
+      ]
+    }
+  },
+  "modules": {
+    "total": 39,
+    "adapters_count": 7,
+    "child_modules_count": 32,
+    "adapters": [
+      {
+        "name": "Local",
+        "catalog": "1756-L83E",
+        "parent": "Local",
+        "address": "0"
+      },
+      {
+        "name": "CPXXENET1",
+        "catalog": "1756-EN2T",
+        "parent": "Local",
+        "address": "1"
+      },
+      {
+        "name": "T_1794_AENT_1",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.51"
+      },
+      {
+        "name": "T_1794_AENT_2",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.52"
+      },
+      {
+        "name": "T_1794_AENT_3",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.53"
+      },
+      {
+        "name": "T_1794_AENT_4",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.54"
+      },
+      {
+        "name": "T_1794_AENT_5",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.55"
+      }
+    ],
+    "child_modules": [
+      {
+        "name": "T_1794_AENT_1_1",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_1",
+        "address": "1"
+      },
+      {
+        "name": "T_1794_AENT_1_2",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_1",
+        "address": "2"
+      },
+      {
+        "name": "T_1794_AENT_1_3",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_1",
+        "address": "3"
+      },
+      {
+        "name": "T_1794_AENT_1_4",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_1",
+        "address": "4"
+      },
+      {
+        "name": "T_1794_AENT_1_5",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_1",
+        "address": "5"
+      },
+      {
+        "name": "T_1794_AENT_1_6",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_1",
+        "address": "6"
+      },
+      {
+        "name": "T_1794_AENT_1_7",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_1",
+        "address": "7"
+      },
+      {
+        "name": "T_1794_AENT_1_8",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_1",
+        "address": "8"
+      },
+      {
+        "name": "T_1794_AENT_2_1",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_2",
+        "address": "1"
+      },
+      {
+        "name": "T_1794_AENT_2_2",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_2",
+        "address": "2"
+      },
+      {
+        "name": "T_1794_AENT_2_3",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_2",
+        "address": "3"
+      },
+      {
+        "name": "T_1794_AENT_2_4",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_2",
+        "address": "4"
+      },
+      {
+        "name": "T_1794_AENT_2_5",
+        "catalog": "1794-IB16/A",
+        "parent": "T_1794_AENT_2",
+        "address": "5"
+      },
+      {
+        "name": "T_1794_AENT_2_6",
+        "catalog": "1794-OB16P/A",
+        "parent": "T_1794_AENT_2",
+        "address": "6"
+      },
+      {
+        "name": "T_1794_AENT_3_1",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_3",
+        "address": "1"
+      },
+      {
+        "name": "T_1794_AENT_3_2",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_3",
+        "address": "2"
+      },
+      {
+        "name": "T_1794_AENT_3_3",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_3",
+        "address": "3"
+      },
+      {
+        "name": "T_1794_AENT_3_4",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_3",
+        "address": "4"
+      },
+      {
+        "name": "T_1794_AENT_3_5",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_3",
+        "address": "5"
+      },
+      {
+        "name": "T_1794_AENT_3_6",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_3",
+        "address": "6"
+      },
+      {
+        "name": "T_1794_AENT_3_7",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_3",
+        "address": "7"
+      },
+      {
+        "name": "T_1794_AENT_3_8",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_3",
+        "address": "8"
+      },
+      {
+        "name": "T_1794_AENT_4_1",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_4",
+        "address": "1"
+      },
+      {
+        "name": "T_1794_AENT_4_2",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_4",
+        "address": "2"
+      },
+      {
+        "name": "T_1794_AENT_4_3",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_4",
+        "address": "3"
+      },
+      {
+        "name": "T_1794_AENT_4_4",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_4",
+        "address": "4"
+      },
+      {
+        "name": "T_1794_AENT_4_5",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_4",
+        "address": "5"
+      },
+      {
+        "name": "T_1794_AENT_4_6",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_4",
+        "address": "6"
+      },
+      {
+        "name": "T_1794_AENT_4_7",
+        "catalog": "1794-IA16/A",
+        "parent": "T_1794_AENT_4",
+        "address": "7"
+      },
+      {
+        "name": "T_1794_AENT_4_8",
+        "catalog": "1794-OA8I/A",
+        "parent": "T_1794_AENT_4",
+        "address": "8"
+      },
+      {
+        "name": "T_1794_AENT_5_1",
+        "catalog": "1794-OB16P/A",
+        "parent": "T_1794_AENT_5",
+        "address": "1"
+      },
+      {
+        "name": "T_1794_AENT_5_2",
+        "catalog": "1794-IB16/A",
+        "parent": "T_1794_AENT_5",
+        "address": "2"
+      }
+    ],
+    "all_names": [
+      "Local",
+      "CPXXENET1",
+      "T_1794_AENT_1",
+      "T_1794_AENT_1_1",
+      "T_1794_AENT_1_2",
+      "T_1794_AENT_1_3",
+      "T_1794_AENT_1_4",
+      "T_1794_AENT_1_5",
+      "T_1794_AENT_1_6",
+      "T_1794_AENT_1_7",
+      "T_1794_AENT_1_8",
+      "T_1794_AENT_2",
+      "T_1794_AENT_2_1",
+      "T_1794_AENT_2_2",
+      "T_1794_AENT_2_3",
+      "T_1794_AENT_2_4",
+      "T_1794_AENT_2_5",
+      "T_1794_AENT_2_6",
+      "T_1794_AENT_3",
+      "T_1794_AENT_3_1",
+      "T_1794_AENT_3_2",
+      "T_1794_AENT_3_3",
+      "T_1794_AENT_3_4",
+      "T_1794_AENT_3_5",
+      "T_1794_AENT_3_6",
+      "T_1794_AENT_3_7",
+      "T_1794_AENT_3_8",
+      "T_1794_AENT_4",
+      "T_1794_AENT_4_1",
+      "T_1794_AENT_4_2",
+      "T_1794_AENT_4_3",
+      "T_1794_AENT_4_4",
+      "T_1794_AENT_4_5",
+      "T_1794_AENT_4_6",
+      "T_1794_AENT_4_7",
+      "T_1794_AENT_4_8",
+      "T_1794_AENT_5",
+      "T_1794_AENT_5_1",
+      "T_1794_AENT_5_2"
+    ],
+    "catalog_numbers": [
+      "1756-EN2T",
+      "1756-L83E",
+      "1794-AENT",
+      "1794-IA16/A",
+      "1794-IB16/A",
+      "1794-OA8I/A",
+      "1794-OB16P/A"
+    ]
+  },
+  "word_map_entries": 27,
+  "io_map": {
+    "program_present": true,
+    "xic_ote_refs": 68,
+    "nop_only": false,
+    "mapped_rungs_parsed": 34,
+    "representative_mappings": [
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_1:I.Data[6].11",
+        "slot": 6,
+        "bit": 11,
+        "tag": "PE215_J.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_1:I.Data[6].11)OTE(PE215_J.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[1].0",
+        "slot": 1,
+        "bit": 0,
+        "tag": "PE142_JF.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[1].0)OTE(PE142_JF.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[1].1",
+        "slot": 1,
+        "bit": 1,
+        "tag": "PE148_JF.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[1].1)OTE(PE148_JF.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[1].2",
+        "slot": 1,
+        "bit": 2,
+        "tag": "PE238_JF.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[1].2)OTE(PE238_JF.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[1].3",
+        "slot": 1,
+        "bit": 3,
+        "tag": "PE322_P.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[1].3)OTE(PE322_P.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[1].4",
+        "slot": 1,
+        "bit": 4,
+        "tag": "PE324_J.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[1].4)OTE(PE324_J.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[1].5",
+        "slot": 1,
+        "bit": 5,
+        "tag": "PE400_J.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[1].5)OTE(PE400_J.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[1].6",
+        "slot": 1,
+        "bit": 6,
+        "tag": "PE1006_J.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[1].6)OTE(PE1006_J.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[1].7",
+        "slot": 1,
+        "bit": 7,
+        "tag": "PE1008_J.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[1].7)OTE(PE1008_J.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[3].0",
+        "slot": 3,
+        "bit": 0,
+        "tag": "PE1010_J.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[3].0)OTE(PE1010_J.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[3].1",
+        "slot": 3,
+        "bit": 1,
+        "tag": "PE1014_J.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[3].1)OTE(PE1014_J.I.PE_Clear);"
+      },
+      {
+        "direction": "I",
+        "channel": "T_1794_AENT_4:I.Data[3].2",
+        "slot": 3,
+        "bit": 2,
+        "tag": "PE1018_J.I.PE_Clear",
+        "rung": "XIC(T_1794_AENT_4:I.Data[3].2)OTE(PE1018_J.I.PE_Clear);"
+      },
+      {
+        "direction": "O",
+        "channel": "T_1794_AENT_1:O.Data[1].2",
+        "slot": 1,
+        "bit": 2,
+        "tag": "T_2MCR1.I.ES_OK",
+        "rung": "XIC(T_2MCR1.I.ES_OK)OTE(T_1794_AENT_1:O.Data[1].2);"
+      },
+      {
+        "direction": "O",
+        "channel": "T_1794_AENT_1:O.Data[1].3",
+        "slot": 1,
+        "bit": 3,
+        "tag": "T_2WH",
+        "rung": "XIC(T_2WH)OTE(T_1794_AENT_1:O.Data[1].3);"
+      },
+      {
+        "direction": "O",
+        "channel": "T_1794_AENT_1:O.Data[1].4",
+        "slot": 1,
+        "bit": 4,
+        "tag": "WH310",
+        "rung": "XIC(WH310)OTE(T_1794_AENT_1:O.Data[1].4);"
+      }
+    ]
+  },
+  "device_relationships": [
+    {
+      "kind": "exact_baseline_mapping",
+      "run_source": "io-regression-lock CP2 baseline",
+      "expected": "XIC(T_1794_AENT_1:I.Data[6].11)OTE(PE215_J.I.PE_Clear);",
+      "generated_tag": "PE215_J.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_1:I.Data[6].11",
+      "slot": 6,
+      "bit": 11,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_1:I.Data[6].11)OTE(PE215_J.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "photoeye",
+      "run_source": "Conveyor.asc / IO points",
+      "generated_tag": "PE215_J.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_1:I.Data[6].11",
+      "slot": 6,
+      "bit": 11,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_1:I.Data[6].11)OTE(PE215_J.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "photoeye",
+      "run_source": "Conveyor.asc / IO points",
+      "generated_tag": "PE142_JF.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_4:I.Data[1].0",
+      "slot": 1,
+      "bit": 0,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].0)OTE(PE142_JF.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "photoeye",
+      "run_source": "Conveyor.asc / IO points",
+      "generated_tag": "PE148_JF.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_4:I.Data[1].1",
+      "slot": 1,
+      "bit": 1,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].1)OTE(PE148_JF.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "photoeye",
+      "run_source": "Conveyor.asc / IO points",
+      "generated_tag": "PE238_JF.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_4:I.Data[1].2",
+      "slot": 1,
+      "bit": 2,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].2)OTE(PE238_JF.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "photoeye",
+      "run_source": "Conveyor.asc / IO points",
+      "generated_tag": "PE322_P.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_4:I.Data[1].3",
+      "slot": 1,
+      "bit": 3,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].3)OTE(PE322_P.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "photoeye",
+      "run_source": "Conveyor.asc / IO points",
+      "generated_tag": "PE324_J.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_4:I.Data[1].4",
+      "slot": 1,
+      "bit": 4,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].4)OTE(PE324_J.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "jam_or_full_pe",
+      "run_source": "Conveyor.asc PE role",
+      "generated_tag": "PE215_J.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_1:I.Data[6].11",
+      "slot": 6,
+      "bit": 11,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_1:I.Data[6].11)OTE(PE215_J.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "jam_or_full_pe",
+      "run_source": "Conveyor.asc PE role",
+      "generated_tag": "PE142_JF.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_4:I.Data[1].0",
+      "slot": 1,
+      "bit": 0,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].0)OTE(PE142_JF.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "jam_or_full_pe",
+      "run_source": "Conveyor.asc PE role",
+      "generated_tag": "PE148_JF.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_4:I.Data[1].1",
+      "slot": 1,
+      "bit": 1,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].1)OTE(PE148_JF.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "jam_or_full_pe",
+      "run_source": "Conveyor.asc PE role",
+      "generated_tag": "PE238_JF.I.PE_Clear",
+      "generated_module_channel": "T_1794_AENT_4:I.Data[1].2",
+      "slot": 1,
+      "bit": 2,
+      "direction": "I",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].2)OTE(PE238_JF.I.PE_Clear);",
+      "ok": true
+    },
+    {
+      "kind": "control_station",
+      "run_source": "local rack / conveyor IO",
+      "generated_tag": "T_2MCR1.I.ES_OK",
+      "generated_module_channel": "T_1794_AENT_1:O.Data[1].2",
+      "slot": 1,
+      "bit": 2,
+      "direction": "O",
+      "rung": "XIC(T_2MCR1.I.ES_OK)OTE(T_1794_AENT_1:O.Data[1].2);",
+      "ok": true
+    },
+    {
+      "kind": "control_station",
+      "run_source": "local rack / conveyor IO",
+      "generated_tag": "T_3MCR1.I.ES_OK",
+      "generated_module_channel": "T_1794_AENT_3:O.Data[1].2",
+      "slot": 1,
+      "bit": 2,
+      "direction": "O",
+      "rung": "XIC(T_3MCR1.I.ES_OK)OTE(T_1794_AENT_3:O.Data[1].2);",
+      "ok": true
+    }
+  ],
+  "transport": {
+    "programs": [
+      "ORNCCP2_Area_Slow",
+      "ORNCCP2_Area_Fast",
+      "ORNCCP2_Area_L1",
+      "ORNCCP2_Area_L2",
+      "System",
+      "Sys",
+      "IO_MAP"
+    ],
+    "has_area_fast": true,
+    "has_area_slow": true,
+    "has_io_map": true,
+    "has_sys": true,
+    "has_system": true,
+    "pe_udt_tags": 108,
+    "conveyor_count_report": 35,
+    "pe_device_count_report": 44,
+    "pe_logic_rungs_report": 44
+  },
+  "baseline_compare": {
+    "baseline_run_modules": 37,
+    "baseline_l5x_modules": 39,
+    "baseline_word_map": 27,
+    "baseline_iomap_xic_ote": 68,
+    "actual_run_modules": 37,
+    "actual_word_map": 27,
+    "actual_l5x_modules": 39,
+    "actual_iomap_xic_ote": 68,
+    "actual_iomap_nop_only": false,
+    "floor_run_modules_ok": true,
+    "floor_l5x_modules_ok": true,
+    "floor_word_map_ok": true,
+    "floor_iomap_ok": true,
+    "exact_pe215_ok": true,
+    "notes": []
+  },
+  "static_precheck": {
+    "ok": true,
+    "summary": {
+      "issues": [
+        {
+          "severity": "WARNING",
+          "kind": "missing_main_routine",
+          "message": "Program ORNCCP2_Area_Slow has no Main routine",
+          "program": "ORNCCP2_Area_Slow"
+        },
+        {
+          "severity": "WARNING",
+          "kind": "missing_main_routine",
+          "message": "Program ORNCCP2_Area_Fast has no Main routine",
+          "program": "ORNCCP2_Area_Fast"
+        },
+        {
+          "severity": "WARNING",
+          "kind": "missing_main_routine",
+          "message": "Program ORNCCP2_Area_L1 has no Main routine",
+          "program": "ORNCCP2_Area_L1"
+        },
+        {
+          "severity": "WARNING",
+          "kind": "missing_main_routine",
+          "message": "Program ORNCCP2_Area_L2 has no Main routine",
+          "program": "ORNCCP2_Area_L2"
+        },
+        {
+          "severity": "WARNING",
+          "kind": "missing_main_routine",
+          "message": "Program System has no Main routine",
+          "program": "System"
+        },
+        {
+          "severity": "WARNING",
+          "kind": "missing_main_routine",
+          "message": "Program Sys has no Main routine",
+          "program": "Sys"
+        },
+        {
+          "severity": "WARNING",
+          "kind": "missing_main_routine",
+          "message": "Program IO_MAP has no Main routine",
+          "program": "IO_MAP"
+        }
+      ]
+    },
+    "studio_pass_claimed": false,
+    "artifact": "C:\\Users\\curtiskricke\\SiteForge\\exports\\cp2-recovery-validation\\studio_precheck.json",
+    "xml_parses": true,
+    "issues": [
+      {
+        "severity": "WARNING",
+        "kind": "missing_main_routine",
+        "message": "Program ORNCCP2_Area_Slow has no Main routine",
+        "program": "ORNCCP2_Area_Slow"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "missing_main_routine",
+        "message": "Program ORNCCP2_Area_Fast has no Main routine",
+        "program": "ORNCCP2_Area_Fast"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "missing_main_routine",
+        "message": "Program ORNCCP2_Area_L1 has no Main routine",
+        "program": "ORNCCP2_Area_L1"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "missing_main_routine",
+        "message": "Program ORNCCP2_Area_L2 has no Main routine",
+        "program": "ORNCCP2_Area_L2"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "missing_main_routine",
+        "message": "Program System has no Main routine",
+        "program": "System"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "missing_main_routine",
+        "message": "Program Sys has no Main routine",
+        "program": "Sys"
+      },
+      {
+        "severity": "WARNING",
+        "kind": "missing_main_routine",
+        "message": "Program IO_MAP has no Main routine",
+        "program": "IO_MAP"
+      }
+    ],
+    "note": "WARNING missing_main_routine is a preflight false positive when routines are named Main_Routine (not Main). Not a Studio blocker by itself. Do not claim Studio PASS."
+  },
+  "ready_for_curtis_studio_test": true,
+  "studio_pass_claimed": false
+}

@@ -1,0 +1,64 @@
+{
+  "generated_at": "2026-09-13T02:31:04.312375+00:00",
+  "path": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP2_recovery_validation.L5X",
+  "sha256": "df09fa9e410b1ec098bf013b314bc7ac85578cb7e9ff4f0c6e139b8e51f843ce",
+  "xml_parses": true,
+  "ok": true,
+  "studio_import_claimed": false,
+  "note": "Static precheck only \u2014 Curtis must import in Studio 5000",
+  "counts": {
+    "errors": 0,
+    "warnings": 7,
+    "info": 0,
+    "programs_with_main": 0,
+    "programs_missing_main": 7,
+    "tags": 574,
+    "duplicate_tags": 0,
+    "modules": 39
+  },
+  "programs_with_main": [],
+  "issues": [
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program ORNCCP2_Area_Slow has no Main routine",
+      "program": "ORNCCP2_Area_Slow"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program ORNCCP2_Area_Fast has no Main routine",
+      "program": "ORNCCP2_Area_Fast"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program ORNCCP2_Area_L1 has no Main routine",
+      "program": "ORNCCP2_Area_L1"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program ORNCCP2_Area_L2 has no Main routine",
+      "program": "ORNCCP2_Area_L2"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program System has no Main routine",
+      "program": "System"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program Sys has no Main routine",
+      "program": "Sys"
+    },
+    {
+      "severity": "WARNING",
+      "kind": "missing_main_routine",
+      "message": "Program IO_MAP has no Main routine",
+      "program": "IO_MAP"
+    }
+  ]
+}
