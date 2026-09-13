@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.01" TargetName="OReillyGreensboro_ORNCCP2" TargetType="Controller" ContainsContext="false" Owner="SiteForge" ExportDate="Sun Sep 13 06:02:30 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
-<Controller Use="Target" Name="OReillyGreensboro_ORNCCP2" ProcessorType="1756-L83E" MajorRev="35" MinorRev="0" ProjectCreationDate="Sun Sep 13 06:02:30 2026" LastModifiedDate="Sun Sep 13 06:02:30 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#0000_0000" MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false">
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.01" TargetName="OReillyGreensboro_ORNCCP2" TargetType="Controller" ContainsContext="false" Owner="SiteForge" ExportDate="Sun Sep 13 06:19:48 2026" ExportOptions="NoRawData L5KData DecoratedData ForceProtectedEncoding AllProjDocTrans">
+<Controller Use="Target" Name="OReillyGreensboro_ORNCCP2" ProcessorType="1756-L83E" MajorRev="35" MinorRev="0" ProjectCreationDate="Sun Sep 13 06:19:48 2026" LastModifiedDate="Sun Sep 13 06:19:48 2026" SFCExecutionControl="CurrentActive" SFCRestartPosition="MostRecent" SFCLastScan="DontScan" ProjectSN="16#0000_0000" MatchProjectToController="false" CanUseRPIFromProducer="false" InhibitAutomaticFirmwareUpdate="0" PassThroughConfiguration="EnabledWithAppend" DownloadProjectDocumentationAndExtendedProperties="true" DownloadProjectCustomProperties="true" ReportMinorOverflow="false">
 <RedundancyInfo Enabled="false" KeepTestEditsOnSwitchOver="false"/>
 <Security Code="0" ChangesToDetect="16#ffff_ffff_ffff_ffff"/>
 <SafetyInfo/>
@@ -4146,7 +4146,7 @@ Modified: 20240402]]>
 <EKey State="CompatibleModule"/>
 <Ports>
 <Port Id="1" Type="Flex" Upstream="false">
-<Bus Size="9"/>
+<Bus Size="8"/>
 </Port>
 <Port Id="2" Address="192.168.1.51" Type="Ethernet" Upstream="true"/>
 </Ports>
@@ -4200,7 +4200,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="0" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4218,7 +4218,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4236,7 +4236,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="3" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4254,7 +4254,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="4" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="3" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4272,7 +4272,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="5" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="4" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4290,7 +4290,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="6" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="5" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4308,7 +4308,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="7" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="6" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4326,7 +4326,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="8" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="7" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4399,7 +4399,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="0" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4417,7 +4417,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4435,7 +4435,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="3" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4453,7 +4453,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="4" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="3" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4471,7 +4471,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="5" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="4" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4489,7 +4489,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="6" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="5" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4508,7 +4508,7 @@ Modified: 20240402]]>
 <EKey State="CompatibleModule"/>
 <Ports>
 <Port Id="1" Type="Flex" Upstream="false">
-<Bus Size="9"/>
+<Bus Size="8"/>
 </Port>
 <Port Id="2" Address="192.168.1.53" Type="Ethernet" Upstream="true"/>
 </Ports>
@@ -4562,7 +4562,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="0" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4580,7 +4580,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4598,7 +4598,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="3" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4616,7 +4616,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="4" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="3" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4634,7 +4634,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="5" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="4" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4652,7 +4652,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="6" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="5" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4670,7 +4670,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="7" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="6" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4688,7 +4688,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="8" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="7" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4707,7 +4707,7 @@ Modified: 20240402]]>
 <EKey State="CompatibleModule"/>
 <Ports>
 <Port Id="1" Type="Flex" Upstream="false">
-<Bus Size="9"/>
+<Bus Size="8"/>
 </Port>
 <Port Id="2" Address="192.168.1.54" Type="Ethernet" Upstream="true"/>
 </Ports>
@@ -4761,7 +4761,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="0" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4779,7 +4779,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4797,7 +4797,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="3" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4815,7 +4815,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="4" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="3" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4833,7 +4833,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="5" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="4" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4851,7 +4851,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="6" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="5" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4869,7 +4869,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="7" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="6" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4887,7 +4887,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="8" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="7" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4960,7 +4960,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="0" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -4978,7 +4978,7 @@ Modified: 20240402]]>
 >
 <EKey State="CompatibleModule"/>
 <Ports>
-<Port Id="1" Address="2" Type="Flex" Upstream="true"/>
+<Port Id="1" Address="1" Type="Flex" Upstream="true"/>
 </Ports>
 <Communications CommMethod="1073741824">
 <ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>
@@ -21341,7 +21341,7 @@ AAlqJZyDa5jfFRfflt77eLPsHl/V84vuoHYwpwB2uWcWit+JIjqjEo6V+pK3iybTMqhy1+h6NLRHRdhK
 <Data Format="Decorated">
 <DataValue DataType="SINT" Radix="Decimal" Value="2"/>
 </Data>
-</Tag><Tag Name="NO_PS" TagType="Base" DataType="PS_UDT" Constant="false" ExternalAccess="Read/Write"><Data Format="Decorated"><Structure DataType="PS_UDT"/></Data></Tag><Tag Name="ORNCCP2_ESZone1" TagType="Base" DataType="ES_Zone_UDT" Constant="false" ExternalAccess="Read/Write">
+</Tag><Tag Name="NO_PS" TagType="Base" DataType="PS_UDT" Constant="false" ExternalAccess="Read/Write"><Data Format="Decorated"><Structure DataType="PS_UDT"><StructureMember Name="I" DataType="PS_I"><DataValueMember Name="PS_OK" DataType="BOOL" Value="0"/></StructureMember><StructureMember Name="Flt" DataType="PS_Fault"><StructureMember Name="PS_FltTmr" DataType="TIMER"><DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/><DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/><DataValueMember Name="EN" DataType="BOOL" Value="0"/><DataValueMember Name="TT" DataType="BOOL" Value="0"/><DataValueMember Name="DN" DataType="BOOL" Value="0"/></StructureMember><DataValueMember Name="PS_Flt" DataType="BOOL" Value="0"/></StructureMember><DataValueMember Name="O_Reset" DataType="BOOL" Value="0"/></Structure></Data></Tag><Tag Name="ORNCCP2_ESZone1" TagType="Base" DataType="ES_Zone_UDT" Constant="false" ExternalAccess="Read/Write">
 <Data Format="L5K">
 <![CDATA[[[0],[0],[0]]]]>
 </Data>
