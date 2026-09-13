@@ -1700,6 +1700,27 @@ def load_eip_topology(run_dir: Path, *, machine: str = "") -> dict:
                     c["flex_slot"] = c["eip_slot"]
                     c["name"] = f"{rio}_{c['flex_slot']}"
 
+            # 1794-AENT Bus Size max is 8 → Port Address / Data[] must be 0..7.
+            # eipcfg often emits 1..8; finished Greensboro PLC2 uses 0..7.
+            # (1734 POINT keeps print-accurate 1-based addressing — do not shift.)
+            if family == "1794" and children:
+                slots = [int(c.get("flex_slot") or 0) for c in children]
+                if slots and min(slots) >= 1 and max(slots) >= 8:
+                    for c in children:
+                        c["flex_slot"] = int(c.get("flex_slot") or 1) - 1
+                        c["name"] = f"{rio}_{c['flex_slot']}"
+                    # Keep word_map flex_slot / child_name in sync
+                    for w, info in list(word_map.items()):
+                        if info.get("rio_name") != rio:
+                            continue
+                        try:
+                            fs = int(info.get("flex_slot") or 0)
+                        except (TypeError, ValueError):
+                            continue
+                        if fs >= 1:
+                            info["flex_slot"] = fs - 1
+                            info["child_name"] = f"{rio}_{info['flex_slot']}"
+
             # Also map any EIPCSV words for this rack/type that match child types
             for c in children:
                 if c.get("word"):
@@ -3125,11 +3146,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "Type2",
     ):
         _ensure_library_tag(lib_tag, fallback_bool=(lib_tag in ("HMI_StatsClear",)))
-    # NO_PS (PS_UDT) — used by Slow_Flt; not always in library, synthesize if missing
+    # NO_PS (PS_UDT) — used by Slow_Flt; Studio requires StructureMember form.
     if "NO_PS" not in seen_tag_names:
         ps_block = extract_tag_block(library_text, "NO_PS")
-        if ps_block:
-            # Always drop L5K for PS_UDT — Studio warns/fails on structure L5K blobs.
+        if ps_block and "<StructureMember" in ps_block:
+            # Prefer Decorated StructureMember; L5K alone is rejected by Studio.
             ps_block = re.sub(
                 r'<Data Format="L5K">.*?</Data>\s*',
                 "",
@@ -3137,20 +3158,27 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 count=1,
                 flags=re.S,
             )
-            if "<Structure" not in ps_block:
-                ps_block = re.sub(
-                    r"</Tag>\s*$",
-                    '<Data Format="Decorated"><Structure DataType="PS_UDT"/></Data></Tag>',
-                    ps_block,
-                    count=1,
-                )
             _add_tag_block(ps_block)
         else:
-            # Decorated Structure only — L5K blob for PS_UDT often fails Studio import.
             _add_tag_block(
                 '<Tag Name="NO_PS" TagType="Base" DataType="PS_UDT" Constant="false" '
                 'ExternalAccess="Read/Write">'
-                '<Data Format="Decorated"><Structure DataType="PS_UDT"/></Data></Tag>'
+                '<Data Format="Decorated"><Structure DataType="PS_UDT">'
+                '<StructureMember Name="I" DataType="PS_I">'
+                '<DataValueMember Name="PS_OK" DataType="BOOL" Value="0"/>'
+                '</StructureMember>'
+                '<StructureMember Name="Flt" DataType="PS_Fault">'
+                '<StructureMember Name="PS_FltTmr" DataType="TIMER">'
+                '<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>'
+                '<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>'
+                '<DataValueMember Name="EN" DataType="BOOL" Value="0"/>'
+                '<DataValueMember Name="TT" DataType="BOOL" Value="0"/>'
+                '<DataValueMember Name="DN" DataType="BOOL" Value="0"/>'
+                '</StructureMember>'
+                '<DataValueMember Name="PS_Flt" DataType="BOOL" Value="0"/>'
+                '</StructureMember>'
+                '<DataValueMember Name="O_Reset" DataType="BOOL" Value="0"/>'
+                '</Structure></Data></Tag>'
             )
 
     # Safety zones referenced by Fast_Conv after rename (e.g. Zone1_ESZone1)
@@ -4592,11 +4620,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 block,
                 count=1,
             )
-            # Resolve child port addresses first so Bus Size can cover max slot.
-            # Studio: valid Addresses are 0 .. BusSize-1. Emitting Address=8 with
-            # Bus Size=8 fails ("Slot out of range for current chassis size").
+            # Resolve child Port Addresses.
+            # 1794-AENT Bus Size max is 8 → valid Addresses are 0..7 only.
+            # eipcfg often stores 1-based slots (1..8); finished PLC uses 0..7.
+            # Prefer flex_slot / name suffix (0-based) over raw eip_slot.
+            family_bus_max = int(EIP_PARENT_BUS_SIZE.get(family, bus_size) or bus_size)
             prepared_kids: list[tuple[dict, str, int, str]] = []
-            max_addr = -1
             for c in kids:
                 mt = (c.get("type") or "").strip()
                 tmpl = child_tmpls.get(mt)
@@ -4604,22 +4633,47 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     # unknown card — skip (Studio needs a real template for AB: types)
                     continue
                 cname = c.get("name") or f"{rio_name}_{c.get('flex_slot')}"
-                # Port Address = chassis/eip slot; flex_slot may be Data[] index (slot-1)
-                try:
-                    port_addr = int(
-                        c.get("eip_slot")
-                        if c.get("eip_slot") is not None
-                        else c.get("flex_slot") or 0
-                    )
-                except (TypeError, ValueError):
-                    port_addr = int(c.get("flex_slot") or 0)
+                port_addr = None
+                # 1) numeric suffix on module name (CP2RIO0_0 → 0)
+                m_suf = re.search(r"_(\d+)$", str(cname))
+                if m_suf:
+                    port_addr = int(m_suf.group(1))
+                # 2) flex_slot when present
+                if port_addr is None and c.get("flex_slot") is not None:
+                    try:
+                        port_addr = int(c.get("flex_slot"))
+                    except (TypeError, ValueError):
+                        port_addr = None
+                # 3) eip_slot last
+                if port_addr is None:
+                    try:
+                        port_addr = int(c.get("eip_slot") or 0)
+                    except (TypeError, ValueError):
+                        port_addr = 0
                 if port_addr < 0:
                     port_addr = 0
-                max_addr = max(max_addr, port_addr)
                 prepared_kids.append((c, cname, port_addr, tmpl))
 
-            if max_addr >= 0:
-                bus_size = max(bus_size, max_addr + 1)
+            if prepared_kids:
+                addrs = [a for _, _, a, _ in prepared_kids]
+                # Detect 1-based eipcfg packing (min>=1 and max>=family_bus_max)
+                if (
+                    min(addrs) >= 1
+                    and max(addrs) >= family_bus_max
+                    and max(addrs) - min(addrs) + 1 <= family_bus_max
+                ):
+                    prepared_kids = [
+                        (c, n, a - 1, tmpl) for (c, n, a, tmpl) in prepared_kids
+                    ]
+                    addrs = [a for _, _, a, _ in prepared_kids]
+                # Drop anything still outside 0..family_bus_max-1
+                prepared_kids = [
+                    (c, n, a, tmpl)
+                    for (c, n, a, tmpl) in prepared_kids
+                    if 0 <= a < family_bus_max
+                ]
+            # Never exceed catalog chassis size (1794-AENT max 8).
+            bus_size = family_bus_max
             block = re.sub(
                 r'(<Bus Size=")[^"]*("/>)',
                 rf'\g<1>{bus_size}\2',

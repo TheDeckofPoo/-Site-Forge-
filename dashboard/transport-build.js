@@ -1643,7 +1643,8 @@
       });
       if (group.length > 1) groups.push(group);
     });
-    const laneGap = 18;
+    // Wider gap so controller-scoped canvases (fewer belts, denser clusters) stay readable.
+    const laneGap = 36;
     groups.forEach((group) => {
       group.sort((a, b) => String(a.conveyorTag || '').localeCompare(String(b.conveyorTag || '')));
       // Re-check: if any pair in the group is actually serial-connected, skip separation.
@@ -1677,6 +1678,51 @@
         });
       });
     });
+
+    // --- Pass 1b: spread near-coincident LOCAL bodies that were not classified ---
+    // Controller-scoped Auto Build often leaves many belts with nearly identical
+    // canvas mids; without this, labels/bodies sit on top of each other.
+    {
+      const locals = list.filter((n) => !n.externalReference && n.plcOwned !== false);
+      const minSep = 42;
+      for (let iter = 0; iter < 3; iter++) {
+        for (let i = 0; i < locals.length; i++) {
+          for (let j = i + 1; j < locals.length; j++) {
+            const a = locals[i];
+            const b = locals[j];
+            if (physicallyLinked(a, b) || endpointNear(a, b)) continue;
+            const oa = offsets[a.id] || { dx: 0, dy: 0 };
+            const ob = offsets[b.id] || { dx: 0, dy: 0 };
+            const ma = midOf(a);
+            const mb = midOf(b);
+            const ax = ma.x + (oa.dx || 0);
+            const ay = ma.y + (oa.dy || 0);
+            const bx = mb.x + (ob.dx || 0);
+            const by = mb.y + (ob.dy || 0);
+            const d = Math.hypot(ax - bx, ay - by);
+            if (d >= minSep) continue;
+            const ang = ((angOf(a) + angOf(b)) / 2) * Math.PI / 180;
+            const nx = -Math.sin(ang) || 0;
+            const ny = Math.cos(ang) || 1;
+            const push = (minSep - Math.max(d, 0.1)) / 2;
+            setOff(
+              a,
+              (oa.dx || 0) - nx * push,
+              (oa.dy || 0) + ny * push,
+              oa.lane || 0,
+              oa.reason ? `${oa.reason}+CLUSTER_SPREAD` : 'CLUSTER_SPREAD',
+            );
+            setOff(
+              b,
+              (ob.dx || 0) + nx * push,
+              (ob.dy || 0) - ny * push,
+              ob.lane || 0,
+              ob.reason ? `${ob.reason}+CLUSTER_SPREAD` : 'CLUSTER_SPREAD',
+            );
+          }
+        }
+      }
+    }
 
     // --- Pass 2: merge feed-lane fan (presentation only) ---
     // When a discharge is marked asMerge (or equipmentType MERGE) with ≥2 inbound
