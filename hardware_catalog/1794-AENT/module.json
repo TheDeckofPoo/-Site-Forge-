@@ -1,0 +1,12 @@
+{
+  "catalog": "1794-AENT",
+  "family": "1794",
+  "direction": "",
+  "channel_count": 0,
+  "connection": "HEADNODE",
+  "description": "FLEX I/O EtherNet/IP adapter",
+  "terminals": [],
+  "wiring_level_b": false,
+  "source": "generic_catalog",
+  "note": "Adapter head — no digital channels."
+}

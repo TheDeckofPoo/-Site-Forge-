@@ -1,0 +1,20 @@
+{
+  "catalog": "1794-OA8I",
+  "family": "1794",
+  "direction": "O",
+  "channel_count": 8,
+  "description": "FLEX I/O 8-point digital output (electronically protected)",
+  "terminals": [
+    {"id": "CH0", "channel": 0},
+    {"id": "CH1", "channel": 1},
+    {"id": "CH2", "channel": 2},
+    {"id": "CH3", "channel": 3},
+    {"id": "CH4", "channel": 4},
+    {"id": "CH5", "channel": 5},
+    {"id": "CH6", "channel": 6},
+    {"id": "CH7", "channel": 7},
+    {"id": "COM", "channel": null, "note": "common — layout only"}
+  ],
+  "wiring_level_b": true,
+  "source": "generic_catalog"
+}

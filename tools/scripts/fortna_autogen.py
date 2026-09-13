@@ -5939,6 +5939,203 @@ def _strip_non_engineer_tokens(stem: str) -> str:
     return s or "Autogen_Project"
 
 
+def cleanup_exports_current_for_controller(
+    current_dir: Path,
+    controller: str,
+    *,
+    keep_l5x_name: str = "",
+    keep_manifest_name: str = "",
+) -> list[str]:
+    """Remove older engineer-facing L5X/manifest clutter for one controller.
+
+    Keeps build_manifest.json + LATEST.json. Deletes {controller}_LATEST.L5X and
+    older timestamped {controller}_*.L5X / {controller}_*.manifest.json except
+    the newly written files named in keep_*.
+    """
+    removed: list[str] = []
+    ctrl = (controller or "").strip()
+    if not ctrl or not current_dir.is_dir():
+        return removed
+    prefix = f"{ctrl}_"
+    keep_l5x = (keep_l5x_name or "").strip().lower()
+    keep_man = (keep_manifest_name or "").strip().lower()
+    try:
+        entries = list(current_dir.iterdir())
+    except Exception:
+        return removed
+    for p in entries:
+        if not p.is_file():
+            continue
+        name = p.name
+        low = name.lower()
+        if not name.startswith(prefix):
+            continue
+        # Never touch shared pointer JSON
+        if low in ("build_manifest.json", "latest.json"):
+            continue
+        is_l5x = low.endswith(".l5x")
+        is_manifest = low.endswith(".manifest.json")
+        if not is_l5x and not is_manifest:
+            continue
+        if is_l5x and keep_l5x and low == keep_l5x:
+            continue
+        if is_manifest and keep_man and low == keep_man:
+            continue
+        try:
+            p.unlink()
+            removed.append(str(p))
+        except Exception:
+            pass
+    return removed
+
+
+def audit_written_l5x(path: Path) -> dict:
+    """Parse a written L5X for structural + transport/hardware counts."""
+    info: dict = {
+        "path": str(path),
+        "exists": False,
+        "bytes": 0,
+        "has_RSLogix5000Content": False,
+        "has_Controller": False,
+        "has_Tags": False,
+        "has_Programs": False,
+        "has_Tasks": False,
+        "programs": [],
+        "program_count": 0,
+        "l5x_module_count": 0,
+        "l5x_p_conv_tags": 0,
+        "p_conv_sample": [],
+        "has_IO_MAP_program": False,
+    }
+    if not path or not Path(path).is_file():
+        return info
+    p = Path(path)
+    info["exists"] = True
+    try:
+        info["bytes"] = int(p.stat().st_size)
+    except Exception:
+        info["bytes"] = 0
+    try:
+        text = p.read_text(encoding="utf-8", errors="replace")
+    except Exception:
+        return info
+    info["has_RSLogix5000Content"] = "RSLogix5000Content" in text
+    info["has_Controller"] = "<Controller" in text
+    info["has_Tags"] = "<Tags" in text or "<Tag " in text
+    info["has_Programs"] = "<Programs" in text or "<Program " in text
+    info["has_Tasks"] = "<Tasks" in text or "<Task " in text
+    programs = re.findall(r'<Program Name="([^"]+)"', text)
+    info["programs"] = programs
+    info["program_count"] = len(programs)
+    info["has_IO_MAP_program"] = "IO_MAP" in programs
+    info["l5x_module_count"] = len(re.findall(r"<Module\b", text))
+    tags = re.findall(r'<Tag Name="([^"]+)"', text)
+    # Site transport tags (exclude library template bases P1000/P2000/…)
+    _lib_templates = {
+        "P1000_Conv",
+        "P2000_Conv",
+        "P3000_Conv",
+        "P4000_Conv",
+        "P5000_Conv",
+        "P7000_Conv",
+        "P8000_Conv",
+    }
+    p_conv = [
+        n
+        for n in tags
+        if re.match(r"^P\d+[A-Z]?_Conv$", n) and n not in _lib_templates
+    ]
+    info["l5x_p_conv_tags"] = len(p_conv)
+    info["p_conv_sample"] = p_conv[:20]
+    return info
+
+
+def validate_l5x_output_integrity(
+    l5x_path: Path,
+    inp: "AutogenInput",
+    report: dict,
+    *,
+    min_bytes: int = 50_000,
+) -> list[str]:
+    """Fail-closed checks on the final written L5X vs generation inputs.
+
+    Does not patch the L5X — caller must set build_failed / ok:false.
+    """
+    failures: list[str] = []
+    audit = audit_written_l5x(l5x_path)
+    report = report if isinstance(report, dict) else {}
+
+    expected_conveyors = int(
+        report.get("conveyor_count")
+        or len(getattr(inp, "conveyors", None) or [])
+        or 0
+    )
+    expected_modules = int(report.get("io_module_count") or 0)
+    if expected_modules <= 0:
+        expected_modules = int(report.get("eip_child_count") or 0) + int(
+            report.get("eip_adapter_count") or 0
+        )
+    if expected_modules <= 0:
+        expected_modules = len(getattr(inp, "modules", None) or [])
+    want_io_map = bool(getattr(inp, "include_io_map", True)) or bool(
+        report.get("include_io_map")
+    )
+
+    stage = dict(report.get("build_stage_audit") or {})
+    stage.setdefault(
+        "run_or_workbook_conveyors",
+        expected_conveyors,
+    )
+    stage["generated_conveyors"] = int(report.get("conveyor_count") or expected_conveyors)
+    stage["l5x_p_conv_tags"] = int(audit.get("l5x_p_conv_tags") or 0)
+    stage["expected_modules"] = expected_modules
+    stage["l5x_module_count"] = int(audit.get("l5x_module_count") or 0)
+    stage["l5x_bytes"] = int(audit.get("bytes") or 0)
+    report["build_stage_audit"] = stage
+    report["l5x_integrity"] = audit
+
+    if not audit.get("exists"):
+        failures.append(f"BUILD FAILED — L5X missing after write: {l5x_path}")
+        return failures
+    if int(audit.get("bytes") or 0) < int(min_bytes):
+        failures.append(
+            f"BUILD FAILED — L5X too small ({audit.get('bytes')} bytes < {min_bytes})"
+        )
+    for key, label in (
+        ("has_RSLogix5000Content", "RSLogix5000Content"),
+        ("has_Controller", "Controller"),
+        ("has_Tags", "Tags"),
+        ("has_Programs", "Programs"),
+        ("has_Tasks", "Tasks"),
+    ):
+        if not audit.get(key):
+            failures.append(f"BUILD FAILED — L5X missing required XML element: {label}")
+
+    p_conv_n = int(audit.get("l5x_p_conv_tags") or 0)
+    if expected_conveyors > 0 and (
+        p_conv_n == 0 or p_conv_n < max(1, expected_conveyors // 4)
+    ):
+        failures.append(
+            f"BUILD FAILED — Transportation model contained {expected_conveyors} devices "
+            f"but final L5X contains 0 transport devices."
+        )
+
+    mod_n = int(audit.get("l5x_module_count") or 0)
+    if expected_modules > 0 and (
+        mod_n == 0 or (expected_modules >= 5 and mod_n < 3)
+    ):
+        failures.append(
+            f"BUILD FAILED — Hardware model contained {expected_modules} modules "
+            f"but final L5X contains 0/incorrect modules."
+        )
+
+    if want_io_map and not audit.get("has_IO_MAP_program"):
+        failures.append(
+            "BUILD FAILED — include_io_map was enabled but IO_MAP Program is missing from L5X."
+        )
+    return failures
+
+
 def _engineer_l5x_stem(
     archive_stem: str,
     when: datetime | None = None,
@@ -6204,7 +6401,76 @@ def generate(
     owner = f"SiteForge {git_commit or build_id}".strip()
     l5x = re.sub(r'Owner="[^"]*"', f'Owner="{_xml_escape(owner)}"', l5x, count=1)
 
+    # Before write: drop confusing physical _LATEST.L5X only (keep prior dated files
+    # until the new L5X passes integrity — avoids leaving engineers with only a hollow file).
+    if explicit_out is None:
+        try:
+            latest_stale = engineer_export_dir / f"{file_stem}_LATEST.L5X"
+            if latest_stale.is_file():
+                latest_stale.unlink()
+        except Exception:
+            pass
+
     l5x_path.write_text(l5x, encoding="utf-8")
+
+    # Seed stage-audit counts before integrity validation
+    report.setdefault("build_stage_audit", {})
+    report["build_stage_audit"].update(
+        {
+            "run_or_workbook_conveyors": len(getattr(inp, "conveyors", None) or []),
+            "generated_conveyors": int(report.get("conveyor_count") or 0),
+            "expected_modules": int(
+                report.get("io_module_count")
+                or (
+                    int(report.get("eip_child_count") or 0)
+                    + int(report.get("eip_adapter_count") or 0)
+                )
+                or len(getattr(inp, "modules", None) or [])
+            ),
+        }
+    )
+
+    integrity_failures = validate_l5x_output_integrity(l5x_path, inp, report)
+    if integrity_failures:
+        report["ok"] = False
+        report["build_failed"] = True
+        report["error"] = integrity_failures[0]
+        assertion = dict(report.get("generation_assertions") or {})
+        assertion["ok"] = False
+        assertion["failures"] = list(assertion.get("failures") or []) + integrity_failures
+        report["generation_assertions"] = assertion
+        try:
+            (diag_dir / "autogen_report.json").write_text(
+                json.dumps(report, indent=2), encoding="utf-8"
+            )
+        except Exception:
+            pass
+        _emit_progress(str(integrity_failures[0]), 100)
+        return {
+            "ok": False,
+            "engine": "python",
+            "export_name": result_export_name,
+            "source_label": archive_stem,
+            "out_dir": str(engineer_export_dir),
+            "diagnostics_dir": str(diag_dir),
+            "build_id": build_id,
+            "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
+            "l5x_filename": l5x_basename,
+            "error": str(integrity_failures[0]),
+            "report": report,
+        }
+
+    # After successful integrity: single engineer L5X — remove older dated clutter + any _LATEST
+    if explicit_out is None:
+        try:
+            cleanup_exports_current_for_controller(
+                engineer_export_dir,
+                file_stem,
+                keep_l5x_name=l5x_basename,
+                keep_manifest_name=f"{engineer_stem}.manifest.json",
+            )
+        except Exception:
+            pass
 
     # History copy (not engineer-facing current) — only for default UI builds
     if explicit_out is None:
@@ -6212,14 +6478,6 @@ def generate(
             hist = history_root / l5x_basename
             if hist.resolve() != l5x_path.resolve():
                 hist.write_text(l5x, encoding="utf-8")
-        except Exception:
-            pass
-        # Stable latest pointer beside current (same folder, no dated ambiguity)
-        try:
-            latest_name = f"{file_stem}_LATEST.L5X"
-            latest_path = engineer_export_dir / latest_name
-            if latest_path.resolve() != l5x_path.resolve():
-                latest_path.write_text(l5x, encoding="utf-8")
         except Exception:
             pass
         # README in exports/autogen pointing engineers to exports/current
@@ -6235,8 +6493,10 @@ def generate(
                         "Do NOT open random L5X files under exports/autogen, studio-validation,",
                         "plc2-fidelity, or candidate folders — those are historical/diagnostic.",
                         "",
-                        "Open exports/current/ and use the newest ORNCCP2_*.L5X (or *_LATEST.L5X).",
-                        "build_manifest.json in that folder identifies the exact build.",
+                        "Open exports/current/ and open the single timestamped L5X named in",
+                        "build_manifest.json (output_filename / output_path).",
+                        "There is no {controller}_LATEST.L5X — use the dated file only.",
+                        "LATEST.json is a pointer JSON (OK); physical _LATEST.L5X is not written.",
                         "",
                     ]
                 ),
@@ -6769,6 +7029,7 @@ def main() -> int:
         if args.cmd == "from-run":
             _emit_progress(f"Loading RUN from {args.run_dir}…", 5)
             inp = load_from_run(Path(args.run_dir), processor=args.processor)
+            run_conveyor_count = len(inp.conveyors or [])
             # Dashboard workbook (Inputdata replacement) — human edits over RUN
             wb_path = (getattr(args, "workbook", "") or "").strip()
             if wb_path:
@@ -6776,11 +7037,19 @@ def main() -> int:
                     from fortna_workbook import apply_workbook_to_input, load_workbook
                     wb = load_workbook(Path(wb_path))
                     if wb:
+                        wb_rows = list(wb.get("conveyors") or [])
                         run_names = {
                             (c.conveyor or "").strip().upper()
                             for c in (inp.conveyors or [])
                             if (c.conveyor or "").strip()
                         }
+                        # Empty disk workbook must not hollow a populated RUN — keep RUN conveyors
+                        # (apply_workbook_to_input already short-circuits on empty rows; reaffirm here).
+                        if len(wb_rows) == 0 and run_conveyor_count > 0:
+                            _emit_progress(
+                                f"Workbook has 0 conveyors; keeping {run_conveyor_count} from RUN",
+                                11,
+                            )
                         inp = apply_workbook_to_input(inp, wb)
                         sb = wb.get("sorter_build")
                         if isinstance(sb, dict) and sb:
@@ -6795,6 +7064,31 @@ def main() -> int:
                                 f"2:1 merges from workbook: {len(m2)}",
                                 12,
                             )
+                        # Guard: workbook must not silently wipe RUN transport
+                        if len(inp.conveyors or []) == 0 and run_conveyor_count > 0:
+                            if len(wb_rows) == 0:
+                                _emit_progress(
+                                    "Restoring conveyors from RUN after empty workbook overlay",
+                                    12,
+                                )
+                                inp = load_from_run(
+                                    Path(args.run_dir), processor=args.processor
+                                )
+                                if isinstance(sb, dict) and sb:
+                                    inp.sorter_build = sb
+                                if isinstance(saw_b, dict) and saw_b:
+                                    inp.sawtooth_build = saw_b
+                                if isinstance(m2, list) and m2:
+                                    inp.merges_2to1 = m2
+                            else:
+                                err = (
+                                    f"BUILD FAILED — workbook overlay left 0 conveyors but "
+                                    f"active RUN has {run_conveyor_count}. "
+                                    f"Re-Apply Transportation or clear exclude flags; "
+                                    f"refusing hollow L5X."
+                                )
+                                _out({"ok": False, "error": err, "engine": "python"})
+                                return 1
                         area_counts: dict[str, int] = {}
                         stub_names: list[str] = []
                         for c in inp.conveyors or []:

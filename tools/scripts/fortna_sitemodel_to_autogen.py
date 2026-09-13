@@ -119,9 +119,23 @@ def site_model_to_sawtooth_build(site: dict[str, Any] | None) -> dict[str, Any]:
         )
         if str(x).strip().lower() not in _optional_cfg
     ]
-    if not collector and "collector conveyor" not in cfg_req:
+    # Proven/filled fields must not remain as contradictory unresolved warnings.
+    def _cfg_key(x: Any) -> str:
+        return str(x or "").strip().lower().replace(" ", "_")
+
+    if collector:
+        cfg_req = [x for x in cfg_req if _cfg_key(x) != "collector_conveyor"]
+    elif "collector conveyor" not in cfg_req and "collector_conveyor" not in {
+        _cfg_key(x) for x in cfg_req
+    }:
         cfg_req.append("collector conveyor")
-    if not encoder and "collector encoder" not in cfg_req:
+    if encoder:
+        cfg_req = [
+            x
+            for x in cfg_req
+            if _cfg_key(x) not in {"collector_encoder", "merge_encoder"}
+        ]
+    elif not any(_cfg_key(x) in {"collector_encoder", "merge_encoder"} for x in cfg_req):
         cfg_req.append("collector encoder")
 
     motor = primary.get("motor") or ""

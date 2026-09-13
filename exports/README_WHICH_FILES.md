@@ -7,27 +7,25 @@
 
 | File | Purpose |
 |------|---------|
-| `exports/autogen/ORNCCP2_LATEST.L5X` | **Use this** — current ORNCCP2 candidate |
-| `exports/autogen/_studio_fix/OReillyGreensboro_ORNCCP2.L5X` | Same build + reports beside it |
-| `exports/studio-validation/ORNCCP2_transport_fidelity_candidate.L5X` | Validation copy |
+| `exports/current/{CONTROLLER}_{YYYY_MM_DD_HHMM}.L5X` | **Use this** — single engineer-facing L5X for the current build |
+| `exports/current/build_manifest.json` | Exact path + SHA256 + controller + RUN provenance |
 
-Do **not** open old timestamp folders under `exports/_archive/`.
+Do **not** look for `{CONTROLLER}_LATEST.L5X` — that duplicate is no longer written.  
+Do **not** open random files under `exports/autogen/` history, `studio-validation`, or candidate folders unless debugging.
 
 ## Keep vs archive
 
-**Kept active**
+**Engineer-facing**
 
-- `exports/autogen/` (current + `_studio_fix`)
-- `exports/plc2-fidelity/`
-- `exports/studio-validation/`
-- `exports/mscreno-aug28-regression/`
-- `exports/run-discovery/`
+- `exports/current/` — one timestamped L5X + `build_manifest.json` (+ `LATEST.json` pointer)
 
-**Compressed** (recoverable)
+**Diagnostics / history**
 
-- `exports/_archive/old-exports-*.zip` — old campaign folders (foundation, io-truth, cp4/cp5, …)
-- `exports/_archive/old-autogen-*.zip` — prior timestamped Autogen runs
+- `workspace/.internal/builds/{build_id}/`
+- `exports/autogen/history/`
 
 ## After Build PLC
 
-Site Forge also writes a new timestamped folder under `exports/autogen/`. Prefer `ORNCCP2_LATEST.L5X` or the newest folder’s `.L5X` after each Build.
+1. Read `exports/current/build_manifest.json` → `output_path`
+2. Open **that exact** `.L5X` in Studio (File → Open as new project)
+3. Site Forge **Open File Location** / **Copy Full Path** use the same manifest path

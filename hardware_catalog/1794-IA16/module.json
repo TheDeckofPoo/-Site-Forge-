@@ -1,0 +1,29 @@
+{
+  "catalog": "1794-IA16",
+  "family": "1794",
+  "direction": "I",
+  "channel_count": 16,
+  "description": "FLEX I/O 16-point 120VAC digital input",
+  "terminals": [
+    {"id": "CH0", "channel": 0},
+    {"id": "CH1", "channel": 1},
+    {"id": "CH2", "channel": 2},
+    {"id": "CH3", "channel": 3},
+    {"id": "CH4", "channel": 4},
+    {"id": "CH5", "channel": 5},
+    {"id": "CH6", "channel": 6},
+    {"id": "CH7", "channel": 7},
+    {"id": "CH8", "channel": 8},
+    {"id": "CH9", "channel": 9},
+    {"id": "CH10", "channel": 10},
+    {"id": "CH11", "channel": 11},
+    {"id": "CH12", "channel": 12},
+    {"id": "CH13", "channel": 13},
+    {"id": "CH14", "channel": 14},
+    {"id": "CH15", "channel": 15},
+    {"id": "COM", "channel": null, "note": "common — layout only; site wiring Level A only"}
+  ],
+  "wiring_level_b": true,
+  "source": "generic_catalog",
+  "note": "Terminal IDs are catalog-standard labels only. Device names come from RUN Level A."
+}

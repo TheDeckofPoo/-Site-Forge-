@@ -141,7 +141,8 @@ function transportEvidence() {
 }
 
 function sawtoothEvidence() {
-  const saw = autogenState.sawtooth || {};
+  const saw = reconcileSawtoothConfigurationRequired(autogenState.sawtooth || {});
+  autogenState.sawtooth = saw;
   const lanes = (saw.lanes || []).filter((l) => l && l.conveyor);
   const unresolved = Array.isArray(saw.configuration_required) ? saw.configuration_required.length : 0;
   const detected = !!(saw.collector_conveyor || lanes.length || saw.detected || saw.discovery_source === 'site_model');
@@ -3332,48 +3333,69 @@ function renderHardwareRacks() {
   const racks = $('hw-io-racks');
   const model = ioState.hardwareIo;
   if (!racks || !model) return;
-  const adapters = adaptersForSelectedPanel(model);
+  let adapters = adaptersForSelectedPanel(model);
+  const rioSel = $('hw-io-rio-select');
+  // Populate Remote I/O dropdown from proven adapters only
+  if (rioSel) {
+    const prev = ioState.hardwareRioFilter || rioSel.value || '__all__';
+    const opts = ['<option value="__all__">All adapters</option>']
+      .concat(adapters.map((a) =>
+        `<option value="${escapeHtml(a.rio_name || '')}">${escapeHtml(a.rio_name || a.name || '')}</option>`));
+    rioSel.innerHTML = opts.join('');
+    const ok = prev === '__all__' || adapters.some((a) => a.rio_name === prev);
+    rioSel.value = ok ? prev : '__all__';
+    ioState.hardwareRioFilter = rioSel.value;
+    if (!rioSel._hwBound) {
+      rioSel._hwBound = true;
+      rioSel.addEventListener('change', () => {
+        ioState.hardwareRioFilter = rioSel.value || '__all__';
+        renderHardwareRacks();
+      });
+    }
+  }
+  if (ioState.hardwareRioFilter && ioState.hardwareRioFilter !== '__all__') {
+    adapters = adapters.filter((a) => a.rio_name === ioState.hardwareRioFilter);
+  }
   if (!adapters.length) {
     racks.innerHTML = `<div class="text-sm text-slate-500 py-6 text-center">No adapters for this control panel (Configio evidence).</div>`;
     return;
   }
 
+  // Horizontal FLEX rail per adapter — physical slot order from RUN/eipcfg only
   racks.innerHTML = adapters.map((ad) => {
     const aent = (ad.modules || []).find((m) => m.is_adapter_card);
     const aentLabel = aent ? (aent.catalog || aent.type || 'AENT') : '—';
-    const cards = (ad.modules || []).map((mod) => {
+    const mods = [...(ad.modules || [])].sort((a, b) => (Number(a.slot) || 0) - (Number(b.slot) || 0));
+    const cards = mods.map((mod) => {
       const key = hwModuleKey(ad.rio_name, mod.slot);
       const selected = key === ioState.selectedHwModuleKey;
       const isHead = !!mod.is_adapter_card;
       const used = mod.channels_used ?? (mod.channels || []).length;
       const total = mod.channel_capacity || 0;
       const unres = mod.channels_unresolved ?? 0;
-      const dir = mod.direction || (isHead ? 'HEAD' : '—');
+      const dir = mod.direction || (isHead ? 'AENT' : '—');
       const cat = mod.catalog || mod.type || '—';
-      const border = selected
-        ? 'border-cyan-500 bg-cyan-950/40'
-        : isHead
-          ? 'border-slate-600 bg-slate-900/80'
-          : 'border-slate-700 bg-[#101820] hover:border-cyan-700';
       return `
         <button type="button" data-hw-mod="${escapeHtml(key)}"
-          class="hw-mod-card shrink-0 w-[7.5rem] rounded-lg border ${border} px-2 py-2 text-left transition-colors">
-          <div class="text-[9px] uppercase tracking-wider text-slate-500">[${mod.slot ?? '—'}] ${escapeHtml(dir)}</div>
-          <div class="text-[11px] font-semibold mono text-cyan-200 truncate" title="${escapeHtml(cat)}">${escapeHtml(cat)}</div>
-          <div class="text-[9px] text-slate-500 mt-1">${isHead ? 'adapter card' : `${used}/${total || '—'} ch`}</div>
-          ${!isHead && unres ? `<div class="text-[9px] text-amber-400/90">${unres} unresolved</div>` : ''}
+          class="hw-flex-mod ${isHead ? 'hw-head' : ''} ${selected ? 'hw-selected' : ''}"
+          title="${escapeHtml(cat)} slot ${mod.slot}">
+          <div class="hw-slot">[${mod.slot ?? '—'}]</div>
+          <div class="hw-cat">${escapeHtml(cat)}</div>
+          <div class="hw-dir">${escapeHtml(dir)}</div>
+          <div class="hw-ch">${isHead ? 'adapter' : `${used}/${total || '—'}`}${!isHead && unres ? ` · ${unres}?` : ''}</div>
+          <div class="hw-led"></div>
         </button>`;
     }).join('');
 
     return `
-      <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3">
+      <div class="rounded-xl border border-slate-800/80 bg-[#060a0f] p-3">
         <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
           <div class="font-semibold text-sm text-cyan-300 mono">${escapeHtml(ad.rio_name || '—')}</div>
           <div class="text-[10px] text-slate-500 mono">${escapeHtml(ad.eipcfg_name || ad.name || '')}</div>
           <div class="text-[10px] text-slate-600">AENT ${escapeHtml(aentLabel)}</div>
           <div class="text-[10px] text-slate-600 ml-auto">${escapeHtml(ad.targetip || '')} · ${escapeHtml(ad.panel || '—')}</div>
         </div>
-        <div class="flex flex-wrap gap-2 overflow-x-auto pb-1">${cards}</div>
+        <div class="hw-flex-rail">${cards}</div>
       </div>`;
   }).join('');
 
@@ -3410,6 +3432,20 @@ function renderHardwareModuleDetail() {
       <div class="text-cyan-300 mono text-xs mb-2">${escapeHtml(ad.rio_name)} slot ${mod.slot} · ${escapeHtml(mod.catalog || '')} · ${escapeHtml(mod.direction || '')}</div>
       <div class="text-slate-500 text-[11px]">No by_word_bit channels for this module (unused or unresolved in Configio).</div>`;
   } else {
+    // Vertical terminal strip (Studio-like module face) + provenance table
+    const terms = channels.map((ch) => {
+      const logical = ch.logical_endpoint?.name || '';
+      const dotCls = logical ? 'on' : 'warn';
+      return `<div class="hw-term-row" data-hw-ch="${escapeHtml(String(ch.fortna_bit ?? ''))}">
+        <div class="mono text-slate-500"><span class="hw-term-dot ${dotCls}"></span>CH${ch.fortna_bit ?? '—'}</div>
+        <div class="mono text-[10px] truncate">
+          <span class="text-cyan-300/90">${escapeHtml(ch.physical_address || '')}</span>
+          ${logical
+            ? ` → <span class="text-emerald-300">${escapeHtml(logical)}</span>`
+            : ' → <span class="text-amber-400/80">unresolved</span>'}
+        </div>
+      </div>`;
+    }).join('');
     const rows = channels.map((ch) => {
       const logical = ch.logical_endpoint?.name || '— unresolved —';
       const logicalCls = ch.logical_endpoint ? 'text-emerald-300' : 'text-amber-400/90';
@@ -3423,14 +3459,19 @@ function renderHardwareModuleDetail() {
       </tr>`;
     }).join('');
     detail.innerHTML = `
-      <div class="text-cyan-300 mono text-xs mb-2">${escapeHtml(ad.rio_name)} [${mod.slot}] ${escapeHtml(mod.catalog || '')} · Data[${mod.data_index ?? '—'}]</div>
+      <div class="text-cyan-300 mono text-xs mb-1">${escapeHtml(ad.rio_name)} · ${escapeHtml(ad.panel || '')}</div>
+      <div class="text-slate-300 text-[11px] mb-2">Slot ${mod.slot} · ${escapeHtml(mod.catalog || '')} · Data[${mod.data_index ?? '—'}] · ${escapeHtml(mod.direction || '')}</div>
+      <div class="rounded-lg border border-slate-800 bg-[#05080c] p-2 mb-3">
+        <div class="text-[9px] uppercase tracking-wider text-slate-600 mb-1">Terminals (vertical)</div>
+        <div class="hw-term-col">${terms}</div>
+      </div>
       <table class="w-full text-left text-[10px]">
-        <thead class="text-slate-500 sticky top-0 bg-[#0c1219]">
+        <thead class="text-slate-500 sticky top-0 bg-[#070b10]">
           <tr>
             <th class="py-1 px-1">Ch</th>
             <th class="py-1 px-1">Physical address</th>
-            <th class="py-1 px-1">Fortna word.bit</th>
-            <th class="py-1 px-1">Logical endpoint</th>
+            <th class="py-1 px-1">Configio</th>
+            <th class="py-1 px-1">RUN / endpoint</th>
             <th class="py-1 px-1">Provenance</th>
           </tr>
         </thead>
@@ -3841,6 +3882,7 @@ function emptySorterTrackRow() {
 function defaultSorterConfig() {
   return {
     sorter_type: '', // shoe_sorter | popup_divert
+    area_name: '',
     induct_conveyor: '',
     induct_pe: '',
     induct_has_encoder: 'no',
@@ -3852,6 +3894,74 @@ function defaultSorterConfig() {
     tracking_pe_count: 0,
     tracking_pes: [],
   };
+}
+
+/** Engineer-built Transportation areas only — never invent from CP / controller name. */
+function transportAreaNameList() {
+  const names = [];
+  const seen = new Set();
+  const add = (n) => {
+    const s = String(n || '').trim();
+    if (!s || seen.has(s)) return;
+    seen.add(s);
+    names.push(s);
+  };
+  try {
+    const live = window.__tbApi?.tb?.areas;
+    if (Array.isArray(live)) live.forEach((a) => add(a && a.name));
+  } catch (_) { /* ignore */ }
+  try {
+    const raw = localStorage.getItem('siteforge.transportBuild.v2')
+      || localStorage.getItem('siteforge.transportBuild.v1');
+    if (raw) {
+      const data = JSON.parse(raw);
+      (data.areas || []).forEach((a) => add(a && a.name));
+    }
+  } catch (_) { /* ignore */ }
+  const wb = autogenState.workbook;
+  (wb?.areas || []).forEach((a) => add(typeof a === 'string' ? a : (a && a.name)));
+  (wb?.options?.areas || []).forEach((a) => add(a));
+  (wb?.conveyors || []).forEach((r) => add(r && r.main_area));
+  return names;
+}
+
+function _sawtoothUnresolvedKey(x) {
+  return String(x || '').trim().toLowerCase().replace(/\s+/g, '_');
+}
+
+/** True when collector-track encoder requirement is already satisfied (e.g. proven ENC414). */
+function sawtoothCollectorEncoderSatisfied(s) {
+  const cfg = s || {};
+  if (cfg.collector_has_encoder === 'no' || cfg.collector_has_encoder === false) return true;
+  return !!(String(cfg.collector_encoder || '').trim());
+}
+
+/**
+ * Keep configuration_required consistent with filled fields.
+ * Proven/filled collector_encoder (ENC414) clears merge_encoder / collector_encoder —
+ * do not leave a contradictory unresolved warning beside the proven-role label.
+ * Only strips satisfied/optional keys; does not invent new gates on empty configs.
+ */
+function reconcileSawtoothConfigurationRequired(s) {
+  const cfg = s || {};
+  let unresolved = Array.isArray(cfg.configuration_required)
+    ? [...cfg.configuration_required]
+    : [];
+  const optional = new Set([
+    'discharge_conveyor', 'downstream_conveyor', 'downstream', 'jam_pe',
+  ]);
+  unresolved = unresolved.filter((x) => !optional.has(_sawtoothUnresolvedKey(x)));
+  if (cfg.collector_conveyor) {
+    unresolved = unresolved.filter((x) => _sawtoothUnresolvedKey(x) !== 'collector_conveyor');
+  }
+  if (sawtoothCollectorEncoderSatisfied(cfg)) {
+    unresolved = unresolved.filter((x) => {
+      const k = _sawtoothUnresolvedKey(x);
+      return k !== 'merge_encoder' && k !== 'collector_encoder';
+    });
+  }
+  cfg.configuration_required = unresolved;
+  return cfg;
 }
 
 function defaultSawtoothConfig() {
@@ -3961,10 +4071,24 @@ function sawtoothBuildFromSiteModel(site) {
   const mrgNum = (collector.match(/(\d+)/) || [])[1] || '';
   // Blocking readiness: collector + merge encoder only. Discharge / lane jam PE stay
   // visible when empty but must not block Apply when RUN left them optional/unresolved.
-  const unresolved = [...(merge.configuration_required || merge.config_required || [])]
+  // When encoder is proven/filled (ENC414 collector_tracking), strip merge_encoder /
+  // collector_encoder from unresolved — requirement is satisfied, not contradictory.
+  let unresolved = [...(merge.configuration_required || merge.config_required || [])]
     .filter((x) => !['discharge_conveyor', 'downstream_conveyor', 'downstream conveyor', 'jam_pe'].includes(String(x)));
-  if (!collector && !unresolved.includes('collector_conveyor')) unresolved.push('collector_conveyor');
-  if (!encoder && !unresolved.includes('collector_encoder') && !unresolved.includes('merge_encoder')) {
+  if (collector) {
+    unresolved = unresolved.filter((x) => _sawtoothUnresolvedKey(x) !== 'collector_conveyor');
+  } else if (!unresolved.some((x) => _sawtoothUnresolvedKey(x) === 'collector_conveyor')) {
+    unresolved.push('collector_conveyor');
+  }
+  if (encoder) {
+    unresolved = unresolved.filter((x) => {
+      const k = _sawtoothUnresolvedKey(x);
+      return k !== 'merge_encoder' && k !== 'collector_encoder';
+    });
+  } else if (!unresolved.some((x) => {
+    const k = _sawtoothUnresolvedKey(x);
+    return k === 'collector_encoder' || k === 'merge_encoder';
+  })) {
     unresolved.push('merge_encoder');
   }
   return normalizeSawtoothConfig({
@@ -4026,6 +4150,7 @@ function sorterBuildFromSiteModel(site) {
     ...defaultSorterConfig(),
     sorter_type: pick.sorter_type || '',
     sorter_name: name,
+    area_name: pick.area_name || pick.main_area || ed.area_name || '',
     induct_conveyor: pick.induct_conveyor || '',
     induct_pe: pick.induct_pe || '',
     induct_has_encoder: enc ? 'yes' : 'no',
@@ -4300,6 +4425,7 @@ function normalizeSawtoothConfig(raw) {
     pls_location: Number(r?.pls_location) || 0,
     blocked_jam_pre: Number(r?.blocked_jam_pre) || 60,
   }));
+  reconcileSawtoothConfigurationRequired(s);
   return s;
 }
 
@@ -4513,6 +4639,8 @@ function renderSorterBuild() {
   const convs = conveyorNameList();
   const pes = photoeyeNameList();
   const encs = encoderNameList();
+
+  fillSawSelect($('sorter-area-name'), transportAreaNameList(), s.area_name || '');
 
   const inductC = $('sorter-induct-conv');
   const inductP = $('sorter-induct-pe');
@@ -4749,9 +4877,15 @@ function wireSorterBuildUi() {
     touchSorter();
     updateSorterSummary();
   });
+  $('sorter-area-name')?.addEventListener('change', () => {
+    autogenState.sorter.area_name = $('sorter-area-name').value || '';
+    touchSorter();
+    updateSorterSummary();
+  });
 
   $('btn-sorter-save')?.addEventListener('click', async () => {
     if ($('sorter-type')) autogenState.sorter.sorter_type = $('sorter-type').value || '';
+    if ($('sorter-area-name')) autogenState.sorter.area_name = $('sorter-area-name').value || '';
     persistSorterToWorkbook();
     const st = $('sorter-save-status');
     const s = autogenState.sorter || {};
@@ -4832,7 +4966,8 @@ function updateSawtoothSummary() {
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   const el = $('sawtooth-summary');
   if (!el) return;
-  const s = autogenState.sawtooth || {};
+  const s = reconcileSawtoothConfigurationRequired(autogenState.sawtooth || {});
+  autogenState.sawtooth = s;
   const n = Number(s.lane_count || (s.lanes || []).length || 0);
   const enc = s.collector_has_encoder === 'no'
     ? 'NO_Enc'
@@ -4907,7 +5042,7 @@ function renderSawtoothBuild() {
   if ($('saw-lane-count')) $('saw-lane-count').value = String(s.lane_count || 4);
   if ($('saw-track-pe-count')) $('saw-track-pe-count').value = String(s.track_pe_count || 0);
   if ($('saw-mrg-id')) $('saw-mrg-id').value = s.mrg_id || '414';
-  if ($('saw-area-name')) $('saw-area-name').value = s.area_name || '';
+  fillSawSelect($('saw-area-name'), transportAreaNameList(), s.area_name || '');
   if ($('saw-enable-trk')) $('saw-enable-trk').checked = s.enable_track !== false;
   if ($('saw-enable-resv')) $('saw-enable-resv').checked = s.enable_reserve !== false;
   if ($('saw-no-carton-check')) $('saw-no-carton-check').checked = !!s.no_carton_check;
@@ -4926,6 +5061,9 @@ function renderSawtoothBuild() {
   const encTag = $('saw-collector-enc');
   if (encTag) encTag.innerHTML = sorterEncTagOptionsHtml(s.collector_encoder || '', encFallback);
   const encRoleEl = $('saw-collector-enc-role');
+  const encSatisfied = sawtoothCollectorEncoderSatisfied(s);
+  const encReqHint = $('saw-collector-enc-req-hint');
+  if (encReqHint) encReqHint.classList.toggle('hidden', encSatisfied && !!(s.collector_encoder || '').trim());
   if (encRoleEl) {
     const role = s.encoder_role || s.collector_encoder_role || '';
     const encName = s.collector_encoder || '';
@@ -5081,7 +5219,11 @@ function wireSawtoothBuildOnce() {
     autogenState.sawtooth.collector_encoder_type = $('saw-collector-enc-type').value || 'Enc_RIOCard';
     updateSawtoothSummary();
   });
-  bind('saw-collector-enc', () => { autogenState.sawtooth.collector_encoder = $('saw-collector-enc').value || ''; updateSawtoothSummary(); });
+  bind('saw-collector-enc', () => {
+    autogenState.sawtooth.collector_encoder = $('saw-collector-enc').value || '';
+    reconcileSawtoothConfigurationRequired(autogenState.sawtooth);
+    renderSawtoothBuild();
+  });
   bind('saw-clctr-speed', () => { autogenState.sawtooth.clctr_speed_fpm = Number($('saw-clctr-speed').value) || 140; });
   bind('saw-clctr-runout', () => { autogenState.sawtooth.clctr_runout_dist = Number($('saw-clctr-runout').value) || 0; });
   bind('saw-slug-gap-adder', () => { autogenState.sawtooth.clctr_slug_gap_adder = Number($('saw-slug-gap-adder').value) || 0; });
@@ -5155,6 +5297,7 @@ function wireSawtoothBuildOnce() {
   });
 
   $('btn-saw-save')?.addEventListener('click', async () => {
+    reconcileSawtoothConfigurationRequired(autogenState.sawtooth || {});
     persistSawtoothToWorkbook();
     const s = autogenState.sawtooth || {};
     const hasData = !!(s.collector_conveyor || (s.lanes || []).some((l) => l && l.conveyor));
@@ -6110,7 +6253,12 @@ async function runAutogenGenerate(mode) {
   const r = res.result || {};
   const rep = r.report || {};
   autogenState.lastOut = r.out_dir || '';
-  autogenState.lastL5x = r.l5x || '';
+  // Prefer exact timestamped L5X from result / build_manifest — never *_LATEST.L5X
+  const manifestL5x = r.manifest?.output_path || '';
+  const rawL5x = r.l5x || manifestL5x || '';
+  autogenState.lastL5x = /_LATEST\.L5X$/i.test(rawL5x)
+    ? (manifestL5x && !/_LATEST\.L5X$/i.test(manifestL5x) ? manifestL5x : '')
+    : rawL5x;
   autogenState.lastManifest = r.manifest || null;
   autogenState.lastGenerateIoMapError = null;
   setAutogenStatus(r.recovered ? 'Complete (recovered)' : 'Complete', 'ready');
@@ -6119,13 +6267,14 @@ async function runAutogenGenerate(mode) {
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
         <div class="text-emerald-400 font-semibold">
-          GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered from disk)</span>' : ''}
+          BUILD SUCCESS — GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered from disk)</span>' : ''}
         </div>
         <div class="text-xs text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
         <div class="text-xs text-slate-300">Source RUN: <span class="mono text-slate-400">${escapeHtml(r.source_run_filename || r.source_label || '')}</span></div>
         <div class="text-xs text-slate-300">Generated: <span class="mono text-slate-400">${escapeHtml(r.generated_at || '')}</span></div>
-        <div class="text-xs text-slate-300">Output: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || (r.l5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
-        <div class="text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Open Output Folder / Open File Location. Only exports/current is engineer-facing.</div>
+        <div class="text-xs text-slate-300">Output: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || (autogenState.lastL5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
+        <div class="text-[10px] text-emerald-200/90 mono break-all leading-snug mt-1">${escapeHtml(autogenState.lastL5x || '')}</div>
+        <div class="text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Open Output Folder / Open File Location. Only the timestamped L5X in exports/current is engineer-facing (no _LATEST.L5X).</div>
       </div>`;
   }
   // CURRENT PLC BUILD provenance card (absolute path + SHA256)
@@ -6135,10 +6284,10 @@ async function runAutogenGenerate(mode) {
     const shaShort = sha ? `${sha.slice(0, 16)}…${sha.slice(-8)}` : '—';
     panel.classList.remove('hidden');
     panel.innerHTML = `
-      <div class="text-[11px] font-semibold text-emerald-300 tracking-wide">CURRENT PLC BUILD</div>
+      <div class="text-[11px] font-semibold text-emerald-300 tracking-wide">BUILD SUCCESS — CURRENT PLC BUILD</div>
       <div class="text-[11px] text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
-      <div class="text-[10px] text-slate-500">File:</div>
-      <div class="mono text-[10px] text-emerald-200/90 break-all leading-snug">${escapeHtml(r.l5x || '')}</div>
+      <div class="text-[10px] text-slate-500">Exact L5X path (open this file in Studio):</div>
+      <div class="mono text-[11px] text-emerald-200 break-all leading-snug font-semibold">${escapeHtml(autogenState.lastL5x || r.l5x || '')}</div>
       <div class="text-[11px] text-slate-400">Generated: <span class="mono">${escapeHtml(r.generated_at || '')}</span>
         ${r.git_commit ? ` · git <span class="mono text-slate-500">${escapeHtml(r.git_commit)}</span>` : ''}</div>
       <div class="text-[11px] text-slate-400">SHA256: <span class="mono text-[10px] text-slate-500" title="${escapeHtml(sha)}">${escapeHtml(shaShort)}</span></div>
@@ -7129,23 +7278,35 @@ $('btn-autogen-open-out')?.addEventListener('click', () => {
   const out = autogenState.lastOut || '';
   if (out && typeof fortnaAPI.openPath === 'function') {
     fortnaAPI.openPath(out);
-    autogenLog(`PLC output folder: ${out}`, 'info');
+    autogenLog(`Open Output Folder: ${out}`, 'info');
   }
 });
 $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
-  // Reveal folder only — never shell-open the .L5X (that launches Studio 5000)
+  // Reveal folder of the exact successful-build L5X — never shell-open .L5X (launches Studio)
   const l5x = autogenState.lastL5x;
-  if (!l5x) return;
+  if (!l5x) {
+    autogenLog('Open File Location: no exact L5X from last successful build (lastL5x empty)', 'warn');
+    return;
+  }
+  if (/_LATEST\.L5X$/i.test(l5x)) {
+    autogenLog(`Open File Location refused _LATEST path: ${l5x}`, 'warn');
+    return;
+  }
   const folder = l5x.replace(/[\\/][^\\/]+$/, '');
   if (folder && typeof fortnaAPI.openPath === 'function') {
-    fortnaAPI.openPath(folder || autogenState.lastOut || l5x);
-    autogenLog(`L5X location: ${l5x}`, 'info');
-    autogenLog('Open the .L5X yourself in Studio when ready (File → Open as new project).', 'info');
+    fortnaAPI.openPath(folder);
+    autogenLog(`Open File Location (exact L5X): ${l5x}`, 'info');
+    autogenLog(`Revealed folder: ${folder}`, 'info');
+    autogenLog('Open the timestamped .L5X yourself in Studio (File → Open as new project).', 'info');
   }
 });
 $('btn-autogen-copy-l5x-path')?.addEventListener('click', async () => {
   const l5x = autogenState.lastL5x;
   if (!l5x) return;
+  if (/_LATEST\.L5X$/i.test(l5x)) {
+    autogenLog(`Copy Full Path refused _LATEST path: ${l5x}`, 'warn');
+    return;
+  }
   try {
     if (typeof fortnaAPI?.clipboardWriteText === 'function') {
       await fortnaAPI.clipboardWriteText(l5x);

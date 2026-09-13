@@ -6,11 +6,10 @@
 
 | Role | Path |
 |------|------|
-| **CURRENT engineer L5X** | `exports/current/{Controller}_{YYYY_MM_DD_HHMM}.L5X` |
-| **Stable latest pointer** | `exports/current/{Controller}_LATEST.L5X` |
-| **Build manifest** | `exports/current/build_manifest.json` |
+| **CURRENT engineer L5X** | `exports/current/{Controller}_{YYYY_MM_DD_HHMM}.L5X` (single dated file per controller) |
+| **Build manifest** | `exports/current/build_manifest.json` (names the exact L5X) |
 | **Per-build manifest** | `exports/current/{stem}.manifest.json` |
-| **Result pointer** | `exports/current/LATEST.json` |
+| **Result pointer** | `exports/current/LATEST.json` (JSON only — **no** physical `{Controller}_LATEST.L5X`) |
 | Diagnostics / IPC recovery | `workspace/.internal/builds/{build_id}/` |
 | Historical copies (not engineer-facing) | `exports/autogen/history/` |
 
@@ -102,6 +101,6 @@ Transport Build canvas state (including **Control Panel** grouping, presentation
 
 - It does **not** change controller ownership, I/O, Area, or generated L5X contents.
 - Apply to Autogen still emits canonical topology only (see `buildCanonicalApplyGraph`).
-- After Build PLC, **`exports/current/` is authoritative** — open `{Controller}_LATEST.L5X` or the dated file named in `build_manifest.json`, not Transport localStorage and not diagnostic trees under `exports/autogen/` / `exports/studio-validation/`.
+- After Build PLC, **`exports/current/` is authoritative** — open the dated file named in `build_manifest.json` (`output_path`), not Transport localStorage and not diagnostic trees under `exports/autogen/` / `exports/studio-validation/`. Physical `{Controller}_LATEST.L5X` is no longer written.
 
 See also: `docs/CONTROL_PANEL_TRANSPORT_MODEL.md`.
