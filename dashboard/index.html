@@ -457,6 +457,32 @@
     #tb-fit-menu > summary, #tb-advanced-menu > summary { list-style: none; }
     #tb-fit-menu > summary::-webkit-details-marker,
     #tb-advanced-menu > summary::-webkit-details-marker { display: none; }
+    /* Control Panel tint / badge (presentation only — does not alter connectivity) */
+    .tb-schematic-body.tb-cp-CP1 { stroke: #22d3ee; }
+    .tb-schematic-body.tb-cp-CP2 { stroke: #c084fc; }
+    .tb-schematic-body.tb-cp-CP3 { stroke: #fbbf24; }
+    .tb-schematic-body.tb-cp-Other { stroke: #94a3b8; }
+    .tb-cp-badge {
+      font-size: 8px; font-weight: 700; fill: #94a3b8;
+      font-family: Inter, system-ui, sans-serif; pointer-events: none;
+    }
+    .tb-cp-badge-CP1 { fill: #22d3ee; }
+    .tb-cp-badge-CP2 { fill: #c084fc; }
+    .tb-cp-badge-CP3 { fill: #fbbf24; }
+    .tb-cp-badge-Other { fill: #94a3b8; }
+    .tb-cp-chip {
+      font-size: 8px; font-weight: 700; margin-left: 4px;
+      padding: 0 3px; border-radius: 3px; border: 1px solid #334155; color: #cbd5e1;
+    }
+    .tb-node.tb-cp-CP1 { box-shadow: inset 0 0 0 1px rgba(34, 211, 238, 0.45); }
+    .tb-node.tb-cp-CP2 { box-shadow: inset 0 0 0 1px rgba(192, 132, 252, 0.45); }
+    .tb-node.tb-cp-CP3 { box-shadow: inset 0 0 0 1px rgba(251, 191, 36, 0.45); }
+    #tb-canvas.tb-cp-filter-active .tb-schematic-body.tb-cp-dim,
+    #tb-canvas.tb-cp-filter-active .tb-node.tb-cp-dim { opacity: 0.18; }
+    #tb-canvas.tb-cp-filter-active .tb-schematic-body.tb-cp-match,
+    #tb-canvas.tb-cp-filter-active .tb-node.tb-cp-match { opacity: 1; }
+    #tb-canvas.tb-panning { cursor: grabbing !important; }
+    .tb-cp-bar label { user-select: none; }
     .tb-area-required, .tb-es-required {
       font-size: 8px; font-weight: 700; letter-spacing: 0.04em;
       padding: 0 4px; border-radius: 3px; margin-left: 4px;
@@ -986,13 +1012,17 @@
               <option value="">Bulk area…</option>
             </select>
             <button id="btn-autogen-wb-apply-area" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Apply area</button>
-            <button id="btn-autogen-open-out" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] ml-auto" disabled title="Open exports/autogen (engineer L5X folder)">
-              <i class="fa-solid fa-folder-open mr-1"></i>Open PLC Output
+            <button id="btn-autogen-open-out" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] ml-auto" disabled title="Open exports/current (authoritative engineer L5X folder)">
+              <i class="fa-solid fa-folder-open mr-1"></i>Open Output Folder
             </button>
-            <button id="btn-autogen-open-l5x" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" disabled title="Reveal latest clean L5X in exports/autogen (does not launch Studio)">
-              <i class="fa-solid fa-folder-open mr-1"></i>Show L5X
+            <button id="btn-autogen-open-l5x" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" disabled title="Reveal current L5X in exports/current (does not launch Studio)">
+              <i class="fa-solid fa-folder-open mr-1"></i>Open File Location
+            </button>
+            <button id="btn-autogen-copy-l5x-path" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" disabled title="Copy absolute L5X path to clipboard">
+              <i class="fa-solid fa-copy mr-1"></i>Copy Full Path
             </button>
           </div>
+          <div id="autogen-current-build" class="mt-3 hidden rounded-xl border border-emerald-800/60 bg-[#0c1612] px-3 py-2.5 space-y-1.5"></div>
           <!-- Collapsible: extend dropdown catalogs (areas / safety / exit PE / types) -->
           <details id="autogen-catalog-panel" class="mt-3 rounded-xl border border-slate-800/80 bg-[#0c1219]/
             <summary class="cursor-pointer px-3 py-2 text-[11px] text-violet-300/90 font-medium select-none hover:bg-[#101820] rounded-xl">
@@ -2084,6 +2114,7 @@
             <div class="absolute right-0 mt-1 z-40 min-w-[160px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-1">
               <button type="button" id="tb-fit-visible" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Visible (main cluster)</button>
               <button type="button" id="tb-fit-all" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit All (incl. outliers)</button>
+              <button type="button" id="tb-fit-selection" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Frame Selection</button>
               <button type="button" id="tb-fit-area" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Area</button>
               <button type="button" id="tb-fit-site" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Site</button>
             </div>
@@ -2155,6 +2186,23 @@
         </button>
         <span class="text-[9px] text-slate-600 ml-auto">New conveyors inherit these · changing context does not rewrite existing nodes</span>
       </div>
+      <!-- Control Panel filter / highlight (organizational — not PLC ownership) -->
+      <div class="tb-cp-bar shrink-0 px-4 py-1 flex items-center gap-3 flex-wrap text-[11px] border-b border-slate-800 bg-[#0b1219]">
+        <span class="text-[10px] uppercase tracking-widest text-violet-400/80 font-semibold" title="Control Panel is presentation/metadata only. Does not change controller ownership, I/O, Area, or PLC logic.">Control Panel</span>
+        <label class="flex items-center gap-1 text-cyan-300/90 cursor-pointer" title="Highlight CP1">
+          <input type="checkbox" id="tb-cp-filter-CP1" class="rounded border-slate-600 bg-slate-900"> CP1
+        </label>
+        <button type="button" id="tb-cp-select-CP1" class="btn-ghost text-[9px] px-1.5 py-0.5 rounded border border-cyan-900/50 text-cyan-400" title="Select all CP1 nodes (group move)">Select</button>
+        <label class="flex items-center gap-1 text-violet-300/90 cursor-pointer" title="Highlight CP2">
+          <input type="checkbox" id="tb-cp-filter-CP2" class="rounded border-slate-600 bg-slate-900"> CP2
+        </label>
+        <button type="button" id="tb-cp-select-CP2" class="btn-ghost text-[9px] px-1.5 py-0.5 rounded border border-violet-900/50 text-violet-300" title="Select all CP2 nodes (group move)">Select</button>
+        <label class="flex items-center gap-1 text-amber-300/90 cursor-pointer" title="Highlight CP3">
+          <input type="checkbox" id="tb-cp-filter-CP3" class="rounded border-slate-600 bg-slate-900"> CP3
+        </label>
+        <button type="button" id="tb-cp-select-CP3" class="btn-ghost text-[9px] px-1.5 py-0.5 rounded border border-amber-900/50 text-amber-300" title="Select all CP3 nodes (group move)">Select</button>
+        <span class="text-[9px] text-slate-600">Wheel zoom · Mid-drag pan · Shift+wheel pan · filters highlight only</span>
+      </div>
       <!-- Continue Run sticky bar -->
       <div id="tb-continue-bar" class="tb-continue-bar hidden shrink-0 px-4 py-1.5 flex items-center gap-2 flex-wrap">
         <span class="text-[10px] uppercase tracking-widest text-cyan-400/80 font-semibold">Continue Run</span>
@@ -2167,7 +2215,7 @@
         <button type="button" id="tb-continue-close" class="btn-ghost text-[10px] px-2 py-1 rounded text-slate-500">Esc</button>
         <div id="tb-continue-hits" class="w-full max-h-28 overflow-y-auto flex flex-wrap gap-1"></div>
       </div>
-      <!-- Multi-select bulk bar — Area / ES Zone fast assign for a conveyor run -->
+      <!-- Multi-select bulk bar — Area / ES Zone / Control Panel fast assign -->
       <div id="tb-bulk-bar" class="tb-bulk-bar hidden shrink-0 px-4 py-1.5 flex items-center gap-2 flex-wrap text-[11px]">
         <span id="tb-bulk-count" class="text-sky-300 font-semibold">0 selected</span>
         <span class="text-[10px] text-slate-500">Assign to run:</span>
@@ -2180,6 +2228,19 @@
         </label>
         <button type="button" id="tb-bulk-apply" class="btn-ghost text-[10px] px-2.5 py-1 rounded border border-emerald-600/70 text-emerald-200 font-semibold" title="Apply Area + ES Zone to the entire selection (engineer configuration)">
           Apply Area / ES
+        </button>
+        <label class="flex items-center gap-1 text-slate-300 font-medium" title="Control Panel is organizational metadata only — not PLC / I/O ownership">CP
+          <select id="tb-bulk-cp" class="bg-slate-900 border border-violet-800/60 rounded text-xs px-1.5 py-1 min-w-[88px]">
+            <option value="">—</option>
+            <option value="CP1">CP1</option>
+            <option value="CP2">CP2</option>
+            <option value="CP3">CP3</option>
+            <option value="Other">Other</option>
+            <option value="clear">Clear</option>
+          </select>
+        </label>
+        <button type="button" id="tb-bulk-cp-apply" class="btn-ghost text-[10px] px-2 py-1 rounded border border-violet-700/60 text-violet-200" title="Assign Control Panel to selection (presentation only)">
+          Set CP
         </button>
         <button type="button" id="tb-bulk-chain" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700" title="Expand selection to the connected chain">Select Chain</button>
         <button type="button" id="tb-bulk-terminal" class="btn-ghost text-[10px] px-2 py-1 rounded border border-amber-900/50 text-amber-300">Mark Terminal</button>

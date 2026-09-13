@@ -5939,7 +5939,13 @@ def _engineer_l5x_stem(
     machine: str = "",
     project_name: str = "",
 ) -> str:
-    """Engineer-facing basename: {studio_stem}__{YYYY_MM_DD_HHMM} (no leading digits, no hyphens)."""
+    """Engineer-facing basename: {studio_stem}_{YYYY_MM_DD_HHMM}.
+
+    Studio-safe rules (Curtis acceptance):
+      - must not begin with digits
+      - must not contain hyphens
+      - must not contain double underscores (__)
+    """
     when = when or datetime.now()
     try:
         from fortna_source_id import studio_project_stem
@@ -5959,7 +5965,70 @@ def _engineer_l5x_stem(
     if base and base[0].isdigit():
         base = f"P_{base}"
     stamp = when.strftime("%Y_%m_%d_%H%M")
-    return f"{base}__{stamp}"
+    # Single underscore separator only — Studio rejects "__" in L5X names.
+    return f"{base}_{stamp}"
+
+
+def _git_commit_short() -> str:
+    """Best-effort short git SHA for build provenance (empty when unavailable)."""
+    try:
+        import subprocess
+
+        r = subprocess.run(
+            ["git", "rev-parse", "--short", "HEAD"],
+            cwd=str(REPO_ROOT),
+            capture_output=True,
+            text=True,
+            timeout=5,
+        )
+        if r.returncode == 0:
+            return (r.stdout or "").strip()
+    except Exception:
+        pass
+    return ""
+
+
+def _sha256_file(path: Path) -> str:
+    import hashlib
+
+    h = hashlib.sha256()
+    with path.open("rb") as f:
+        for chunk in iter(lambda: f.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _write_build_manifest(
+    *,
+    path: Path,
+    controller: str,
+    source_run_filename: str,
+    source_run_hash: str,
+    generation_timestamp: str,
+    git_commit: str,
+    generator_version: str,
+    output_filename: str,
+    output_path: Path,
+    output_hash: str,
+    extra: dict | None = None,
+) -> dict:
+    manifest = {
+        "controller": controller,
+        "source_run_filename": source_run_filename,
+        "source_run_hash": source_run_hash,
+        "generation_timestamp": generation_timestamp,
+        "git_commit": git_commit,
+        "generator_version": generator_version,
+        "output_filename": output_filename,
+        "output_path": str(output_path.resolve()) if output_path else "",
+        "output_hash": output_hash,
+        "output_sha256": output_hash,
+    }
+    if extra:
+        manifest.update(extra)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    return manifest
 
 
 def generate(
@@ -6010,20 +6079,25 @@ def generate(
     )
     stamp = build_id
 
+    # Engineer-facing current output (ONE obvious place for Studio import).
+    # Historical/debug builds stay under workspace/.internal and exports/autogen/history.
+    current_root = REPO_ROOT / "exports" / "current"
+    history_root = REPO_ROOT / "exports" / "autogen" / "history"
     export_root = REPO_ROOT / "exports" / "autogen"
     explicit_out = Path(out_dir) if out_dir else None
     if explicit_out is None:
         # Default UI Build PLC path:
         #   diagnostics → workspace/.internal/builds/{build_id}/
-        #   engineer L5X → exports/autogen/{archive_stem}__{date}.L5X
-        #   optional dated folder → exports/autogen/{stem}/ (L5X + README only)
+        #   engineer L5X → exports/current/{controller}_{YYYY_MM_DD_HHMM}.L5X
+        #   history copy → exports/autogen/history/ (not engineer-facing)
         diag_dir = REPO_ROOT / "workspace" / ".internal" / "builds" / build_id
-        dated_dir = export_root / engineer_stem
+        dated_dir = None  # do not create nested engineer-facing dated folders
         diag_dir.mkdir(parents=True, exist_ok=True)
+        current_root.mkdir(parents=True, exist_ok=True)
+        history_root.mkdir(parents=True, exist_ok=True)
         export_root.mkdir(parents=True, exist_ok=True)
-        dated_dir.mkdir(parents=True, exist_ok=True)
         out = diag_dir
-        engineer_export_dir = export_root
+        engineer_export_dir = current_root
         l5x_basename = f"{engineer_stem}.L5X"
         result_export_name = engineer_stem
     else:
@@ -6083,7 +6157,87 @@ def generate(
         }
     l5x_path = engineer_export_dir / l5x_basename
     _emit_progress("Writing L5X file…", 70)
+
+    # Embed build provenance in L5X (Controller Description + Owner) so Studio
+    # projects remain traceable to the exact Site Forge build.
+    try:
+        from fortna_source_id import load_active_meta as _lam2
+
+        _meta2 = _lam2()
+    except Exception:
+        _meta2 = {}
+    source_run_filename = str(
+        _meta2.get("archive_name")
+        or _meta2.get("archive_stem")
+        or archive_stem
+        or ""
+    )
+    source_run_hash = str(_meta2.get("run_fingerprint") or _meta2.get("run_hash") or "")
+    git_commit = _git_commit_short()
+    gen_ts_local = now.strftime("%Y-%m-%d %H:%M:%S")
+    prov_lines = [
+        f"SiteForge ORNCCP2 build" if file_stem.upper().startswith("ORNCCP") else f"SiteForge {file_stem} build",
+        f"Controller={file_stem}",
+        f"SourceRUN={source_run_filename}",
+        f"Generated={gen_ts_local}",
+        f"Output={l5x_basename}",
+        f"Git={git_commit or 'unknown'}",
+        f"BuildId={build_id}",
+    ]
+    # Keep description short for Studio; full detail lives in build_manifest.json
+    prov_desc = " | ".join(prov_lines[:6])
+    if "<Description>" not in l5x.split("<Controller", 1)[-1][:800]:
+        l5x = re.sub(
+            r"(<Controller\b[^>]*>)",
+            rf'\1\n<Description>{_xml_escape(prov_desc)}</Description>',
+            l5x,
+            count=1,
+        )
+    # Owner carries short provenance (visible in RSLogix5000Content attrs)
+    owner = f"SiteForge {git_commit or build_id}".strip()
+    l5x = re.sub(r'Owner="[^"]*"', f'Owner="{_xml_escape(owner)}"', l5x, count=1)
+
     l5x_path.write_text(l5x, encoding="utf-8")
+
+    # History copy (not engineer-facing current) — only for default UI builds
+    if explicit_out is None:
+        try:
+            hist = history_root / l5x_basename
+            if hist.resolve() != l5x_path.resolve():
+                hist.write_text(l5x, encoding="utf-8")
+        except Exception:
+            pass
+        # Stable latest pointer beside current (same folder, no dated ambiguity)
+        try:
+            latest_name = f"{file_stem}_LATEST.L5X"
+            latest_path = engineer_export_dir / latest_name
+            if latest_path.resolve() != l5x_path.resolve():
+                latest_path.write_text(l5x, encoding="utf-8")
+        except Exception:
+            pass
+        # README in exports/autogen pointing engineers to exports/current
+        try:
+            (export_root / "README_CURRENT_OUTPUT.txt").write_text(
+                "\n".join(
+                    [
+                        "Site Forge — engineer-facing PLC output moved",
+                        "",
+                        "CURRENT builds are written to:",
+                        f"  {current_root}",
+                        "",
+                        "Do NOT open random L5X files under exports/autogen, studio-validation,",
+                        "plc2-fidelity, or candidate folders — those are historical/diagnostic.",
+                        "",
+                        "Open exports/current/ and use the newest ORNCCP2_*.L5X (or *_LATEST.L5X).",
+                        "build_manifest.json in that folder identifies the exact build.",
+                        "",
+                    ]
+                ),
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
+
     if dated_dir is not None:
         try:
             dated_l5x = dated_dir / f"{engineer_stem}.L5X"
@@ -6422,16 +6576,59 @@ def generate(
     except Exception as exc:
         prism_info = {"ok": False, "error": str(exc)}
 
+    output_hash = ""
+    try:
+        output_hash = _sha256_file(l5x_path) if l5x_path.is_file() else ""
+    except Exception:
+        output_hash = ""
+
+    manifest: dict = {}
+    try:
+        manifest = _write_build_manifest(
+            path=engineer_export_dir / "build_manifest.json",
+            controller=file_stem,
+            source_run_filename=source_run_filename,
+            source_run_hash=source_run_hash,
+            generation_timestamp=gen_ts_local,
+            git_commit=git_commit,
+            generator_version="siteforge-autogen",
+            output_filename=l5x_basename,
+            output_path=l5x_path,
+            output_hash=output_hash,
+            extra={
+                "build_id": build_id,
+                "diagnostics_dir": str(diag_dir),
+                "source_label": archive_stem,
+                "l5x_bytes": l5x_path.stat().st_size if l5x_path.is_file() else 0,
+                "conveyor_count": report.get("conveyor_count"),
+                "program_count": report.get("program_count"),
+            },
+        )
+        # Per-build manifest beside the dated filename as well
+        per_build = engineer_export_dir / f"{engineer_stem}.manifest.json"
+        if per_build.resolve() != (engineer_export_dir / "build_manifest.json").resolve():
+            per_build.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+    except Exception as exc:
+        manifest = {"error": str(exc)}
+
     result = {
         "ok": True,
         "engine": "python",
         "export_name": result_export_name,
         "source_label": archive_stem,
+        "source_run_filename": source_run_filename,
+        "source_run_hash": source_run_hash,
         "controller_name": file_stem,
-        "out_dir": str(engineer_export_dir),
+        "generated_at": gen_ts_local,
+        "git_commit": git_commit,
+        "out_dir": str(engineer_export_dir.resolve()),
         "diagnostics_dir": str(diag_dir),
         "build_id": build_id,
-        "l5x": str(l5x_path),
+        "l5x": str(l5x_path.resolve()),
+        "l5x_filename": l5x_basename,
+        "l5x_sha256": output_hash,
+        "build_manifest": str((engineer_export_dir / "build_manifest.json").resolve()),
+        "manifest": manifest,
         "studio_tags_csv": str(studio_csv_path) if csv_count else "",
         "report": report,
         "report_txt": str(diag_dir / "autogen_report.txt"),
@@ -6451,7 +6648,8 @@ def generate(
     except Exception:
         pass
     _emit_progress(
-        f"Done — {report.get('conveyor_count', 0)} conveyors, {report.get('tag_count', 0)} tags",
+        f"Done — {report.get('conveyor_count', 0)} conveyors, {report.get('tag_count', 0)} tags"
+        f" · {l5x_basename}",
         100,
     )
     return result

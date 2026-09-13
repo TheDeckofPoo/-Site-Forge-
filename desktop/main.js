@@ -905,10 +905,28 @@ function createWindow() {
   /** If IPC/stdout fails after Python wrote files, recover the newest successful export. */
   function recoverLatestAutogenResult(maxAgeMs = 5 * 60 * 1000) {
     try {
+      // Prefer authoritative engineer-facing current folder first.
+      const currentDir = path.join(REPO_ROOT, 'exports', 'current');
+      const currentLatest = path.join(currentDir, 'LATEST.json');
+      if (fs.existsSync(currentLatest)) {
+        try {
+          const st = fs.statSync(currentLatest);
+          if (Date.now() - st.mtimeMs <= maxAgeMs) {
+            const r = JSON.parse(fs.readFileSync(currentLatest, 'utf-8'));
+            if (r && r.ok) {
+              r.recovered = true;
+              r.note = r.note || 'Recovered from exports/current/LATEST.json';
+              return r;
+            }
+          }
+        } catch (_) { /* fall through */ }
+      }
+
+      // Legacy fallback: dated folders under exports/autogen (historical only)
       const root = path.join(REPO_ROOT, 'exports', 'autogen');
       if (!fs.existsSync(root)) return null;
       const dirs = fs.readdirSync(root, { withFileTypes: true })
-        .filter((d) => d.isDirectory())
+        .filter((d) => d.isDirectory() && d.name !== 'history')
         .map((d) => {
           const full = path.join(root, d.name);
           const st = fs.statSync(full);
@@ -951,10 +969,23 @@ function createWindow() {
       engine: result.engine || 'python',
       out_dir: result.out_dir || '',
       l5x: result.l5x || '',
+      l5x_filename: result.l5x_filename || '',
+      l5x_sha256: result.l5x_sha256 || '',
+      build_manifest: result.build_manifest || '',
+      manifest: result.manifest || null,
+      controller_name: result.controller_name || '',
+      source_label: result.source_label || '',
+      source_run_filename: result.source_run_filename || '',
+      source_run_hash: result.source_run_hash || '',
+      generated_at: result.generated_at || '',
+      git_commit: result.git_commit || '',
+      build_id: result.build_id || '',
+      diagnostics_dir: result.diagnostics_dir || '',
       report_txt: result.report_txt || '',
       library_used: result.library_used || '',
       recovered: !!result.recovered,
       l5x_bytes: result.l5x_bytes || 0,
+      twin_gaps: result.twin_gaps || null,
       report: {
         project: rep.project,
         processor: rep.processor,
@@ -1884,6 +1915,16 @@ function createWindow() {
       return { success: false, message: `Unknown recipe: ${recipeId}` };
     } catch (e) {
       return { success: false, message: e.message };
+    }
+  });
+
+  ipcMain.handle('clipboard-write-text', async (_event, text) => {
+    try {
+      const { clipboard } = require('electron');
+      clipboard.writeText(String(text || ''));
+      return { success: true };
+    } catch (e) {
+      return { success: false, message: e?.message || String(e) };
     }
   });
 

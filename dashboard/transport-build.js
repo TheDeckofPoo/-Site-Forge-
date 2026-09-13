@@ -216,6 +216,9 @@
       controller: false,
       tracking: false,
     },
+    // Control Panel filter toggles (presentation only — multiple may be on)
+    cpFilters: { CP1: false, CP2: false, CP3: false },
+    panning: null, // middle-mouse pan: { sx, sy, sl, st }
     workflow: { import: false, autobuild: false, review: true, apply: false, build: false },
   };
 
@@ -379,6 +382,9 @@
           areas: tb.areas,
           activeAreaId: tb.activeAreaId,
           autoConnectNew: !!tb.autoConnectNew,
+          // Additive v2 fields — controlPanel lives on nodes; filters/layers are UI prefs
+          cpFilters: tb.cpFilters || { CP1: false, CP2: false, CP3: false },
+          layers: tb.layers || null,
         })
       );
     } catch (_) { /* ignore */ }
@@ -432,6 +438,22 @@
       }
       if ((tb.areas || []).length) tb.suppressDefaultArea = false;
       if (typeof data.autoConnectNew === 'boolean') tb.autoConnectNew = data.autoConnectNew;
+      if (data.cpFilters && typeof data.cpFilters === 'object') {
+        tb.cpFilters = {
+          CP1: !!data.cpFilters.CP1,
+          CP2: !!data.cpFilters.CP2,
+          CP3: !!data.cpFilters.CP3,
+        };
+      }
+      if (data.layers && typeof data.layers === 'object') {
+        tb.layers = { ...(tb.layers || {}), ...data.layers };
+      }
+      // Ensure controlPanel exists on restored nodes (presentation metadata only)
+      (tb.areas || []).forEach((area) => {
+        (area.nodes || []).forEach((n) => {
+          if (n.controlPanel == null) n.controlPanel = '';
+        });
+      });
     } catch (_) { /* ignore */ }
   }
 
@@ -1403,6 +1425,131 @@
     return !!(n && n.physical && (n.schematic || (n.pathCanvas && n.pathCanvas.length) || n.entryCanvas));
   }
 
+  /** Normalize controlPanel to CP1/CP2/CP3/Other or "". Presentation metadata only. */
+  function normalizeControlPanel(v) {
+    const s = String(v || '').trim();
+    if (!s) return '';
+    const u = s.toUpperCase();
+    if (u === 'OTHER') return 'Other';
+    const m = u.match(/^CP\s*(\d{1,2})$/);
+    if (m) return `CP${Number(m[1])}`;
+    return s;
+  }
+
+  /**
+   * Infer controlPanel ONLY from strong RUN evidence.
+   * Machine_Name embedding CP# (ORNCCP2 → CP2) or explicit CP token.
+   * If unsure, return "" — engineer assigns manually.
+   */
+  function inferControlPanelFromEvidence(n) {
+    if (!n) return '';
+    const existing = normalizeControlPanel(n.controlPanel);
+    if (existing) return existing;
+    const mn = String(n.machineName || n.machine_name || '').trim().toUpperCase();
+    if (!mn || ['N/A', 'INVALID', 'NONE', 'ALL', '0'].includes(mn)) return '';
+    // Explicit CP token bounded by non-alnum (or string edges)
+    let m = mn.match(/(?:^|[^A-Z0-9])(CP\d{1,2})(?=[^A-Z0-9]|$)/);
+    if (m) return normalizeControlPanel(m[1]);
+    // Trailing embedded form common in Fortna controllers: ORNCCP2, MSCRENOCP3
+    m = mn.match(/CP(\d{1,2})$/);
+    if (m) return `CP${Number(m[1])}`;
+    return '';
+  }
+
+  function ensureControlPanel(n, { forceInfer = false } = {}) {
+    if (!n) return '';
+    if (!forceInfer && n.controlPanel != null && String(n.controlPanel).trim() !== '') {
+      n.controlPanel = normalizeControlPanel(n.controlPanel);
+      return n.controlPanel;
+    }
+    if (n.controlPanel == null) n.controlPanel = '';
+    const inferred = inferControlPanelFromEvidence({ ...n, controlPanel: '' });
+    if (inferred) {
+      n.controlPanel = inferred;
+      n.controlPanelProvenance = 'RUN_EXPLICIT';
+    } else if (forceInfer) {
+      n.controlPanel = '';
+      n.controlPanelProvenance = 'UNKNOWN';
+    }
+    return n.controlPanel || '';
+  }
+
+  function cpFilterActive() {
+    const f = tb.cpFilters || {};
+    return !!(f.CP1 || f.CP2 || f.CP3);
+  }
+
+  function nodeMatchesCpFilter(n) {
+    if (!cpFilterActive()) return true;
+    const cp = normalizeControlPanel(n?.controlPanel);
+    const f = tb.cpFilters || {};
+    if (f.CP1 && cp === 'CP1') return true;
+    if (f.CP2 && cp === 'CP2') return true;
+    if (f.CP3 && cp === 'CP3') return true;
+    return false;
+  }
+
+  /** Snapshot canvas geometry for undo-safe group moves (does not touch sourceX/Y). */
+  function captureNodeGeom(n) {
+    if (!n) return null;
+    return {
+      id: n.id,
+      x: Number(n.x) || 0,
+      y: Number(n.y) || 0,
+      entryCanvas: n.entryCanvas ? { ...n.entryCanvas } : null,
+      exitCanvas: n.exitCanvas ? { ...n.exitCanvas } : null,
+      pathCanvas: Array.isArray(n.pathCanvas) ? JSON.parse(JSON.stringify(n.pathCanvas)) : null,
+      arcSamplesCanvas: Array.isArray(n.arcSamplesCanvas)
+        ? JSON.parse(JSON.stringify(n.arcSamplesCanvas))
+        : null,
+    };
+  }
+
+  /** Apply dx/dy from a captureNodeGeom origin. Preserves relative geometry. */
+  function applyNodeGeomDelta(n, origin, dx, dy) {
+    if (!n || !origin) return;
+    const nx = (origin.x || 0) + dx;
+    const ny = (origin.y || 0) + dy;
+    // Avoid negative proxy positions for palette cards; physical schematic may go slightly negative
+    const clamp = !(n.physical || isSchematicNode(n));
+    n.x = clamp ? Math.max(0, nx) : nx;
+    n.y = clamp ? Math.max(0, ny) : ny;
+    const adx = n.x - (origin.x || 0);
+    const ady = n.y - (origin.y || 0);
+    if (origin.entryCanvas) {
+      n.entryCanvas = {
+        ...origin.entryCanvas,
+        x: origin.entryCanvas.x + adx,
+        y: origin.entryCanvas.y + ady,
+      };
+    }
+    if (origin.exitCanvas) {
+      n.exitCanvas = {
+        ...origin.exitCanvas,
+        x: origin.exitCanvas.x + adx,
+        y: origin.exitCanvas.y + ady,
+      };
+    }
+    if (origin.pathCanvas) {
+      n.pathCanvas = origin.pathCanvas.map((cmd) => {
+        const c = { ...cmd };
+        if (c.x != null) c.x = Number(c.x) + adx;
+        if (c.y != null) c.y = Number(c.y) + ady;
+        if (c.center && c.center.x != null) {
+          c.center = { ...c.center, x: c.center.x + adx, y: c.center.y + ady };
+        }
+        return c;
+      });
+    }
+    if (origin.arcSamplesCanvas) {
+      n.arcSamplesCanvas = origin.arcSamplesCanvas.map((p) => ({
+        ...p,
+        x: p.x + adx,
+        y: p.y + ady,
+      }));
+    }
+  }
+
   /** Build SVG path `d` from projected pathCanvas commands (Y already flipped). */
   function schematicPathD(pathCanvas) {
     if (!pathCanvas || !pathCanvas.length) return '';
@@ -1862,10 +2009,15 @@
       const sw = schematicStrokeWidth(n);
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
       const amb = (n.ambiguousInbound || []).length > 0;
+      const cp = normalizeControlPanel(n.controlPanel);
+      const cpMatch = nodeMatchesCpFilter(n);
       let cls = `tb-schematic-body tb-rk-${rk}`;
       if (sel) cls += ' selected';
       if (amb) cls += ' tb-ambiguous';
       if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') cls += ' tb-display-context tb-external-ref';
+      if (cp === 'CP1' || cp === 'CP2' || cp === 'CP3') cls += ` tb-cp-${cp}`;
+      else if (cp === 'Other') cls += ' tb-cp-Other';
+      if (cpFilterActive()) cls += cpMatch ? ' tb-cp-match' : ' tb-cp-dim';
       const tag = (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE')
         ? (`→ External ${(n.conveyorTag || n.label || '').trim()}`.trim() || '→ External')
         : ((n.conveyorTag || n.label || '').trim() || 'P???');
@@ -1873,13 +2025,19 @@
         ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
       const mid = applyPresOffset(mid0, off);
-      html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tag)}</title></path>`;
+      const tip = cp ? `${tag} · ${cp}` : tag;
+      html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
       // Canvas labels: P-tag only by default. Area/ES stay in the inspector — never
       // paint missing-config words or zone names across the drawing. Small warn dot if needed.
       const needsCfg = !!(n.areaRequired || n.esZoneRequired);
       if (needsCfg) {
         html += `<circle class="tb-schematic-warn" data-id="${escapeHtml(n.id)}" cx="${mid.x}" cy="${mid.y - sw / 2 - 4}" r="2.5"><title>Missing Area/ES — edit in inspector</title></circle>`;
+      }
+      // Small CP badge (does not alter connectivity geometry)
+      if (cp && (sel || cpFilterActive() || lod === 'close' || lod === 'mid')) {
+        const badge = cp === 'Other' ? 'CP?' : cp;
+        html += `<text class="tb-cp-badge tb-cp-badge-${escapeHtml(cp)}" data-id="${escapeHtml(n.id)}" x="${mid.x}" y="${mid.y + sw / 2 + 10}" text-anchor="middle">${escapeHtml(badge)}</text>`;
       }
       // Flow tick at exit (overview+) so direction is readable without device clutter
       if (n.exitCanvas && n.entryCanvas) {
@@ -2077,8 +2235,17 @@
     return { inn: 'side-left', out: 'side-right' };
   }
 
+  function viewportZoomLimits() {
+    // Physical RUN layouts must allow deep zoom-out (fitView minZoom 0.05).
+    return {
+      min: tb.physicalLayout ? 0.05 : 0.25,
+      max: 3,
+    };
+  }
+
   function applyViewportZoom() {
-    const z = Math.max(0.25, Math.min(3, Number(tb.view?.zoom) || 1));
+    const lim = viewportZoomLimits();
+    const z = Math.max(lim.min, Math.min(lim.max, Number(tb.view?.zoom) || 1));
     tb.view.zoom = z;
     const host = $('tb-nodes');
     const wires = $('tb-wires');
@@ -2309,6 +2476,31 @@
     status(`Fit Area · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`);
   }
 
+  /** Frame current selection (or Fit Visible when nothing selected). */
+  function fitSelection() {
+    const area = activeArea();
+    const ids = new Set(
+      (tb.selectedIds || []).length
+        ? tb.selectedIds
+        : tb.selectedId
+          ? [tb.selectedId]
+          : []
+    );
+    const nodes = (area?.nodes || []).filter((n) => ids.has(n.id));
+    if (nodes.length < 1) {
+      return fitVisible();
+    }
+    fitViewToNodes(nodes, {
+      mode: 'selection',
+      paddingFrac: 0.12,
+      minZoom: tb.physicalLayout ? 0.05 : 0.35,
+      excludeOutliers: false,
+    });
+    drawSchematic(area);
+    drawWires();
+    status(`Frame Selection · ${nodes.length} · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`);
+  }
+
   function render() {
     ensureArea();
     refreshAreaSelect();
@@ -2392,9 +2584,17 @@
         : (tb.connectMode && tb.connectSourceId && n.id !== tb.connectSourceId ? ' tb-connect-dst' : '');
       if (n.asMerge) el.classList.add('tb-as-merge');
 
+      const cp = normalizeControlPanel(n.controlPanel);
+      const cpMatch = nodeMatchesCpFilter(n);
+      const cpCls = cp === 'CP1' || cp === 'CP2' || cp === 'CP3'
+        ? ` tb-cp-${cp}`
+        : (cp === 'Other' ? ' tb-cp-Other' : '');
+      const cpFilterCls = cpFilterActive() ? (cpMatch ? ' tb-cp-match' : ' tb-cp-dim') : '';
+      const multiSel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
+
       if (useSchematic) {
         // Invisible proxy at body center — selection/drag/connect; body drawn in #tb-schematic
-        el.className = `tb-node tb-schematic-proxy tb-physical${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}`;
+        el.className = `tb-node tb-schematic-proxy tb-physical${multiSel ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}${cpCls}${cpFilterCls}`;
         if ((n.ambiguousInbound || []).length) el.classList.add('tb-ambiguous');
         el.style.left = `${(Number(n.x) || 0) - 9}px`;
         el.style.top = `${(Number(n.y) || 0) - 9}px`;
@@ -2402,12 +2602,12 @@
         el.style.height = '18px';
         el.style.transform = '';
         el.innerHTML = `${portsHtml}`;
-        el.title = (n.conveyorTag || n.label || '').trim();
+        el.title = cp ? `${(n.conveyorTag || n.label || '').trim()} · ${cp}` : (n.conveyorTag || n.label || '').trim();
       } else if (useSeg) {
         const { L, W } = segSize(n);
         const ang = flowAngleDeg(n);
         const eq = String(n.equipmentType || '').toUpperCase();
-        el.className = `tb-node tb-seg${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}`;
+        el.className = `tb-node tb-seg${multiSel ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}${cpCls}${cpFilterCls}`;
         if (eq === 'CURVE' || n.kind === 'conv_right' || n.kind === 'conv_left') el.classList.add('tb-curve');
         if (eq === 'MERGE' || n.asMerge) el.classList.add('tb-seg-merge');
         if (eq === 'BELT') el.classList.add('tb-seg-belt');
@@ -2421,7 +2621,7 @@
         const counter = -ang;
         // Conveyor-first: P-tag only on body; no AMB / equipmentType / PE badges on canvas.
         el.innerHTML = `
-          <div class="tb-seg-body" title="${escapeHtml(tagShow)}">
+          <div class="tb-seg-body" title="${escapeHtml(cp ? `${tagShow} · ${cp}` : tagShow)}">
             <span class="tb-seg-entry" aria-hidden="true">◀</span>
             <span class="tb-seg-label" style="transform:rotate(${counter}deg)">${escapeHtml(tagShow)}</span>
             <span class="tb-seg-exit" aria-hidden="true">▶</span>
@@ -2429,16 +2629,17 @@
           ${portsHtml}
         `;
       } else {
-        el.className = `tb-node${n.id === tb.selectedId ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}`;
+        el.className = `tb-node${multiSel ? ' selected' : ''}${meta.isMerge || n.asMerge ? ' tb-merge' : ''}${connectCls}${cpCls}${cpFilterCls}`;
         el.style.left = `${n.x}px`;
         el.style.top = `${n.y}px`;
         el.style.transform = ''; // card stays upright — labels always readable
         // Conveyor-first card: tag only; details live in inspector / hover.
         el.innerHTML = `
-          <div class="tb-content" title="${escapeHtml(tagShow)}">
+          <div class="tb-content" title="${escapeHtml(cp ? `${tagShow} · ${cp}` : tagShow)}">
             <div class="tb-head">
               ${isConv(n.kind) ? '' : kindIconHtml(n.kind, meta.color)}
               <span class="tb-tag truncate">${escapeHtml(tagShow)}</span>
+              ${cp ? `<span class="tb-cp-chip">${escapeHtml(cp)}</span>` : ''}
             </div>
           </div>
           ${portsHtml}
@@ -2447,18 +2648,25 @@
 
       el.addEventListener('mousedown', (ev) => {
         if (ev.target.classList.contains('tb-port')) return;
+        if (ev.button === 1) return; // middle-mouse reserved for pan (Pass2)
         if (tb.connectMode && isConv(n.kind)) {
           ev.preventDefault();
           ev.stopPropagation();
           handleConnectModeClick(n);
           return;
         }
+        // Pass2 capture handler owns multi-select / group-move setup when present
+        if (ev.ctrlKey || ev.metaKey || ev.shiftKey) return;
+        if ((tb.selectedIds || []).length > 1 && (tb.selectedIds || []).includes(n.id)) return;
         selectNode(n.id);
         const pt = canvasPointFromEvent(ev);
         tb.moving = {
           id: n.id,
           ox: pt.x - n.x,
           oy: pt.y - n.y,
+          origins: [captureNodeGeom(n)],
+          startX: n.x,
+          startY: n.y,
         };
         ev.preventDefault();
       });
@@ -2482,6 +2690,7 @@
     if (canvas) {
       canvas.classList.add('tb-clean-schematic');
       canvas.classList.toggle('tb-geom-debug', tb.viewMode === 'geom-debug' || !!tb.layers?.physical);
+      canvas.classList.toggle('tb-cp-filter-active', cpFilterActive());
     }
     drawSchematic(area);
     drawWires();
@@ -3008,6 +3217,7 @@
       terminal: false,
       asMerge: false,
       safetyZone: (tb.buildContext && tb.buildContext.safetyZone) || '',
+      controlPanel: '', // presentation / organizational only — not PLC ownership
     };
     if (meta.isSpiral) {
       node.motorCount = SPIRAL_MOTOR_DEFAULT;
@@ -3559,22 +3769,55 @@
     });
 
     window.addEventListener('mousemove', (ev) => {
+      // Middle-mouse pan is owned by Pass2 (tb.panning)
+      if (tb.panning) return;
       if (tb.moving) {
         const area = activeArea();
-        const n = area?.nodes.find((x) => x.id === tb.moving.id);
-        if (n) {
-          const pt = canvasPointFromEvent(ev);
-          n.x = Math.max(0, pt.x - tb.moving.ox);
-          n.y = Math.max(0, pt.y - tb.moving.oy);
-          const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
+        if (!area) return;
+        const pt = canvasPointFromEvent(ev);
+        const primary = area.nodes.find((x) => x.id === tb.moving.id);
+        if (!primary) return;
+        const origins = tb.moving.origins;
+        if (origins && origins.length) {
+          // ox/oy captured as pt - n.x at drag start → nx/ny is primary target
+          const nx = pt.x - tb.moving.ox;
+          const ny = pt.y - tb.moving.oy;
+          const ddx = nx - (tb.moving.startX || 0);
+          const ddy = ny - (tb.moving.startY || 0);
+          origins.forEach((o) => {
+            const n = area.nodes.find((x) => x.id === o.id);
+            if (!n) return;
+            applyNodeGeomDelta(n, o, ddx, ddy);
+            const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
+            if (el) {
+              if (isSchematicNode(n) || el.classList.contains('tb-schematic-proxy')) {
+                el.style.left = `${(Number(n.x) || 0) - 9}px`;
+                el.style.top = `${(Number(n.y) || 0) - 9}px`;
+              } else if (isPhysicalSeg(n) || el.classList.contains('tb-seg')) {
+                const { L, W } = segSize(n);
+                el.style.left = `${n.x - L / 2}px`;
+                el.style.top = `${n.y - W / 2}px`;
+              } else {
+                el.style.left = `${n.x}px`;
+                el.style.top = `${n.y}px`;
+              }
+            }
+          });
+          ensureCanvasExtents(area);
+          drawSchematic(area);
+          drawWires();
+        } else {
+          primary.x = Math.max(0, pt.x - tb.moving.ox);
+          primary.y = Math.max(0, pt.y - tb.moving.oy);
+          const el = document.querySelector(`.tb-node[data-id="${primary.id}"]`);
           if (el) {
-            if (isPhysicalSeg(n) || el.classList.contains('tb-seg')) {
-              const { L, W } = segSize(n);
-              el.style.left = `${n.x - L / 2}px`;
-              el.style.top = `${n.y - W / 2}px`;
+            if (isPhysicalSeg(primary) || el.classList.contains('tb-seg')) {
+              const { L, W } = segSize(primary);
+              el.style.left = `${primary.x - L / 2}px`;
+              el.style.top = `${primary.y - W / 2}px`;
             } else {
-              el.style.left = `${n.x}px`;
-              el.style.top = `${n.y}px`;
+              el.style.left = `${primary.x}px`;
+              el.style.top = `${primary.y}px`;
             }
           }
           ensureCanvasExtents(area);
@@ -3596,7 +3839,10 @@
     window.addEventListener('mouseup', (ev) => {
       if (tb.moving) {
         tb.moving = null;
+        tb._moveHistoryPushed = false;
         save();
+        // Refresh schematic after group move settles
+        try { drawSchematic(activeArea()); drawWires(); } catch (_) { /* ignore */ }
       }
       if (tb.linkFrom) {
         const target = ev.target.closest?.('.tb-port.in');
@@ -4250,8 +4496,10 @@
     fitArea,
     fitVisible,
     fitAll,
+    fitSelection,
     fitViewToNodes,
     applyViewportZoom,
+    viewportZoomLimits,
     nodesBBox,
     classifySpatialOutliers,
     placeSchematicLabels,
@@ -4261,6 +4509,13 @@
     applyMergesToAutogenUi,
     setWorkflowStep,
     computePresentationOffsets,
+    normalizeControlPanel,
+    inferControlPanelFromEvidence,
+    ensureControlPanel,
+    cpFilterActive,
+    nodeMatchesCpFilter,
+    captureNodeGeom,
+    applyNodeGeomDelta,
   };
 
   if (document.readyState === 'loading') {

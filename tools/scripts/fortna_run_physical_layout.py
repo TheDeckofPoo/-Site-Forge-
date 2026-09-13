@@ -265,6 +265,10 @@ def build_transport_graph(
             "motorsMeta": e.get("drives") or [],
             "geometryConfidence": e.get("confidence") or "LOW",
             "drawingPage": e.get("drawing_page") or "",
+            # RUN evidence for Control Panel inference (presentation only — not PLC ownership)
+            "machineName": e.get("machine_name") or "",
+            "ioAddressWord": e.get("io_address_word") or "",
+            "controlPanel": "",  # filled by UI only when Machine_Name/CP evidence is clear
             # display_context / EXTERNAL_REFERENCE neighbors complete physical runs
             # (curves/U-turns) but are NOT Autogen/PLC ownership — Apply must skip them.
             # Compact rendering remains available via downstream label for EXTERNAL.

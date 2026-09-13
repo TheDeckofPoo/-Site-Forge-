@@ -532,25 +532,26 @@
   }
 
   function refreshBulkBar() {
-    const { tb, escapeHtml, activeArea } = A();
+    const { tb, escapeHtml, normalizeControlPanel } = A();
     const bar = $('tb-bulk-bar');
     if (!bar) return;
     const n = (tb.selectedIds || []).length || (tb.selectedId ? 1 : 0);
-    // Show for multi-select, or single select when Area/ES still required
+    // Show for multi-select, or single select when Area/ES still required, or any selection for CP assign
     const nodes = selectedConvNodes();
     const needsConfig = nodes.some((x) => x.areaRequired || x.esZoneRequired);
-    if (n < 2 && !needsConfig) {
-      bar.classList.add('hidden');
-      return;
-    }
     if (n < 1) {
       bar.classList.add('hidden');
       return;
     }
-    bar.classList.remove('hidden');
+    if (n < 2 && !needsConfig) {
+      // Still show when a single node is selected so CP can be assigned
+      bar.classList.remove('hidden');
+    } else {
+      bar.classList.remove('hidden');
+    }
     if ($('tb-bulk-count')) {
       $('tb-bulk-count').textContent = n === 1
-        ? `1 conveyor · assign Area / ES`
+        ? `1 conveyor selected`
         : `${n} conveyors selected`;
     }
     const areaSel = $('tb-bulk-area');
@@ -566,6 +567,73 @@
     if ($('tb-bulk-eszone') && document.activeElement !== $('tb-bulk-eszone')) {
       $('tb-bulk-eszone').value = zones.length === 1 ? zones[0] : ensureBuildContext().safetyZone || '';
     }
+    const cpSel = $('tb-bulk-cp');
+    if (cpSel && document.activeElement !== cpSel) {
+      const cps = [...new Set(nodes.map((x) => (normalizeControlPanel
+        ? normalizeControlPanel(x.controlPanel)
+        : String(x.controlPanel || '').trim())).filter(Boolean))];
+      cpSel.value = cps.length === 1 ? cps[0] : '';
+    }
+  }
+
+  function applyControlPanelToSelection(value) {
+    const { tb, save, render, status, normalizeControlPanel } = A();
+    const ids = [...(tb.selectedIds || [])];
+    if (!ids.length && tb.selectedId) ids.push(tb.selectedId);
+    if (!ids.length) {
+      status('Select conveyors first');
+      return;
+    }
+    const raw = String(value || '').trim();
+    const next = raw === '' || raw.toLowerCase() === 'clear'
+      ? ''
+      : (normalizeControlPanel ? normalizeControlPanel(raw) : raw);
+    pushHistory(`Assign Control Panel (${ids.length})`);
+    let n = 0;
+    ids.forEach((id) => {
+      for (const a of tb.areas) {
+        const node = (a.nodes || []).find((x) => x.id === id);
+        if (!node) continue;
+        node.controlPanel = next;
+        node.controlPanelProvenance = next ? 'ENGINEER' : 'CLEARED';
+        n += 1;
+      }
+    });
+    save();
+    render();
+    status(next
+      ? `Control Panel ${next} → ${n} conveyor(s) (presentation only)`
+      : `Cleared Control Panel on ${n} conveyor(s)`);
+    refreshPass2Chrome();
+  }
+
+  function refreshCpFilterUi() {
+    const { tb } = A();
+    if (!tb.cpFilters) tb.cpFilters = { CP1: false, CP2: false, CP3: false };
+    ['CP1', 'CP2', 'CP3'].forEach((cp) => {
+      const el = $(`tb-cp-filter-${cp}`);
+      if (el) el.checked = !!tb.cpFilters[cp];
+    });
+  }
+
+  function selectCpGroup(cp) {
+    const { tb, activeArea, isConv, render, status, normalizeControlPanel } = A();
+    const want = normalizeControlPanel ? normalizeControlPanel(cp) : String(cp || '').trim();
+    if (!want) return;
+    const area = activeArea();
+    const ids = (area?.nodes || [])
+      .filter((n) => isConv(n.kind))
+      .filter((n) => (normalizeControlPanel
+        ? normalizeControlPanel(n.controlPanel)
+        : String(n.controlPanel || '').trim()) === want)
+      .map((n) => n.id);
+    tb.selectedIds = ids;
+    tb.selectedId = ids[0] || null;
+    render();
+    refreshPass2Chrome();
+    status(ids.length
+      ? `Selected ${want} group · ${ids.length} conveyor(s) — drag moves as a unit`
+      : `No conveyors tagged ${want}`);
   }
 
   function applyBulkEdit() {
@@ -1163,30 +1231,38 @@
       }
 
       // Normal select + move; push history once when move starts
-      if (!ev.shiftKey) {
-        if (!(tb.selectedIds || []).includes(id) || (tb.selectedIds || []).length <= 1) {
+      if (!ev.shiftKey && ev.button === 0) {
+        const groupIds = moveGroupIdsForNode(n);
+        if (groupIds.length > 1) {
+          // Keep / expand selection to the move group (multi-select or CP filter group)
+          tb.selectedIds = groupIds;
+          tb.selectedId = groupIds.includes(id) ? id : groupIds[0];
+        } else if (!(tb.selectedIds || []).includes(id) || (tb.selectedIds || []).length <= 1) {
           selectNode(id);
         } else {
           tb.selectedId = id;
         }
         const pt = canvasPointFromEvent(ev);
         if (!tb._moveHistoryPushed) {
-          pushHistory('Move');
+          pushHistory(groupIds.length > 1 ? 'Group Move' : 'Move');
           tb._moveHistoryPushed = true;
         }
-        // Multi-drag: store origins
+        const { captureNodeGeom } = A();
+        const ids = groupIds.length ? groupIds : [id];
+        // Multi-drag: full canvas geometry origins (pathCanvas/entry/exit)
         tb.moving = {
           id,
           ox: pt.x - n.x,
           oy: pt.y - n.y,
-          origins: (tb.selectedIds || []).map((sid) => {
+          origins: ids.map((sid) => {
             const nn = area.nodes.find((x) => x.id === sid);
-            return nn ? { id: sid, x: nn.x, y: nn.y } : null;
+            return nn && captureNodeGeom ? captureNodeGeom(nn) : (nn ? { id: sid, x: nn.x, y: nn.y } : null);
           }).filter(Boolean),
           startX: n.x,
           startY: n.y,
         };
         ev.preventDefault();
+        ev.stopPropagation(); // prevent Pass1 from overwriting tb.moving / collapsing selection
       }
     }, true);
 
@@ -1201,40 +1277,40 @@
   }
 
   function patchMultiDrag() {
+    // Pass1 mousemove now applies captureNodeGeom deltas (incl. pathCanvas/entry/exit).
+    // Keep this hook as a no-op guard so older dual-handlers don't fight.
     window.addEventListener('mousemove', (ev) => {
-      const {
-        tb, activeArea, canvasPointFromEvent, ensureCanvasExtents, drawWires, isPhysicalSeg, segSize,
-      } = A();
-      if (!tb.moving?.origins || tb.moving.origins.length <= 1) return;
-      const area = activeArea();
-      if (!area) return;
-      const pt = canvasPointFromEvent(ev);
-      const primary = area.nodes.find((n) => n.id === tb.moving.id);
-      if (!primary) return;
-      const nx = Math.max(0, pt.x - tb.moving.ox);
-      const ny = Math.max(0, pt.y - tb.moving.oy);
-      const dx = nx - (tb.moving.startX || 0);
-      const dy = ny - (tb.moving.startY || 0);
-      tb.moving.origins.forEach((o) => {
-        const n = area.nodes.find((x) => x.id === o.id);
-        if (!n) return;
-        n.x = Math.max(0, o.x + dx);
-        n.y = Math.max(0, o.y + dy);
-        const el = document.querySelector(`.tb-node[data-id="${n.id}"]`);
-        if (el) {
-          if ((typeof isPhysicalSeg === 'function' && isPhysicalSeg(n)) || el.classList.contains('tb-seg')) {
-            const { L, W } = segSize(n);
-            el.style.left = `${n.x - L / 2}px`;
-            el.style.top = `${n.y - W / 2}px`;
-          } else {
-            el.style.left = `${n.x}px`;
-            el.style.top = `${n.y}px`;
-          }
-        }
-      });
-      ensureCanvasExtents(area);
-      drawWires();
+      if (A().tb.panning) {
+        const canvas = $('tb-canvas');
+        const p = A().tb.panning;
+        if (!canvas || !p) return;
+        canvas.scrollLeft = p.sl - (ev.clientX - p.sx);
+        canvas.scrollTop = p.st - (ev.clientY - p.sy);
+      }
     });
+  }
+
+  /** Resolve which node ids should move together (multi-select or active CP filter group). */
+  function moveGroupIdsForNode(n) {
+    const { tb, activeArea, isConv, normalizeControlPanel, cpFilterActive } = A();
+    const area = activeArea();
+    if (!n || !area) return [];
+    const sel = tb.selectedIds || [];
+    if (sel.length > 1 && sel.includes(n.id)) return [...sel];
+    const cp = normalizeControlPanel ? normalizeControlPanel(n.controlPanel) : String(n.controlPanel || '').trim();
+    if (cp && typeof cpFilterActive === 'function' && cpFilterActive()) {
+      const f = tb.cpFilters || {};
+      const filteredOn = (cp === 'CP1' && f.CP1) || (cp === 'CP2' && f.CP2) || (cp === 'CP3' && f.CP3);
+      if (filteredOn) {
+        return (area.nodes || [])
+          .filter((x) => isConv(x.kind))
+          .filter((x) => (normalizeControlPanel
+            ? normalizeControlPanel(x.controlPanel)
+            : String(x.controlPanel || '').trim()) === cp)
+          .map((x) => x.id);
+      }
+    }
+    return [n.id];
   }
 
   /* ---------- Keyboard ---------- */
@@ -1327,6 +1403,7 @@
       ensureBuildContext();
       const canvas = $('tb-canvas');
       if (canvas) canvas.classList.toggle('tb-show-ports', !!A().tb.showPorts);
+      refreshCpFilterUi();
       refreshPass2Chrome();
     } catch (err) {
       try {
@@ -1405,13 +1482,30 @@
             scopeClass: 'EXTERNAL_REFERENCE',
             label: n.label || `→ External ${n.conveyorTag || n.label || ''}`.trim(),
             schematic: true,
+            controlPanel: n.controlPanel || '',
           };
         }
-        return { ...n, scopeClass: n.scopeClass || 'LOCAL', plcOwned: true, displayContext: false };
+        return {
+          ...n,
+          scopeClass: n.scopeClass || 'LOCAL',
+          plcOwned: true,
+          displayContext: false,
+          controlPanel: n.controlPanel || '',
+        };
       });
       const wires = (area.wires || []).filter((w) => keptNodeIds.has(w.from) && keptNodeIds.has(w.to));
       return { ...area, nodes, wires };
     }).filter((a) => (a.nodes || []).length > 0);
+    // Auto-populate controlPanel ONLY when RUN evidence is clear; else leave empty
+    {
+      const { ensureControlPanel } = A();
+      (tb.areas || []).forEach((area) => {
+        (area.nodes || []).forEach((n) => {
+          if (typeof ensureControlPanel === 'function') ensureControlPanel(n, { forceInfer: true });
+          else if (n.controlPanel == null) n.controlPanel = '';
+        });
+      });
+    }
     tb.activeAreaId = g.activeAreaId || tb.areas[0]?.id || null;
     tb.selectedId = null;
     tb.selectedIds = [];
@@ -1534,6 +1628,9 @@
     $('tb-fit-area')?.addEventListener('click', () => {
       try { A().fitArea?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Fit Area: ${err?.message || err}`); }
     });
+    $('tb-fit-selection')?.addEventListener('click', () => {
+      try { A().fitSelection?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Frame Selection: ${err?.message || err}`); }
+    });
     $('tb-advanced-debug')?.addEventListener('change', (ev) => {
       const { tb, render, status } = A();
       tb.viewMode = ev.target.checked ? 'geom-debug' : 'schematic';
@@ -1647,6 +1744,27 @@
     $('tb-bulk-space')?.addEventListener('click', () => spaceEvenlySelection());
     $('tb-bulk-layout')?.addEventListener('click', () => autoLayoutSelection());
     $('tb-bulk-terminal')?.addEventListener('click', () => markTerminalSelection(true));
+    $('tb-bulk-cp-apply')?.addEventListener('click', () => {
+      applyControlPanelToSelection($('tb-bulk-cp')?.value || '');
+    });
+    $('tb-bulk-cp')?.addEventListener('change', (e) => {
+      // Immediate assign on choose (CP1/CP2/CP3/Other/clear). Ignore placeholder "—".
+      const v = String(e.target.value || '').trim();
+      if (!v) return;
+      applyControlPanelToSelection(v === 'clear' ? '' : v);
+    });
+    ['CP1', 'CP2', 'CP3'].forEach((cp) => {
+      $(`tb-cp-filter-${cp}`)?.addEventListener('change', (ev) => {
+        const { tb, save, render, status } = A();
+        if (!tb.cpFilters) tb.cpFilters = { CP1: false, CP2: false, CP3: false };
+        tb.cpFilters[cp] = !!ev.target.checked;
+        try { save(); } catch (_) { /* ignore */ }
+        render();
+        status(`CP filter ${cp}: ${tb.cpFilters[cp] ? 'ON' : 'OFF'} (highlight only)`);
+        refreshPass2Chrome();
+      });
+      $(`tb-cp-select-${cp}`)?.addEventListener('click', () => selectCpGroup(cp));
+    });
 
     $('tb-inv-filter')?.addEventListener('input', () => renderInventoryPalette());
 
@@ -1668,18 +1786,58 @@
     });
 
     const canvas = $('tb-canvas');
-    canvas?.addEventListener('mousedown', onCanvasMouseDown);
+    canvas?.addEventListener('mousedown', (ev) => {
+      // Middle-mouse drag = pan (CAD-style); scrollbars remain as fallback
+      if (ev.button === 1) {
+        ev.preventDefault();
+        const { tb } = A();
+        tb.panning = {
+          sx: ev.clientX,
+          sy: ev.clientY,
+          sl: canvas.scrollLeft,
+          st: canvas.scrollTop,
+        };
+        canvas.classList.add('tb-panning');
+        return;
+      }
+      onCanvasMouseDown(ev);
+    });
     window.addEventListener('mousemove', onCanvasMouseMove);
-    window.addEventListener('mouseup', onCanvasMouseUp);
-    // Presentation zoom only — does not mutate RUN source geometry
+    window.addEventListener('mouseup', (ev) => {
+      const { tb, save } = A();
+      if (tb.panning) {
+        tb.panning = null;
+        canvas?.classList.remove('tb-panning');
+      }
+      if (tb.moving && tb._moveHistoryPushed) {
+        tb._moveHistoryPushed = false;
+        try { save(); } catch (_) { /* ignore */ }
+      }
+      onCanvasMouseUp(ev);
+    });
+    // CAD-style navigation (presentation only — does not mutate RUN source geometry)
+    // wheel = zoom @ cursor · Shift+wheel = horizontal pan · scrollbars still work
     canvas?.addEventListener('wheel', (ev) => {
-      if (!(ev.ctrlKey || ev.metaKey)) return;
-      ev.preventDefault();
-      const { tb, render, applyViewportZoom, status } = A();
+      const { tb, render, applyViewportZoom, viewportZoomLimits, status } = A();
       if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
-      const before = Math.max(0.25, Number(tb.view.zoom) || 1);
+
+      // Shift+wheel → horizontal pan (keep vertical delta available without Shift)
+      if (ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
+        ev.preventDefault();
+        const delta = Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
+        canvas.scrollLeft += delta;
+        return;
+      }
+
+      // Plain wheel (or Ctrl+wheel) → zoom centered on cursor
+      // Allow unmodified wheel so CAD navigation works; scrollbars remain for pan.
+      ev.preventDefault();
+      const lim = typeof viewportZoomLimits === 'function'
+        ? viewportZoomLimits()
+        : { min: tb.physicalLayout ? 0.05 : 0.25, max: 3 };
+      const before = Math.max(lim.min, Number(tb.view.zoom) || 1);
       const factor = ev.deltaY < 0 ? 1.1 : 0.9;
-      const next = Math.max(0.25, Math.min(3, before * factor));
+      const next = Math.max(lim.min, Math.min(lim.max, before * factor));
       if (Math.abs(next - before) < 0.001) return;
       const rect = canvas.getBoundingClientRect();
       const mx = ev.clientX - rect.left + canvas.scrollLeft;
@@ -1691,10 +1849,14 @@
       else render();
       canvas.scrollLeft = cx * next - (ev.clientX - rect.left);
       canvas.scrollTop = cy * next - (ev.clientY - rect.top);
-      status(`Zoom ${Math.round(next * 100)}% (Ctrl+wheel · presentation only)`);
+      status(`Zoom ${Math.round(next * 100)}% (wheel · presentation only)`);
       // Re-render for LOD label density
       render();
     }, { passive: false });
+    // Prevent middle-click autoscroll chrome behavior
+    canvas?.addEventListener('auxclick', (ev) => {
+      if (ev.button === 1) ev.preventDefault();
+    });
 
     // When area select changes, sync build context area id if matching
     $('tb-area-select')?.addEventListener('change', () => {

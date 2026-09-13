@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-09-13T15:09:01.018822+00:00",
+  "generated_at": "2026-09-13T15:42:20.893523+00:00",
   "machine": "ORNCCP2",
-  "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
   "source_of_truth": "RUN + cross-table (Mtrchain Timer_Name, Fullline Response IO, PE/SSV)",
-  "finished_validation_only": true,
-  "finished_path": "workspace\\validation\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+  "finished_validation_only": false,
+  "finished_path": null,
   "section_count": 77,
   "downstream_proven_count": 24,
   "rows": [
@@ -44,9 +44,7 @@
           "timer": "tmM1001_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1001",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1001",
@@ -79,9 +77,7 @@
           "timer": "tmM1002_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1002",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1002",
@@ -119,9 +115,7 @@
           "timer": "tmLATCH_2CR3_1002_TRASH",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1004",
@@ -159,9 +153,7 @@
           "timer": "tmM1005_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1005",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1005",
@@ -194,9 +186,7 @@
           "timer": "tmM1002_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1002",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1006",
@@ -234,9 +224,7 @@
           "timer": "tmM1007_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1007",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1007",
@@ -269,9 +257,7 @@
           "timer": "tmM1008_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1008",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1008",
@@ -309,9 +295,7 @@
           "timer": "tmLATCH_3CR3_1008_TRASH",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1014",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1010",
@@ -349,9 +333,7 @@
           "timer": "tmM1011_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1011",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1011",
@@ -384,9 +366,7 @@
           "timer": "tmM1008_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1008",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1014",
@@ -424,9 +404,7 @@
           "timer": "tmLATCH_3CR3_1014_TRASH",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1015",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1015",
@@ -459,9 +437,7 @@
           "timer": "tmM1016_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1016",
-      "finished_match": false
+      ]
     },
     {
       "section": "P1016",
@@ -504,9 +480,7 @@
           "timer": "tmM1018",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P1018",
-      "finished_match": true
+      ]
     },
     {
       "section": "P1018",
@@ -544,9 +518,7 @@
           "timer": "tmLATCH_3CR3_1018_TRASH",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P123",
@@ -579,9 +551,7 @@
           "timer": "tmM124_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P124",
-      "finished_match": false
+      ]
     },
     {
       "section": "P124",
@@ -614,9 +584,7 @@
           "timer": "tmLATCH_2CR1_LANES",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P128",
-      "finished_match": false
+      ]
     },
     {
       "section": "P126",
@@ -642,9 +610,7 @@
           "timer": "tmM130A",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P128",
@@ -687,9 +653,7 @@
           "timer": "tmM130A",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P130A",
-      "finished_match": true
+      ]
     },
     {
       "section": "P130",
@@ -717,9 +681,7 @@
           "timer": "tmM130B",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P130A",
@@ -750,9 +712,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P130B",
-      "finished_match": true
+      ]
     },
     {
       "section": "P130B",
@@ -783,9 +743,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P130C",
-      "finished_match": true
+      ]
     },
     {
       "section": "P130C",
@@ -816,9 +774,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P130D",
-      "finished_match": true
+      ]
     },
     {
       "section": "P130D",
@@ -849,9 +805,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P130E",
-      "finished_match": true
+      ]
     },
     {
       "section": "P130E",
@@ -882,9 +836,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P132",
-      "finished_match": true
+      ]
     },
     {
       "section": "P132",
@@ -927,9 +879,7 @@
           "timer": "tmM136",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P136_P1",
-      "finished_match": false
+      ]
     },
     {
       "section": "P134",
@@ -955,9 +905,7 @@
           "timer": "tmM136",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P136",
@@ -1000,9 +948,7 @@
           "timer": "tmLATCH_MERGE_316",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P136A",
@@ -1023,9 +969,7 @@
           "timer": "tmLATCH_MERGE_316",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P136_P1",
@@ -1060,9 +1004,7 @@
           "timer": "tmLATCH_MERGE_316",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P136_P2",
-      "finished_match": false
+      ]
     },
     {
       "section": "P136_P2",
@@ -1097,9 +1039,7 @@
           "timer": "tmM406",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P138",
-      "finished_match": false
+      ]
     },
     {
       "section": "P138",
@@ -1147,9 +1087,7 @@
           "timer": "tmM406",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P406",
-      "finished_match": true
+      ]
     },
     {
       "section": "P139",
@@ -1182,9 +1120,7 @@
           "timer": "tmM139_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P140",
-      "finished_match": false
+      ]
     },
     {
       "section": "P140",
@@ -1217,9 +1153,7 @@
           "timer": "tmLATCH_3CR1_LANES",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P144",
-      "finished_match": false
+      ]
     },
     {
       "section": "P142",
@@ -1245,9 +1179,7 @@
           "timer": "tmM145A",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P144",
@@ -1290,9 +1222,7 @@
           "timer": "tmM145A",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P145A",
-      "finished_match": true
+      ]
     },
     {
       "section": "P145",
@@ -1320,9 +1250,7 @@
           "timer": "tmM145B",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P145A",
@@ -1353,9 +1281,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P145B",
-      "finished_match": true
+      ]
     },
     {
       "section": "P145B",
@@ -1386,9 +1312,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P145C",
-      "finished_match": true
+      ]
     },
     {
       "section": "P145C",
@@ -1419,9 +1343,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P145D",
-      "finished_match": true
+      ]
     },
     {
       "section": "P145D",
@@ -1452,9 +1374,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P145E",
-      "finished_match": true
+      ]
     },
     {
       "section": "P145E",
@@ -1485,9 +1405,7 @@
           "confidence": "PROVEN_RUN",
           "table": "Conveyor.asc"
         }
-      ],
-      "finished_downstream": "P146",
-      "finished_match": true
+      ]
     },
     {
       "section": "P146",
@@ -1530,9 +1448,7 @@
           "timer": "tmM150",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P150_P1",
-      "finished_match": false
+      ]
     },
     {
       "section": "P148",
@@ -1558,9 +1474,7 @@
           "timer": "tmM150",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P150",
@@ -1603,9 +1517,7 @@
           "timer": "tmLATCH_MERGE_324",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P150A",
@@ -1626,9 +1538,7 @@
           "timer": "tmLATCH_MERGE_324",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P150_P1",
@@ -1663,9 +1573,7 @@
           "timer": "tmLATCH_MERGE_324",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P150_P2",
-      "finished_match": false
+      ]
     },
     {
       "section": "P150_P2",
@@ -1700,9 +1608,7 @@
           "timer": "tmLATCH_P400_2-1_MERGE",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P400",
-      "finished_match": false
+      ]
     },
     {
       "section": "P215",
@@ -1730,9 +1636,7 @@
           "io_name": "PE215_J",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P220",
@@ -1765,9 +1669,7 @@
           "timer": "tmLATCH_2CR1_LANES",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P222",
-      "finished_match": false
+      ]
     },
     {
       "section": "P220A",
@@ -1796,9 +1698,7 @@
           "timer": "tmM220_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P220",
-      "finished_match": false
+      ]
     },
     {
       "section": "P222",
@@ -1831,9 +1731,7 @@
           "timer": "tmLATCH_2CR2_ACCUM",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P226",
@@ -1851,9 +1749,7 @@
           "io_name": "PE226_JF",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P228",
@@ -1878,9 +1774,7 @@
           "type": "BELT",
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P229",
@@ -1898,9 +1792,7 @@
           "io_name": "EZPE229_F",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P230",
@@ -1940,9 +1832,7 @@
           "io_name": "SSVEZPE230_P",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P232",
@@ -1972,9 +1862,7 @@
           "io_name": "PE232_P",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P233",
@@ -2007,9 +1895,7 @@
           "timer": "tmM233_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P234",
-      "finished_match": false
+      ]
     },
     {
       "section": "P234",
@@ -2042,9 +1928,7 @@
           "timer": "tmLATCH_3CR1_LANES",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P236",
-      "finished_match": false
+      ]
     },
     {
       "section": "P236",
@@ -2087,9 +1971,7 @@
           "timer": "tmM240",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P240",
-      "finished_match": true
+      ]
     },
     {
       "section": "P238",
@@ -2115,9 +1997,7 @@
           "timer": "tmM242",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P240",
@@ -2169,9 +2049,7 @@
           "timer": "tmM242",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P242",
-      "finished_match": true
+      ]
     },
     {
       "section": "P242",
@@ -2227,9 +2105,7 @@
           "timer": "tmLATCH_P400_2-1_MERGE",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P400",
-      "finished_match": false
+      ]
     },
     {
       "section": "P309",
@@ -2262,9 +2138,7 @@
           "timer": "tmM309_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P310",
-      "finished_match": false
+      ]
     },
     {
       "section": "P310",
@@ -2316,9 +2190,7 @@
           "timer": "tmM312",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P312",
-      "finished_match": true
+      ]
     },
     {
       "section": "P312",
@@ -2374,9 +2246,7 @@
           "timer": "tmLATCH_2CR1_LANES",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P314",
-      "finished_match": false
+      ]
     },
     {
       "section": "P314",
@@ -2414,9 +2284,7 @@
           "timer": "tmLATCH_MERGE_316_A",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P136_P2",
-      "finished_match": false
+      ]
     },
     {
       "section": "P316",
@@ -2442,9 +2310,7 @@
           "timer": "tmLATCH_MERGE_316_A",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P317",
@@ -2477,9 +2343,7 @@
           "timer": "tmM317_AUX",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P318",
-      "finished_match": false
+      ]
     },
     {
       "section": "P318",
@@ -2531,9 +2395,7 @@
           "timer": "tmM320",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P320",
-      "finished_match": true
+      ]
     },
     {
       "section": "P320",
@@ -2589,9 +2451,7 @@
           "timer": "tmLATCH_3CR1_LANES",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P322",
-      "finished_match": false
+      ]
     },
     {
       "section": "P322",
@@ -2629,9 +2489,7 @@
           "timer": "tmLATCH_MERGE_324_A",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P150_P2",
-      "finished_match": false
+      ]
     },
     {
       "section": "P324",
@@ -2657,9 +2515,7 @@
           "timer": "tmLATCH_MERGE_324_A",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P400",
@@ -2707,9 +2563,7 @@
           "timer": "tmLATCH_P400_2-1_MERGE",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P402",
@@ -2765,9 +2619,7 @@
           "timer": "tmM406",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P404",
-      "finished_match": false
+      ]
     },
     {
       "section": "P404",
@@ -2815,9 +2667,7 @@
           "timer": "tmM406",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "P406",
-      "finished_match": true
+      ]
     },
     {
       "section": "P406",
@@ -2865,9 +2715,7 @@
           "timer": "tmLATCH_P406_3-1_MERGE",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     },
     {
       "section": "P408",
@@ -2885,9 +2733,7 @@
           "io_name": "EZPE408_F",
           "confidence": "PROVEN_CROSS_TABLE"
         }
-      ],
-      "finished_downstream": "",
-      "finished_match": false
+      ]
     }
   ],
   "assemblies": {

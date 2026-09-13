@@ -1,0 +1,2665 @@
+{
+  "generated_at": "2026-09-13T15:51:10.266638+00:00",
+  "policy": "Compare Conv/AOI/MS/PE/Fast_Conv next+Type; ignore Area / ESZone names",
+  "local_conveyor_count": 59,
+  "totals": {
+    "Conv_BOTH": 42,
+    "Conv_AOI_BOTH": 42,
+    "MS_BOTH": 43,
+    "PE_BOTH": 27,
+    "Fast_Conv_BOTH": 42,
+    "PE_NEITHER": 30,
+    "Conv_GENERATED_ONLY": 10,
+    "Conv_AOI_GENERATED_ONLY": 10,
+    "MS_GENERATED_ONLY": 12,
+    "Fast_Conv_GENERATED_ONLY": 10,
+    "Conv_NEITHER": 6,
+    "Conv_AOI_NEITHER": 6,
+    "MS_NEITHER": 4,
+    "Fast_Conv_NEITHER": 6,
+    "Conv_FINISHED_ONLY": 1,
+    "Conv_AOI_FINISHED_ONLY": 1,
+    "Fast_Conv_FINISHED_ONLY": 1,
+    "PE_GENERATED_ONLY": 2
+  },
+  "fast_conv_field_counts": {
+    "next_mismatch": 39,
+    "type_match": 42,
+    "next_match": 14,
+    "type_mismatch": 11
+  },
+  "sample_next_mismatches": [
+    {
+      "conveyor": "P1000",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1001"
+    },
+    {
+      "conveyor": "P1001",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1002"
+    },
+    {
+      "conveyor": "P1004",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1005"
+    },
+    {
+      "conveyor": "P1005",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1002"
+    },
+    {
+      "conveyor": "P1006",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1007"
+    },
+    {
+      "conveyor": "P1007",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1008"
+    },
+    {
+      "conveyor": "P1008",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1014"
+    },
+    {
+      "conveyor": "P1010",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1011"
+    },
+    {
+      "conveyor": "P1011",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1008"
+    },
+    {
+      "conveyor": "P1014",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1015"
+    },
+    {
+      "conveyor": "P1015",
+      "generated_next": "NO_Conv",
+      "finished_next": "P1016"
+    },
+    {
+      "conveyor": "P123",
+      "generated_next": "NO_Conv",
+      "finished_next": "P124"
+    },
+    {
+      "conveyor": "P124",
+      "generated_next": "NO_Conv",
+      "finished_next": "P128"
+    },
+    {
+      "conveyor": "P126",
+      "generated_next": "NO_Conv",
+      "finished_next": null
+    },
+    {
+      "conveyor": "P134",
+      "generated_next": "NO_Conv",
+      "finished_next": null
+    },
+    {
+      "conveyor": "P139",
+      "generated_next": "NO_Conv",
+      "finished_next": "P140"
+    },
+    {
+      "conveyor": "P140",
+      "generated_next": "NO_Conv",
+      "finished_next": "P144"
+    },
+    {
+      "conveyor": "P142",
+      "generated_next": "NO_Conv",
+      "finished_next": null
+    },
+    {
+      "conveyor": "P148",
+      "generated_next": "NO_Conv",
+      "finished_next": null
+    },
+    {
+      "conveyor": "P220",
+      "generated_next": null,
+      "finished_next": "P222"
+    },
+    {
+      "conveyor": "P220A",
+      "generated_next": "NO_Conv",
+      "finished_next": "P220"
+    },
+    {
+      "conveyor": "P228",
+      "generated_next": "NO_Conv",
+      "finished_next": null
+    },
+    {
+      "conveyor": "P230",
+      "generated_next": "NO_Conv",
+      "finished_next": null
+    },
+    {
+      "conveyor": "P232",
+      "generated_next": "NO_Conv",
+      "finished_next": null
+    },
+    {
+      "conveyor": "P233",
+      "generated_next": "NO_Conv",
+      "finished_next": "P234"
+    },
+    {
+      "conveyor": "P234",
+      "generated_next": "NO_Conv",
+      "finished_next": "P236"
+    },
+    {
+      "conveyor": "P238",
+      "generated_next": "NO_Conv",
+      "finished_next": null
+    },
+    {
+      "conveyor": "P242",
+      "generated_next": "NO_Conv",
+      "finished_next": "P400"
+    },
+    {
+      "conveyor": "P309",
+      "generated_next": "NO_Conv",
+      "finished_next": "P310"
+    },
+    {
+      "conveyor": "P312",
+      "generated_next": "NO_Conv",
+      "finished_next": "P314"
+    }
+  ],
+  "conveyors": [
+    {
+      "conveyor": "P1000",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1001",
+        "next_match": false,
+        "generated_type": "P1000_Conv.Type",
+        "finished_type": "P1000_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1001",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1002",
+        "next_match": false,
+        "generated_type": "P1001_Conv.Type",
+        "finished_type": "P1001_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1002",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "NO_Conv",
+        "next_match": true,
+        "generated_type": "P1002_Conv.Type",
+        "finished_type": "P1002_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1004",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1005",
+        "next_match": false,
+        "generated_type": "P1004_Conv.Type",
+        "finished_type": "P1004_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1005",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1002",
+        "next_match": false,
+        "generated_type": "P1005_Conv.Type",
+        "finished_type": "P1005_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1006",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1007",
+        "next_match": false,
+        "generated_type": "P1006_Conv.Type",
+        "finished_type": "P1006_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1007",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1008",
+        "next_match": false,
+        "generated_type": "P1007_Conv.Type",
+        "finished_type": "P1007_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1008",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1014",
+        "next_match": false,
+        "generated_type": "P1008_Conv.Type",
+        "finished_type": "P1008_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1010",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1011",
+        "next_match": false,
+        "generated_type": "P1010_Conv.Type",
+        "finished_type": "P1010_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1011",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1008",
+        "next_match": false,
+        "generated_type": "P1011_Conv.Type",
+        "finished_type": "P1011_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1014",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1015",
+        "next_match": false,
+        "generated_type": "P1014_Conv.Type",
+        "finished_type": "P1014_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1015",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P1016",
+        "next_match": false,
+        "generated_type": "P1015_Conv.Type",
+        "finished_type": "P1015_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1016",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P1018",
+        "finished_next": "P1018",
+        "next_match": true,
+        "generated_type": "P1016_Conv.Type",
+        "finished_type": "P1016_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P1018",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "NO_Conv",
+        "next_match": true,
+        "generated_type": "P1018_Conv.Type",
+        "finished_type": "P1018_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "Trash_Area"
+      }
+    },
+    {
+      "conveyor": "P123",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P124",
+        "next_match": false,
+        "generated_type": "P123_Conv.Type",
+        "finished_type": "P123_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P124",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P128",
+        "next_match": false,
+        "generated_type": "P124_Conv.Type",
+        "finished_type": "P124_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P126",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P126_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P128",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P130A",
+        "finished_next": "P130A",
+        "next_match": true,
+        "generated_type": "P128_Conv.Type",
+        "finished_type": "P128_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P130",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Conv_AOI": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "MS": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        }
+      },
+      "fast_conv": {
+        "generated_next": null,
+        "finished_next": null,
+        "next_match": null,
+        "generated_type": null,
+        "finished_type": null,
+        "type_match": null,
+        "area_ignored": true,
+        "generated_area_ignored": null,
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P132",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P136_P1",
+        "finished_next": "P136_P1",
+        "next_match": true,
+        "generated_type": "P132_Conv.Type",
+        "finished_type": "P132_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P134",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P134_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P136",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Conv_AOI": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        }
+      },
+      "fast_conv": {
+        "generated_next": null,
+        "finished_next": null,
+        "next_match": null,
+        "generated_type": null,
+        "finished_type": null,
+        "type_match": null,
+        "area_ignored": true,
+        "generated_area_ignored": null,
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P136A",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Conv_AOI": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "MS": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        }
+      },
+      "fast_conv": {
+        "generated_next": null,
+        "finished_next": null,
+        "next_match": null,
+        "generated_type": null,
+        "finished_type": null,
+        "type_match": null,
+        "area_ignored": true,
+        "generated_area_ignored": null,
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P138",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P406",
+        "finished_next": "P406",
+        "next_match": true,
+        "generated_type": "P138_Conv.Type",
+        "finished_type": "P138_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P139",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P140",
+        "next_match": false,
+        "generated_type": "P139_Conv.Type",
+        "finished_type": "P139_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P140",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P144",
+        "next_match": false,
+        "generated_type": "P140_Conv.Type",
+        "finished_type": "P140_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P142",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P142_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P144",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P145A",
+        "finished_next": "P145A",
+        "next_match": true,
+        "generated_type": "P144_Conv.Type",
+        "finished_type": "P144_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P145",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Conv_AOI": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "MS": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        }
+      },
+      "fast_conv": {
+        "generated_next": null,
+        "finished_next": null,
+        "next_match": null,
+        "generated_type": null,
+        "finished_type": null,
+        "type_match": null,
+        "area_ignored": true,
+        "generated_area_ignored": null,
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P146",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P150_P1",
+        "finished_next": "P150_P1",
+        "next_match": true,
+        "generated_type": "P146_Conv.Type",
+        "finished_type": "P146_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P148",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P148_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P150",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Conv_AOI": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        }
+      },
+      "fast_conv": {
+        "generated_next": null,
+        "finished_next": null,
+        "next_match": null,
+        "generated_type": null,
+        "finished_type": null,
+        "type_match": null,
+        "area_ignored": true,
+        "generated_area_ignored": null,
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P150A",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Conv_AOI": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "MS": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        }
+      },
+      "fast_conv": {
+        "generated_next": null,
+        "finished_next": null,
+        "next_match": null,
+        "generated_type": null,
+        "finished_type": null,
+        "type_match": null,
+        "area_ignored": true,
+        "generated_area_ignored": null,
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P220",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": false,
+          "finished": true,
+          "result": "FINISHED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": false,
+          "finished": true,
+          "result": "FINISHED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": false,
+          "finished": true,
+          "result": "FINISHED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": null,
+        "finished_next": "P222",
+        "next_match": false,
+        "generated_type": null,
+        "finished_type": "P220_Conv.Type",
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": null,
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P220A",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P220",
+        "next_match": false,
+        "generated_type": "P220A_Conv.Type",
+        "finished_type": "P220A_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P222",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "NO_Conv",
+        "next_match": true,
+        "generated_type": "P222_Conv.Type",
+        "finished_type": "P222_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P228",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P228_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P230",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P230_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P232",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P232_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P233",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P234",
+        "next_match": false,
+        "generated_type": "P233_Conv.Type",
+        "finished_type": "P233_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P234",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P236",
+        "next_match": false,
+        "generated_type": "P234_Conv.Type",
+        "finished_type": "P234_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P236",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P240",
+        "finished_next": "P240",
+        "next_match": true,
+        "generated_type": "P236_Conv.Type",
+        "finished_type": "P236_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P238",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P238_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P240",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P242",
+        "finished_next": "P242",
+        "next_match": true,
+        "generated_type": "P240_Conv.Type",
+        "finished_type": "P240_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P242",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P400",
+        "next_match": false,
+        "generated_type": "P242_Conv.Type",
+        "finished_type": "P242_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P309",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P310",
+        "next_match": false,
+        "generated_type": "P309_Conv.Type",
+        "finished_type": "P309_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P310",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P312",
+        "finished_next": "P312",
+        "next_match": true,
+        "generated_type": "P310_Conv.Type",
+        "finished_type": "P310_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P312",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P314",
+        "next_match": false,
+        "generated_type": "P312_Conv.Type",
+        "finished_type": "P312_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P314",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P136_P2",
+        "next_match": false,
+        "generated_type": "P314_Conv.Type",
+        "finished_type": "P314_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P316",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P316_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P317",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P318",
+        "next_match": false,
+        "generated_type": "P317_Conv.Type",
+        "finished_type": "P317_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P318",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": false,
+          "finished": false,
+          "result": "NEITHER"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P320",
+        "finished_next": "P320",
+        "next_match": true,
+        "generated_type": "P318_Conv.Type",
+        "finished_type": "P318_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P320",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P322",
+        "next_match": false,
+        "generated_type": "P320_Conv.Type",
+        "finished_type": "P320_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P322",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P150_P2",
+        "next_match": false,
+        "generated_type": "P322_Conv.Type",
+        "finished_type": "P322_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P324",
+      "asc_type": "CURVE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "MS": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": false,
+          "result": "GENERATED_ONLY"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": null,
+        "next_match": false,
+        "generated_type": "P324_Conv.Type",
+        "finished_type": null,
+        "type_match": false,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": null
+      }
+    },
+    {
+      "conveyor": "P400",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P402",
+        "finished_next": "NO_Conv",
+        "next_match": false,
+        "generated_type": "P400_Conv.Type",
+        "finished_type": "P400_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleC_Area"
+      }
+    },
+    {
+      "conveyor": "P402",
+      "asc_type": "ZEROPRESSURE",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "NO_Conv",
+        "finished_next": "P404",
+        "next_match": false,
+        "generated_type": "P402_Conv.Type",
+        "finished_type": "P402_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P404",
+      "asc_type": "BELT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P406",
+        "finished_next": "P406",
+        "next_match": true,
+        "generated_type": "P404_Conv.Type",
+        "finished_type": "P404_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    },
+    {
+      "conveyor": "P406",
+      "asc_type": "STRAIGHT",
+      "families": {
+        "Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Conv_AOI": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "MS": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "PE": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        },
+        "Fast_Conv": {
+          "generated": true,
+          "finished": true,
+          "result": "BOTH"
+        }
+      },
+      "fast_conv": {
+        "generated_next": "P408",
+        "finished_next": "NO_Conv",
+        "next_match": false,
+        "generated_type": "P406_Conv.Type",
+        "finished_type": "P406_Conv.Type",
+        "type_match": true,
+        "area_ignored": true,
+        "generated_area_ignored": "ORNCCP2_Area",
+        "finished_area_ignored": "ModuleB_Area"
+      }
+    }
+  ],
+  "current_l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORNCCP2_LATEST.L5X",
+  "finished_l5x": "C:\\dev\\worktree\\FortnaPlus\\workspace\\validation\\ORLY_GreensboroPLC2_NC_Finished.L5X"
+}

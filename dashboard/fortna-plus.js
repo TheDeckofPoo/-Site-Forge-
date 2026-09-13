@@ -5350,19 +5350,36 @@ async function runAutogenGenerate(mode) {
   const rep = r.report || {};
   autogenState.lastOut = r.out_dir || '';
   autogenState.lastL5x = r.l5x || '';
+  autogenState.lastManifest = r.manifest || null;
   setAutogenStatus(r.recovered ? 'Complete (recovered)' : 'Complete', 'ready');
   if ($('autogen-summary')) {
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
         <div class="text-emerald-400 font-semibold">
-          L5X package exported${mode === 'run' ? ' (site config + RUN)' : ' (legacy Excel)'}
-          ${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered from disk)</span>' : ''}
-          <span class="block text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Show L5X / Open PLC Output when you want the files</span>
+          GENERATED PLC${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered from disk)</span>' : ''}
         </div>
-        <div class="mono text-xs text-slate-400 break-all">${escapeHtml(r.l5x || '')}</div>
-        ${r.diagnostics_dir ? `<div class="text-[10px] text-slate-600 break-all">Diagnostics: ${escapeHtml(r.diagnostics_dir)}</div>` : ''}
-        <div class="text-xs text-slate-500">${escapeHtml(rep.note || r.note || '')}</div>
+        <div class="text-xs text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
+        <div class="text-xs text-slate-300">Source RUN: <span class="mono text-slate-400">${escapeHtml(r.source_run_filename || r.source_label || '')}</span></div>
+        <div class="text-xs text-slate-300">Generated: <span class="mono text-slate-400">${escapeHtml(r.generated_at || '')}</span></div>
+        <div class="text-xs text-slate-300">Output: <span class="mono text-emerald-300/90">${escapeHtml(r.l5x_filename || (r.l5x || '').split(/[\\\\/]/).pop() || '')}</span></div>
+        <div class="text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Open Output Folder / Open File Location. Only exports/current is engineer-facing.</div>
       </div>`;
+  }
+  // CURRENT PLC BUILD provenance card (absolute path + SHA256)
+  if ($('autogen-current-build')) {
+    const panel = $('autogen-current-build');
+    const sha = r.l5x_sha256 || r.manifest?.output_sha256 || '';
+    const shaShort = sha ? `${sha.slice(0, 16)}…${sha.slice(-8)}` : '—';
+    panel.classList.remove('hidden');
+    panel.innerHTML = `
+      <div class="text-[11px] font-semibold text-emerald-300 tracking-wide">CURRENT PLC BUILD</div>
+      <div class="text-[11px] text-slate-300">Controller: <span class="mono text-violet-300">${escapeHtml(r.controller_name || '')}</span></div>
+      <div class="text-[10px] text-slate-500">File:</div>
+      <div class="mono text-[10px] text-emerald-200/90 break-all leading-snug">${escapeHtml(r.l5x || '')}</div>
+      <div class="text-[11px] text-slate-400">Generated: <span class="mono">${escapeHtml(r.generated_at || '')}</span>
+        ${r.git_commit ? ` · git <span class="mono text-slate-500">${escapeHtml(r.git_commit)}</span>` : ''}</div>
+      <div class="text-[11px] text-slate-400">SHA256: <span class="mono text-[10px] text-slate-500" title="${escapeHtml(sha)}">${escapeHtml(shaShort)}</span></div>
+    `;
   }
   if ($('autogen-stats')) {
     $('autogen-stats').classList.remove('hidden');
@@ -5378,16 +5395,30 @@ async function runAutogenGenerate(mode) {
       </div>`).join('');
   }
   if ($('autogen-detail')) {
-    $('autogen-detail').textContent = JSON.stringify(rep, null, 2);
+    $('autogen-detail').textContent = JSON.stringify({
+      provenance: {
+        controller: r.controller_name,
+        source_run: r.source_run_filename || r.source_label,
+        generated_at: r.generated_at,
+        l5x: r.l5x,
+        sha256: r.l5x_sha256,
+        git_commit: r.git_commit,
+        build_manifest: r.build_manifest,
+      },
+      report: rep,
+    }, null, 2);
   }
   if ($('btn-autogen-open-out')) $('btn-autogen-open-out').disabled = !autogenState.lastOut;
   if ($('btn-autogen-open-l5x')) $('btn-autogen-open-l5x').disabled = !autogenState.lastL5x;
+  if ($('btn-autogen-copy-l5x-path')) $('btn-autogen-copy-l5x-path').disabled = !autogenState.lastL5x;
   autogenLog(
     `Done (Python) — ${rep.conveyor_count || 0} conveyors, ${rep.tag_count || 0} tags, `
     + `${rep.program_count || 0} programs`
-    + (r.l5x_bytes ? ` · ${(r.l5x_bytes / 1024 / 1024).toFixed(1)} MB L5X` : ''),
+    + (r.l5x_bytes ? ` · ${(r.l5x_bytes / 1024 / 1024).toFixed(1)} MB L5X` : '')
+    + (r.l5x_filename ? ` · ${r.l5x_filename}` : ''),
     'ok',
   );
+  if (r.l5x) autogenLog(`CURRENT: ${r.l5x}`, 'ok');
   // Site Twin panel — prefer gaps embedded in generate result
   if (r.twin_gaps && Array.isArray(r.twin_gaps.gaps)) {
     autogenState.twinGaps = r.twin_gaps.gaps.map((g, i) => ({ ...g, id: g.id || `gap_${i}` }));
@@ -6319,11 +6350,11 @@ $('btn-autogen-preview-run')?.addEventListener('click', async () => {
 });
 
 $('btn-autogen-open-out')?.addEventListener('click', () => {
-  // Prefer exports/autogen (engineer-facing L5X); fall back to lastOut
+  // Prefer exports/current (authoritative engineer L5X folder)
   const out = autogenState.lastOut || '';
   if (out && typeof fortnaAPI.openPath === 'function') {
     fortnaAPI.openPath(out);
-    autogenLog(`PLC output: ${out}`, 'info');
+    autogenLog(`PLC output folder: ${out}`, 'info');
   }
 });
 $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
@@ -6333,8 +6364,24 @@ $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
   const folder = l5x.replace(/[\\/][^\\/]+$/, '');
   if (folder && typeof fortnaAPI.openPath === 'function') {
     fortnaAPI.openPath(folder || autogenState.lastOut || l5x);
-    autogenLog(`L5X: ${l5x}`, 'info');
+    autogenLog(`L5X location: ${l5x}`, 'info');
     autogenLog('Open the .L5X yourself in Studio when ready (File → Open as new project).', 'info');
+  }
+});
+$('btn-autogen-copy-l5x-path')?.addEventListener('click', async () => {
+  const l5x = autogenState.lastL5x;
+  if (!l5x) return;
+  try {
+    if (typeof fortnaAPI?.clipboardWriteText === 'function') {
+      await fortnaAPI.clipboardWriteText(l5x);
+    } else if (navigator?.clipboard?.writeText) {
+      await navigator.clipboard.writeText(l5x);
+    } else {
+      throw new Error('clipboard unavailable');
+    }
+    autogenLog(`Copied full path: ${l5x}`, 'ok');
+  } catch (e) {
+    autogenLog(`Copy failed: ${e?.message || e}`, 'err');
   }
 });
 

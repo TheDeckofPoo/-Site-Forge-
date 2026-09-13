@@ -1,10 +1,10 @@
 {
-  "generated_at": "2026-09-13T15:09:01.444767+00:00",
+  "generated_at": "2026-09-13T15:42:20.973680+00:00",
   "machine": "ORNCCP2",
-  "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
   "source_of_truth": "RUN ASC Type + VFD evidence; library type codes (DOC_DEFINED)",
-  "finished_validation_only": true,
-  "finished_path": "workspace\\validation\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+  "finished_validation_only": false,
+  "finished_path": null,
   "type_code_legend": {
     "0": "P1000 Transport+VFD",
     "1": "P2000 Accum+VFD",
@@ -33,9 +33,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1001",
@@ -58,9 +56,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1002",
@@ -83,9 +79,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1004",
@@ -108,9 +102,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1005",
@@ -133,9 +125,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1006",
@@ -158,9 +148,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1007",
@@ -183,9 +171,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1008",
@@ -208,9 +194,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1010",
@@ -233,9 +217,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1011",
@@ -258,9 +240,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1014",
@@ -283,9 +263,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1015",
@@ -308,9 +286,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1016",
@@ -333,9 +309,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P1018",
@@ -358,9 +332,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P123",
@@ -383,9 +355,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P124",
@@ -408,9 +378,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P126",
@@ -433,9 +401,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P128",
@@ -458,9 +424,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P130",
@@ -483,9 +447,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P130A",
@@ -508,9 +470,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P130B",
@@ -533,9 +493,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P130C",
@@ -558,9 +516,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P130D",
@@ -583,9 +539,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P130E",
@@ -608,9 +562,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P132",
@@ -633,9 +585,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P134",
@@ -658,9 +608,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P136",
@@ -683,9 +631,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P136A",
@@ -708,9 +654,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P136_P1",
@@ -733,9 +677,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 3,
-      "finished_match": false
+      ]
     },
     {
       "section": "P136_P2",
@@ -758,9 +700,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": true
+      ]
     },
     {
       "section": "P138",
@@ -783,9 +723,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P139",
@@ -808,9 +746,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P140",
@@ -833,9 +769,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P142",
@@ -858,9 +792,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P144",
@@ -883,9 +815,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P145",
@@ -908,9 +838,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P145A",
@@ -933,9 +861,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P145B",
@@ -958,9 +884,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P145C",
@@ -983,9 +907,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P145D",
@@ -1008,9 +930,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P145E",
@@ -1033,9 +953,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P146",
@@ -1058,9 +976,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P148",
@@ -1083,9 +999,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P150",
@@ -1108,9 +1022,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P150A",
@@ -1133,9 +1045,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P150_P1",
@@ -1158,9 +1068,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 3,
-      "finished_match": false
+      ]
     },
     {
       "section": "P150_P2",
@@ -1183,9 +1091,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 3,
-      "finished_match": false
+      ]
     },
     {
       "section": "P215",
@@ -1208,9 +1114,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P220",
@@ -1233,9 +1137,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P220A",
@@ -1258,9 +1160,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P222",
@@ -1283,9 +1183,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P226",
@@ -1308,9 +1206,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P228",
@@ -1333,9 +1229,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P229",
@@ -1358,9 +1252,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P230",
@@ -1383,9 +1275,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P232",
@@ -1408,9 +1298,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P233",
@@ -1433,9 +1321,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P234",
@@ -1458,9 +1344,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P236",
@@ -1483,9 +1367,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P238",
@@ -1508,9 +1390,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P240",
@@ -1533,9 +1413,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P242",
@@ -1558,9 +1436,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": true
+      ]
     },
     {
       "section": "P309",
@@ -1583,9 +1459,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P310",
@@ -1608,9 +1482,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P312",
@@ -1633,9 +1505,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 3,
-      "finished_match": false
+      ]
     },
     {
       "section": "P314",
@@ -1658,9 +1528,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P316",
@@ -1683,9 +1551,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P317",
@@ -1708,9 +1574,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P318",
@@ -1733,9 +1597,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P320",
@@ -1758,9 +1620,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": true
+      ]
     },
     {
       "section": "P322",
@@ -1783,9 +1643,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P324",
@@ -1808,9 +1666,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     },
     {
       "section": "P400",
@@ -1833,9 +1689,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P402",
@@ -1858,9 +1712,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 3,
-      "finished_match": false
+      ]
     },
     {
       "section": "P404",
@@ -1883,9 +1735,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P406",
@@ -1908,9 +1758,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": 2,
-      "finished_match": false
+      ]
     },
     {
       "section": "P408",
@@ -1933,9 +1781,7 @@
           "is_vfd": false,
           "confidence": "PROVEN_RUN"
         }
-      ],
-      "finished_type_code": null,
-      "finished_match": false
+      ]
     }
   ]
 }
