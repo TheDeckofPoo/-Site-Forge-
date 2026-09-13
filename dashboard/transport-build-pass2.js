@@ -931,76 +931,25 @@
       }
       if ((n.ambiguousInbound || []).length) el.classList.add('tb-ambiguous');
 
-      // Schematic proxies / compact segments: details live in inspector + hover
+      // Conveyor-first: never paint motors / PE / AMB / safety onto the canvas.
+      // Those details belong in the inspector + hover tooltip only.
       if (
         el.classList.contains('tb-schematic-proxy')
         || el.classList.contains('tb-seg')
         || (typeof isSchematicNode === 'function' && isSchematicNode(n))
         || (typeof isPhysicalSeg === 'function' && isPhysicalSeg(n))
       ) {
-        if (el.classList.contains('tb-schematic-proxy')) return;
-        if (lod === 'close' || n.id === tb.selectedId) {
-          const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
-          const motorLab = motors.map((m) => escapeHtml(m.tag)).join(' · ')
-            || (n.motorsMeta || []).map((m) => escapeHtml(m.motor || '')).filter(Boolean).join(' · ');
-          let detail = el.querySelector('.tb-seg-detail');
-          if (!detail) {
-            detail = document.createElement('div');
-            detail.className = 'tb-seg-detail';
-            el.appendChild(detail);
-          }
-          const ang = n.sourceAngle != null ? -Number(n.sourceAngle) : -(Number(n.rotation) || 0);
-          detail.style.transform = `rotate(${-ang}deg)`;
-          detail.innerHTML = [
-            motorLab ? `<span class="mono text-amber-300/90">${motorLab}</span>` : '',
-            n.safetyZone ? `<span class="text-slate-500">${escapeHtml(n.safetyZone)}</span>` : '',
-            (n.ambiguousInbound || []).length ? `<span class="text-amber-400">AMB×${n.ambiguousInbound.length}</span>` : '',
-          ].filter(Boolean).join(' · ') || '';
-        }
+        el.querySelector('.tb-seg-detail')?.remove();
         return;
       }
 
       const tag = (n.conveyorTag || '').trim() || 'P???';
-      const ds = n.terminal
-        ? 'END'
-        : String(n.downstream || '').trim() || '—';
-      const dsCls = n.terminal ? 'tb-end' : 'tb-ds';
-      const roles = peRoleBadgesHtml(peRolesOnNode(n));
-      const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
-      const motorLab = motors.map((m) => escapeHtml(m.tag)).join(' · ')
-        || (n.motorsMeta || []).map((m) => escapeHtml(m.motor || '')).filter(Boolean).join(' · ');
-      const driveTypes = [
-        ...motors.map((m) => m.driveType).filter(Boolean),
-        ...(n.motorsMeta || []).map((m) => m.drive_type || m.driveType).filter(Boolean),
-      ];
-      const driveHtml = driveTypes.length
-        ? driveTypes.map(driveBadge).join(' ')
-        : (motorLab ? driveBadge('CONTACTOR / MOTOR STARTER') : '');
-      const meta = KIND_META[n.kind] || {};
-      const flags = [];
-      if (n.asMerge || meta.isMerge || n.mergeDetected) {
-        flags.push('<span class="text-orange-400 text-[8px]">merge</span>');
-      }
-      if (n.mergeGenSupported === false) flags.push('<span class="text-amber-400 text-[8px]">CFG</span>');
-      if (n.terminal) flags.push('<span class="text-amber-300 text-[8px]">term</span>');
-      if ((n.ambiguousInbound || []).length) {
-        flags.push(`<span class="text-amber-400 text-[8px]" title="Ambiguous inbound mates">AMB×${n.ambiguousInbound.length}</span>`);
-      }
-      if (n.physical) flags.push('<span class="text-sky-400/80 text-[8px]">PHYS</span>');
       const head = el.querySelector('.tb-head');
       const body = el.querySelector('.tb-body');
       if (head) {
-        head.innerHTML = `<div class="tb-flow" title="${escapeHtml(tag)} → ${escapeHtml(ds)}">${escapeHtml(tag)}<span class="tb-arrow">→</span><span class="${dsCls}">${escapeHtml(ds)}</span></div>`;
+        head.innerHTML = `<div class="tb-flow" title="${escapeHtml(tag)}">${escapeHtml(tag)}</div>`;
       }
-      if (body) {
-        body.innerHTML = `<div class="flex items-center gap-1 flex-wrap text-[9px]">
-          ${motorLab ? `<span class="mono text-amber-300/90">${motorLab}</span>` : '<span class="text-slate-700">—</span>'}
-          ${driveHtml}
-          <span class="tb-status-row">${roles}</span>
-          ${flags.join(' ')}
-        </div>
-        <div class="tb-area-chip truncate text-[8px] text-slate-600">${escapeHtml(n.safetyZone || area?.name || '')}${n.equipmentType ? ` · ${escapeHtml(n.equipmentType)}` : ''}</div>`;
-      }
+      if (body) body.innerHTML = '';
     });
   }
 
@@ -1486,17 +1435,38 @@
       ui_controller_scoped: true,
     };
     if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
-    if (!tb.layers) {
-      tb.layers = {
-        physical: true, motors: false, photoeyes: false, area: false,
-        safety: false, controller: false, tracking: false,
-      };
-    }
-    tb.layers.physical = true;
+    if (!tb.layers) tb.layers = {};
+    Object.assign(tb.layers, {
+      physical: false,
+      conveyorTags: true,
+      motors: false,
+      photoeyes: false,
+      otherDevices: false,
+      deviceLabels: false,
+      externalRefs: true,
+      area: false,
+      safety: false,
+      controller: false,
+      tracking: false,
+    });
     const cs = Number(tb.metrics.canvas_scale || g.canvasScale);
     if (cs && cs > 0) tb.view.canvasScale = cs;
-    // Ensure schematic flags on imported nodes
+    // Prefer controller-scoped area name (matches Autogen ORNCCP2_Area family).
+    // Transport_1 is only the empty-canvas placeholder — rename after Auto Build.
+    let mach = '';
+    try {
+      const ws = await api.getWorkspace?.();
+      mach = String(ws?.active?.machine || ws?.active?.controller || '').toUpperCase();
+      if (!mach && ws?.active?.project_name) {
+        const mm = String(ws.active.project_name).match(/_([A-Z0-9]+)$/i);
+        if (mm) mach = mm[1].toUpperCase();
+      }
+    } catch (_) { /* ignore */ }
     (tb.areas || []).forEach((area) => {
+      const nm = String(area.name || '');
+      if (/^Transport_\d+$/i.test(nm) || /Imported/i.test(nm) || !nm) {
+        area.name = mach ? `${mach}_Area` : (g.areas?.[0]?.name || area.name || 'Transport');
+      }
       (area.nodes || []).forEach((n) => {
         if (n.physical && (n.pathCanvas || n.entryCanvas)) n.schematic = true;
       });
@@ -1589,6 +1559,22 @@
       render();
       status(`Physical debug ${tb.layers.physical ? 'on' : 'off'}`);
     });
+    const bindLayer = (id, key) => {
+      $(id)?.addEventListener('change', (ev) => {
+        const { tb, render, save, status } = A();
+        if (!tb.layers) tb.layers = {};
+        tb.layers[key] = !!ev.target.checked;
+        try { save(); } catch (_) { /* ignore */ }
+        render();
+        status(`Layer ${key}: ${tb.layers[key] ? 'ON' : 'OFF'}`);
+      });
+    };
+    bindLayer('tb-layer-conv-tags', 'conveyorTags');
+    bindLayer('tb-layer-motors', 'motors');
+    bindLayer('tb-layer-pe', 'photoeyes');
+    bindLayer('tb-layer-other', 'otherDevices');
+    bindLayer('tb-layer-device-labels', 'deviceLabels');
+    bindLayer('tb-layer-external', 'externalRefs');
     $('tb-goto-build-plc')?.addEventListener('click', () => {
       try {
         if (typeof window.activateTab === 'function') window.activateTab('autogen');

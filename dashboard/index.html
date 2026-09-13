@@ -2117,12 +2117,14 @@
                 <input type="checkbox" id="tb-auto-connect" class="rounded border-slate-600 bg-slate-900"> Auto Connect New
               </label>
               <div class="border-t border-slate-800 my-1"></div>
-              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Debug layers</div>
+              <div class="px-2 py-1 text-[10px] uppercase tracking-wider text-slate-600">Display layers</div>
+              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-conv-tags" checked> Conveyor Tags</label>
+              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-motors"> Motors / Drives</label>
+              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-pe"> Photoeyes</label>
+              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-other"> Other Devices</label>
+              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-device-labels"> Device Labels</label>
+              <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-external" checked> External References</label>
               <label class="tb-layer-chip mx-1"><input type="checkbox" id="tb-layer-physical"> Physical debug</label>
-              <label class="tb-layer-chip opacity-50 mx-1" title="Prepared"><input type="checkbox" id="tb-layer-motors" disabled> Motors</label>
-              <label class="tb-layer-chip opacity-50 mx-1" title="Prepared"><input type="checkbox" id="tb-layer-pe" disabled> PE</label>
-              <label class="tb-layer-chip opacity-50 mx-1" title="Prepared"><input type="checkbox" id="tb-layer-area" disabled> Area</label>
-              <label class="tb-layer-chip opacity-50 mx-1" title="Prepared"><input type="checkbox" id="tb-layer-safety" disabled> Safety</label>
               <div class="border-t border-slate-800 my-1"></div>
               <button type="button" id="tb-area-rename" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Rename area</button>
               <button type="button" id="tb-area-delete" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-red-300">Delete area</button>
@@ -2372,6 +2374,10 @@
                   </select>
                 </div>
                 <p class="text-[9px] text-slate-600 mt-1">Type to search. Belts = P###; PWS nodes = EZPWS*.</p>
+              </div>
+              <div id="tb-insp-attached-wrap" class="space-y-2 border border-fuchsia-900/40 rounded-lg p-2 bg-fuchsia-950/10">
+                <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/80 font-semibold">Attached devices</div>
+                <div id="tb-insp-attached" class="text-[11px] text-slate-300 space-y-1.5 leading-relaxed">—</div>
               </div>
               <div id="tb-insp-topo-wrap" class="space-y-2 border border-slate-800/80 rounded-lg p-2 bg-slate-950/40">
                 <div>

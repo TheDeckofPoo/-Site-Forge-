@@ -2534,6 +2534,19 @@ def _build_sys_comm_program_xml(
             # Never import MESSAGE tags with ConnectionPath to missing modules
             if (not _sntp_ok) and tname.startswith("SNTP_MSG_"):
                 continue
+            # Never import gold Comm_UDT / RIO tags that collide with Module names
+            # (CP2RIO0_0, PLC2_ENET1, …). Studio creates AB: module tags for those;
+            # a second controller Tag with Comm_UDT Data → "Data type mismatch".
+            if re.match(
+                r"^(CP\d*RIO\d*|T_\d+_AENT|PLC\d*_?ENET\d*|NO_CommDev)(_\d+)?$",
+                tname,
+                re.I,
+            ):
+                continue
+            if "DataType=\"Comm_UDT\"" in block and re.search(
+                r"RIO\d|ENET|AENT", tname, re.I
+            ):
+                continue
             _add_tag_block(block)
 
     devices: list[tuple[str, str | None]] = []
@@ -2588,38 +2601,17 @@ def _build_sys_comm_program_xml(
         )
 
     def _ensure_comm_udt(name: str) -> None:
-        """Clone Comm_UDT Data matching *library* Comm_UDT (includes CommLoss_Tmr).
+        """Emit Comm_UDT with Decorated StructureMember Data (includes CommLoss_Tmr).
 
-        Gold NO_CommDev Data omits CommLoss_Tmr → Studio 'Data type mismatch'.
-        Prefer library templates CP2N6_RIO / CP2N7_RIO.
+        Never reuse Module names. Never emit gold L5K blobs that omit CommLoss_Tmr —
+        those cause Studio 'Data type mismatch'.
         """
         if name in seen_tag_names:
             return
-        for cand in ("CP2N6_RIO", "CP2N7_RIO", "NO_CommDev"):
-            # Only accept clone if source is in library (has CommLoss_Tmr) when possible
-            src = extract_tag_block(library_text, cand) or (
-                extract_tag_block(gold, cand) if cand == "NO_CommDev" else None
-            )
-            if not src:
-                continue
-            # Library templates include CommLoss_Tmr — required for lib Comm_UDT
-            if cand != "NO_CommDev" or "CommLoss_Tmr" in src:
-                block = re.sub(r'Tag Name="[^"]+"', f'Tag Name="{_xml_escape(name)}"', src, count=1)
-                # Zero out site-specific MAC/IP from template
-                block = re.sub(
-                    r"(<DataValueMember Name=\"LEN\"[^>]*Value=\")\d+(\")",
-                    r"\g<1>0\2",
-                    block,
-                )
-                _add_tag_block(block)
-                return
-        # Explicit library-shaped Decorated Data (CommLoss_Tmr + Flt + …)
+        # Decorated-only — matches current library Comm_UDT (with CommLoss_Tmr).
         _add_tag_block(
             f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="Comm_UDT" '
             f'Constant="false" ExternalAccess="Read/Write">'
-            f"<Data Format=\"L5K\"><![CDATA[[[0,0,0],[0],0,0.00000000e+000,"
-            f"[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00'],"
-            f"[0,'$00$00$00$00$00$00$00$00$00$00$00$00$00$00$00']]]]></Data>"
             f'<Data Format="Decorated"><Structure DataType="Comm_UDT">'
             f'<StructureMember Name="CommLoss_Tmr" DataType="TIMER">'
             f'<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>'
@@ -2636,11 +2628,11 @@ def _build_sys_comm_program_xml(
             f'<DataValueMember Name="Firmware" DataType="REAL" Radix="Float" Value="0.0"/>'
             f'<StructureMember Name="MACId" DataType="String_20">'
             f'<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="DATA" DataType="String_20" Radix="ASCII"><![CDATA[]]></DataValueMember>'
+            f'<DataValueMember Name="DATA" DataType="SINT" Dimensions="20" Radix="ASCII"/>'
             f"</StructureMember>"
             f'<StructureMember Name="IP_Address" DataType="String_15">'
             f'<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="DATA" DataType="String_15" Radix="ASCII"><![CDATA[]]></DataValueMember>'
+            f'<DataValueMember Name="DATA" DataType="SINT" Dimensions="15" Radix="ASCII"/>'
             f"</StructureMember>"
             f"</Structure></Data></Tag>"
         )
@@ -4926,6 +4918,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Controller SFC attrs + element order match library / Rockwell schema.
     # Open this L5X as a NEW Studio project (not Import into existing .acd).
     minor_i = int(minor) if str(minor).isdigit() else 0
+    # Final safety: drop controller Tags that collide with Module names.
+    # Studio synthesizes AB: module tags; a second Tag (often Comm_UDT) → Data mismatch.
+    _module_names = set(re.findall(r'<Module\b[^>]*\bName="([^"]+)"', modules_block or ""))
+    if _module_names:
+        scrubbed: list[str] = []
+        for blk in all_tags:
+            nm = re.search(r'<Tag[^>]*\bName="([^"]+)"', blk)
+            if nm and nm.group(1) in _module_names:
+                continue
+            scrubbed.append(blk)
+        all_tags = scrubbed
     tags_block = "<Tags>\n" + "".join(all_tags) + "\n</Tags>"
     programs_block = "<Programs>\n" + "".join(programs_xml) + "\n</Programs>"
     tasks_block = '<Tasks>\n'

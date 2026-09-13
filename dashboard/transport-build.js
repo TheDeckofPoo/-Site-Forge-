@@ -201,11 +201,15 @@
     // Clean schematic is the normal view. Geometry debug is Advanced-only.
     viewMode: 'schematic', // schematic | geom-debug
     laneSeparate: true, // presentation-only offsets for stacked bodies
-    // Site layers — debug only (not required for normal workflow)
+    // Presentation layers — conveyor tags on by default; device text off.
     layers: {
       physical: false,
+      conveyorTags: true,
       motors: false,
       photoeyes: false,
+      otherDevices: false,
+      deviceLabels: false,
+      externalRefs: true,
       area: false,
       safety: false,
       controller: false,
@@ -1885,14 +1889,14 @@
         const by = fy - Math.sin(ang + 0.45) * 7;
         html += `<path class="tb-schematic-flow" data-id="${escapeHtml(n.id)}" d="M ${ax} ${ay} L ${fx} ${fy} L ${bx} ${by}" />`;
       }
-      // Progressive disclosure: overview/mid = P-tag; close OR selected = optional motor/VFD line
-      // PE / encoder / Area / ES names never appear on the canvas (inspector + evidence only).
-      if (lod === 'overview' || lod === 'mid' || lod === 'close' || sel) {
+      // Conveyor-first: P-tag only unless Motors/PE/Device Labels layers are on.
+      const showConvTags = tb.layers?.conveyorTags !== false;
+      if (showConvTags && (lod === 'overview' || lod === 'mid' || lod === 'close' || sel)) {
         const len = Number(n.length) || (n.entryCanvas && n.exitCanvas
           ? Math.hypot(n.exitCanvas.x - n.entryCanvas.x, n.exitCanvas.y - n.entryCanvas.y)
           : 0);
         let secondary = '';
-        if ((lod === 'close' || sel) && !debug) {
+        if (tb.layers?.motors || tb.layers?.deviceLabels) {
           if (Array.isArray(n.motorsMeta) && n.motorsMeta[0]) {
             const m = n.motorsMeta[0].motor || n.motorsMeta[0].tag;
             if (m) secondary = String(m);
@@ -1900,17 +1904,23 @@
             secondary = String(n.vfdTag);
           }
         }
-        if (debug && (lod === 'close' || sel)) {
-          // Evidence/debug may reveal more — still no Area/ES text on canvas
-          const bits = [];
-          if (n.vfdTag) bits.push(n.vfdTag);
-          if (n.encoderTag) bits.push(n.encoderTag);
-          if (bits.length) secondary = bits.join(' · ');
-        }
+        // Rich hover tooltip — not painted permanently
+        const tipParts = [tag];
+        const m0 = (Array.isArray(n.motorsMeta) && n.motorsMeta[0])
+          ? (n.motorsMeta[0].motor || n.motorsMeta[0].tag)
+          : (n.devices || []).find((d) => d.kind === 'motor')?.tag;
+        if (m0) tipParts.push(`Motor: ${m0}`);
+        const pes = (n.devices || []).filter((d) => d.kind === 'photoeye' && (d.tag || '').trim()).map((d) => d.tag);
+        if (pes.length) tipParts.push(`PE: ${pes.slice(0, 3).join(', ')}`);
+        const ups = getUpstreamTags(area, n.id);
+        if (ups.length) tipParts.push(`Upstream: ${ups.join(', ')}`);
+        if (n.downstream) tipParts.push(`Downstream: ${n.downstream}`);
+        if ((n.ambiguousInbound || []).length) tipParts.push(`Ambiguous mates: ${n.ambiguousInbound.length}`);
         labelCandidates.push({
           id: n.id,
           tag,
           secondary,
+          tip: tipParts.join('\n'),
           x: mid.x,
           y: mid.y,
           anchorX: mid.x,
@@ -1928,8 +1938,9 @@
         const ay = lab.anchorY != null ? lab.anchorY : lab.y;
         html += `<line class="tb-schematic-leader" data-id="${escapeHtml(lab.id)}" x1="${ax}" y1="${ay}" x2="${lab.x}" y2="${lab.y}" />`;
       }
-      html += `<text class="tb-schematic-label" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${escapeHtml(lab.tag)}</text>`;
-      if (lab.secondary) {
+      const tipAttr = lab.tip ? `<title>${escapeHtml(lab.tip)}</title>` : '';
+      html += `<text class="tb-schematic-label" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${tipAttr}${escapeHtml(lab.tag)}</text>`;
+      if (lab.secondary && (tb.layers?.motors || tb.layers?.deviceLabels)) {
         html += `<text class="tb-schematic-label-sec" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y + 11}">${escapeHtml(lab.secondary)}</text>`;
       }
     });
@@ -2303,6 +2314,16 @@
     const lod = detailLevel();
     host.innerHTML = '';
     (area?.nodes || []).forEach((n) => {
+      // Conveyor-first: hide attached device nodes unless their layer is on.
+      if (!isConv(n.kind) && !n.externalReference) {
+        const k = String(n.kind || '').toLowerCase();
+        const showMotor = !!(tb.layers?.motors || tb.layers?.deviceLabels) && (k === 'motor' || k === 'vfd');
+        const showPe = !!(tb.layers?.photoeyes || tb.layers?.deviceLabels) && k === 'photoeye';
+        const showOther = !!(tb.layers?.otherDevices || tb.layers?.deviceLabels)
+          && !showMotor && !showPe;
+        if (!(showMotor || showPe || showOther)) return;
+      }
+      if (n.externalReference && tb.layers?.externalRefs === false) return;
       const meta = KIND_META[n.kind] || { icon: 'fa-cube', color: 'text-slate-300', title: n.kind };
       const el = document.createElement('div');
       el.dataset.id = n.id;
@@ -2385,18 +2406,13 @@
         el.style.height = `${W}px`;
         el.style.transform = `rotate(${ang}deg)`;
         const counter = -ang;
-        const showDetail = lod !== 'overview' || n.id === tb.selectedId;
-        const midBits = showDetail && lod !== 'overview'
-          ? `<span class="tb-seg-meta">${escapeHtml(eq || '')}${(n.ambiguousInbound || []).length ? ' · AMB' : ''}</span>`
-          : '';
+        // Conveyor-first: P-tag only on body; no AMB / equipmentType / PE badges on canvas.
         el.innerHTML = `
           <div class="tb-seg-body" title="${escapeHtml(tagShow)}">
             <span class="tb-seg-entry" aria-hidden="true">◀</span>
             <span class="tb-seg-label" style="transform:rotate(${counter}deg)">${escapeHtml(tagShow)}</span>
             <span class="tb-seg-exit" aria-hidden="true">▶</span>
           </div>
-          ${showDetail && lod === 'close' ? `<div class="tb-seg-detail" style="transform:rotate(${counter}deg)">${roleBadges}${mergeNote}</div>` : ''}
-          ${midBits && lod === 'mid' ? `<div class="tb-seg-detail" style="transform:rotate(${counter}deg)">${midBits}</div>` : ''}
           ${portsHtml}
         `;
       } else {
@@ -2404,15 +2420,12 @@
         el.style.left = `${n.x}px`;
         el.style.top = `${n.y}px`;
         el.style.transform = ''; // card stays upright — labels always readable
+        // Conveyor-first card: tag only; details live in inspector / hover.
         el.innerHTML = `
-          <div class="tb-content">
+          <div class="tb-content" title="${escapeHtml(tagShow)}">
             <div class="tb-head">
-              ${kindIconHtml(n.kind, meta.color)}
-              <span class="tb-tag truncate" title="${escapeHtml(tagShow)}">${escapeHtml(tagShow)}</span>
-            </div>
-            <div class="tb-body">
-              <div class="tb-area-chip truncate" title="${escapeHtml(areaName)}">${escapeHtml(areaName || '—')}</div>
-              <div class="tb-status-row">${roleBadges}${mergeNote}${spiralNote}${orientNote}</div>
+              ${isConv(n.kind) ? '' : kindIconHtml(n.kind, meta.color)}
+              <span class="tb-tag truncate">${escapeHtml(tagShow)}</span>
             </div>
           </div>
           ${portsHtml}
@@ -2689,9 +2702,36 @@
     // Conveyor mode
     convPanel?.classList.remove('hidden');
     devPanel?.classList.add('hidden');
-    $('tb-insp-kind').textContent = `${meta.title || n.kind} (${n.kind})`;
+    const convTag = (n.conveyorTag || n.label || '').trim() || 'P???';
+    $('tb-insp-kind').textContent = `Conveyor ${convTag}`;
     if ($('tb-insp-label')) $('tb-insp-label').value = n.label || '';
     if ($('tb-insp-rotation')) $('tb-insp-rotation').textContent = `${Number(n.rotation || 0) % 360}°`;
+    // Attached devices / relationships (presentation of canonical model)
+    const attached = $('tb-insp-attached');
+    if (attached) {
+      const motors = (n.devices || []).filter((d) => d.kind === 'motor' && (d.tag || '').trim());
+      const pes = (n.devices || []).filter((d) => d.kind === 'photoeye' && (d.tag || '').trim());
+      const others = (n.devices || []).filter((d) => d.kind !== 'motor' && d.kind !== 'photoeye' && (d.tag || d.name || '').trim());
+      const m0 = motors[0]?.tag || (n.motorsMeta && n.motorsMeta[0] && (n.motorsMeta[0].motor || n.motorsMeta[0].tag)) || '';
+      const msTag = m0 ? `${String(convTag).replace(/_Conv$/i, '')}_MS` : '—';
+      const vfd = n.vfdTag || motors.find((d) => /vfd/i.test(d.tag || '') || d.driveType === 'VFD')?.tag || 'none';
+      const ups = getUpstreamTags(area, n.id);
+      const lines = [
+        `<div><span class="text-slate-500">Conveyor</span> <span class="mono text-cyan-300">${escapeHtml(convTag)}</span></div>`,
+        `<div><span class="text-slate-500">Drive</span> <span class="mono text-amber-300">${escapeHtml(m0 || '—')}</span></div>`,
+        `<div class="pl-2 text-[10px] text-slate-500">Motor Starter: <span class="mono text-slate-300">${escapeHtml(msTag)}</span> · VFD: <span class="mono text-slate-300">${escapeHtml(vfd || 'none')}</span></div>`,
+        `<div><span class="text-slate-500">Photoeyes</span> <span class="mono text-emerald-300">${pes.length ? pes.map((p) => escapeHtml(p.tag)).join(', ') : '—'}</span></div>`,
+        `<div><span class="text-slate-500">Upstream</span> <span class="mono text-slate-300">${ups.length ? ups.map(escapeHtml).join(', ') : '—'}</span></div>`,
+        `<div><span class="text-slate-500">Downstream</span> <span class="mono text-slate-300">${escapeHtml(n.terminal ? 'END' : (n.downstream || '—'))}</span></div>`,
+      ];
+      if (others.length) {
+        lines.push(`<div><span class="text-slate-500">Other</span> <span class="mono text-slate-400">${others.map((d) => escapeHtml(d.tag || d.name)).join(', ')}</span></div>`);
+      }
+      if ((n.ambiguousInbound || []).length) {
+        lines.push(`<div class="text-amber-400/90 text-[10px]">Ambiguous inbound mates: ${n.ambiguousInbound.length} (review connections)</div>`);
+      }
+      attached.innerHTML = lines.join('');
+    }
     const upEl = $('tb-insp-upstream');
     if (upEl) {
       const ups = getUpstreamTags(area, n.id);
