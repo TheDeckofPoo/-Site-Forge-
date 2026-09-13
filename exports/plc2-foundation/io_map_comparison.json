@@ -1,0 +1,298 @@
+{
+  "finished_CP_I": {
+    "found": true,
+    "max_rung": 303,
+    "rung_count": 304,
+    "real_mapping_texts": 161,
+    "placeholder_rungs": 95,
+    "nop_rungs": 48,
+    "xic": 256,
+    "ote": 258,
+    "channels": [
+      "CP2RIO0",
+      "CP2RIO1",
+      "CP3RIO0",
+      "CP3RIO1",
+      "CP3RIO2"
+    ]
+  },
+  "generated_CP_I": {
+    "found": true,
+    "max_rung": 263,
+    "rung_count": 264,
+    "real_mapping_texts": 12,
+    "placeholder_rungs": 244,
+    "nop_rungs": 8,
+    "xic": 256,
+    "ote": 256,
+    "channels": [
+      "T_1794_AENT_1",
+      "T_1794_AENT_2",
+      "T_1794_AENT_3",
+      "T_1794_AENT_4",
+      "T_1794_AENT_5"
+    ]
+  },
+  "finished_CP_O": {
+    "found": true,
+    "max_rung": 303,
+    "rung_count": 304,
+    "real_mapping_texts": 77,
+    "placeholder_rungs": 179,
+    "nop_rungs": 48,
+    "xic": 258,
+    "ote": 256,
+    "channels": [
+      "CP2RIO0",
+      "CP2RIO1",
+      "CP3RIO0",
+      "CP3RIO1",
+      "CP3RIO2"
+    ]
+  },
+  "generated_CP_O": {
+    "found": true,
+    "max_rung": 154,
+    "rung_count": 155,
+    "real_mapping_texts": 22,
+    "placeholder_rungs": 122,
+    "nop_rungs": 11,
+    "xic": 144,
+    "ote": 144,
+    "channels": [
+      "T_1794_AENT_1",
+      "T_1794_AENT_2",
+      "T_1794_AENT_3",
+      "T_1794_AENT_4",
+      "T_1794_AENT_5"
+    ]
+  },
+  "finished_real_input_mappings": 159,
+  "generated_real_input_mappings": 256,
+  "finished_real_output_mappings": 75,
+  "generated_real_output_mappings": 144,
+  "exact_matches": 0,
+  "equivalent_tag_direction_matches": 11,
+  "missing_tag_direction": 221,
+  "extra_tag_direction": 23,
+  "missing_sample": [
+    [
+      "CP2_CS.I.Start_PB",
+      "I"
+    ],
+    [
+      "CP2_CS.I.Stop_PB",
+      "I"
+    ],
+    [
+      "CP2_CS.O.Start_PB_LT",
+      "O"
+    ],
+    [
+      "CP2_CS.O.Stop_PB_LT",
+      "O"
+    ],
+    [
+      "CP2_ES.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP2_ESR1.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP2_ESR2.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP2_ESR3.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP2_MCR1.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP2_MCR1_Power_On",
+      "O"
+    ],
+    [
+      "CP2_WH.O.Horn",
+      "O"
+    ],
+    [
+      "CP3_CS.I.Start_PB",
+      "I"
+    ],
+    [
+      "CP3_CS.I.Stop_PB ",
+      "I"
+    ],
+    [
+      "CP3_CS.O.Start_PB_LT",
+      "O"
+    ],
+    [
+      "CP3_CS.O.Stop_PB_LT",
+      "O"
+    ],
+    [
+      "CP3_ES.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP3_ESR1.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP3_ESR2.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP3_ESR3.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP3_ESR4.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP3_ESR5.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP3_MCR1.I.ES_OK",
+      "I"
+    ],
+    [
+      "CP3_P1014_MS.I.Auxiliary_Forward",
+      "I"
+    ],
+    [
+      "CP3_WH.O.Horn",
+      "O"
+    ],
+    [
+      "CP4_P408_MS.I.Auxiliary_Forward",
+      "I"
+    ],
+    [
+      "CP8_P229_MS.I.Auxiliary_Forward",
+      "I"
+    ],
+    [
+      "ES1002.I.ES_OK",
+      "I"
+    ],
+    [
+      "ES1008.I.ES_OK",
+      "I"
+    ],
+    [
+      "ES1014.I.ES_OK",
+      "I"
+    ],
+    [
+      "ES1018.I.ES_OK",
+      "I"
+    ]
+  ],
+  "extra_sample": [
+    [
+      "M1000",
+      "O"
+    ],
+    [
+      "M1001",
+      "O"
+    ],
+    [
+      "M1002",
+      "O"
+    ],
+    [
+      "M1004",
+      "O"
+    ],
+    [
+      "M1005",
+      "O"
+    ],
+    [
+      "M1006",
+      "O"
+    ],
+    [
+      "M1008",
+      "O"
+    ],
+    [
+      "M1010",
+      "O"
+    ],
+    [
+      "M1014",
+      "O"
+    ],
+    [
+      "M1016",
+      "O"
+    ],
+    [
+      "M1018",
+      "O"
+    ],
+    [
+      "M406",
+      "O"
+    ],
+    [
+      "MCR1.I.ES_OK",
+      "O"
+    ],
+    [
+      "NO_PointPlaceholder",
+      "I"
+    ],
+    [
+      "NO_PointPlaceholder",
+      "O"
+    ],
+    [
+      "PE215_J.I.PE_Clear",
+      "I"
+    ],
+    [
+      "SSVEZPE150_P1",
+      "O"
+    ],
+    [
+      "SSVEZPE150_P2",
+      "O"
+    ],
+    [
+      "SSVEZPE242_P",
+      "O"
+    ],
+    [
+      "SSVEZPE320_P",
+      "O"
+    ],
+    [
+      "WH",
+      "O"
+    ],
+    [
+      "WH310",
+      "O"
+    ],
+    [
+      "WH318",
+      "O"
+    ]
+  ],
+  "generated_placeholder_rungs_I": 244,
+  "generated_placeholder_rungs_O": 122,
+  "finished_placeholder_rungs_I": 95,
+  "finished_placeholder_rungs_O": 179
+}

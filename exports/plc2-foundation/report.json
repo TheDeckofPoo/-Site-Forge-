@@ -1,0 +1,385 @@
+{
+  "generated_at": "2026-09-13T03:45:54.537608+00:00",
+  "ok": true,
+  "machine": "ORNCCP2",
+  "import": {
+    "ok": true,
+    "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+    "machine": "ORNCCP2"
+  },
+  "controller_scope": {
+    "LOCAL": 59,
+    "EXTERNAL_REFERENCE": 4,
+    "OUT_OF_SCOPE": 147,
+    "UNRESOLVED": 74
+  },
+  "finished_validation": {
+    "finished_device_tags": 62,
+    "finished_normalized": 64,
+    "correct_local": 47,
+    "correct_local_sample": [
+      "P1000",
+      "P1001",
+      "P1002",
+      "P1004",
+      "P1005",
+      "P1006",
+      "P1007",
+      "P1008",
+      "P1010",
+      "P1011",
+      "P1014",
+      "P1015",
+      "P1016",
+      "P1018",
+      "P123",
+      "P124",
+      "P128",
+      "P130",
+      "P132",
+      "P136",
+      "P138",
+      "P139",
+      "P140",
+      "P144",
+      "P145",
+      "P146",
+      "P150",
+      "P220",
+      "P220A",
+      "P222",
+      "P233",
+      "P234",
+      "P236",
+      "P240",
+      "P242",
+      "P309",
+      "P310",
+      "P312",
+      "P314",
+      "P317"
+    ],
+    "missed_local": 11,
+    "missed_local_sample": [
+      "P130A",
+      "P130B",
+      "P130C",
+      "P130D",
+      "P130E",
+      "P145A",
+      "P145B",
+      "P145C",
+      "P145D",
+      "P145E",
+      "P2000"
+    ],
+    "incorrect_local": 10,
+    "incorrect_local_sample": [
+      "P126",
+      "P134",
+      "P142",
+      "P148",
+      "P228",
+      "P230",
+      "P232",
+      "P238",
+      "P316",
+      "P324"
+    ],
+    "external_reference_count": 4,
+    "finished_only_approx": [
+      "P130A",
+      "P130B",
+      "P130C",
+      "P130D",
+      "P130E",
+      "P145A",
+      "P145B",
+      "P145C",
+      "P145D",
+      "P145E",
+      "P2000"
+    ],
+    "run_only_local": [
+      "P126",
+      "P134",
+      "P142",
+      "P148",
+      "P228",
+      "P230",
+      "P232",
+      "P238",
+      "P316",
+      "P324"
+    ],
+    "note": "Validation only \u2014 finished PLC is oracle, not generation input. Lettered finished AOIs (P130A) vs RUN parent (P130) are treated as related."
+  },
+  "io_tree": {
+    "generated_module_count": 39,
+    "finished_module_count": 40,
+    "generated_names_sample": [
+      "CPXXENET1",
+      "Local",
+      "T_1794_AENT_1",
+      "T_1794_AENT_1_1",
+      "T_1794_AENT_1_2",
+      "T_1794_AENT_1_3",
+      "T_1794_AENT_1_4",
+      "T_1794_AENT_1_5",
+      "T_1794_AENT_1_6",
+      "T_1794_AENT_1_7",
+      "T_1794_AENT_1_8",
+      "T_1794_AENT_2",
+      "T_1794_AENT_2_1",
+      "T_1794_AENT_2_2",
+      "T_1794_AENT_2_3",
+      "T_1794_AENT_2_4",
+      "T_1794_AENT_2_5",
+      "T_1794_AENT_2_6",
+      "T_1794_AENT_3",
+      "T_1794_AENT_3_1",
+      "T_1794_AENT_3_2",
+      "T_1794_AENT_3_3",
+      "T_1794_AENT_3_4",
+      "T_1794_AENT_3_5",
+      "T_1794_AENT_3_6",
+      "T_1794_AENT_3_7",
+      "T_1794_AENT_3_8",
+      "T_1794_AENT_4",
+      "T_1794_AENT_4_1",
+      "T_1794_AENT_4_2"
+    ],
+    "finished_names_sample": [
+      "CP2RIO0",
+      "CP2RIO0_0",
+      "CP2RIO0_1",
+      "CP2RIO0_2",
+      "CP2RIO0_3",
+      "CP2RIO0_4",
+      "CP2RIO0_5",
+      "CP2RIO0_6",
+      "CP2RIO0_7",
+      "CP2RIO1",
+      "CP2RIO1_0",
+      "CP2RIO1_1",
+      "CP2RIO1_2",
+      "CP2RIO1_3",
+      "CP2RIO1_4",
+      "CP2RIO1_5",
+      "CP3RIO0",
+      "CP3RIO0_0",
+      "CP3RIO0_1",
+      "CP3RIO0_2",
+      "CP3RIO0_3",
+      "CP3RIO0_4",
+      "CP3RIO0_5",
+      "CP3RIO0_6",
+      "CP3RIO0_7",
+      "CP3RIO1",
+      "CP3RIO1_0",
+      "CP3RIO1_1",
+      "CP3RIO1_2",
+      "CP3RIO1_3"
+    ],
+    "generated_catalogs": [
+      "1756-EN2T",
+      "1756-L83E",
+      "1794-AENT",
+      "1794-IA16/A",
+      "1794-IB16/A",
+      "1794-OA8I/A",
+      "1794-OB16P/A"
+    ],
+    "finished_catalogs": [
+      "1756-EN2T",
+      "1756-L83E",
+      "1794-AENT",
+      "1794-IA16/A",
+      "1794-IB16/A",
+      "1794-OA8I/A",
+      "1794-OB16P/A"
+    ],
+    "catalog_overlap": [
+      "1756-EN2T",
+      "1756-L83E",
+      "1794-AENT",
+      "1794-IA16/A",
+      "1794-IB16/A",
+      "1794-OA8I/A",
+      "1794-OB16P/A"
+    ],
+    "adapters_generated": [
+      {
+        "name": "Local",
+        "catalog": "1756-L83E",
+        "parent": "Local",
+        "address": "0"
+      },
+      {
+        "name": "CPXXENET1",
+        "catalog": "1756-EN2T",
+        "parent": "Local",
+        "address": "1"
+      },
+      {
+        "name": "T_1794_AENT_1",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.51"
+      },
+      {
+        "name": "T_1794_AENT_2",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.52"
+      },
+      {
+        "name": "T_1794_AENT_3",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.53"
+      },
+      {
+        "name": "T_1794_AENT_4",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.54"
+      },
+      {
+        "name": "T_1794_AENT_5",
+        "catalog": "1794-AENT",
+        "parent": "CPXXENET1",
+        "address": "192.168.1.55"
+      }
+    ],
+    "note": "Name families differ (T_1794_AENT_* vs CP2RIO*/CP3RIO*). Compare catalogs/slots structurally; rack name is not ownership.",
+    "adapters_generated_count": 7,
+    "child_modules_generated": 32
+  },
+  "io_map": {
+    "generated_modules": 39,
+    "generated_xic_ote_refs": 800,
+    "nop_only": false,
+    "comparison": {
+      "finished_CP_I_rungs": 304,
+      "generated_CP_I_rungs": 264,
+      "finished_CP_O_rungs": 304,
+      "generated_CP_O_rungs": 155,
+      "finished_real_inputs": 159,
+      "generated_real_inputs": 256,
+      "finished_real_outputs": 75,
+      "generated_real_outputs": 144,
+      "exact_matches": 0,
+      "equivalent_matches": 11,
+      "missing": 221,
+      "extra": 23
+    }
+  },
+  "transport": {
+    "ok": true,
+    "nodes_total": 60,
+    "local_rendered": 59,
+    "external_boundaries": 1,
+    "full_remote_networks_rendered": false,
+    "local_sample": [
+      "P1000",
+      "P1001",
+      "P1002",
+      "P1004",
+      "P1005",
+      "P1006",
+      "P1007",
+      "P1008",
+      "P1010",
+      "P1011",
+      "P1014",
+      "P1015",
+      "P1016",
+      "P1018",
+      "P123",
+      "P124",
+      "P126",
+      "P128",
+      "P130",
+      "P132",
+      "P134",
+      "P136",
+      "P136A",
+      "P138",
+      "P139",
+      "P140",
+      "P142",
+      "P144",
+      "P145",
+      "P146"
+    ],
+    "external_sample": [
+      "P226"
+    ]
+  },
+  "l5x": {
+    "path": "C:\\Users\\curtiskricke\\SiteForge\\exports\\plc2-foundation\\ORNCCP2_foundation_candidate.L5X",
+    "studio_path": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP2_foundation_candidate.L5X",
+    "sha256": "940cd0e81ad6494253853177f5244650dcb33ee060fff22f95a94611374f1bbf",
+    "programs": [
+      "ORNCCP2_Area_Slow",
+      "ORNCCP2_Area_Fast",
+      "ORNCCP2_Area_L1",
+      "ORNCCP2_Area_L2",
+      "System",
+      "Sys",
+      "IO_MAP"
+    ],
+    "module_entries": 39
+  },
+  "acceptance_gate": {
+    "CONTROLLER_SCOPE": {
+      "total_Conveyor_rows_in_RUN": 284,
+      "local_PLC2": 59,
+      "external_references": 4,
+      "out_of_scope": 147,
+      "unresolved": 74
+    },
+    "FINISHED_VALIDATION": {
+      "correct_local_devices": 47,
+      "missing_local_devices": 11,
+      "incorrect_local_devices": 10
+    },
+    "IO_TREE": {
+      "adapters_generated": 7,
+      "child_modules_generated": 32,
+      "catalog_overlap": [
+        "1756-EN2T",
+        "1756-L83E",
+        "1794-AENT",
+        "1794-IA16/A",
+        "1794-IB16/A",
+        "1794-OA8I/A",
+        "1794-OB16P/A"
+      ]
+    },
+    "CP_I": {
+      "finished_rungs": 304,
+      "generated_rungs": 264,
+      "real_mappings_finished": 159,
+      "real_mappings_generated": 256
+    },
+    "CP_O": {
+      "finished_rungs": 304,
+      "generated_rungs": 155,
+      "real_mappings_finished": 75,
+      "real_mappings_generated": 144
+    },
+    "MAPPINGS": {
+      "exact_or_equivalent": 11,
+      "exact": 0,
+      "missing": 221,
+      "extra": 23
+    },
+    "TRANSPORT": {
+      "full_remote_networks_rendered": false,
+      "external_boundaries_rendered": true
+    },
+    "STUDIO_candidate": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP2_foundation_candidate.L5X"
+  }
+}

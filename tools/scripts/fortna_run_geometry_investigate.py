@@ -254,7 +254,27 @@ def _pe_to_conveyor_guess(pe_name: str) -> str:
 
 
 def _controller_conveyor_tags(run_dir: Path, machine: str) -> set[str]:
-    """Same identity set Autogen uses for this controller (PE/VFD-linked P###)."""
+    """Owned mechanical P-tags for this controller.
+
+    Prefer fortna_cp2_ownership CP2_CONFIRMED when machine is ORNCCP2/CP2.
+    Fall back to load_from_run PE/VFD-linked conveyors.
+    """
+    mu = (machine or "").strip().upper()
+    if mu in {"ORNCCP2", "CP2"} or mu.endswith("CP2"):
+        try:
+            from fortna_cp2_ownership import classify_ownership
+
+            own_machine = "ORNCCP2" if mu == "CP2" else mu
+            payload = classify_ownership(run_dir, own_machine)
+            confirmed = {
+                str(t).strip().upper()
+                for t in ((payload.get("by_class") or {}).get("CP2_CONFIRMED") or [])
+                if str(t).strip()
+            }
+            if confirmed:
+                return confirmed
+        except Exception:
+            pass
     try:
         from fortna_autogen import load_from_run
 
@@ -312,10 +332,9 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
         )
 
     # DISPLAY CONTEXT EXPANSION (presentation only):
-    # Autogen ownership often omits intermediate CURVE/STRAIGHT segments that complete
-    # a physical run (e.g. P126→P128→P130→P132→P134 U-turn). Include geometrically
-    # mated neighbors so Auto Build can draw recognizable assemblies. These are marked
-    # display_context=True and must NOT become PLC Apply / workbook ownership.
+    # Only direct EXTERNAL_REFERENCE geometric neighbors of LOCAL owned tags.
+    # Do NOT recursively expand from external into further remotes (avoids
+    # pulling entire remote clusters such as the P600 network).
     def _quick_anchors(row: dict) -> tuple[dict | None, dict | None]:
         try:
             from fortna_physical_geometry import build_equipment_geometry
@@ -340,11 +359,8 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
         if en and ex:
             owned_ends.append((tag, en, ex))
 
-    # Mate thresholds in RUN units.
-    # True abutments ≈ 0; hairpin CURVE assemblies also share entry/entry or exit/exit
-    # and may leave a few hundred units of gap when IR/tangent interpretation is MEDIUM.
+    # Mate thresholds in RUN units — true abutments only (one hop from LOCAL).
     _MATE_U = 50.0
-    _ASSEMBLY_U = 600.0
     for tag, row in mech_by_name.items():
         if tag in owned_set:
             continue
@@ -360,155 +376,6 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
             ):
                 display_extra.add(tag)
                 break
-
-    # Arc-center clustering: owned CURVE bodies pull nearby CURVE records that share
-    # the same circular/hairpin assembly (e.g. P126/P130/P134), even when endpoint
-    # mating is imperfect under the current IR model.
-    owned_arc_centers: list[tuple[float, float]] = []
-    try:
-        from fortna_physical_geometry import build_equipment_geometry as _beg
-
-        for tag in owned_tags:
-            g = _beg(mech_by_name[tag])
-            ac = g.get("arc_center") if g else None
-            if ac:
-                owned_arc_centers.append((float(ac["x"]), float(ac["y"])))
-    except Exception:
-        owned_arc_centers = []
-
-    if owned_arc_centers:
-        for tag, row in mech_by_name.items():
-            if tag in owned_set or tag in display_extra:
-                continue
-            if _clean(row.get("Type")).upper() not in {"CURVE", "TRIANG"}:
-                continue
-            try:
-                from fortna_physical_geometry import build_equipment_geometry as _beg2
-
-                g = _beg2(row)
-            except Exception:
-                continue
-            ac = g.get("arc_center") if g else None
-            if not ac:
-                continue
-            if any(
-                math.hypot(float(ac["x"]) - cx, float(ac["y"]) - cy) <= 1500.0
-                for cx, cy in owned_arc_centers
-            ):
-                display_extra.add(tag)
-
-    # One-hop + assembly-gap expansion: pull near-mates of owned/display seeds so
-    # U-turn corridors (curve–straight–curve) become continuous on the canvas.
-    if display_extra or owned_ends:
-        seed_ends = list(owned_ends)
-        for tag in list(display_extra):
-            en, ex = _quick_anchors(mech_by_name[tag])
-            if en and ex:
-                seed_ends.append((tag, en, ex))
-        for tag, row in mech_by_name.items():
-            if tag in owned_set or tag in display_extra:
-                continue
-            en, ex = _quick_anchors(row)
-            if not en or not ex:
-                continue
-            for _ot, oen, oex in seed_ends:
-                if (
-                    _dist(oex, en) <= _ASSEMBLY_U
-                    or _dist(ex, oen) <= _ASSEMBLY_U
-                    or _dist(oen, en) <= _MATE_U
-                    or _dist(oex, ex) <= _MATE_U
-                ):
-                    display_extra.add(tag)
-                    break
-
-    # Same-IO-word dense CURVE banks (presentation only):
-    # Autogen may omit large multi-CURVE assemblies that share IO_Address_Word with
-    # owned equipment (e.g. plant spiral/curve banks). Cluster CURVE arc centers on
-    # shared words; if a cluster is large and mostly outside Autogen ownership, pull
-    # it (+ endpoint mates) as display_context. Never invents PLC ownership.
-    owned_words = {
-        _clean(mech_by_name[t].get("IO_Address_Word"))
-        for t in owned_tags
-        if _clean(mech_by_name[t].get("IO_Address_Word"))
-    }
-    if owned_words:
-        try:
-            from fortna_physical_geometry import build_equipment_geometry as _beg3
-
-            word_curves: list[dict] = []
-            for tag, row in mech_by_name.items():
-                if _clean(row.get("Type")).upper() not in {"CURVE", "TRIANG"}:
-                    continue
-                if _clean(row.get("IO_Address_Word")) not in owned_words:
-                    continue
-                g = _beg3(row)
-                ac = g.get("arc_center") if g else None
-                if not ac:
-                    continue
-                word_curves.append({"tag": tag, "row": row, "geom": g, "ac": ac})
-
-            used_c: set[str] = set()
-            dense_clusters: list[list[dict]] = []
-            for e in word_curves:
-                if e["tag"] in used_c:
-                    continue
-                cl = [e]
-                used_c.add(e["tag"])
-                changed = True
-                while changed:
-                    changed = False
-                    for o in word_curves:
-                        if o["tag"] in used_c:
-                            continue
-                        if any(
-                            math.hypot(
-                                float(o["ac"]["x"]) - float(x["ac"]["x"]),
-                                float(o["ac"]["y"]) - float(x["ac"]["y"]),
-                            )
-                            <= 5000.0
-                            for x in cl
-                        ):
-                            cl.append(o)
-                            used_c.add(o["tag"])
-                            changed = True
-                # Dense multi-curve banks (print spirals / curve fields) often have
-                # 5–20 CURVEs spanning several thousand RUN units.
-                if len(cl) >= 5:
-                    dense_clusters.append(cl)
-
-            for cl in dense_clusters:
-                owned_in = sum(1 for e in cl if e["tag"] in owned_set)
-                # Only pull banks that Autogen largely missed (print spiral case).
-                if owned_in > max(2, len(cl) // 4):
-                    continue
-                for e in cl:
-                    display_extra.add(e["tag"])
-                # One-hop mates of the bank (tangents / collectors)
-                bank_ends: list[tuple[dict, dict]] = []
-                for e in cl:
-                    en = e["geom"].get("entry")
-                    ex = e["geom"].get("exit")
-                    if en and ex:
-                        bank_ends.append((en, ex))
-                for tag, row in mech_by_name.items():
-                    if tag in owned_set or tag in display_extra:
-                        continue
-                    if _clean(row.get("IO_Address_Word")) not in owned_words:
-                        continue
-                    en, ex = _quick_anchors(row)
-                    if not en or not ex:
-                        continue
-                    for ben, bex in bank_ends:
-                        if (
-                            _dist(bex, en) <= _ASSEMBLY_U
-                            or _dist(ex, ben) <= _ASSEMBLY_U
-                            or _dist(ben, en) <= _MATE_U
-                            or _dist(bex, ex) <= _MATE_U
-                        ):
-                            display_extra.add(tag)
-                            break
-        except Exception:
-            pass
 
     target_tags = sorted(owned_set | display_extra)
 
@@ -592,6 +459,7 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
         else:
             geom_conf = "HIGH" if not hard_issues else ("MEDIUM" if len(hard_issues) == 1 else "LOW")
         is_display_ctx = tag not in owned_set
+        is_external_ref = is_display_ctx
         equipment.append(
             {
                 "conveyor": name,
@@ -634,9 +502,10 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                 "machine_name": _clean(r.get("Machine_Name")),
                 "io_address_word": _clean(r.get("IO_Address_Word")),
                 "in_motor_chain": _clean(r.get("In Motor Chain")),
-                # Presentation-only neighbor included to complete physical runs.
-                # Never treat as Autogen/PLC ownership.
+                # Presentation-only EXTERNAL_REFERENCE neighbor of LOCAL owned tags.
+                # Never treat as Autogen/PLC ownership. Not recursively expanded.
                 "display_context": is_display_ctx,
+                "external_reference": is_external_ref,
                 "plc_owned": not is_display_ctx,
                 "layer": _clean(r.get("Layer")),
                 "field_b": _f(r.get("b")),

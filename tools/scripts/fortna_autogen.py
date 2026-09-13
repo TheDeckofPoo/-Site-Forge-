@@ -201,9 +201,12 @@ class AutogenInput:
     # Sys gold is OK (timers/nulls).
     # include_io_map: emit RUN/tar.gz IO_MAP program (any site). OFF = no IO_MAP in L5X.
     # include_io_map_gold: optional Greensboro Excel merge (CLI only; blocked if site is CP1–CP4).
+    # io_map_fill_placeholders: after real CP_I/CP_O maps, fill unused RIO bits with
+    # NO_PointPlaceholder (finished-PLC style). Default True for foundation builds.
     include_sys: bool = True
     include_io_map: bool = True
     include_io_map_gold: bool = False
+    io_map_fill_placeholders: bool = True
     # Sorter build UI config (induct / tracking / encoders / divert count)
     sorter_build: dict = field(default_factory=dict)
     # Sawtooth / collector merge UI config (PLC4-class Sawtooth_Merge pack)
@@ -3866,6 +3869,88 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             text = f"XIC({row['channel']})OTE({row['member']});"
             cp_i_rungs.append(_rung_xml(0, text, row["comment"]))
 
+    # --- Unused RIO Data[slot].bit → NO_PointPlaceholder (finished-PLC style) ---
+    # After real mappings only. Does not replace or delete existing map logic.
+    io_map_placeholders = 0
+    fill_placeholders = bool(getattr(inp, "include_io_map", True)) and bool(
+        getattr(inp, "io_map_fill_placeholders", True)
+    )
+    if fill_placeholders:
+        used_bits = {
+            (r["rio"], r["mod_dir"], int(r["slot"]), int(r["data_bit"]))
+            for r in resolved_rows
+        }
+        used_rios = {r["rio"] for r in resolved_rows}
+        topo_for_ph = list(getattr(inp, "eip_topology", None) or [])
+        # Prefer RIO adapters that already have real mappings; else all topology.
+        adapters = [
+            ad for ad in topo_for_ph
+            if (ad.get("rio_name") or "") in used_rios
+        ] if used_rios else list(topo_for_ph)
+        if not adapters:
+            adapters = list(topo_for_ph)
+
+        ph_i_rows: list[tuple[str, int, int, str]] = []
+        ph_o_rows: list[tuple[str, int, int, str]] = []
+        for ad in adapters:
+            rio = str(ad.get("rio_name") or "").strip()
+            if not rio:
+                continue
+            for child in (ad.get("children") or []):
+                mod_dir = (child.get("direction") or "").upper()
+                if mod_dir not in ("I", "O"):
+                    mt = (child.get("type") or "").upper()
+                    if any(x in mt for x in ("IA", "IB", "IM")):
+                        mod_dir = "I"
+                    elif any(x in mt for x in ("OA", "OB", "OW")):
+                        mod_dir = "O"
+                    else:
+                        continue
+                try:
+                    slot = int(child.get("flex_slot") or 0)
+                except (TypeError, ValueError):
+                    continue
+                mod_type = child.get("type") or ""
+                max_bit = _point_card_max_bit(mod_type)
+                for bit in range(0, max_bit + 1):
+                    if (rio, mod_dir, slot, bit) in used_bits:
+                        continue
+                    channel = f"{rio}:{mod_dir}.Data[{slot}].{bit}"
+                    if mod_dir == "I":
+                        ph_i_rows.append((rio, slot, bit, channel))
+                    else:
+                        ph_o_rows.append((rio, slot, bit, channel))
+
+        ph_i_rows.sort(key=lambda r: (_rio_numeric_key(r[0]), r[1], r[2]))
+        ph_o_rows.sort(key=lambda r: (_rio_numeric_key(r[0]), r[1], r[2]))
+        for rio, _slot, _bit, channel in ph_i_rows:
+            if rio != last_rio_i:
+                cp_i_rungs.append(_rung_xml(0, "NOP();", rio))
+                last_rio_i = rio
+            cp_i_rungs.append(
+                _rung_xml(
+                    0,
+                    f"XIC({channel})OTE(NO_PointPlaceholder);",
+                    f"spare {channel}",
+                )
+            )
+            io_map_placeholders += 1
+        for rio, _slot, _bit, channel in ph_o_rows:
+            if rio != last_rio_o:
+                cp_o_rungs.append(_rung_xml(0, "NOP();", rio))
+                last_rio_o = rio
+            cp_o_rungs.append(
+                _rung_xml(
+                    0,
+                    f"XIC(NO_PointPlaceholder)OTE({channel});",
+                    f"spare {channel}",
+                )
+            )
+            io_map_placeholders += 1
+
+        if io_map_placeholders:
+            _add_tag_block(_bool_tag("NO_PointPlaceholder", 0))
+
     # --- Gold program exports: Sys (default). Gold Excel IO_MAP is CLI-only. ---
     # UI "IO_MAP" checkbox → include_io_map (RUN banks). Gold Excel is separate.
     want_io_map = bool(getattr(inp, "include_io_map", True))
@@ -4591,6 +4676,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_rungs": max(0, len(cp_i_rungs) + len(cp_o_rungs) - 2),
         "io_map_mapped": io_map_mapped,
         "io_map_unmapped": io_map_unmapped,
+        "io_map_placeholders": io_map_placeholders,
+        "io_map_fill_placeholders": fill_placeholders,
         "io_map_mappable": len(map_points),
         "io_map_source": (
             "gold_program_excel"
@@ -5374,6 +5461,15 @@ def main() -> int:
         help="OPTIONAL CLI: merge gold Excel IO_MAP_Program.L5X (Greensboro CP5–CP7)",
     )
     p_run.add_argument(
+        "--io-map-placeholders",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help=(
+            "Fill unused RIO Data[slot].bit with NO_PointPlaceholder in IO_MAP "
+            "(default on). Use --no-io-map-placeholders to disable."
+        ),
+    )
+    p_run.add_argument(
         "--workbook",
         default="",
         help="Path to Site Forge autogen_workbook.json (dashboard edits). Applied over RUN before L5X.",
@@ -5469,6 +5565,9 @@ def main() -> int:
                 inp.include_io_map_gold = True
             else:
                 inp.include_io_map_gold = False
+            inp.io_map_fill_placeholders = bool(
+                getattr(args, "io_map_placeholders", True)
+            )
             if args.preview_only:
                 vfd_n = sum(1 for c in inp.conveyors if "vfd" in (c.type or "").lower())
                 with_pe = sum(1 for c in inp.conveyors if c.all_pe_tags or c.exit_pe_tag)

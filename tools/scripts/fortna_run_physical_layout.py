@@ -255,9 +255,22 @@ def build_transport_graph(
             "motorsMeta": e.get("drives") or [],
             "geometryConfidence": e.get("confidence") or "LOW",
             "drawingPage": e.get("drawing_page") or "",
-            # display_context neighbors complete physical runs (curves/U-turns) but
-            # are NOT Autogen/PLC ownership — Apply must skip them.
+            # display_context / EXTERNAL_REFERENCE neighbors complete physical runs
+            # (curves/U-turns) but are NOT Autogen/PLC ownership — Apply must skip them.
+            # Compact rendering remains available via downstream label for EXTERNAL.
             "displayContext": bool(e.get("display_context")),
+            "externalReference": bool(
+                e.get("external_reference")
+                or (e.get("display_context") and not e.get("plc_owned", True))
+            ),
+            "scopeClass": (
+                "EXTERNAL_REFERENCE"
+                if (
+                    e.get("external_reference")
+                    or (e.get("display_context") and not e.get("plc_owned", True))
+                )
+                else "LOCAL"
+            ),
             "plcOwned": bool(e.get("plc_owned", not e.get("display_context"))),
             "layer": e.get("layer") or "",
             "fieldB": e.get("field_b"),
