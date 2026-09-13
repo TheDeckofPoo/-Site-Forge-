@@ -6574,12 +6574,12 @@ def generate(
     prov_desc = f"SiteForge {file_stem} | Git={git_commit or 'unknown'} | {date_short}"
     if len(prov_desc) > 128:
         prov_desc = prov_desc[:128]
-    # Replace any existing Controller Description (library may ship one) so we
-    # never leave an overlong value from a prior inject / template.
-    ctrl_head = l5x.split("<Controller", 1)[-1][:4000] if "<Controller" in l5x else ""
-    if re.search(r"<Description\b", ctrl_head):
+    # Controller Description must be the first child after <Controller ...>.
+    # Do NOT key off any <Description> later in DataTypes/AOIs (false positive).
+    # Studio max length = 128; overlong aborts import → empty Tags/Tasks.
+    if re.search(r"<Controller\b[^>]*>\s*<Description\b", l5x, re.S):
         l5x = re.sub(
-            r"(<Controller\b[^>]*>\s*)<Description>.*?</Description>",
+            r"(<Controller\b[^>]*>\s*)<Description\b[^>]*>.*?</Description>",
             rf"\1<Description>{_xml_escape(prov_desc)}</Description>",
             l5x,
             count=1,
