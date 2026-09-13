@@ -5357,9 +5357,10 @@ async function runAutogenGenerate(mode) {
         <div class="text-emerald-400 font-semibold">
           L5X package exported${mode === 'run' ? ' (site config + RUN)' : ' (legacy Excel)'}
           ${r.recovered ? ' <span class="text-amber-400 text-xs">(recovered from disk)</span>' : ''}
-          <span class="block text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Show L5X / Out when you want the files</span>
+          <span class="block text-[10px] text-slate-500 font-normal mt-0.5">Studio not launched — use Show L5X / Open PLC Output when you want the files</span>
         </div>
         <div class="mono text-xs text-slate-400 break-all">${escapeHtml(r.l5x || '')}</div>
+        ${r.diagnostics_dir ? `<div class="text-[10px] text-slate-600 break-all">Diagnostics: ${escapeHtml(r.diagnostics_dir)}</div>` : ''}
         <div class="text-xs text-slate-500">${escapeHtml(rep.note || r.note || '')}</div>
       </div>`;
   }
@@ -5702,35 +5703,60 @@ $('btn-hub-save-transport-wb')?.addEventListener('click', async () => {
 });
 
 /**
- * Full project wipe: site-config table + Transport/Sorter/Sawtooth + merges + prints + workbook file.
- * Does not delete the original .tar.gz on disk; clears in-app Autogen state so you start empty.
+ * Clear Current Project: active RUN extract + workbook edits + Transport/Sawtooth/Sorter
+ * + matching exports/autogen outputs. Does NOT delete libraries, docs, fixtures, or
+ * original .tar.gz archives on disk.
  */
 async function clearProjectBuilds() {
   const ok = confirm(
-    'Clear ALL project builds (start empty)?\n\n'
-    + 'This will wipe:\n'
-    + '• Site config table — Conveyors / IO map / Areas / Report\n'
-    + '• workspace/autogen_workbook.json on disk\n'
-    + '• Transport Build areas and PE role selections\n'
-    + '• Sawtooth + Sorter configs and merge rows\n'
-    + '• Panel prints + OCR / merge-crosswalk results\n'
-    + '• Program-pack checkboxes\n\n'
-    + 'You will need to load a RUN again to refill the table.\n'
-    + 'This cannot be undone from the UI. Continue?'
+    'WARNING — Clear Current Project?\n\n'
+    + 'This removes for the CURRENT project only:\n'
+    + '• Active RUN extract (workspace/active) and active-meta.json\n'
+    + '• Workbook edits (workspace/autogen_workbook.json)\n'
+    + '• Transport / Sawtooth / Sorter builds and merge rows\n'
+    + '• Matching generated outputs under exports/autogen\n'
+    + '  (timestamp folders for this archive + MACHINE_LATEST.L5X)\n\n'
+    + 'Does NOT delete:\n'
+    + '• Original .tar.gz archives on disk\n'
+    + '• libraries / docs / fixtures / exports/_archive\n\n'
+    + 'You will need to load a RUN again. This cannot be undone from the UI.\n'
+    + 'Continue?'
   );
   if (!ok) return;
 
   const ok2 = confirm(
-    'Final warning: wipe site config + Transport / Sawtooth / Sorter / merges / prints now?'
+    'Final WARNING: wipe current project RUN + edits + Transport/Sawtooth/Sorter + generated outputs now?\n\n'
+    + '(Libraries, docs, and fixtures are kept.)'
   );
   if (!ok2) return;
 
   try {
-    if (typeof window.transportBuildClearAll === 'function') {
-      window.transportBuildClearAll();
-    } else {
-      try { localStorage.removeItem('siteforge.transportBuild.v1'); } catch (_) { /* ignore */ }
+    // Disk wipe first (workspace + workbook + current-project autogen outputs)
+    if (typeof fortnaAPI?.clearCurrentProject === 'function') {
+      const res = await fortnaAPI.clearCurrentProject();
+      if (!res?.success) {
+        autogenLog(res?.message || 'clearCurrentProject failed', 'err');
+      } else if (res.cleared_outputs?.length) {
+        autogenLog(`Removed ${res.cleared_outputs.length} autogen output(s) for this project.`, 'ok');
+      }
+    } else if (typeof fortnaAPI?.clearWorkspace === 'function') {
+      // Fallback if preload is stale — workspace only (workbook cleared below)
+      await fortnaAPI.clearWorkspace();
     }
+    try { resetWorkspaceUi(); } catch (_) { /* ignore */ }
+
+    // Transport canvas — leave empty (no Transport_1 until Auto Build)
+    if (typeof window.transportBuildClearAll === 'function') {
+      window.transportBuildClearAll({ leaveEmpty: true });
+    }
+    // Strip v1+v2 after clearAll so next load stays empty until Auto Build
+    ['siteforge.transportBuild.v1', 'siteforge.transportBuild.v2'].forEach((k) => {
+      try { localStorage.removeItem(k); } catch (_) { /* ignore */ }
+    });
+    // Again after any incidental save from refresh/render paths
+    ['siteforge.transportBuild.v1', 'siteforge.transportBuild.v2'].forEach((k) => {
+      try { localStorage.removeItem(k); } catch (_) { /* ignore */ }
+    });
     ['tb-insp-pe-role-exit', 'tb-insp-pe-role-add', 'tb-insp-pe-role-jam', 'tb-insp-pe-role-full'].forEach((id) => {
       const el = $(id);
       if (el) el.checked = false;
@@ -5753,6 +5779,8 @@ async function clearProjectBuilds() {
     try { localStorage.removeItem('fortna_sorter_build'); } catch (_) { /* ignore */ }
     try { renderSorterBuild(); } catch (_) { /* ignore */ }
 
+    try { localStorage.removeItem('fortna_last_equipment_names'); } catch (_) { /* ignore */ }
+
     // Uncheck all program-pack options
     [
       'autogen-opt-merges-2to1',
@@ -5764,15 +5792,16 @@ async function clearProjectBuilds() {
     ].forEach((id) => {
       if ($(id)) $(id).checked = false;
     });
-    // Core packs stay recommended-on after a full wipe (user can uncheck)
 
-    // Wipe entire Autogen workbook (conveyors / IO / areas / report) and persist empty file
+    // Empty workbook in memory (+ persist empty file if IPC left a stub)
     const emptyWb = {
       version: 1,
       kind: 'fortna_autogen_workbook',
       generated_utc: new Date().toISOString(),
       source: 'cleared',
       site: '',
+      machine: '',
+      project_name: '',
       conveyors: [],
       io_map: [],
       areas: [],
@@ -5784,7 +5813,7 @@ async function clearProjectBuilds() {
     autogenState.workbook = emptyWb;
     autogenState.selected = new Set();
     if (typeof fortnaAPI?.autogenWorkbookSave === 'function') {
-      await fortnaAPI.autogenWorkbookSave({ workbook: emptyWb });
+      try { await fortnaAPI.autogenWorkbookSave({ workbook: emptyWb }); } catch (_) { /* ignore */ }
     }
     try { setWorkbook(emptyWb); } catch (_) {
       try { renderWorkbook(); } catch (__) { /* ignore */ }
@@ -5792,7 +5821,8 @@ async function clearProjectBuilds() {
 
     if ($('autogen-summary')) {
       $('autogen-summary').innerHTML =
-        'Cleared — load a <strong class="text-slate-300">.tar.gz</strong> on I/O &amp; Prints to refill site config.';
+        '<strong class="text-amber-300">NO ACTIVE PROJECT</strong> — load a '
+        + '<strong class="text-slate-300">.tar.gz</strong> on I/O &amp; Prints to start.';
     }
     if ($('autogen-stats')) {
       $('autogen-stats').classList.add('hidden');
@@ -5800,16 +5830,18 @@ async function clearProjectBuilds() {
     }
     if ($('autogen-wb-count')) $('autogen-wb-count').textContent = '0 rows';
     if ($('autogen-detail')) $('autogen-detail').textContent = '—';
-    setAutogenStatus('Cleared', 'idle');
+    setAutogenStatus('NO ACTIVE PROJECT', 'idle');
+    try { setStatus('workspace-status', 'NO ACTIVE PROJECT', 'idle'); } catch (_) { /* ignore */ }
+    try { setIoRunStatus('NO ACTIVE PROJECT', 'idle'); } catch (_) { /* ignore */ }
 
     try {
       clearIoCompareState({ clearPanels: true });
     } catch (_) { /* ignore */ }
 
     refreshAutogenCompileHub();
-    autogenLog('Project cleared — site config + Transport / Sorter / Sawtooth / merges / prints wiped.', 'ok');
+    autogenLog('Current project cleared — NO ACTIVE PROJECT.', 'ok');
   } catch (e) {
-    autogenLog(`Clear project builds failed: ${e?.message || e}`, 'err');
+    autogenLog(`Clear Current Project failed: ${e?.message || e}`, 'err');
   }
 }
 
@@ -6287,7 +6319,12 @@ $('btn-autogen-preview-run')?.addEventListener('click', async () => {
 });
 
 $('btn-autogen-open-out')?.addEventListener('click', () => {
-  if (autogenState.lastOut) fortnaAPI.openPath(autogenState.lastOut);
+  // Prefer exports/autogen (engineer-facing L5X); fall back to lastOut
+  const out = autogenState.lastOut || '';
+  if (out && typeof fortnaAPI.openPath === 'function') {
+    fortnaAPI.openPath(out);
+    autogenLog(`PLC output: ${out}`, 'info');
+  }
 });
 $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
   // Reveal folder only — never shell-open the .L5X (that launches Studio 5000)
@@ -6296,7 +6333,7 @@ $('btn-autogen-open-l5x')?.addEventListener('click', async () => {
   const folder = l5x.replace(/[\\/][^\\/]+$/, '');
   if (folder && typeof fortnaAPI.openPath === 'function') {
     fortnaAPI.openPath(folder || autogenState.lastOut || l5x);
-    autogenLog(`L5X folder: ${folder || autogenState.lastOut}`, 'info');
+    autogenLog(`L5X: ${l5x}`, 'info');
     autogenLog('Open the .L5X yourself in Studio when ready (File → Open as new project).', 'info');
   }
 });

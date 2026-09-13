@@ -548,6 +548,7 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     graph_area_set = set(graph_area_names) | set(tag_area.values())
 
     def _default_main_area() -> str:
+        """Controller-scoped default — never hardcode another site's Area name."""
         counts: dict[str, int] = {}
         for r in wb.get("conveyors") or []:
             a = (r.get("main_area") or "").strip()
@@ -562,7 +563,21 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             name = (a.get("name") if isinstance(a, dict) else str(a)).strip()
             if name and name not in graph_area_set:
                 return name
-        return "MSCRENOSHIP_Area"
+        machine = (
+            str(wb.get("machine") or wb.get("controller") or "").strip().upper()
+        )
+        if not machine:
+            # Infer from project_name like OReillyGreensboro_ORNCCP2
+            pn = str(wb.get("project_name") or wb.get("site") or "")
+            m = re.search(r"_([A-Z0-9]+)$", pn, re.I)
+            if m:
+                machine = m.group(1).upper()
+        if machine:
+            return f"{machine}_Area"
+        # Last resort: first graph area, else generic placeholder (never MSCRENOSHIP)
+        if graph_area_names:
+            return graph_area_names[0]
+        return "Main_Area"
 
     default_area = _default_main_area()
     default_safety = _safety_for_area(default_area)

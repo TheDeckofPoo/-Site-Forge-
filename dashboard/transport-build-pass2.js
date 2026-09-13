@@ -1383,6 +1383,7 @@
     const g = res.graph;
     // ONE transport equipment source: ControllerScope LOCAL + EXTERNAL_REFERENCE only.
     // displayContext neighbors used for geometry mating must NOT paint the whole site.
+    tb.suppressDefaultArea = false;
     const rawAreas = Array.isArray(g.areas) ? g.areas : [];
     const keptNodeIds = new Set();
     tb.areas = rawAreas.map((area) => {

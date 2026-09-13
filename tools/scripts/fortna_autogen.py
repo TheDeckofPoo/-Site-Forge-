@@ -576,18 +576,23 @@ def _classify_pe_role(name: str, desc: str = "") -> str:
 
 
 def _link_pe_to_conveyor(p: dict) -> str:
-    """Resolve PE → P### conveyor name from RUN description / tag."""
-    link = (p.get("conveyor") or "").upper()
-    if link and re.match(r"^P\d", link):
+    """Resolve PE → P### / P###A / P###_P1 conveyor name from RUN description / tag."""
+    link = (p.get("conveyor") or "").upper().strip()
+    if link and re.match(r"^P\d{2,4}(?:[A-Z]+|_(?:P\d+))?$", link):
         return link
     desc = (p.get("description") or "").upper()
     name = (p.get("fortna_name") or p.get("io_name") or "").upper()
-    m = re.search(r"\bP(\d{2,4}[A-Z]?)\b", desc)
+    # Prefer section form when present (EZPE136_P1 → P136_P1), else letter/plain.
+    m = re.search(r"\bP(\d{2,4})(?:([A-Z]+)|_(P\d+))?\b", desc)
     if m:
-        return f"P{m.group(1)}"
-    m = re.search(r"(?:EZ)?PE(\d{2,4}[A-Z]?)", name)
+        if m.group(3):
+            return f"P{m.group(1)}_{m.group(3)}"
+        return f"P{m.group(1)}{m.group(2) or ''}"
+    m = re.match(r"^(?:SSV)?(?:EZ)?PE(\d{2,4})(?:([A-Z]+)|_(P\d+))?(?:_|$)", name)
     if m:
-        return f"P{m.group(1)}"
+        if m.group(3):
+            return f"P{m.group(1)}_{m.group(3)}"
+        return f"P{m.group(1)}{m.group(2) or ''}"
     return ""
 
 
@@ -1969,8 +1974,21 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
             }
             pe_devices.append(pe_rec)
             if link:
-                pe_by_conv.setdefault(link.upper(), []).append(p)
-                linked_conveyors.add(link.upper())
+                link_u = link.upper()
+                pe_by_conv.setdefault(link_u, []).append(p)
+                linked_conveyors.add(link_u)
+                # Section PE (EZPE136_P1 → P136_P1) also owns plain P136 ASC rows
+                # when no separate section conveyor exists — never invents sections.
+                try:
+                    from fortna_identity import parse_p_tag
+
+                    parsed = parse_p_tag(link_u)
+                    if parsed and parsed[1].startswith("_P"):
+                        base = f"P{parsed[0]}"
+                        linked_conveyors.add(base)
+                        pe_by_conv.setdefault(base, []).append(p)
+                except Exception:
+                    pass
             io_points.append(
                 IoPoint(
                     device_name=name,
@@ -1992,15 +2010,22 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 if dm:
                     linked_conveyors.add(f"P{dm.group(1)}")
             elif kind == "motor":
-                # M123 / M123_AUX → P123 (exact numeric+letter family, never prefix).
+                # M123 / M123A / M123_P1 / M123_AUX → matching P-tag
+                # (exact numeric+letter/section family, never digit-prefix).
                 # Belts often have Machine_Name=N/A but motors are controller-tagged.
+                # M130A → P130A when that ASC row exists (letter family also owns P130).
                 mm = re.match(
-                    r"^M(\d{2,4})([A-Z]*)(?:_AUX|_FLT|_OK|_RUN)?$",
+                    r"^M(\d{2,4})(?:([A-Z]+)|_(P\d+))?(?:_AUX|_FLT|_OK|_RUN)?$",
                     str(name or ""),
                     re.I,
                 )
                 if mm:
-                    linked_conveyors.add(f"P{mm.group(1)}{mm.group(2)}".upper())
+                    if mm.group(3):
+                        linked_conveyors.add(f"P{mm.group(1)}_{mm.group(3)}".upper())
+                    else:
+                        linked_conveyors.add(
+                            f"P{mm.group(1)}{mm.group(2) or ''}".upper()
+                        )
             io_dir = str(p.get("io_type") or "").upper()
             direction = "O" if io_dir in ("OUT", "O", "OUTPUT") else "I"
             # Encoders are inputs (pulse) — never force to output even if Type=BEACON
@@ -2166,6 +2191,142 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
 # ---------------------------------------------------------------------------
 # Library template resolution
 # ---------------------------------------------------------------------------
+
+# Conv_UDT.Type codes — library Area_L1 Conv presets (P1000–P4000), not site locks.
+# P1000 Transport+VFD=0, P2000 Accum+VFD=1, P4000 Accum+MS=2, P3000 Transport+MS=3.
+CONV_UDT_TYPE_CODES = {
+    "transport with vfd": 0,
+    "accumulation with vfd": 1,
+    "accumulation with ms": 2,
+    "transport with ms": 3,
+    "transport with mdr": 2,
+    "accumulation with mdr": 3,
+    "gravity": 3,
+}
+
+
+def _conv_udt_type_code(type_str: str) -> int:
+    """Map Autogen TYPE string → Conv_UDT.Type (library convention)."""
+    key = (type_str or "").strip().lower()
+    if key in CONV_UDT_TYPE_CODES:
+        return CONV_UDT_TYPE_CODES[key]
+    has_vfd = "vfd" in key
+    has_accum = "accum" in key or "zero" in key
+    if has_vfd and has_accum:
+        return 1
+    if has_vfd:
+        return 0
+    if has_accum:
+        return 2
+    return 3  # Transport with MS default
+
+
+def _library_has_aoi(library_text: str, aoi_name: str) -> bool:
+    """True when sealed EncodedData or plaintext AOI def exists in library XML."""
+    if not library_text or not aoi_name:
+        return False
+    esc = re.escape(aoi_name)
+    return bool(
+        re.search(
+            rf'(?:EncodedData\b[^>]*\bName="{esc}"|AddOnInstructionDefinition\b[^>]*\bName="{esc}")',
+            library_text,
+        )
+    )
+
+
+def _l1_conv_preset_lines(
+    conv_name: str,
+    type_str: str,
+    *,
+    is_vfd: bool = False,
+    downstream: str = "",
+    use_init: bool = True,
+) -> list[str]:
+    """Real L1 Conv ST presets for one belt (Type / fault times / LastConv)."""
+    base = _safe(conv_name)
+    if not base:
+        return []
+    tag = f"{base}_Conv" if not base.endswith("_Conv") else base
+    type_code = _conv_udt_type_code(type_str)
+    vfd = bool(is_vfd) or "vfd" in (type_str or "").lower()
+    ds = (downstream or "").strip()
+    ds_safe = _safe(ds) if ds else ""
+    last_conv = (
+        1
+        if (not ds_safe or ds_safe.upper() in ("NO_CONV", "NEXT_CONV", "NONE", "N/A", "-"))
+        else 0
+    )
+    lines = [f"//{tag}", f"{tag}.Type := {type_code};"]
+    if use_init:
+        if vfd:
+            lines.append(f"{tag}.Mtr_Start_FltTime := Init.VFD_Start_FltTime;")
+            lines.append(f"{tag}.Mtr_Stop_FltTime := Init.VFD_Stop_FltTime;")
+        else:
+            lines.append(f"{tag}.Mtr_Start_FltTime := Init.MtrStarter_Start_FltTime;")
+            lines.append(f"{tag}.Mtr_Stop_FltTime := Init.MtrStarter_Stop_FltTime;")
+        lines.append(f"{tag}.Restart_Time := Init.RestartTime;")
+        lines.append(f"{tag}.Ready_To_Receive_Time := Init.RTRTime;")
+        lines.append(f"{tag}.Reset_Time := Init.Reset_PulseTime;")
+    else:
+        lines.extend(
+            [
+                f"{tag}.Mtr_Start_FltTime := 5000;",
+                f"{tag}.Mtr_Stop_FltTime := 5000;",
+                f"{tag}.Restart_Time := 2000;",
+                f"{tag}.Ready_To_Receive_Time := 1000;",
+                f"{tag}.Reset_Time := 1000;",
+            ]
+        )
+    lines.append(f"{tag}.LastConv := {last_conv};")
+    lines.append("")
+    return lines
+
+
+def _slow_conv_pi_rungs(
+    area: str,
+    safe: str,
+    conv_names: list[str],
+    *,
+    _rung_xml,
+) -> tuple[list[str], list[str]]:
+    """Pack area conveyors into Slow_ConvPI20 calls (20 slots, NO_Conv pad).
+
+    Returns (rung_xml_list, pi_instance_tag_names).
+    """
+    area_s = _safe(area) or "Main_Area"
+    safe_s = _safe(safe) or f"{area_s}_Safe"
+    conv_tags: list[str] = []
+    for cn in conv_names:
+        base = _safe(cn)
+        if not base:
+            continue
+        conv_tags.append(f"{base}_Conv" if not base.endswith("_Conv") else base)
+    if not conv_tags:
+        return [], []
+    rungs: list[str] = []
+    pi_tags: list[str] = []
+    chunk = 20
+    for i in range(0, len(conv_tags), chunk):
+        batch = conv_tags[i : i + chunk]
+        while len(batch) < chunk:
+            batch.append("NO_Conv")
+        inst_n = (i // chunk) + 1
+        pi_tag = f"{area_s}_Conv_PI{inst_n}"
+        pi_tags.append(pi_tag)
+        text = (
+            f"Slow_ConvPI20({pi_tag},{area_s},{safe_s},"
+            + ",".join(batch)
+            + ");"
+        )
+        rungs.append(
+            _rung_xml(
+                0,
+                text,
+                f"~~~~~~~~~~~\n{pi_tag} Conv PI pack\n(up to 20 belts)\n~~~~~~~~~~~",
+            )
+        )
+    return rungs, pi_tags
+
 
 def resolve_template(conv_type: str, library_text: str) -> str:
     key = (conv_type or "").strip().lower()
@@ -3489,6 +3650,66 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"{time_tag}.HMI.ReleaseTimeFull := 15000;",
         ]
 
+    def _ensure_init_tag() -> bool:
+        """Ensure controller Init (PLC_INIT) exists for L1 Conv time refs.
+
+        Creates a simple Init with Autogen defaults when missing. Returns True
+        when Init is available for ST references.
+        """
+        if "Init" in seen_tag_names:
+            return True
+        # Prefer library structure, but rewrite timing defaults to Phase-4 values.
+        lib_init = extract_tag_block(library_text, "Init")
+        if lib_init and 'DataType="PLC_INIT"' in lib_init:
+            block = lib_init
+            for member, val in (
+                ("MtrStarter_Start_FltTime", "5000"),
+                ("MtrStarter_Stop_FltTime", "5000"),
+                ("VFD_Start_FltTime", "5000"),
+                ("VFD_Stop_FltTime", "5000"),
+                ("RestartTime", "2000"),
+                ("RTRTime", "1000"),
+                ("Reset_PulseTime", "1000"),
+            ):
+                block = re.sub(
+                    rf'(<DataValueMember Name="{member}"[^>]*Value=")[^"]*(")',
+                    rf"\g<1>{val}\2",
+                    block,
+                    count=1,
+                )
+            _add_tag_block(block)
+            return "Init" in seen_tag_names
+        _add_tag_block(
+            '<Tag Name="Init" TagType="Base" DataType="PLC_INIT" Constant="false" '
+            'ExternalAccess="Read/Write">'
+            '<Data Format="Decorated"><Structure DataType="PLC_INIT">'
+            '<DataValueMember Name="MtrStarter_Start_FltTime" DataType="INT" '
+            'Radix="Decimal" Value="5000"/>'
+            '<DataValueMember Name="MtrStarter_Stop_FltTime" DataType="INT" '
+            'Radix="Decimal" Value="5000"/>'
+            '<DataValueMember Name="VFD_Start_FltTime" DataType="INT" '
+            'Radix="Decimal" Value="5000"/>'
+            '<DataValueMember Name="VFD_Stop_FltTime" DataType="INT" '
+            'Radix="Decimal" Value="5000"/>'
+            '<DataValueMember Name="RestartTime" DataType="INT" '
+            'Radix="Decimal" Value="2000"/>'
+            '<DataValueMember Name="RTRTime" DataType="INT" '
+            'Radix="Decimal" Value="1000"/>'
+            '<DataValueMember Name="Reset_PulseTime" DataType="INT" '
+            'Radix="Decimal" Value="1000"/>'
+            "</Structure></Data></Tag>"
+        )
+        return "Init" in seen_tag_names
+
+    # Downstream lookup for L1 LastConv (terminal when empty / NO_Conv).
+    _downstream_by_conv = {
+        _safe(c.clean_name or c.conveyor): str(getattr(c, "downstream", "") or "").strip()
+        for c in (inp.conveyors or [])
+        if (c.clean_name or c.conveyor)
+    }
+    _init_ready = _ensure_init_tag()
+    _has_slow_conv_pi20 = _library_has_aoi(library_text, "Slow_ConvPI20")
+
     # Build programs per area — ModuleB-shaped pack (PLC2 gold):
     # Fast / Slow / L1 / L2 (+ Conv_Merge when merges configured)
     programs_xml = []
@@ -3546,11 +3767,45 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
 
         # Filter PE rungs to real PE_Logic only (no empty NOP placeholders)
         rungs_pe = [r for r in rungs_pe if "PE_Logic(" in r]
-        # Area Slow — only emit routines Autogen fills (no empty CS / PI / Stacklight scaffolds)
+        # Conv_PI — Slow_ConvPI20 packs (skip gracefully when AOI missing)
+        rungs_pi: list[str] = []
+        pi_tag_names: list[str] = []
+        if _has_slow_conv_pi20 and area_convs:
+            area_safe = ""
+            for it in items:
+                area_safe = (it.get("safety_zone") or "").strip()
+                if area_safe:
+                    break
+            if not area_safe:
+                area_safe = f"{_safe(area)}_Safe"
+            rungs_pi, pi_tag_names = _slow_conv_pi_rungs(
+                area, area_safe, area_convs, _rung_xml=_rung_xml
+            )
+            for pi_tag in pi_tag_names:
+                if pi_tag in seen_tag_names:
+                    continue
+                pi_src = extract_tag_block(library_text, "Main_Area_Conv_PI1")
+                if pi_src:
+                    _add_tag_block(
+                        pi_src.replace("Main_Area_Conv_PI1", pi_tag).replace(
+                            "Main_Area_Conv_PI2", pi_tag
+                        )
+                    )
+                else:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(pi_tag)}" TagType="Base" '
+                        f'DataType="Slow_ConvPI20" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated">'
+                        f'<Structure DataType="Slow_ConvPI20"/></Data></Tag>'
+                    )
+        # Area Slow — only emit routines Autogen fills (no empty CS / Stacklight scaffolds)
         main_slow = [
             _rung_xml(0, "JSR(Conv_Flt,0);", "Conv_Flt"),
             _rung_xml(1, "JSR(Conv_Jam,0);", "Conv_Jam"),
         ]
+        if rungs_pi:
+            main_slow.append(_rung_xml(len(main_slow), "JSR(Conv_PI,0);", "Conv_PI"))
         if rungs_pe:
             main_slow.append(_rung_xml(len(main_slow), "JSR(Conv_PE,0);", "Conv_PE"))
         # ModuleB_Area_Fast Main JSR chain
@@ -3723,12 +3978,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         prog_l1 = _safe(prog_l1)[:40]
         prog_l2 = _safe(prog_l2)[:40]
 
-        # --- Slow (Flt / Jam / PE only when PE roles exist) ---
+        # --- Slow (Flt / Jam / Conv_PI / PE only when content exists) ---
         slow_routines = (
             f'{routine("Main_Routine", main_slow)}'
             f'{routine("Conv_Flt", rungs_flt)}'
             f'{routine("Conv_Jam", rungs_jam)}'
         )
+        if rungs_pi:
+            slow_routines += f'{routine("Conv_PI", rungs_pi)}'
         if rungs_pe:
             slow_routines += f'{routine("Conv_PE", rungs_pe)}'
         programs_xml.append(
@@ -3760,16 +4017,32 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"</Routines></Program>"
         )
 
-        # --- L1 ST presets (ModuleB_Area_L1) ---
+        # --- L1 ST presets (ModuleB_Area_L1) — real Conv Type/time/LastConv ---
         l1_area_lines = [
             f"// {_safe(area)} Area presets",
             f"{_safe(area)}.StartTime := 1000;",
         ]
         l1_conv_lines = [f"// Conveyor presets — {len(area_convs)} belt(s)"]
         l1_ms_lines = ["// Motor starter fault times (defaults; Sys Init may override later)"]
-        for cn in area_convs:
+        l2_speed_lines = [f"// Conv speed presets — {len(area_convs)} belt(s)"]
+        for item in items:
+            cn = (item.get("conveyor") or "").strip()
+            if not cn:
+                continue
             base = _safe(cn)
-            l1_conv_lines.append(f"// {base}")
+            ctype = item.get("type") or ""
+            is_vfd = bool(item.get("is_vfd")) or "vfd" in str(ctype).lower()
+            ds = _downstream_by_conv.get(base, "")
+            l1_conv_lines.extend(
+                _l1_conv_preset_lines(
+                    base,
+                    str(ctype),
+                    is_vfd=is_vfd,
+                    downstream=ds,
+                    use_init=_init_ready,
+                )
+            )
+            # MS_Time stays real (unchanged pattern)
             l1_ms_lines.extend(
                 [
                     f"//{base}_MS",
@@ -3778,6 +4051,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     "",
                 ]
             )
+            conv_tag = f"{base}_Conv" if not base.endswith("_Conv") else base
+            l2_speed_lines.append(f"{conv_tag}.Spd := 100;")
+        if len(l1_conv_lines) == 1:
+            l1_conv_lines.append("// (no conveyors in area)")
+        if len(l2_speed_lines) == 1:
+            l2_speed_lines.append("// (no conveyors in area)")
         main_l1 = [
             _rung_xml(0, "JSR(Area,0);", "Area"),
             _rung_xml(1, "JSR(Conv,0);", "Conv"),
@@ -3801,7 +4080,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             f"</Routines></Program>"
         )
 
-        # --- L2 ST presets — omit Merge routine when no merges in this area ---
+        # --- L2 ST presets — real Conv_Speed; omit Merge when no merges ---
         main_l2 = [
             _rung_xml(0, "JSR(Conv_Speed,0);", "Conv_Speed"),
             _rung_xml(1, "JSR(FullTime,0);", "FullTime"),
@@ -3811,7 +4090,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         main_l2.append(_rung_xml(len(main_l2), "JSR(PETime,0);", "PETime"))
         l2_routines = (
             f'{routine("Main_Routine", main_l2)}'
-            f"{st_routine('Conv_Speed', ['// Conv speed presets — site customize'])}"
+            f"{st_routine('Conv_Speed', l2_speed_lines)}"
             f"{st_routine('FullTime', ['// Full PE timers — site customize'])}"
         )
         if merge_st_lines:
@@ -3969,12 +4248,35 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             return f"CP{n}_CS.I.Stop_PB"
 
         # Motor aux → Motor_Starter UDT; motor run output → Conv.O.Run
-        m = re.match(r"^M(\d+[A-Z]?)_AUX$", core, re.I)
+        # Prefer RUN-owned conveyor names (P130A if present, else parent P130).
+        known_convs = {
+            str(getattr(c, "conveyor", "") or "").strip().upper()
+            for c in (getattr(inp, "conveyors", None) or [])
+        }
+
+        def _motor_to_p_base(mot_core: str) -> str:
+            """M130A → P130A if that conveyor exists, else P130."""
+            mm = re.match(r"^M(\d{2,4})([A-Z]?)$", mot_core, re.I)
+            if not mm:
+                return ""
+            digits, letters = mm.group(1), (mm.group(2) or "").upper()
+            full = f"P{digits}{letters}"
+            if full in known_convs:
+                return full
+            base = f"P{digits}"
+            if base in known_convs:
+                return base
+            # Section form P136_P1 not derived from motors here
+            return full if letters else base
+
+        m = re.match(r"^M(\d{2,4}[A-Z]?)_AUX$", core, re.I)
         if m:
-            return f"P{m.group(1)}_MS.I.Auxiliary_Forward"
-        m = re.match(r"^M(\d+[A-Z]?)$", core, re.I)
+            pbase = _motor_to_p_base(f"M{m.group(1)}")
+            return f"{pbase}_MS.I.Auxiliary_Forward" if pbase else f"P{m.group(1)}_MS.I.Auxiliary_Forward"
+        m = re.match(r"^M(\d{2,4}[A-Z]?)$", core, re.I)
         if m and (direction or "").upper() in ("O", "OUT", "OUTPUT"):
-            return f"P{m.group(1)}_Conv.O.Run"
+            pbase = _motor_to_p_base(f"M{m.group(1)}")
+            return f"{pbase}_Conv.O.Run" if pbase else f"P{m.group(1)}_Conv.O.Run"
 
         if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", raw, re.I) or re.match(
             r"^(?:EZ)?PE\d", core, re.I
@@ -4918,6 +5220,37 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Controller SFC attrs + element order match library / Rockwell schema.
     # Open this L5X as a NEW Studio project (not Import into existing .acd).
     minor_i = int(minor) if str(minor).isdigit() else 0
+    # Ensure ES/CS UDTs referenced by IO_MAP exist BEFORE Tags block is sealed.
+    if want_io_map and not gold_io_map_used:
+        _es_src = (
+            extract_tag_block(library_text, "NO_ES")
+            or extract_tag_block(library_text, "CP5_ES")
+        )
+        _cs_src = extract_tag_block(library_text, "NO_CS") or extract_tag_block(
+            library_text, "CP2_CS"
+        )
+        for _rungs in (cp_i_rungs, cp_o_rungs):
+            for _inst, _op, _base in _iomap_xic_ote_bases(_rungs):
+                if _base in seen_tag_names:
+                    continue
+                if re.match(r"^CP\d+_ES\d*$", _base, re.I) and _es_src:
+                    _add_tag_block(
+                        re.sub(
+                            r'Tag Name="[^"]+"',
+                            f'Tag Name="{_xml_escape(_base)}"',
+                            _es_src,
+                            count=1,
+                        )
+                    )
+                elif re.match(r"^CP\d+_CS$", _base, re.I) and _cs_src:
+                    _add_tag_block(
+                        re.sub(
+                            r'Tag Name="[^"]+"',
+                            f'Tag Name="{_xml_escape(_base)}"',
+                            _cs_src,
+                            count=1,
+                        )
+                    )
     # Final safety: drop controller Tags that collide with Module names.
     # Studio synthesizes AB: module tags; a second Tag (often Comm_UDT) → Data mismatch.
     _module_names = set(re.findall(r'<Module\b[^>]*\bName="([^"]+)"', modules_block or ""))
@@ -5089,6 +5422,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         inp,
         report,
         mappable_io_count=len(map_points),
+        cp_i_rungs=cp_i_rungs if (want_io_map and not gold_io_map_used) else None,
+        cp_o_rungs=cp_o_rungs if (want_io_map and not gold_io_map_used) else None,
+        known_tags=set(seen_tag_names),
+        known_modules=(
+            set(eip_module_names)
+            | set(eip_child_names)
+            | set(used_rios or [])
+            | {str(r.get("rio") or "") for r in resolved_rows if r.get("rio")}
+        ),
     )
     report["generation_assertions"] = {
         "ok": not assertion_failures,
@@ -5133,11 +5475,59 @@ def _include_programs_want_sawtooth(include_programs: list | None) -> bool:
     return False
 
 
+def _iomap_xic_ote_bases(rung_xmls: list[str] | None) -> list[tuple[str, str, str]]:
+    """Extract (instruction, full_operand, base_tag) from CP_I/CP_O rung texts.
+
+    Base tag is the operand before the first '.' or ':' (module path / UDT root).
+    """
+    out: list[tuple[str, str, str]] = []
+    for rx in rung_xmls or []:
+        for text in re.findall(r"<Text><!\[CDATA\[(.*?)\]\]></Text>", rx, flags=re.S):
+            if not text or "NOP(" in text.upper():
+                continue
+            for inst, operand in re.findall(r"\b(XIC|OTE)\(([^)]+)\)", text, flags=re.I):
+                op = (operand or "").strip()
+                if not op:
+                    continue
+                base = re.split(r"[.:]", op, maxsplit=1)[0].strip()
+                if base:
+                    out.append((inst.upper(), op, base))
+    return out
+
+
+def _iomap_operand_is_system(base: str) -> bool:
+    """True for allowed non-tag operands (placeholders / ALWAYS* / S: system)."""
+    b = (base or "").strip()
+    if not b:
+        return True
+    bu = b.upper()
+    if bu in {
+        "NO_POINTPLACEHOLDER",
+        "ALWAYSON",
+        "ALWAYS ON",
+        "ALWAYSOFF",
+        "ALWAYS OFF",
+        "NEVERON",
+        "NEVER ON",
+        "NEVEROFF",
+        "NEVER OFF",
+    }:
+        return True
+    # Studio system bits (S:FS, S:V, …)
+    if bu.startswith("S:"):
+        return True
+    return False
+
+
 def _generation_assertion_failures(
     inp: "AutogenInput",
     report: dict,
     *,
     mappable_io_count: int,
+    cp_i_rungs: list[str] | None = None,
+    cp_o_rungs: list[str] | None = None,
+    known_tags: set[str] | None = None,
+    known_modules: set[str] | None = None,
 ) -> list[str]:
     """Fail-closed checks so empty NOP scaffolds cannot claim success."""
     failures: list[str] = []
@@ -5176,6 +5566,52 @@ def _generation_assertion_failures(
             failures.append(
                 "BUILD FAILED: sawtooth_build configured and Sawtooth_Merge requested, "
                 "but Sawtooth_Merge program was not emitted"
+            )
+
+    # Phase 6 — every XIC/OTE base in emitted CP_I/CP_O must resolve to a known
+    # controller tag or module name (or an allowed system/placeholder operand).
+    if want_io and not gold_io and (cp_i_rungs is not None or cp_o_rungs is not None):
+        known = set(known_tags or set()) | set(known_modules or set())
+        # Always allow null / placeholder objects Autogen emits
+        known.update(
+            {
+                "NO_PointPlaceholder",
+                "AlwaysOn",
+                "AlwaysOff",
+                "ALWAYSON",
+                "NEVERON",
+                "NO_PE",
+                "NO_Conv",
+                "NO_MS",
+                "NO_VFD",
+            }
+        )
+        unknown: list[str] = []
+        seen_unknown: set[str] = set()
+        for routine_name, rungs in (("CP_I", cp_i_rungs), ("CP_O", cp_o_rungs)):
+            for _inst, op, base in _iomap_xic_ote_bases(rungs):
+                if _iomap_operand_is_system(base):
+                    continue
+                if base in known:
+                    continue
+                # Case-insensitive fallback for module/tag naming drift
+                if any(base.lower() == k.lower() for k in known):
+                    continue
+                key = f"{routine_name}:{base}"
+                if key in seen_unknown:
+                    continue
+                seen_unknown.add(key)
+                unknown.append(f"{routine_name} {op} (base={base})")
+                if len(unknown) >= 12:
+                    break
+            if len(unknown) >= 12:
+                break
+        if unknown:
+            sample = "; ".join(unknown[:8])
+            more = f" (+{len(unknown) - 8} more)" if len(unknown) > 8 else ""
+            failures.append(
+                "BUILD FAILED: IO_MAP CP_I/CP_O references unknown tag/module bases — "
+                f"{sample}{more}"
             )
     return failures
 
@@ -5336,6 +5772,28 @@ def build_twin_gaps(inp: AutogenInput, report: dict | None = None) -> dict:
     }
 
 
+def _strip_non_engineer_tokens(stem: str) -> str:
+    """Remove candidate/fidelity/test tokens from engineer-facing names."""
+    s = stem or ""
+    for bad in ("candidate", "fidelity", "test"):
+        s = re.sub(rf"(?i)(^|[_-]){bad}([_-]|$)", r"\1\2", s)
+    s = re.sub(r"[_-]{2,}", "_", s).strip("._-")
+    return s or "Autogen_Project"
+
+
+def _engineer_l5x_stem(archive_stem: str, when: datetime | None = None) -> str:
+    """Engineer-facing basename: {archive_stem}__{YYYY-MM-DD_HHMM}."""
+    when = when or datetime.now()
+    try:
+        from fortna_source_id import safe_fs_name
+
+        base = safe_fs_name(archive_stem or "") or "Autogen_Project"
+    except Exception:
+        base = _safe(archive_stem) or "Autogen_Project"
+    base = _strip_non_engineer_tokens(base)
+    return f"{base}__{when.strftime('%Y-%m-%d_%H%M')}"
+
+
 def generate(
     inp: AutogenInput,
     library: Path,
@@ -5343,8 +5801,10 @@ def generate(
 ) -> dict:
     if not library.is_file():
         raise FileNotFoundError(f"Library L5X not found: {library}")
-    # Folder: timestamp + archive label (track history).
-    # L5X file + Controller name: site + panel ONLY (no date) — Studio rejects long dated names.
+    # Engineer L5X name: archive_stem__YYYY-MM-DD_HHMM (no candidate/fidelity/test).
+    # Controller TargetName inside L5X stays short (site+panel) — Studio rejects long dates.
+    now = datetime.now()
+    build_id = now.strftime("%Y%m%d-%H%M%S")
     try:
         from fortna_source_id import (
             export_label_from_meta,
@@ -5367,13 +5827,38 @@ def generate(
         file_stem = _safe(inp.project_name) or "Autogen_Project"
     if not folder_stem:
         folder_stem = file_stem
-    stamp = datetime.now().strftime("%Y%m%d-%H%M%S")
-    # Always unique folder per run (stamp + site) so exports don't overwrite.
-    folder = f"{stamp}-{folder_stem}"
-    out = out_dir or (REPO_ROOT / "exports" / "autogen" / folder)
-    out.mkdir(parents=True, exist_ok=True)
+    archive_stem = _strip_non_engineer_tokens(export_label or folder_stem or file_stem)
+    engineer_stem = _engineer_l5x_stem(archive_stem, now)
+    stamp = build_id
 
-    # Force short controller name inside L5X (matches file stem)
+    export_root = REPO_ROOT / "exports" / "autogen"
+    explicit_out = Path(out_dir) if out_dir else None
+    if explicit_out is None:
+        # Default UI Build PLC path:
+        #   diagnostics → workspace/.internal/builds/{build_id}/
+        #   engineer L5X → exports/autogen/{archive_stem}__{date}.L5X
+        #   optional dated folder → exports/autogen/{stem}/ (L5X + README only)
+        diag_dir = REPO_ROOT / "workspace" / ".internal" / "builds" / build_id
+        dated_dir = export_root / engineer_stem
+        diag_dir.mkdir(parents=True, exist_ok=True)
+        export_root.mkdir(parents=True, exist_ok=True)
+        dated_dir.mkdir(parents=True, exist_ok=True)
+        out = diag_dir
+        engineer_export_dir = export_root
+        l5x_basename = f"{engineer_stem}.L5X"
+        result_export_name = engineer_stem
+    else:
+        # Gates / tests: keep all artifacts under the caller-provided out-dir.
+        # Use short Studio stem for L5X basename (gate globs / Studio import).
+        out = explicit_out
+        out.mkdir(parents=True, exist_ok=True)
+        diag_dir = out
+        dated_dir = None
+        engineer_export_dir = out
+        l5x_basename = f"{file_stem}.L5X"
+        result_export_name = file_stem
+
+    # Force short controller name inside L5X (Studio-safe; not the engineer filename)
     try:
         inp.project_name = file_stem
     except Exception:
@@ -5388,7 +5873,7 @@ def generate(
             or (assertion.get("failures") or ["BUILD FAILED: generation assertion"])[0]
         )
         try:
-            (out / "autogen_report.json").write_text(
+            (diag_dir / "autogen_report.json").write_text(
                 json.dumps(report, indent=2), encoding="utf-8"
             )
         except Exception:
@@ -5397,19 +5882,46 @@ def generate(
         return {
             "ok": False,
             "engine": "python",
-            "export_name": file_stem,
-            "source_label": file_stem,
-            "out_dir": str(out),
+            "export_name": result_export_name,
+            "source_label": archive_stem,
+            "out_dir": str(engineer_export_dir),
+            "diagnostics_dir": str(diag_dir),
+            "build_id": build_id,
             "l5x": "",
             "error": str(err),
             "report": report,
         }
-    l5x_path = out / f"{file_stem}.L5X"
+    l5x_path = engineer_export_dir / l5x_basename
     _emit_progress("Writing L5X file…", 70)
     l5x_path.write_text(l5x, encoding="utf-8")
+    if dated_dir is not None:
+        try:
+            dated_l5x = dated_dir / f"{engineer_stem}.L5X"
+            if dated_l5x.resolve() != l5x_path.resolve():
+                dated_l5x.write_text(l5x, encoding="utf-8")
+            (dated_dir / "README.txt").write_text(
+                "\n".join(
+                    [
+                        "Site Forge — engineer L5X package",
+                        "",
+                        f"L5X: {engineer_stem}.L5X",
+                        "Open this file in Studio 5000 as a NEW project (File → Open).",
+                        "",
+                        "Diagnostics (autogen_report, physical_io_map.csv, rio_inventory,",
+                        "twin_gaps, equipment_plan, autogen_input) are under:",
+                        f"  workspace/.internal/builds/{build_id}/",
+                        "",
+                        "Do not rename with candidate/fidelity/test — those are internal only.",
+                    ]
+                )
+                + "\n",
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
 
-    # Studio 5000 Tools → Import tag CSV (controller scope) — separate from L5X
-    studio_csv_path = out / f"{file_stem}_Controller_Tags.csv"
+    # Studio 5000 Tools → Import tag CSV (controller scope) — diagnostics side
+    studio_csv_path = diag_dir / f"{file_stem}_Controller_Tags.csv"
     csv_count = 0
     try:
         from fortna_plc_export import write_studio_tags_csv
@@ -5723,22 +6235,29 @@ def generate(
     result = {
         "ok": True,
         "engine": "python",
-        "export_name": file_stem,
-        "source_label": file_stem,
-        "out_dir": str(out),
+        "export_name": result_export_name,
+        "source_label": archive_stem,
+        "controller_name": file_stem,
+        "out_dir": str(engineer_export_dir),
+        "diagnostics_dir": str(diag_dir),
+        "build_id": build_id,
         "l5x": str(l5x_path),
         "studio_tags_csv": str(studio_csv_path) if csv_count else "",
         "report": report,
-        "report_txt": str(out / "autogen_report.txt"),
+        "report_txt": str(diag_dir / "autogen_report.txt"),
         "l5x_bytes": l5x_path.stat().st_size if l5x_path.is_file() else 0,
         "twin_gaps": twin_gaps,
         "prism": prism_info,
     }
     # Persist full result for Electron recovery if stdout/IPC fails
     try:
-        (out / "autogen_result.json").write_text(
-            json.dumps(result, separators=(",", ":")), encoding="utf-8"
-        )
+        blob = json.dumps(result, separators=(",", ":"))
+        (diag_dir / "autogen_result.json").write_text(blob, encoding="utf-8")
+        # Pointer beside engineer L5X so Open PLC Output / recovery finds it
+        if engineer_export_dir != diag_dir:
+            (engineer_export_dir / "LATEST.json").write_text(blob, encoding="utf-8")
+            if dated_dir is not None:
+                (dated_dir / "autogen_result.json").write_text(blob, encoding="utf-8")
     except Exception:
         pass
     _emit_progress(

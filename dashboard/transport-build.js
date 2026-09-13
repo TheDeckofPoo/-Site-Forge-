@@ -174,6 +174,7 @@
   const tb = {
     areas: [],
     activeAreaId: null,
+    suppressDefaultArea: false, // Clear Current Project: leave canvas empty until Auto Build / New Area
     selectedId: null, // conveyor node id (primary)
     selectedIds: [], // multi-select (includes selectedId when set)
     selectedDeviceId: null, // device id on that conveyor (inspector device mode)
@@ -360,6 +361,8 @@
   }
 
   function ensureArea() {
+    // Clear Current Project may leave canvas empty until Auto Build / Add area
+    if (tb.suppressDefaultArea) return;
     if (!tb.areas.length) {
       const a = { id: uid('area'), name: 'Transport_1', nodes: [], wires: [] };
       tb.areas.push(a);
@@ -427,6 +430,7 @@
       if (tb.activeAreaId && !(tb.areas || []).some((a) => a.id === tb.activeAreaId)) {
         tb.activeAreaId = (tb.areas[0] && tb.areas[0].id) || null;
       }
+      if ((tb.areas || []).length) tb.suppressDefaultArea = false;
       if (typeof data.autoConnectNew === 'boolean') tb.autoConnectNew = data.autoConnectNew;
     } catch (_) { /* ignore */ }
   }
@@ -3110,6 +3114,7 @@
 
     $('tb-area-new')?.addEventListener('click', async () => {
       try {
+        tb.suppressDefaultArea = false;
         const def = `Transport_${tb.areas.length + 1}`;
         // Always create immediately so the click never feels dead, then offer rename.
         const a = { id: uid('area'), name: def, nodes: [], wires: [] };
@@ -4130,8 +4135,13 @@
     } catch (_) { /* ignore */ }
   };
 
-  /** Wipe all Transport Build areas (Transport1, Merge5, …) and reset PE role UI. */
-  window.transportBuildClearAll = function () {
+  /**
+   * Wipe all Transport Build areas (Transport1, Merge5, …) and reset PE role UI.
+   * opts.leaveEmpty — skip recreating Transport_1 / save (Clear Current Project).
+   */
+  window.transportBuildClearAll = function (opts) {
+    const leaveEmpty = !!(opts && opts.leaveEmpty);
+    tb.suppressDefaultArea = leaveEmpty;
     tb.areas = [];
     tb.activeAreaId = null;
     tb.selectedId = null;
@@ -4139,14 +4149,21 @@
     tb.selectedDeviceId = null;
     tb.history = { past: [], future: [], max: 50 };
     try { localStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
-    ensureArea();
+    try { localStorage.removeItem('siteforge.transportBuild.v1'); } catch (_) { /* ignore */ }
+    if (!leaveEmpty) {
+      ensureArea();
+    }
     resetPeRoleUi();
-    save();
+    if (!leaveEmpty) {
+      save();
+    }
     render();
-    // Force inspector empty state (PE roles must not linger after Clear project builds)
+    // Force inspector empty state (PE roles must not linger after Clear Current Project)
     $('tb-inspector-empty')?.classList.remove('hidden');
     $('tb-inspector')?.classList.add('hidden');
-    status('All transport areas cleared — PE roles reset');
+    status(leaveEmpty
+      ? 'Transport canvas empty — Auto Build to refill'
+      : 'All transport areas cleared — PE roles reset');
     return true;
   };
 

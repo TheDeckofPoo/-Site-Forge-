@@ -80,6 +80,18 @@ For each assigned build task:
 
 The local coding AI must **not** automatically begin unrelated improvements after completing the requested task.
 
+### Bolt / overnight coding AI — layered checkpoints
+
+Bolt (or equivalent overnight coding agents) must implement **2–3 meaningful layers**, then:
+
+1. **push** the feature branch
+2. **STOP** for Curtis spot-check / Studio or Electron acceptance
+3. continue only after acceptance (or an explicit correction task)
+
+Do not chain unrelated PLC4 / PLC5 / Sorter / WCS work after a PLC2 transport checkpoint.
+
+Prefer durable regression assets under `tools/scripts/test_*.py` and `docs/` over one-off generated noise in engineer-facing `exports/autogen/`.
+
 ---
 
 ## Git workflow

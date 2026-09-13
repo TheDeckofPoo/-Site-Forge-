@@ -12,6 +12,7 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   getSiteModel: () => ipcRenderer.invoke('get-site-model'),
   getWorkspace: () => ipcRenderer.invoke('get-workspace'),
   clearWorkspace: () => ipcRenderer.invoke('clear-workspace'),
+  clearCurrentProject: () => ipcRenderer.invoke('clear-current-project'),
   listConveyors: () => ipcRenderer.invoke('list-conveyors'),
   listDevices: (data) => ipcRenderer.invoke('list-devices', data),
   applyRecipe: (data) => ipcRenderer.invoke('apply-recipe', data),

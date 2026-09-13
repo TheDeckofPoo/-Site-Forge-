@@ -47,6 +47,7 @@ exports/**/LATEST.*
 workspace/active/**
 workspace/active_*/
 workspace/active-meta.json
+workspace/.internal/**
 workspace/cp4-run/**
 workspace/cp5-run/**
 workspace/inbox/**

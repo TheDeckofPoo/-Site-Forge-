@@ -986,10 +986,10 @@
               <option value="">Bulk area…</option>
             </select>
             <button id="btn-autogen-wb-apply-area" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Apply area</button>
-            <button id="btn-autogen-open-out" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] ml-auto" disabled>
-              <i class="fa-solid fa-folder-open mr-1"></i>Out
+            <button id="btn-autogen-open-out" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] ml-auto" disabled title="Open exports/autogen (engineer L5X folder)">
+              <i class="fa-solid fa-folder-open mr-1"></i>Open PLC Output
             </button>
-            <button id="btn-autogen-open-l5x" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" disabled title="Reveal L5X in folder (does not launch Studio)">
+            <button id="btn-autogen-open-l5x" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]" disabled title="Reveal latest clean L5X in exports/autogen (does not launch Studio)">
               <i class="fa-solid fa-folder-open mr-1"></i>Show L5X
             </button>
           </div>
@@ -1138,12 +1138,13 @@
           <div id="autogen-hub-empty-hint" class="text-[10px] text-slate-500 leading-relaxed">
             Empty project — load a RUN on <strong class="text-slate-400">I/O &amp; Prints</strong>, or design on Transport / Sorter / Sawtooth.
           </div>
-          <button type="button" id="btn-clear-project-builds" class="w-full sm:w-auto px-3 py-2.5 rounded-xl text-[11px] font-semibold bg-red-950/70 border border-red-600/70 text-red-200 hover:bg-red-900/80 hover:border-red-500" title="Wipe site config table, transport/sorter/sawtooth, merges, prints, and workbook file">
-            <i class="fa-solid fa-triangle-exclamation mr-1"></i>Clear project builds
+          <button type="button" id="btn-clear-project-builds" class="w-full sm:w-auto px-3 py-2.5 rounded-xl text-[11px] font-semibold bg-red-950/70 border border-red-600/70 text-red-200 hover:bg-red-900/80 hover:border-red-500" title="Clear current project: RUN extract, edits, Transport/Sawtooth/Sorter, and generated outputs (not libraries/docs/fixtures)">
+            <i class="fa-solid fa-triangle-exclamation mr-1"></i>Clear Current Project
           </button>
           <p class="text-[9px] text-slate-600 leading-relaxed">
-            Clear wipes Conveyors / IO map / Areas / Report, Transport · Sorter · Sawtooth, merges, prints, and
-            <span class="mono text-slate-500">workspace/autogen_workbook.json</span>. Asks for confirmation first.
+            Clears the active RUN extract, workbook edits, Transport · Sorter · Sawtooth, and matching
+            <span class="mono text-slate-500">exports/autogen</span> outputs for this project only.
+            Does <strong class="text-slate-500">not</strong> delete libraries, docs, or fixtures.
           </p>
         </div>
       </div>

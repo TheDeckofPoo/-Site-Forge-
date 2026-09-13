@@ -531,6 +531,80 @@ function createWindow() {
     }
   });
 
+  /** Remove current-project autogen outputs only (never _archive / libraries / fixtures). */
+  function clearCurrentProjectAutogenOutputs(meta) {
+    const removed = [];
+    const autogenRoot = path.join(REPO_ROOT, 'exports', 'autogen');
+    if (!fs.existsSync(autogenRoot)) return removed;
+
+    const stem = String(
+      meta?.archive_stem || meta?.export_name || meta?.source_label || ''
+    ).trim();
+    const machine = String(meta?.machine || '').trim();
+
+    let entries = [];
+    try {
+      entries = fs.readdirSync(autogenRoot, { withFileTypes: true });
+    } catch (_) {
+      return removed;
+    }
+
+    for (const ent of entries) {
+      const name = ent.name;
+      if (!name || name === '.gitkeep' || name.startsWith('_archive')) continue;
+      const full = path.join(autogenRoot, name);
+
+      // Timestamp folders that include this project's archive stem
+      if (ent.isDirectory() && stem && name.includes(stem)) {
+        try {
+          fs.rmSync(full, { recursive: true, force: true });
+          removed.push(full);
+        } catch (_) { /* ignore */ }
+        continue;
+      }
+
+      // MACHINE_LATEST.L5X shortcut for the active controller
+      if (
+        ent.isFile()
+        && machine
+        && name.toUpperCase() === `${machine.toUpperCase()}_LATEST.L5X`
+      ) {
+        try {
+          fs.unlinkSync(full);
+          removed.push(full);
+        } catch (_) { /* ignore */ }
+      }
+    }
+    return removed;
+  }
+
+  ipcMain.handle('clear-current-project', async () => {
+    try {
+      // Read meta BEFORE wipe so we can target this project's autogen outputs only
+      const meta = readJson(ACTIVE_META, null);
+      const clearedOutputs = clearCurrentProjectAutogenOutputs(meta);
+
+      clearWorkspaceFiles();
+
+      // Full project clear also drops the Autogen workbook (clear-workspace keeps it)
+      for (const p of [AUTOGEN_WORKBOOK_PATH, AUTOGEN_WORKBOOK_PATH_LEGACY]) {
+        try {
+          if (fs.existsSync(p)) fs.unlinkSync(p);
+        } catch (_) { /* ignore */ }
+      }
+
+      return {
+        success: true,
+        message: 'Current project cleared — workspace, workbook, and matching autogen outputs removed.',
+        machine: meta?.machine || '',
+        archive_stem: meta?.archive_stem || meta?.export_name || '',
+        cleared_outputs: clearedOutputs,
+      };
+    } catch (e) {
+      return { success: false, message: e.message || String(e) };
+    }
+  });
+
   ipcMain.handle('get-io-banks', async () => {
     try {
       const r = await runPythonAsync([IO_BANKS_SCRIPT, 'banks']);

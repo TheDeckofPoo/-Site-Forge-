@@ -662,13 +662,17 @@ def _build_sawtooth(
                 motor_io=m.get("motor_io"),
                 reservation=m.get("reservation"),
                 slice_seconds=m.get("slice_seconds"),
+                reserve_seconds=m.get("reserve_seconds") or m.get("ReserveSeconds"),
                 lanes=[
                     {
                         "name": ln.get("name"),
                         "conveyor": ln.get("conveyor"),
                         "photoeye": ln.get("photoeye"),
+                        "jam_pe": ln.get("jam_pe") or ln.get("jam_photoeye") or "",
+                        "merge_pe": ln.get("merge_pe") or "",
                         "drive": ln.get("drive") or ln.get("vfd"),
                         "lane_index": ln.get("lane_index"),
+                        "reserve_seconds": ln.get("reserve_seconds") or ln.get("ReserveSeconds"),
                         "provenance": ln.get("provenance") or PROV_RUN_EXPLICIT,
                         "conveyor_provenance": ln.get("conveyor_provenance"),
                     }
@@ -679,6 +683,12 @@ def _build_sawtooth(
                     for x in (
                         "collector parameterization" if not m.get("slice_seconds") else None,
                         "lane conveyor" if any(not ln.get("conveyor") for ln in lane_rows) else None,
+                        "lane jam/merge PE"
+                        if any(
+                            not (ln.get("jam_pe") or ln.get("merge_pe") or ln.get("photoeye"))
+                            for ln in lane_rows
+                        )
+                        else None,
                     )
                     if x
                 ],

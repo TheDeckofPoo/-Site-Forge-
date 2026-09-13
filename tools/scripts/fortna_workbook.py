@@ -97,6 +97,9 @@ def build_workbook_from_run(
 
     If existing workbook is passed, preserve human edits (main_area, type,
     safety_zone, include) for matching conveyor names.
+
+    When existing.machine differs from the new RUN machine (case-insensitive),
+    do NOT preserve foreign main_area / safety_zone — treat as a fresh workbook.
     """
     run_dir = Path(run_dir)
     if (run_dir / "RUN" / "project.cfg").is_file():
@@ -104,7 +107,22 @@ def build_workbook_from_run(
 
     inp = load_from_run(run_dir, processor=processor)
     prev_by_name: dict[str, dict] = {}
-    if existing and isinstance(existing.get("conveyors"), list):
+    # Cross-machine merge must NOT preserve foreign Area/ES (MSCRENO → ORNCCP2 leak).
+    existing_machine = str((existing or {}).get("machine") or "").strip().upper()
+    new_machine = str(getattr(inp, "project_name", "") or "").strip().upper()
+    # project_name often OReillyGreensboro_ORNCCP2 — extract controller token
+    m_new = re.search(r"_([A-Z0-9]+)$", new_machine, re.I)
+    new_ctrl = (m_new.group(1) if m_new else new_machine).upper()
+    same_machine = bool(
+        existing_machine
+        and new_ctrl
+        and (
+            existing_machine == new_ctrl
+            or existing_machine in new_machine
+            or new_ctrl in existing_machine
+        )
+    )
+    if existing and isinstance(existing.get("conveyors"), list) and same_machine:
         for row in existing["conveyors"]:
             name = (row.get("conveyor") or "").strip().upper()
             if name:
@@ -122,9 +140,16 @@ def build_workbook_from_run(
                 if t.lower() == low:
                     ag_type = t
                     break
-        main_area = prev.get("main_area") or c.main_area or _infer_area_label(name, inp.project_name)
-        safety = prev.get("safety_zone") or c.safety_zone or (
-            f"{main_area.replace('_Area', '')}_ESZone1"
+        # Only preserve Area/ES edits when same controller project
+        main_area = (
+            (prev.get("main_area") if same_machine else None)
+            or c.main_area
+            or _infer_area_label(name, inp.project_name)
+        )
+        safety = (
+            (prev.get("safety_zone") if same_machine else None)
+            or c.safety_zone
+            or f"{main_area.replace('_Area', '')}_ESZone1"
         )
         include = prev.get("include", True)
         if include in ("0", 0, "false", "False", False):
@@ -237,8 +262,8 @@ def build_workbook_from_run(
         lab = f"Zone{z}_Area"
         if lab not in area_opts:
             area_opts.append(lab)
-    # Preserve any previous custom areas from existing workbook
-    if existing:
+    # Preserve previous custom areas only for the same controller project
+    if existing and same_machine:
         for row in existing.get("conveyors") or []:
             a = (row.get("main_area") or "").strip()
             if a and a not in area_opts:
@@ -256,7 +281,7 @@ def build_workbook_from_run(
     for s in (inp.safety_zones or []):
         if s and s not in safety_opts:
             safety_opts.append(s)
-    if existing:
+    if existing and same_machine:
         for row in existing.get("conveyors") or []:
             s = (row.get("safety_zone") or "").strip()
             if s and s not in safety_opts:
