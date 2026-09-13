@@ -206,6 +206,8 @@ class AutogenInput:
     include_io_map_gold: bool = False
     # Sorter build UI config (induct / tracking / encoders / divert count)
     sorter_build: dict = field(default_factory=dict)
+    # Sawtooth / collector merge UI config (PLC4-class Sawtooth_Merge pack)
+    sawtooth_build: dict = field(default_factory=dict)
     # 2:1 merges (PLC2-class transport) — list of dicts from workbook UI
     # keys: name, area, lane_a, lane_b, discharge, pe_a, pe_b, jam_pe
     merges_2to1: list = field(default_factory=list)
@@ -4589,6 +4591,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_rungs": max(0, len(cp_i_rungs) + len(cp_o_rungs) - 2),
         "io_map_mapped": io_map_mapped,
         "io_map_unmapped": io_map_unmapped,
+        "io_map_mappable": len(map_points),
         "io_map_source": (
             "gold_program_excel"
             if gold_io_map_used
@@ -4638,11 +4641,100 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         t = item["template"]
         report["template_usage"][t] = report["template_usage"].get(t, 0) + 1
 
+    # Fail-closed: empty IO_MAP / PE / Sawtooth scaffolds must not look successful
+    assertion_failures = _generation_assertion_failures(
+        inp,
+        report,
+        mappable_io_count=len(map_points),
+    )
+    report["generation_assertions"] = {
+        "ok": not assertion_failures,
+        "failures": assertion_failures,
+    }
+    if assertion_failures:
+        report["ok"] = False
+        report["error"] = assertion_failures[0]
+        report["build_failed"] = True
+
     # Final pass: unsealed AOI descriptions only (never EncodedData / sealed bodies)
     l5x = _shorten_aoi_descriptions(l5x)
     # Last chance: any leftover gold Greensboro names → this site
     l5x = _retarget_gold_site_names(l5x, site_stem)
     return l5x, report
+
+
+def sawtooth_build_is_configured(saw: dict | None) -> bool:
+    """True when workbook sawtooth_build has a collector or any lane conveyor."""
+    if not saw or not isinstance(saw, dict):
+        return False
+    if str(saw.get("collector_conveyor") or "").strip():
+        return True
+    for lane in saw.get("lanes") or []:
+        if isinstance(lane, dict) and str(lane.get("conveyor") or "").strip():
+            return True
+    return False
+
+
+def _include_programs_want_sawtooth(include_programs: list | None) -> bool:
+    aliases = {
+        "sawtooth",
+        "sawtooth_merge",
+        "sawtoothmerge",
+    }
+    for x in include_programs or []:
+        token = str(x or "").strip().lower().replace(" ", "_").replace("-", "_")
+        if token in aliases or token == "sawtooth_merge":
+            return True
+        if str(x or "").strip() == "Sawtooth_Merge":
+            return True
+    return False
+
+
+def _generation_assertion_failures(
+    inp: "AutogenInput",
+    report: dict,
+    *,
+    mappable_io_count: int,
+) -> list[str]:
+    """Fail-closed checks so empty NOP scaffolds cannot claim success."""
+    failures: list[str] = []
+    want_io = bool(getattr(inp, "include_io_map", True))
+    io_mapped = int(report.get("io_map_mapped") or 0)
+    gold_io = bool(report.get("io_map_source") == "gold_program_excel")
+    if want_io and not gold_io and mappable_io_count > 0 and io_mapped == 0:
+        failures.append(
+            "BUILD FAILED: discovered mappable IO points > 0 but generated IO_MAP mappings == 0"
+        )
+
+    pe_n = len(getattr(inp, "pe_devices", None) or [])
+    pe_rungs = int(report.get("pe_logic_rungs") or 0)
+    transport_n = int(report.get("conveyor_count") or len(getattr(inp, "conveyors", None) or []))
+    if pe_n > 0 and pe_rungs == 0 and transport_n > 0:
+        failures.append(
+            f"BUILD FAILED: pe_devices={pe_n} but pe_logic_rungs/PE devices emitted == 0 "
+            f"(transport conveyors={transport_n})"
+        )
+
+    saw_cfg = dict(getattr(inp, "sawtooth_build", None) or {})
+    want_saw = _include_programs_want_sawtooth(getattr(inp, "include_programs", None) or [])
+    if sawtooth_build_is_configured(saw_cfg) and want_saw:
+        prog_names = {
+            str(p).strip()
+            for p in (report.get("programs") or [])
+            if str(p).strip()
+        }
+        gold_names = {
+            str(p).strip()
+            for p in (report.get("gold_programs") or [])
+            if str(p).strip()
+        }
+        emitted = "Sawtooth_Merge" in prog_names or "Sawtooth_Merge" in gold_names
+        if not emitted:
+            failures.append(
+                "BUILD FAILED: sawtooth_build configured and Sawtooth_Merge requested, "
+                "but Sawtooth_Merge program was not emitted"
+            )
+    return failures
 
 
 def _emit_progress(message: str, pct: int = 0, **extra) -> None:
@@ -4846,6 +4938,29 @@ def generate(
 
     _emit_progress(f"Building L5X for {len(inp.conveyors)} conveyors…", 20, conveyor_count=len(inp.conveyors))
     l5x, report = build_l5x(inp, library)
+    assertion = report.get("generation_assertions") or {}
+    if report.get("build_failed") or assertion.get("ok") is False:
+        err = (
+            report.get("error")
+            or (assertion.get("failures") or ["BUILD FAILED: generation assertion"])[0]
+        )
+        try:
+            (out / "autogen_report.json").write_text(
+                json.dumps(report, indent=2), encoding="utf-8"
+            )
+        except Exception:
+            pass
+        _emit_progress(str(err), 100)
+        return {
+            "ok": False,
+            "engine": "python",
+            "export_name": file_stem,
+            "source_label": file_stem,
+            "out_dir": str(out),
+            "l5x": "",
+            "error": str(err),
+            "report": report,
+        }
     l5x_path = out / f"{file_stem}.L5X"
     _emit_progress("Writing L5X file…", 70)
     l5x_path.write_text(l5x, encoding="utf-8")
@@ -5304,6 +5419,9 @@ def main() -> int:
                         sb = wb.get("sorter_build")
                         if isinstance(sb, dict) and sb:
                             inp.sorter_build = sb
+                        saw_b = wb.get("sawtooth_build")
+                        if isinstance(saw_b, dict) and saw_b:
+                            inp.sawtooth_build = saw_b
                         m2 = wb.get("merges_2to1")
                         if isinstance(m2, list) and m2:
                             inp.merges_2to1 = m2

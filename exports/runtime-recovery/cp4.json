@@ -1,0 +1,207 @@
+{
+  "label": "CP4",
+  "archive": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\inbox\\20251016-0933-OReillyGreensboro-ORNCCP4-RUN.tar.gz",
+  "ok": true,
+  "gate": {
+    "normal_ui_import_path": true,
+    "transport_auto_populated": true,
+    "sawtooth_auto_populated": true,
+    "sorter_auto_populated": true,
+    "no_simulator_button_required": true,
+    "io_modules": 40,
+    "io_map_rungs": 476,
+    "io_map_nop_fail": false,
+    "sawtooth_generation_included": true
+  },
+  "counts": {
+    "site_model": {
+      "controllers": 18,
+      "areas": 1,
+      "equipment": 76,
+      "equipment_included": 76,
+      "motors": 86,
+      "vfds": 13,
+      "drives": 13,
+      "photoeyes": 55,
+      "encoders": 2,
+      "estop_zones": 1,
+      "sawtooth_merges": 1,
+      "sawtooth_lanes": 5,
+      "sorters": 2,
+      "tracking_systems": 3,
+      "tracking": 3,
+      "wcs_interfaces": 84,
+      "io_points": 0,
+      "motor_chains": 176,
+      "transport_paths": 0,
+      "merges": 0,
+      "scanners": 0,
+      "communications": 87,
+      "decision_traces": 55,
+      "superseded_candidates": 134,
+      "inclusion_reasons": 0,
+      "startstop_zones": 8,
+      "jam_zones": 27,
+      "engineering_areas": 1,
+      "full_groups": 79,
+      "sorter_zones": 2,
+      "og_estop_zones": 1,
+      "relationships": 1168,
+      "unresolved": 0,
+      "transport_nodes": 72,
+      "transport_edges": 40
+    },
+    "autogen_workbook_conveyors": 44,
+    "generated": {
+      "conveyors": 44,
+      "io_modules": 38,
+      "io_points": 258,
+      "io_map_mapped": 238,
+      "io_map_rungs": 247,
+      "pe_devices": 55,
+      "programs": [
+        "ORNCCP4_Area_Slow",
+        "ORNCCP4_Area_Fast",
+        "ORNCCP4_Area_L1",
+        "ORNCCP4_Area_L2",
+        "System",
+        "Sys",
+        "Sawtooth_Merge",
+        "IO_MAP"
+      ]
+    }
+  },
+  "steps": [
+    {
+      "step": "locate_archive",
+      "ok": true
+    },
+    {
+      "step": "import_run",
+      "ok": true,
+      "machine": "ORNCCP4",
+      "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN"
+    },
+    {
+      "step": "workspace_active",
+      "ok": true
+    },
+    {
+      "step": "discover",
+      "ok": true,
+      "has_sawtooth": true,
+      "has_sorter": true,
+      "equipment": 76,
+      "editors": {
+        "transport": true,
+        "sawtooth": true,
+        "sorter": true
+      }
+    },
+    {
+      "step": "sawtooth_auto_populate",
+      "ok": true
+    },
+    {
+      "step": "sorter_auto_populate",
+      "ok": true
+    },
+    {
+      "step": "workbook",
+      "ok": true,
+      "conveyors": 44,
+      "workbook_ok": true
+    },
+    {
+      "step": "build_plc",
+      "ok": true,
+      "l5x": "C:\\Users\\curtiskricke\\SiteForge\\exports\\runtime-recovery\\cp4\\autogen\\OReillyGreensboro_ORNCCP4.L5X",
+      "modules": 40,
+      "io_map_xic_ote": 476,
+      "io_map_nop_only": false
+    }
+  ],
+  "generated_at": "2026-09-13T00:11:02.815593+00:00",
+  "machine": "ORNCCP4",
+  "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+  "import_meta": {
+    "device_count": 3173,
+    "project_name": null,
+    "export_name": "20251016-0933-OReillyGreensboro-ORNCCP4-RUN"
+  },
+  "ui_status_summary": {
+    "TRANSPORT": {
+      "Included": 76,
+      "Available": 0,
+      "Excluded": 0,
+      "relationships_need_review": 253
+    },
+    "SAWTOOTH": {
+      "detected": 1,
+      "lanes": 5,
+      "configuration_resolved_pct": 60.5,
+      "engineer_decisions": 15
+    },
+    "SORTER": {
+      "detected": 1,
+      "configuration_modeled": true,
+      "encoder_resolved": true,
+      "scan_zones_resolved": true,
+      "divert_map_required": true,
+      "generation": "partial"
+    },
+    "PE": {
+      "auto_resolved": 38,
+      "engineer_required": 17
+    }
+  },
+  "editor_population": {
+    "sawtooth": true,
+    "sawtooth_detail": {
+      "collector": "P414",
+      "encoder": "ENC414",
+      "lanes": 5,
+      "downstream": "P416"
+    },
+    "sorter": true,
+    "sorter_detail": {
+      "name": null,
+      "encoder": "ENC424",
+      "generation_state": null,
+      "sorters_detected": 2,
+      "configuration_required": [
+        "divert_map",
+        "conveyor_tracking_chain",
+        "induct_conveyor",
+        "tracking_conveyors",
+        "divert_count"
+      ]
+    },
+    "simulator_button_required": false
+  },
+  "l5x": {
+    "path": "C:\\Users\\curtiskricke\\SiteForge\\exports\\runtime-recovery\\cp4\\autogen\\OReillyGreensboro_ORNCCP4.L5X",
+    "exists": true,
+    "bytes": 3076037,
+    "module_entries": 40,
+    "has_io_map_program": true,
+    "io_map_xic_ote_refs": 476,
+    "io_map_nop_only": false,
+    "pe_udt_tags": 134,
+    "programs": [
+      "ORNCCP4_Area_Slow",
+      "ORNCCP4_Area_Fast",
+      "ORNCCP4_Area_L1",
+      "ORNCCP4_Area_L2",
+      "System",
+      "Sys",
+      "Sawtooth_Merge",
+      "IO_MAP"
+    ],
+    "has_sawtooth_merge": true,
+    "has_sorter_track": false,
+    "generate_ok": true,
+    "error": null
+  },
+  "studio_candidate": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP4_ui_candidate.L5X"
+}

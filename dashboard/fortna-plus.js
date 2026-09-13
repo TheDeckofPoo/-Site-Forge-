@@ -99,22 +99,27 @@ function refreshAutogenCompileHub() {
   const trackN = Number(s.tracking_count || 0);
   const divertN = Number(s.divert_count || 0);
   const stype = s.sorter_type === 'shoe_sorter' ? 'shoe' : (s.sorter_type === 'popup_divert' ? 'popup' : '');
-  const hasSorter = !!(s.induct_conveyor || trackN || divertN || stype);
+  const hasSorter = !!(
+    s.induct_conveyor || trackN || divertN || stype
+    || s.sorter_name || s.induct_encoder_tag || (s.known_sorters || []).length
+  );
   if (sEl) {
     sEl.textContent = hasSorter
-      ? `${stype || 'type?'} · induct ${s.induct_conveyor || '—'} · track ${trackN} · divert ${divertN}`
+      ? `${s.sorter_name || stype || 'discovered'} · enc ${s.induct_encoder_tag || '—'} · track ${trackN} · divert ${divertN}`
+        + (s.generation_state ? ` · ${s.generation_state}` : '')
       : 'Empty — open Sorter Build';
   }
   const saw = autogenState.sawtooth || {};
   const sawEl = $('autogen-hub-sawtooth');
-  const hasSaw = !!saw.collector_conveyor;
+  const hasSaw = !!(saw.collector_conveyor || (saw.lanes || []).some((l) => l && l.conveyor));
   if (sawEl) {
     const ln = Number(saw.lane_count || (saw.lanes || []).length || 0);
     const enc = saw.collector_has_encoder === 'no'
       ? 'NO_Enc'
-      : (saw.collector_encoder || 'enc?');
+      : (saw.collector_encoder || 'UNRESOLVED');
     sawEl.textContent = hasSaw
-      ? `Collector ${saw.collector_conveyor} · enc ${enc} · ${ln} lane(s) · MRG${saw.mrg_id || '—'}`
+      ? `Collector ${saw.collector_conveyor || 'UNRESOLVED'} · enc ${enc} · ${ln} lane(s) · MRG${saw.mrg_id || '—'}`
+        + (saw.discovery_source === 'site_model' ? ' · from RUN' : '')
       : 'Empty — open Sawtooth Merge';
   }
   const convN = (wb?.conveyors || []).filter((r) => r?.include !== false).length;
@@ -697,6 +702,15 @@ async function importRunPackage(path, name) {
   try {
     await ensureAutogenWorkbookFromRun({ force: true, reason: 'RUN loaded' });
   } catch (_) { /* workbook API may be unavailable in browser-only mode */ }
+  // Canonical SiteModel → Sawtooth / Sorter / Transport editors (NO simulator button required)
+  try {
+    await applySiteModelToEditors({
+      discovery: res.discovery || null,
+      reason: 'RUN import',
+    });
+  } catch (e) {
+    log(`SiteModel→editors: ${e?.message || e}`, 'warn');
+  }
   return true;
 }
 
@@ -3234,6 +3248,311 @@ function defaultSawtoothConfig() {
   };
 }
 
+/** Derive P### collector from VFD###_AUX / VFD### motor_io. */
+function collectorFromMotorIo(motorIo) {
+  const m = String(motorIo || '').match(/^VFD(\d+[A-Z]?)/i);
+  return m ? `P${m[1]}` : '';
+}
+
+/** Map SiteModel editors.sawtooth → dashboard sawtooth_build shape. */
+function sawtoothBuildFromSiteModel(site) {
+  const ed = (site && site.editors && site.editors.sawtooth) || {};
+  const merges = ed.merges || site?.sawtooth_merges || [];
+  if (!merges.length) return null;
+  const merge = merges[0] || {};
+  const lanesSrc = merge.lanes || [];
+  const motor = merge.motor || merge.motor_io || '';
+  let collector = merge.collector_conveyor || merge.collector || '';
+  if (!collector) collector = collectorFromMotorIo(motor);
+  let encoder = merge.collector_encoder || merge.encoder || '';
+  if (!encoder && Array.isArray(site?.encoders)) {
+    const mergeName = String(merge.merge_identity || merge.normalized_name || merge.raw_name || '').toUpperCase();
+    for (const enc of site.encoders) {
+      const name = enc.raw_name || enc.normalized_name || '';
+      const assocs = enc.associations || [];
+      const hit = assocs.some((a) => {
+        const to = String(a.to || '').toUpperCase().replace(/\s+/g, '_');
+        return to && mergeName && (to === mergeName || to.replace(/_/g, ' ') === mergeName.replace(/_/g, ' '));
+      });
+      if (hit) { encoder = name; break; }
+      if (!encoder && collector) {
+        const num = collector.replace(/^P/i, '');
+        if (String(name).toUpperCase() === `ENC${num}`) { encoder = name; break; }
+      }
+    }
+  }
+  const lanes = lanesSrc.map((ln) => normalizeSawLaneRow({
+    conveyor: ln.lane_conveyor || ln.conveyor || '',
+    pe: ln.lane_pe || ln.photoeye || '',
+    jam_pe: ln.jam_pe || '',
+    merge_pe: ln.merge_pe || '',
+    has_encoder: ln.encoder ? 'yes' : 'no',
+    encoder_type: 'Enc_RIOCard',
+    encoder_tag: ln.encoder || '',
+    drive: ln.drive || ln.vfd || '',
+    motor: ln.motor || motor || '',
+    configuration_required: ln.configuration_required || [],
+  }));
+  const mrgNum = (collector.match(/(\d+)/) || [])[1] || '414';
+  const unresolved = [];
+  if (!collector) unresolved.push('collector_conveyor');
+  if (!encoder) unresolved.push('collector_encoder');
+  if (!(merge.downstream_conveyor || merge.downstream)) unresolved.push('downstream_conveyor');
+  return normalizeSawtoothConfig({
+    ...defaultSawtoothConfig(),
+    collector_conveyor: collector,
+    downstream_conveyor: merge.downstream_conveyor || merge.downstream || '',
+    collector_has_encoder: encoder ? 'yes' : 'no',
+    collector_encoder_type: 'Enc_RIOCard',
+    collector_encoder: encoder,
+    clctr_speed_fpm: Number(merge.clctr_speed_fpm) || 140,
+    lane_count: lanes.length || Number(merge.lane_count) || 0,
+    lanes,
+    mrg_id: String(mrgNum),
+    area_name: merge.area_name || '',
+    enable_track: true,
+    enable_reserve: true,
+    discovery_source: 'site_model',
+    configuration_required: unresolved,
+    merge_identity: merge.merge_identity || merge.normalized_name || merge.raw_name || '',
+  });
+}
+
+/** Map SiteModel editors.sorter → dashboard sorter_build (known fields only). */
+function sorterBuildFromSiteModel(site) {
+  const ed = (site && site.editors && site.editors.sorter) || {};
+  const sorters = ed.sorters || site?.sorters || [];
+  if (!sorters.length && !(ed.detected)) return null;
+  // Prefer a non-sawtooth sorter (e.g. CITY_LANE) when present; else first.
+  const pick = sorters.find((s) => {
+    const n = String(s.raw_name || s.normalized_name || s.sorter || '').toUpperCase();
+    return n && !n.includes('SAWTOOTH');
+  }) || sorters[0] || {};
+  const name = pick.raw_name || pick.normalized_name || pick.sorter || '';
+  const enc = pick.encoder_io || (Array.isArray(pick.encoders) ? pick.encoders[0] : '') || '';
+  const scanBosses = pick.scan_bosses || ed.scan_bosses || [];
+  const zoneLanes = pick.lane_assignments || pick.zone_lanes || ed.zone_lanes || [];
+  const tracking = [];
+  // Best-effort: scan boss lane numbers → P### tracking stubs when evidenced
+  for (const boss of scanBosses) {
+    const lane = boss.lane?.value || boss.lane || '';
+    const zone = boss.scan_zone?.value || boss.scan_zone || '';
+    if (lane && /^\d+/.test(String(lane))) {
+      tracking.push(normalizeSorterTrackRow({
+        conveyor: `P${String(lane).replace(/\D.*/, '')}`,
+        pe: '',
+        has_encoder: 'no',
+        encoder_type: 'Enc_RIOCard',
+        encoder_tag: '',
+        note: zone ? `scan_zone=${zone}` : 'from scan_boss',
+      }));
+    }
+  }
+  const cfg = {
+    ...defaultSorterConfig(),
+    sorter_type: pick.sorter_type || '',
+    sorter_name: name,
+    induct_conveyor: pick.induct_conveyor || '',
+    induct_pe: pick.induct_pe || '',
+    induct_has_encoder: enc ? 'yes' : 'no',
+    induct_encoder_type: 'Enc_RIOCard',
+    induct_encoder_tag: enc || '',
+    tracking_count: tracking.length,
+    tracking,
+    divert_count: Array.isArray(zoneLanes) ? zoneLanes.length : 0,
+    tracking_pe_count: 0,
+    tracking_pes: [],
+    discovery_source: 'site_model',
+    generation_state: pick.generation_state || ed.generation || 'CONFIGURATION_REQUIRED',
+    generation_boundary: pick.generation_boundary || '',
+    scan_zone: (scanBosses[0] && (scanBosses[0].scan_zone?.value || scanBosses[0].scan_zone)) || '',
+    known_sorters: sorters.map((s) => ({
+      name: s.raw_name || s.normalized_name || s.sorter,
+      encoder: s.encoder_io || (Array.isArray(s.encoders) ? s.encoders[0] : ''),
+      generation_state: s.generation_state || 'NOT_SUPPORTED',
+    })),
+    configuration_required: [],
+  };
+  if (!cfg.induct_conveyor) cfg.configuration_required.push('induct_conveyor');
+  if (!cfg.induct_pe) cfg.configuration_required.push('induct_pe');
+  if (!(cfg.tracking_count > 0)) cfg.configuration_required.push('tracking_conveyors');
+  return cfg;
+}
+
+/**
+ * Apply canonical SiteModel to Sawtooth / Sorter editors + workbook.
+ * Normal RUN import must never require Prefill / simulator buttons.
+ */
+async function applySiteModelToEditors({ discovery = null, reason = 'discovery' } = {}) {
+  let site = null;
+  let editors = discovery?.editors || null;
+  if (typeof fortnaAPI?.getSiteModel === 'function') {
+    try {
+      const res = await fortnaAPI.getSiteModel();
+      if (res?.success && res.site) {
+        site = res.site;
+        editors = res.editors || site.editors || editors;
+      }
+    } catch (_) { /* ignore */ }
+  }
+  if (!site && !editors) {
+    log('SiteModel→editors: no site_model yet', 'warn');
+    return { ok: false, reason: 'no_site_model' };
+  }
+  // Fresh import: drop stale localStorage demo/prefill so it cannot override RUN discovery
+  try {
+    localStorage.removeItem('fortna_sawtooth_build');
+    localStorage.removeItem('fortna_sorter_build');
+  } catch (_) { /* ignore */ }
+
+  const saw = sawtoothBuildFromSiteModel(site || { editors, sawtooth_merges: discovery?.has_sawtooth ? [{}] : [] });
+  const sorter = sorterBuildFromSiteModel(site || { editors, sorters: discovery?.has_sorter ? [{}] : [] });
+
+  const summary = {
+    machine: (site && site.machine_scope) || discovery?.machine || '',
+    transport: (site?.counts?.equipment_included)
+      || (editors?.transport?.items?.length)
+      || discovery?.equipment_count
+      || 0,
+    sawtooth: false,
+    sorter: false,
+  };
+
+  if (saw && (saw.collector_conveyor || (saw.lanes || []).some((l) => l && l.conveyor))) {
+    autogenState.sawtooth = saw;
+    persistSawtoothToWorkbook();
+    try { renderSawtoothBuild(); } catch (_) { /* ignore */ }
+    if ($('autogen-opt-sawtooth')) $('autogen-opt-sawtooth').checked = true;
+    summary.sawtooth = true;
+    const laneN = (saw.lanes || []).filter((l) => l && l.conveyor).length;
+    log(
+      `Sawtooth auto-populated from SiteModel (${reason}): collector=${saw.collector_conveyor || '—'} `
+      + `enc=${saw.collector_encoder || 'UNRESOLVED'} lanes=${laneN}`,
+      'ok',
+    );
+    if ((saw.configuration_required || []).length) {
+      log(`Sawtooth unresolved (visible): ${(saw.configuration_required || []).join(', ')}`, 'warn');
+    }
+  } else if (discovery?.has_sawtooth || (site?.sawtooth_merges || []).length) {
+    log('Sawtooth detected in SiteModel but editor mapping produced empty config — FAIL soft', 'err');
+  }
+
+  const sorterPopulated = !!(
+    sorter
+    && (
+      sorter.sorter_name
+      || sorter.induct_encoder_tag
+      || (sorter.known_sorters || []).length
+      || sorter.detected
+      || sorter.sorters_detected
+      || (sorter.encoders || []).length
+    )
+  );
+  if (sorterPopulated) {
+    // Normalize Python bridge shape → dashboard fields
+    if (!sorter.sorter_name && (site?.sorters || []).length) {
+      const pick = (site.sorters || []).find((s) => {
+        const n = String(s.raw_name || s.normalized_name || '').toUpperCase();
+        return n && !n.includes('SAWTOOTH');
+      }) || site.sorters[0];
+      sorter.sorter_name = pick.raw_name || pick.normalized_name || '';
+      if (!sorter.induct_encoder_tag) {
+        sorter.induct_encoder_tag = pick.encoder_io || (sorter.encoders || [])[0] || '';
+        if (sorter.induct_encoder_tag) sorter.induct_has_encoder = 'yes';
+      }
+      if (!sorter.generation_state) sorter.generation_state = pick.generation_state || 'NOT_SUPPORTED';
+    }
+    if (!sorter.induct_encoder_tag && (sorter.encoders || []).length) {
+      sorter.induct_encoder_tag = sorter.encoders[0];
+      sorter.induct_has_encoder = 'yes';
+    }
+    autogenState.sorter = sorter;
+    persistSorterToWorkbook();
+    try { renderSorterBuild(); } catch (_) { /* ignore */ }
+    // Do NOT auto-enable Sorter_Track pack when generation is NOT_SUPPORTED —
+    // still show discovered data; engineer enables pack when ready.
+    const gen = String(sorter.generation_state || '').toUpperCase();
+    if (gen && !gen.includes('NOT_SUPPORTED') && $('autogen-opt-sorter-track')) {
+      $('autogen-opt-sorter-track').checked = true;
+    }
+    summary.sorter = true;
+    log(
+      `Sorter auto-populated from SiteModel (${reason}): ${sorter.sorter_name || `${sorter.sorters_detected || '?'} sorter(s)`} `
+      + `enc=${sorter.induct_encoder_tag || '—'} state=${sorter.generation_state || 'PARTIAL'}`,
+      'ok',
+    );
+    if ((sorter.configuration_required || []).length) {
+      log(`Sorter unresolved (visible): ${(sorter.configuration_required || []).join(', ')}`, 'warn');
+    }
+  } else if (discovery?.has_sorter || (site?.sorters || []).length) {
+    log('Sorter detected in SiteModel but editor mapping produced empty config — FAIL soft', 'err');
+  }
+
+  // Persist workbook so Build PLC consumes the same canonical overrides
+  try {
+    if (typeof fortnaAPI?.autogenWorkbookSave === 'function' && autogenState.workbook) {
+      await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
+    }
+  } catch (e) {
+    log(`Workbook save after SiteModel apply failed: ${e?.message || e}`, 'warn');
+  }
+
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  try { updateSubsystemGenerationContract(site || discovery); } catch (_) { /* ignore */ }
+
+  if (discovery?.ok === false) {
+    log(`Discovery warning: ${discovery.error || 'failed'}`, 'warn');
+  } else if (summary.machine) {
+    log(
+      `Discovery complete · ${summary.machine} · transport≈${summary.transport}`
+      + ` · sawtooth=${summary.sawtooth ? 'YES' : 'no'} · sorter=${summary.sorter ? 'YES' : 'no'}`,
+      'ok',
+    );
+  }
+  return { ok: true, summary };
+}
+
+/** Subsystem generation contract shown on Autogen hub (what Build PLC will emit). */
+function updateSubsystemGenerationContract(siteOrDiscovery) {
+  const hub = $('autogen-compile-hub');
+  if (!hub) return;
+  let el = $('autogen-subsystem-contract');
+  if (!el) {
+    el = document.createElement('div');
+    el.id = 'autogen-subsystem-contract';
+    el.className = 'mt-3 rounded-lg border border-slate-800 bg-[#0c1219] p-3 text-[11px] space-y-1';
+    hub.appendChild(el);
+  }
+  const ui = (siteOrDiscovery && siteOrDiscovery.ui_status_summary) || {};
+  const saw = autogenState.sawtooth || {};
+  const sorter = autogenState.sorter || {};
+  const sawReady = !!(saw.collector_conveyor || (saw.lanes || []).some((l) => l && l.conveyor));
+  const sawChecked = !!$('autogen-opt-sawtooth')?.checked;
+  const sorterKnown = !!(sorter.sorter_name || sorter.known_sorters?.length || sorter.induct_encoder_tag);
+  const sorterGen = String(sorter.generation_state || '').toUpperCase();
+  const ioChecked = !!$('autogen-opt-iomap')?.checked;
+  const rows = [
+    ['TRANSPORT', 'READY'],
+    ['IO', ioChecked ? 'READY' : 'BLOCKED (checkbox off)'],
+    ['SAWTOOTH', !sawReady && !(ui.SAWTOOTH?.detected)
+      ? 'N/A'
+      : (sawReady && sawChecked ? 'READY' : (sawReady ? 'CONFIG REQUIRED (pack off)' : 'CONFIG REQUIRED'))],
+    ['SORTER', !sorterKnown && !(ui.SORTER?.detected)
+      ? 'N/A'
+      : (sorterGen.includes('NOT_SUPPORTED')
+        ? 'PARTIAL / NOT SUPPORTED (data shown)'
+        : (sorterKnown ? 'PARTIAL / CONFIG REQUIRED' : 'CONFIG REQUIRED'))],
+    ['WCS', 'NOT SUPPORTED'],
+  ];
+  el.innerHTML = `<div class="text-[10px] uppercase tracking-wider text-violet-400 font-semibold mb-1">Subsystem generation contract</div>`
+    + rows.map(([k, v]) => {
+      const tone = /READY/.test(v) && !/CONFIG|PARTIAL|BLOCKED|NOT/.test(v)
+        ? 'text-emerald-400'
+        : (/N\/A/.test(v) ? 'text-slate-500' : (/NOT SUPPORTED|BLOCKED/.test(v) ? 'text-amber-400' : 'text-cyan-300'));
+      return `<div class="flex justify-between gap-2 mono"><span class="text-slate-500">${k}</span><span class="${tone}">${v}</span></div>`;
+    }).join('');
+}
+
 function emptySawTrackPeRow() {
   return { pe: '', pls_location: 0, blocked_jam_pre: 60 };
 }
@@ -4056,6 +4375,10 @@ function wireSawtoothBuildOnce() {
   bind('saw-no-carton-check', () => { autogenState.sawtooth.no_carton_check = !!$('saw-no-carton-check').checked; });
 
   $('btn-saw-defaults-plc4')?.addEventListener('click', () => {
+    // DEV ONLY — hardcoded Greensboro demo. Normal acceptance uses SiteModel auto-populate.
+    if (!confirm('DEV ONLY: load hardcoded Greensboro PLC4 demo tags?\n\nNormal workflow: Import RUN → Sawtooth auto-populates from SiteModel.\nDo not use this for acceptance testing.')) {
+      return;
+    }
     const s = autogenState.sawtooth;
     s.collector_conveyor = 'P414';
     s.downstream_conveyor = 'P418';
@@ -4085,9 +4408,11 @@ function wireSawtoothBuildOnce() {
     s.enable_track = true;
     s.enable_reserve = true;
     s.use_gapstore = false;
+    s.discovery_source = 'dev_prefill_plc4';
     renderSawtoothBuild();
     const st = $('saw-save-status');
-    if (st) { st.textContent = 'PLC4 example filled — review then Save'; st.className = 'text-[10px] text-amber-400 mono'; }
+    if (st) { st.textContent = 'DEV demo filled — NOT for acceptance'; st.className = 'text-[10px] text-amber-400 mono'; }
+    autogenLog('DEV Prefill PLC4 demo used — acceptance requires SiteModel auto-populate from Import RUN.', 'warn');
   });
 
   $('btn-saw-save')?.addEventListener('click', async () => {
@@ -4264,7 +4589,8 @@ async function ensureAutogenWorkbookFromRun({ force = false, reason = '' } = {})
   } catch (_) { /* ignore */ }
   if (!runLoaded && !state.workspace) return false;
   if (reason) autogenLog(`Site config: scanning RUN (${reason})…`, 'info');
-  await buildAutogenWorkbook();
+  // Fresh RUN import must not merge a previous machine's workbook (CP2 rows leaking into CP4).
+  await buildAutogenWorkbook({ mergeExisting: !force });
   return !!autogenState.workbook;
 }
 
@@ -4511,7 +4837,7 @@ function switchWbTab(tab) {
   });
 }
 
-async function buildAutogenWorkbook() {
+async function buildAutogenWorkbook({ mergeExisting = true } = {}) {
   if (typeof fortnaAPI.autogenWorkbookBuild !== 'function') {
     autogenLog('Workbook API missing — relaunch Site Forge desktop app', 'warn');
     return;
@@ -4519,10 +4845,15 @@ async function buildAutogenWorkbook() {
   if (autogenState.busy) return;
   autogenState.busy = true;
   setAutogenStatus('Building workbook…', 'busy');
-  autogenLog('Building AutoGen workbook from active RUN (Inputdata auto-fill)…', 'info');
+  autogenLog(
+    mergeExisting
+      ? 'Building AutoGen workbook from active RUN (merge engineer edits)…'
+      : 'Building AutoGen workbook from active RUN (fresh — no prior-machine merge)…',
+    'info',
+  );
   let res;
   try {
-    res = await fortnaAPI.autogenWorkbookBuild({ mergeExisting: true });
+    res = await fortnaAPI.autogenWorkbookBuild({ mergeExisting: !!mergeExisting });
   } catch (e) {
     res = { success: false, message: e?.message || String(e) };
   }
@@ -4899,32 +5230,73 @@ async function runAutogenGenerate(mode) {
   if (packExtra.length) packBits.push(...packExtra);
   autogenLog(`Program pack: ${packBits.join(' + ')}`, 'info');
 
-  // Disk workbook is source of truth for Transport Apply (areas/stubs/merges).
-  // Do NOT save in-memory workbook over disk here — that previously wiped MERGE5 stubs
-  // and left Conv_Fast with only P55.
-  if (mode === 'run' && typeof fortnaAPI.autogenWorkbookLoad === 'function') {
-    try {
-      const full = await fortnaAPI.autogenWorkbookLoad();
-      if (full?.success && full.workbook) {
-        const disk = full.workbook;
-        autogenState.workbook = disk;
-        if (Array.isArray(disk.merges_2to1)) autogenState.merges_2to1 = disk.merges_2to1;
-        const stubNames = (disk.conveyors || [])
-          .filter((r) => r && (r.transport_build || r.source === 'transport_build_graph'))
-          .map((r) => r.conveyor)
-          .filter(Boolean);
-        const mergeN = Array.isArray(disk.merges_2to1) ? disk.merges_2to1.length : 0;
-        if (stubNames.length || mergeN) {
-          autogenLog(
-            `Transport workbook on disk: ${stubNames.length} stub/bound row(s)`
-              + (stubNames.length ? ` [${stubNames.slice(0, 12).join(', ')}${stubNames.length > 12 ? '…' : ''}]` : '')
-              + (mergeN ? ` · ${mergeN} merge(s)` : ''),
-            'ok',
-          );
-        }
-        try { if (typeof renderWorkbook === 'function') renderWorkbook(); } catch (_) { /* ignore */ }
+  // One canonical workbook: merge disk Transport Apply with in-memory Sawtooth/Sorter.
+  // Previously we reloaded disk and dropped SiteModel-populated sawtooth_build/sorter_build,
+  // so Build PLC emitted Transport-only L5X even after Import discovery.
+  if (mode === 'run') {
+    const sawCfg = autogenState.sawtooth || {};
+    const sawConfigured = !!(
+      sawCfg.collector_conveyor
+      || (sawCfg.lanes || []).some((l) => l && l.conveyor)
+    );
+    if (sawConfigured) {
+      persistSawtoothToWorkbook();
+      if ($('autogen-opt-sawtooth') && !$('autogen-opt-sawtooth').checked) {
+        $('autogen-opt-sawtooth').checked = true;
+        if (!includePrograms.includes('Sawtooth_Merge')) includePrograms.push('Sawtooth_Merge');
+        autogenLog('Sawtooth populated → auto-checked Program pack · Sawtooth Merge.', 'ok');
       }
-    } catch (_) { /* keep memory workbook */ }
+    }
+    if (sorterConfigured) persistSorterToWorkbook();
+    try { updateSubsystemGenerationContract(); } catch (_) { /* ignore */ }
+
+    if (typeof fortnaAPI.autogenWorkbookLoad === 'function') {
+      try {
+        const full = await fortnaAPI.autogenWorkbookLoad();
+        if (full?.success && full.workbook) {
+          const disk = full.workbook;
+          // Preserve transport rows/merges from disk; keep SiteModel editor overlays from memory.
+          const merged = {
+            ...disk,
+            sawtooth_build: (autogenState.workbook && autogenState.workbook.sawtooth_build)
+              || disk.sawtooth_build
+              || null,
+            sorter_build: (autogenState.workbook && autogenState.workbook.sorter_build)
+              || disk.sorter_build
+              || null,
+          };
+          if (sawConfigured) merged.sawtooth_build = { ...autogenState.sawtooth };
+          if (sorterConfigured) merged.sorter_build = { ...autogenState.sorter };
+          autogenState.workbook = merged;
+          if (Array.isArray(disk.merges_2to1)) autogenState.merges_2to1 = disk.merges_2to1;
+          const stubNames = (disk.conveyors || [])
+            .filter((r) => r && (r.transport_build || r.source === 'transport_build_graph'))
+            .map((r) => r.conveyor)
+            .filter(Boolean);
+          const mergeN = Array.isArray(disk.merges_2to1) ? disk.merges_2to1.length : 0;
+          const convN = (disk.conveyors || []).length;
+          if (stubNames.length || mergeN || convN) {
+            autogenLog(
+              `Canonical workbook: ${convN} conveyor row(s)`
+                + (stubNames.length ? ` · ${stubNames.length} transport stub(s)` : '')
+                + (mergeN ? ` · ${mergeN} merge(s)` : '')
+                + (merged.sawtooth_build?.collector_conveyor ? ` · sawtooth ${merged.sawtooth_build.collector_conveyor}` : '')
+                + (merged.sorter_build?.sorter_name ? ` · sorter ${merged.sorter_build.sorter_name}` : ''),
+              'ok',
+            );
+          }
+          try { if (typeof renderWorkbook === 'function') renderWorkbook(); } catch (_) { /* ignore */ }
+        }
+      } catch (_) { /* keep memory workbook */ }
+    }
+    // Persist merged workbook so Electron from-run --workbook matches UI editors
+    try {
+      if (typeof fortnaAPI.autogenWorkbookSave === 'function' && autogenState.workbook) {
+        await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
+      }
+    } catch (e) {
+      autogenLog(`Workbook save before generate failed: ${e?.message || e}`, 'warn');
+    }
   }
 
   let res;
@@ -4937,12 +5309,10 @@ async function runAutogenGenerate(mode) {
       noSys,
       includeIoMap,
       noIoMap: !includeIoMap,
-      // Path only — Electron resolves stable workspace/autogen_workbook.json.
-      // Avoids passing a stale in-memory object that overwrites Transport Apply.
-      workbook: undefined,
+      // Pass merged workbook so Build PLC == editor state (one canonical model).
+      workbook: (mode === 'run' && autogenState.workbook) ? autogenState.workbook : undefined,
       sorterBuild: sorterTrackChecked ? sorterCfg : undefined,
-    });
-  } catch (e) {
+    });  } catch (e) {
     res = { success: false, message: e?.message || String(e) };
   }
   autogenState.busy = false;

@@ -7,6 +7,10 @@ conveyors/PEs/IO to the controller. SiteModel optionally enriches:
   - engineer area_id overrides when present
   - encoder list cross-check
 
+Also projects SiteModel → dashboard workbook shapes:
+  - site_model_to_sawtooth_build(site)
+  - site_model_to_sorter_build(site)
+
 SOURCE FIREWALL: RUN + SiteModel (from RUN) + overrides only.
 Never imports finished PLC / answer-sheet modules.
 """
@@ -17,6 +21,235 @@ from typing import Any
 
 from fortna_autogen import AutogenInput, load_from_run
 from fortna_site_model import INCLUDED, _clean, normalize_name
+
+
+def _mrg_id_from_collector(collector: str | None, motor_io: str | None = None) -> str:
+    for raw in (collector, motor_io):
+        m = re.search(r"(\d{2,4}[A-Za-z]?)", str(raw or ""))
+        if m:
+            return m.group(1)
+    return ""
+
+
+def site_model_to_sawtooth_build(site: dict[str, Any] | None) -> dict[str, Any]:
+    """Project SiteModel → dashboard `sawtooth_build` shape (best-effort, no invent).
+
+    Prefers enriched `editors.sawtooth.merges`; falls back to `sawtooth_merges`.
+    Unresolved collector/encoder/downstream stay empty and listed in
+    `configuration_required`.
+    """
+    site = site or {}
+    editor = ((site.get("editors") or {}).get("sawtooth")) or {}
+    merges = list(editor.get("merges") or [])
+    needs_enrich = (not merges) or any(
+        not (m.get("collector_conveyor") and (m.get("collector_encoder") or m.get("encoder")))
+        for m in merges
+        if isinstance(m, dict)
+    )
+    if needs_enrich:
+        # Re-derive collector/encoder even when a stale editors.sawtooth is cached
+        try:
+            from fortna_knowledge_enrich import build_sawtooth_editor_v2
+
+            editor = build_sawtooth_editor_v2(site)
+            merges = list(editor.get("merges") or [])
+        except Exception:
+            if not merges:
+                merges = []
+    if not merges:
+        # Minimal fallback from raw sawtooth_merges
+        for m in site.get("sawtooth_merges") or []:
+            if (m.get("inclusion") or INCLUDED) not in {INCLUDED, "INCLUDED", None}:
+                if m.get("inclusion") and m.get("inclusion") != INCLUDED:
+                    continue
+            merges.append(
+                {
+                    "merge_identity": m.get("raw_name") or m.get("normalized_name"),
+                    "motor": m.get("motor_io"),
+                    "lanes": [
+                        {
+                            "lane_conveyor": ln.get("conveyor"),
+                            "lane_pe": ln.get("photoeye"),
+                            "drive": ln.get("drive") or ln.get("vfd"),
+                        }
+                        for ln in (m.get("lanes") or [])
+                        if isinstance(ln, dict)
+                    ],
+                    "collector_conveyor": None,
+                    "collector_encoder": None,
+                    "downstream_conveyor": None,
+                    "configuration_required": ["collector conveyor", "collector encoder"],
+                }
+            )
+
+    primary = merges[0] if merges else {}
+    lanes_out: list[dict[str, Any]] = []
+    for ln in primary.get("lanes") or []:
+        if not isinstance(ln, dict):
+            continue
+        lanes_out.append(
+            {
+                "conveyor": ln.get("lane_conveyor") or ln.get("conveyor") or "",
+                "pe": ln.get("lane_pe") or ln.get("photoeye") or ln.get("pe") or "",
+                "jam_pe": ln.get("jam_pe") or "",
+                "merge_pe": ln.get("merge_pe") or "",
+                "has_encoder": "yes" if ln.get("encoder") else "no",
+                "encoder_type": "Enc_RIOCard",
+                "encoder_tag": ln.get("encoder") or "",
+            }
+        )
+
+    collector = primary.get("collector_conveyor") or ""
+    encoder = primary.get("collector_encoder") or primary.get("encoder") or ""
+    downstream = primary.get("downstream_conveyor") or ""
+    cfg_req = list(
+        primary.get("configuration_required")
+        or primary.get("config_required")
+        or []
+    )
+    if not collector and "collector conveyor" not in cfg_req:
+        cfg_req.append("collector conveyor")
+    if not encoder and "collector encoder" not in cfg_req:
+        cfg_req.append("collector encoder")
+    if not downstream and "downstream conveyor" not in cfg_req:
+        cfg_req.append("downstream conveyor")
+
+    motor = primary.get("motor") or ""
+    return {
+        "collector_conveyor": collector or "",
+        "downstream_conveyor": downstream or "",
+        "collector_has_encoder": "yes" if encoder else "no",
+        "collector_encoder_type": "Enc_RIOCard",
+        "collector_encoder": encoder or "",
+        "clctr_speed_fpm": 140,
+        "lane_count": len(lanes_out) or int(primary.get("lane_count") or 0),
+        "lanes": lanes_out,
+        "mrg_id": _mrg_id_from_collector(collector, motor),
+        "motor_io": motor,
+        "merge_identity": primary.get("merge_identity") or "",
+        "merges": merges,
+        "configuration_required": cfg_req,
+        "source": "site_model",
+        "detected": bool(merges),
+    }
+
+
+def site_model_to_sorter_build(site: dict[str, Any] | None) -> dict[str, Any]:
+    """Project SiteModel → dashboard `sorter_build` shape (best-effort).
+
+    Uses `editors.sorter` / `sorters` / research hints. Does not invent divert maps.
+    Unresolved fields are listed in `configuration_required`.
+    """
+    site = site or {}
+    editor = ((site.get("editors") or {}).get("sorter")) or {}
+    sorters = list(editor.get("sorters") or site.get("sorters") or [])
+    cfg_req: list[str] = [
+        "divert_map",
+        "conveyor_tracking_chain",
+    ]
+    primary = None
+    for s in sorters:
+        if not isinstance(s, dict):
+            continue
+        # Prefer non-sawtooth shoe/popup sorter rows when present
+        name = str(s.get("raw_name") or s.get("normalized_name") or s.get("sorter") or "")
+        stype = str(s.get("sorter_type") or s.get("type") or "").lower()
+        if "sawtooth" in name.lower() and not stype:
+            continue
+        primary = s
+        break
+    if primary is None and sorters:
+        primary = sorters[0] if isinstance(sorters[0], dict) else None
+
+    encoders: list[str] = []
+    if primary:
+        for e in primary.get("encoders") or []:
+            if isinstance(e, str) and e.strip():
+                encoders.append(e.strip())
+            elif isinstance(e, dict):
+                n = _clean(e.get("raw_name") or e.get("normalized_name") or e.get("encoder") or "")
+                if n:
+                    encoders.append(n)
+        enc_io = _clean(primary.get("encoder_io") or "")
+        if enc_io and enc_io not in encoders:
+            encoders.append(enc_io)
+    if not encoders:
+        for e in site.get("encoders") or []:
+            if e.get("inclusion") and e.get("inclusion") != INCLUDED:
+                continue
+            n = _clean(e.get("raw_name") or e.get("normalized_name") or "")
+            if n:
+                encoders.append(n)
+            if len(encoders) >= 3:
+                break
+
+    induct = ""
+    induct_pe = ""
+    tracking: list[dict[str, Any]] = []
+    if primary:
+        induct = _clean(
+            primary.get("induct_conveyor")
+            or primary.get("induct")
+            or ""
+        )
+        induct_pe = _clean(primary.get("induct_pe") or "")
+        for row in primary.get("tracking") or primary.get("lane_assignments") or []:
+            if not isinstance(row, dict):
+                continue
+            conv = _clean(row.get("conveyor") or row.get("name") or "")
+            if not conv:
+                continue
+            tracking.append(
+                {
+                    "conveyor": conv,
+                    "pe": _clean(row.get("pe") or row.get("photoeye") or ""),
+                    "has_encoder": "yes" if row.get("encoder") or row.get("has_encoder") == "yes" else "no",
+                    "encoder_type": row.get("encoder_type") or "Enc_RIOCard",
+                    "encoder_tag": _clean(row.get("encoder_tag") or row.get("encoder") or ""),
+                }
+            )
+
+    if not induct:
+        cfg_req.append("induct_conveyor")
+    if not tracking:
+        cfg_req.append("tracking_conveyors")
+    divert_count = 0
+    if primary:
+        try:
+            divert_count = int(primary.get("divert_count") or 0)
+        except (TypeError, ValueError):
+            divert_count = 0
+    if divert_count <= 0:
+        cfg_req.append("divert_count")
+
+    sorter_type = ""
+    if primary:
+        sorter_type = str(primary.get("sorter_type") or primary.get("type") or "")
+    leaves = editor.get("generation_leaves") or {}
+
+    return {
+        "sorter_type": sorter_type,
+        "induct_conveyor": induct,
+        "induct_pe": induct_pe,
+        "induct_has_encoder": "yes" if encoders else "no",
+        "induct_encoder_type": "Enc_RIOCard",
+        "induct_encoder_tag": encoders[0] if encoders else "",
+        "tracking_count": len(tracking),
+        "tracking": tracking,
+        "divert_count": divert_count,
+        "tracking_pe_count": 0,
+        "tracking_pes": [],
+        "encoders": encoders,
+        "configuration_required": cfg_req,
+        "generation_leaves": leaves,
+        "sorters_detected": len(sorters),
+        "source": "site_model",
+        "detected": bool(sorters),
+        "note": (
+            "Best-effort bridge from SiteModel/editors.sorter; divert map and "
+            "tracking chain remain CONFIGURATION_REQUIRED unless engineer-provided."
+        ),
+    }
 
 
 def bridge_site_model_to_autogen(

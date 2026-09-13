@@ -1,0 +1,27 @@
+{
+  "generated_at": "2026-09-13T00:11:59.966148+00:00",
+  "chain": [
+    "Electron Import RUN (ipc import-run)",
+    "apply_recipe.py import \u2192 workspace/active/RUN",
+    "fortna_run_workspace_discover.py \u2192 exports/run-discovery/<MACHINE>/site_model.json",
+    "copy \u2192 workspace/active/site_model.json",
+    "UI applySiteModelToEditors (Sawtooth/Sorter) + workbook save",
+    "fortna_workbook.py build \u2192 workspace/autogen_workbook.json",
+    "UI Build PLC \u2192 ipc autogen-generate from-run --with-io-map --workbook",
+    "fortna_autogen.py L5X (+ assertions)"
+  ],
+  "loss_points_fixed": [
+    "SiteModel discovery result was ignored by dashboard editors",
+    "Prefill PLC4 demo was required to fill Sawtooth",
+    "Build PLC reloaded disk workbook and dropped in-memory sawtooth_build/sorter_build",
+    "Discovery always wrote exports/run-discovery (cross-machine overwrite)"
+  ],
+  "canonical_model": [
+    "workspace/active/site_model.json",
+    "workspace/autogen_workbook.json (conveyors + sawtooth_build + sorter_build)"
+  ],
+  "parallel_paths_bridged": [
+    "localStorage fortna_sawtooth_build / fortna_sorter_build cleared on import",
+    "DEV Prefill PLC4 demoted \u2014 not required for acceptance"
+  ]
+}

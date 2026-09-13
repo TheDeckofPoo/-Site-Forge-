@@ -368,7 +368,7 @@ def build_workbook_from_run(
             ],
         },
     }
-    # Preserve Transport Build / Merge panel + sorter config across RUN rebuilds
+    # Preserve Transport Build / Merge panel + sorter/sawtooth config across RUN rebuilds
     if existing:
         if isinstance(existing.get("merges_2to1"), list):
             wb["merges_2to1"] = existing["merges_2to1"]
@@ -376,6 +376,10 @@ def build_workbook_from_run(
             wb["sorter_build"] = existing["sorter_build"]
         elif isinstance(existing.get("sorter"), dict):
             wb["sorter_build"] = existing["sorter"]
+        if isinstance(existing.get("sawtooth_build"), dict):
+            wb["sawtooth_build"] = existing["sawtooth_build"]
+        elif isinstance(existing.get("sawtooth"), dict):
+            wb["sawtooth_build"] = existing["sawtooth"]
     return wb
 
 

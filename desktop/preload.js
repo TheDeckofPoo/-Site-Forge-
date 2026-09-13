@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   getDocIndex: () => ipcRenderer.invoke('get-doc-index'),
   reindexDocs: () => ipcRenderer.invoke('reindex-docs'),
   importRun: (path) => ipcRenderer.invoke('import-run', path),
+  getSiteModel: () => ipcRenderer.invoke('get-site-model'),
   getWorkspace: () => ipcRenderer.invoke('get-workspace'),
   clearWorkspace: () => ipcRenderer.invoke('clear-workspace'),
   listConveyors: () => ipcRenderer.invoke('list-conveyors'),

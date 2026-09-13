@@ -370,16 +370,52 @@ function createWindow() {
           if (m) machine = m[1].toUpperCase();
         } catch (_) { /* ignore */ }
         if (!machine && meta.controller) machine = String(meta.controller);
+        if (!machine && meta.machine) machine = String(meta.machine).toUpperCase();
         const discoverScript = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_run_workspace_discover.py');
         if (fs.existsSync(discoverScript) && fs.existsSync(runDir)) {
-          // Machine defaults from project.cfg MACHINENAME when omitted.
-          const dArgs = [discoverScript, '--run-dir', runDir, '--out', path.join(REPO_ROOT, 'exports', 'run-discovery')];
+          // Per-machine discovery output — never overwrite CP2 with CP4 (or vice versa).
+          const safeMachine = String(machine || 'UNKNOWN').replace(/[^\w.-]+/g, '_');
+          const discoveryOut = path.join(REPO_ROOT, 'exports', 'run-discovery', safeMachine);
+          fs.mkdirSync(discoveryOut, { recursive: true });
+          const dArgs = [discoverScript, '--run-dir', runDir, '--out', discoveryOut];
           if (machine) dArgs.push('--machine', machine);
           const dr = await runPythonAsync(dArgs);
           if (dr.ok) {
             try { discovery = JSON.parse(dr.stdout); } catch (_) { discovery = { ok: true, raw: (dr.stdout || '').slice(0, 500) }; }
           } else {
             discovery = { ok: false, error: dr.error || 'discovery failed' };
+          }
+          // Canonical active SiteModel — editors + Build PLC must read the same file.
+          const siteModelSrc = path.join(discoveryOut, 'site_model.json');
+          const siteModelDst = path.join(ACTIVE_DIR, 'site_model.json');
+          if (fs.existsSync(siteModelSrc)) {
+            try {
+              fs.mkdirSync(ACTIVE_DIR, { recursive: true });
+              fs.copyFileSync(siteModelSrc, siteModelDst);
+              // Also keep a stable latest pointer for tools that still look at exports/run-discovery/
+              const latestDir = path.join(REPO_ROOT, 'exports', 'run-discovery');
+              fs.mkdirSync(latestDir, { recursive: true });
+              fs.copyFileSync(siteModelSrc, path.join(latestDir, 'site_model.json'));
+              let site = null;
+              try { site = JSON.parse(fs.readFileSync(siteModelSrc, 'utf8')); } catch (_) { site = null; }
+              discovery = discovery && typeof discovery === 'object' ? discovery : { ok: true };
+              discovery.ok = discovery.ok !== false;
+              discovery.machine = machine || (site && site.machine_scope) || '';
+              discovery.out_dir = discoveryOut;
+              discovery.site_model_path = siteModelDst;
+              discovery.counts = (site && site.counts) || discovery.counts || null;
+              discovery.ui_status_summary = (site && site.ui_status_summary) || null;
+              discovery.editors = (site && site.editors) || null;
+              discovery.has_sawtooth = !!(site && (site.sawtooth_merges || []).length);
+              discovery.has_sorter = !!(site && (site.sorters || []).length);
+              discovery.equipment_count = site
+                ? ((site.counts && site.counts.equipment_included)
+                  || (Array.isArray(site.equipment) ? site.equipment.length : 0))
+                : 0;
+            } catch (copyErr) {
+              if (!discovery) discovery = { ok: true };
+              discovery.site_model_copy_error = copyErr.message || String(copyErr);
+            }
           }
         }
       } catch (de) {
@@ -388,6 +424,30 @@ function createWindow() {
       return { success: true, meta, discovery };
     } catch (e) {
       return { success: false, message: e.message };
+    }
+  });
+
+  /** Canonical SiteModel for the active RUN (workspace/active/site_model.json). */
+  ipcMain.handle('get-site-model', async () => {
+    try {
+      const primary = path.join(ACTIVE_DIR, 'site_model.json');
+      const fallback = path.join(REPO_ROOT, 'exports', 'run-discovery', 'site_model.json');
+      const p = fs.existsSync(primary) ? primary : (fs.existsSync(fallback) ? fallback : null);
+      if (!p) {
+        return { success: false, message: 'No site_model.json — import a RUN first.' };
+      }
+      const site = JSON.parse(fs.readFileSync(p, 'utf8'));
+      return {
+        success: true,
+        path: p,
+        site,
+        editors: site.editors || null,
+        ui_status_summary: site.ui_status_summary || null,
+        counts: site.counts || null,
+        machine: site.machine_scope || site.machine || '',
+      };
+    } catch (e) {
+      return { success: false, message: e.message || String(e) };
     }
   });
 

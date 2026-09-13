@@ -568,6 +568,115 @@ def build_transport_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _vfd_base_token(name: str) -> str:
+    m = re.match(r"^(VFD\d+[A-Z]?)", (name or "").upper())
+    return m.group(1) if m else (name or "").upper()
+
+
+def _p_tag_from_vfd_token(name: str) -> str:
+    """VFD414_AUX / VFD414 → P414 (digits + optional letter)."""
+    m = re.match(r"^VFD[\s\-_]*(\d{2,4}[A-Za-z]?)", name or "", re.I)
+    return ("P" + m.group(1).upper()) if m else ""
+
+
+def _equipment_name_set(site: dict[str, Any]) -> set[str]:
+    names: set[str] = set()
+    for eq in site.get("equipment") or []:
+        for key in ("raw_name", "normalized_name"):
+            n = _clean(eq.get(key) or "")
+            if n:
+                names.add(n.upper())
+                names.add(normalize_name(n))
+    return names
+
+
+def _derive_collector_conveyor(site: dict[str, Any], merge: dict[str, Any]) -> str | None:
+    """Derive collector P-tag from motor_io when that equipment exists."""
+    motor = _clean(merge.get("motor_io") or merge.get("motor") or "")
+    if not motor:
+        return None
+    candidate = _p_tag_from_vfd_token(motor)
+    if not candidate:
+        return None
+    eq_names = _equipment_name_set(site)
+    if candidate.upper() in eq_names or normalize_name(candidate) in eq_names:
+        return candidate
+    return None
+
+
+def _derive_collector_encoder(site: dict[str, Any], merge: dict[str, Any]) -> str | None:
+    """Encoder associated to merge, or ENC### matching VFD### base."""
+    merge_name = _clean(merge.get("raw_name") or merge.get("normalized_name") or "")
+    merge_u = merge_name.upper()
+    motor = _clean(merge.get("motor_io") or merge.get("motor") or "")
+    vfd_base = _vfd_base_token(motor) if motor else ""
+    digits = ""
+    m_dig = re.match(r"^VFD(\d+[A-Z]?)$", vfd_base)
+    if m_dig:
+        digits = m_dig.group(1)
+
+    for enc in site.get("encoders") or []:
+        enc_name = _clean(enc.get("raw_name") or enc.get("normalized_name") or "")
+        if not enc_name:
+            continue
+        for assoc in enc.get("associations") or []:
+            if not isinstance(assoc, dict):
+                continue
+            atype = str(assoc.get("type") or assoc.get("kind") or "")
+            to = _clean(assoc.get("to") or "")
+            if atype in {
+                "encoder_to_saw_merge_via_motor_io",
+                "encoder_jamzone_sawtooth",
+            } and to.upper().replace(" ", "_") in {merge_u, merge_u.replace(" ", "_")}:
+                return enc_name
+            if merge_u and merge_u in to.upper().replace(" ", "_"):
+                return enc_name
+        # ENC414 ↔ VFD414
+        if digits and re.match(rf"^ENC{re.escape(digits)}$", enc_name, re.I):
+            return enc_name
+        enable = _clean(enc.get("enable") or "")
+        if vfd_base and _vfd_base_token(enable) == vfd_base:
+            return enc_name
+    return None
+
+
+def _derive_downstream_conveyor(
+    site: dict[str, Any],
+    collector: str | None,
+) -> str | None:
+    """Best-effort downstream from motor_chain order after collector."""
+    if not collector:
+        return None
+    coll_n = normalize_name(collector)
+    eq_names = _equipment_name_set(site)
+    for ch in site.get("motor_chains") or []:
+        order = [normalize_name(x) for x in (ch.get("order") or ch.get("members") or [])]
+        if coll_n not in order:
+            continue
+        idx = order.index(coll_n)
+        for nxt in order[idx + 1 :]:
+            if not nxt or nxt == coll_n:
+                continue
+            if nxt.upper().startswith("VFD") or nxt.upper().startswith("MTR"):
+                continue
+            if nxt.upper() in eq_names or nxt in eq_names:
+                # Prefer original casing from chain
+                for raw in ch.get("order") or ch.get("members") or []:
+                    if normalize_name(raw) == nxt:
+                        return _clean(raw) or nxt
+                return nxt
+    # Transport graph edges (from → to)
+    tr = site.get("transport") or {}
+    for edge in tr.get("edges") or []:
+        if not isinstance(edge, dict):
+            continue
+        frm = normalize_name(edge.get("from") or edge.get("source") or edge.get("a") or "")
+        to = _clean(edge.get("to") or edge.get("target") or edge.get("b") or "")
+        if frm == coll_n and to:
+            return to
+    return None
+
+
 def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
     merges = site.get("sawtooth_merges") or []
     capability_matrix = {
@@ -588,8 +697,13 @@ def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
     cfg_required = 0
     resolved = 0
     for m in merges:
+        collector = _derive_collector_conveyor(site, m)
+        collector_encoder = _derive_collector_encoder(site, m)
+        downstream = _derive_downstream_conveyor(site, collector)
+        merge_cfg_required: list[str] = list(m.get("config_required") or [])
         lanes = []
         for ln in m.get("lanes") or []:
+            lane_encoder = ln.get("encoder") or collector_encoder or m.get("encoder")
             lane = {
                 "lane_identity": ln.get("name"),
                 "lane_conveyor": ln.get("conveyor"),
@@ -598,10 +712,10 @@ def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
                 "reserve_eye": ln.get("reserve_eye") or ln.get("reserve"),
                 "motor": ln.get("motor") or m.get("motor_io"),
                 "drive": ln.get("drive") or ln.get("vfd"),
-                "encoder": ln.get("encoder") or m.get("encoder"),
-                "collector": ln.get("collector"),
-                "slice_time": ln.get("slice_time") or m.get("slice_time"),
-                "reserve_time": ln.get("reserve_time") or m.get("reserve_time"),
+                "encoder": lane_encoder,
+                "collector": ln.get("collector") or collector,
+                "slice_time": ln.get("slice_time") or m.get("slice_time") or m.get("slice_seconds"),
+                "reserve_time": ln.get("reserve_time") or m.get("reserve_time") or m.get("reserve_seconds"),
                 "enable_delay": ln.get("enable_delay"),
                 "reservation_mode": ln.get("reservation_mode") or m.get("reservation_mode"),
                 "shifter_config": ln.get("shifter_config"),
@@ -629,6 +743,22 @@ def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
                 else:
                     resolved += 1
             lanes.append(lane)
+        for field, label in (
+            ("collector_conveyor", "collector conveyor"),
+            ("collector_encoder", "collector encoder"),
+            ("downstream_conveyor", "downstream conveyor"),
+        ):
+            val = {
+                "collector_conveyor": collector,
+                "collector_encoder": collector_encoder,
+                "downstream_conveyor": downstream,
+            }[field]
+            if not val:
+                if label not in merge_cfg_required:
+                    merge_cfg_required.append(label)
+                cfg_required += 1
+            else:
+                resolved += 1
         items.append(
             {
                 "merge_identity": m.get("raw_name") or m.get("normalized_name"),
@@ -636,10 +766,14 @@ def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
                 "lane_count": len(lanes),
                 "lanes": lanes,
                 "motor": m.get("motor_io"),
-                "encoder": m.get("encoder"),
+                "encoder": collector_encoder or m.get("encoder"),
+                "collector_conveyor": collector,
+                "collector_encoder": collector_encoder,
+                "downstream_conveyor": downstream,
                 "provenance": m.get("provenance"),
                 "confidence": m.get("confidence"),
-                "config_required": m.get("config_required") or [],
+                "config_required": merge_cfg_required,
+                "configuration_required": list(merge_cfg_required),
             }
         )
     total = max(resolved + cfg_required, 1)
@@ -650,7 +784,7 @@ def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
         "capability_matrix": capability_matrix,
         "configuration_resolved_pct": round(100.0 * resolved / total, 1),
         "engineer_decisions": cfg_required,
-        "note": "Unknowns stay CONFIGURATION REQUIRED; collector tracking remains modeled",
+        "note": "Unknowns stay CONFIGURATION REQUIRED; collector/encoder derived from motor_io when equipment exists",
     }
 
 
