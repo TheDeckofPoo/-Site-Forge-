@@ -2488,12 +2488,30 @@ def _build_sys_comm_program_xml(
         bm = re.search(r"<Program\b[^>]*>(.*?)</Program>", sys_pack["program_xml"], re.S)
         sys_prog_body = bm.group(1) if bm else ""
         # Merge controller/context tags needed by NTP / System_Logic (SNTP_*, Sys_AOI, …)
+        _sntp_ok = (
+            "AOI_TIME_ADD" in library_text
+            and "AOI_TIME_DIFFERENCE" in library_text
+            and "AOI_SNTP_QUERY" in (sys_pack.get("aois_xml") or library_text)
+        )
         for block in sys_pack.get("tags") or []:
             # Site-stamp System_UDT instance names inside tag XML too
             block = _cookie_cutter_site_system(block, project_name=proj)
             # Skip if tag name already present
             nm = re.search(r'Tag Name="([^"]+)"', block)
-            if nm and nm.group(1) in seen_tag_names:
+            if not nm:
+                continue
+            tname = nm.group(1)
+            if tname in seen_tag_names:
+                continue
+            # Skip broken SNTP tags when AOI deps are incomplete
+            if (not _sntp_ok) and (
+                tname.startswith("SNTP_")
+                or "SNTP" in tname
+                or tname in ("AOI_SNTP_QUERY",)
+            ):
+                continue
+            # Never import MESSAGE tags with ConnectionPath to missing modules
+            if (not _sntp_ok) and tname.startswith("SNTP_MSG_"):
                 continue
             _add_tag_block(block)
 
@@ -2702,18 +2720,26 @@ def _build_sys_comm_program_xml(
         for i, (dev, parent) in enumerate(devices):
             g = (i // 10) + 1
             dsafe = _safe(dev)
+            # Comm_UDT must NOT reuse module names (CP2RIO0_0, PLC2_ENET1, …).
+            # Studio creates AB: module tags for those names → Data type mismatch
+            # if we also emit Comm_UDT with the same Tag Name.
+            comm_tag = f"{dsafe}_Comm"
             aoi_tag = f"{dsafe}_CommLoss_AOI"
-            _ensure_comm_udt(dsafe)
-            parent_arg = _safe(parent) if parent else "NO_CommDev"
-            if parent_arg != "NO_CommDev":
-                _ensure_comm_udt(parent_arg)
+            _ensure_comm_udt(comm_tag)
+            if parent:
+                parent_comm = f"{_safe(parent)}_Comm"
+                _ensure_comm_udt(parent_comm)
+                parent_arg = parent_comm
+            else:
+                parent_arg = "NO_CommDev"
+                _ensure_comm_udt("NO_CommDev")
             _ensure_aoi_comm(aoi_tag)
             info_read = "DeviceInfo_Read" if parent is None else "0"
             reset_arg = f"{reset_udt}.Reset"
             # Only emit live AOI call when backing AOI tag was successfully cloned
-            if safe_emit and aoi_tag in seen_tag_names and dsafe in seen_tag_names:
+            if safe_emit and aoi_tag in seen_tag_names and comm_tag in seen_tag_names:
                 text = (
-                    f"AOI_CommDiag({aoi_tag},{parent_arg},{dsafe},{dsafe},"
+                    f"AOI_CommDiag({aoi_tag},{parent_arg},{comm_tag},{comm_tag},"
                     f"GET_Firmware,GET_MACID,MACID_Bytes,Firmware_Bytes,{info_read},"
                     f"{reset_arg},CommsDiag_Group{g}.Index);"
                 )
@@ -3103,12 +3129,27 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     if "NO_PS" not in seen_tag_names:
         ps_block = extract_tag_block(library_text, "NO_PS")
         if ps_block:
+            # Always drop L5K for PS_UDT — Studio warns/fails on structure L5K blobs.
+            ps_block = re.sub(
+                r'<Data Format="L5K">.*?</Data>\s*',
+                "",
+                ps_block,
+                count=1,
+                flags=re.S,
+            )
+            if "<Structure" not in ps_block:
+                ps_block = re.sub(
+                    r"</Tag>\s*$",
+                    '<Data Format="Decorated"><Structure DataType="PS_UDT"/></Data></Tag>',
+                    ps_block,
+                    count=1,
+                )
             _add_tag_block(ps_block)
         else:
+            # Decorated Structure only — L5K blob for PS_UDT often fails Studio import.
             _add_tag_block(
                 '<Tag Name="NO_PS" TagType="Base" DataType="PS_UDT" Constant="false" '
                 'ExternalAccess="Read/Write">'
-                '<Data Format="L5K"><![CDATA[[[0],[[0,0,0],0],0]]]></Data>'
                 '<Data Format="Decorated"><Structure DataType="PS_UDT"/></Data></Tag>'
             )
 
@@ -4528,7 +4569,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             if not aent_tmpl:
                 continue
             parent_lib_name = EIP_PARENT_TEMPLATE.get(family, "IO_1N90")
-            bus_size = EIP_PARENT_BUS_SIZE.get(family, 8)
+            bus_size = int(EIP_PARENT_BUS_SIZE.get(family, 8) or 8)
             parent_cat = EIP_PARENT_CATALOG.get(family, "1794-AENT")
             # Parent AENT — clone library template (1794 Flex or 1734 POINT)
             block = aent_tmpl
@@ -4551,15 +4592,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 block,
                 count=1,
             )
-            block = re.sub(
-                r'(<Bus Size=")[^"]*("/>)',
-                rf'\g<1>{bus_size}\2',
-                block,
-                count=1,
-            )
-            extra_mods.append(block)
-            eip_module_names.append(rio_name)
-
+            # Resolve child port addresses first so Bus Size can cover max slot.
+            # Studio: valid Addresses are 0 .. BusSize-1. Emitting Address=8 with
+            # Bus Size=8 fails ("Slot out of range for current chassis size").
+            prepared_kids: list[tuple[dict, str, int, str]] = []
+            max_addr = -1
             for c in kids:
                 mt = (c.get("type") or "").strip()
                 tmpl = child_tmpls.get(mt)
@@ -4576,6 +4613,23 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     )
                 except (TypeError, ValueError):
                     port_addr = int(c.get("flex_slot") or 0)
+                if port_addr < 0:
+                    port_addr = 0
+                max_addr = max(max_addr, port_addr)
+                prepared_kids.append((c, cname, port_addr, tmpl))
+
+            if max_addr >= 0:
+                bus_size = max(bus_size, max_addr + 1)
+            block = re.sub(
+                r'(<Bus Size=")[^"]*("/>)',
+                rf'\g<1>{bus_size}\2',
+                block,
+                count=1,
+            )
+            extra_mods.append(block)
+            eip_module_names.append(rio_name)
+
+            for c, cname, port_addr, tmpl in prepared_kids:
                 cblock = tmpl
                 # Rename module + parent + port address (Flex or PointIO)
                 cblock = re.sub(
@@ -4596,12 +4650,21 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     cblock,
                     count=1,
                 )
-                catalog = c.get("catalog") or EIP_CATALOG.get(mt, mt)
+                catalog = c.get("catalog") or EIP_CATALOG.get((c.get("type") or "").strip(), (c.get("type") or "").strip())
                 cblock = re.sub(
                     r'CatalogNumber="[^"]*"',
                     f'CatalogNumber="{_xml_escape(catalog)}"',
                     cblock,
                     count=1,
+                )
+                # Strip ConfigTag L5K blobs that often mismatch catalog revisions in Studio.
+                # Studio recreates safe defaults from the module catalog on import.
+                cblock = re.sub(
+                    r'<ConfigTag\b[^>]*>.*?</ConfigTag>',
+                    '<ConfigTag ConfigSize="0" ExternalAccess="Read/Write"/>',
+                    cblock,
+                    count=1,
+                    flags=re.S,
                 )
                 extra_mods.append(cblock)
                 eip_child_names.append(cname)
@@ -4699,11 +4762,19 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     for _core in ("Fast_Conv", "Slow_Flt", "Slow_Jam", "PE_Logic", "Full_PE", "Merge_2to1"):
         if _core in _aoi_lib_names:
             _keep.add(_core)
-    # NTP pack — never drop AOI_SNTP_QUERY when Device Comms/NTP is on
-    if want_ntp and "AOI_SNTP_QUERY" in _aoi_lib_names:
+    # NTP pack — only keep AOI_SNTP_QUERY when its LocalTag deps exist (AOI_TIME_ADD).
+    # Otherwise Studio fails: Missing dependency of AOI_SNTP_QUERY / SNTP_AOI_TAG.
+    _sntp_deps_ok = "AOI_TIME_ADD" in _aoi_lib_names and "AOI_TIME_DIFFERENCE" in _aoi_lib_names
+    if (
+        want_ntp
+        and _sntp_deps_ok
+        and "AOI_SNTP_QUERY" in _aoi_lib_names
+    ):
         _keep.add("AOI_SNTP_QUERY")
-    if "AOI_SNTP_QUERY" in _used and "AOI_SNTP_QUERY" in _aoi_lib_names:
-        _keep.add("AOI_SNTP_QUERY")
+        _keep.add("AOI_TIME_ADD")
+        _keep.add("AOI_TIME_DIFFERENCE")
+    elif "AOI_SNTP_QUERY" in _keep and not _sntp_deps_ok:
+        _keep.discard("AOI_SNTP_QUERY")
     if _keep:
         before_n = len(_aoi_lib_names)
         aoi_xml = _filter_aois_to_used(aoi_xml, _keep)

@@ -2,7 +2,8 @@
  * Persists to localStorage. Future: feed graph JSON to fortna_autogen.
  */
 (function () {
-  const STORE_KEY = 'siteforge.transportBuild.v1';
+  // v2 invalidates plant-wide canvases saved before ControllerScope filtering.
+  const STORE_KEY = 'siteforge.transportBuild.v2';
 
   const KIND_META = {
     conv_straight: { icon: 'fa-minus', color: 'text-sky-300', isConv: true, title: 'Straight' },
@@ -376,13 +377,52 @@
     } catch (_) { /* ignore */ }
   }
 
+  function _nodeInControllerScope(n) {
+    if (!n) return false;
+    if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') return true;
+    if (n.displayContext) return false;
+    if (n.plcOwned === false) return false;
+    if (n.scopeClass === 'OUT_OF_SCOPE' || n.scopeClass === 'UNRESOLVED') return false;
+    return true;
+  }
+
+  function _filterAreasToControllerScope(areas) {
+    return (areas || []).map((area) => {
+      const nodes = (area.nodes || []).filter(_nodeInControllerScope);
+      const keep = new Set(nodes.map((n) => n.id));
+      const wires = (area.wires || []).filter((w) => keep.has(w.from) && keep.has(w.to));
+      return { ...area, nodes, wires };
+    }).filter((a) => (a.nodes || []).length > 0);
+  }
+
   function load() {
     try {
+      // Drop legacy plant-wide saves (v1 and any stale duplicates).
+      try {
+        localStorage.removeItem('siteforge.transportBuild.v1');
+      } catch (_) { /* ignore */ }
       const raw = localStorage.getItem(STORE_KEY);
       if (!raw) return;
       const data = JSON.parse(raw);
-      if (Array.isArray(data.areas)) tb.areas = data.areas;
+      if (Array.isArray(data.areas)) {
+        const filtered = _filterAreasToControllerScope(data.areas);
+        const before = (data.areas || []).reduce((s, a) => s + ((a.nodes || []).length), 0);
+        const after = filtered.reduce((s, a) => s + ((a.nodes || []).length), 0);
+        // If a saved canvas is still site-wide after filtering, wipe it.
+        if (before > 120 && after > 0 && after < before * 0.5) {
+          tb.areas = filtered;
+        } else if (before > 200 && after > 150) {
+          // Unscoped residual — do not restore.
+          tb.areas = [];
+          try { localStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
+        } else {
+          tb.areas = filtered;
+        }
+      }
       tb.activeAreaId = data.activeAreaId || (tb.areas[0] && tb.areas[0].id) || null;
+      if (tb.activeAreaId && !(tb.areas || []).some((a) => a.id === tb.activeAreaId)) {
+        tb.activeAreaId = (tb.areas[0] && tb.areas[0].id) || null;
+      }
       if (typeof data.autoConnectNew === 'boolean') tb.autoConnectNew = data.autoConnectNew;
     } catch (_) { /* ignore */ }
   }

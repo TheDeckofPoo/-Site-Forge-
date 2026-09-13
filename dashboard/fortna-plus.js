@@ -84,7 +84,8 @@ function refreshAutogenCompileHub() {
   const tbRows = (wb?.conveyors || []).filter((r) => r && (r.transport_build || r.source === 'transport_build_graph'));
   let hasTransportGraph = false;
   try {
-    const raw = localStorage.getItem('siteforge.transportBuild.v1');
+    const raw = localStorage.getItem('siteforge.transportBuild.v2')
+      || localStorage.getItem('siteforge.transportBuild.v1');
     if (raw) {
       const data = JSON.parse(raw);
       hasTransportGraph = Array.isArray(data.areas) && data.areas.some((a) => (a.nodes || []).length);
@@ -713,7 +714,9 @@ async function importRunPackage(path, name) {
   }
   // Fresh RUN must not keep a prior site-wide Transport canvas (localStorage).
   try {
-    localStorage.removeItem('siteforge.transportBuild.v1');
+    ['siteforge.transportBuild.v1', 'siteforge.transportBuild.v2'].forEach((k) => {
+      try { localStorage.removeItem(k); } catch (_) { /* ignore */ }
+    });
     if (typeof window.transportBuildClearAll === 'function') {
       window.transportBuildClearAll();
     }
@@ -5669,7 +5672,8 @@ $('btn-hub-from-transport')?.addEventListener('click', () => {
     try {
       let graph = null;
       try {
-        const raw = localStorage.getItem('siteforge.transportBuild.v1');
+        const raw = localStorage.getItem('siteforge.transportBuild.v2')
+      || localStorage.getItem('siteforge.transportBuild.v1');
         if (raw) {
           const data = JSON.parse(raw);
           if (Array.isArray(data.areas)) graph = { version: 1, areas: data.areas };
@@ -6099,7 +6103,8 @@ function wireMergeBuildUi() {
       // Prefer live graph from Transport Build tab
       let graph = null;
       try {
-        const raw = localStorage.getItem('siteforge.transportBuild.v1');
+        const raw = localStorage.getItem('siteforge.transportBuild.v2')
+      || localStorage.getItem('siteforge.transportBuild.v1');
         if (raw) {
           const data = JSON.parse(raw);
           if (Array.isArray(data.areas)) graph = { version: 1, areas: data.areas };
