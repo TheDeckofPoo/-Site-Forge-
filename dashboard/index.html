@@ -1301,57 +1301,54 @@
           <p><strong class="text-amber-400/90">Clear RUN</strong> empties Autogen’s source — only clear when starting a new site.</p>
         </div>
       </details>
-      <div class="flex-1 min-h-0 flex gap-4">
-      <div class="w-[38%] flex flex-col gap-3 min-h-0">
-        <!-- RUN / tar.gz import (no need for Workspace tab) -->
-        <div id="io-run-dropzone" class="dropzone rounded-2xl p-4 text-center flex flex-col items-center justify-center min-h-[100px] shrink-0 border-dashed border-2 border-cyan-900/50">
-          <div class="text-sm font-semibold mb-0.5"><i class="fa-solid fa-file-zipper text-cyan-500 mr-1"></i>Load RUN package (.tar.gz)</div>
-          <div class="text-[10px] text-slate-500 mb-2">IPC controller archive — same as Workspace import</div>
-          <div class="flex flex-wrap gap-2 justify-center">
-            <button id="btn-io-browse-run" class="btn-ghost px-3 py-1.5 rounded-lg text-xs" type="button">
-              <i class="fa-solid fa-folder-open mr-1"></i>Browse tar.gz
+      <div class="flex-1 min-h-0 flex gap-3">
+      <!-- LEFT: compact RUN + secondary OCR/prints (default closed) -->
+      <div class="w-[13%] min-w-[10rem] max-w-[15%] flex flex-col gap-2 min-h-0 overflow-y-auto shrink-0">
+        <div id="io-run-dropzone" class="dropzone rounded-xl p-2 text-center flex flex-col items-center justify-center min-h-[64px] shrink-0 border-dashed border-2 border-cyan-900/50">
+          <div class="text-[11px] font-semibold mb-0.5 leading-tight"><i class="fa-solid fa-file-zipper text-cyan-500 mr-1"></i>Load RUN</div>
+          <div class="text-[9px] text-slate-500 mb-1.5 leading-tight">.tar.gz package</div>
+          <div class="flex flex-col gap-1 w-full">
+            <button id="btn-io-browse-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] w-full" type="button">
+              <i class="fa-solid fa-folder-open mr-1"></i>Browse
             </button>
-            <button id="btn-io-clear-run" class="btn-ghost px-3 py-1.5 rounded-lg text-xs text-red-300/90" type="button">
+            <button id="btn-io-clear-run" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-red-300/90 w-full" type="button">
               Clear RUN
             </button>
-            <button id="btn-io-clear-prints" class="btn-ghost px-3 py-1.5 rounded-lg text-xs text-amber-300/90" type="button" title="Clear panel PDFs and merge/crosswalk results">
+            <button id="btn-io-clear-prints" class="btn-ghost px-2 py-1 rounded-lg text-[10px] text-amber-300/90 w-full" type="button" title="Clear panel PDFs and merge/crosswalk results">
               Clear prints
             </button>
           </div>
-          <div id="io-run-status" class="mono text-[10px] text-slate-500 mt-2">No RUN loaded</div>
+          <div id="io-run-status" class="mono text-[9px] text-slate-500 mt-1.5 break-all leading-snug">No RUN loaded</div>
         </div>
 
-        <!-- Electrical prints — collapsible (tar.gz is source of truth; PDFs optional for OCR) -->
-        <details id="remote-prints-details" class="card shrink-0 border-2 border-sky-800/50 bg-sky-950/10 group">
-          <summary class="px-3 py-2.5 cursor-pointer list-none flex items-center justify-between gap-2 select-none">
-            <span class="text-xs uppercase tracking-wider text-sky-400 font-semibold">
-              <i class="fa-solid fa-file-pdf mr-1"></i> Electrical prints
-              <span class="font-normal normal-case text-slate-500 ml-1">(optional)</span>
+        <details id="remote-prints-details" class="card shrink-0 border border-sky-800/50 bg-sky-950/10 group">
+          <summary class="px-2 py-1.5 cursor-pointer list-none flex items-center justify-between gap-1 select-none">
+            <span class="text-[10px] uppercase tracking-wider text-sky-400 font-semibold">
+              <i class="fa-solid fa-file-pdf mr-1"></i>Prints
             </span>
-            <span class="flex items-center gap-2">
-              <span id="remote-panel-count" class="text-[10px] mono text-sky-400">0 panels</span>
-              <i class="fa-solid fa-chevron-down text-[10px] text-slate-500 group-open:rotate-180 transition-transform"></i>
+            <span class="flex items-center gap-1">
+              <span id="remote-panel-count" class="text-[9px] mono text-sky-400">0</span>
+              <i class="fa-solid fa-chevron-down text-[9px] text-slate-500 group-open:rotate-180 transition-transform"></i>
             </span>
           </summary>
-          <div id="remote-dropzone" class="dropzone px-3 pb-3 min-h-[140px] border-t border-sky-900/40">
-            <p class="text-[10px] text-slate-600 mb-2 leading-relaxed pt-2">
-              Drop panel PDFs here (CP13, CP14, AC3…). Multi-select =
-              <strong class="text-slate-400">one panel per file</strong> (named from the filename).
-              Used for OCR VFD/params — <strong class="text-slate-400">not required</strong> for tar→L5X
-              (DWG/WDP often missing; rely on the RUN above).
+          <div id="remote-dropzone" class="dropzone px-2 pb-2 min-h-[80px] border-t border-sky-900/40">
+            <p class="text-[9px] text-slate-600 mb-1.5 leading-relaxed pt-1.5">
+              Panel PDFs (optional OCR). One panel per file.
             </p>
-            <div class="flex gap-2 mb-2">
-              <input id="remote-name-input" type="text" placeholder="Or name one panel then Browse"
-                class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs">
-              <button id="btn-add-remote" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs border-sky-800/50 text-sky-300">
-                <i class="fa-solid fa-plus"></i> Add
-              </button>
-              <button id="btn-browse-remote-prints" type="button" class="btn-ghost px-2 py-1.5 rounded-lg text-xs border border-sky-800/50 text-sky-300" title="Browse panel PDFs">
-                <i class="fa-solid fa-folder-open"></i>
-              </button>
+            <div class="flex flex-col gap-1 mb-1.5">
+              <input id="remote-name-input" type="text" placeholder="Panel name"
+                class="w-full bg-[#101820] border border-slate-700 rounded-lg px-1.5 py-1 text-[10px]">
+              <div class="flex gap-1">
+                <button id="btn-add-remote" type="button" class="btn-ghost flex-1 px-2 py-1 rounded-lg text-[10px] border-sky-800/50 text-sky-300">
+                  <i class="fa-solid fa-plus"></i> Add
+                </button>
+                <button id="btn-browse-remote-prints" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] border border-sky-800/50 text-sky-300" title="Browse panel PDFs">
+                  <i class="fa-solid fa-folder-open"></i>
+                </button>
+              </div>
             </div>
-            <div id="remote-panels-list" class="space-y-1.5 max-h-48 overflow-y-auto text-xs min-h-[48px]">
-              <div class="text-slate-600 italic">Drop CP_13.pdf, CP_14.pdf, AC_3.pdf… — each becomes its own panel.</div>
+            <div id="remote-panels-list" class="space-y-1 max-h-36 overflow-y-auto text-[10px] min-h-[32px]">
+              <div class="text-slate-600 italic">Drop CP_*.pdf…</div>
             </div>
           </div>
         </details>
@@ -1369,77 +1366,86 @@
           <button id="btn-browse-prints" type="button" class="hidden"></button>
         </div>
 
-        <div class="card p-3 shrink-0">
-          <div class="flex flex-wrap gap-2">
-            <button id="btn-run-ocr" class="btn-primary flex-1 py-2 rounded-xl text-sm" type="button" disabled>
-              <i class="fa-solid fa-code-merge mr-2"></i>OCR · vs tar.gz
-            </button>
-            <button id="btn-refresh-banks" class="btn-ghost py-2 px-3 rounded-xl text-sm" type="button" title="Refresh banks from RUN">
-              <i class="fa-solid fa-rotate"></i>
-            </button>
-          </div>
-          <p class="text-[10px] text-slate-600 mt-2 leading-relaxed">
-            Load <strong class="text-slate-400">.tar.gz</strong> at the top of this tab (Workspace not required).
-            OCR reads panel PDFs and compares to program I/O / VFD params from the RUN.
-          </p>
-          <!-- Live OCR progress -->
-          <div id="ocr-progress-wrap" class="mt-3 hidden">
-            <div class="flex items-center justify-between mb-1">
-              <div class="text-[10px] uppercase tracking-wider text-amber-400/90">Reading pages</div>
-              <div id="ocr-progress-pct" class="mono text-[11px] text-cyan-300">0%</div>
+        <details class="card shrink-0 border border-slate-800/80 group">
+          <summary class="px-2 py-1.5 cursor-pointer list-none flex items-center justify-between gap-1 select-none">
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">OCR</span>
+            <i class="fa-solid fa-chevron-down text-[9px] text-slate-500 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <div class="px-2 pb-2 border-t border-slate-800/60">
+            <div class="flex flex-col gap-1 pt-1.5">
+              <button id="btn-run-ocr" class="btn-primary w-full py-1.5 rounded-lg text-[10px]" type="button" disabled>
+                <i class="fa-solid fa-code-merge mr-1"></i>OCR · vs tar.gz
+              </button>
+              <button id="btn-refresh-banks" class="btn-ghost w-full py-1.5 rounded-lg text-[10px]" type="button" title="Refresh banks from RUN">
+                <i class="fa-solid fa-rotate mr-1"></i>Refresh banks
+              </button>
             </div>
-            <div class="h-2 rounded-full bg-slate-800 overflow-hidden border border-slate-700">
-              <div id="ocr-progress-bar" class="h-full bg-gradient-to-r from-cyan-600 to-emerald-400 transition-all duration-300" style="width:0%"></div>
+            <div id="ocr-progress-wrap" class="mt-2 hidden">
+              <div class="flex items-center justify-between mb-1">
+                <div class="text-[9px] uppercase tracking-wider text-amber-400/90">Reading</div>
+                <div id="ocr-progress-pct" class="mono text-[10px] text-cyan-300">0%</div>
+              </div>
+              <div class="h-1.5 rounded-full bg-slate-800 overflow-hidden border border-slate-700">
+                <div id="ocr-progress-bar" class="h-full bg-gradient-to-r from-cyan-600 to-emerald-400 transition-all duration-300" style="width:0%"></div>
+              </div>
+              <div id="ocr-progress-detail" class="mono text-[9px] text-slate-500 mt-1 leading-relaxed">Starting...</div>
             </div>
-            <div id="ocr-progress-detail" class="mono text-[10px] text-slate-500 mt-1.5 leading-relaxed">Starting...</div>
           </div>
-        </div>
+        </details>
 
-        <div class="card p-3 shrink-0">
-          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2">Merge &amp; crosswalk</div>
-          <div id="io-crosswalk-summary" class="text-sm text-slate-400">No OCR run yet.</div>
-          <div class="flex gap-1 mt-2 flex-wrap" id="io-crosswalk-tabs">
-            <button type="button" data-cw-tab="matched" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-800 text-cyan-300">vs tar.gz</button>
-            <button type="button" data-cw-tab="remote_merge" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-900 text-slate-500">Remote → master</button>
-            <button type="button" data-cw-tab="print_only" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-900 text-slate-500">Print only</button>
-            <button type="button" data-cw-tab="program_only" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-900 text-slate-500">tar.gz only</button>
-            <button type="button" data-cw-tab="panels" class="cw-tab text-[10px] px-2 py-1 rounded-lg bg-slate-900 text-slate-500">By panel</button>
+        <details class="card shrink-0 border border-slate-800/80 group flex-1 min-h-0 overflow-hidden flex flex-col">
+          <summary class="px-2 py-1.5 cursor-pointer list-none flex items-center justify-between gap-1 select-none shrink-0">
+            <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Crosswalk</span>
+            <i class="fa-solid fa-chevron-down text-[9px] text-slate-500 group-open:rotate-180 transition-transform"></i>
+          </summary>
+          <div class="px-2 pb-2 border-t border-slate-800/60 flex-1 min-h-0 overflow-y-auto">
+            <div id="io-crosswalk-summary" class="text-[10px] text-slate-400 pt-1.5">No OCR run yet.</div>
+            <div class="flex gap-1 mt-1.5 flex-wrap" id="io-crosswalk-tabs">
+              <button type="button" data-cw-tab="matched" class="cw-tab text-[9px] px-1.5 py-0.5 rounded bg-slate-800 text-cyan-300">vs tar.gz</button>
+              <button type="button" data-cw-tab="remote_merge" class="cw-tab text-[9px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-500">Remote</button>
+              <button type="button" data-cw-tab="print_only" class="cw-tab text-[9px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-500">Print</button>
+              <button type="button" data-cw-tab="program_only" class="cw-tab text-[9px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-500">tar.gz</button>
+              <button type="button" data-cw-tab="panels" class="cw-tab text-[9px] px-1.5 py-0.5 rounded bg-slate-900 text-slate-500">Panels</button>
+            </div>
+            <div class="text-[9px] uppercase tracking-wider text-slate-500 mt-2 mb-1" id="io-match-heading">Results</div>
+            <div id="io-match-list" class="mono text-[9px] text-slate-400 space-y-1">No compare yet.</div>
           </div>
-        </div>
-        <div class="card p-3 flex-1 min-h-0 overflow-y-auto">
-          <div class="text-xs uppercase tracking-wider text-slate-500 mb-2" id="io-match-heading">Results</div>
-          <div id="io-match-list" class="mono text-[11px] text-slate-400 space-y-1">No compare yet. Drop prints, click OCR — then open tabs: vs tar.gz · Print only · tar.gz only.</div>
-        </div>
+        </details>
       </div>
-      <div class="flex-1 flex flex-col gap-3 min-h-0">
-        <!-- Hardware / I/O — PhysicalWordResolver tree (same model as IO_MAP). Area editing stays on Transportation. -->
-        <div class="card p-4 flex-[1.6] min-h-0 overflow-hidden flex flex-col border border-cyan-900/40 bg-[#05080c]">
-          <div class="flex flex-wrap items-center gap-2 mb-2 shrink-0">
-            <div class="font-semibold text-cyan-300">
-              <i class="fa-solid fa-microchip mr-1"></i>Hardware / I/O
+
+      <!-- MAIN: Studio Logix–like Hardware / I/O tree -->
+      <div class="flex-[2] flex flex-col gap-2 min-h-0">
+        <div class="card p-3 flex-1 min-h-0 overflow-hidden flex flex-col border border-cyan-900/40 bg-[#05080c]">
+          <div class="flex flex-wrap items-center gap-2 mb-1.5 shrink-0">
+            <div class="font-semibold text-cyan-300 text-sm">
+              <i class="fa-solid fa-sitemap mr-1"></i>Hardware / I/O
             </div>
             <span id="hw-io-status" class="status-pill status-idle">No RUN</span>
-            <span class="text-[10px] text-slate-500 ml-auto mono" id="hw-io-controller">Controller: —</span>
+            <label class="ml-auto flex items-center gap-1.5 text-[10px] text-slate-500 cursor-pointer select-none" title="Show legacy FLEX faceplate rail">
+              <input id="hw-io-flex-toggle" type="checkbox" class="rounded border-slate-600">
+              Physical FLEX view
+            </label>
+            <span class="text-[10px] text-slate-500 mono" id="hw-io-controller">Controller: —</span>
           </div>
-          <p class="text-[10px] text-slate-600 mb-2 shrink-0 leading-relaxed">
-            Studio-like FLEX rack view from RUN eipcfg/Configio. Transportation Areas are edited on the
-            <strong class="text-slate-400">Transportation</strong> tab — not here.
+          <p class="text-[10px] text-slate-600 mb-1.5 shrink-0 leading-relaxed">
+            Studio Logix–style tree from RUN eipcfg/Configio (PhysicalWordResolver). Areas edit on
+            <strong class="text-slate-400">Transportation</strong>.
           </p>
-          <div class="flex flex-wrap items-center gap-2 mb-2 shrink-0">
+          <div class="flex flex-wrap items-center gap-2 mb-1.5 shrink-0">
             <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="hw-io-panel-select">Control Panel</label>
             <select id="hw-io-panel-select"
-              class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 min-w-[9rem]">
+              class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-xs text-slate-200 min-w-[8rem]">
               <option value="__all__">All Panels</option>
             </select>
-            <label class="text-[10px] text-slate-500 uppercase tracking-wider ml-2" for="hw-io-rio-select">Remote I/O</label>
+            <label class="text-[10px] text-slate-500 uppercase tracking-wider ml-1" for="hw-io-rio-select">Remote I/O</label>
             <select id="hw-io-rio-select"
-              class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs mono text-cyan-200/90 min-w-[9rem]">
+              class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-xs mono text-cyan-200/90 min-w-[8rem]">
               <option value="__all__">All adapters</option>
             </select>
-            <div id="hw-io-stats" class="flex flex-wrap gap-2 text-[10px] mono text-slate-500"></div>
+            <div id="hw-io-stats" class="flex flex-wrap gap-1.5 text-[10px] mono text-slate-500"></div>
           </div>
-          <div class="flex-1 min-h-0 grid grid-cols-1 xl:grid-cols-5 gap-3 overflow-hidden">
-            <div class="xl:col-span-3 overflow-y-auto min-h-0 space-y-3" id="hw-io-racks">
+          <div class="flex-1 min-h-0 grid grid-cols-1 xl:grid-cols-5 gap-2 overflow-hidden">
+            <div class="xl:col-span-3 overflow-y-auto min-h-0" id="hw-io-racks">
               <div class="text-sm text-slate-500 py-6 text-center">Load a RUN to show Remote I/O adapters from PhysicalWordResolver.</div>
             </div>
             <div class="xl:col-span-2 min-h-0 flex flex-col gap-2 overflow-hidden">
@@ -1448,10 +1454,10 @@
                   Module detail · vertical terminals
                 </div>
                 <div id="hw-io-module-detail" class="flex-1 overflow-auto p-2 text-[11px] text-slate-400">
-                  Select a FLEX module to list channels (physical address · Fortna word.bit · logical endpoint).
+                  Select a module to list channels (physical address · Fortna word.bit · logical endpoint).
                 </div>
               </div>
-              <div class="shrink-0 max-h-40 overflow-auto border border-slate-800 rounded-xl bg-[#070b10] p-3">
+              <div class="shrink-0 max-h-36 overflow-auto border border-slate-800 rounded-xl bg-[#070b10] p-2.5">
                 <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Wiring diagram</div>
                 <div id="hw-io-wiring" class="text-[11px] text-slate-400 leading-relaxed">
                   Level A = proven RUN assignments. Level B = catalog pin layout if approved. Level C = unavailable — never invent schematics.
@@ -1461,6 +1467,27 @@
           </div>
         </div>
         <style>
+          .hw-io-tree { font-family: ui-monospace, 'JetBrains Mono', monospace; font-size: 11px; color: #cbd5e1; }
+          .hw-io-tree-head {
+            display: grid; grid-template-columns: minmax(10rem,1.4fr) minmax(5rem,0.9fr) 3.2rem 3rem 4.5rem;
+            gap: 0.5rem; padding: 4px 8px; color: #64748b; text-transform: uppercase; letter-spacing: 0.04em;
+            font-size: 9px; border-bottom: 1px solid #1e293b; position: sticky; top: 0; background: #05080c; z-index: 1;
+          }
+          .hw-io-tree-row {
+            display: grid; grid-template-columns: minmax(10rem,1.4fr) minmax(5rem,0.9fr) 3.2rem 3rem 4.5rem;
+            gap: 0.5rem; align-items: center; padding: 3px 8px; border-radius: 4px; border: 1px solid transparent;
+            width: 100%; text-align: left; background: transparent; color: inherit; cursor: default;
+          }
+          .hw-io-tree-row.hw-mod { cursor: pointer; }
+          .hw-io-tree-row.hw-mod:hover { background: rgba(15,23,42,0.85); border-color: #1e293b; }
+          .hw-io-tree-row.hw-selected {
+            border-color: #22d3ee; background: rgba(8,51,68,0.35);
+            box-shadow: 0 0 0 1px rgba(34,211,238,0.25);
+          }
+          .hw-io-tree-indent { color: #475569; white-space: pre; }
+          .hw-io-tree-ctrl { color: #67e8f9; font-weight: 600; }
+          .hw-io-tree-enet { color: #94a3b8; }
+          .hw-io-tree-rio { color: #a5f3fc; font-weight: 600; }
           .hw-flex-rail {
             display: flex; flex-wrap: nowrap; gap: 3px; overflow-x: auto;
             padding: 10px 8px; background: linear-gradient(180deg,#0a0e14,#05070a);
@@ -1504,95 +1531,143 @@
         </style>
 
         <details class="card p-0 shrink-0 border border-slate-800/80 overflow-hidden">
-          <summary class="px-4 py-2.5 cursor-pointer list-none flex items-center justify-between gap-2 select-none hover:bg-[#101820]">
+          <summary class="px-3 py-2 cursor-pointer list-none flex items-center justify-between gap-2 select-none hover:bg-[#101820]">
             <span class="font-semibold text-sm text-slate-400">
               I/O banks (from program)
               <span class="text-[10px] font-normal text-slate-600 ml-1">diagnostics</span>
             </span>
             <span id="io-banks-status" class="status-pill status-idle">No RUN</span>
           </summary>
-          <div class="px-4 pb-4 border-t border-slate-800/60">
-            <div id="io-banks-stats" class="grid grid-cols-4 gap-2 my-3 hidden"></div>
-            <div id="io-banks-list" class="max-h-48 overflow-y-auto space-y-2 text-sm text-slate-400">
+          <div class="px-3 pb-3 border-t border-slate-800/60">
+            <div id="io-banks-stats" class="grid grid-cols-4 gap-2 my-2 hidden"></div>
+            <div id="io-banks-list" class="max-h-40 overflow-y-auto space-y-2 text-sm text-slate-400">
               Load a RUN package to list Fortna banks (Bank&lt;word&gt;.bit from Conveyor.asc / Configio).
             </div>
           </div>
         </details>
+      </div>
 
-        <div class="card p-4 flex-1 min-h-0 overflow-hidden flex flex-col">
-          <div class="flex items-center justify-between mb-2 shrink-0">
-            <div class="font-semibold"><i class="fa-solid fa-gears text-cyan-500 mr-2"></i>Devices (by type)</div>
-            <span id="io-drives-status" class="status-pill status-idle">—</span>
+      <!-- RIGHT: Ready For Build + demoted Devices -->
+      <div class="w-[22%] min-w-[14rem] max-w-[26%] flex flex-col gap-2 min-h-0 shrink-0">
+        <div id="io-ready-for-build" class="card p-3 flex-1 min-h-0 overflow-y-auto border border-violet-900/40 bg-gradient-to-b from-[#12101a] to-[#0a1018]">
+          <div class="flex flex-wrap items-center gap-2 mb-2 shrink-0">
+            <i class="fa-solid fa-layer-group text-violet-400"></i>
+            <span class="text-sm font-semibold text-violet-300">Ready For Build</span>
           </div>
-          <div id="io-drives-stats" class="grid grid-cols-4 gap-2 mb-2 shrink-0 hidden"></div>
-          <div class="flex flex-wrap gap-2 mb-2 shrink-0 items-center">
-            <label class="text-[10px] text-slate-500 shrink-0">Device type</label>
-            <select id="device-type-filter"
-              class="flex-1 min-w-[160px] bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200">
-              <option value="all">All devices</option>
-            </select>
-            <label class="flex items-center gap-1.5 text-[10px] text-slate-500 whitespace-nowrap" title="Only devices that got parameters from print OCR">
-              <input id="drive-print-only" type="checkbox" class="rounded border-slate-600">
-              Print-matched only
-            </label>
-            <span id="device-type-count" class="text-[10px] mono text-slate-600">0</span>
-            <button id="btn-print-repo" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] border border-amber-800/40 text-amber-300/90" title="Browse loaded CP print PDFs">
-              <i class="fa-solid fa-book-open mr-1"></i>Print repository
+          <p class="text-[10px] text-slate-500 mb-2 leading-relaxed">
+            Same readiness as Compile Hub. Apply on each subsystem tab → READY FOR BUILD → Export L5X.
+          </p>
+          <div id="io-hub-readiness" class="grid grid-cols-1 gap-1.5 text-[11px]">
+            <div class="hub-ready-card" data-ready-key="hardware" data-status="NOT_DETECTED">
+              <div class="text-[10px] uppercase tracking-wider text-sky-400/90 font-semibold mb-0.5">Hardware / IO</div>
+              <div id="io-hub-hardware" class="hub-status">NOT DETECTED</div>
+              <div id="io-hub-hardware-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Load RUN</div>
+            </div>
+            <div class="hub-ready-card" data-ready-key="transport" data-status="NOT_DETECTED">
+              <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/90 font-semibold mb-0.5">Transportation</div>
+              <div id="io-hub-transport" class="hub-status">NOT DETECTED</div>
+              <div id="io-hub-transport-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Apply on Transport Build</div>
+              <button type="button" class="tab-jump mt-1.5 text-[10px] text-fuchsia-300 hover:underline" data-jump-tab="transport">Open Transport →</button>
+            </div>
+            <div class="hub-ready-card" data-ready-key="sawtooth" data-status="NOT_DETECTED">
+              <div class="text-[10px] uppercase tracking-wider text-amber-400/90 font-semibold mb-0.5">Sawtooth</div>
+              <div id="io-hub-sawtooth" class="hub-status">NOT DETECTED</div>
+              <div id="io-hub-sawtooth-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Apply on Sawtooth Merge</div>
+              <button type="button" class="tab-jump mt-1.5 text-[10px] text-amber-300 hover:underline" data-jump-tab="sawtooth">Open Sawtooth →</button>
+            </div>
+            <div class="hub-ready-card" data-ready-key="sorter" data-status="NOT_DETECTED">
+              <div class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold mb-0.5">Sorter</div>
+              <div id="io-hub-sorter" class="hub-status">NOT DETECTED</div>
+              <div id="io-hub-sorter-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Apply on Sorter Build</div>
+              <button type="button" class="tab-jump mt-1.5 text-[10px] text-cyan-300 hover:underline" data-jump-tab="sorter">Open Sorter →</button>
+            </div>
+            <div class="hub-ready-card" data-ready-key="system" data-status="NOT_DETECTED">
+              <div class="text-[10px] uppercase tracking-wider text-violet-400/90 font-semibold mb-0.5">System / Core</div>
+              <div id="io-hub-system" class="hub-status">NOT DETECTED</div>
+              <div id="io-hub-system-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Sys · Comms · Logic · IO_MAP</div>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800/80 space-y-2">
+            <button type="button" id="btn-io-goto-autogen" class="btn-primary w-full py-2 rounded-xl text-xs font-semibold" data-jump-tab="autogen">
+              <i class="fa-solid fa-microchip mr-1"></i>Build PLC (Autogen)
             </button>
-          </div>
-          <div id="print-repo-panel" class="hidden mb-2 shrink-0 border border-amber-900/40 rounded-xl p-2 bg-[#0c1219] max-h-36 overflow-y-auto">
-            <div class="text-[10px] uppercase tracking-wider text-amber-400/80 mb-1">Print repository (loaded CP PDFs)</div>
-            <div id="print-repo-list" class="mono text-[10px] text-slate-400 space-y-0.5">Load master/remote PDFs to build the repository.</div>
-          </div>
-          <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-5 gap-3 overflow-hidden">
-            <!-- Drive list -->
-            <div class="lg:col-span-2 overflow-auto min-h-0 border border-slate-800 rounded-xl">
-              <table class="w-full text-[11px] mono text-left">
-                <thead class="sticky top-0 bg-[#131c27] text-slate-500 uppercase tracking-wider text-[9px]">
-                  <tr>
-                    <th class="py-1.5 px-2 font-medium">Type</th>
-                    <th class="py-1.5 px-2 font-medium">Name</th>
-                    <th class="py-1.5 px-2 font-medium">Addr / Drv</th>
-                    <th class="py-1.5 px-2 font-medium" title="Electrical drawing page — click to open print">Print #</th>
-                  </tr>
-                </thead>
-                <tbody id="io-drives-tbody" class="text-slate-300">
-                  <tr><td colspan="4" class="py-4 px-2 text-slate-500">Import a RUN, then refresh. Use device type dropdown (PE, VFD, Motor…).</td></tr>
-                </tbody>
-              </table>
+            <div id="io-hub-build-hint" class="text-[9px] text-slate-500 leading-relaxed">
+              Jump to Autogen when required cards show READY FOR BUILD.
             </div>
-            <!-- Dynamic detail: program vs print -->
-            <div class="lg:col-span-3 overflow-y-auto min-h-0 border border-slate-800 rounded-xl p-3 bg-[#0c1219]">
-              <div id="drive-detail-empty" class="text-sm text-slate-500 py-6 text-center">
-                Select a drive to see <strong class="text-slate-400">program fields</strong> and
-                <strong class="text-slate-400">VFD parameters from prints</strong> (OCR).
-              </div>
-              <div id="drive-detail" class="hidden space-y-3">
-                <div>
-                  <div class="text-sm font-semibold text-cyan-300 mono" id="drive-detail-name">—</div>
-                  <div class="text-[10px] text-slate-500 mono" id="drive-detail-meta"></div>
-                  <button id="btn-open-device-print" type="button" class="hidden mt-1.5 text-[10px] px-2 py-1 rounded-lg border border-amber-800/50 text-amber-300 hover:bg-amber-950/40">
-                    <i class="fa-solid fa-file-pdf mr-1"></i>Open print <span id="btn-open-device-print-label"></span>
-                  </button>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  <div>
-                    <div class="text-[10px] uppercase tracking-wider text-emerald-500/90 mb-1.5">Program (key ASC fields)</div>
-                    <div id="drive-program-params" class="space-y-0.5 mono text-[11px]"></div>
-                  </div>
-                  <div>
-                    <div class="text-[10px] uppercase tracking-wider text-amber-400/90 mb-1.5">Print / VFD (PowerFlex params only)</div>
-                    <div id="drive-print-params" class="space-y-0.5 mono text-[11px]"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="text-[10px] text-slate-600 mt-2 shrink-0">
-            <strong class="text-slate-500">Print #</strong> = PDF page from OCR (VFD sheets only). Not the conveyor drawing page from the RUN.
-            VFD print params = PowerFlex table only (P031, P033, P036…), not every OCR hit.
           </div>
         </div>
+
+        <details class="card p-0 shrink-0 border border-slate-800/80 overflow-hidden max-h-[42%] flex flex-col">
+          <summary class="px-3 py-2 cursor-pointer list-none flex items-center justify-between gap-2 select-none hover:bg-[#101820] shrink-0">
+            <span class="font-semibold text-sm text-slate-400">
+              <i class="fa-solid fa-gears text-cyan-500/70 mr-1"></i>Devices (by type)
+            </span>
+            <span id="io-drives-status" class="status-pill status-idle">—</span>
+          </summary>
+          <div class="px-3 pb-3 border-t border-slate-800/60 min-h-0 overflow-hidden flex flex-col max-h-[22rem]">
+            <div id="io-drives-stats" class="grid grid-cols-2 gap-1.5 my-2 shrink-0 hidden"></div>
+            <div class="flex flex-wrap gap-1.5 mb-2 shrink-0 items-center">
+              <label class="text-[9px] text-slate-500 shrink-0">Type</label>
+              <select id="device-type-filter"
+                class="flex-1 min-w-[7rem] bg-[#101820] border border-slate-700 rounded-lg px-1.5 py-1 text-[10px] text-slate-200">
+                <option value="all">All devices</option>
+              </select>
+              <label class="flex items-center gap-1 text-[9px] text-slate-500 whitespace-nowrap" title="Only devices that got parameters from print OCR">
+                <input id="drive-print-only" type="checkbox" class="rounded border-slate-600">
+                Print-matched
+              </label>
+              <span id="device-type-count" class="text-[9px] mono text-slate-600">0</span>
+              <button id="btn-print-repo" type="button" class="btn-ghost px-1.5 py-0.5 rounded text-[9px] border border-amber-800/40 text-amber-300/90" title="Browse loaded CP print PDFs">
+                <i class="fa-solid fa-book-open mr-1"></i>Prints
+              </button>
+            </div>
+            <div id="print-repo-panel" class="hidden mb-2 shrink-0 border border-amber-900/40 rounded-lg p-1.5 bg-[#0c1219] max-h-24 overflow-y-auto">
+              <div class="text-[9px] uppercase tracking-wider text-amber-400/80 mb-1">Print repository</div>
+              <div id="print-repo-list" class="mono text-[9px] text-slate-400 space-y-0.5">Load master/remote PDFs to build the repository.</div>
+            </div>
+            <div class="flex-1 min-h-0 grid grid-cols-1 gap-2 overflow-hidden">
+              <div class="overflow-auto min-h-0 border border-slate-800 rounded-lg max-h-36">
+                <table class="w-full text-[10px] mono text-left">
+                  <thead class="sticky top-0 bg-[#131c27] text-slate-500 uppercase tracking-wider text-[8px]">
+                    <tr>
+                      <th class="py-1 px-1.5 font-medium">Type</th>
+                      <th class="py-1 px-1.5 font-medium">Name</th>
+                      <th class="py-1 px-1.5 font-medium">Addr</th>
+                      <th class="py-1 px-1.5 font-medium" title="Electrical drawing page">Print #</th>
+                    </tr>
+                  </thead>
+                  <tbody id="io-drives-tbody" class="text-slate-300">
+                    <tr><td colspan="4" class="py-3 px-1.5 text-slate-500">Import a RUN, then refresh.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="overflow-y-auto min-h-0 border border-slate-800 rounded-lg p-2 bg-[#0c1219] max-h-40">
+                <div id="drive-detail-empty" class="text-[10px] text-slate-500 py-3 text-center">
+                  Select a drive for program / print params.
+                </div>
+                <div id="drive-detail" class="hidden space-y-2">
+                  <div>
+                    <div class="text-[11px] font-semibold text-cyan-300 mono" id="drive-detail-name">—</div>
+                    <div class="text-[9px] text-slate-500 mono" id="drive-detail-meta"></div>
+                    <button id="btn-open-device-print" type="button" class="hidden mt-1 text-[9px] px-1.5 py-0.5 rounded border border-amber-800/50 text-amber-300 hover:bg-amber-950/40">
+                      <i class="fa-solid fa-file-pdf mr-1"></i>Open print <span id="btn-open-device-print-label"></span>
+                    </button>
+                  </div>
+                  <div class="grid grid-cols-1 gap-2">
+                    <div>
+                      <div class="text-[9px] uppercase tracking-wider text-emerald-500/90 mb-1">Program</div>
+                      <div id="drive-program-params" class="space-y-0.5 mono text-[10px]"></div>
+                    </div>
+                    <div>
+                      <div class="text-[9px] uppercase tracking-wider text-amber-400/90 mb-1">Print / VFD</div>
+                      <div id="drive-print-params" class="space-y-0.5 mono text-[10px]"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </details>
       </div>
       </div><!-- end I/O content row -->
     </section>

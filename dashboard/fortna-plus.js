@@ -370,26 +370,20 @@ function markReadinessDirty(key) {
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
 }
 
-function readinessDisplayLabel(status) {
+function readinessDisplayLabel(status, { buildFacing = false } = {}) {
+  if (buildFacing && status === 'READY') return 'READY FOR BUILD';
   return READINESS_LABELS[status] || READINESS_LABELS.REVIEW_REQUIRED;
 }
 
-/** PLC Autogen compile hub — explicit readiness cards */
-function refreshAutogenCompileHub() {
-  const map = computeCompileHubReadiness();
-  const keys = [
-    ['hardware', 'autogen-hub-hardware', 'autogen-hub-hardware-detail'],
-    ['transport', 'autogen-hub-transport', 'autogen-hub-transport-detail'],
-    ['sawtooth', 'autogen-hub-sawtooth', 'autogen-hub-sawtooth-detail'],
-    ['sorter', 'autogen-hub-sorter', 'autogen-hub-sorter-detail'],
-    ['system', 'autogen-hub-system', 'autogen-hub-system-detail'],
-  ];
-  keys.forEach(([key, statusId, detailId]) => {
+function paintHubReadinessCards(map, targets, { buildFacing = false } = {}) {
+  targets.forEach(([key, statusId, detailId]) => {
     const e = map[key] || emptyReadinessEntry();
-    const card = document.querySelector(`.hub-ready-card[data-ready-key="${key}"]`);
-    if (card) card.setAttribute('data-status', e.status || 'NOT_DETECTED');
+    const status = e.status || 'NOT_DETECTED';
+    document.querySelectorAll(`.hub-ready-card[data-ready-key="${key}"]`).forEach((card) => {
+      card.setAttribute('data-status', status);
+    });
     const sEl = $(statusId);
-    if (sEl) sEl.textContent = readinessDisplayLabel(e.status);
+    if (sEl) sEl.textContent = readinessDisplayLabel(status, { buildFacing });
     const dEl = $(detailId);
     if (dEl) {
       const bits = [];
@@ -403,6 +397,46 @@ function refreshAutogenCompileHub() {
       dEl.textContent = bits.join(' · ') || '—';
     }
   });
+}
+
+/** PLC Autogen compile hub — explicit readiness cards (+ I/O Ready For Build mirror) */
+function refreshAutogenCompileHub() {
+  const map = computeCompileHubReadiness();
+  paintHubReadinessCards(map, [
+    ['hardware', 'autogen-hub-hardware', 'autogen-hub-hardware-detail'],
+    ['transport', 'autogen-hub-transport', 'autogen-hub-transport-detail'],
+    ['sawtooth', 'autogen-hub-sawtooth', 'autogen-hub-sawtooth-detail'],
+    ['sorter', 'autogen-hub-sorter', 'autogen-hub-sorter-detail'],
+    ['system', 'autogen-hub-system', 'autogen-hub-system-detail'],
+  ], { buildFacing: false });
+  // I/O tab Ready For Build — same truth; user-facing READY FOR BUILD label
+  paintHubReadinessCards(map, [
+    ['hardware', 'io-hub-hardware', 'io-hub-hardware-detail'],
+    ['transport', 'io-hub-transport', 'io-hub-transport-detail'],
+    ['sawtooth', 'io-hub-sawtooth', 'io-hub-sawtooth-detail'],
+    ['sorter', 'io-hub-sorter', 'io-hub-sorter-detail'],
+    ['system', 'io-hub-system', 'io-hub-system-detail'],
+  ], { buildFacing: true });
+
+  const pre = autogenBuildPreflight();
+  const hint = $('io-hub-build-hint');
+  const goBtn = $('btn-io-goto-autogen');
+  if (hint) {
+    hint.textContent = pre.ok
+      ? 'Required cards READY FOR BUILD — open Autogen and Build PLC.'
+      : (pre.blockers?.[0]?.message
+        ? `Waiting: ${pre.blockers[0].message}`
+        : 'Jump to Autogen when required cards show READY FOR BUILD.');
+    hint.className = pre.ok
+      ? 'text-[9px] text-emerald-400/90 leading-relaxed'
+      : 'text-[9px] text-slate-500 leading-relaxed';
+  }
+  if (goBtn) {
+    goBtn.classList.toggle('opacity-60', !pre.ok);
+    goBtn.title = pre.ok
+      ? 'Open PLC Autogen · Build PLC'
+      : 'Open Autogen (some subsystems still need Apply)';
+  }
 
   const evT = transportEvidence();
   const evS = sawtoothEvidence();
@@ -1569,6 +1603,8 @@ const ioState = {
   /** Hardware/I/O model from PhysicalWordResolver (via fortna_hardware_io_model) */
   hardwareIo: null,
   hardwarePanelFilter: '__all__',
+  hardwareRioFilter: '__all__',
+  hardwareFlexView: false,
   selectedHwModuleKey: '',
   /** @type {Array<object>} */
   drives: [],
@@ -3329,6 +3365,153 @@ function adaptersForSelectedPanel(model) {
   return (model.adapters || []).filter((a) => a.panel === filter);
 }
 
+/** Vendor from resolver module only; AB 1794 family → "1"; else "—". Never invent. */
+function hwModuleVendor(mod) {
+  if (!mod) return '—';
+  if (mod.vendor != null && String(mod.vendor).trim() !== '') return String(mod.vendor).trim();
+  const cat = String(mod.catalog || mod.type || '');
+  if (/^1794([-_]|$)/i.test(cat)) return '1';
+  return '—';
+}
+
+function hwEthernetLabel(model) {
+  const c = model?.controller || {};
+  const name = c.enet_name || c.ethernet_name || c.enet || model?.enet_name || '';
+  return name ? String(name) : 'Ethernet';
+}
+
+function bindHwModuleClicks(root) {
+  root.querySelectorAll('[data-hw-mod]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      ioState.selectedHwModuleKey = btn.getAttribute('data-hw-mod') || '';
+      renderHardwareRacks();
+      renderHardwareModuleDetail();
+    });
+  });
+}
+
+function renderHardwareRacksFlex(adapters) {
+  // Legacy horizontal FLEX rail — optional toggle only
+  return adapters.map((ad) => {
+    const aent = (ad.modules || []).find((m) => m.is_adapter_card);
+    const aentLabel = aent ? (aent.catalog || aent.type || 'AENT') : '—';
+    const mods = [...(ad.modules || [])].sort((a, b) => (Number(a.slot) || 0) - (Number(b.slot) || 0));
+    const cards = mods.map((mod) => {
+      const key = hwModuleKey(ad.rio_name, mod.slot);
+      const selected = key === ioState.selectedHwModuleKey;
+      const isHead = !!mod.is_adapter_card;
+      const used = mod.channels_used ?? (mod.channels || []).length;
+      const total = mod.channel_capacity || 0;
+      const unres = mod.channels_unresolved ?? 0;
+      const dir = mod.direction || (isHead ? 'AENT' : '—');
+      const cat = mod.catalog || mod.type || '—';
+      return `
+        <button type="button" data-hw-mod="${escapeHtml(key)}"
+          class="hw-flex-mod ${isHead ? 'hw-head' : ''} ${selected ? 'hw-selected' : ''}"
+          title="${escapeHtml(cat)} slot ${mod.slot}">
+          <div class="hw-slot">[${mod.slot ?? '—'}]</div>
+          <div class="hw-cat">${escapeHtml(cat)}</div>
+          <div class="hw-dir">${escapeHtml(dir)}</div>
+          <div class="hw-ch">${isHead ? 'adapter' : `${used}/${total || '—'}`}${!isHead && unres ? ` · ${unres}?` : ''}</div>
+          <div class="hw-led"></div>
+        </button>`;
+    }).join('');
+
+    return `
+      <div class="rounded-xl border border-slate-800/80 bg-[#060a0f] p-3 mb-3">
+        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
+          <div class="font-semibold text-sm text-cyan-300 mono">${escapeHtml(ad.rio_name || '—')}</div>
+          <div class="text-[10px] text-slate-500 mono">${escapeHtml(ad.eipcfg_name || ad.name || '')}</div>
+          <div class="text-[10px] text-slate-600">AENT ${escapeHtml(aentLabel)}</div>
+          <div class="text-[10px] text-slate-600 ml-auto">${escapeHtml(ad.targetip || '')} · ${escapeHtml(ad.panel || '—')}</div>
+        </div>
+        <div class="hw-flex-rail">${cards}</div>
+      </div>`;
+  }).join('');
+}
+
+function renderHardwareRacksTree(model, adapters) {
+  const machine = model.controller?.machine || model.machine || '—';
+  const enet = hwEthernetLabel(model);
+  const rows = [];
+  rows.push(`<div class="hw-io-tree-head">
+    <div>Name</div><div>Catalog</div><div>Vendor</div><div>Dir</div><div>Channels</div>
+  </div>`);
+  rows.push(`<div class="hw-io-tree-row">
+    <div><span class="hw-io-tree-ctrl">Controller: ${escapeHtml(machine)}</span></div>
+    <div class="text-slate-600">—</div><div class="text-slate-600">—</div>
+    <div class="text-slate-600">—</div><div class="text-slate-600">—</div>
+  </div>`);
+  rows.push(`<div class="hw-io-tree-row">
+    <div><span class="hw-io-tree-indent"> └ </span><span class="hw-io-tree-enet">Ethernet (${escapeHtml(enet)})</span></div>
+    <div class="text-slate-600">—</div><div class="text-slate-600">—</div>
+    <div class="text-slate-600">—</div><div class="text-slate-600">—</div>
+  </div>`);
+
+  adapters.forEach((ad, ai) => {
+    const aent = (ad.modules || []).find((m) => m.is_adapter_card);
+    const aentCat = aent ? (aent.catalog || aent.type || 'AENT') : (ad.eipcfg_name || ad.name || '—');
+    const aentVendor = hwModuleVendor(aent || { catalog: aentCat });
+    const ip = ad.targetip || '';
+    const panel = ad.panel || '—';
+    const rioLast = ai === adapters.length - 1;
+    const rioBranch = rioLast ? ' └─ ' : ' ├─ ';
+    const childPad = rioLast ? '    ' : ' │  ';
+    const aentKey = aent ? hwModuleKey(ad.rio_name, aent.slot) : '';
+    const aentSelected = aentKey && aentKey === ioState.selectedHwModuleKey;
+    const aentTag = aentKey ? 'button' : 'div';
+    const aentAttrs = aentKey
+      ? `type="button" data-hw-mod="${escapeHtml(aentKey)}" class="hw-io-tree-row hw-mod ${aentSelected ? 'hw-selected' : ''}" title="${escapeHtml(aentCat)}"`
+      : 'class="hw-io-tree-row"';
+    rows.push(`<${aentTag} ${aentAttrs}>
+      <div>
+        <span class="hw-io-tree-indent"> ${rioBranch}</span>
+        <span class="hw-io-tree-rio">${escapeHtml(ad.rio_name || '—')}</span>
+        <span class="text-slate-500"> ${escapeHtml(aentCat)}</span>
+        ${ip ? `<span class="text-slate-600"> ${escapeHtml(ip)}</span>` : ''}
+        <span class="text-slate-600"> panel=${escapeHtml(panel)}</span>
+      </div>
+      <div class="text-cyan-300/80">${escapeHtml(aentCat)}</div>
+      <div class="text-slate-400">${escapeHtml(aentVendor)}</div>
+      <div class="text-slate-500">${escapeHtml(aent?.direction || 'AENT')}</div>
+      <div class="text-slate-500">adapter</div>
+    </${aentTag}>`);
+
+    const mods = [...(ad.modules || [])]
+      .filter((m) => !m.is_adapter_card)
+      .sort((a, b) => (Number(a.slot) || 0) - (Number(b.slot) || 0));
+    mods.forEach((mod, mi) => {
+      const key = hwModuleKey(ad.rio_name, mod.slot);
+      const selected = key === ioState.selectedHwModuleKey;
+      const used = mod.channels_used ?? (mod.channels || []).length;
+      const total = mod.channel_capacity || 0;
+      const unres = mod.channels_unresolved ?? 0;
+      const dir = mod.direction || '—';
+      const cat = mod.catalog || mod.type || '—';
+      const name = mod.name || cat;
+      const vendor = hwModuleVendor(mod);
+      const chLabel = `${used}/${total || '—'}${unres ? ` · ${unres}?` : ''}`;
+      const modLast = mi === mods.length - 1;
+      const modBranch = modLast ? ' └─ ' : ' ├─ ';
+      rows.push(`<button type="button" data-hw-mod="${escapeHtml(key)}"
+        class="hw-io-tree-row hw-mod ${selected ? 'hw-selected' : ''}"
+        title="${escapeHtml(cat)} slot ${mod.slot}">
+        <div>
+          <span class="hw-io-tree-indent"> ${childPad}${modBranch}</span>
+          <span class="text-slate-500">[${mod.slot ?? '—'}]</span>
+          <span class="text-slate-200"> ${escapeHtml(name)}</span>
+        </div>
+        <div class="text-cyan-300">${escapeHtml(cat)}</div>
+        <div class="text-slate-400">${escapeHtml(vendor)}</div>
+        <div class="text-slate-300">${escapeHtml(dir)}</div>
+        <div class="text-slate-400">${escapeHtml(chLabel)}</div>
+      </button>`);
+    });
+  });
+
+  return `<div class="hw-io-tree rounded-xl border border-slate-800/80 bg-[#060a0f] py-1">${rows.join('')}</div>`;
+}
+
 function renderHardwareRacks() {
   const racks = $('hw-io-racks');
   const model = ioState.hardwareIo;
@@ -3361,51 +3544,20 @@ function renderHardwareRacks() {
     return;
   }
 
-  // Horizontal FLEX rail per adapter — physical slot order from RUN/eipcfg only
-  racks.innerHTML = adapters.map((ad) => {
-    const aent = (ad.modules || []).find((m) => m.is_adapter_card);
-    const aentLabel = aent ? (aent.catalog || aent.type || 'AENT') : '—';
-    const mods = [...(ad.modules || [])].sort((a, b) => (Number(a.slot) || 0) - (Number(b.slot) || 0));
-    const cards = mods.map((mod) => {
-      const key = hwModuleKey(ad.rio_name, mod.slot);
-      const selected = key === ioState.selectedHwModuleKey;
-      const isHead = !!mod.is_adapter_card;
-      const used = mod.channels_used ?? (mod.channels || []).length;
-      const total = mod.channel_capacity || 0;
-      const unres = mod.channels_unresolved ?? 0;
-      const dir = mod.direction || (isHead ? 'AENT' : '—');
-      const cat = mod.catalog || mod.type || '—';
-      return `
-        <button type="button" data-hw-mod="${escapeHtml(key)}"
-          class="hw-flex-mod ${isHead ? 'hw-head' : ''} ${selected ? 'hw-selected' : ''}"
-          title="${escapeHtml(cat)} slot ${mod.slot}">
-          <div class="hw-slot">[${mod.slot ?? '—'}]</div>
-          <div class="hw-cat">${escapeHtml(cat)}</div>
-          <div class="hw-dir">${escapeHtml(dir)}</div>
-          <div class="hw-ch">${isHead ? 'adapter' : `${used}/${total || '—'}`}${!isHead && unres ? ` · ${unres}?` : ''}</div>
-          <div class="hw-led"></div>
-        </button>`;
-    }).join('');
-
-    return `
-      <div class="rounded-xl border border-slate-800/80 bg-[#060a0f] p-3">
-        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
-          <div class="font-semibold text-sm text-cyan-300 mono">${escapeHtml(ad.rio_name || '—')}</div>
-          <div class="text-[10px] text-slate-500 mono">${escapeHtml(ad.eipcfg_name || ad.name || '')}</div>
-          <div class="text-[10px] text-slate-600">AENT ${escapeHtml(aentLabel)}</div>
-          <div class="text-[10px] text-slate-600 ml-auto">${escapeHtml(ad.targetip || '')} · ${escapeHtml(ad.panel || '—')}</div>
-        </div>
-        <div class="hw-flex-rail">${cards}</div>
-      </div>`;
-  }).join('');
-
-  racks.querySelectorAll('[data-hw-mod]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      ioState.selectedHwModuleKey = btn.getAttribute('data-hw-mod') || '';
+  const flexToggle = $('hw-io-flex-toggle');
+  if (flexToggle && !flexToggle._hwBound) {
+    flexToggle._hwBound = true;
+    flexToggle.checked = !!ioState.hardwareFlexView;
+    flexToggle.addEventListener('change', () => {
+      ioState.hardwareFlexView = !!flexToggle.checked;
       renderHardwareRacks();
-      renderHardwareModuleDetail();
     });
-  });
+  }
+  const useFlex = !!(flexToggle?.checked || ioState.hardwareFlexView);
+  racks.innerHTML = useFlex
+    ? renderHardwareRacksFlex(adapters)
+    : renderHardwareRacksTree(model, adapters);
+  bindHwModuleClicks(racks);
 }
 
 function renderHardwareModuleDetail() {

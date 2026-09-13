@@ -4832,6 +4832,45 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     40,
                 )
 
+    # --- Sawtooth feature gates: gold pack XICs Enable_* but never defines the tags ---
+    sawtooth_enable_report: dict = {"emitted": False, "tags": {}}
+    saw_cfg_live = dict(getattr(inp, "sawtooth_build", None) or {})
+    if "Sawtooth_Merge" in gold_program_names and sawtooth_build_is_configured(saw_cfg_live):
+        def _force_tag_block(block: str) -> None:
+            m = re.search(r'<Tag Name="([^"]+)"', block)
+            if not m:
+                return
+            tname = m.group(1)
+            for i, existing in enumerate(all_tags):
+                em = re.search(r'<Tag Name="([^"]+)"', existing)
+                if em and em.group(1) == tname:
+                    all_tags[i] = block
+                    seen_tag_names.add(tname)
+                    return
+            seen_tag_names.add(tname)
+            all_tags.append(block)
+
+        enable_blocks = build_sawtooth_enable_tag_blocks(saw_cfg_live)
+        for block in enable_blocks:
+            _force_tag_block(block)
+        sawtooth_enable_report = {
+            "emitted": True,
+            "provenance": "ENGINEER_CONFIGURED",
+            "source": "workbook.sawtooth_build",
+            "tags": {
+                "Enable_Merge2_Trk": 0 if saw_cfg_live.get("enable_track") is False else 1,
+                "Enable_Merge1_Reserv": 0 if saw_cfg_live.get("enable_reserve") is False else 1,
+                "Use_GapStore_Belts": 1 if saw_cfg_live.get("use_gapstore") is True else 0,
+            },
+        }
+        _emit_progress(
+            "Sawtooth enable tags from sawtooth_build (ENGINEER_CONFIGURED workbook)",
+            40,
+        )
+        # TODO(Part B deepen): wire parameterize_sawtooth_pack / fortna_sawtooth_semantics
+        # inject for Conv_* ONLY where CAN_GENERATE_REAL_LOGIC. Enable gates above arm
+        # Main_Routine XICs; pack Conv_* remain gold/NOP until that pass is wired here.
+
     # --- Equipment plan from tar → auto-hint packs (Sorter Track, merges note) ---
     equip = dict(getattr(inp, "equipment_plan", None) or {})
     plan = dict(equip.get("plan") or {})
@@ -5635,6 +5674,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "eip_modules_filtered_to_word_map": sorted(used_rios) if used_rios else [],
         "gold_programs": gold_program_names,
         "sorter_build": sorter_report,
+        "sawtooth_enable_tags": sawtooth_enable_report,
         "equipment_plan": getattr(inp, "equipment_plan", None) or {},
         "optional_programs_available": list(OPTIONAL_PROGRAMS.keys()),
         "task_schedule": {
@@ -5672,6 +5712,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             | set(used_rios or [])
             | {str(r.get("rio") or "") for r in resolved_rows if r.get("rio")}
         ),
+        l5x_text=l5x,
     )
     report["generation_assertions"] = {
         "ok": not assertion_failures,
@@ -5699,6 +5740,37 @@ def sawtooth_build_is_configured(saw: dict | None) -> bool:
         if isinstance(lane, dict) and str(lane.get("conveyor") or "").strip():
             return True
     return False
+
+
+def build_sawtooth_enable_tag_blocks(saw: dict | None) -> list[str]:
+    """BOOL feature gates for Sawtooth_Merge Main_Routine XICs from workbook.
+
+    Gold pack references Enable_Merge2_Trk / Enable_Merge1_Reserv / Use_GapStore_Belts
+    but never exports Tag definitions — Studio build must emit them from sawtooth_build.
+    Defaults match dashboard: enable_track/enable_reserve on unless explicitly false;
+    use_gapstore off unless explicitly true.
+    """
+    cfg = saw if isinstance(saw, dict) else {}
+    enable_track = 0 if cfg.get("enable_track") is False else 1
+    enable_reserve = 0 if cfg.get("enable_reserve") is False else 1
+    use_gapstore = 1 if cfg.get("use_gapstore") is True else 0
+    specs = (
+        ("Enable_Merge2_Trk", enable_track, "ENGINEER_CONFIGURED workbook enable_track"),
+        ("Enable_Merge1_Reserv", enable_reserve, "ENGINEER_CONFIGURED workbook enable_reserve"),
+        ("Use_GapStore_Belts", use_gapstore, "ENGINEER_CONFIGURED workbook use_gapstore"),
+    )
+    out: list[str] = []
+    for name, value, desc in specs:
+        desc_c = (desc[:120]).replace("]]>", "]] >")
+        out.append(
+            f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="BOOL" '
+            f'Radix="Decimal" Constant="false" ExternalAccess="Read/Write">'
+            f'<Description><![CDATA[{desc_c}]]></Description>'
+            f'<Data Format="L5K"><![CDATA[{int(value)}]]></Data>'
+            f'<Data Format="Decorated"><DataValue DataType="BOOL" Value="{int(value)}"/></Data>'
+            f"</Tag>"
+        )
+    return out
 
 
 def _include_programs_want_sawtooth(include_programs: list | None) -> bool:
@@ -5769,6 +5841,7 @@ def _generation_assertion_failures(
     cp_o_rungs: list[str] | None = None,
     known_tags: set[str] | None = None,
     known_modules: set[str] | None = None,
+    l5x_text: str | None = None,
 ) -> list[str]:
     """Fail-closed checks so empty NOP scaffolds cannot claim success."""
     failures: list[str] = []
@@ -5808,6 +5881,18 @@ def _generation_assertion_failures(
                 "BUILD FAILED: sawtooth_build configured and Sawtooth_Merge requested, "
                 "but Sawtooth_Merge program was not emitted"
             )
+        else:
+            # Pack XICs Enable_Merge2_Trk — tag must be present or track logic never arms
+            has_enable = False
+            if l5x_text is not None:
+                has_enable = 'Tag Name="Enable_Merge2_Trk"' in l5x_text
+            elif known_tags is not None:
+                has_enable = "Enable_Merge2_Trk" in known_tags
+            if not has_enable:
+                failures.append(
+                    "BUILD FAILED: Sawtooth_Merge emitted with sawtooth_build configured, "
+                    "but Enable_Merge2_Trk tag missing from L5X"
+                )
 
     # Phase 6 — every XIC/OTE base in emitted CP_I/CP_O must resolve to a known
     # controller tag or module name (or an allowed system/placeholder operand).
