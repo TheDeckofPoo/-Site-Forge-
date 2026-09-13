@@ -1,0 +1,52 @@
+{
+  "generated_at": "2026-09-13T04:09:57.321834+00:00",
+  "ok": true,
+  "scope_local_count": 59,
+  "scope_external_count": 4,
+  "graph_nodes_total": 60,
+  "local_rendered": 59,
+  "external_boundaries_rendered": 1,
+  "full_remote_networks_rendered": false,
+  "print_boundary_model": {
+    "model": "compact_external",
+    "description": "Transportation renders LOCAL conveyors fully; EXTERNAL_REFERENCE neighbors appear as compact boundary stubs (one-hop), not full remote networks. Print PDFs are optional validation aids and are not required when absent from repo.",
+    "prints_required": false,
+    "prints_present": true
+  },
+  "local_sample": [
+    "P1000",
+    "P1001",
+    "P1002",
+    "P1004",
+    "P1005",
+    "P1006",
+    "P1007",
+    "P1008",
+    "P1010",
+    "P1011",
+    "P1014",
+    "P1015",
+    "P1016",
+    "P1018",
+    "P123",
+    "P124",
+    "P126",
+    "P128",
+    "P130",
+    "P132",
+    "P134",
+    "P136",
+    "P136A",
+    "P138",
+    "P139",
+    "P140",
+    "P142",
+    "P144",
+    "P145",
+    "P146"
+  ],
+  "external_sample": [
+    "P226"
+  ],
+  "layout_command_ok": true
+}

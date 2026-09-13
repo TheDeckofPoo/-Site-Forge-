@@ -1,0 +1,5355 @@
+{
+  "generated_at": "2026-09-13T04:09:57.070423+00:00",
+  "taxonomy_labels": [
+    "WRONG_WORD",
+    "WRONG_BANK",
+    "WRONG_ADAPTER",
+    "WRONG_SLOT",
+    "WRONG_BIT",
+    "WRONG_DIRECTION",
+    "WRONG_LOGICAL_DEVICE",
+    "WRONG_CONTROLLER_SCOPE",
+    "STALE_RECORD_USED",
+    "UNSUPPORTED_POINT_TYPE",
+    "PLACEHOLDER_SHOULD_BE_USED",
+    "MISSING_RUN_RELATIONSHIP"
+  ],
+  "counts": {
+    "WRONG_WORD": 0,
+    "WRONG_BANK": 0,
+    "WRONG_ADAPTER": 152,
+    "WRONG_SLOT": 11,
+    "WRONG_BIT": 3,
+    "WRONG_DIRECTION": 0,
+    "WRONG_LOGICAL_DEVICE": 141,
+    "WRONG_CONTROLLER_SCOPE": 14,
+    "STALE_RECORD_USED": 0,
+    "UNSUPPORTED_POINT_TYPE": 0,
+    "PLACEHOLDER_SHOULD_BE_USED": 0,
+    "MISSING_RUN_RELATIONSHIP": 101
+  },
+  "counts_other": {},
+  "mismatched_generated_mappings": [
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "PE215_J.I.PE_Clear",
+        "channel": "T_1794_AENT_1:I.Data[6].11",
+        "direction": "I",
+        "slot": 6,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_CONTROLLER_SCOPE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE142_JF.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[1].0",
+        "direction": "I",
+        "slot": 1,
+        "bit": 0
+      },
+      "finished": {
+        "tag": "PE142_JF.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].0",
+        "direction": "I",
+        "slot": 2,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE148_JF.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[1].1",
+        "direction": "I",
+        "slot": 1,
+        "bit": 1
+      },
+      "finished": {
+        "tag": "PE148_JF.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].1",
+        "direction": "I",
+        "slot": 2,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE238_JF.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[1].2",
+        "direction": "I",
+        "slot": 1,
+        "bit": 2
+      },
+      "finished": {
+        "tag": "PE238_JF.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].2",
+        "direction": "I",
+        "slot": 2,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE322_P.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[1].3",
+        "direction": "I",
+        "slot": 1,
+        "bit": 3
+      },
+      "finished": {
+        "tag": "PE322_P.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].3",
+        "direction": "I",
+        "slot": 2,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE324_J.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[1].4",
+        "direction": "I",
+        "slot": 1,
+        "bit": 4
+      },
+      "finished": {
+        "tag": "PE324_J.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].4",
+        "direction": "I",
+        "slot": 2,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE400_J.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[1].5",
+        "direction": "I",
+        "slot": 1,
+        "bit": 5
+      },
+      "finished": {
+        "tag": "PE400_J.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].5",
+        "direction": "I",
+        "slot": 2,
+        "bit": 5
+      },
+      "taxonomy": [
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE1006_J.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[1].6",
+        "direction": "I",
+        "slot": 1,
+        "bit": 6
+      },
+      "finished": {
+        "tag": "PE1006_J.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].6",
+        "direction": "I",
+        "slot": 2,
+        "bit": 6
+      },
+      "taxonomy": [
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE1008_J.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[1].7",
+        "direction": "I",
+        "slot": 1,
+        "bit": 7
+      },
+      "finished": {
+        "tag": "PE1008_J.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].7",
+        "direction": "I",
+        "slot": 2,
+        "bit": 7
+      },
+      "taxonomy": [
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE1010_J.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[3].0",
+        "direction": "I",
+        "slot": 3,
+        "bit": 0
+      },
+      "finished": {
+        "tag": "PE1010_J.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].8",
+        "direction": "I",
+        "slot": 2,
+        "bit": 8
+      },
+      "taxonomy": [
+        "WRONG_BIT",
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE1014_J.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[3].1",
+        "direction": "I",
+        "slot": 3,
+        "bit": 1
+      },
+      "finished": {
+        "tag": "PE1014_J.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].9",
+        "direction": "I",
+        "slot": 2,
+        "bit": 9
+      },
+      "taxonomy": [
+        "WRONG_BIT",
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "structural_mismatch",
+      "generated": {
+        "tag": "PE1018_J.I.PE_Clear",
+        "channel": "T_1794_AENT_4:I.Data[3].2",
+        "direction": "I",
+        "slot": 3,
+        "bit": 2
+      },
+      "finished": {
+        "tag": "PE1018_J.I.PE_Clear",
+        "channel": "CP3RIO1:I.Data[2].10",
+        "direction": "I",
+        "slot": 2,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_BIT",
+        "WRONG_SLOT",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "T_3MCR1.I.ES_OK",
+        "channel": "T_1794_AENT_3:O.Data[1].2",
+        "direction": "O",
+        "slot": 1,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "T_3WH",
+        "channel": "T_1794_AENT_3:O.Data[1].3",
+        "direction": "O",
+        "slot": 1,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "WH310",
+        "channel": "T_1794_AENT_1:O.Data[1].4",
+        "direction": "O",
+        "slot": 1,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M406",
+        "channel": "T_1794_AENT_2:O.Data[6].0",
+        "direction": "O",
+        "slot": 6,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1000",
+        "channel": "T_1794_AENT_2:O.Data[6].1",
+        "direction": "O",
+        "slot": 6,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1002",
+        "channel": "T_1794_AENT_2:O.Data[6].2",
+        "direction": "O",
+        "slot": 6,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1004",
+        "channel": "T_1794_AENT_2:O.Data[6].3",
+        "direction": "O",
+        "slot": 6,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1001",
+        "channel": "T_1794_AENT_2:O.Data[6].4",
+        "direction": "O",
+        "slot": 6,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1005",
+        "channel": "T_1794_AENT_2:O.Data[6].5",
+        "direction": "O",
+        "slot": 6,
+        "bit": 5
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "WH318",
+        "channel": "T_1794_AENT_3:O.Data[1].4",
+        "direction": "O",
+        "slot": 1,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1006",
+        "channel": "T_1794_AENT_4:O.Data[6].0",
+        "direction": "O",
+        "slot": 6,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1008",
+        "channel": "T_1794_AENT_4:O.Data[6].1",
+        "direction": "O",
+        "slot": 6,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1010",
+        "channel": "T_1794_AENT_4:O.Data[6].2",
+        "direction": "O",
+        "slot": 6,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1014",
+        "channel": "T_1794_AENT_4:O.Data[6].3",
+        "direction": "O",
+        "slot": 6,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1016",
+        "channel": "T_1794_AENT_4:O.Data[6].4",
+        "direction": "O",
+        "slot": 6,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "M1018",
+        "channel": "T_1794_AENT_4:O.Data[6].5",
+        "direction": "O",
+        "slot": 6,
+        "bit": 5
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "SSVEZPE150_P1",
+        "channel": "T_1794_AENT_5:O.Data[1].0",
+        "direction": "O",
+        "slot": 1,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "SSVEZPE150_P2",
+        "channel": "T_1794_AENT_5:O.Data[1].1",
+        "direction": "O",
+        "slot": 1,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "SSVEZPE242_P",
+        "channel": "T_1794_AENT_5:O.Data[1].2",
+        "direction": "O",
+        "slot": 1,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    },
+    {
+      "kind": "extra_generated",
+      "generated": {
+        "tag": "SSVEZPE320_P",
+        "channel": "T_1794_AENT_5:O.Data[1].3",
+        "direction": "O",
+        "slot": 1,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ]
+    }
+  ],
+  "missing_finished_mappings": [
+    {
+      "finished": {
+        "tag": "CP2_CS.I.Start_PB",
+        "channel": "CP2RIO0:I.Data[1].0",
+        "direction": "I",
+        "slot": 1,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "2PBSTART",
+        "CP2_CS"
+      ],
+      "run_hits": [
+        {
+          "name": "2PBSTART",
+          "word": "201",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP2_CS.I.Stop_PB",
+        "channel": "CP2RIO0:I.Data[1].1",
+        "direction": "I",
+        "slot": 1,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "2PBSTOP",
+        "CP2_CS"
+      ],
+      "run_hits": [
+        {
+          "name": "2PBSTOP",
+          "word": "201",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP2_MCR1.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].2",
+        "direction": "I",
+        "slot": 1,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "2MCR1_AUX",
+        "2MCR1",
+        "CP2_MCR1"
+      ],
+      "run_hits": [
+        {
+          "name": "2MCR1_AUX",
+          "word": "201",
+          "bit": 2
+        },
+        {
+          "name": "2MCR1",
+          "word": "200",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP2_ESR1.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].3",
+        "direction": "I",
+        "slot": 1,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP2_ESR1"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP2_ESR2.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].4",
+        "direction": "I",
+        "slot": 1,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP2_ESR2"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP2_ESR3.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].5",
+        "direction": "I",
+        "slot": 1,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP2_ESR3"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP2_ES.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].7",
+        "direction": "I",
+        "slot": 1,
+        "bit": 7
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "2ES",
+        "CP2_ES"
+      ],
+      "run_hits": [
+        {
+          "name": "2ES",
+          "word": "201",
+          "bit": 7
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ES406.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].8",
+        "direction": "I",
+        "slot": 1,
+        "bit": 8
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ES406"
+      ],
+      "run_hits": [
+        {
+          "name": "ES406",
+          "word": "201",
+          "bit": 8
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ES1002.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].9",
+        "direction": "I",
+        "slot": 1,
+        "bit": 9
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ES1002"
+      ],
+      "run_hits": [
+        {
+          "name": "ES1002",
+          "word": "201",
+          "bit": 9
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS125.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].10",
+        "direction": "I",
+        "slot": 1,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS125"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS125",
+          "word": "201",
+          "bit": 10
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS127.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].11",
+        "direction": "I",
+        "slot": 1,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS127"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS127",
+          "word": "201",
+          "bit": 11
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS221.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].12",
+        "direction": "I",
+        "slot": 1,
+        "bit": 12
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS221"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS221",
+          "word": "201",
+          "bit": 12
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS223.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].13",
+        "direction": "I",
+        "slot": 1,
+        "bit": 13
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS223"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS223",
+          "word": "201",
+          "bit": 13
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS311.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].14",
+        "direction": "I",
+        "slot": 1,
+        "bit": 14
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS311"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS311",
+          "word": "201",
+          "bit": 14
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS313.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[1].15",
+        "direction": "I",
+        "slot": 1,
+        "bit": 15
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS313"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS313",
+          "word": "201",
+          "bit": 15
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS125A.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[3].0",
+        "direction": "I",
+        "slot": 3,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS125A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS125A",
+          "word": "203",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS127A.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[3].1",
+        "direction": "I",
+        "slot": 3,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS127A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS127A",
+          "word": "203",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS221A.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[3].2",
+        "direction": "I",
+        "slot": 3,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS221A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS221A",
+          "word": "203",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS223A.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[3].3",
+        "direction": "I",
+        "slot": 3,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS223A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS223A",
+          "word": "203",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS311A.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[3].4",
+        "direction": "I",
+        "slot": 3,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS311A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS311A",
+          "word": "203",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS313A.I.ES_OK",
+        "channel": "CP2RIO0:I.Data[3].5",
+        "direction": "I",
+        "slot": 3,
+        "bit": 5
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS313A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS313A",
+          "word": "203",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P124_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[3].7",
+        "direction": "I",
+        "slot": 3,
+        "bit": 7
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M124_AUX",
+        "M124",
+        "P124_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M124_AUX",
+          "word": "203",
+          "bit": 7
+        },
+        {
+          "name": "M124",
+          "word": "202",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P128_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[3].8",
+        "direction": "I",
+        "slot": 3,
+        "bit": 8
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M128_AUX",
+        "M128",
+        "P128_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M128_AUX",
+          "word": "203",
+          "bit": 8
+        },
+        {
+          "name": "M128",
+          "word": "204",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P130A_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[3].9",
+        "direction": "I",
+        "slot": 3,
+        "bit": 9
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M130A_AUX",
+        "M130A",
+        "P130A_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M130A_AUX",
+          "word": "203",
+          "bit": 9
+        },
+        {
+          "name": "M130A",
+          "word": "204",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P130B_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[3].10",
+        "direction": "I",
+        "slot": 3,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M130B_AUX",
+        "M130B",
+        "P130B_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M130B_AUX",
+          "word": "203",
+          "bit": 10
+        },
+        {
+          "name": "M130B",
+          "word": "204",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P130C_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[3].11",
+        "direction": "I",
+        "slot": 3,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M130C_AUX",
+        "M130C",
+        "P130C_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M130C_AUX",
+          "word": "203",
+          "bit": 11
+        },
+        {
+          "name": "M130C",
+          "word": "204",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P130D_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[3].12",
+        "direction": "I",
+        "slot": 3,
+        "bit": 12
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M130D_AUX",
+        "M130D",
+        "P130D_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M130D_AUX",
+          "word": "203",
+          "bit": 12
+        },
+        {
+          "name": "M130D",
+          "word": "204",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P130E_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[3].13",
+        "direction": "I",
+        "slot": 3,
+        "bit": 13
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M130E_AUX",
+        "M130E",
+        "P130E_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M130E_AUX",
+          "word": "203",
+          "bit": 13
+        },
+        {
+          "name": "M130E",
+          "word": "204",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P132_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[3].14",
+        "direction": "I",
+        "slot": 3,
+        "bit": 14
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M132_AUX",
+        "M132",
+        "P132_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M132_AUX",
+          "word": "203",
+          "bit": 14
+        },
+        {
+          "name": "M132",
+          "word": "204",
+          "bit": 6
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P138_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].0",
+        "direction": "I",
+        "slot": 5,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M138_AUX",
+        "M138",
+        "P138_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M138_AUX",
+          "word": "205",
+          "bit": 0
+        },
+        {
+          "name": "M138",
+          "word": "206",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P220_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].1",
+        "direction": "I",
+        "slot": 5,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M220_AUX",
+        "M220",
+        "P220_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M220_AUX",
+          "word": "205",
+          "bit": 1
+        },
+        {
+          "name": "M220",
+          "word": "202",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P222_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].2",
+        "direction": "I",
+        "slot": 5,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M222_AUX",
+        "M222",
+        "P222_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M222_AUX",
+          "word": "205",
+          "bit": 2
+        },
+        {
+          "name": "M222",
+          "word": "206",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P310_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].6",
+        "direction": "I",
+        "slot": 5,
+        "bit": 6
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M310_AUX",
+        "M310",
+        "P310_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M310_AUX",
+          "word": "205",
+          "bit": 6
+        },
+        {
+          "name": "M310",
+          "word": "202",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P312_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].7",
+        "direction": "I",
+        "slot": 5,
+        "bit": 7
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M312_AUX",
+        "M312",
+        "P312_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M312_AUX",
+          "word": "205",
+          "bit": 7
+        },
+        {
+          "name": "M312",
+          "word": "202",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P314_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].8",
+        "direction": "I",
+        "slot": 5,
+        "bit": 8
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M314_AUX",
+        "M314",
+        "P314_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M314_AUX",
+          "word": "205",
+          "bit": 8
+        },
+        {
+          "name": "M314",
+          "word": "206",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P402_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO1:I.Data[0].8",
+        "direction": "I",
+        "slot": 0,
+        "bit": 8
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M402_AUX",
+        "M402",
+        "P402_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M402_AUX",
+          "word": "205",
+          "bit": 9
+        },
+        {
+          "name": "M402",
+          "word": "206",
+          "bit": 6
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P404_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].10",
+        "direction": "I",
+        "slot": 5,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M404_AUX",
+        "M404",
+        "P404_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M404_AUX",
+          "word": "205",
+          "bit": 10
+        },
+        {
+          "name": "M404",
+          "word": "206",
+          "bit": 7
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P406_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].11",
+        "direction": "I",
+        "slot": 5,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M406_AUX",
+        "M406",
+        "P406_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M406_AUX",
+          "word": "205",
+          "bit": 11
+        },
+        {
+          "name": "M406",
+          "word": "211",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1000_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].12",
+        "direction": "I",
+        "slot": 5,
+        "bit": 12
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1000_AUX",
+        "M1000",
+        "P1000_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1000_AUX",
+          "word": "205",
+          "bit": 12
+        },
+        {
+          "name": "M1000",
+          "word": "211",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1002_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].13",
+        "direction": "I",
+        "slot": 5,
+        "bit": 13
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1002_AUX",
+        "M1002",
+        "P1002_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1002_AUX",
+          "word": "205",
+          "bit": 13
+        },
+        {
+          "name": "M1002",
+          "word": "211",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1004_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[5].14",
+        "direction": "I",
+        "slot": 5,
+        "bit": 14
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1004_AUX",
+        "M1004",
+        "P1004_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1004_AUX",
+          "word": "205",
+          "bit": 14
+        },
+        {
+          "name": "M1004",
+          "word": "211",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P123_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[7].0",
+        "direction": "I",
+        "slot": 7,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M123_AUX",
+        "M123",
+        "P123_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M123_AUX",
+          "word": "207",
+          "bit": 0
+        },
+        {
+          "name": "M123",
+          "word": "202",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P220A_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[7].1",
+        "direction": "I",
+        "slot": 7,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M220A_AUX",
+        "M220A",
+        "P220A_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M220A_AUX",
+          "word": "207",
+          "bit": 1
+        },
+        {
+          "name": "M220A",
+          "word": "202",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P309_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[7].2",
+        "direction": "I",
+        "slot": 7,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M309_AUX",
+        "M309",
+        "P309_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M309_AUX",
+          "word": "207",
+          "bit": 2
+        },
+        {
+          "name": "M309",
+          "word": "202",
+          "bit": 6
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1001_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[7].3",
+        "direction": "I",
+        "slot": 7,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1001_AUX",
+        "M1001",
+        "P1001_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1001_AUX",
+          "word": "207",
+          "bit": 3
+        },
+        {
+          "name": "M1001",
+          "word": "211",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1005_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[7].4",
+        "direction": "I",
+        "slot": 7,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1005_AUX",
+        "M1005",
+        "P1005_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1005_AUX",
+          "word": "207",
+          "bit": 4
+        },
+        {
+          "name": "M1005",
+          "word": "211",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP8_P229_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[7].6",
+        "direction": "I",
+        "slot": 7,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP8_P229_MS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP4_P408_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[7].8",
+        "direction": "I",
+        "slot": 7,
+        "bit": 8
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP4_P408_MS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP3_P1014_MS.I.Auxiliary_Forward",
+        "channel": "CP2RIO0:I.Data[7].9",
+        "direction": "I",
+        "slot": 7,
+        "bit": 9
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP3_P1014_MS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE126_JF.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].0",
+        "direction": "I",
+        "slot": 0,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE126_JF"
+      ],
+      "run_hits": [
+        {
+          "name": "PE126_JF",
+          "word": "210",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE134_JF.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].1",
+        "direction": "I",
+        "slot": 0,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE134_JF"
+      ],
+      "run_hits": [
+        {
+          "name": "PE134_JF",
+          "word": "210",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE138_P.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].2",
+        "direction": "I",
+        "slot": 0,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE138_P"
+      ],
+      "run_hits": [
+        {
+          "name": "PE138_P",
+          "word": "210",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE226_JF.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].3",
+        "direction": "I",
+        "slot": 0,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "PE226_JF"
+      ],
+      "run_hits": [
+        {
+          "name": "PE226_JF",
+          "word": "210",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE314_P.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].5",
+        "direction": "I",
+        "slot": 0,
+        "bit": 5
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE314_P"
+      ],
+      "run_hits": [
+        {
+          "name": "PE314_P",
+          "word": "210",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE316_J.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].6",
+        "direction": "I",
+        "slot": 0,
+        "bit": 6
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE316_J"
+      ],
+      "run_hits": [
+        {
+          "name": "PE316_J",
+          "word": "210",
+          "bit": 6
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE404_P.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].7",
+        "direction": "I",
+        "slot": 0,
+        "bit": 7
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE404_P"
+      ],
+      "run_hits": [
+        {
+          "name": "PE404_P",
+          "word": "210",
+          "bit": 7
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE406_J.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].8",
+        "direction": "I",
+        "slot": 0,
+        "bit": 8
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE406_J"
+      ],
+      "run_hits": [
+        {
+          "name": "PE406_J",
+          "word": "210",
+          "bit": 8
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE1000_J.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].9",
+        "direction": "I",
+        "slot": 0,
+        "bit": 9
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE1000_J"
+      ],
+      "run_hits": [
+        {
+          "name": "PE1000_J",
+          "word": "210",
+          "bit": 9
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE1002_J.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].10",
+        "direction": "I",
+        "slot": 0,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE1002_J"
+      ],
+      "run_hits": [
+        {
+          "name": "PE1002_J",
+          "word": "210",
+          "bit": 10
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE1004_J.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[0].11",
+        "direction": "I",
+        "slot": 0,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PE1004_J"
+      ],
+      "run_hits": [
+        {
+          "name": "PE1004_J",
+          "word": "210",
+          "bit": 11
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "EZPWS136.I.PS_OK",
+        "channel": "CP2RIO1:I.Data[2].0",
+        "direction": "I",
+        "slot": 2,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "EZPWS136"
+      ],
+      "run_hits": [
+        {
+          "name": "EZPWS136",
+          "word": "212",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "EZPWS312.I.PS_OK",
+        "channel": "CP2RIO1:I.Data[2].2",
+        "direction": "I",
+        "slot": 2,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "EZPWS312"
+      ],
+      "run_hits": [
+        {
+          "name": "EZPWS312",
+          "word": "212",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "EZPWS402.I.PS_OK",
+        "channel": "CP2RIO1:I.Data[2].3",
+        "direction": "I",
+        "slot": 2,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "EZPWS402"
+      ],
+      "run_hits": [
+        {
+          "name": "EZPWS402",
+          "word": "212",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P406_CS.I.Reset_PB",
+        "channel": "CP2RIO1:I.Data[2].8",
+        "direction": "I",
+        "slot": 2,
+        "bit": 8
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P406_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1002_CS.I.Reset_PB",
+        "channel": "CP2RIO1:I.Data[2].9",
+        "direction": "I",
+        "slot": 2,
+        "bit": 9
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1002_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PS312.I.Pressure_OK",
+        "channel": "CP2RIO1:I.Data[2].12",
+        "direction": "I",
+        "slot": 2,
+        "bit": 12
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PS312"
+      ],
+      "run_hits": [
+        {
+          "name": "PS312",
+          "word": "212",
+          "bit": 12
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "PE136_F1.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].0",
+        "direction": "I",
+        "slot": 4,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE136_F1"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE136_F2.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].1",
+        "direction": "I",
+        "slot": 4,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE136_F2"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE312_F.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].3",
+        "direction": "I",
+        "slot": 4,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE312_F"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE408_F.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].4",
+        "direction": "I",
+        "slot": 4,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "PE408_F"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE136_P1.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].5",
+        "direction": "I",
+        "slot": 4,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE136_P1"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE136_P2.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].6",
+        "direction": "I",
+        "slot": 4,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE136_P2"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE312_P.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].8",
+        "direction": "I",
+        "slot": 4,
+        "bit": 8
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE312_P"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE402_P.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].9",
+        "direction": "I",
+        "slot": 4,
+        "bit": 9
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE402_P"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE229_F.I.PE_Clear",
+        "channel": "CP2RIO1:I.Data[4].10",
+        "direction": "I",
+        "slot": 4,
+        "bit": 10
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "PE229_F"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP3_CS.I.Start_PB",
+        "channel": "CP3RIO0:I.Data[1].0",
+        "direction": "I",
+        "slot": 1,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "3PBSTART",
+        "CP3_CS"
+      ],
+      "run_hits": [
+        {
+          "name": "3PBSTART",
+          "word": "301",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP3_CS.I.Stop_PB ",
+        "channel": "CP3RIO0:I.Data[1].1",
+        "direction": "I",
+        "slot": 1,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "3PBSTOP",
+        "CP3_CS"
+      ],
+      "run_hits": [
+        {
+          "name": "3PBSTOP",
+          "word": "301",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP3_MCR1.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].2",
+        "direction": "I",
+        "slot": 1,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "3MCR1_AUX",
+        "3MCR1",
+        "CP3_MCR1"
+      ],
+      "run_hits": [
+        {
+          "name": "3MCR1_AUX",
+          "word": "301",
+          "bit": 2
+        },
+        {
+          "name": "3MCR1",
+          "word": "300",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP3_ESR1.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].3",
+        "direction": "I",
+        "slot": 1,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP3_ESR1"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP3_ESR2.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].4",
+        "direction": "I",
+        "slot": 1,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP3_ESR2"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP3_ESR3.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].5",
+        "direction": "I",
+        "slot": 1,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP3_ESR3"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP3_ESR4.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].6",
+        "direction": "I",
+        "slot": 1,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP3_ESR4"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP3_ESR5.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].7",
+        "direction": "I",
+        "slot": 1,
+        "bit": 7
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "CP3_ESR5"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP3_ES.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].8",
+        "direction": "I",
+        "slot": 1,
+        "bit": 8
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "3ES",
+        "CP3_ES"
+      ],
+      "run_hits": [
+        {
+          "name": "3ES",
+          "word": "301",
+          "bit": 8
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ES400.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].9",
+        "direction": "I",
+        "slot": 1,
+        "bit": 9
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ES400"
+      ],
+      "run_hits": [
+        {
+          "name": "ES400",
+          "word": "301",
+          "bit": 9
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ES1008.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].10",
+        "direction": "I",
+        "slot": 1,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ES1008"
+      ],
+      "run_hits": [
+        {
+          "name": "ES1008",
+          "word": "301",
+          "bit": 10
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ES1014.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].11",
+        "direction": "I",
+        "slot": 1,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ES1014"
+      ],
+      "run_hits": [
+        {
+          "name": "ES1014",
+          "word": "301",
+          "bit": 11
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ES1018.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].12",
+        "direction": "I",
+        "slot": 1,
+        "bit": 12
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ES1018"
+      ],
+      "run_hits": [
+        {
+          "name": "ES1018",
+          "word": "301",
+          "bit": 12
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS141.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].13",
+        "direction": "I",
+        "slot": 1,
+        "bit": 13
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS141"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS141",
+          "word": "301",
+          "bit": 13
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS143.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].14",
+        "direction": "I",
+        "slot": 1,
+        "bit": 14
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS143"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS143",
+          "word": "301",
+          "bit": 14
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS235.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[1].15",
+        "direction": "I",
+        "slot": 1,
+        "bit": 15
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS235"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS235",
+          "word": "301",
+          "bit": 15
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS237.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].0",
+        "direction": "I",
+        "slot": 3,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS237"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS237",
+          "word": "303",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS319.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].1",
+        "direction": "I",
+        "slot": 3,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS319"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS319",
+          "word": "303",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS321.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].2",
+        "direction": "I",
+        "slot": 3,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS321"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS321",
+          "word": "303",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS141A.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].9",
+        "direction": "I",
+        "slot": 3,
+        "bit": 9
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS141A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS141A",
+          "word": "303",
+          "bit": 9
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS143A.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].10",
+        "direction": "I",
+        "slot": 3,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS143A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS143A",
+          "word": "303",
+          "bit": 10
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS235A.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].11",
+        "direction": "I",
+        "slot": 3,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS235A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS235A",
+          "word": "303",
+          "bit": 11
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS237A.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].12",
+        "direction": "I",
+        "slot": 3,
+        "bit": 12
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS237A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS237A",
+          "word": "303",
+          "bit": 12
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS319A.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].13",
+        "direction": "I",
+        "slot": 3,
+        "bit": 13
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS319A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS319A",
+          "word": "303",
+          "bit": 13
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "ESLS321A.I.ES_OK",
+        "channel": "CP3RIO0:I.Data[3].14",
+        "direction": "I",
+        "slot": 3,
+        "bit": 14
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "ESLS321A"
+      ],
+      "run_hits": [
+        {
+          "name": "ESLS321A",
+          "word": "303",
+          "bit": 14
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P140_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].0",
+        "direction": "I",
+        "slot": 5,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M140_AUX",
+        "M140",
+        "P140_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M140_AUX",
+          "word": "305",
+          "bit": 0
+        },
+        {
+          "name": "M140",
+          "word": "302",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P144_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].1",
+        "direction": "I",
+        "slot": 5,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M144_AUX",
+        "M144",
+        "P144_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M144_AUX",
+          "word": "305",
+          "bit": 1
+        },
+        {
+          "name": "M144",
+          "word": "304",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P145A_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].2",
+        "direction": "I",
+        "slot": 5,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M145A_AUX",
+        "M145A",
+        "P145A_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M145A_AUX",
+          "word": "305",
+          "bit": 2
+        },
+        {
+          "name": "M145A",
+          "word": "304",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P145B_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].3",
+        "direction": "I",
+        "slot": 5,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M145B_AUX",
+        "M145B",
+        "P145B_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M145B_AUX",
+          "word": "305",
+          "bit": 3
+        },
+        {
+          "name": "M145B",
+          "word": "304",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P145C_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].4",
+        "direction": "I",
+        "slot": 5,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M145C_AUX",
+        "M145C",
+        "P145C_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M145C_AUX",
+          "word": "305",
+          "bit": 4
+        },
+        {
+          "name": "M145C",
+          "word": "304",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P145D_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].5",
+        "direction": "I",
+        "slot": 5,
+        "bit": 5
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M145D_AUX",
+        "M145D",
+        "P145D_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M145D_AUX",
+          "word": "305",
+          "bit": 5
+        },
+        {
+          "name": "M145D",
+          "word": "304",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P145E_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].6",
+        "direction": "I",
+        "slot": 5,
+        "bit": 6
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER",
+        "WRONG_CONTROLLER_SCOPE"
+      ],
+      "run_candidates": [
+        "M145E_AUX",
+        "M145E",
+        "P145E_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M145E_AUX",
+          "word": "305",
+          "bit": 6
+        },
+        {
+          "name": "M145E",
+          "word": "304",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P146_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].7",
+        "direction": "I",
+        "slot": 5,
+        "bit": 7
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M146_AUX",
+        "M146",
+        "P146_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M146_AUX",
+          "word": "305",
+          "bit": 7
+        },
+        {
+          "name": "M146",
+          "word": "304",
+          "bit": 6
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P234_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].9",
+        "direction": "I",
+        "slot": 5,
+        "bit": 9
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M234_AUX",
+        "M234",
+        "P234_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M234_AUX",
+          "word": "305",
+          "bit": 9
+        },
+        {
+          "name": "M234",
+          "word": "302",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P236_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].10",
+        "direction": "I",
+        "slot": 5,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M236_AUX",
+        "M236",
+        "P236_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M236_AUX",
+          "word": "305",
+          "bit": 10
+        },
+        {
+          "name": "M236",
+          "word": "306",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P240_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].11",
+        "direction": "I",
+        "slot": 5,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M240_AUX",
+        "M240",
+        "P240_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M240_AUX",
+          "word": "305",
+          "bit": 11
+        },
+        {
+          "name": "M240",
+          "word": "306",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P242_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].12",
+        "direction": "I",
+        "slot": 5,
+        "bit": 12
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M242_AUX",
+        "M242",
+        "P242_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M242_AUX",
+          "word": "305",
+          "bit": 12
+        },
+        {
+          "name": "M242",
+          "word": "306",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P318_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].13",
+        "direction": "I",
+        "slot": 5,
+        "bit": 13
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M318_AUX",
+        "M318",
+        "P318_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M318_AUX",
+          "word": "305",
+          "bit": 13
+        },
+        {
+          "name": "M318",
+          "word": "302",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P320_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].14",
+        "direction": "I",
+        "slot": 5,
+        "bit": 14
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M320_AUX",
+        "M320",
+        "P320_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M320_AUX",
+          "word": "305",
+          "bit": 14
+        },
+        {
+          "name": "M320",
+          "word": "302",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P322_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[5].15",
+        "direction": "I",
+        "slot": 5,
+        "bit": 15
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M322_AUX",
+        "M322",
+        "P322_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M322_AUX",
+          "word": "305",
+          "bit": 15
+        },
+        {
+          "name": "M322",
+          "word": "306",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P400_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].0",
+        "direction": "I",
+        "slot": 7,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M400_AUX",
+        "M400",
+        "P400_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M400_AUX",
+          "word": "307",
+          "bit": 0
+        },
+        {
+          "name": "M400",
+          "word": "306",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1006_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].1",
+        "direction": "I",
+        "slot": 7,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1006_AUX",
+        "M1006",
+        "P1006_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1006_AUX",
+          "word": "307",
+          "bit": 1
+        },
+        {
+          "name": "M1006",
+          "word": "311",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1008_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].2",
+        "direction": "I",
+        "slot": 7,
+        "bit": 2
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1008_AUX",
+        "M1008",
+        "P1008_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1008_AUX",
+          "word": "307",
+          "bit": 2
+        },
+        {
+          "name": "M1008",
+          "word": "311",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1010_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].3",
+        "direction": "I",
+        "slot": 7,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1010_AUX",
+        "M1010",
+        "P1010_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1010_AUX",
+          "word": "307",
+          "bit": 3
+        },
+        {
+          "name": "M1010",
+          "word": "311",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1014_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].4",
+        "direction": "I",
+        "slot": 7,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1014_AUX",
+        "M1014",
+        "P1014_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1014_AUX",
+          "word": "307",
+          "bit": 4
+        },
+        {
+          "name": "M1014",
+          "word": "311",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1016_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].5",
+        "direction": "I",
+        "slot": 7,
+        "bit": 5
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1016_AUX",
+        "M1016",
+        "P1016_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1016_AUX",
+          "word": "307",
+          "bit": 5
+        },
+        {
+          "name": "M1016",
+          "word": "311",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1018_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].6",
+        "direction": "I",
+        "slot": 7,
+        "bit": 6
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1018_AUX",
+        "M1018",
+        "P1018_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1018_AUX",
+          "word": "307",
+          "bit": 6
+        },
+        {
+          "name": "M1018",
+          "word": "311",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P139_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].7",
+        "direction": "I",
+        "slot": 7,
+        "bit": 7
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M139_AUX",
+        "M139",
+        "P139_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M139_AUX",
+          "word": "307",
+          "bit": 7
+        },
+        {
+          "name": "M139",
+          "word": "313",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1007_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].8",
+        "direction": "I",
+        "slot": 7,
+        "bit": 8
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1007_AUX",
+        "M1007",
+        "P1007_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1007_AUX",
+          "word": "307",
+          "bit": 8
+        },
+        {
+          "name": "M1007",
+          "word": "313",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1011_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].9",
+        "direction": "I",
+        "slot": 7,
+        "bit": 9
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1011_AUX",
+        "M1011",
+        "P1011_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1011_AUX",
+          "word": "307",
+          "bit": 9
+        },
+        {
+          "name": "M1011",
+          "word": "313",
+          "bit": 2
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1015_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].10",
+        "direction": "I",
+        "slot": 7,
+        "bit": 10
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M1015_AUX",
+        "M1015",
+        "P1015_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M1015_AUX",
+          "word": "307",
+          "bit": 10
+        },
+        {
+          "name": "M1015",
+          "word": "313",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P233_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].11",
+        "direction": "I",
+        "slot": 7,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M233_AUX",
+        "M233",
+        "P233_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M233_AUX",
+          "word": "307",
+          "bit": 11
+        },
+        {
+          "name": "M233",
+          "word": "313",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P317_MS.I.Auxiliary_Forward",
+        "channel": "CP3RIO0:I.Data[7].13",
+        "direction": "I",
+        "slot": 7,
+        "bit": 13
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "M317_AUX",
+        "M317",
+        "P317_MS"
+      ],
+      "run_hits": [
+        {
+          "name": "M317_AUX",
+          "word": "307",
+          "bit": 13
+        },
+        {
+          "name": "M317",
+          "word": "313",
+          "bit": 6
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "Trash_Compactor_Running",
+        "channel": "CP3RIO1:I.Data[0].9",
+        "direction": "I",
+        "slot": 0,
+        "bit": 9
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P400_CS.I.Reset_PB",
+        "channel": "CP3RIO1:I.Data[4].0",
+        "direction": "I",
+        "slot": 4,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P400_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1008_CS.I.Reset_PB",
+        "channel": "CP3RIO1:I.Data[4].1",
+        "direction": "I",
+        "slot": 4,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1008_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1014_CS.I.Reset_PB",
+        "channel": "CP3RIO1:I.Data[4].2",
+        "direction": "I",
+        "slot": 4,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1014_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PS320.I.Pressure_OK",
+        "channel": "CP3RIO1:I.Data[4].7",
+        "direction": "I",
+        "slot": 4,
+        "bit": 7
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "PS320"
+      ],
+      "run_hits": [
+        {
+          "name": "PS320",
+          "word": "314",
+          "bit": 7
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "EZPWS150.I.PS_OK",
+        "channel": "CP3RIO1:I.Data[4].11",
+        "direction": "I",
+        "slot": 4,
+        "bit": 11
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "EZPWS150"
+      ],
+      "run_hits": [
+        {
+          "name": "EZPWS150",
+          "word": "314",
+          "bit": 11
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "EZPWS242.I.PS_OK",
+        "channel": "CP3RIO1:I.Data[4].12",
+        "direction": "I",
+        "slot": 4,
+        "bit": 12
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "EZPWS242"
+      ],
+      "run_hits": [
+        {
+          "name": "EZPWS242",
+          "word": "314",
+          "bit": 12
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "EZPWS320.I.PS_OK",
+        "channel": "CP3RIO1:I.Data[4].13",
+        "direction": "I",
+        "slot": 4,
+        "bit": 13
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "EZPWS320"
+      ],
+      "run_hits": [
+        {
+          "name": "EZPWS320",
+          "word": "314",
+          "bit": 13
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P1018_CS.I.Start_PB",
+        "channel": "CP3RIO1:I.Data[6].0",
+        "direction": "I",
+        "slot": 6,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1018_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1018_CS.I.Stop_PB ",
+        "channel": "CP3RIO1:I.Data[6].1",
+        "direction": "I",
+        "slot": 6,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1018_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE150_F1.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].0",
+        "direction": "I",
+        "slot": 1,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE150_F1"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE150_F2.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].1",
+        "direction": "I",
+        "slot": 1,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE150_F2"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE242_F.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].2",
+        "direction": "I",
+        "slot": 1,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE242_F"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE320_F.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].3",
+        "direction": "I",
+        "slot": 1,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE320_F"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE402_F.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].4",
+        "direction": "I",
+        "slot": 1,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE402_F"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE150_P1.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].5",
+        "direction": "I",
+        "slot": 1,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE150_P1"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE150_P2.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].6",
+        "direction": "I",
+        "slot": 1,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE150_P2"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE242_P.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].7",
+        "direction": "I",
+        "slot": 1,
+        "bit": 7
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE242_P"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "PE320_P.I.PE_Clear",
+        "channel": "CP3RIO2:I.Data[1].8",
+        "direction": "I",
+        "slot": 1,
+        "bit": 8
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "PE320_P"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP2_CS.O.Start_PB_LT",
+        "channel": "CP2RIO0:O.Data[0].0",
+        "direction": "O",
+        "slot": 0,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "2PBSTART_PLT",
+        "CP2_CS"
+      ],
+      "run_hits": [
+        {
+          "name": "2PBSTART_PLT",
+          "word": "200",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP2_CS.O.Stop_PB_LT",
+        "channel": "CP2RIO0:O.Data[0].1",
+        "direction": "O",
+        "slot": 0,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "2PBSTOP_PLT",
+        "CP2_CS"
+      ],
+      "run_hits": [
+        {
+          "name": "2PBSTOP_PLT",
+          "word": "200",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP2_MCR1_Power_On",
+        "channel": "CP3RIO0:O.Data[0].2",
+        "direction": "O",
+        "slot": 0,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP2_WH.O.Horn",
+        "channel": "CP2RIO0:O.Data[0].3",
+        "direction": "O",
+        "slot": 0,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "2WH",
+        "CP2_WH"
+      ],
+      "run_hits": [
+        {
+          "name": "2WH",
+          "word": "200",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "WH310.O.Horn",
+        "channel": "CP2RIO0:O.Data[0].4",
+        "direction": "O",
+        "slot": 0,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "WH310"
+      ],
+      "run_hits": [
+        {
+          "name": "WH310",
+          "word": "200",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P124_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[2].0",
+        "direction": "O",
+        "slot": 2,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P124_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P220_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[2].1",
+        "direction": "O",
+        "slot": 2,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P220_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P310_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[2].2",
+        "direction": "O",
+        "slot": 2,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P310_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P312_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[2].3",
+        "direction": "O",
+        "slot": 2,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P312_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P123_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[2].4",
+        "direction": "O",
+        "slot": 2,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P123_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P220A_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[2].5",
+        "direction": "O",
+        "slot": 2,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P220A_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P309_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[2].6",
+        "direction": "O",
+        "slot": 2,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P309_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P128_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[4].0",
+        "direction": "O",
+        "slot": 4,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P128_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P130A_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[4].1",
+        "direction": "O",
+        "slot": 4,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P130A_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P130B_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[4].2",
+        "direction": "O",
+        "slot": 4,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P130B_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P130C_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[4].3",
+        "direction": "O",
+        "slot": 4,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P130C_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P130D_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[4].4",
+        "direction": "O",
+        "slot": 4,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P130D_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P130E_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[4].5",
+        "direction": "O",
+        "slot": 4,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P130E_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P132_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[4].6",
+        "direction": "O",
+        "slot": 4,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P132_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P138_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[6].0",
+        "direction": "O",
+        "slot": 6,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P138_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P222_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[6].1",
+        "direction": "O",
+        "slot": 6,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P222_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P314_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[6].5",
+        "direction": "O",
+        "slot": 6,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P314_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P402_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[6].6",
+        "direction": "O",
+        "slot": 6,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P402_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P404_Conv.O.Run",
+        "channel": "CP2RIO0:O.Data[6].7",
+        "direction": "O",
+        "slot": 6,
+        "bit": 7
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P404_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P406_Conv.O.Run",
+        "channel": "CP2RIO1:O.Data[1].0",
+        "direction": "O",
+        "slot": 1,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P406_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1000_Conv.O.Run",
+        "channel": "CP2RIO1:O.Data[1].1",
+        "direction": "O",
+        "slot": 1,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1000_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1002_Conv.O.Run",
+        "channel": "CP2RIO1:O.Data[1].2",
+        "direction": "O",
+        "slot": 1,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1002_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1004_Conv.O.Run",
+        "channel": "CP2RIO1:O.Data[1].3",
+        "direction": "O",
+        "slot": 1,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1004_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1001_Conv.O.Run",
+        "channel": "CP2RIO1:O.Data[1].4",
+        "direction": "O",
+        "slot": 1,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1001_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1005_Conv.O.Run",
+        "channel": "CP2RIO1:O.Data[1].5",
+        "direction": "O",
+        "slot": 1,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1005_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "WB406.O.Red",
+        "channel": "CP2RIO1:O.Data[3].0",
+        "direction": "O",
+        "slot": 3,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "WB406"
+      ],
+      "run_hits": [
+        {
+          "name": "WB406",
+          "word": "213",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P136_P1_Conv.O.Release",
+        "channel": "CP2RIO1:O.Data[5].0",
+        "direction": "O",
+        "slot": 5,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P136_P1_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P136_P2_Conv.O.Release",
+        "channel": "CP2RIO1:O.Data[5].1",
+        "direction": "O",
+        "slot": 5,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P136_P2_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P312_Conv.O.Release",
+        "channel": "CP2RIO1:O.Data[5].3",
+        "direction": "O",
+        "slot": 5,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P312_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P402_Conv.O.Release",
+        "channel": "CP2RIO1:O.Data[5].4",
+        "direction": "O",
+        "slot": 5,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P402_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "CP3_CS.O.Start_PB_LT",
+        "channel": "CP3RIO0:O.Data[0].0",
+        "direction": "O",
+        "slot": 0,
+        "bit": 0
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "3PBSTART_PLT",
+        "CP3_CS"
+      ],
+      "run_hits": [
+        {
+          "name": "3PBSTART_PLT",
+          "word": "300",
+          "bit": 0
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP3_CS.O.Stop_PB_LT",
+        "channel": "CP3RIO0:O.Data[0].1",
+        "direction": "O",
+        "slot": 0,
+        "bit": 1
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "3PBSTOP_PLT",
+        "CP3_CS"
+      ],
+      "run_hits": [
+        {
+          "name": "3PBSTOP_PLT",
+          "word": "300",
+          "bit": 1
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "CP3_WH.O.Horn",
+        "channel": "CP3RIO0:O.Data[0].3",
+        "direction": "O",
+        "slot": 0,
+        "bit": 3
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "3WH",
+        "CP3_WH"
+      ],
+      "run_hits": [
+        {
+          "name": "3WH",
+          "word": "300",
+          "bit": 3
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "WH318.O.Horn",
+        "channel": "CP3RIO0:O.Data[0].4",
+        "direction": "O",
+        "slot": 0,
+        "bit": 4
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "WH318"
+      ],
+      "run_hits": [
+        {
+          "name": "WH318",
+          "word": "300",
+          "bit": 4
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P140_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[2].0",
+        "direction": "O",
+        "slot": 2,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P140_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P234_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[2].1",
+        "direction": "O",
+        "slot": 2,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P234_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P318_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[2].2",
+        "direction": "O",
+        "slot": 2,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P318_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P320_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[2].3",
+        "direction": "O",
+        "slot": 2,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P320_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P144_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[4].0",
+        "direction": "O",
+        "slot": 4,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P144_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P145A_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[4].1",
+        "direction": "O",
+        "slot": 4,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P145A_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P145B_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[4].2",
+        "direction": "O",
+        "slot": 4,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P145B_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P145C_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[4].3",
+        "direction": "O",
+        "slot": 4,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P145C_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P145D_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[4].4",
+        "direction": "O",
+        "slot": 4,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P145D_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P145E_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[4].5",
+        "direction": "O",
+        "slot": 4,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P145E_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P146_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[4].6",
+        "direction": "O",
+        "slot": 4,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P146_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P236_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[6].0",
+        "direction": "O",
+        "slot": 6,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P236_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P240_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[6].1",
+        "direction": "O",
+        "slot": 6,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P240_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P242_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[6].2",
+        "direction": "O",
+        "slot": 6,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P242_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P322_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[6].3",
+        "direction": "O",
+        "slot": 6,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P322_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P400_Conv.O.Run",
+        "channel": "CP3RIO0:O.Data[6].4",
+        "direction": "O",
+        "slot": 6,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P400_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1006_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[1].0",
+        "direction": "O",
+        "slot": 1,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1006_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1008_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[1].1",
+        "direction": "O",
+        "slot": 1,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1008_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1010_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[1].2",
+        "direction": "O",
+        "slot": 1,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1010_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1014_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[1].3",
+        "direction": "O",
+        "slot": 1,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1014_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1016_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[1].4",
+        "direction": "O",
+        "slot": 1,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1016_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1018_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[1].5",
+        "direction": "O",
+        "slot": 1,
+        "bit": 5
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1018_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P139_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[3].0",
+        "direction": "O",
+        "slot": 3,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P139_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1007_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[3].1",
+        "direction": "O",
+        "slot": 3,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1007_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1011_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[3].2",
+        "direction": "O",
+        "slot": 3,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1011_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1015_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[3].3",
+        "direction": "O",
+        "slot": 3,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1015_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P233_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[3].4",
+        "direction": "O",
+        "slot": 3,
+        "bit": 4
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P233_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P317_Conv.O.Run",
+        "channel": "CP3RIO1:O.Data[3].6",
+        "direction": "O",
+        "slot": 3,
+        "bit": 6
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P317_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1018_CS.O.Start_PB_LT",
+        "channel": "CP3RIO1:O.Data[7].0",
+        "direction": "O",
+        "slot": 7,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1018_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P1018_CS.O.Stop_PB_LT",
+        "channel": "CP3RIO1:O.Data[7].1",
+        "direction": "O",
+        "slot": 7,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P1018_CS"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "WB400.O.Red",
+        "channel": "CP3RIO1:O.Data[7].5",
+        "direction": "O",
+        "slot": 7,
+        "bit": 5
+      },
+      "taxonomy": [
+        "WRONG_LOGICAL_DEVICE",
+        "WRONG_ADAPTER"
+      ],
+      "run_candidates": [
+        "WB400"
+      ],
+      "run_hits": [
+        {
+          "name": "WB400",
+          "word": "317",
+          "bit": 5
+        }
+      ]
+    },
+    {
+      "finished": {
+        "tag": "P150_P1_Conv.O.Release",
+        "channel": "CP3RIO2:O.Data[0].0",
+        "direction": "O",
+        "slot": 0,
+        "bit": 0
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P150_P1_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P150_P2_Conv.O.Release",
+        "channel": "CP3RIO2:O.Data[0].1",
+        "direction": "O",
+        "slot": 0,
+        "bit": 1
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P150_P2_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P242_Conv.O.Release",
+        "channel": "CP3RIO2:O.Data[0].2",
+        "direction": "O",
+        "slot": 0,
+        "bit": 2
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P242_Conv"
+      ],
+      "run_hits": []
+    },
+    {
+      "finished": {
+        "tag": "P320_Conv.O.Release",
+        "channel": "CP3RIO2:O.Data[0].3",
+        "direction": "O",
+        "slot": 0,
+        "bit": 3
+      },
+      "taxonomy": [
+        "MISSING_RUN_RELATIONSHIP"
+      ],
+      "run_candidates": [
+        "P320_Conv"
+      ],
+      "run_hits": []
+    }
+  ],
+  "summary": {
+    "mismatched_generated": 32,
+    "missing_finished": 221,
+    "REAL_LOGICAL_POINT_generated": 34,
+    "UNUSED_PLACEHOLDER_generated": 366,
+    "REAL_LOGICAL_POINT_finished": 234,
+    "UNUSED_PLACEHOLDER_finished": 274
+  }
+}

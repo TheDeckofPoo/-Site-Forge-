@@ -1,0 +1,97 @@
+{
+  "generated_at": "2026-09-13T04:09:56.751332+00:00",
+  "ok": true,
+  "machine": "ORNCCP2",
+  "policy": {
+    "no_autogen_iomap_emit_changes": true,
+    "finished_plc_oracle_only": true,
+    "edges_from_run_only": true,
+    "no_name_similarity_edges": true
+  },
+  "import": {
+    "ok": true,
+    "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+    "skipped": true
+  },
+  "graph_nodes": 3909,
+  "graph_edges": 5168,
+  "graph_by_type": {
+    "Controller": 1,
+    "EthernetCard": 1,
+    "RIOAdapter": 5,
+    "FortnaWord": 170,
+    "LogicalPoint": 1426,
+    "Device": 712,
+    "Conveyor": 487,
+    "Bit": 1107
+  },
+  "controller_scope": {
+    "LOCAL": 59,
+    "EXTERNAL_REFERENCE": 4,
+    "OUT_OF_SCOPE": 147,
+    "UNRESOLVED": 74
+  },
+  "l5x": {
+    "label": "diagnostic candidate pending mapping rewrite",
+    "mapping_code_modified": false,
+    "method": "copy_foundation_candidate",
+    "ok": true,
+    "source_l5x": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP2_foundation_candidate.L5X",
+    "sha256": "940cd0e81ad6494253853177f5244650dcb33ee060fff22f95a94611374f1bbf",
+    "note": "Copied existing from-run foundation candidate; IO_MAP emit logic untouched"
+  },
+  "reverse_trace": {
+    "traced": 20,
+    "reconstructable": 15
+  },
+  "io_map": {
+    "finished_real_I": 159,
+    "finished_real_O": 75,
+    "generated_real_I": 12,
+    "generated_real_O": 22,
+    "finished_placeholder_I": 95,
+    "finished_placeholder_O": 179,
+    "generated_placeholder_I": 244,
+    "generated_placeholder_O": 122,
+    "REAL_LOGICAL_POINT_finished": 234,
+    "UNUSED_PLACEHOLDER_finished": 274,
+    "REAL_LOGICAL_POINT_generated": 34,
+    "UNUSED_PLACEHOLDER_generated": 366
+  },
+  "taxonomy_summary": {
+    "mismatched_generated": 32,
+    "missing_finished": 221,
+    "REAL_LOGICAL_POINT_generated": 34,
+    "UNUSED_PLACEHOLDER_generated": 366,
+    "REAL_LOGICAL_POINT_finished": 234,
+    "UNUSED_PLACEHOLDER_finished": 274
+  },
+  "transport": {
+    "local_rendered": 59,
+    "external_boundaries": 1,
+    "full_remote_networks_rendered": false
+  },
+  "acceptance": {
+    "graph_nodes": 3909,
+    "graph_edges": 5168,
+    "reverse_traces": 20,
+    "reconstructable_from_RUN": 15,
+    "REAL_LOGICAL_POINT_finished_I": 159,
+    "REAL_LOGICAL_POINT_finished_O": 75,
+    "REAL_LOGICAL_POINT_generated_I": 12,
+    "REAL_LOGICAL_POINT_generated_O": 22,
+    "UNUSED_PLACEHOLDER_finished_I": 95,
+    "UNUSED_PLACEHOLDER_finished_O": 179,
+    "UNUSED_PLACEHOLDER_generated_I": 244,
+    "UNUSED_PLACEHOLDER_generated_O": 122,
+    "missing_finished_tag_direction": 221,
+    "extra_generated_tag_direction": 21,
+    "equivalent_tag_direction": 11,
+    "scope_LOCAL": 59,
+    "scope_EXTERNAL_REFERENCE": 4,
+    "transport_local_rendered": 59,
+    "transport_external_boundaries": 1,
+    "foundation_artifact_labeled_I": 256,
+    "foundation_artifact_labeled_O": 144
+  }
+}

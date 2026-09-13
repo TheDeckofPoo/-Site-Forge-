@@ -1,0 +1,43 @@
+{
+  "generated_at": "2026-09-13T04:09:57.064277+00:00",
+  "finished_CP_I_rungs": 304,
+  "finished_CP_O_rungs": 304,
+  "counts": {
+    "finished_real_I": 159,
+    "finished_real_O": 75,
+    "generated_real_I": 12,
+    "generated_real_O": 22,
+    "finished_placeholder_I": 95,
+    "finished_placeholder_O": 179,
+    "generated_placeholder_I": 244,
+    "generated_placeholder_O": 122,
+    "REAL_LOGICAL_POINT_finished": 234,
+    "UNUSED_PLACEHOLDER_finished": 274,
+    "REAL_LOGICAL_POINT_generated": 34,
+    "UNUSED_PLACEHOLDER_generated": 366
+  },
+  "foundation_metric_artifact": {
+    "labeled_generated_real_I": 256,
+    "labeled_generated_real_O": 144,
+    "true_generated_real_I": 12,
+    "true_generated_real_O": 22,
+    "explanation": "plc2-foundation io_map_comparison counted ALL XIC/OTE rows from _parse_iomap_mappings as 'real', including NO_PointPlaceholder fill. True REAL_LOGICAL_POINT generated is much smaller (placeholders dominate). Therefore generated 256/144 did NOT exceed finished 159/75 in true real maps \u2014 the foundation metric mixed placeholders into 'real'."
+  },
+  "why_generated_exceeds_finished_investigation": {
+    "question": "Why did foundation report generated real 256/144 > finished 159/75?",
+    "findings": [
+      "Metric contamination: placeholder rungs (XIC(ch)OTE(NO_PointPlaceholder)) were counted as real.",
+      "True generated REAL_LOGICAL_POINT: 34 (I=12, O=22).",
+      "Finished REAL_LOGICAL_POINT: 234 (I=159, O=75).",
+      "Generated under-maps finished real points; over-fills unused channels with placeholders.",
+      "Some generated real tags are site PE/motor points that may be wrong-scope or wrong-channel vs finished.",
+      "Adapter name family T_1794_AENT_* vs finished CP2RIO*/CP3RIO* prevents exact channel identity matches.",
+      "Generator word_map is sparse for Greensboro Fortna words (200/201/300\u2026) \u2014 Configio owns those words."
+    ]
+  },
+  "equivalent_tag_direction": 11,
+  "missing_finished_tag_direction": 221,
+  "extra_generated_tag_direction": 21,
+  "generated_CP_I_rungs": 264,
+  "generated_CP_O_rungs": 155
+}
