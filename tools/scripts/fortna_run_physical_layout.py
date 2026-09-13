@@ -58,24 +58,34 @@ def _infer_pe_roles(tag: str) -> list[str]:
 def _normalize_canvas(
     equipment: list[dict],
     *,
-    canvas_w: float = 1600.0,
-    canvas_h: float = 1000.0,
-    pad: float = 80.0,
+    # Fixed RUN→canvas scale. Do NOT compress plant geometry into a viewport box;
+    # Electron fitView zooms to the resulting extents (Curtis Phase 5 acceptance).
+    pixels_per_run_unit: float = 0.045,
+    pad: float = 120.0,
+    # Legacy kwargs retained for callers; ignored so geometry is never squashed.
+    canvas_w: float | None = None,
+    canvas_h: float | None = None,
 ) -> tuple[dict[str, tuple[float, float]], float]:
-    """Map RUN source XY → canvas pixels. Returns tag→(x,y) and scale."""
-    pts = [(e["conveyor"].upper(), e["x"], e["y"]) for e in equipment if e.get("x") is not None and e.get("y") is not None]
+    """Map RUN source XY → canvas pixels at a stable scale.
+
+    Returns tag→(x,y) and scale. Viewport fitting is the UI's job — never shrink
+    spacing to fit 1600×1000 (that produced the compressed-knot failure mode).
+    """
+    del canvas_w, canvas_h  # intentionally unused
+    pts = [
+        (e["conveyor"].upper(), e["x"], e["y"])
+        for e in equipment
+        if e.get("x") is not None and e.get("y") is not None
+    ]
     if not pts:
-        return {}, 1.0
+        return {}, float(pixels_per_run_unit)
     xs = [p[1] for p in pts]
     ys = [p[2] for p in pts]
-    min_x, max_x = min(xs), max(xs)
-    min_y, max_y = min(ys), max(ys)
-    span_x = max(max_x - min_x, 1.0)
-    span_y = max(max_y - min_y, 1.0)
-    usable_w = canvas_w - 2 * pad
-    usable_h = canvas_h - 2 * pad
-    scale = min(usable_w / span_x, usable_h / span_y)
-    # Center the layout
+    min_x = min(xs)
+    max_y = max(ys)
+    scale = float(pixels_per_run_unit)
+    if scale <= 0:
+        scale = 0.045
     out: dict[str, tuple[float, float]] = {}
     for tag, x, y in pts:
         # Flip Y for screen coords (RUN Y often increases "up" on prints)
@@ -327,6 +337,54 @@ def build_transport_graph(
         dst = next(n for n in nodes if n["id"] == id_by_tag[to])
         src["downstream"] = dst["conveyorTag"]
         src["terminal"] = False
+
+    # Overlay proven Mtrchain Timer_Name topology when geometric mate is missing.
+    # Same canonical section model as Autogen — never invent edges.
+    try:
+        from fortna_conveyor_section_model import (
+            discover_sections,
+            infer_downstream_from_mtrchain,
+        )
+
+        section_model = discover_sections(run_dir, machine)
+        prefer = section_model.get("preferred_induct") or {}
+        mtr_ds = infer_downstream_from_mtrchain(run_dir, preferred_induct=prefer) or {}
+        for src_tag, ds in mtr_ds.items():
+            ds = str(ds or "").strip()
+            if not ds:
+                continue
+            frm = src_tag.upper()
+            to = ds.upper()
+            if frm not in id_by_tag or to not in id_by_tag:
+                continue
+            src = next(n for n in nodes if n["id"] == id_by_tag[frm])
+            if (src.get("downstream") or "").strip():
+                continue  # geometric mate already won
+            dst = next(n for n in nodes if n["id"] == id_by_tag[to])
+            src["downstream"] = dst["conveyorTag"]
+            src["terminal"] = False
+            src.setdefault("topologyProvenance", {
+                "rule": "mtrchain_timer_startup_order",
+                "confidence": "PROVEN_CROSS_TABLE",
+                "source_table": "Mtrchain.asc",
+            })
+            wires.append(
+                {
+                    "id": _uid("wire"),
+                    "from": id_by_tag[frm],
+                    "to": id_by_tag[to],
+                    "toPort": "in",
+                    "physical": False,
+                    "fromAnchor": "exit",
+                    "toAnchor": "entry",
+                    "confidence": "PROVEN_CROSS_TABLE",
+                    "provenance": "mtrchain_timer",
+                }
+            )
+            auto_connected += 1
+            inbound_count[to] = inbound_count.get(to, 0) + 1
+    except Exception:
+        pass
 
     # Merge detection: 2+ auto inbound → asMerge
     merges_detected = 0

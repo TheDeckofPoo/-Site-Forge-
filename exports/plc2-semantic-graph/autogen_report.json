@@ -1,0 +1,368 @@
+{
+  "project": "ORNCCP2",
+  "processor": "1756-L83E",
+  "revision": "35.00",
+  "library": "tools\\libraries\\OReilly_Library_v3.L5X",
+  "conveyor_count": 70,
+  "area_count": 1,
+  "tag_count": 476,
+  "program_count": 6,
+  "programs": [
+    "ORNCCP2_Area_Slow",
+    "ORNCCP2_Area_Fast",
+    "ORNCCP2_Area_L1",
+    "ORNCCP2_Area_L2",
+    "Sys",
+    "IO_MAP"
+  ],
+  "areas_summary": {
+    "ORNCCP2_Area": 70
+  },
+  "conveyor_sample": [
+    "P1000",
+    "P1001",
+    "P1002",
+    "P1004",
+    "P1005",
+    "P1006",
+    "P1007",
+    "P1008",
+    "P1010",
+    "P1011",
+    "P1014",
+    "P1015",
+    "P1016",
+    "P1018",
+    "P123",
+    "P124",
+    "P126",
+    "P128",
+    "P130A",
+    "P130B",
+    "P130C",
+    "P130D",
+    "P130E",
+    "P132",
+    "P134"
+  ],
+  "template_usage": {
+    "P3000_Conv": 59,
+    "P4000_Conv": 11
+  },
+  "missing_excel_templates_in_library": [
+    "P7000_Conv",
+    "P8000_Conv"
+  ],
+  "io_module_count": 32,
+  "io_point_count": 236,
+  "io_tags_in_l5x": 236,
+  "pe_device_count": 44,
+  "pe_logic_rungs": 52,
+  "slow_flt_rungs": 70,
+  "conveyors_with_real_pe": 33,
+  "eip_adapter_count": 5,
+  "eip_rio_modules": [
+    "CP2RIO0",
+    "CP2RIO1",
+    "CP3RIO0",
+    "CP3RIO1",
+    "CP3RIO2"
+  ],
+  "eip_child_modules": [
+    "CP2RIO0_0",
+    "CP2RIO0_1",
+    "CP2RIO0_2",
+    "CP2RIO0_3",
+    "CP2RIO0_4",
+    "CP2RIO0_5",
+    "CP2RIO0_6",
+    "CP2RIO0_7",
+    "CP2RIO1_0",
+    "CP2RIO1_1",
+    "CP2RIO1_2",
+    "CP2RIO1_3",
+    "CP2RIO1_4",
+    "CP2RIO1_5",
+    "CP3RIO0_0",
+    "CP3RIO0_1",
+    "CP3RIO0_2",
+    "CP3RIO0_3",
+    "CP3RIO0_4",
+    "CP3RIO0_5",
+    "CP3RIO0_6",
+    "CP3RIO0_7",
+    "CP3RIO1_0",
+    "CP3RIO1_1",
+    "CP3RIO1_2",
+    "CP3RIO1_3",
+    "CP3RIO1_4",
+    "CP3RIO1_5",
+    "CP3RIO1_6",
+    "CP3RIO1_7",
+    "CP3RIO2_0",
+    "CP3RIO2_1"
+  ],
+  "eip_child_count": 32,
+  "eip_interface_ip": "192.168.1.9",
+  "io_word_map_count": 59,
+  "io_map_rungs": 422,
+  "io_map_mapped": 225,
+  "io_map_unmapped": 11,
+  "io_map_placeholders": 177,
+  "io_map_fill_placeholders": true,
+  "io_map_mappable": 236,
+  "io_map_source": "run_tar_gz_banks_eip",
+  "io_map_note": "Built from RUN Conveyor.asc banks + EIP word_map \u2192 CPxRIOn modules",
+  "include_io_map": true,
+  "gold_io_map_blocked": false,
+  "eip_modules_filtered_to_word_map": [
+    "CP2RIO0",
+    "CP2RIO1",
+    "CP3RIO0",
+    "CP3RIO1",
+    "CP3RIO2",
+    "T_1794_AENT_1",
+    "T_1794_AENT_2",
+    "T_1794_AENT_3",
+    "T_1794_AENT_4",
+    "T_1794_AENT_5"
+  ],
+  "gold_programs": [
+    "Sys"
+  ],
+  "sorter_build": {},
+  "equipment_plan": {
+    "inventory": {
+      "run_dir": "workspace\\active\\RUN",
+      "fortna_dir": "workspace\\active\\RUN\\FORTNA",
+      "machine_name": "ORNCCP2",
+      "counts": {
+        "conveyors": 7,
+        "vfds": 0,
+        "photoeyes_named": 44,
+        "motors_named": 118,
+        "beacons_in_conveyor": 32,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 302,
+        "conveyor_asc_rows_all": 6000
+      },
+      "kind_counts": {
+        "spare": 59,
+        "estop": 18,
+        "beacon": 32,
+        "pushbutton": 6,
+        "motor": 118,
+        "photoeye": 44,
+        "power_supply": 9,
+        "conveyor": 7,
+        "digital_out": 9
+      },
+      "conveyors": [
+        "PB400_JR",
+        "PB406_JR",
+        "PB1002_JR",
+        "PB1008_JR",
+        "PB1014_JR",
+        "PBSTOP1018_PLT",
+        "PBSTART1018_PLT"
+      ],
+      "vfds": [],
+      "photoeyes": [
+        "EZPE136_F1",
+        "EZPE136_F2",
+        "EZPE136_P1",
+        "EZPE136_P2",
+        "EZPE150_F1",
+        "EZPE150_F2",
+        "EZPE150_P1",
+        "EZPE150_P2",
+        "EZPE229_F",
+        "EZPE230_F",
+        "EZPE230_P",
+        "EZPE242_F",
+        "EZPE242_P",
+        "EZPE312_F",
+        "EZPE312_P",
+        "EZPE320_F",
+        "EZPE320_P",
+        "EZPE402_F",
+        "EZPE402_P",
+        "EZPE408_F",
+        "PE1000_J",
+        "PE1002_J",
+        "PE1004_J",
+        "PE1006_J",
+        "PE1008_J",
+        "PE1010_J",
+        "PE1014_J",
+        "PE1018_J",
+        "PE126_JF",
+        "PE134_JF",
+        "PE138_P",
+        "PE142_JF",
+        "PE148_JF",
+        "PE215_J",
+        "PE226_JF",
+        "PE232_P",
+        "PE238_JF",
+        "PE314_P",
+        "PE316_J",
+        "PE322_P",
+        "PE324_J",
+        "PE400_J",
+        "PE404_P",
+        "PE406_J"
+      ],
+      "conveyor_types": {
+        "STRAIGHT": 7
+      },
+      "tables": {
+        "encoders": {
+          "file": "Encoders.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP2"
+        },
+        "estop": {
+          "file": "EStop.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP2"
+        },
+        "merges": {
+          "file": "Merges.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP2"
+        },
+        "sorters": {
+          "file": "Sorters.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP2"
+        },
+        "beacons": {
+          "file": "BeaconInfo.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP2"
+        },
+        "mtrchain": {
+          "file": "Mtrchain.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP2"
+        },
+        "power_supply": {
+          "file": "PowerSupply.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP2"
+        }
+      },
+      "flags": {
+        "has_srt_track": true,
+        "has_srt_device": true,
+        "has_eipcfg": true,
+        "transport_heavy": false,
+        "merge_candidate": false,
+        "sorter_candidate": false
+      }
+    },
+    "plan": {
+      "profile": "transport",
+      "features": {
+        "transport_fast_slow": true,
+        "io_map": true,
+        "pe_logic": true,
+        "full_pe": true,
+        "motor_starter_flt": true,
+        "vfd_as_motor_starter_udt": false,
+        "es_udt": false,
+        "merge_2to1": false,
+        "sorter_track_pack": false,
+        "enc_riocard": false,
+        "sys_pack": true,
+        "comm_diag": true
+      },
+      "aois": [
+        "AOI_CommDiag",
+        "Fast_Conv",
+        "Full_PE",
+        "PE_Logic",
+        "Slow_Flt",
+        "Slow_Jam"
+      ],
+      "packs": [
+        "Sys"
+      ],
+      "merge_rows_configured": 0,
+      "notes": [
+        "Sawtooth: optional Sawtooth_Merge pack available (from PLC4S pattern) \u2014 enable manually; not auto-emitted from tar yet."
+      ],
+      "inventory_counts": {
+        "conveyors": 7,
+        "vfds": 0,
+        "photoeyes_named": 44,
+        "motors_named": 118,
+        "beacons_in_conveyor": 32,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 302,
+        "conveyor_asc_rows_all": 6000
+      }
+    }
+  },
+  "optional_programs_available": [
+    "ShippingSorter_Area_L3",
+    "WCS_Interface_TCP_IP",
+    "Sorter_Track",
+    "Sawtooth_Merge"
+  ],
+  "task_schedule": {
+    "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
+    "Sys": "Task Sys @ 100ms (own task)",
+    "P10_Fast_20ms": [
+      "ORNCCP2_Area_Fast"
+    ],
+    "P11_Slow_200ms": [
+      "ORNCCP2_Area_Slow"
+    ]
+  },
+  "encoded_aois_stripped": false,
+  "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
+  "note": "Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File\u2192Open L5X).",
+  "generation_assertions": {
+    "ok": true,
+    "failures": []
+  },
+  "studio_tags_csv_error": "unterminated string literal (detected at line 1105) (fortna_plc_export.py, line 1105)",
+  "rio_inventory": "exports\\plc2-semantic-graph\\rio_inventory.json",
+  "rio_module_count": 32,
+  "rio_names": [
+    "CP2RIO0",
+    "CP2RIO1",
+    "CP3RIO0",
+    "CP3RIO1",
+    "CP3RIO2"
+  ],
+  "physical_io_map_csv": "exports\\plc2-semantic-graph\\physical_io_map.csv",
+  "physical_io_mapped": 235,
+  "physical_io_unmapped": 1,
+  "io_map_pending_csv": "exports\\plc2-semantic-graph\\io_map_pending.csv"
+}

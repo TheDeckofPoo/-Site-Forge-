@@ -1,0 +1,4971 @@
+{
+  "generated_at": "2026-09-13T15:09:01.018822+00:00",
+  "machine": "ORNCCP2",
+  "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+  "source_of_truth": "RUN + cross-table (Mtrchain Timer_Name, Fullline Response IO, PE/SSV)",
+  "finished_validation_only": true,
+  "finished_path": "workspace\\validation\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+  "section_count": 77,
+  "downstream_proven_count": 24,
+  "rows": [
+    {
+      "section": "P1000",
+      "parent_mechanical": "P1000",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1000",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1000",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1000",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1000_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1000",
+          "chained": "P1000",
+          "section": "P1000",
+          "timer": "tmM1001_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1001",
+      "finished_match": false
+    },
+    {
+      "section": "P1001",
+      "parent_mechanical": "P1001",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1001",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1001",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1001",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1001",
+          "chained": "P1001",
+          "section": "P1001",
+          "timer": "tmM1002_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1002",
+      "finished_match": false
+    },
+    {
+      "section": "P1002",
+      "parent_mechanical": "P1002",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1002",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1002",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1002",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1002_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1002",
+          "chained": "P1002",
+          "section": "P1002",
+          "timer": "tmLATCH_2CR3_1002_TRASH",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P1004",
+      "parent_mechanical": "P1004",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1004",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1004",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1004",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1004_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1004",
+          "chained": "P1004",
+          "section": "P1004",
+          "timer": "tmM1005_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1005",
+      "finished_match": false
+    },
+    {
+      "section": "P1005",
+      "parent_mechanical": "P1005",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1005",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1005",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1005",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1005",
+          "chained": "P1005",
+          "section": "P1005",
+          "timer": "tmM1002_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1002",
+      "finished_match": false
+    },
+    {
+      "section": "P1006",
+      "parent_mechanical": "P1006",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1006",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1006",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1006",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1006_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1006",
+          "chained": "P1006",
+          "section": "P1006",
+          "timer": "tmM1007_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1007",
+      "finished_match": false
+    },
+    {
+      "section": "P1007",
+      "parent_mechanical": "P1007",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1007",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1007",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1007",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1007",
+          "chained": "P1007",
+          "section": "P1007",
+          "timer": "tmM1008_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1008",
+      "finished_match": false
+    },
+    {
+      "section": "P1008",
+      "parent_mechanical": "P1008",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1008",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1008",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1008",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1008_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1008",
+          "chained": "P1008",
+          "section": "P1008",
+          "timer": "tmLATCH_3CR3_1008_TRASH",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1014",
+      "finished_match": false
+    },
+    {
+      "section": "P1010",
+      "parent_mechanical": "P1010",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1010",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1010",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1010",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1010_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1010",
+          "chained": "P1010",
+          "section": "P1010",
+          "timer": "tmM1011_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1011",
+      "finished_match": false
+    },
+    {
+      "section": "P1011",
+      "parent_mechanical": "P1011",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1011",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1011",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1011",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1011",
+          "chained": "P1011",
+          "section": "P1011",
+          "timer": "tmM1008_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1008",
+      "finished_match": false
+    },
+    {
+      "section": "P1014",
+      "parent_mechanical": "P1014",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M1014",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1014",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1014",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1014_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1014",
+          "chained": "P1014",
+          "section": "P1014",
+          "timer": "tmLATCH_3CR3_1014_TRASH",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1015",
+      "finished_match": false
+    },
+    {
+      "section": "P1015",
+      "parent_mechanical": "P1015",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M1015",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1015",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1015",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1015",
+          "chained": "P1015",
+          "section": "P1015",
+          "timer": "tmM1016_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1016",
+      "finished_match": false
+    },
+    {
+      "section": "P1016",
+      "parent_mechanical": "P1016",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M1016",
+      "downstream": "P1018",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M1016",
+          "timer_name": "tmM1018",
+          "next_motor": "M1018",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1016",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1016",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1016",
+          "chained": "P1016",
+          "section": "P1016",
+          "timer": "tmM1018",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P1018",
+      "finished_match": true
+    },
+    {
+      "section": "P1018",
+      "parent_mechanical": "P1018",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M1018",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1018",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1018",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1018_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1018",
+          "chained": "P1018",
+          "section": "P1018",
+          "timer": "tmLATCH_3CR3_1018_TRASH",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P123",
+      "parent_mechanical": "P123",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M123",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M123",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P123",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M123",
+          "chained": "P123",
+          "section": "P123",
+          "timer": "tmM124_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P124",
+      "finished_match": false
+    },
+    {
+      "section": "P124",
+      "parent_mechanical": "P124",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M124",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M124",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P124",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M124",
+          "chained": "P124",
+          "section": "P124",
+          "timer": "tmLATCH_2CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P128",
+      "finished_match": false
+    },
+    {
+      "section": "P126",
+      "parent_mechanical": "P126",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M128",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE126_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M128",
+          "chained": "P126",
+          "section": "P126",
+          "timer": "tmM130A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P128",
+      "parent_mechanical": "P128",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M128",
+      "downstream": "P130A",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M128",
+          "timer_name": "tmM130A",
+          "next_motor": "M130A",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M128",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P128",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M128",
+          "chained": "P128",
+          "section": "P128",
+          "timer": "tmM130A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P130A",
+      "finished_match": true
+    },
+    {
+      "section": "P130",
+      "parent_mechanical": "P130",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M130A",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P130",
+          "type": "CURVE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M130A",
+          "chained": "P130",
+          "section": "P130",
+          "timer": "tmM130B",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P130A",
+      "parent_mechanical": "P130",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M130A",
+      "downstream": "P130B",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M130A",
+          "timer_name": "tmM130B",
+          "next_motor": "M130B",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130A",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P130B",
+      "finished_match": true
+    },
+    {
+      "section": "P130B",
+      "parent_mechanical": "P130",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M130B",
+      "downstream": "P130C",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M130B",
+          "timer_name": "tmM130C",
+          "next_motor": "M130C",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130B",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P130C",
+      "finished_match": true
+    },
+    {
+      "section": "P130C",
+      "parent_mechanical": "P130",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M130C",
+      "downstream": "P130D",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M130C",
+          "timer_name": "tmM130D",
+          "next_motor": "M130D",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130C",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P130D",
+      "finished_match": true
+    },
+    {
+      "section": "P130D",
+      "parent_mechanical": "P130",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M130D",
+      "downstream": "P130E",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M130D",
+          "timer_name": "tmM130E",
+          "next_motor": "M130E",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130D",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P130E",
+      "finished_match": true
+    },
+    {
+      "section": "P130E",
+      "parent_mechanical": "P130",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M130E",
+      "downstream": "P132",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M130E",
+          "timer_name": "tmM132",
+          "next_motor": "M132",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130E",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P132",
+      "finished_match": true
+    },
+    {
+      "section": "P132",
+      "parent_mechanical": "P132",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M132",
+      "downstream": "P136",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M132",
+          "timer_name": "tmM136",
+          "next_motor": "M136",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M132",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P132",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M132",
+          "chained": "P132",
+          "section": "P132",
+          "timer": "tmM136",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P136_P1",
+      "finished_match": false
+    },
+    {
+      "section": "P134",
+      "parent_mechanical": "P134",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M132",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE134_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M132",
+          "chained": "P134",
+          "section": "P134",
+          "timer": "tmM136",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P136",
+      "parent_mechanical": "P136",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M136",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M136",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P136",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE136_F1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE136_F2",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M136",
+          "chained": "P136",
+          "section": "P136",
+          "timer": "tmLATCH_MERGE_316",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P136A",
+      "parent_mechanical": "P136",
+      "kind": "mtrchain_chained",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M136",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "mtrchain_p",
+          "motor": "M136",
+          "chained": "P136A",
+          "section": "P136A",
+          "timer": "tmLATCH_MERGE_316",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P136_P1",
+      "parent_mechanical": "P136",
+      "kind": "pe_ssv_section",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M136",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "pe_section",
+          "io_name": "EZPE136_P1",
+          "type": "PHOTOCELL",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "ssv_pe_section",
+          "io_name": "SSVEZPE136_P1",
+          "type": "TRIANG",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M136",
+          "chained": "SSVEZPE136_P1",
+          "section": "P136_P1",
+          "timer": "tmLATCH_MERGE_316",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P136_P2",
+      "finished_match": false
+    },
+    {
+      "section": "P136_P2",
+      "parent_mechanical": "P136",
+      "kind": "pe_ssv_section",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M138",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "pe_section",
+          "io_name": "EZPE136_P2",
+          "type": "PHOTOCELL",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "ssv_pe_section",
+          "io_name": "SSVEZPE136_P2",
+          "type": "TRIANG",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M138",
+          "chained": "SSVEZPE136_P2",
+          "section": "P136_P2",
+          "timer": "tmM406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P138",
+      "finished_match": false
+    },
+    {
+      "section": "P138",
+      "parent_mechanical": "P138",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M138",
+      "downstream": "P406",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M138",
+          "timer_name": "tmM406",
+          "next_motor": "M406",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M138",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P138",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE138_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M138",
+          "chained": "P138",
+          "section": "P138",
+          "timer": "tmM406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P406",
+      "finished_match": true
+    },
+    {
+      "section": "P139",
+      "parent_mechanical": "P139",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M139",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M139",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P139",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M139",
+          "chained": "P139",
+          "section": "P139",
+          "timer": "tmM139_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P140",
+      "finished_match": false
+    },
+    {
+      "section": "P140",
+      "parent_mechanical": "P140",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M140",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M140",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P140",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M140",
+          "chained": "P140",
+          "section": "P140",
+          "timer": "tmLATCH_3CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P144",
+      "finished_match": false
+    },
+    {
+      "section": "P142",
+      "parent_mechanical": "P142",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M144",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE142_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M144",
+          "chained": "P142",
+          "section": "P142",
+          "timer": "tmM145A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P144",
+      "parent_mechanical": "P144",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M144",
+      "downstream": "P145A",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M144",
+          "timer_name": "tmM145A",
+          "next_motor": "M145A",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M144",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P144",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M144",
+          "chained": "P144",
+          "section": "P144",
+          "timer": "tmM145A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P145A",
+      "finished_match": true
+    },
+    {
+      "section": "P145",
+      "parent_mechanical": "P145",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M145A",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P145",
+          "type": "CURVE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M145A",
+          "chained": "P145",
+          "section": "P145",
+          "timer": "tmM145B",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P145A",
+      "parent_mechanical": "P145",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M145A",
+      "downstream": "P145B",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M145A",
+          "timer_name": "tmM145B",
+          "next_motor": "M145B",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145A",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P145B",
+      "finished_match": true
+    },
+    {
+      "section": "P145B",
+      "parent_mechanical": "P145",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M145B",
+      "downstream": "P145C",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M145B",
+          "timer_name": "tmM145C",
+          "next_motor": "M145C",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145B",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P145C",
+      "finished_match": true
+    },
+    {
+      "section": "P145C",
+      "parent_mechanical": "P145",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M145C",
+      "downstream": "P145D",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M145C",
+          "timer_name": "tmM145D",
+          "next_motor": "M145D",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145C",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P145D",
+      "finished_match": true
+    },
+    {
+      "section": "P145D",
+      "parent_mechanical": "P145",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M145D",
+      "downstream": "P145E",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M145D",
+          "timer_name": "tmM145E",
+          "next_motor": "M145E",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145D",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P145E",
+      "finished_match": true
+    },
+    {
+      "section": "P145E",
+      "parent_mechanical": "P145",
+      "kind": "letter_motor_promotion",
+      "asc_type": "CURVE",
+      "motor": "M145E",
+      "downstream": "P146",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M145E",
+          "timer_name": "tmM146",
+          "next_motor": "M146",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145E",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ],
+      "finished_downstream": "P146",
+      "finished_match": true
+    },
+    {
+      "section": "P146",
+      "parent_mechanical": "P146",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M146",
+      "downstream": "P150",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M146",
+          "timer_name": "tmM150",
+          "next_motor": "M150",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M146",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P146",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M146",
+          "chained": "P146",
+          "section": "P146",
+          "timer": "tmM150",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P150_P1",
+      "finished_match": false
+    },
+    {
+      "section": "P148",
+      "parent_mechanical": "P148",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M146",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE148_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M146",
+          "chained": "P148",
+          "section": "P148",
+          "timer": "tmM150",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P150",
+      "parent_mechanical": "P150",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M150",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M150",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P150",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE150_F1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE150_F2",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M150",
+          "chained": "P150",
+          "section": "P150",
+          "timer": "tmLATCH_MERGE_324",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P150A",
+      "parent_mechanical": "P150",
+      "kind": "mtrchain_chained",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M150",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "mtrchain_p",
+          "motor": "M150",
+          "chained": "P150A",
+          "section": "P150A",
+          "timer": "tmLATCH_MERGE_324",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P150_P1",
+      "parent_mechanical": "P150",
+      "kind": "pe_ssv_section",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M150",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "ssv_pe_section",
+          "io_name": "SSVEZPE150_P1",
+          "type": "TRIANG",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_section",
+          "io_name": "EZPE150_P1",
+          "type": "PHOTOCELL",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M150",
+          "chained": "SSVEZPE150_P1",
+          "section": "P150_P1",
+          "timer": "tmLATCH_MERGE_324",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P150_P2",
+      "finished_match": false
+    },
+    {
+      "section": "P150_P2",
+      "parent_mechanical": "P150",
+      "kind": "pe_ssv_section",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M400",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "pe_section",
+          "io_name": "EZPE150_P2",
+          "type": "PHOTOCELL",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "ssv_pe_section",
+          "io_name": "SSVEZPE150_P2",
+          "type": "TRIANG",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M400",
+          "chained": "SSVEZPE150_P2",
+          "section": "P150_P2",
+          "timer": "tmLATCH_P400_2-1_MERGE",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P400",
+      "finished_match": false
+    },
+    {
+      "section": "P215",
+      "parent_mechanical": "P215",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "",
+      "downstream": "P217",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "fullline_response_upstream",
+          "table": "Fullline.asc",
+          "sensor": "EZPE217_F",
+          "conveyor_name": "P217",
+          "response_io": "M215",
+          "rule": "Fullline Response IO stops upstream motor (Response motor \u21d2 upstream of Conveyor_Name)",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE215_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P220",
+      "parent_mechanical": "P220",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M220",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M220",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P220",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M220",
+          "chained": "P220",
+          "section": "P220",
+          "timer": "tmLATCH_2CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P222",
+      "finished_match": false
+    },
+    {
+      "section": "P220A",
+      "parent_mechanical": "P220",
+      "kind": "letter_motor_promotion",
+      "asc_type": "STRAIGHT",
+      "motor": "M220A",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_CROSS_TABLE",
+      "section_provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M220A",
+          "parent_mechanical": "P220",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M220A",
+          "chained": "P220A",
+          "section": "P220A",
+          "timer": "tmM220_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P220",
+      "finished_match": false
+    },
+    {
+      "section": "P222",
+      "parent_mechanical": "P222",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M222",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M222",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P222",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M222",
+          "chained": "P222",
+          "section": "P222",
+          "timer": "tmLATCH_2CR2_ACCUM",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P226",
+      "parent_mechanical": "P226",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE226_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P228",
+      "parent_mechanical": "P228",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M228",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M228",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P228",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P229",
+      "parent_mechanical": "P229",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE229_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P230",
+      "parent_mechanical": "P230",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M230",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M230",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P230",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE230_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE230_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE230_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P232",
+      "parent_mechanical": "P232",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M232",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M232",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P232",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE232_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P233",
+      "parent_mechanical": "P233",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M233",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M233",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P233",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M233",
+          "chained": "P233",
+          "section": "P233",
+          "timer": "tmM233_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P234",
+      "finished_match": false
+    },
+    {
+      "section": "P234",
+      "parent_mechanical": "P234",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M234",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M234",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P234",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M234",
+          "chained": "P234",
+          "section": "P234",
+          "timer": "tmLATCH_3CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P236",
+      "finished_match": false
+    },
+    {
+      "section": "P236",
+      "parent_mechanical": "P236",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M236",
+      "downstream": "P240",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M236",
+          "timer_name": "tmM240",
+          "next_motor": "M240",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M236",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P236",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M236",
+          "chained": "P236",
+          "section": "P236",
+          "timer": "tmM240",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P240",
+      "finished_match": true
+    },
+    {
+      "section": "P238",
+      "parent_mechanical": "P238",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M240",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE238_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M240",
+          "chained": "P238",
+          "section": "P238",
+          "timer": "tmM242",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P240",
+      "parent_mechanical": "P240",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M240",
+      "downstream": "P242",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M240",
+          "timer_name": "tmM242",
+          "next_motor": "M242",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "fullline_response_upstream",
+          "table": "Fullline.asc",
+          "sensor": "EZPE242_F",
+          "conveyor_name": "P242",
+          "response_io": "M240",
+          "rule": "Fullline Response IO stops upstream motor (Response motor \u21d2 upstream of Conveyor_Name)",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M240",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P240",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M240",
+          "chained": "P240",
+          "section": "P240",
+          "timer": "tmM242",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P242",
+      "finished_match": true
+    },
+    {
+      "section": "P242",
+      "parent_mechanical": "P242",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M242",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M242",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P242",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE242_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE242_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE242_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M242",
+          "chained": "P242",
+          "section": "P242",
+          "timer": "tmLATCH_3CR2_ACCUM",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M400",
+          "chained": "SSVEZPE242_P",
+          "section": "P242",
+          "timer": "tmLATCH_P400_2-1_MERGE",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P400",
+      "finished_match": false
+    },
+    {
+      "section": "P309",
+      "parent_mechanical": "P309",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M309",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M309",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P309",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M309",
+          "chained": "P309",
+          "section": "P309",
+          "timer": "tmM309_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P310",
+      "finished_match": false
+    },
+    {
+      "section": "P310",
+      "parent_mechanical": "P310",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M310",
+      "downstream": "P312",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M310",
+          "timer_name": "tmM312",
+          "next_motor": "M312",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "fullline_response_upstream",
+          "table": "Fullline.asc",
+          "sensor": "EZPE312_F",
+          "conveyor_name": "P312",
+          "response_io": "M310",
+          "rule": "Fullline Response IO stops upstream motor (Response motor \u21d2 upstream of Conveyor_Name)",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M310",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P310",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M310",
+          "chained": "P310",
+          "section": "P310",
+          "timer": "tmM312",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P312",
+      "finished_match": true
+    },
+    {
+      "section": "P312",
+      "parent_mechanical": "P312",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M312",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M312",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P312",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE312_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE312_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE312_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M314",
+          "chained": "SSVEZPE312_P",
+          "section": "P312",
+          "timer": "tmLATCH_MERGE_316_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M312",
+          "chained": "P312",
+          "section": "P312",
+          "timer": "tmLATCH_2CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P314",
+      "finished_match": false
+    },
+    {
+      "section": "P314",
+      "parent_mechanical": "P314",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M314",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M314",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P314",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE314_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M314",
+          "chained": "P314",
+          "section": "P314",
+          "timer": "tmLATCH_MERGE_316_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P136_P2",
+      "finished_match": false
+    },
+    {
+      "section": "P316",
+      "parent_mechanical": "P316",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M314",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE316_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M314",
+          "chained": "P316",
+          "section": "P316",
+          "timer": "tmLATCH_MERGE_316_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P317",
+      "parent_mechanical": "P317",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M317",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M317",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P317",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M317",
+          "chained": "P317",
+          "section": "P317",
+          "timer": "tmM317_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P318",
+      "finished_match": false
+    },
+    {
+      "section": "P318",
+      "parent_mechanical": "P318",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M318",
+      "downstream": "P320",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M318",
+          "timer_name": "tmM320",
+          "next_motor": "M320",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "fullline_response_upstream",
+          "table": "Fullline.asc",
+          "sensor": "EZPE320_F",
+          "conveyor_name": "P320",
+          "response_io": "M318",
+          "rule": "Fullline Response IO stops upstream motor (Response motor \u21d2 upstream of Conveyor_Name)",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M318",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P318",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M318",
+          "chained": "P318",
+          "section": "P318",
+          "timer": "tmM320",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P320",
+      "finished_match": true
+    },
+    {
+      "section": "P320",
+      "parent_mechanical": "P320",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M320",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M320",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P320",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE320_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE320_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE320_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M322",
+          "chained": "SSVEZPE320_P",
+          "section": "P320",
+          "timer": "tmLATCH_MERGE_324_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M320",
+          "chained": "P320",
+          "section": "P320",
+          "timer": "tmLATCH_3CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P322",
+      "finished_match": false
+    },
+    {
+      "section": "P322",
+      "parent_mechanical": "P322",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M322",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M322",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P322",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE322_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M322",
+          "chained": "P322",
+          "section": "P322",
+          "timer": "tmLATCH_MERGE_324_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P150_P2",
+      "finished_match": false
+    },
+    {
+      "section": "P324",
+      "parent_mechanical": "P324",
+      "kind": "mechanical",
+      "asc_type": "CURVE",
+      "motor": "M322",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE324_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M322",
+          "chained": "P324",
+          "section": "P324",
+          "timer": "tmLATCH_MERGE_324_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P400",
+      "parent_mechanical": "P400",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M400",
+      "downstream": "P402",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "fullline_response_upstream",
+          "table": "Fullline.asc",
+          "sensor": "EZPE402_F",
+          "conveyor_name": "P402",
+          "response_io": "M400",
+          "rule": "Fullline Response IO stops upstream motor (Response motor \u21d2 upstream of Conveyor_Name)",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M400",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P400",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE400_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M400",
+          "chained": "P400",
+          "section": "P400",
+          "timer": "tmLATCH_P400_2-1_MERGE",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P402",
+      "parent_mechanical": "P402",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "M402",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M402",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P402",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE402_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE402_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE402_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M402",
+          "chained": "P402",
+          "section": "P402",
+          "timer": "tmLATCH_2CR2_ACCUM",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M404",
+          "chained": "SSVEZPE402_P",
+          "section": "P402",
+          "timer": "tmM406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P404",
+      "finished_match": false
+    },
+    {
+      "section": "P404",
+      "parent_mechanical": "P404",
+      "kind": "mechanical",
+      "asc_type": "BELT",
+      "motor": "M404",
+      "downstream": "P406",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "mtrchain_timer_name",
+          "table": "Mtrchain.asc",
+          "motor": "M404",
+          "timer_name": "tmM406",
+          "next_motor": "M406",
+          "rule": "Timer_Name=tmM{next} means {next} starts before product leaves current motor \u2192 downstream of current section is next section",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M404",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P404",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE404_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M404",
+          "chained": "P404",
+          "section": "P404",
+          "timer": "tmM406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "P406",
+      "finished_match": true
+    },
+    {
+      "section": "P406",
+      "parent_mechanical": "P406",
+      "kind": "mechanical",
+      "asc_type": "STRAIGHT",
+      "motor": "M406",
+      "downstream": "P408",
+      "downstream_confidence": "PROVEN_CROSS_TABLE",
+      "downstream_provenance": [
+        {
+          "kind": "fullline_response_upstream",
+          "table": "Fullline.asc",
+          "sensor": "EZPE408_F",
+          "conveyor_name": "P408",
+          "response_io": "M406",
+          "rule": "Fullline Response IO stops upstream motor (Response motor \u21d2 upstream of Conveyor_Name)",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P406",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE406_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M406",
+          "chained": "P406",
+          "section": "P406",
+          "timer": "tmLATCH_P406_3-1_MERGE",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    },
+    {
+      "section": "P408",
+      "parent_mechanical": "P408",
+      "kind": "mechanical",
+      "asc_type": "ZEROPRESSURE",
+      "motor": "",
+      "downstream": "",
+      "downstream_confidence": "UNRESOLVED",
+      "downstream_provenance": [],
+      "section_confidence": "PROVEN_RUN",
+      "section_provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE408_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ],
+      "finished_downstream": "",
+      "finished_match": false
+    }
+  ],
+  "assemblies": {
+    "P1000": {
+      "id": "P1000",
+      "sections": [
+        "P1000"
+      ],
+      "mechanical": "P1000",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1000",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1000",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1000_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1000",
+          "chained": "P1000",
+          "section": "P1000",
+          "timer": "tmM1001_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1001": {
+      "id": "P1001",
+      "sections": [
+        "P1001"
+      ],
+      "mechanical": "P1001",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1001",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1001",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1001",
+          "chained": "P1001",
+          "section": "P1001",
+          "timer": "tmM1002_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1002": {
+      "id": "P1002",
+      "sections": [
+        "P1002"
+      ],
+      "mechanical": "P1002",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1002",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1002",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1002_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1002",
+          "chained": "P1002",
+          "section": "P1002",
+          "timer": "tmLATCH_2CR3_1002_TRASH",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1004": {
+      "id": "P1004",
+      "sections": [
+        "P1004"
+      ],
+      "mechanical": "P1004",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1004",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1004",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1004_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1004",
+          "chained": "P1004",
+          "section": "P1004",
+          "timer": "tmM1005_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1005": {
+      "id": "P1005",
+      "sections": [
+        "P1005"
+      ],
+      "mechanical": "P1005",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1005",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1005",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1005",
+          "chained": "P1005",
+          "section": "P1005",
+          "timer": "tmM1002_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1006": {
+      "id": "P1006",
+      "sections": [
+        "P1006"
+      ],
+      "mechanical": "P1006",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1006",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1006",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1006_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1006",
+          "chained": "P1006",
+          "section": "P1006",
+          "timer": "tmM1007_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1007": {
+      "id": "P1007",
+      "sections": [
+        "P1007"
+      ],
+      "mechanical": "P1007",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1007",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1007",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1007",
+          "chained": "P1007",
+          "section": "P1007",
+          "timer": "tmM1008_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1008": {
+      "id": "P1008",
+      "sections": [
+        "P1008"
+      ],
+      "mechanical": "P1008",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1008",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1008",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1008_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1008",
+          "chained": "P1008",
+          "section": "P1008",
+          "timer": "tmLATCH_3CR3_1008_TRASH",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1010": {
+      "id": "P1010",
+      "sections": [
+        "P1010"
+      ],
+      "mechanical": "P1010",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1010",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1010",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1010_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1010",
+          "chained": "P1010",
+          "section": "P1010",
+          "timer": "tmM1011_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1011": {
+      "id": "P1011",
+      "sections": [
+        "P1011"
+      ],
+      "mechanical": "P1011",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1011",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1011",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1011",
+          "chained": "P1011",
+          "section": "P1011",
+          "timer": "tmM1008_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1014": {
+      "id": "P1014",
+      "sections": [
+        "P1014"
+      ],
+      "mechanical": "P1014",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1014",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1014",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1014_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1014",
+          "chained": "P1014",
+          "section": "P1014",
+          "timer": "tmLATCH_3CR3_1014_TRASH",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1015": {
+      "id": "P1015",
+      "sections": [
+        "P1015"
+      ],
+      "mechanical": "P1015",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1015",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1015",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1015",
+          "chained": "P1015",
+          "section": "P1015",
+          "timer": "tmM1016_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1016": {
+      "id": "P1016",
+      "sections": [
+        "P1016"
+      ],
+      "mechanical": "P1016",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1016",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1016",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1016",
+          "chained": "P1016",
+          "section": "P1016",
+          "timer": "tmM1018",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P1018": {
+      "id": "P1018",
+      "sections": [
+        "P1018"
+      ],
+      "mechanical": "P1018",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M1018",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P1018",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE1018_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M1018",
+          "chained": "P1018",
+          "section": "P1018",
+          "timer": "tmLATCH_3CR3_1018_TRASH",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P123": {
+      "id": "P123",
+      "sections": [
+        "P123"
+      ],
+      "mechanical": "P123",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M123",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P123",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M123",
+          "chained": "P123",
+          "section": "P123",
+          "timer": "tmM124_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P124": {
+      "id": "P124",
+      "sections": [
+        "P124"
+      ],
+      "mechanical": "P124",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M124",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P124",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M124",
+          "chained": "P124",
+          "section": "P124",
+          "timer": "tmLATCH_2CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P126": {
+      "id": "P126",
+      "sections": [
+        "P126"
+      ],
+      "mechanical": "P126",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE126_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M128",
+          "chained": "P126",
+          "section": "P126",
+          "timer": "tmM130A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P128": {
+      "id": "P128",
+      "sections": [
+        "P128"
+      ],
+      "mechanical": "P128",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M128",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P128",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M128",
+          "chained": "P128",
+          "section": "P128",
+          "timer": "tmM130A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P130": {
+      "id": "P130",
+      "sections": [
+        "P130",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E"
+      ],
+      "mechanical": "P130",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130A",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P130",
+          "type": "CURVE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M130A",
+          "chained": "P130",
+          "section": "P130",
+          "timer": "tmM130B",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130B",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130C",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130D",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M130E",
+          "parent_mechanical": "P130",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ]
+    },
+    "P132": {
+      "id": "P132",
+      "sections": [
+        "P132"
+      ],
+      "mechanical": "P132",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M132",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P132",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M132",
+          "chained": "P132",
+          "section": "P132",
+          "timer": "tmM136",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P134": {
+      "id": "P134",
+      "sections": [
+        "P134"
+      ],
+      "mechanical": "P134",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE134_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M132",
+          "chained": "P134",
+          "section": "P134",
+          "timer": "tmM136",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P136": {
+      "id": "P136",
+      "sections": [
+        "P136",
+        "P136A",
+        "P136_P1",
+        "P136_P2"
+      ],
+      "mechanical": "P136",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M136",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P136",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE136_F1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE136_F2",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M136",
+          "chained": "P136",
+          "section": "P136",
+          "timer": "tmLATCH_MERGE_316",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_section",
+          "io_name": "EZPE136_P1",
+          "type": "PHOTOCELL",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "ssv_pe_section",
+          "io_name": "SSVEZPE136_P1",
+          "type": "TRIANG",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M136",
+          "chained": "SSVEZPE136_P1",
+          "section": "P136_P1",
+          "timer": "tmLATCH_MERGE_316",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_section",
+          "io_name": "EZPE136_P2",
+          "type": "PHOTOCELL",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "ssv_pe_section",
+          "io_name": "SSVEZPE136_P2",
+          "type": "TRIANG",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M138",
+          "chained": "SSVEZPE136_P2",
+          "section": "P136_P2",
+          "timer": "tmM406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M136",
+          "chained": "P136A",
+          "section": "P136A",
+          "timer": "tmLATCH_MERGE_316",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P138": {
+      "id": "P138",
+      "sections": [
+        "P138"
+      ],
+      "mechanical": "P138",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M138",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P138",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE138_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M138",
+          "chained": "P138",
+          "section": "P138",
+          "timer": "tmM406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P139": {
+      "id": "P139",
+      "sections": [
+        "P139"
+      ],
+      "mechanical": "P139",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M139",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P139",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M139",
+          "chained": "P139",
+          "section": "P139",
+          "timer": "tmM139_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P140": {
+      "id": "P140",
+      "sections": [
+        "P140"
+      ],
+      "mechanical": "P140",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M140",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P140",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M140",
+          "chained": "P140",
+          "section": "P140",
+          "timer": "tmLATCH_3CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P142": {
+      "id": "P142",
+      "sections": [
+        "P142"
+      ],
+      "mechanical": "P142",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE142_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M144",
+          "chained": "P142",
+          "section": "P142",
+          "timer": "tmM145A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P144": {
+      "id": "P144",
+      "sections": [
+        "P144"
+      ],
+      "mechanical": "P144",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M144",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P144",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M144",
+          "chained": "P144",
+          "section": "P144",
+          "timer": "tmM145A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P145": {
+      "id": "P145",
+      "sections": [
+        "P145",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E"
+      ],
+      "mechanical": "P145",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145A",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P145",
+          "type": "CURVE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M145A",
+          "chained": "P145",
+          "section": "P145",
+          "timer": "tmM145B",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145B",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145C",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145D",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M145E",
+          "parent_mechanical": "P145",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        }
+      ]
+    },
+    "P146": {
+      "id": "P146",
+      "sections": [
+        "P146"
+      ],
+      "mechanical": "P146",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M146",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P146",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M146",
+          "chained": "P146",
+          "section": "P146",
+          "timer": "tmM150",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P148": {
+      "id": "P148",
+      "sections": [
+        "P148"
+      ],
+      "mechanical": "P148",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE148_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M146",
+          "chained": "P148",
+          "section": "P148",
+          "timer": "tmM150",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P150": {
+      "id": "P150",
+      "sections": [
+        "P150",
+        "P150A",
+        "P150_P1",
+        "P150_P2"
+      ],
+      "mechanical": "P150",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M150",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P150",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE150_F1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE150_F2",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M150",
+          "chained": "P150",
+          "section": "P150",
+          "timer": "tmLATCH_MERGE_324",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "ssv_pe_section",
+          "io_name": "SSVEZPE150_P1",
+          "type": "TRIANG",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_section",
+          "io_name": "EZPE150_P1",
+          "type": "PHOTOCELL",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M150",
+          "chained": "SSVEZPE150_P1",
+          "section": "P150_P1",
+          "timer": "tmLATCH_MERGE_324",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_section",
+          "io_name": "EZPE150_P2",
+          "type": "PHOTOCELL",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "ssv_pe_section",
+          "io_name": "SSVEZPE150_P2",
+          "type": "TRIANG",
+          "rule": "EZPE{n}_P1 / SSVEZPE{n}_P1 \u2192 section id P{n}_P1",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M400",
+          "chained": "SSVEZPE150_P2",
+          "section": "P150_P2",
+          "timer": "tmLATCH_P400_2-1_MERGE",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M150",
+          "chained": "P150A",
+          "section": "P150A",
+          "timer": "tmLATCH_MERGE_324",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P215": {
+      "id": "P215",
+      "sections": [
+        "P215"
+      ],
+      "mechanical": "P215",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE215_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P220": {
+      "id": "P220",
+      "sections": [
+        "P220",
+        "P220A"
+      ],
+      "mechanical": "P220",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M220",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P220",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M220",
+          "chained": "P220",
+          "section": "P220",
+          "timer": "tmLATCH_2CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc_motor",
+          "motor": "M220A",
+          "parent_mechanical": "P220",
+          "rule": "Letter motors M{n}A.. on controller promote P{n}A.. sections",
+          "confidence": "PROVEN_RUN",
+          "table": "Conveyor.asc"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M220A",
+          "chained": "P220A",
+          "section": "P220A",
+          "timer": "tmM220_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P222": {
+      "id": "P222",
+      "sections": [
+        "P222"
+      ],
+      "mechanical": "P222",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M222",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P222",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M222",
+          "chained": "P222",
+          "section": "P222",
+          "timer": "tmLATCH_2CR2_ACCUM",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P226": {
+      "id": "P226",
+      "sections": [
+        "P226"
+      ],
+      "mechanical": "P226",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE226_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P228": {
+      "id": "P228",
+      "sections": [
+        "P228"
+      ],
+      "mechanical": "P228",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M228",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P228",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        }
+      ]
+    },
+    "P229": {
+      "id": "P229",
+      "sections": [
+        "P229"
+      ],
+      "mechanical": "P229",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE229_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P230": {
+      "id": "P230",
+      "sections": [
+        "P230"
+      ],
+      "mechanical": "P230",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M230",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P230",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE230_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE230_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE230_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P232": {
+      "id": "P232",
+      "sections": [
+        "P232"
+      ],
+      "mechanical": "P232",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M232",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P232",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE232_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P233": {
+      "id": "P233",
+      "sections": [
+        "P233"
+      ],
+      "mechanical": "P233",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M233",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P233",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M233",
+          "chained": "P233",
+          "section": "P233",
+          "timer": "tmM233_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P234": {
+      "id": "P234",
+      "sections": [
+        "P234"
+      ],
+      "mechanical": "P234",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M234",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P234",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M234",
+          "chained": "P234",
+          "section": "P234",
+          "timer": "tmLATCH_3CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P236": {
+      "id": "P236",
+      "sections": [
+        "P236"
+      ],
+      "mechanical": "P236",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M236",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P236",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M236",
+          "chained": "P236",
+          "section": "P236",
+          "timer": "tmM240",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P238": {
+      "id": "P238",
+      "sections": [
+        "P238"
+      ],
+      "mechanical": "P238",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE238_JF",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M240",
+          "chained": "P238",
+          "section": "P238",
+          "timer": "tmM242",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P240": {
+      "id": "P240",
+      "sections": [
+        "P240"
+      ],
+      "mechanical": "P240",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M240",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P240",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M240",
+          "chained": "P240",
+          "section": "P240",
+          "timer": "tmM242",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P242": {
+      "id": "P242",
+      "sections": [
+        "P242"
+      ],
+      "mechanical": "P242",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M242",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P242",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE242_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE242_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE242_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M242",
+          "chained": "P242",
+          "section": "P242",
+          "timer": "tmLATCH_3CR2_ACCUM",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M400",
+          "chained": "SSVEZPE242_P",
+          "section": "P242",
+          "timer": "tmLATCH_P400_2-1_MERGE",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P309": {
+      "id": "P309",
+      "sections": [
+        "P309"
+      ],
+      "mechanical": "P309",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M309",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P309",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M309",
+          "chained": "P309",
+          "section": "P309",
+          "timer": "tmM309_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P310": {
+      "id": "P310",
+      "sections": [
+        "P310"
+      ],
+      "mechanical": "P310",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M310",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P310",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M310",
+          "chained": "P310",
+          "section": "P310",
+          "timer": "tmM312",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P312": {
+      "id": "P312",
+      "sections": [
+        "P312"
+      ],
+      "mechanical": "P312",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M312",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P312",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE312_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE312_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE312_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M314",
+          "chained": "SSVEZPE312_P",
+          "section": "P312",
+          "timer": "tmLATCH_MERGE_316_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M312",
+          "chained": "P312",
+          "section": "P312",
+          "timer": "tmLATCH_2CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P314": {
+      "id": "P314",
+      "sections": [
+        "P314"
+      ],
+      "mechanical": "P314",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M314",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P314",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE314_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M314",
+          "chained": "P314",
+          "section": "P314",
+          "timer": "tmLATCH_MERGE_316_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P316": {
+      "id": "P316",
+      "sections": [
+        "P316"
+      ],
+      "mechanical": "P316",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE316_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M314",
+          "chained": "P316",
+          "section": "P316",
+          "timer": "tmLATCH_MERGE_316_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P317": {
+      "id": "P317",
+      "sections": [
+        "P317"
+      ],
+      "mechanical": "P317",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M317",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P317",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M317",
+          "chained": "P317",
+          "section": "P317",
+          "timer": "tmM317_AUX",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P318": {
+      "id": "P318",
+      "sections": [
+        "P318"
+      ],
+      "mechanical": "P318",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M318",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P318",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M318",
+          "chained": "P318",
+          "section": "P318",
+          "timer": "tmM320",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P320": {
+      "id": "P320",
+      "sections": [
+        "P320"
+      ],
+      "mechanical": "P320",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M320",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P320",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE320_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE320_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE320_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M322",
+          "chained": "SSVEZPE320_P",
+          "section": "P320",
+          "timer": "tmLATCH_MERGE_324_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M320",
+          "chained": "P320",
+          "section": "P320",
+          "timer": "tmLATCH_3CR1_LANES",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P322": {
+      "id": "P322",
+      "sections": [
+        "P322"
+      ],
+      "mechanical": "P322",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M322",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P322",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE322_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M322",
+          "chained": "P322",
+          "section": "P322",
+          "timer": "tmLATCH_MERGE_324_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P324": {
+      "id": "P324",
+      "sections": [
+        "P324"
+      ],
+      "mechanical": "P324",
+      "asc_type": "CURVE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "PE324_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M322",
+          "chained": "P324",
+          "section": "P324",
+          "timer": "tmLATCH_MERGE_324_A",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P400": {
+      "id": "P400",
+      "sections": [
+        "P400"
+      ],
+      "mechanical": "P400",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M400",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P400",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE400_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M400",
+          "chained": "P400",
+          "section": "P400",
+          "timer": "tmLATCH_P400_2-1_MERGE",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P402": {
+      "id": "P402",
+      "sections": [
+        "P402"
+      ],
+      "mechanical": "P402",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M402",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P402",
+          "type": "ZEROPRESSURE",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE402_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "SSVEZPE402_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE402_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M402",
+          "chained": "P402",
+          "section": "P402",
+          "timer": "tmLATCH_2CR2_ACCUM",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_ssv",
+          "motor": "M404",
+          "chained": "SSVEZPE402_P",
+          "section": "P402",
+          "timer": "tmM406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P404": {
+      "id": "P404",
+      "sections": [
+        "P404"
+      ],
+      "mechanical": "P404",
+      "asc_type": "BELT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M404",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P404",
+          "type": "BELT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE404_P",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M404",
+          "chained": "P404",
+          "section": "P404",
+          "timer": "tmM406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P406": {
+      "id": "P406",
+      "sections": [
+        "P406"
+      ],
+      "mechanical": "P406",
+      "asc_type": "STRAIGHT",
+      "provenance": [
+        {
+          "kind": "motor_owns_mechanical",
+          "motor": "M406",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "conveyor_asc",
+          "table": "Conveyor.asc",
+          "io_name": "P406",
+          "type": "STRAIGHT",
+          "confidence": "PROVEN_RUN"
+        },
+        {
+          "kind": "pe_link",
+          "io_name": "PE406_J",
+          "confidence": "PROVEN_CROSS_TABLE"
+        },
+        {
+          "kind": "mtrchain_p",
+          "motor": "M406",
+          "chained": "P406",
+          "section": "P406",
+          "timer": "tmLATCH_P406_3-1_MERGE",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    },
+    "P408": {
+      "id": "P408",
+      "sections": [
+        "P408"
+      ],
+      "mechanical": "P408",
+      "asc_type": "ZEROPRESSURE",
+      "provenance": [
+        {
+          "kind": "pe_link",
+          "io_name": "EZPE408_F",
+          "confidence": "PROVEN_CROSS_TABLE"
+        }
+      ]
+    }
+  }
+}

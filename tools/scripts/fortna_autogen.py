@@ -177,6 +177,7 @@ class IoPoint:
 @dataclass
 class AutogenInput:
     project_name: str = "Autogen_Project"
+    machine: str = ""
     processor: str = "1756-L83E"
     major_rev: str = "35"
     minor_rev: str = "00"
@@ -2151,6 +2152,115 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
         seen_conv.add(key)
         deduped.append(c)
     conveyors = deduped
+
+    # Promote lettered / PE-SSV sections (P130A..E, P136_P1, …) from RUN cross-table evidence.
+    # Fill proven Mtrchain Timer_Name downstream; leave "" when unproven (Fast_Conv maps → NO_Conv).
+    section_model: dict = {}
+    try:
+        from fortna_conveyor_section_model import (
+            classify_conv_type,
+            discover_sections,
+            infer_downstream_from_mtrchain,
+        )
+
+        section_model = discover_sections(run_dir, machine, word_map=io_word_map)
+        known = {(c.conveyor or "").upper() for c in conveyors}
+        area = areas[0] if areas else f"{_safe(machine)}_Area"
+        safe = f"{_safe(machine)}_ESZone1"
+        parent_row = {
+            (c.conveyor or "").upper(): c for c in conveyors
+        }
+        suppress = {
+            str(k).upper()
+            for k in (section_model.get("suppress_as_assembly_only") or {})
+        }
+        preferred_induct = {
+            str(k).upper(): str(v).upper()
+            for k, v in (section_model.get("preferred_induct") or {}).items()
+            if k and v
+        }
+        promoted = 0
+        for sid, info in (section_model.get("sections") or {}).items():
+            su = str(sid).upper()
+            if not su or su in known:
+                continue
+            if info.get("assembly_only") or su in suppress:
+                continue
+            kind = info.get("kind") or ""
+            if kind not in (
+                "letter_motor_promotion",
+                "pe_ssv_section",
+                "mtrchain_chained",
+            ):
+                continue
+            parent = str(info.get("parent_mechanical") or "").upper()
+            base = parent_row.get(parent) or parent_row.get(su)
+            asc_type = str(info.get("asc_type") or "")
+            is_vfd = bool(base and "vfd" in (base.type or "").lower())
+            classified = classify_conv_type(asc_type, is_vfd)
+            pe = _pe_wiring_for_conv(
+                pe_by_conv.get(su, []) or pe_by_conv.get(parent, [])
+            )
+            conveyors.append(
+                ConveyorRow(
+                    number=0,
+                    system=machine,
+                    main_area=(base.main_area if base else area),
+                    safety_zone=(base.safety_zone if base else safe),
+                    conveyor=su,
+                    type=classified["type_str"],
+                    downstream="",
+                    exit_pe=pe["exit_opt"],
+                    full=pe["full_opt"],
+                    jam=pe["jam_opt"] or pe["exit_opt"],
+                    motor_starter="" if is_vfd else "Yes",
+                    exit_pe_tag=pe["exit_pe_tag"],
+                    add_pe_tag=pe["add_pe_tag"],
+                    jam_pe_tags=pe["jam_pe_tags"],
+                    full_pe_tags=pe["full_pe_tags"],
+                    product_pe_tags=pe["product_pe_tags"],
+                    all_pe_tags=pe["all_pe_tags"],
+                )
+            )
+            known.add(su)
+            parent_row[su] = conveyors[-1]
+            promoted += 1
+
+        # Drop assembly-only mechanical parents (P130 when P130A..E promoted, etc.)
+        if suppress:
+            before = len(conveyors)
+            conveyors = [
+                c for c in conveyors if (c.conveyor or "").upper() not in suppress
+            ]
+            known = {(c.conveyor or "").upper() for c in conveyors}
+            suppressed_n = before - len(conveyors)
+        else:
+            suppressed_n = 0
+
+        ds_map = infer_downstream_from_mtrchain(
+            run_dir, preferred_induct=preferred_induct
+        )
+        filled = 0
+        for c in conveyors:
+            if (c.downstream or "").strip():
+                continue
+            key = (c.conveyor or "").upper()
+            ds = ds_map.get(key) or ""
+            if ds:
+                ds_u = ds.upper()
+                if ds_u in preferred_induct:
+                    ds_u = preferred_induct[ds_u]
+                c.downstream = ds_u
+                filled += 1
+        _emit_progress(
+            f"Sections[{machine}]: promoted={promoted} suppressed_assembly={suppressed_n} "
+            f"downstream_filled={filled} sections={len(section_model.get('sections') or {})}",
+            16,
+        )
+    except Exception as ex:
+        section_model = {"error": str(ex)}
+
+    conveyors = sorted(conveyors, key=lambda x: x.conveyor or "")
     for i, c in enumerate(conveyors, start=1):
         c.number = i
 
@@ -2170,6 +2280,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
 
     return AutogenInput(
         project_name=f"{project}_{machine}",
+        machine=machine,
         processor=processor,
         major_rev="35",
         minor_rev="00",
@@ -4255,7 +4366,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         }
 
         def _motor_to_p_base(mot_core: str) -> str:
-            """M130A → P130A if that conveyor exists, else P130."""
+            """Map motor → existing conveyor section only (never invent suppressed parents).
+
+            M130A → P130A when present.
+            M136 / M150 (assembly parents suppressed) → P136_P1 / P150_P1 when those
+            PE/SSV sections were promoted into known_convs.
+            """
             mm = re.match(r"^M(\d{2,4})([A-Z]?)$", mot_core, re.I)
             if not mm:
                 return ""
@@ -4266,8 +4382,26 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             base = f"P{digits}"
             if base in known_convs:
                 return base
-            # Section form P136_P1 not derived from motors here
-            return full if letters else base
+            # Prefer PE/SSV induct section P{n}_P1, then any lettered P{n}A.. in known
+            p1 = f"{base}_P1"
+            if p1 in known_convs:
+                return p1
+            lettered = sorted(
+                c
+                for c in known_convs
+                if re.fullmatch(rf"P{re.escape(digits)}[A-Z]+", c)
+            )
+            if lettered:
+                return lettered[0]
+            sectioned = sorted(
+                c
+                for c in known_convs
+                if re.fullmatch(rf"P{re.escape(digits)}_P\d+", c)
+            )
+            if sectioned:
+                return sectioned[0]
+            # Do not return a Conv base that was not generated (IO_MAP assert)
+            return ""
 
         m = re.match(r"^M(\d{2,4}[A-Z]?)_AUX$", core, re.I)
         if m:
@@ -4314,6 +4448,23 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 # finished often uses WH310.O.Horn for named WH tags
                 return f"{core}.O.Horn" if not core.upper().startswith("T_") else raw
             return raw
+
+        # SSV / solenoid hold → Conv.O.Release (BEFORE bare BOOL). Configio physical resolver untouched.
+        if (
+            dt in ("digital_out", "solenoid", "output")
+            or re.search(r"SSV", core, re.I)
+            or re.search(r"SSV", raw, re.I)
+        ):
+            try:
+                from fortna_conveyor_section_model import resolve_ssv_endpoint
+
+                endpoint = resolve_ssv_endpoint(core, known_convs) or resolve_ssv_endpoint(
+                    raw, known_convs
+                )
+                if endpoint:
+                    return endpoint
+            except Exception:
+                pass
 
         # BOOL / simple devices — do not invent placeholder member paths
         return raw
@@ -5781,17 +5932,34 @@ def _strip_non_engineer_tokens(stem: str) -> str:
     return s or "Autogen_Project"
 
 
-def _engineer_l5x_stem(archive_stem: str, when: datetime | None = None) -> str:
-    """Engineer-facing basename: {archive_stem}__{YYYY-MM-DD_HHMM}."""
+def _engineer_l5x_stem(
+    archive_stem: str,
+    when: datetime | None = None,
+    *,
+    machine: str = "",
+    project_name: str = "",
+) -> str:
+    """Engineer-facing basename: {studio_stem}__{YYYY_MM_DD_HHMM} (no leading digits, no hyphens)."""
     when = when or datetime.now()
     try:
-        from fortna_source_id import safe_fs_name
+        from fortna_source_id import studio_project_stem
 
-        base = safe_fs_name(archive_stem or "") or "Autogen_Project"
+        # Prefer machine panel id (ORNCCP2), not tar.gz date stamp.
+        base = studio_project_stem(machine or "", machine or "")
+        if not base or base == "Autogen_Project":
+            base = studio_project_stem(project_name or "", machine or "")
+        if not base or base == "Autogen_Project":
+            base = studio_project_stem(archive_stem or "", machine or "")
     except Exception:
-        base = _safe(archive_stem) or "Autogen_Project"
+        base = _safe(machine or project_name or archive_stem) or "Autogen_Project"
     base = _strip_non_engineer_tokens(base)
-    return f"{base}__{when.strftime('%Y-%m-%d_%H%M')}"
+    base = (base or "Autogen_Project").replace("-", "_")
+    base = re.sub(r"_+", "_", base).strip("._")
+    # Studio / engineer basenames must not begin with digits
+    if base and base[0].isdigit():
+        base = f"P_{base}"
+    stamp = when.strftime("%Y_%m_%d_%H%M")
+    return f"{base}__{stamp}"
 
 
 def generate(
@@ -5801,34 +5969,45 @@ def generate(
 ) -> dict:
     if not library.is_file():
         raise FileNotFoundError(f"Library L5X not found: {library}")
-    # Engineer L5X name: archive_stem__YYYY-MM-DD_HHMM (no candidate/fidelity/test).
+    # Engineer L5X name: {studio_stem}__YYYY_MM_DD_HHMM (no leading digits, no hyphens).
     # Controller TargetName inside L5X stays short (site+panel) — Studio rejects long dates.
     now = datetime.now()
     build_id = now.strftime("%Y%m%d-%H%M%S")
+    machine_name = (getattr(inp, "machine", None) or "").strip()
     try:
         from fortna_source_id import (
             export_label_from_meta,
+            load_active_meta,
             safe_fs_name,
             studio_project_stem,
         )
         export_label = export_label_from_meta()
         folder_stem = safe_fs_name(export_label) if export_label else safe_fs_name(inp.project_name)
-        # OReillyDC27_ORDENCP4 — never 20260803_0815_…
-        file_stem = studio_project_stem(inp.project_name, getattr(inp, "machine", "") or "")
+        if not machine_name:
+            machine_name = str(load_active_meta().get("machine") or "").strip()
+        # Prefer panel id for Studio file stem (ORNCCP2), never tar.gz date stamp.
+        file_stem = studio_project_stem(machine_name, machine_name)
+        if not file_stem or file_stem == "Autogen_Project":
+            file_stem = studio_project_stem(inp.project_name, machine_name)
         if not file_stem or file_stem == "Autogen_Project":
             file_stem = studio_project_stem(inp.project_name, "")
     except Exception:
         export_label = ""
         folder_stem = _safe(inp.project_name) or "Autogen_Project"
-        file_stem = _safe(inp.project_name) or "Autogen_Project"
+        file_stem = _safe(machine_name or inp.project_name) or "Autogen_Project"
         # strip date if present
         file_stem = re.sub(r"^\d{8}_?\d{0,6}_?", "", file_stem).strip("_") or "Autogen_Project"
     if not file_stem:
-        file_stem = _safe(inp.project_name) or "Autogen_Project"
+        file_stem = _safe(machine_name or inp.project_name) or "Autogen_Project"
     if not folder_stem:
         folder_stem = file_stem
     archive_stem = _strip_non_engineer_tokens(export_label or folder_stem or file_stem)
-    engineer_stem = _engineer_l5x_stem(archive_stem, now)
+    engineer_stem = _engineer_l5x_stem(
+        archive_stem,
+        now,
+        machine=machine_name,
+        project_name=inp.project_name or "",
+    )
     stamp = build_id
 
     export_root = REPO_ROOT / "exports" / "autogen"
@@ -5861,6 +6040,17 @@ def generate(
     # Force short controller name inside L5X (Studio-safe; not the engineer filename)
     try:
         inp.project_name = file_stem
+    except Exception:
+        pass
+
+    # RUN-derived relationship / type matrices (finished PLC never used as generation source)
+    try:
+        from fortna_conveyor_section_model import write_matrices
+        from fortna_source_id import load_active_meta as _lam
+
+        _run = Path((_lam().get("run_dir") or "") or (REPO_ROOT / "workspace" / "active" / "RUN"))
+        if machine_name and _run.exists():
+            write_matrices(_run, machine_name, REPO_ROOT / "internal")
     except Exception:
         pass
 

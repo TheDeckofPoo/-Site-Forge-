@@ -67,20 +67,24 @@ def studio_project_stem(
     Short Studio L5X / Controller name: site + panel only.
 
     Examples:
-      OReillyDC27_ORDENCP4  (preferred)
-      ORDENCP4
+      ORNCCP2
+      OReillyDC27_ORDENCP4
     Never includes tar.gz date stamps (20260803_0815_…) — Studio rejects those.
+    Engineer .L5X basenames must NOT begin with digits and must NOT contain hyphens.
     """
-    candidates = [
-        (project_name or "").strip(),
-        (machine or "").strip(),
-    ]
+    mach = (machine or "").strip()
+    proj = (project_name or "").strip()
+    # Prefer bare machine/panel when it looks like a controller id (ORNCCP2 / ORDENCP4 / CP2)
+    if mach and re.search(r"(?:CP\d+|ORNCCP\d+|ORDENCP\d+|ORLYCP\d+)$", mach, re.I):
+        candidates = [mach, proj]
+    else:
+        candidates = [proj, mach]
     # Also try meta machine/project if caller passes nothing useful
     if not any(candidates):
         meta = load_active_meta()
         candidates = [
-            str(meta.get("project") or meta.get("project_name") or "").strip(),
             str(meta.get("machine") or "").strip(),
+            str(meta.get("project") or meta.get("project_name") or "").strip(),
         ]
     raw = next((c for c in candidates if c), "Autogen_Project")
     s = studio_safe_name(raw, max_len=120)
@@ -102,11 +106,13 @@ def studio_project_stem(
     elif parts:
         s = parts[0]
     if not s:
-        s = studio_safe_name(machine or "Autogen_Project", max_len=max_len)
+        s = studio_safe_name(mach or "Autogen_Project", max_len=max_len)
+    s = s.replace("-", "_")
+    s = re.sub(r"_+", "_", s).strip("._")
     # Studio controller names: letter/underscore start, max ~40 practical
-    if s[0].isdigit():
+    if s and s[0].isdigit():
         s = f"P_{s}"
-    return s[:max_len]
+    return (s or "Autogen_Project")[:max_len]
 
 
 def load_active_meta() -> dict:

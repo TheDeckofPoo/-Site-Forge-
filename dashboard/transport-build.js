@@ -1687,13 +1687,14 @@
       });
     });
 
-    // --- Pass 1b: spread near-coincident LOCAL bodies that were not classified ---
-    // Controller-scoped Auto Build often leaves many belts with nearly identical
-    // canvas mids; without this, labels/bodies sit on top of each other.
+    // --- Pass 1b: light nudge only for true near-coincident LOCAL bodies ---
+    // With fixed RUN→canvas scale (no viewport squash), most belts already have
+    // real separation. Keep a small minSep for duplicate/zero-length overlaps only;
+    // do not invent a second topology via aggressive CLUSTER_SPREAD.
     {
       const locals = list.filter((n) => !n.externalReference && n.plcOwned !== false);
-      const minSep = 42;
-      for (let iter = 0; iter < 3; iter++) {
+      const minSep = 18;
+      for (let iter = 0; iter < 2; iter++) {
         for (let i = 0; i < locals.length; i++) {
           for (let j = i + 1; j < locals.length; j++) {
             const a = locals[i];
@@ -2216,8 +2217,10 @@
     const frameH = bb.h + padY * 2;
     const cw = Math.max(200, canvas.clientWidth);
     const ch = Math.max(160, canvas.clientHeight);
-    // Minimum useful scale — keep P-tags readable; do not shrink for distant outliers
-    const zMin = minZoom != null ? minZoom : 0.55;
+    // Physical RUN layouts use fixed world scale — allow deep zoom-out so fitView
+    // frames the plant without compressing geometry into the viewport box.
+    const defaultMin = tb.physicalLayout ? 0.05 : 0.55;
+    const zMin = minZoom != null ? minZoom : defaultMin;
     const zMax = maxZoom != null ? maxZoom : 2.4;
     const zoom = Math.max(zMin, Math.min(zMax, Math.min(cw / frameW, ch / frameH)));
     tb.view.zoom = zoom;
@@ -2237,9 +2240,10 @@
     const info = fitViewToNodes(nodes, {
       mode: 'visible',
       paddingFrac: 0.08,
-      minZoom: 0.55,
+      minZoom: tb.physicalLayout ? 0.05 : 0.55,
       maxZoom: 2.4,
-      excludeOutliers: true,
+      // Physical layouts already have real XY — do not drop "outlier" chains.
+      excludeOutliers: !tb.physicalLayout,
     });
     drawSchematic(area);
     drawWires();
@@ -2260,7 +2264,7 @@
     fitViewToNodes(nodes, {
       mode: 'all',
       paddingFrac: 0.08,
-      minZoom: 0.25,
+      minZoom: tb.physicalLayout ? 0.05 : 0.25,
       maxZoom: 2.4,
       excludeOutliers: false,
     });
@@ -2281,7 +2285,12 @@
     if (tb.physicalLayout && activeArea()?.nodes?.length) {
       return fitVisible();
     }
-    fitViewToNodes(nodes, { mode: 'site', paddingFrac: 0.08, minZoom: 0.55, excludeOutliers: true });
+    fitViewToNodes(nodes, {
+      mode: 'site',
+      paddingFrac: 0.08,
+      minZoom: tb.physicalLayout ? 0.05 : 0.55,
+      excludeOutliers: !tb.physicalLayout,
+    });
     drawSchematic(activeArea());
     drawWires();
     status(`Fit Site · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`);
@@ -2292,8 +2301,8 @@
     fitViewToNodes(area?.nodes || [], {
       mode: 'area',
       paddingFrac: 0.08,
-      minZoom: 0.55,
-      excludeOutliers: true,
+      minZoom: tb.physicalLayout ? 0.05 : 0.55,
+      excludeOutliers: !tb.physicalLayout,
     });
     drawSchematic(area);
     drawWires();

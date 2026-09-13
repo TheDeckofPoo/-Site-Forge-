@@ -1,0 +1,1941 @@
+{
+  "generated_at": "2026-09-13T15:09:01.444767+00:00",
+  "machine": "ORNCCP2",
+  "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+  "source_of_truth": "RUN ASC Type + VFD evidence; library type codes (DOC_DEFINED)",
+  "finished_validation_only": true,
+  "finished_path": "workspace\\validation\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+  "type_code_legend": {
+    "0": "P1000 Transport+VFD",
+    "1": "P2000 Accum+VFD",
+    "2": "P4000 Accum+MS",
+    "3": "P3000 Transport+MS"
+  },
+  "rows": [
+    {
+      "section": "P1000",
+      "parent_mechanical": "P1000",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1001",
+      "parent_mechanical": "P1001",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1002",
+      "parent_mechanical": "P1002",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1004",
+      "parent_mechanical": "P1004",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1005",
+      "parent_mechanical": "P1005",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1006",
+      "parent_mechanical": "P1006",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1007",
+      "parent_mechanical": "P1007",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1008",
+      "parent_mechanical": "P1008",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1010",
+      "parent_mechanical": "P1010",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1011",
+      "parent_mechanical": "P1011",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1014",
+      "parent_mechanical": "P1014",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1015",
+      "parent_mechanical": "P1015",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1016",
+      "parent_mechanical": "P1016",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P1018",
+      "parent_mechanical": "P1018",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P123",
+      "parent_mechanical": "P123",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P124",
+      "parent_mechanical": "P124",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P126",
+      "parent_mechanical": "P126",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P128",
+      "parent_mechanical": "P128",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P130",
+      "parent_mechanical": "P130",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P130A",
+      "parent_mechanical": "P130",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P130B",
+      "parent_mechanical": "P130",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P130C",
+      "parent_mechanical": "P130",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P130D",
+      "parent_mechanical": "P130",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P130E",
+      "parent_mechanical": "P130",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P132",
+      "parent_mechanical": "P132",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P134",
+      "parent_mechanical": "P134",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P136",
+      "parent_mechanical": "P136",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P136A",
+      "parent_mechanical": "P136",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P136_P1",
+      "parent_mechanical": "P136",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 3,
+      "finished_match": false
+    },
+    {
+      "section": "P136_P2",
+      "parent_mechanical": "P136",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": true
+    },
+    {
+      "section": "P138",
+      "parent_mechanical": "P138",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P139",
+      "parent_mechanical": "P139",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P140",
+      "parent_mechanical": "P140",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P142",
+      "parent_mechanical": "P142",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P144",
+      "parent_mechanical": "P144",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P145",
+      "parent_mechanical": "P145",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P145A",
+      "parent_mechanical": "P145",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P145B",
+      "parent_mechanical": "P145",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P145C",
+      "parent_mechanical": "P145",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P145D",
+      "parent_mechanical": "P145",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P145E",
+      "parent_mechanical": "P145",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P146",
+      "parent_mechanical": "P146",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P148",
+      "parent_mechanical": "P148",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P150",
+      "parent_mechanical": "P150",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P150A",
+      "parent_mechanical": "P150",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P150_P1",
+      "parent_mechanical": "P150",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 3,
+      "finished_match": false
+    },
+    {
+      "section": "P150_P2",
+      "parent_mechanical": "P150",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 3,
+      "finished_match": false
+    },
+    {
+      "section": "P215",
+      "parent_mechanical": "P215",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P220",
+      "parent_mechanical": "P220",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P220A",
+      "parent_mechanical": "P220",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P222",
+      "parent_mechanical": "P222",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P226",
+      "parent_mechanical": "P226",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P228",
+      "parent_mechanical": "P228",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P229",
+      "parent_mechanical": "P229",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P230",
+      "parent_mechanical": "P230",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P232",
+      "parent_mechanical": "P232",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P233",
+      "parent_mechanical": "P233",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P234",
+      "parent_mechanical": "P234",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P236",
+      "parent_mechanical": "P236",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P238",
+      "parent_mechanical": "P238",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P240",
+      "parent_mechanical": "P240",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P242",
+      "parent_mechanical": "P242",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": true
+    },
+    {
+      "section": "P309",
+      "parent_mechanical": "P309",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P310",
+      "parent_mechanical": "P310",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P312",
+      "parent_mechanical": "P312",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 3,
+      "finished_match": false
+    },
+    {
+      "section": "P314",
+      "parent_mechanical": "P314",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P316",
+      "parent_mechanical": "P316",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P317",
+      "parent_mechanical": "P317",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P318",
+      "parent_mechanical": "P318",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P320",
+      "parent_mechanical": "P320",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": true
+    },
+    {
+      "section": "P322",
+      "parent_mechanical": "P322",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P324",
+      "parent_mechanical": "P324",
+      "asc_type": "CURVE",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "CURVE",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    },
+    {
+      "section": "P400",
+      "parent_mechanical": "P400",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P402",
+      "parent_mechanical": "P402",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 3,
+      "finished_match": false
+    },
+    {
+      "section": "P404",
+      "parent_mechanical": "P404",
+      "asc_type": "BELT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "BELT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P406",
+      "parent_mechanical": "P406",
+      "asc_type": "STRAIGHT",
+      "is_vfd": false,
+      "type_code": 3,
+      "type_str": "Transport with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "STRAIGHT",
+          "accum": false,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": 2,
+      "finished_match": false
+    },
+    {
+      "section": "P408",
+      "parent_mechanical": "P408",
+      "asc_type": "ZEROPRESSURE",
+      "is_vfd": false,
+      "type_code": 2,
+      "type_str": "Accumulation with MS",
+      "confidence": "DOC_DEFINED",
+      "provenance": [
+        {
+          "kind": "library_conv_udt_type",
+          "rule": "P1000=0 Transport+VFD, P2000=1 Accum+VFD, P4000=2 Accum+MS, P3000=3 Transport+MS",
+          "confidence": "DOC_DEFINED"
+        },
+        {
+          "kind": "run_asc_type",
+          "asc_type": "ZEROPRESSURE",
+          "accum": true,
+          "is_vfd": false,
+          "confidence": "PROVEN_RUN"
+        }
+      ],
+      "finished_type_code": null,
+      "finished_match": false
+    }
+  ]
+}
