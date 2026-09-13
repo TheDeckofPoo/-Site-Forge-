@@ -1,0 +1,5600 @@
+{
+  "generated_at": "2026-09-13T04:36:16.070329+00:00",
+  "finished_real_mappings_total": 234,
+  "traced_count": 75,
+  "reconstructable_count": 54,
+  "required_examples_included": [
+    {
+      "channel": "CP2RIO0:I.Data[1].0",
+      "tag": "CP2_CS.I.Start_PB"
+    },
+    {
+      "channel": "CP2RIO0:I.Data[1].1",
+      "tag": "CP2_CS.I.Stop_PB"
+    },
+    {
+      "channel": "CP2RIO0:I.Data[1].2",
+      "tag": "CP2_MCR1.I.ES_OK"
+    },
+    {
+      "channel": "CP3RIO0:I.Data[7].0",
+      "tag": "P400_MS.I.Auxiliary_Forward"
+    }
+  ],
+  "traces": [
+    {
+      "finished_channel": "CP2RIO0:I.Data[1].0",
+      "finished_tag": "CP2_CS.I.Start_PB",
+      "direction": "I",
+      "slot": 1,
+      "bit": 0,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "2PBSTART",
+        "CP2_CS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "2PBSTART",
+          "word": "201",
+          "bit": 0,
+          "type": "PROXPART"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[1].0",
+          "tag": "CP2_CS.I.Start_PB",
+          "adapter": "CP2RIO0",
+          "slot": 1,
+          "bit": 0,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "2PBSTART",
+          "type": "PROXPART",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "201",
+          "data_bit": 0,
+          "source_row": 701,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "201",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "201:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:2PBSTART",
+              "name": "2PBSTART",
+              "device_type": "PROXPART",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": true
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[1].1",
+      "finished_tag": "CP2_CS.I.Stop_PB",
+      "direction": "I",
+      "slot": 1,
+      "bit": 1,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "2PBSTOP",
+        "CP2_CS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "2PBSTOP",
+          "word": "201",
+          "bit": 1,
+          "type": "PROXPART"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[1].1",
+          "tag": "CP2_CS.I.Stop_PB",
+          "adapter": "CP2RIO0",
+          "slot": 1,
+          "bit": 1,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "2PBSTOP",
+          "type": "PROXPART",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "201",
+          "data_bit": 1,
+          "source_row": 702,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "201",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "201:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:2PBSTOP",
+              "name": "2PBSTOP",
+              "device_type": "PROXPART",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": true
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[1].2",
+      "finished_tag": "CP2_MCR1.I.ES_OK",
+      "direction": "I",
+      "slot": 1,
+      "bit": 2,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "2MCR1_AUX",
+        "2MCR1",
+        "CP2_MCR1"
+      ],
+      "matched_run_points": [
+        {
+          "name": "2MCR1_AUX",
+          "word": "201",
+          "bit": 2,
+          "type": "STRAIGHT"
+        },
+        {
+          "name": "2MCR1",
+          "word": "200",
+          "bit": 2,
+          "type": "INVALID"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[1].2",
+          "tag": "CP2_MCR1.I.ES_OK",
+          "adapter": "CP2RIO0",
+          "slot": 1,
+          "bit": 2,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "2MCR1_AUX",
+          "type": "STRAIGHT",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "201",
+          "data_bit": 2,
+          "source_row": 703,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "201",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "201:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:2MCR1_AUX",
+              "name": "2MCR1_AUX",
+              "device_type": "STRAIGHT",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "2MCR1",
+          "type": "INVALID",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "200",
+          "data_bit": 2,
+          "source_row": 698,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "200",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "200:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:2MCR1",
+              "name": "2MCR1",
+              "device_type": "INVALID",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": true
+    },
+    {
+      "finished_channel": "CP3RIO0:I.Data[7].0",
+      "finished_tag": "P400_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 0,
+      "adapter": "CP3RIO0",
+      "run_name_candidates": [
+        "M400_AUX",
+        "M400",
+        "P400_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M400_AUX",
+          "word": "307",
+          "bit": 0,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M400",
+          "word": "306",
+          "bit": 4,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO0:I.Data[7].0",
+          "tag": "P400_MS.I.Auxiliary_Forward",
+          "adapter": "CP3RIO0",
+          "slot": 7,
+          "bit": 0,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M400_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "307",
+          "data_bit": 0,
+          "source_row": 838,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "307",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "307:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M400_AUX",
+              "name": "M400_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M400",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "306",
+          "data_bit": 4,
+          "source_row": 849,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "306",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "306:4",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M400",
+              "name": "M400",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": true
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].0",
+      "finished_tag": "PE126_JF.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 0,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE126_JF"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE126_JF",
+          "word": "210",
+          "bit": 0,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].0",
+          "tag": "PE126_JF.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 0,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE126_JF",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 0,
+          "source_row": 762,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE126_JF",
+              "name": "PE126_JF",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].1",
+      "finished_tag": "PE134_JF.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 1,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE134_JF"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE134_JF",
+          "word": "210",
+          "bit": 1,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].1",
+          "tag": "PE134_JF.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 1,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE134_JF",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 1,
+          "source_row": 763,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE134_JF",
+              "name": "PE134_JF",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].2",
+      "finished_tag": "PE138_P.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 2,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE138_P"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE138_P",
+          "word": "210",
+          "bit": 2,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].2",
+          "tag": "PE138_P.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 2,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE138_P",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 2,
+          "source_row": 764,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE138_P",
+              "name": "PE138_P",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].3",
+      "finished_tag": "PE226_JF.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 3,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE226_JF"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE226_JF",
+          "word": "210",
+          "bit": 3,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].3",
+          "tag": "PE226_JF.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 3,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE226_JF",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 3,
+          "source_row": 765,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:3",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE226_JF",
+              "name": "PE226_JF",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].5",
+      "finished_tag": "PE314_P.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 5,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE314_P"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE314_P",
+          "word": "210",
+          "bit": 5,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].5",
+          "tag": "PE314_P.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 5,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE314_P",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 5,
+          "source_row": 766,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:5",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE314_P",
+              "name": "PE314_P",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].6",
+      "finished_tag": "PE316_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 6,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE316_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE316_J",
+          "word": "210",
+          "bit": 6,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].6",
+          "tag": "PE316_J.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 6,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE316_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 6,
+          "source_row": 767,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:6",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE316_J",
+              "name": "PE316_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].7",
+      "finished_tag": "PE404_P.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 7,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE404_P"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE404_P",
+          "word": "210",
+          "bit": 7,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].7",
+          "tag": "PE404_P.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 7,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE404_P",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 7,
+          "source_row": 768,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:7",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE404_P",
+              "name": "PE404_P",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].8",
+      "finished_tag": "PE406_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 8,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE406_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE406_J",
+          "word": "210",
+          "bit": 8,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].8",
+          "tag": "PE406_J.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 8,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE406_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 8,
+          "source_row": 769,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:8",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE406_J",
+              "name": "PE406_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].9",
+      "finished_tag": "PE1000_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 9,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE1000_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE1000_J",
+          "word": "210",
+          "bit": 9,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].9",
+          "tag": "PE1000_J.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 9,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE1000_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 9,
+          "source_row": 770,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:9",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE1000_J",
+              "name": "PE1000_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].10",
+      "finished_tag": "PE1002_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 10,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE1002_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE1002_J",
+          "word": "210",
+          "bit": 10,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].10",
+          "tag": "PE1002_J.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 10,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE1002_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 10,
+          "source_row": 771,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:10",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE1002_J",
+              "name": "PE1002_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[0].11",
+      "finished_tag": "PE1004_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 0,
+      "bit": 11,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE1004_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE1004_J",
+          "word": "210",
+          "bit": 11,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[0].11",
+          "tag": "PE1004_J.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 0,
+          "bit": 11,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE1004_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "210",
+          "data_bit": 11,
+          "source_row": 772,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "210",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "210:11",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE1004_J",
+              "name": "PE1004_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].0",
+      "finished_tag": "PE136_F1.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 0,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE136_F1"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].0",
+          "tag": "PE136_F1.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 0,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE136_F1'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].1",
+      "finished_tag": "PE136_F2.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 1,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE136_F2"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].1",
+          "tag": "PE136_F2.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 1,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE136_F2'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].3",
+      "finished_tag": "PE312_F.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 3,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE312_F"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].3",
+          "tag": "PE312_F.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 3,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE312_F'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].4",
+      "finished_tag": "PE408_F.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 4,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE408_F"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].4",
+          "tag": "PE408_F.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 4,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE408_F'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].5",
+      "finished_tag": "PE136_P1.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 5,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE136_P1"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].5",
+          "tag": "PE136_P1.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 5,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE136_P1'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].6",
+      "finished_tag": "PE136_P2.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 6,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE136_P2"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].6",
+          "tag": "PE136_P2.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 6,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE136_P2'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].8",
+      "finished_tag": "PE312_P.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 8,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE312_P"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].8",
+          "tag": "PE312_P.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 8,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE312_P'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].9",
+      "finished_tag": "PE402_P.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 9,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE402_P"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].9",
+          "tag": "PE402_P.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 9,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE402_P'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO1:I.Data[4].10",
+      "finished_tag": "PE229_F.I.PE_Clear",
+      "direction": "I",
+      "slot": 4,
+      "bit": 10,
+      "adapter": "CP2RIO1",
+      "run_name_candidates": [
+        "PE229_F"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO1:I.Data[4].10",
+          "tag": "PE229_F.I.PE_Clear",
+          "adapter": "CP2RIO1",
+          "slot": 4,
+          "bit": 10,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE229_F'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].0",
+      "finished_tag": "PE142_JF.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 0,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE142_JF"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE142_JF",
+          "word": "312",
+          "bit": 0,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].0",
+          "tag": "PE142_JF.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 0,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE142_JF",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 0,
+          "source_row": 819,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE142_JF",
+              "name": "PE142_JF",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].1",
+      "finished_tag": "PE148_JF.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 1,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE148_JF"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE148_JF",
+          "word": "312",
+          "bit": 1,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].1",
+          "tag": "PE148_JF.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 1,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE148_JF",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 1,
+          "source_row": 820,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE148_JF",
+              "name": "PE148_JF",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].2",
+      "finished_tag": "PE238_JF.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 2,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE238_JF"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE238_JF",
+          "word": "312",
+          "bit": 2,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].2",
+          "tag": "PE238_JF.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 2,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE238_JF",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 2,
+          "source_row": 821,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE238_JF",
+              "name": "PE238_JF",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].3",
+      "finished_tag": "PE322_P.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 3,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE322_P"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE322_P",
+          "word": "312",
+          "bit": 3,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].3",
+          "tag": "PE322_P.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 3,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE322_P",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 3,
+          "source_row": 822,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:3",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE322_P",
+              "name": "PE322_P",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].4",
+      "finished_tag": "PE324_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 4,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE324_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE324_J",
+          "word": "312",
+          "bit": 4,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].4",
+          "tag": "PE324_J.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 4,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE324_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 4,
+          "source_row": 823,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:4",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE324_J",
+              "name": "PE324_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].5",
+      "finished_tag": "PE400_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 5,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE400_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE400_J",
+          "word": "312",
+          "bit": 5,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].5",
+          "tag": "PE400_J.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 5,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE400_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 5,
+          "source_row": 824,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:5",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE400_J",
+              "name": "PE400_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].6",
+      "finished_tag": "PE1006_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 6,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE1006_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE1006_J",
+          "word": "312",
+          "bit": 6,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].6",
+          "tag": "PE1006_J.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 6,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE1006_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 6,
+          "source_row": 825,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:6",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE1006_J",
+              "name": "PE1006_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].7",
+      "finished_tag": "PE1008_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 7,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE1008_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE1008_J",
+          "word": "312",
+          "bit": 7,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].7",
+          "tag": "PE1008_J.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 7,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE1008_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 7,
+          "source_row": 826,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:7",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE1008_J",
+              "name": "PE1008_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].8",
+      "finished_tag": "PE1010_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 8,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE1010_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE1010_J",
+          "word": "312",
+          "bit": 8,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].8",
+          "tag": "PE1010_J.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 8,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE1010_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 8,
+          "source_row": 827,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:8",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE1010_J",
+              "name": "PE1010_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].9",
+      "finished_tag": "PE1014_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 9,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE1014_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE1014_J",
+          "word": "312",
+          "bit": 9,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].9",
+          "tag": "PE1014_J.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 9,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE1014_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 9,
+          "source_row": 828,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:9",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE1014_J",
+              "name": "PE1014_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO1:I.Data[2].10",
+      "finished_tag": "PE1018_J.I.PE_Clear",
+      "direction": "I",
+      "slot": 2,
+      "bit": 10,
+      "adapter": "CP3RIO1",
+      "run_name_candidates": [
+        "PE1018_J"
+      ],
+      "matched_run_points": [
+        {
+          "name": "PE1018_J",
+          "word": "312",
+          "bit": 10,
+          "type": "PHOTOCELL"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO1:I.Data[2].10",
+          "tag": "PE1018_J.I.PE_Clear",
+          "adapter": "CP3RIO1",
+          "slot": 2,
+          "bit": 10,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "PE1018_J",
+          "type": "PHOTOCELL",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "312",
+          "data_bit": 10,
+          "source_row": 829,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "312",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "312:10",
+          "occupants": [
+            {
+              "id": "LogicalPoint:PE1018_J",
+              "name": "PE1018_J",
+              "device_type": "PHOTOCELL",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO1",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].0",
+      "finished_tag": "PE150_F1.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 0,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE150_F1"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].0",
+          "tag": "PE150_F1.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 0,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE150_F1'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].1",
+      "finished_tag": "PE150_F2.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 1,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE150_F2"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].1",
+          "tag": "PE150_F2.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 1,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE150_F2'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].2",
+      "finished_tag": "PE242_F.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 2,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE242_F"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].2",
+          "tag": "PE242_F.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 2,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE242_F'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].3",
+      "finished_tag": "PE320_F.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 3,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE320_F"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].3",
+          "tag": "PE320_F.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 3,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE320_F'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].4",
+      "finished_tag": "PE402_F.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 4,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE402_F"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].4",
+          "tag": "PE402_F.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 4,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE402_F'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].5",
+      "finished_tag": "PE150_P1.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 5,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE150_P1"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].5",
+          "tag": "PE150_P1.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 5,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE150_P1'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].6",
+      "finished_tag": "PE150_P2.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 6,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE150_P2"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].6",
+          "tag": "PE150_P2.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 6,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE150_P2'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].7",
+      "finished_tag": "PE242_P.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 7,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE242_P"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].7",
+          "tag": "PE242_P.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 7,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE242_P'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO2:I.Data[1].8",
+      "finished_tag": "PE320_P.I.PE_Clear",
+      "direction": "I",
+      "slot": 1,
+      "bit": 8,
+      "adapter": "CP3RIO2",
+      "run_name_candidates": [
+        "PE320_P"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO2:I.Data[1].8",
+          "tag": "PE320_P.I.PE_Clear",
+          "adapter": "CP3RIO2",
+          "slot": 1,
+          "bit": 8,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['PE320_P'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[3].7",
+      "finished_tag": "P124_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 3,
+      "bit": 7,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M124_AUX",
+        "M124",
+        "P124_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M124_AUX",
+          "word": "203",
+          "bit": 7,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M124",
+          "word": "202",
+          "bit": 0,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[3].7",
+          "tag": "P124_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 3,
+          "bit": 7,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M124_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "203",
+          "data_bit": 7,
+          "source_row": 720,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "203",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "203:7",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M124_AUX",
+              "name": "M124_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M124",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "202",
+          "data_bit": 0,
+          "source_row": 716,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "202",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "202:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M124",
+              "name": "M124",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[3].8",
+      "finished_tag": "P128_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 3,
+      "bit": 8,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M128_AUX",
+        "M128",
+        "P128_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M128_AUX",
+          "word": "203",
+          "bit": 8,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M128",
+          "word": "204",
+          "bit": 0,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[3].8",
+          "tag": "P128_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 3,
+          "bit": 8,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M128_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "203",
+          "data_bit": 8,
+          "source_row": 721,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "203",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "203:8",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M128_AUX",
+              "name": "M128_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M128",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "204",
+          "data_bit": 0,
+          "source_row": 729,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "204",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "204:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M128",
+              "name": "M128",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[3].9",
+      "finished_tag": "P130A_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 3,
+      "bit": 9,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M130A_AUX",
+        "M130A",
+        "P130A_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M130A_AUX",
+          "word": "203",
+          "bit": 9,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M130A",
+          "word": "204",
+          "bit": 1,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[3].9",
+          "tag": "P130A_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 3,
+          "bit": 9,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130A_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "203",
+          "data_bit": 9,
+          "source_row": 722,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "203",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "203:9",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130A_AUX",
+              "name": "M130A_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130A",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "204",
+          "data_bit": 1,
+          "source_row": 730,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "204",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "204:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130A",
+              "name": "M130A",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[3].10",
+      "finished_tag": "P130B_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 3,
+      "bit": 10,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M130B_AUX",
+        "M130B",
+        "P130B_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M130B_AUX",
+          "word": "203",
+          "bit": 10,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M130B",
+          "word": "204",
+          "bit": 2,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[3].10",
+          "tag": "P130B_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 3,
+          "bit": 10,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130B_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "203",
+          "data_bit": 10,
+          "source_row": 723,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "203",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "203:10",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130B_AUX",
+              "name": "M130B_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130B",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "204",
+          "data_bit": 2,
+          "source_row": 731,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "204",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "204:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130B",
+              "name": "M130B",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[3].11",
+      "finished_tag": "P130C_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 3,
+      "bit": 11,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M130C_AUX",
+        "M130C",
+        "P130C_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M130C_AUX",
+          "word": "203",
+          "bit": 11,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M130C",
+          "word": "204",
+          "bit": 3,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[3].11",
+          "tag": "P130C_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 3,
+          "bit": 11,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130C_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "203",
+          "data_bit": 11,
+          "source_row": 724,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "203",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "203:11",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130C_AUX",
+              "name": "M130C_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130C",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "204",
+          "data_bit": 3,
+          "source_row": 732,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "204",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "204:3",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130C",
+              "name": "M130C",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[3].12",
+      "finished_tag": "P130D_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 3,
+      "bit": 12,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M130D_AUX",
+        "M130D",
+        "P130D_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M130D_AUX",
+          "word": "203",
+          "bit": 12,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M130D",
+          "word": "204",
+          "bit": 4,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[3].12",
+          "tag": "P130D_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 3,
+          "bit": 12,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130D_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "203",
+          "data_bit": 12,
+          "source_row": 725,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "203",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "203:12",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130D_AUX",
+              "name": "M130D_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130D",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "204",
+          "data_bit": 4,
+          "source_row": 733,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "204",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "204:4",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130D",
+              "name": "M130D",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[3].13",
+      "finished_tag": "P130E_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 3,
+      "bit": 13,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M130E_AUX",
+        "M130E",
+        "P130E_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M130E_AUX",
+          "word": "203",
+          "bit": 13,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M130E",
+          "word": "204",
+          "bit": 5,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[3].13",
+          "tag": "P130E_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 3,
+          "bit": 13,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130E_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "203",
+          "data_bit": 13,
+          "source_row": 726,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "203",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "203:13",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130E_AUX",
+              "name": "M130E_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M130E",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "204",
+          "data_bit": 5,
+          "source_row": 734,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "204",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "204:5",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M130E",
+              "name": "M130E",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[3].14",
+      "finished_tag": "P132_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 3,
+      "bit": 14,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M132_AUX",
+        "M132",
+        "P132_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M132_AUX",
+          "word": "203",
+          "bit": 14,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M132",
+          "word": "204",
+          "bit": 6,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[3].14",
+          "tag": "P132_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 3,
+          "bit": 14,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M132_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "203",
+          "data_bit": 14,
+          "source_row": 727,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "203",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "203:14",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M132_AUX",
+              "name": "M132_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M132",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "204",
+          "data_bit": 6,
+          "source_row": 735,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "204",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "204:6",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M132",
+              "name": "M132",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].0",
+      "finished_tag": "P138_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 0,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M138_AUX",
+        "M138",
+        "P138_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M138_AUX",
+          "word": "205",
+          "bit": 0,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M138",
+          "word": "206",
+          "bit": 0,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].0",
+          "tag": "P138_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 0,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M138_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 0,
+          "source_row": 737,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M138_AUX",
+              "name": "M138_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M138",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "206",
+          "data_bit": 0,
+          "source_row": 752,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "206",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "206:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M138",
+              "name": "M138",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].1",
+      "finished_tag": "P220_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 1,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M220_AUX",
+        "M220",
+        "P220_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M220_AUX",
+          "word": "205",
+          "bit": 1,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M220",
+          "word": "202",
+          "bit": 1,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].1",
+          "tag": "P220_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 1,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M220_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 1,
+          "source_row": 738,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M220_AUX",
+              "name": "M220_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M220",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "202",
+          "data_bit": 1,
+          "source_row": 717,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "202",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "202:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M220",
+              "name": "M220",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].2",
+      "finished_tag": "P222_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 2,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M222_AUX",
+        "M222",
+        "P222_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M222_AUX",
+          "word": "205",
+          "bit": 2,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M222",
+          "word": "206",
+          "bit": 1,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].2",
+          "tag": "P222_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 2,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M222_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 2,
+          "source_row": 739,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M222_AUX",
+              "name": "M222_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M222",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "206",
+          "data_bit": 1,
+          "source_row": 753,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "206",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "206:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M222",
+              "name": "M222",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].6",
+      "finished_tag": "P310_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 6,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M310_AUX",
+        "M310",
+        "P310_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M310_AUX",
+          "word": "205",
+          "bit": 6,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M310",
+          "word": "202",
+          "bit": 2,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].6",
+          "tag": "P310_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 6,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M310_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 6,
+          "source_row": 743,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:6",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M310_AUX",
+              "name": "M310_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M310",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "202",
+          "data_bit": 2,
+          "source_row": 718,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "202",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "202:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M310",
+              "name": "M310",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].7",
+      "finished_tag": "P312_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 7,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M312_AUX",
+        "M312",
+        "P312_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M312_AUX",
+          "word": "205",
+          "bit": 7,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M312",
+          "word": "202",
+          "bit": 3,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].7",
+          "tag": "P312_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 7,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M312_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 7,
+          "source_row": 744,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:7",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M312_AUX",
+              "name": "M312_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M312",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "202",
+          "data_bit": 3,
+          "source_row": 719,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "202",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "202:3",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M312",
+              "name": "M312",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].8",
+      "finished_tag": "P314_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 8,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M314_AUX",
+        "M314",
+        "P314_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M314_AUX",
+          "word": "205",
+          "bit": 8,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M314",
+          "word": "206",
+          "bit": 5,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].8",
+          "tag": "P314_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 8,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M314_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 8,
+          "source_row": 745,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:8",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M314_AUX",
+              "name": "M314_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M314",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "206",
+          "data_bit": 5,
+          "source_row": 757,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "206",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "206:5",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M314",
+              "name": "M314",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].9",
+      "finished_tag": "P402_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 9,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M402_AUX",
+        "M402",
+        "P402_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M402_AUX",
+          "word": "205",
+          "bit": 9,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M402",
+          "word": "206",
+          "bit": 6,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].9",
+          "tag": "P402_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 9,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M402_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 9,
+          "source_row": 746,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:9",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M402_AUX",
+              "name": "M402_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M402",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "206",
+          "data_bit": 6,
+          "source_row": 758,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "206",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "206:6",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M402",
+              "name": "M402",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].10",
+      "finished_tag": "P404_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 10,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M404_AUX",
+        "M404",
+        "P404_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M404_AUX",
+          "word": "205",
+          "bit": 10,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M404",
+          "word": "206",
+          "bit": 7,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].10",
+          "tag": "P404_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 10,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M404_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 10,
+          "source_row": 747,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:10",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M404_AUX",
+              "name": "M404_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M404",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "206",
+          "data_bit": 7,
+          "source_row": 759,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "206",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "206:7",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M404",
+              "name": "M404",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].11",
+      "finished_tag": "P406_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 11,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M406_AUX",
+        "M406",
+        "P406_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M406_AUX",
+          "word": "205",
+          "bit": 11,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M406",
+          "word": "211",
+          "bit": 0,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].11",
+          "tag": "P406_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 11,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M406_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 11,
+          "source_row": 748,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:11",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M406_AUX",
+              "name": "M406_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M406",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "211",
+          "data_bit": 0,
+          "source_row": 773,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "211",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "211:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M406",
+              "name": "M406",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].12",
+      "finished_tag": "P1000_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 12,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M1000_AUX",
+        "M1000",
+        "P1000_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M1000_AUX",
+          "word": "205",
+          "bit": 12,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M1000",
+          "word": "211",
+          "bit": 1,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].12",
+          "tag": "P1000_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 12,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1000_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 12,
+          "source_row": 749,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:12",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1000_AUX",
+              "name": "M1000_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1000",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "211",
+          "data_bit": 1,
+          "source_row": 774,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "211",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "211:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1000",
+              "name": "M1000",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].13",
+      "finished_tag": "P1002_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 13,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M1002_AUX",
+        "M1002",
+        "P1002_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M1002_AUX",
+          "word": "205",
+          "bit": 13,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M1002",
+          "word": "211",
+          "bit": 2,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].13",
+          "tag": "P1002_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 13,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1002_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 13,
+          "source_row": 750,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:13",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1002_AUX",
+              "name": "M1002_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1002",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "211",
+          "data_bit": 2,
+          "source_row": 775,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "211",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "211:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1002",
+              "name": "M1002",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[5].14",
+      "finished_tag": "P1004_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 14,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M1004_AUX",
+        "M1004",
+        "P1004_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M1004_AUX",
+          "word": "205",
+          "bit": 14,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M1004",
+          "word": "211",
+          "bit": 3,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[5].14",
+          "tag": "P1004_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 5,
+          "bit": 14,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1004_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "205",
+          "data_bit": 14,
+          "source_row": 751,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "205",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "205:14",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1004_AUX",
+              "name": "M1004_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1004",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "211",
+          "data_bit": 3,
+          "source_row": 776,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "211",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "211:3",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1004",
+              "name": "M1004",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[7].0",
+      "finished_tag": "P123_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 0,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M123_AUX",
+        "M123",
+        "P123_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M123_AUX",
+          "word": "207",
+          "bit": 0,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M123",
+          "word": "202",
+          "bit": 4,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[7].0",
+          "tag": "P123_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 7,
+          "bit": 0,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M123_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "207",
+          "data_bit": 0,
+          "source_row": 1328,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "207",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "207:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M123_AUX",
+              "name": "M123_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M123",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "202",
+          "data_bit": 4,
+          "source_row": 1323,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "202",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "202:4",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M123",
+              "name": "M123",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[7].1",
+      "finished_tag": "P220A_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 1,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M220A_AUX",
+        "M220A",
+        "P220A_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M220A_AUX",
+          "word": "207",
+          "bit": 1,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M220A",
+          "word": "202",
+          "bit": 5,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[7].1",
+          "tag": "P220A_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 7,
+          "bit": 1,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M220A_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "207",
+          "data_bit": 1,
+          "source_row": 1329,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "207",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "207:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M220A_AUX",
+              "name": "M220A_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M220A",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "202",
+          "data_bit": 5,
+          "source_row": 1324,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "202",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "202:5",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M220A",
+              "name": "M220A",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[7].2",
+      "finished_tag": "P309_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 2,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M309_AUX",
+        "M309",
+        "P309_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M309_AUX",
+          "word": "207",
+          "bit": 2,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M309",
+          "word": "202",
+          "bit": 6,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[7].2",
+          "tag": "P309_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 7,
+          "bit": 2,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M309_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "207",
+          "data_bit": 2,
+          "source_row": 1330,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "207",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "207:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M309_AUX",
+              "name": "M309_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M309",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "202",
+          "data_bit": 6,
+          "source_row": 1325,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "202",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "202:6",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M309",
+              "name": "M309",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[7].3",
+      "finished_tag": "P1001_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 3,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M1001_AUX",
+        "M1001",
+        "P1001_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M1001_AUX",
+          "word": "207",
+          "bit": 3,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M1001",
+          "word": "211",
+          "bit": 4,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[7].3",
+          "tag": "P1001_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 7,
+          "bit": 3,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1001_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "207",
+          "data_bit": 3,
+          "source_row": 1331,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "207",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "207:3",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1001_AUX",
+              "name": "M1001_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1001",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "211",
+          "data_bit": 4,
+          "source_row": 1326,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "211",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "211:4",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1001",
+              "name": "M1001",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[7].4",
+      "finished_tag": "P1005_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 4,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "M1005_AUX",
+        "M1005",
+        "P1005_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M1005_AUX",
+          "word": "207",
+          "bit": 4,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M1005",
+          "word": "211",
+          "bit": 5,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[7].4",
+          "tag": "P1005_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 7,
+          "bit": 4,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1005_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "207",
+          "data_bit": 4,
+          "source_row": 1332,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "207",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "207:4",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1005_AUX",
+              "name": "M1005_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M1005",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "211",
+          "data_bit": 5,
+          "source_row": 1327,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "211",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "211:5",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M1005",
+              "name": "M1005",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP2RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[7].6",
+      "finished_tag": "CP8_P229_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 6,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "CP8_P229_MS"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[7].6",
+          "tag": "CP8_P229_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 7,
+          "bit": 6,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['CP8_P229_MS'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[7].8",
+      "finished_tag": "CP4_P408_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 8,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "CP4_P408_MS"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[7].8",
+          "tag": "CP4_P408_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 7,
+          "bit": 8,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['CP4_P408_MS'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP2RIO0:I.Data[7].9",
+      "finished_tag": "CP3_P1014_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 7,
+      "bit": 9,
+      "adapter": "CP2RIO0",
+      "run_name_candidates": [
+        "CP3_P1014_MS"
+      ],
+      "matched_run_points": [],
+      "can_reconstruct_from_RUN": false,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP2RIO0:I.Data[7].9",
+          "tag": "CP3_P1014_MS.I.Auxiliary_Forward",
+          "adapter": "CP2RIO0",
+          "slot": 7,
+          "bit": 9,
+          "direction": "I"
+        }
+      ],
+      "gaps": [
+        "No Conveyor.IO_Name match for finished tag candidates ['CP3_P1014_MS'] (AOI member path is finished convention; RUN uses Fortna part names)",
+        "MISSING_RUN_RELATIONSHIP: finished logical tag not linked by explicit RUN part name"
+      ],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO0:I.Data[5].0",
+      "finished_tag": "P140_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 0,
+      "adapter": "CP3RIO0",
+      "run_name_candidates": [
+        "M140_AUX",
+        "M140",
+        "P140_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M140_AUX",
+          "word": "305",
+          "bit": 0,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M140",
+          "word": "302",
+          "bit": 0,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO0:I.Data[5].0",
+          "tag": "P140_MS.I.Auxiliary_Forward",
+          "adapter": "CP3RIO0",
+          "slot": 5,
+          "bit": 0,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M140_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "305",
+          "data_bit": 0,
+          "source_row": 851,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "305",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "305:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M140_AUX",
+              "name": "M140_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M140",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "302",
+          "data_bit": 0,
+          "source_row": 877,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "302",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "302:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M140",
+              "name": "M140",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO0:I.Data[5].1",
+      "finished_tag": "P144_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 1,
+      "adapter": "CP3RIO0",
+      "run_name_candidates": [
+        "M144_AUX",
+        "M144",
+        "P144_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M144_AUX",
+          "word": "305",
+          "bit": 1,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M144",
+          "word": "304",
+          "bit": 0,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO0:I.Data[5].1",
+          "tag": "P144_MS.I.Auxiliary_Forward",
+          "adapter": "CP3RIO0",
+          "slot": 5,
+          "bit": 1,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M144_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "305",
+          "data_bit": 1,
+          "source_row": 852,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "305",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "305:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M144_AUX",
+              "name": "M144_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M144",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "304",
+          "data_bit": 0,
+          "source_row": 866,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "304",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "304:0",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M144",
+              "name": "M144",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    },
+    {
+      "finished_channel": "CP3RIO0:I.Data[5].2",
+      "finished_tag": "P145A_MS.I.Auxiliary_Forward",
+      "direction": "I",
+      "slot": 5,
+      "bit": 2,
+      "adapter": "CP3RIO0",
+      "run_name_candidates": [
+        "M145A_AUX",
+        "M145A",
+        "P145A_MS"
+      ],
+      "matched_run_points": [
+        {
+          "name": "M145A_AUX",
+          "word": "305",
+          "bit": 2,
+          "type": "MOTOR"
+        },
+        {
+          "name": "M145A",
+          "word": "304",
+          "bit": 1,
+          "type": "MOTOR"
+        }
+      ],
+      "can_reconstruct_from_RUN": true,
+      "chain": [
+        {
+          "hop": "finished_rung",
+          "channel": "CP3RIO0:I.Data[5].2",
+          "tag": "P145A_MS.I.Auxiliary_Forward",
+          "adapter": "CP3RIO0",
+          "slot": 5,
+          "bit": 2,
+          "direction": "I"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M145A_AUX",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "305",
+          "data_bit": 2,
+          "source_row": 853,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "305",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "305:2",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M145A_AUX",
+              "name": "M145A_AUX",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Conveyor.asc",
+          "io_name": "M145A",
+          "type": "MOTOR",
+          "machine_name": "ORNCCP2",
+          "IO_Address_Word": "304",
+          "data_bit": 1,
+          "source_row": 867,
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "Configio.asc",
+          "Octal_Word": "304",
+          "confidence": "HIGH",
+          "documented_semantics": "Octal_Word owned on this AC"
+        },
+        {
+          "hop": "word_bit_cell",
+          "key": "304:1",
+          "occupants": [
+            {
+              "id": "LogicalPoint:M145A",
+              "name": "M145A",
+              "device_type": "MOTOR",
+              "machine_name": "ORNCCP2"
+            }
+          ],
+          "confidence": "HIGH"
+        },
+        {
+          "hop": "adapter_identity",
+          "finished_adapter": "CP3RIO0",
+          "note": "Finished rack names (CP2RIO*/CP3RIO*) are Studio identities; RUN eipcfg/generator currently emit T_1794_AENT_* \u2014 name family \u2260 ownership",
+          "confidence": "HIGH"
+        }
+      ],
+      "gaps": [],
+      "required_example": false
+    }
+  ],
+  "note": "Reconstruction means RUN contains explicit Conveyor word/bit for the Fortna part that the finished AOI tag conventionally represents. Finished AOI member paths (e.g. CP2_CS.I.Start_PB) are not stored in RUN \u2014 only part names like 2PBSTART."
+}

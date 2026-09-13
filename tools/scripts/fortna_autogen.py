@@ -757,6 +757,15 @@ def _io_point_want_dir(device_name: str, device_type: str, direction: str) -> st
         return "I"
     if n.startswith("ENC") or "ENCODER" in n:
         return "I"
+    # E-stop PB / pullcord / light-curtain feedbacks are inputs even when Conveyor
+    # Type is BEACON or direction=O (common Greensboro miscategorization).
+    if (
+        re.match(r"^ES\d", n)
+        or re.match(r"^ESLS", n)
+        or re.match(r"^T_\d*ES\d", n)
+        or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d.*AUX", n)
+    ):
+        return "I"
     # E-stop PB / pullcord feedbacks are inputs; MCR/ES *coil* tags are outputs
     if dt in ("estop", "e-stop", "e_stop", "es"):
         if re.search(r"MCR\d*$", n) or re.match(r"^\d*ES\d+$", n) or re.match(r"^ES\d+$", n):
@@ -912,6 +921,11 @@ _CONFIGIO_DESC_TO_RIO = {
 
 
 def _configio_desc_to_rio(desc: str) -> str:
+    """Map Reno-style Configio Desc (EP3RP/CP14) → AENTR* rio name.
+
+    Greensboro PANEL-TYPE-INDEX Descs (CP2-1794-IA16-3) intentionally return ""
+    here — channel identity comes from fortna_physical_word_resolver instead.
+    """
     d = (desc or "").strip().upper()
     if not d:
         return ""
@@ -1820,6 +1834,44 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
     eip_adapters, eip_ip, eip_modules, eip_topology, io_word_map = _load_eip_adapters(run_dir)
     # Configio: Fortna Octal_Word → EIP Bank (authoritative when EIPCSV empty)
     configio_octal_map = _load_configio_octal_map(run_dir, machine)
+
+    # Configio-primary physical map (Greensboro PANEL-TYPE-INDEX Descs → CPxRIOn).
+    # Populates io_word_map for ALL configio-owned words and renames adapters from
+    # T_1794_AENT_* to CP2RIO*/CP3RIO* using Configio panel prefixes (RUN evidence).
+    try:
+        from fortna_physical_word_resolver import (
+            PhysicalWordResolver,
+            parse_configio_desc,
+        )
+
+        _gres_descs = [
+            (e.get("desc") or "")
+            for entries in (configio_octal_map or {}).values()
+            for e in (entries or [])
+        ]
+        if any(parse_configio_desc(d) for d in _gres_descs):
+            _pwr = PhysicalWordResolver(run_dir, machine)
+            phys_wm = _pwr.io_word_map()
+            if phys_wm:
+                merged = dict(io_word_map or {})
+                merged.update(phys_wm)  # Configio-owned words win; EIPCSV supplements
+                io_word_map = merged
+            phys_topo = _pwr.eip_topology()
+            if phys_topo:
+                eip_topology = phys_topo
+                eip_modules = [
+                    IoModule(
+                        name=str(ch.get("name") or ""),
+                        type=str(ch.get("type") or ch.get("catalog") or ""),
+                        slot=str(ch.get("eip_slot") if ch.get("eip_slot") is not None else ch.get("flex_slot") or ""),
+                        parent=str(ad.get("rio_name") or ""),
+                        rack=str(ad.get("panel") or ad.get("rack") or ""),
+                    )
+                    for ad in phys_topo
+                    for ch in (ad.get("children") or [])
+                ]
+    except Exception:
+        pass
 
     from fortna_io_extract import belongs_to_controller, row_machine_matches
 
@@ -3198,6 +3250,65 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 "device_class": "vfd_ms",
             })
             continue
+        # M###_AUX → P###_MS Motor_Starter_UDT (IO_MAP uses .I.Auxiliary_Forward)
+        core_name = re.sub(r"^T_", "", tname)
+        m_aux = re.match(r"^M(\d+[A-Z]?)_AUX$", core_name, re.I) or re.match(
+            r"^M(\d+[A-Z]?)_AUX$", raw, re.I
+        )
+        if m_aux:
+            ms_name = f"P{m_aux.group(1)}_MS"
+            if ms_name not in seen_tag_names:
+                ms_src = extract_tag_block(library_text, "NO_MS")
+                if ms_src:
+                    _add_tag_block(ms_src.replace("NO_MS", ms_name))
+                else:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(ms_name)}" TagType="Base" '
+                        f'DataType="Motor_Starter_UDT" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated">'
+                        f'<Structure DataType="Motor_Starter_UDT"/></Data></Tag>'
+                    )
+            io_tag_rows.append({
+                "tag": ms_name,
+                "fortna_name": raw,
+                "fortna_address": (
+                    f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                ),
+                "description": f"Motor aux → {ms_name} (Motor_Starter_UDT)",
+                "type": "Motor_Starter_UDT",
+                "device_class": "motor_aux",
+            })
+            continue
+        # nPBSTART / nPBSTOP → CPn_CS control-station UDT
+        m_pb = re.match(r"^(\d+)PB(START|STOP)(_PLT)?$", core_name, re.I) or re.match(
+            r"^(\d+)PB(START|STOP)(_PLT)?$", raw, re.I
+        )
+        if m_pb:
+            cs_name = f"CP{m_pb.group(1)}_CS"
+            if cs_name not in seen_tag_names:
+                cs_src = extract_tag_block(library_text, "NO_CS")
+                if cs_src:
+                    _add_tag_block(cs_src.replace("NO_CS", cs_name))
+                else:
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(cs_name)}" TagType="Base" '
+                        f'DataType="CS_UDT" Constant="false" '
+                        f'ExternalAccess="Read/Write">'
+                        f'<Data Format="Decorated">'
+                        f'<Structure DataType="CS_UDT"/></Data></Tag>'
+                    )
+            io_tag_rows.append({
+                "tag": cs_name,
+                "fortna_name": raw,
+                "fortna_address": (
+                    f"Bank{p.fortna_bank}.{p.fortna_bit}" if p.fortna_bank else ""
+                ),
+                "description": f"Control station → {cs_name}",
+                "type": "CS_UDT",
+                "device_class": "control_station",
+            })
+            continue
         # ES_UDT for e-stops AND for MCR/ESR aux contacts that IO_MAP addresses as .I.ES_OK.
         # Names may be T_1MCR1_AUX (digit-leading Fortna tags get T_ prefix).
         needs_es_udt = (
@@ -3209,18 +3320,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", raw, re.I)
         )
         if needs_es_udt:
+            # Prefer finished-style CP2_MCR1 / CP2_ES tag names when Fortna is 2MCR1_AUX
+            es_tag = tname
+            m_es = re.match(r"^(\d+)(MCR|ESR)(\d*)_?AUX$", core_name, re.I) or re.match(
+                r"^(\d+)(MCR|ESR)(\d*)_?AUX$", raw, re.I
+            )
+            if m_es:
+                es_tag = f"CP{m_es.group(1)}_{m_es.group(2).upper()}{m_es.group(3) or '1'}"
+            else:
+                m_es2 = re.match(r"^(\d+)ES$", core_name, re.I) or re.match(
+                    r"^(\d+)ES$", raw, re.I
+                )
+                if m_es2:
+                    es_tag = f"CP{m_es2.group(1)}_ES"
             src = (
                 extract_tag_block(library_text, "NO_ES")
                 or extract_tag_block(library_text, "CP5_ES")
             )
-            if src:
-                # Rename template tag to this device
+            if src and es_tag not in seen_tag_names:
                 udt_block = re.sub(
                     r'Tag Name="[^"]+"',
-                    f'Tag Name="{_xml_escape(tname)}"',
+                    f'Tag Name="{_xml_escape(es_tag)}"',
                     src,
                     count=1,
                 )
+                dtype = "ES_UDT"
+                tname = es_tag
+            elif es_tag != tname and es_tag not in seen_tag_names:
+                tname = es_tag
                 dtype = "ES_UDT"
         if udt_block:
             _add_tag_block(udt_block)
@@ -3649,10 +3776,31 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     configio_map = dict(getattr(inp, "configio_octal_map", None) or {})
 
     def _word_info(word: str, *, want_dir: str = "", bit: str = "") -> dict | None:
-        """Resolve Fortna word → module. Prefer Configio, then heuristics, then EIPCSV."""
+        """Resolve Fortna word → module. Prefer Configio physical, then bank map, then EIPCSV."""
         w = str(word or "").strip()
         if not w:
             return None
+
+        def _from_word_map(key: str) -> dict | None:
+            info = word_map.get(key)
+            if not info:
+                return None
+            # Direction filter when known
+            if want_dir and (info.get("direction") or "").upper() not in ("", want_dir.upper()):
+                return None
+            return info
+
+        # 0) Configio-primary physical map (Greensboro PANEL-TYPE-INDEX)
+        info = _from_word_map(w)
+        if info and (info.get("resolve_how") or "") == "configio_physical":
+            return info
+        try:
+            info = _from_word_map(str(int(float(w))))
+            if info and (info.get("resolve_how") or "") == "configio_physical":
+                return info
+        except Exception:
+            pass
+
         # 1) Configio + bank heuristics (Reno: EIPCSV empty)
         if want_dir:
             hit = _resolve_fortna_bank(
@@ -3665,17 +3813,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             if hit:
                 return hit
         # 2) Legacy word_map from EIPCSV / InputBank index
-        info = word_map.get(w)
+        info = _from_word_map(w)
         if info:
             return info
         try:
-            info = word_map.get(str(int(float(w))))
+            info = _from_word_map(str(int(float(w))))
         except Exception:
             info = None
         if info:
             return info
         if w.isdigit() and int(w) % 2 == 1:
-            return word_map.get(str(int(w) - 1))
+            return _from_word_map(str(int(w) - 1))
         return None
 
     def _vfd_ms_member(tname: str, direction: str) -> str | None:
@@ -3717,23 +3865,85 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         Only use .I.ES_OK / .I.PE_Clear when the tag is (or will be) a UDT with
         those members. Plain BOOL tags must be referenced bare — Studio error:
         'Invalid member specifier' if you write BOOL.I.ES_OK.
+
+        Fortna name patterns (documented finished conventions):
+          *PBSTART / *PBSTOP → CPn_CS.I.Start_PB / Stop_PB (keep CS UDT)
+          M###_AUX → P###_MS.I.Auxiliary_Forward (Motor_Starter UDT)
+          M### motor out → P###_Conv.O.Run when direction is output
+          PE* → .I.PE_Clear
+          *MCR*_AUX / ES* → .I.ES_OK
+          lights/horns → bare BOOL
         """
         dt = (device_type or "").lower()
-        vfd_m = _vfd_ms_member(tname, direction)
+        raw = tname or ""
+        # Strip T_ prefix added for digit-leading Fortna names
+        core = re.sub(r"^T_", "", raw)
+
+        vfd_m = _vfd_ms_member(raw, direction) or _vfd_ms_member(core, direction)
         if vfd_m:
             return vfd_m
-        if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", tname, re.I):
-            return f"{tname}.I.PE_Clear"
+
+        # Control station pushbuttons: 2PBSTART → CP2_CS.I.Start_PB
+        m = re.match(r"^(\d+)PBSTART(_PLT)?$", core, re.I)
+        if m:
+            n, lt = m.group(1), m.group(2)
+            if lt:
+                return f"CP{n}_CS.O.Start_PB_LT"
+            return f"CP{n}_CS.I.Start_PB"
+        m = re.match(r"^(\d+)PBSTOP(_PLT)?$", core, re.I)
+        if m:
+            n, lt = m.group(1), m.group(2)
+            if lt:
+                return f"CP{n}_CS.O.Stop_PB_LT"
+            return f"CP{n}_CS.I.Stop_PB"
+
+        # Motor aux → Motor_Starter UDT; motor run output → Conv.O.Run
+        m = re.match(r"^M(\d+[A-Z]?)_AUX$", core, re.I)
+        if m:
+            return f"P{m.group(1)}_MS.I.Auxiliary_Forward"
+        m = re.match(r"^M(\d+[A-Z]?)$", core, re.I)
+        if m and (direction or "").upper() in ("O", "OUT", "OUTPUT"):
+            return f"P{m.group(1)}_Conv.O.Run"
+
+        if dt == "photoeye" or re.match(r"^(?:EZ)?PE\d", raw, re.I) or re.match(
+            r"^(?:EZ)?PE\d", core, re.I
+        ):
+            pe = raw if re.match(r"^(?:EZ)?PE\d", raw, re.I) else core
+            return f"{pe}.I.PE_Clear"
+
+        # MCR/ESR aux + ES* → ES_OK member
         if (
             dt in ("estop", "e-stop", "e_stop", "es")
-            or re.match(r"^ES\d", tname, re.I)
-            or re.match(r"^ESLS", tname, re.I)
-            or re.match(r"^T_\d*ES\d", tname, re.I)
-            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", tname, re.I)
+            or re.match(r"^ES\d", raw, re.I)
+            or re.match(r"^ESLS", raw, re.I)
+            or re.match(r"^T_\d*ES\d", raw, re.I)
+            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", raw, re.I)
+            or re.search(r"(?:^|_)(?:\d*)?(?:MCR|ESR)\d", core, re.I)
+            or re.match(r"^\d*ES\d*$", core, re.I)
+            or re.match(r"^ESLS", core, re.I)
         ):
-            return f"{tname}.I.ES_OK"
-        # BOOL / simple devices (PB, motor aux, digital, beacon force bit, …)
-        return tname
+            # Prefer finished-style CP2_MCR1 / CP2_ES when Fortna is 2MCR1_AUX / 2ES
+            m = re.match(r"^(\d+)(MCR|ESR)(\d*)_?AUX$", core, re.I)
+            if m:
+                return f"CP{m.group(1)}_{m.group(2).upper()}{m.group(3) or '1'}.I.ES_OK"
+            m = re.match(r"^(\d+)ES$", core, re.I)
+            if m:
+                return f"CP{m.group(1)}_ES.I.ES_OK"
+            return f"{raw}.I.ES_OK"
+
+        # Beacon / horn / light — bare BOOL (or .O.Horn when already a UDT name)
+        if dt in ("beacon", "horn", "light", "stacklight") or re.match(
+            r"^(?:WH|WB)\d", core, re.I
+        ):
+            if (direction or "").upper() in ("O", "OUT", "OUTPUT") and re.match(
+                r"^WH\d", core, re.I
+            ):
+                # finished often uses WH310.O.Horn for named WH tags
+                return f"{core}.O.Horn" if not core.upper().startswith("T_") else raw
+            return raw
+
+        # BOOL / simple devices — do not invent placeholder member paths
+        return raw
 
     def _is_output_point(p: IoPoint, info: dict | None) -> bool:
         d = (getattr(p, "direction", None) or "").upper()
@@ -4347,7 +4557,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     # unknown card — skip (Studio needs a real template for AB: types)
                     continue
                 cname = c.get("name") or f"{rio_name}_{c.get('flex_slot')}"
-                flex = int(c.get("flex_slot") or 0)
+                # Port Address = chassis/eip slot; flex_slot may be Data[] index (slot-1)
+                try:
+                    port_addr = int(
+                        c.get("eip_slot")
+                        if c.get("eip_slot") is not None
+                        else c.get("flex_slot") or 0
+                    )
+                except (TypeError, ValueError):
+                    port_addr = int(c.get("flex_slot") or 0)
                 cblock = tmpl
                 # Rename module + parent + port address (Flex or PointIO)
                 cblock = re.sub(
@@ -4364,7 +4582,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 )
                 cblock = re.sub(
                     r'(<Port Id="1" Address=")[^"]*(" Type="(?:Flex|PointIO)")',
-                    rf'\g<1>{flex}\2',
+                    rf'\g<1>{port_addr}\2',
                     cblock,
                     count=1,
                 )

@@ -1,0 +1,614 @@
+{
+  "generated_at": "2026-09-13T04:36:15.954250+00:00",
+  "ok": true,
+  "machine": "ORNCCP2",
+  "branch_goal": "Configio-primary PhysicalWordResolver for PLC2 IO_MAP",
+  "import": {
+    "ok": true,
+    "run_dir": "workspace\\active\\RUN",
+    "skipped": true
+  },
+  "physical_word_map": {
+    "path": "exports\\plc2-configio-compiler\\physical_word_map.json",
+    "stats": {
+      "adapter_count": 5,
+      "word_count": 32,
+      "unresolved_count": 0,
+      "by_word_bit_count": 400,
+      "rio_names": [
+        "CP2RIO0",
+        "CP2RIO1",
+        "CP3RIO0",
+        "CP3RIO1",
+        "CP3RIO2"
+      ]
+    },
+    "rio_names": [
+      "CP2RIO0",
+      "CP2RIO1",
+      "CP3RIO0",
+      "CP3RIO1",
+      "CP3RIO2"
+    ],
+    "word_201_bit0": {
+      "octal_word": 201,
+      "rio_name": "CP2RIO0",
+      "direction": "I",
+      "flex_slot": 1,
+      "data_index": 1,
+      "eip_slot": 2,
+      "type": "1794-IA16",
+      "module_name": "1794-IA16-3",
+      "panel": "CP2",
+      "family": "1794",
+      "child_name": "CP2RIO0_1",
+      "resolve_how": "configio_physical",
+      "assign_how": "configio_desc_name+sequential",
+      "channel_base": "CP2RIO0:I.Data[1]",
+      "bit_half_default": "low",
+      "low_desc": "CP2-1794-IA16-3",
+      "high_desc": "CP2-1794-IA16-4",
+      "low_bank": 6,
+      "high_bank": 7,
+      "name_match_module": "1794-IA16-3",
+      "name_match_agrees": true,
+      "provenance": {
+        "source_tables": [
+          "Configio.asc",
+          "eipcfg"
+        ],
+        "configio_panel": "CP2",
+        "eipcfg_adapter": "1794-AENT-1",
+        "eipcfg_module": "1794-IA16-3",
+        "eipcfg_slot": 2,
+        "data_index_scheme": "1794 bridged: Data[slot-1] when slot>0 (head=slot0); proven by 2PBSTART word201\u2192Data[1] with eipcfg IA16-3 slot=2",
+        "assign_how": "configio_desc_name+sequential"
+      },
+      "bit": 0,
+      "bit_half": "low",
+      "channel": "CP2RIO0:I.Data[1].0"
+    },
+    "word_307_bit0": {
+      "octal_word": 307,
+      "rio_name": "CP3RIO0",
+      "direction": "I",
+      "flex_slot": 7,
+      "data_index": 7,
+      "eip_slot": 8,
+      "type": "1794-IA16",
+      "module_name": "1794-IA16-25",
+      "panel": "CP3",
+      "family": "1794",
+      "child_name": "CP3RIO0_7",
+      "resolve_how": "configio_physical",
+      "assign_how": "configio_panel_sequential",
+      "channel_base": "CP3RIO0:I.Data[7]",
+      "bit_half_default": "low",
+      "low_desc": "CP3-1794-IA16-43",
+      "high_desc": "CP3-1794-IA16-44",
+      "low_bank": 66,
+      "high_bank": 67,
+      "name_match_module": null,
+      "name_match_agrees": false,
+      "provenance": {
+        "source_tables": [
+          "Configio.asc",
+          "eipcfg"
+        ],
+        "configio_panel": "CP3",
+        "eipcfg_adapter": "1794-AENT-3",
+        "eipcfg_module": "1794-IA16-25",
+        "eipcfg_slot": 8,
+        "data_index_scheme": "1794 bridged: Data[slot-1] when slot>0 (head=slot0); proven by 2PBSTART word201\u2192Data[1] with eipcfg IA16-3 slot=2",
+        "assign_how": "configio_panel_sequential"
+      },
+      "bit": 0,
+      "bit_half": "low",
+      "channel": "CP3RIO0:I.Data[7].0"
+    }
+  },
+  "finished_sha256": "8f45630e7975ac0cfe37dade58928fa6178288b2b11aac357397972e6893d4ab",
+  "reverse_trace": {
+    "traced_count": 75,
+    "reconstructable_count": 54,
+    "finished_real_mappings_total": 234,
+    "required_examples_included": [
+      {
+        "channel": "CP2RIO0:I.Data[1].0",
+        "tag": "CP2_CS.I.Start_PB"
+      },
+      {
+        "channel": "CP2RIO0:I.Data[1].1",
+        "tag": "CP2_CS.I.Stop_PB"
+      },
+      {
+        "channel": "CP2RIO0:I.Data[1].2",
+        "tag": "CP2_MCR1.I.ES_OK"
+      },
+      {
+        "channel": "CP3RIO0:I.Data[7].0",
+        "tag": "P400_MS.I.Auxiliary_Forward"
+      }
+    ]
+  },
+  "controller_scope": {
+    "LOCAL": 59,
+    "EXTERNAL_REFERENCE": 4,
+    "OUT_OF_SCOPE": 147,
+    "UNRESOLVED": 74
+  },
+  "autogen": {
+    "ok": true,
+    "code": 0,
+    "stderr_tail": "FORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Loading RUN from workspace\\\\active\\\\RUN\\u2026\",\"pct\":5}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Equipment[ORNCCP2]: {'conveyors': 7, 'vfds': 0, 'photoeyes_named': 44, 'motors_named': 118, 'beacons_in_conveyor': 32, 'encoders_table_usable': 0, 'estop_table_usable': 0, 'merges_table_usable': 0, 'sorters_table_usable': 0, 'beacons_usable': 0, 'motor_chains_usable': 0, 'power_supplies_usable': 0, 'eip_adapters': 50, 'eip_modules': 500, 'conveyor_asc_rows': 302, 'conveyor_asc_rows_all': 6000} profile=transport packs=['Sys']\",\"pct\":18}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Applied workbook (35 rows) \\u2014 areas: ORNCCP2_Area\\u00d731\",\"pct\":12}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Building L5X for 31 conveyors\\u2026\",\"pct\":20,\"conveyor_count\":31}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"AOI overlay: AOI_TIME_ADD, AOI_TIME_DIFFERENCE, Slow_Flt, TRK_Divert_WaveFunction+\",\"pct\":86}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"AOIs kept 9/72 (dropped unused sealed defs)\",\"pct\":88}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Writing L5X file\\u2026\",\"pct\":70}\nFORTNA_PROGRESS {\"phase\":\"autogen\",\"message\":\"Done \\u2014 31 conveyors, 483 tags\",\"pct\":100}"
+  },
+  "l5x": {
+    "path": "exports\\plc2-configio-compiler\\ORNCCP2_configio_candidate.L5X",
+    "studio_copy": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP2_configio_candidate.L5X",
+    "sha256": "5572b5f5b86f4d738b184cea6e89f02c815e54f7bb28a3fb4ccf707fd2e1e855",
+    "counts": {
+      "exists": true,
+      "bytes": 1610002,
+      "module_entries": 39,
+      "has_io_map_program": true,
+      "io_map_xic_ote_refs": 804,
+      "io_map_nop_only": false,
+      "pe_udt_tags": 108,
+      "programs": [
+        "ORNCCP2_Area_Slow",
+        "ORNCCP2_Area_Fast",
+        "ORNCCP2_Area_L1",
+        "ORNCCP2_Area_L2",
+        "System",
+        "Sys",
+        "IO_MAP"
+      ],
+      "has_sawtooth_merge": false,
+      "has_sorter_track": false
+    }
+  },
+  "io_map_comparison": {
+    "finished_real_I": 159,
+    "finished_real_O": 75,
+    "generated_real_I": 147,
+    "generated_real_O": 78,
+    "generated_placeholder_I": 109,
+    "generated_placeholder_O": 68,
+    "finished_placeholder_I": 95,
+    "finished_placeholder_O": 179,
+    "exact_channel_tag_matches": 173,
+    "equivalent_tag_direction_matches": 173,
+    "missing_tag_direction": 59,
+    "extra_tag_direction": 52,
+    "generated_adapters": [
+      "CP2RIO0",
+      "CP2RIO1",
+      "CP3RIO0",
+      "CP3RIO1",
+      "CP3RIO2"
+    ],
+    "finished_adapters": [
+      "CP2RIO0",
+      "CP2RIO1",
+      "CP3RIO0",
+      "CP3RIO1",
+      "CP3RIO2"
+    ],
+    "missing_sample": [
+      [
+        "CP2_CS.O.START_PB_LT",
+        "O"
+      ],
+      [
+        "CP2_CS.O.STOP_PB_LT",
+        "O"
+      ],
+      [
+        "CP2_ES.I.ES_OK",
+        "I"
+      ],
+      [
+        "CP2_MCR1_POWER_ON",
+        "O"
+      ],
+      [
+        "CP2_WH.O.HORN",
+        "O"
+      ],
+      [
+        "CP3_CS.I.STOP_PB ",
+        "I"
+      ],
+      [
+        "CP3_CS.O.START_PB_LT",
+        "O"
+      ],
+      [
+        "CP3_CS.O.STOP_PB_LT",
+        "O"
+      ],
+      [
+        "CP3_ES.I.ES_OK",
+        "I"
+      ],
+      [
+        "CP3_P1014_MS.I.AUXILIARY_FORWARD",
+        "I"
+      ],
+      [
+        "CP3_WH.O.HORN",
+        "O"
+      ],
+      [
+        "CP4_P408_MS.I.AUXILIARY_FORWARD",
+        "I"
+      ],
+      [
+        "CP8_P229_MS.I.AUXILIARY_FORWARD",
+        "I"
+      ],
+      [
+        "EZPWS136.I.PS_OK",
+        "I"
+      ],
+      [
+        "EZPWS150.I.PS_OK",
+        "I"
+      ],
+      [
+        "EZPWS242.I.PS_OK",
+        "I"
+      ],
+      [
+        "EZPWS312.I.PS_OK",
+        "I"
+      ],
+      [
+        "EZPWS320.I.PS_OK",
+        "I"
+      ],
+      [
+        "EZPWS402.I.PS_OK",
+        "I"
+      ],
+      [
+        "P1002_CS.I.RESET_PB",
+        "I"
+      ],
+      [
+        "P1008_CS.I.RESET_PB",
+        "I"
+      ],
+      [
+        "P1014_CS.I.RESET_PB",
+        "I"
+      ],
+      [
+        "P1018_CS.I.START_PB",
+        "I"
+      ],
+      [
+        "P1018_CS.I.STOP_PB ",
+        "I"
+      ],
+      [
+        "P1018_CS.O.START_PB_LT",
+        "O"
+      ],
+      [
+        "P1018_CS.O.STOP_PB_LT",
+        "O"
+      ],
+      [
+        "P136_P1_CONV.O.RELEASE",
+        "O"
+      ],
+      [
+        "P136_P2_CONV.O.RELEASE",
+        "O"
+      ],
+      [
+        "P150_P1_CONV.O.RELEASE",
+        "O"
+      ],
+      [
+        "P150_P2_CONV.O.RELEASE",
+        "O"
+      ],
+      [
+        "P242_CONV.O.RELEASE",
+        "O"
+      ],
+      [
+        "P312_CONV.O.RELEASE",
+        "O"
+      ],
+      [
+        "P320_CONV.O.RELEASE",
+        "O"
+      ],
+      [
+        "P400_CS.I.RESET_PB",
+        "I"
+      ],
+      [
+        "P402_CONV.O.RELEASE",
+        "O"
+      ],
+      [
+        "P406_CS.I.RESET_PB",
+        "I"
+      ],
+      [
+        "PE136_F1.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "PE136_F2.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "PE136_P1.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "PE136_P2.I.PE_CLEAR",
+        "I"
+      ]
+    ],
+    "extra_sample": [
+      [
+        "CP2_ES.I.ES_OK",
+        "O"
+      ],
+      [
+        "CP3_CS.I.STOP_PB",
+        "I"
+      ],
+      [
+        "CP3_ES.I.ES_OK",
+        "O"
+      ],
+      [
+        "EZPE136_F1.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE136_F2.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE136_P1.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE136_P2.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE150_F1.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE150_F2.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE150_P1.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE150_P2.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE229_F.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE230_F.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE230_P.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE242_F.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE242_P.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE312_F.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE312_P.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE320_F.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE320_P.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE402_F.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE402_P.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "EZPE408_F.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "INT229",
+        "O"
+      ],
+      [
+        "P136_CONV.O.RUN",
+        "O"
+      ],
+      [
+        "P136_MS.I.AUXILIARY_FORWARD",
+        "I"
+      ],
+      [
+        "P150_CONV.O.RUN",
+        "O"
+      ],
+      [
+        "P150_MS.I.AUXILIARY_FORWARD",
+        "I"
+      ],
+      [
+        "P228_CONV.O.RUN",
+        "O"
+      ],
+      [
+        "P228_MS.I.AUXILIARY_FORWARD",
+        "I"
+      ],
+      [
+        "P230_CONV.O.RUN",
+        "O"
+      ],
+      [
+        "P230_MS.I.AUXILIARY_FORWARD",
+        "I"
+      ],
+      [
+        "P232_CONV.O.RUN",
+        "O"
+      ],
+      [
+        "P232_MS.I.AUXILIARY_FORWARD",
+        "I"
+      ],
+      [
+        "PBSTART1018",
+        "I"
+      ],
+      [
+        "PBSTOP1018",
+        "I"
+      ],
+      [
+        "PE232_P.I.PE_CLEAR",
+        "I"
+      ],
+      [
+        "SSVEZPE136_P1",
+        "O"
+      ],
+      [
+        "SSVEZPE136_P2",
+        "O"
+      ],
+      [
+        "SSVEZPE150_P1",
+        "O"
+      ]
+    ],
+    "before_real_I": 12,
+    "before_real_O": 22
+  },
+  "taxonomy_counts": {
+    "WRONG_WORD": 0,
+    "WRONG_BANK": 0,
+    "WRONG_ADAPTER": 19,
+    "WRONG_SLOT": 1,
+    "WRONG_BIT": 1,
+    "WRONG_DIRECTION": 0,
+    "WRONG_LOGICAL_DEVICE": 67,
+    "WRONG_CONTROLLER_SCOPE": 4,
+    "STALE_RECORD_USED": 0,
+    "UNSUPPORTED_POINT_TYPE": 0,
+    "PLACEHOLDER_SHOULD_BE_USED": 0,
+    "MISSING_RUN_RELATIONSHIP": 40
+  },
+  "wrong_adapter_before": 152,
+  "wrong_adapter_after": 19,
+  "transport": {
+    "generated_at": "2026-09-13T04:36:40.198442+00:00",
+    "ok": true,
+    "scope_local_count": 59,
+    "scope_external_count": 4,
+    "graph_nodes_total": 60,
+    "local_rendered": 59,
+    "external_boundaries_rendered": 1,
+    "full_remote_networks_rendered": false,
+    "print_boundary_model": {
+      "model": "compact_external",
+      "description": "Transportation renders LOCAL conveyors fully; EXTERNAL_REFERENCE neighbors appear as compact boundary stubs (one-hop), not full remote networks. Print PDFs are optional validation aids and are not required when absent from repo.",
+      "prints_required": false,
+      "prints_present": true
+    },
+    "local_sample": [
+      "P1000",
+      "P1001",
+      "P1002",
+      "P1004",
+      "P1005",
+      "P1006",
+      "P1007",
+      "P1008",
+      "P1010",
+      "P1011",
+      "P1014",
+      "P1015",
+      "P1016",
+      "P1018",
+      "P123",
+      "P124",
+      "P126",
+      "P128",
+      "P130",
+      "P132",
+      "P134",
+      "P136",
+      "P136A",
+      "P138",
+      "P139",
+      "P140",
+      "P142",
+      "P144",
+      "P145",
+      "P146"
+    ],
+    "external_sample": [
+      "P226"
+    ],
+    "layout_command_ok": true,
+    "png": {
+      "ok": true,
+      "path": "exports\\plc2-configio-compiler\\transport\\transport_overview.png",
+      "local": 59,
+      "external": 1,
+      "other": 0
+    }
+  },
+  "acceptance": {
+    "before_real_I": 12,
+    "after_real_I": 147,
+    "before_real_O": 22,
+    "after_real_O": 78,
+    "finished_real_I": 159,
+    "finished_real_O": 75,
+    "delta_I": 135,
+    "delta_O": 56,
+    "wrong_adapter_before": 152,
+    "wrong_adapter_after": 19,
+    "material_improvement_I": true,
+    "material_improvement_O": true,
+    "no_hardcoded_201_cp2rio0": true
+  }
+}
