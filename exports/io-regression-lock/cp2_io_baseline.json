@@ -1,0 +1,2042 @@
+{
+  "generated_at": "2026-09-13T01:04:27.236497+00:00",
+  "label": "CP2",
+  "machine": "ORNCCP2",
+  "run_dir": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\active\\RUN",
+  "archive": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\inbox\\20251016-0933-OReillyGreensboro-ORNCCP2-RUN.tar.gz",
+  "l5x_path": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP2_ui_candidate.L5X",
+  "source_of_truth": "RUN + load_from_run + UI-path L5X candidate",
+  "generator_stack": [
+    "fortna_autogen.load_from_run",
+    "fortna_autogen.load_eip_topology",
+    "fortna_autogen._load_eip_adapters",
+    "fortna_autogen._build_eip_bank_index",
+    "fortna_autogen build_l5x Modules + IO_MAP"
+  ],
+  "counts": {
+    "modules_from_run": 37,
+    "word_map_entries": 27,
+    "io_points_non_spare_sample": 120,
+    "pe_points_sample": 44,
+    "output_points_sample": 70,
+    "l5x_module_entries": 39,
+    "l5x_io_map_xic_ote": 68,
+    "l5x_io_map_nop_only": false,
+    "l5x_programs": [
+      "ORNCCP2_Area_Slow",
+      "ORNCCP2_Area_Fast",
+      "ORNCCP2_Area_L1",
+      "ORNCCP2_Area_L2",
+      "System",
+      "Sys",
+      "IO_MAP"
+    ],
+    "mapped_mappings_parsed": 34,
+    "unmapped_sample_estimate": 30,
+    "mapped_sample": 30
+  },
+  "input_modules": [
+    {
+      "name": "T_1794_AENT_5",
+      "catalog": null,
+      "parent": null,
+      "slot": "0",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4",
+      "catalog": null,
+      "parent": null,
+      "slot": "0",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3",
+      "catalog": null,
+      "parent": null,
+      "slot": "0",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2",
+      "catalog": null,
+      "parent": null,
+      "slot": "0",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1",
+      "catalog": null,
+      "parent": null,
+      "slot": "0",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_3",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "3",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_4",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "4",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_5",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "5",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_6",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "6",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_7",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "7",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_8",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "8",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_3",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "3",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_4",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "4",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_5",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "5",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_6",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "6",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_3",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "3",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_4",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "4",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_5",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "5",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_6",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "6",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_7",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "7",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_8",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "8",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_3",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "3",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_4",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "4",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_5",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "5",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_6",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "6",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_7",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "7",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_8",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "8",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_5_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_5",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_5_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_5",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    }
+  ],
+  "output_modules": [],
+  "remote_racks": [
+    {
+      "name": "T_1794_AENT_1",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.51"
+    },
+    {
+      "name": "T_1794_AENT_1_1",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_1_2",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_1_3",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_1_4",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_1_5",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_1_6",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_1_7",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "7"
+    },
+    {
+      "name": "T_1794_AENT_1_8",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "8"
+    },
+    {
+      "name": "T_1794_AENT_2",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.52"
+    },
+    {
+      "name": "T_1794_AENT_2_1",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_2",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_2_2",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_2",
+      "address": "2"
+    }
+  ],
+  "child_modules": [
+    {
+      "name": "T_1794_AENT_1_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_3",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "3",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_4",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "4",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_5",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "5",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_6",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "6",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_7",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "7",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_1_8",
+      "catalog": null,
+      "parent": "T_1794_AENT_1",
+      "slot": "8",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_3",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "3",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_4",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "4",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_5",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "5",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_2_6",
+      "catalog": null,
+      "parent": "T_1794_AENT_2",
+      "slot": "6",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_3",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "3",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_4",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "4",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_5",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "5",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_6",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "6",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_7",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "7",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_3_8",
+      "catalog": null,
+      "parent": "T_1794_AENT_3",
+      "slot": "8",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_3",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "3",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_4",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "4",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_5",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "5",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_6",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "6",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_7",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "7",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_4_8",
+      "catalog": null,
+      "parent": "T_1794_AENT_4",
+      "slot": "8",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_5_1",
+      "catalog": null,
+      "parent": "T_1794_AENT_5",
+      "slot": "1",
+      "address": null,
+      "direction": null
+    },
+    {
+      "name": "T_1794_AENT_5_2",
+      "catalog": null,
+      "parent": "T_1794_AENT_5",
+      "slot": "2",
+      "address": null,
+      "direction": null
+    }
+  ],
+  "word_map_sample": [
+    {
+      "word": "0",
+      "rio_name": "T_1794_AENT_1",
+      "flex_slot": 1,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "1",
+      "rio_name": "T_1794_AENT_1",
+      "flex_slot": 4,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "105",
+      "rio_name": "T_1794_AENT_5",
+      "flex_slot": 2,
+      "direction": "I",
+      "type": "1794-IB16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "2",
+      "rio_name": "T_1794_AENT_1",
+      "flex_slot": 6,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "20",
+      "rio_name": "T_1794_AENT_2",
+      "flex_slot": 2,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "21",
+      "rio_name": "T_1794_AENT_2",
+      "flex_slot": 4,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "22",
+      "rio_name": "T_1794_AENT_2",
+      "flex_slot": 6,
+      "direction": "O",
+      "type": "1794-OB16P",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "3",
+      "rio_name": "T_1794_AENT_1",
+      "flex_slot": 8,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "32",
+      "rio_name": "T_1794_AENT_2",
+      "flex_slot": 1,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "33",
+      "rio_name": "T_1794_AENT_2",
+      "flex_slot": 3,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "34",
+      "rio_name": "T_1794_AENT_2",
+      "flex_slot": 5,
+      "direction": "I",
+      "type": "1794-IB16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "40",
+      "rio_name": "T_1794_AENT_3",
+      "flex_slot": 1,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "41",
+      "rio_name": "T_1794_AENT_3",
+      "flex_slot": 3,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "42",
+      "rio_name": "T_1794_AENT_3",
+      "flex_slot": 5,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "43",
+      "rio_name": "T_1794_AENT_3",
+      "flex_slot": 7,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "56",
+      "rio_name": "T_1794_AENT_3",
+      "flex_slot": 2,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "57",
+      "rio_name": "T_1794_AENT_3",
+      "flex_slot": 4,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "58",
+      "rio_name": "T_1794_AENT_3",
+      "flex_slot": 6,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "59",
+      "rio_name": "T_1794_AENT_3",
+      "flex_slot": 8,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "60",
+      "rio_name": "T_1794_AENT_4",
+      "flex_slot": 2,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "61",
+      "rio_name": "T_1794_AENT_4",
+      "flex_slot": 4,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "62",
+      "rio_name": "T_1794_AENT_4",
+      "flex_slot": 6,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "63",
+      "rio_name": "T_1794_AENT_4",
+      "flex_slot": 8,
+      "direction": "O",
+      "type": "1794-OA8I",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "80",
+      "rio_name": "T_1794_AENT_5",
+      "flex_slot": 1,
+      "direction": "O",
+      "type": "1794-OB16P",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "81",
+      "rio_name": "T_1794_AENT_4",
+      "flex_slot": 3,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "82",
+      "rio_name": "T_1794_AENT_4",
+      "flex_slot": 5,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    },
+    {
+      "word": "83",
+      "rio_name": "T_1794_AENT_4",
+      "flex_slot": 7,
+      "direction": "I",
+      "type": "1794-IA16",
+      "family": "1794",
+      "resolved_bank": null
+    }
+  ],
+  "io_points_sample": [
+    {
+      "device_name": "EZPE136_F1",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "0"
+    },
+    {
+      "device_name": "EZPE136_F2",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "1"
+    },
+    {
+      "device_name": "EZPE136_P1",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "5"
+    },
+    {
+      "device_name": "EZPE136_P2",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "6"
+    },
+    {
+      "device_name": "EZPE150_F1",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "0"
+    },
+    {
+      "device_name": "EZPE150_F2",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "1"
+    },
+    {
+      "device_name": "EZPE150_P1",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "5"
+    },
+    {
+      "device_name": "EZPE150_P2",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "6"
+    },
+    {
+      "device_name": "EZPE229_F",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "12"
+    },
+    {
+      "device_name": "EZPE230_F",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "2"
+    },
+    {
+      "device_name": "EZPE230_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "7"
+    },
+    {
+      "device_name": "EZPE242_F",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "2"
+    },
+    {
+      "device_name": "EZPE242_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "7"
+    },
+    {
+      "device_name": "EZPE312_F",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "3"
+    },
+    {
+      "device_name": "EZPE312_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "10"
+    },
+    {
+      "device_name": "EZPE320_F",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "3"
+    },
+    {
+      "device_name": "EZPE320_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "10"
+    },
+    {
+      "device_name": "EZPE402_F",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "321",
+      "fortna_bit": "4"
+    },
+    {
+      "device_name": "EZPE402_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "11"
+    },
+    {
+      "device_name": "EZPE408_F",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "214",
+      "fortna_bit": "4"
+    },
+    {
+      "device_name": "PE1000_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "11"
+    },
+    {
+      "device_name": "PE1002_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "12"
+    },
+    {
+      "device_name": "PE1004_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "13"
+    },
+    {
+      "device_name": "PE1006_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "6"
+    },
+    {
+      "device_name": "PE1008_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "7"
+    },
+    {
+      "device_name": "PE1010_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "10"
+    },
+    {
+      "device_name": "PE1014_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "11"
+    },
+    {
+      "device_name": "PE1018_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "12"
+    },
+    {
+      "device_name": "PE126_JF",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "0"
+    },
+    {
+      "device_name": "PE134_JF",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "1"
+    },
+    {
+      "device_name": "PE138_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "2"
+    },
+    {
+      "device_name": "PE142_JF",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "0"
+    },
+    {
+      "device_name": "PE148_JF",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "1"
+    },
+    {
+      "device_name": "PE215_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "1002",
+      "fortna_bit": "13"
+    },
+    {
+      "device_name": "PE226_JF",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "3"
+    },
+    {
+      "device_name": "PE232_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "4"
+    },
+    {
+      "device_name": "PE238_JF",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "2"
+    },
+    {
+      "device_name": "PE314_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "5"
+    },
+    {
+      "device_name": "PE316_J",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "210",
+      "fortna_bit": "6"
+    },
+    {
+      "device_name": "PE322_P",
+      "device_type": "photoeye",
+      "direction": "I",
+      "fortna_bank": "312",
+      "fortna_bit": "3"
+    }
+  ],
+  "l5x_modules": [
+    {
+      "name": "Local",
+      "catalog": "1756-L83E",
+      "parent": "Local",
+      "address": "0"
+    },
+    {
+      "name": "CPXXENET1",
+      "catalog": "1756-EN2T",
+      "parent": "Local",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_1",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.51"
+    },
+    {
+      "name": "T_1794_AENT_1_1",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_1_2",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_1_3",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_1_4",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_1_5",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_1_6",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_1_7",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "7"
+    },
+    {
+      "name": "T_1794_AENT_1_8",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "8"
+    },
+    {
+      "name": "T_1794_AENT_2",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.52"
+    },
+    {
+      "name": "T_1794_AENT_2_1",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_2",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_2_2",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_2",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_2_3",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_2",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_2_4",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_2",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_2_5",
+      "catalog": "1794-IB16/A",
+      "parent": "T_1794_AENT_2",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_2_6",
+      "catalog": "1794-OB16P/A",
+      "parent": "T_1794_AENT_2",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_3",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.53"
+    },
+    {
+      "name": "T_1794_AENT_3_1",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_3",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_3_2",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_3",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_3_3",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_3",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_3_4",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_3",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_3_5",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_3",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_3_6",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_3",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_3_7",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_3",
+      "address": "7"
+    },
+    {
+      "name": "T_1794_AENT_3_8",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_3",
+      "address": "8"
+    },
+    {
+      "name": "T_1794_AENT_4",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.54"
+    },
+    {
+      "name": "T_1794_AENT_4_1",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_4",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_4_2",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_4",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_4_3",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_4",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_4_4",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_4",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_4_5",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_4",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_4_6",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_4",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_4_7",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_4",
+      "address": "7"
+    },
+    {
+      "name": "T_1794_AENT_4_8",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_4",
+      "address": "8"
+    },
+    {
+      "name": "T_1794_AENT_5",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.55"
+    },
+    {
+      "name": "T_1794_AENT_5_1",
+      "catalog": "1794-OB16P/A",
+      "parent": "T_1794_AENT_5",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_5_2",
+      "catalog": "1794-IB16/A",
+      "parent": "T_1794_AENT_5",
+      "address": "2"
+    }
+  ],
+  "representative_mappings": [
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_1:I.Data[6].11",
+      "slot": 6,
+      "bit": 11,
+      "tag": "PE215_J.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_1:I.Data[6].11)OTE(PE215_J.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[1].0",
+      "slot": 1,
+      "bit": 0,
+      "tag": "PE142_JF.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].0)OTE(PE142_JF.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[1].1",
+      "slot": 1,
+      "bit": 1,
+      "tag": "PE148_JF.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].1)OTE(PE148_JF.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[1].2",
+      "slot": 1,
+      "bit": 2,
+      "tag": "PE238_JF.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].2)OTE(PE238_JF.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[1].3",
+      "slot": 1,
+      "bit": 3,
+      "tag": "PE322_P.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].3)OTE(PE322_P.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[1].4",
+      "slot": 1,
+      "bit": 4,
+      "tag": "PE324_J.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].4)OTE(PE324_J.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[1].5",
+      "slot": 1,
+      "bit": 5,
+      "tag": "PE400_J.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].5)OTE(PE400_J.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[1].6",
+      "slot": 1,
+      "bit": 6,
+      "tag": "PE1006_J.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].6)OTE(PE1006_J.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[1].7",
+      "slot": 1,
+      "bit": 7,
+      "tag": "PE1008_J.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[1].7)OTE(PE1008_J.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[3].0",
+      "slot": 3,
+      "bit": 0,
+      "tag": "PE1010_J.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[3].0)OTE(PE1010_J.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[3].1",
+      "slot": 3,
+      "bit": 1,
+      "tag": "PE1014_J.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[3].1)OTE(PE1014_J.I.PE_Clear);"
+    },
+    {
+      "direction": "I",
+      "channel": "T_1794_AENT_4:I.Data[3].2",
+      "slot": 3,
+      "bit": 2,
+      "tag": "PE1018_J.I.PE_Clear",
+      "rung": "XIC(T_1794_AENT_4:I.Data[3].2)OTE(PE1018_J.I.PE_Clear);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_1:O.Data[1].2",
+      "slot": 1,
+      "bit": 2,
+      "tag": "T_2MCR1.I.ES_OK",
+      "rung": "XIC(T_2MCR1.I.ES_OK)OTE(T_1794_AENT_1:O.Data[1].2);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_1:O.Data[1].3",
+      "slot": 1,
+      "bit": 3,
+      "tag": "T_2WH",
+      "rung": "XIC(T_2WH)OTE(T_1794_AENT_1:O.Data[1].3);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_1:O.Data[1].4",
+      "slot": 1,
+      "bit": 4,
+      "tag": "WH310",
+      "rung": "XIC(WH310)OTE(T_1794_AENT_1:O.Data[1].4);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_2:O.Data[6].0",
+      "slot": 6,
+      "bit": 0,
+      "tag": "M406",
+      "rung": "XIC(M406)OTE(T_1794_AENT_2:O.Data[6].0);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_2:O.Data[6].1",
+      "slot": 6,
+      "bit": 1,
+      "tag": "M1000",
+      "rung": "XIC(M1000)OTE(T_1794_AENT_2:O.Data[6].1);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_2:O.Data[6].2",
+      "slot": 6,
+      "bit": 2,
+      "tag": "M1002",
+      "rung": "XIC(M1002)OTE(T_1794_AENT_2:O.Data[6].2);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_2:O.Data[6].3",
+      "slot": 6,
+      "bit": 3,
+      "tag": "M1004",
+      "rung": "XIC(M1004)OTE(T_1794_AENT_2:O.Data[6].3);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_2:O.Data[6].4",
+      "slot": 6,
+      "bit": 4,
+      "tag": "M1001",
+      "rung": "XIC(M1001)OTE(T_1794_AENT_2:O.Data[6].4);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_2:O.Data[6].5",
+      "slot": 6,
+      "bit": 5,
+      "tag": "M1005",
+      "rung": "XIC(M1005)OTE(T_1794_AENT_2:O.Data[6].5);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_3:O.Data[1].2",
+      "slot": 1,
+      "bit": 2,
+      "tag": "T_3MCR1.I.ES_OK",
+      "rung": "XIC(T_3MCR1.I.ES_OK)OTE(T_1794_AENT_3:O.Data[1].2);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_3:O.Data[1].3",
+      "slot": 1,
+      "bit": 3,
+      "tag": "T_3WH",
+      "rung": "XIC(T_3WH)OTE(T_1794_AENT_3:O.Data[1].3);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_3:O.Data[1].4",
+      "slot": 1,
+      "bit": 4,
+      "tag": "WH318",
+      "rung": "XIC(WH318)OTE(T_1794_AENT_3:O.Data[1].4);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_4:O.Data[6].0",
+      "slot": 6,
+      "bit": 0,
+      "tag": "M1006",
+      "rung": "XIC(M1006)OTE(T_1794_AENT_4:O.Data[6].0);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_4:O.Data[6].1",
+      "slot": 6,
+      "bit": 1,
+      "tag": "M1008",
+      "rung": "XIC(M1008)OTE(T_1794_AENT_4:O.Data[6].1);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_4:O.Data[6].2",
+      "slot": 6,
+      "bit": 2,
+      "tag": "M1010",
+      "rung": "XIC(M1010)OTE(T_1794_AENT_4:O.Data[6].2);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_4:O.Data[6].3",
+      "slot": 6,
+      "bit": 3,
+      "tag": "M1014",
+      "rung": "XIC(M1014)OTE(T_1794_AENT_4:O.Data[6].3);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_4:O.Data[6].4",
+      "slot": 6,
+      "bit": 4,
+      "tag": "M1016",
+      "rung": "XIC(M1016)OTE(T_1794_AENT_4:O.Data[6].4);"
+    },
+    {
+      "direction": "O",
+      "channel": "T_1794_AENT_4:O.Data[6].5",
+      "slot": 6,
+      "bit": 5,
+      "tag": "M1018",
+      "rung": "XIC(M1018)OTE(T_1794_AENT_4:O.Data[6].5);"
+    }
+  ],
+  "expectations": [
+    {
+      "kind": "module_present",
+      "name": "T_1794_AENT_1",
+      "catalog": "1794-AENT"
+    },
+    {
+      "kind": "module_present",
+      "name": "T_1794_AENT_1_1",
+      "catalog": "1794-OA8I/A"
+    },
+    {
+      "kind": "module_present",
+      "name": "T_1794_AENT_1_2",
+      "catalog": "1794-IA16/A"
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "I",
+      "tag": "PE215_J.I.PE_Clear",
+      "channel": "T_1794_AENT_1:I.Data[6].11",
+      "slot": 6,
+      "bit": 11
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "I",
+      "tag": "PE142_JF.I.PE_Clear",
+      "channel": "T_1794_AENT_4:I.Data[1].0",
+      "slot": 1,
+      "bit": 0
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "I",
+      "tag": "PE148_JF.I.PE_Clear",
+      "channel": "T_1794_AENT_4:I.Data[1].1",
+      "slot": 1,
+      "bit": 1
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "I",
+      "tag": "PE238_JF.I.PE_Clear",
+      "channel": "T_1794_AENT_4:I.Data[1].2",
+      "slot": 1,
+      "bit": 2
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "I",
+      "tag": "PE322_P.I.PE_Clear",
+      "channel": "T_1794_AENT_4:I.Data[1].3",
+      "slot": 1,
+      "bit": 3
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "O",
+      "tag": "T_2MCR1.I.ES_OK",
+      "channel": "T_1794_AENT_1:O.Data[1].2",
+      "slot": 1,
+      "bit": 2
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "O",
+      "tag": "T_2WH",
+      "channel": "T_1794_AENT_1:O.Data[1].3",
+      "slot": 1,
+      "bit": 3
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "O",
+      "tag": "WH310",
+      "channel": "T_1794_AENT_1:O.Data[1].4",
+      "slot": 1,
+      "bit": 4
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "O",
+      "tag": "M406",
+      "channel": "T_1794_AENT_2:O.Data[6].0",
+      "slot": 6,
+      "bit": 0
+    },
+    {
+      "kind": "io_map_exact",
+      "direction": "O",
+      "tag": "M1000",
+      "channel": "T_1794_AENT_2:O.Data[6].1",
+      "slot": 6,
+      "bit": 1
+    },
+    {
+      "kind": "discovered_pe_point",
+      "device_name": "EZPE136_F1",
+      "fortna_bank": "214",
+      "fortna_bit": "0",
+      "direction": "I"
+    },
+    {
+      "kind": "discovered_pe_point",
+      "device_name": "EZPE136_F2",
+      "fortna_bank": "214",
+      "fortna_bit": "1",
+      "direction": "I"
+    },
+    {
+      "kind": "discovered_pe_point",
+      "device_name": "EZPE136_P1",
+      "fortna_bank": "214",
+      "fortna_bit": "5",
+      "direction": "I"
+    },
+    {
+      "kind": "discovered_pe_point",
+      "device_name": "EZPE136_P2",
+      "fortna_bank": "214",
+      "fortna_bit": "6",
+      "direction": "I"
+    },
+    {
+      "kind": "discovered_pe_point",
+      "device_name": "EZPE150_F1",
+      "fortna_bank": "321",
+      "fortna_bit": "0",
+      "direction": "I"
+    }
+  ],
+  "child_modules_l5x": [
+    {
+      "name": "Local",
+      "catalog": "1756-L83E",
+      "parent": "Local",
+      "address": "0"
+    },
+    {
+      "name": "CPXXENET1",
+      "catalog": "1756-EN2T",
+      "parent": "Local",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_1",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.51"
+    },
+    {
+      "name": "T_1794_AENT_1_1",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_1_2",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_1_3",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_1_4",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_1_5",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_1_6",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_1_7",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_1",
+      "address": "7"
+    },
+    {
+      "name": "T_1794_AENT_1_8",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_1",
+      "address": "8"
+    },
+    {
+      "name": "T_1794_AENT_2",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.52"
+    },
+    {
+      "name": "T_1794_AENT_2_1",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_2",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_2_2",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_2",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_2_3",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_2",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_2_4",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_2",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_2_5",
+      "catalog": "1794-IB16/A",
+      "parent": "T_1794_AENT_2",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_2_6",
+      "catalog": "1794-OB16P/A",
+      "parent": "T_1794_AENT_2",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_3",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.53"
+    },
+    {
+      "name": "T_1794_AENT_3_1",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_3",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_3_2",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_3",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_3_3",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_3",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_3_4",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_3",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_3_5",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_3",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_3_6",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_3",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_3_7",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_3",
+      "address": "7"
+    },
+    {
+      "name": "T_1794_AENT_3_8",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_3",
+      "address": "8"
+    },
+    {
+      "name": "T_1794_AENT_4",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.54"
+    },
+    {
+      "name": "T_1794_AENT_4_1",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_4",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_4_2",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_4",
+      "address": "2"
+    },
+    {
+      "name": "T_1794_AENT_4_3",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_4",
+      "address": "3"
+    },
+    {
+      "name": "T_1794_AENT_4_4",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_4",
+      "address": "4"
+    },
+    {
+      "name": "T_1794_AENT_4_5",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_4",
+      "address": "5"
+    },
+    {
+      "name": "T_1794_AENT_4_6",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_4",
+      "address": "6"
+    },
+    {
+      "name": "T_1794_AENT_4_7",
+      "catalog": "1794-IA16/A",
+      "parent": "T_1794_AENT_4",
+      "address": "7"
+    },
+    {
+      "name": "T_1794_AENT_4_8",
+      "catalog": "1794-OA8I/A",
+      "parent": "T_1794_AENT_4",
+      "address": "8"
+    },
+    {
+      "name": "T_1794_AENT_5",
+      "catalog": "1794-AENT",
+      "parent": "CPXXENET1",
+      "address": "192.168.1.55"
+    },
+    {
+      "name": "T_1794_AENT_5_1",
+      "catalog": "1794-OB16P/A",
+      "parent": "T_1794_AENT_5",
+      "address": "1"
+    },
+    {
+      "name": "T_1794_AENT_5_2",
+      "catalog": "1794-IB16/A",
+      "parent": "T_1794_AENT_5",
+      "address": "2"
+    }
+  ]
+}

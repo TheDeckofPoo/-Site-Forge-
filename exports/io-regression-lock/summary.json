@@ -1,0 +1,86 @@
+{
+  "generated_at": "2026-09-13T01:04:33.583166+00:00",
+  "ok": true,
+  "results": [
+    {
+      "label": "CP2",
+      "ok": true,
+      "machine": "ORNCCP2",
+      "counts": {
+        "modules_from_run": 37,
+        "word_map_entries": 27,
+        "io_points_non_spare_sample": 120,
+        "pe_points_sample": 44,
+        "output_points_sample": 70,
+        "l5x_module_entries": 39,
+        "l5x_io_map_xic_ote": 68,
+        "l5x_io_map_nop_only": false,
+        "l5x_programs": [
+          "ORNCCP2_Area_Slow",
+          "ORNCCP2_Area_Fast",
+          "ORNCCP2_Area_L1",
+          "ORNCCP2_Area_L2",
+          "System",
+          "Sys",
+          "IO_MAP"
+        ],
+        "mapped_mappings_parsed": 34
+      },
+      "expectation_count": 18
+    },
+    {
+      "label": "CP4",
+      "ok": true,
+      "machine": "ORNCCP4",
+      "counts": {
+        "modules_from_run": 38,
+        "word_map_entries": 46,
+        "io_points_non_spare_sample": 120,
+        "pe_points_sample": 55,
+        "output_points_sample": 43,
+        "l5x_module_entries": 40,
+        "l5x_io_map_xic_ote": 476,
+        "l5x_io_map_nop_only": false,
+        "l5x_programs": [
+          "ORNCCP4_Area_Slow",
+          "ORNCCP4_Area_Fast",
+          "ORNCCP4_Area_L1",
+          "ORNCCP4_Area_L2",
+          "System",
+          "Sys",
+          "Sawtooth_Merge",
+          "IO_MAP"
+        ],
+        "mapped_mappings_parsed": 60
+      },
+      "expectation_count": 13
+    },
+    {
+      "label": "CP5",
+      "ok": true,
+      "machine": "ORNCCP5",
+      "counts": {
+        "modules_from_run": 61,
+        "word_map_entries": 67,
+        "io_points_non_spare_sample": 120,
+        "pe_points_sample": 94,
+        "output_points_sample": 24,
+        "l5x_module_entries": 63,
+        "l5x_io_map_xic_ote": 706,
+        "l5x_io_map_nop_only": false,
+        "l5x_programs": [
+          "ORNCCP5_Area_Slow",
+          "ORNCCP5_Area_Fast",
+          "ORNCCP5_Area_L1",
+          "ORNCCP5_Area_L2",
+          "System",
+          "Sys",
+          "IO_MAP"
+        ],
+        "mapped_mappings_parsed": 60
+      },
+      "expectation_count": 12
+    }
+  ],
+  "note": "Baselines combine load_from_run (RUN truth) with UI-path studio L5X candidates"
+}
