@@ -102,17 +102,27 @@ def site_model_to_sawtooth_build(site: dict[str, Any] | None) -> dict[str, Any]:
     collector = primary.get("collector_conveyor") or ""
     encoder = primary.get("collector_encoder") or primary.get("encoder") or ""
     downstream = primary.get("downstream_conveyor") or ""
-    cfg_req = list(
-        primary.get("configuration_required")
-        or primary.get("config_required")
-        or []
-    )
+    # Discharge/downstream is engineer-optional when RUN has no Mtrchain successor —
+    # do not block Apply/READY on it. Keep collector + encoder as hard requirements.
+    _optional_cfg = {
+        "downstream conveyor",
+        "downstream_conveyor",
+        "discharge_conveyor",
+        "jam_pe",
+    }
+    cfg_req = [
+        x
+        for x in (
+            primary.get("configuration_required")
+            or primary.get("config_required")
+            or []
+        )
+        if str(x).strip().lower() not in _optional_cfg
+    ]
     if not collector and "collector conveyor" not in cfg_req:
         cfg_req.append("collector conveyor")
     if not encoder and "collector encoder" not in cfg_req:
         cfg_req.append("collector encoder")
-    if not downstream and "downstream conveyor" not in cfg_req:
-        cfg_req.append("downstream conveyor")
 
     motor = primary.get("motor") or ""
     return {

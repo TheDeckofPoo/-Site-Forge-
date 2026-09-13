@@ -47,6 +47,12 @@ class TestSawtoothMergeModelCp4(unittest.TestCase):
         self.assertEqual(coll["value"], "P414")
         self.assertEqual(coll["provenance"], "RUN_DERIVED")
 
+    def test_discharge_from_mtrchain(self):
+        disc = self.model["merges"][0]["discharge_conveyor"]
+        self.assertEqual(disc["value"], "P416")
+        self.assertEqual(disc["provenance"], "RUN_DERIVED")
+        self.assertEqual(self.editor["merges"][0]["downstream_conveyor"], "P416")
+
     def test_slice_reserve_from_run(self):
         lanes = self.model["merges"][0]["lanes"]
         self.assertTrue(any(ln["slice_seconds"]["value"] is not None for ln in lanes))

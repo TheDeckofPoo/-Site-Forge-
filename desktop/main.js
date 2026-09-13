@@ -11,6 +11,7 @@ const APPLY_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'apply_recipe.py')
 const INDEX_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'index_docs.py');
 const PLC_EXPORT_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_plc_export.py');
 const IO_BANKS_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_io_banks.py');
+const HARDWARE_IO_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_hardware_io_model.py');
 const AUTOGEN_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_autogen.py');
 const WORKBOOK_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_workbook.py');
 const IGNITION_BUILD_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ignition_build.py');
@@ -623,6 +624,37 @@ function createWindow() {
       }
       const data = JSON.parse(r.stdout);
       if (!data.ok) return { success: false, message: data.error || 'Failed to load I/O banks' };
+      return { success: true, ...data };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
+  });
+
+  // Hardware/I/O tree from PhysicalWordResolver (same active RUN as get-io-banks)
+  ipcMain.handle('get-hardware-io', async () => {
+    try {
+      const runDir = path.join(ACTIVE_DIR, 'RUN');
+      if (!fs.existsSync(path.join(runDir, 'project.cfg'))) {
+        return { success: false, message: 'No active RUN loaded' };
+      }
+      const meta = readJson(ACTIVE_META, null);
+      const machine = (meta && (meta.machine || meta.machine_name)) || '';
+      const args = [HARDWARE_IO_SCRIPT, '--run-dir', runDir];
+      if (machine) args.push('--machine', String(machine));
+      const r = await runPythonAsync(args);
+      if (!r.ok) {
+        try {
+          const parsed = JSON.parse(r.error || r.stdout || '{}');
+          if (parsed && parsed.error) return { success: false, message: parsed.error };
+        } catch (_) { /* ignore */ }
+        let msg = r.error || 'Failed to load Hardware I/O model';
+        if (typeof msg === 'string' && msg.length > 400) {
+          msg = 'Failed to load Hardware I/O model (Python error). Try refresh again.';
+        }
+        return { success: false, message: msg };
+      }
+      const data = JSON.parse(r.stdout);
+      if (!data.ok) return { success: false, message: data.error || 'Failed to load Hardware I/O model' };
       return { success: true, ...data };
     } catch (e) {
       return { success: false, message: e.message };

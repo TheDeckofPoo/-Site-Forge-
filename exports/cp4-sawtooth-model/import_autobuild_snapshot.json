@@ -1,9 +1,9 @@
 {
   "machine": "ORNCCP4",
   "sawtooth_merge_model": {
-    "generated_at": "2026-09-13T16:37:27.038314+00:00",
+    "generated_at": "2026-09-13T18:00:24.187164+00:00",
     "machine": "ORNCCP4",
-    "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
+    "run_dir": "C:\\Dev\\worktree\\FortnaPlus\\workspace\\cp4-run\\RUN",
     "source_of_truth": "RUN SawMerge/SawLane + VFD/encoder relationships \u2014 finished PLC4 never read",
     "detected": true,
     "merge_count": 1,
@@ -27,11 +27,11 @@
           "provenance": "RUN_DERIVED"
         },
         "discharge_conveyor": {
-          "value": null,
-          "source_table": "",
+          "value": "P416",
+          "source_table": "Mtrchain.asc",
           "source_row_key": "SAWTOOTH_MERGE",
-          "relationship_rule": "No Convpath successor; leave UNRESOLVED for engineer",
-          "provenance": "UNRESOLVED"
+          "relationship_rule": "Next Motor_Chained P-tag after collector on collector VFD row",
+          "provenance": "RUN_DERIVED"
         },
         "merge_encoder": {
           "value": "ENC414",
@@ -811,7 +811,7 @@
         "collector_conveyor": "P414",
         "collector_encoder": "ENC414",
         "encoder": "ENC414",
-        "downstream_conveyor": null,
+        "downstream_conveyor": "P416",
         "reservation": "SAW_RESERVATION",
         "slice_seconds": 18.0,
         "lane_enable_delay_tm": "tmSawMerge_DLY",
@@ -825,6 +825,6 @@
     "lane_count": 5,
     "note": "Auto-built on RUN import from SawMerge/SawLane cross-table evidence"
   },
-  "ui_status_summary_sawtooth": "1 merge \u00b7 5 lanes",
-  "has_sawtooth_merges": 1
+  "ui_status_summary_sawtooth": "Sawtooth: 1 merge \u00b7 5 lanes",
+  "has_sawtooth_merges": true
 }

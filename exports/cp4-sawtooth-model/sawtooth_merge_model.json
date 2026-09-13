@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-13T16:37:18.529195+00:00",
+  "generated_at": "2026-09-13T17:59:20.164475+00:00",
   "machine": "ORNCCP4",
   "run_dir": "workspace\\cp4-run\\RUN",
   "source_of_truth": "RUN SawMerge/SawLane + VFD/encoder relationships \u2014 finished PLC4 never read",
@@ -25,11 +25,11 @@
         "provenance": "RUN_DERIVED"
       },
       "discharge_conveyor": {
-        "value": null,
-        "source_table": "",
+        "value": "P416",
+        "source_table": "Mtrchain.asc",
         "source_row_key": "SAWTOOTH_MERGE",
-        "relationship_rule": "No Convpath successor; leave UNRESOLVED for engineer",
-        "provenance": "UNRESOLVED"
+        "relationship_rule": "Next Motor_Chained P-tag after collector on collector VFD row",
+        "provenance": "RUN_DERIVED"
       },
       "merge_encoder": {
         "value": "ENC414",

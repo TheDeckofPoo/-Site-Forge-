@@ -199,7 +199,7 @@
       "collector_conveyor": "P414",
       "collector_encoder": "ENC414",
       "encoder": "ENC414",
-      "downstream_conveyor": null,
+      "downstream_conveyor": "P416",
       "reservation": "SAW_RESERVATION",
       "slice_seconds": 18.0,
       "lane_enable_delay_tm": "tmSawMerge_DLY",

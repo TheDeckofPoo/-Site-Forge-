@@ -743,15 +743,15 @@ def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
                 else:
                     resolved += 1
             lanes.append(lane)
+        # Downstream is derived when Mtrchain proves a successor; otherwise optional
+        # (do not count toward blocking engineer_decisions / Apply readiness).
         for field, label in (
             ("collector_conveyor", "collector conveyor"),
             ("collector_encoder", "collector encoder"),
-            ("downstream_conveyor", "downstream conveyor"),
         ):
             val = {
                 "collector_conveyor": collector,
                 "collector_encoder": collector_encoder,
-                "downstream_conveyor": downstream,
             }[field]
             if not val:
                 if label not in merge_cfg_required:
@@ -759,6 +759,14 @@ def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
                 cfg_required += 1
             else:
                 resolved += 1
+        if downstream:
+            resolved += 1
+        merge_cfg_required = [
+            x
+            for x in merge_cfg_required
+            if str(x).strip().lower()
+            not in {"downstream conveyor", "downstream_conveyor", "discharge_conveyor"}
+        ]
         items.append(
             {
                 "merge_identity": m.get("raw_name") or m.get("normalized_name"),

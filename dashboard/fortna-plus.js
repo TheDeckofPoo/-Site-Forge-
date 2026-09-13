@@ -212,6 +212,11 @@ function computeCompileHubReadiness() {
   // Hardware / IO
   {
     const e = R.hardware;
+    const hw = (typeof ioState !== 'undefined' && ioState) ? ioState.hardwareIo : null;
+    const unresolvedWords = hw
+      ? ((hw.unresolved_words || []).length || hw.stats?.unresolved_count || 0)
+      : 0;
+    const adapterN = hw ? ((hw.adapters || []).length || hw.stats?.adapter_count || 0) : 0;
     if (autogenState.lastGenerateIoMapError) {
       e.status = 'ERROR';
       e.unresolved = 1;
@@ -222,12 +227,17 @@ function computeCompileHubReadiness() {
       e.detail = 'Load RUN on I/O & Prints';
     } else if (e.dirty && e.appliedAt) {
       e.status = 'CHANGED';
-      e.detail = `Edited since Apply · ${formatAppliedAt(e.appliedAt)}`;
+      e.unresolved = unresolvedWords;
+      e.detail = `Edited since Apply · ${formatAppliedAt(e.appliedAt)}`
+        + (hw ? ` · resolver ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s)` : '');
     } else {
       e.status = 'READY';
-      e.unresolved = 0;
+      e.unresolved = unresolvedWords;
       if (!e.appliedAt) e.appliedAt = new Date().toISOString();
-      e.detail = `RUN loaded · IO_MAP included${e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : ''}`;
+      e.detail = hw
+        ? `Resolver tree · ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s) · IO_MAP included`
+          + (e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : '')
+        : `RUN loaded · IO_MAP included${e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : ''}`;
     }
     nowDetail.hardware = e;
   }
@@ -844,12 +854,34 @@ function setIoRunStatus(text, kind = 'idle') {
 function clearDevicesPanelUi() {
   if (typeof ioState !== 'undefined' && ioState) {
     ioState.banks = null;
+    ioState.hardwareIo = null;
+    ioState.hardwarePanelFilter = '__all__';
+    ioState.selectedHwModuleKey = '';
     ioState.drives = [];
     ioState.devices = [];
     ioState.motorChains = [];
     ioState.printVfdParams = [];
     ioState.selectedDriveName = '';
     ioState.deviceTypeFilter = 'all';
+  }
+  // Hardware / I/O
+  if ($('hw-io-status')) {
+    $('hw-io-status').textContent = 'No RUN';
+    $('hw-io-status').className = 'status-pill status-idle';
+  }
+  if ($('hw-io-controller')) $('hw-io-controller').textContent = 'Controller: —';
+  if ($('hw-io-racks')) {
+    $('hw-io-racks').innerHTML = '<div class="text-sm text-slate-500 py-6 text-center">Load a RUN to show Remote I/O adapters from PhysicalWordResolver.</div>';
+  }
+  if ($('hw-io-module-detail')) {
+    $('hw-io-module-detail').innerHTML = 'Select a module card to list channels (physical address · Fortna word.bit · logical endpoint).';
+  }
+  if ($('hw-io-wiring')) {
+    $('hw-io-wiring').textContent = 'Select a module — Level A shows proven channel→logical assignments. Catalog schematics (Level B) are not required yet.';
+  }
+  if ($('hw-io-stats')) $('hw-io-stats').innerHTML = '';
+  if ($('hw-io-panel-select')) {
+    $('hw-io-panel-select').innerHTML = '<option value="__all__">All Panels</option>';
   }
   // Banks
   if ($('io-banks-status')) {
@@ -1533,6 +1565,10 @@ const ioState = {
   panelSets: [],
   activePanelId: '',
   banks: null,
+  /** Hardware/I/O model from PhysicalWordResolver (via fortna_hardware_io_model) */
+  hardwareIo: null,
+  hardwarePanelFilter: '__all__',
+  selectedHwModuleKey: '',
   /** @type {Array<object>} */
   drives: [],
   /** Unified device list (I/O points + drives) for type filter browser */
@@ -3194,6 +3230,7 @@ function renderCrosswalkList(cw) {
 async function refreshIoBanks() {
   if (!state.workspace) {
     renderIoBanks({ success: false, message: 'No RUN loaded. Import on Workspace first.' });
+    renderHardwareIo({ success: false, message: 'No RUN loaded' });
     return;
   }
   if ($('io-banks-status')) {
@@ -3202,7 +3239,250 @@ async function refreshIoBanks() {
   }
   const res = await fortnaAPI.getIoBanks();
   renderIoBanks(res);
+  // Also load Hardware / I/O resolver tree (same active RUN)
+  refreshHardwareIo().catch(() => {});
 }
+
+function hwModuleKey(rioName, slot) {
+  return `${rioName || ''}::${slot}`;
+}
+
+function findHwModule(model, key) {
+  if (!model || !key) return null;
+  for (const ad of model.adapters || []) {
+    for (const mod of ad.modules || []) {
+      if (hwModuleKey(ad.rio_name, mod.slot) === key) {
+        return { adapter: ad, module: mod };
+      }
+    }
+  }
+  return null;
+}
+
+function renderHardwareIo(data) {
+  const status = $('hw-io-status');
+  const ctrl = $('hw-io-controller');
+  const racks = $('hw-io-racks');
+  const sel = $('hw-io-panel-select');
+  const statsEl = $('hw-io-stats');
+  if (!racks) return;
+
+  if (!data || !data.success) {
+    ioState.hardwareIo = null;
+    if (status) {
+      status.textContent = 'No RUN';
+      status.className = 'status-pill status-idle';
+    }
+    if (ctrl) ctrl.textContent = 'Controller: —';
+    racks.innerHTML = `<div class="text-sm text-slate-500 py-6 text-center">${escapeHtml(data?.message || 'Load a RUN to show Hardware / I/O.')}</div>`;
+    if ($('hw-io-module-detail')) {
+      $('hw-io-module-detail').innerHTML = 'Select a module card to list channels.';
+    }
+    if ($('hw-io-wiring')) {
+      $('hw-io-wiring').textContent = 'Wiring diagram unavailable until a module is selected.';
+    }
+    try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+    return;
+  }
+
+  ioState.hardwareIo = data;
+  const machine = data.controller?.machine || data.machine || '—';
+  if (status) {
+    status.textContent = 'Resolver tree';
+    status.className = 'status-pill status-ready';
+  }
+  if (ctrl) ctrl.textContent = `Controller: ${machine}`;
+
+  // Panel select — Configio evidence only + All Panels (never invent CPs)
+  const panels = data.control_panels?.panels || [];
+  const allLabel = data.control_panels?.all_panels_label || 'All Panels';
+  if (sel) {
+    const prev = ioState.hardwarePanelFilter || '__all__';
+    sel.innerHTML = `<option value="__all__">${escapeHtml(allLabel)}</option>`
+      + panels.map((p) => `<option value="${escapeHtml(p)}">${escapeHtml(p)}</option>`).join('');
+    sel.value = (prev === '__all__' || panels.includes(prev)) ? prev : '__all__';
+    ioState.hardwarePanelFilter = sel.value;
+  }
+
+  const st = data.stats || {};
+  if (statsEl) {
+    statsEl.innerHTML = [
+      `${st.adapter_count ?? (data.adapters || []).length} adapters`,
+      `${st.word_count ?? '—'} words`,
+      `${(data.unresolved_words || []).length} unresolved`,
+      `${st.by_word_bit_count ?? '—'} channels`,
+    ].map((t) => `<span class="px-1.5 py-0.5 rounded bg-slate-900 border border-slate-800">${escapeHtml(t)}</span>`).join('');
+  }
+
+  renderHardwareRacks();
+  renderHardwareModuleDetail();
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+}
+
+function adaptersForSelectedPanel(model) {
+  if (!model) return [];
+  const filter = ioState.hardwarePanelFilter || '__all__';
+  if (filter === '__all__') return model.adapters || [];
+  const byPanel = model.control_panels?.adapters_by_panel || {};
+  if (byPanel[filter]) return byPanel[filter];
+  return (model.adapters || []).filter((a) => a.panel === filter);
+}
+
+function renderHardwareRacks() {
+  const racks = $('hw-io-racks');
+  const model = ioState.hardwareIo;
+  if (!racks || !model) return;
+  const adapters = adaptersForSelectedPanel(model);
+  if (!adapters.length) {
+    racks.innerHTML = `<div class="text-sm text-slate-500 py-6 text-center">No adapters for this control panel (Configio evidence).</div>`;
+    return;
+  }
+
+  racks.innerHTML = adapters.map((ad) => {
+    const aent = (ad.modules || []).find((m) => m.is_adapter_card);
+    const aentLabel = aent ? (aent.catalog || aent.type || 'AENT') : '—';
+    const cards = (ad.modules || []).map((mod) => {
+      const key = hwModuleKey(ad.rio_name, mod.slot);
+      const selected = key === ioState.selectedHwModuleKey;
+      const isHead = !!mod.is_adapter_card;
+      const used = mod.channels_used ?? (mod.channels || []).length;
+      const total = mod.channel_capacity || 0;
+      const unres = mod.channels_unresolved ?? 0;
+      const dir = mod.direction || (isHead ? 'HEAD' : '—');
+      const cat = mod.catalog || mod.type || '—';
+      const border = selected
+        ? 'border-cyan-500 bg-cyan-950/40'
+        : isHead
+          ? 'border-slate-600 bg-slate-900/80'
+          : 'border-slate-700 bg-[#101820] hover:border-cyan-700';
+      return `
+        <button type="button" data-hw-mod="${escapeHtml(key)}"
+          class="hw-mod-card shrink-0 w-[7.5rem] rounded-lg border ${border} px-2 py-2 text-left transition-colors">
+          <div class="text-[9px] uppercase tracking-wider text-slate-500">[${mod.slot ?? '—'}] ${escapeHtml(dir)}</div>
+          <div class="text-[11px] font-semibold mono text-cyan-200 truncate" title="${escapeHtml(cat)}">${escapeHtml(cat)}</div>
+          <div class="text-[9px] text-slate-500 mt-1">${isHead ? 'adapter card' : `${used}/${total || '—'} ch`}</div>
+          ${!isHead && unres ? `<div class="text-[9px] text-amber-400/90">${unres} unresolved</div>` : ''}
+        </button>`;
+    }).join('');
+
+    return `
+      <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3">
+        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
+          <div class="font-semibold text-sm text-cyan-300 mono">${escapeHtml(ad.rio_name || '—')}</div>
+          <div class="text-[10px] text-slate-500 mono">${escapeHtml(ad.eipcfg_name || ad.name || '')}</div>
+          <div class="text-[10px] text-slate-600">AENT ${escapeHtml(aentLabel)}</div>
+          <div class="text-[10px] text-slate-600 ml-auto">${escapeHtml(ad.targetip || '')} · ${escapeHtml(ad.panel || '—')}</div>
+        </div>
+        <div class="flex flex-wrap gap-2 overflow-x-auto pb-1">${cards}</div>
+      </div>`;
+  }).join('');
+
+  racks.querySelectorAll('[data-hw-mod]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      ioState.selectedHwModuleKey = btn.getAttribute('data-hw-mod') || '';
+      renderHardwareRacks();
+      renderHardwareModuleDetail();
+    });
+  });
+}
+
+function renderHardwareModuleDetail() {
+  const detail = $('hw-io-module-detail');
+  const wiring = $('hw-io-wiring');
+  const model = ioState.hardwareIo;
+  if (!detail) return;
+  const hit = findHwModule(model, ioState.selectedHwModuleKey);
+  if (!hit) {
+    detail.innerHTML = 'Select a module card to list channels (physical address · Fortna word.bit · logical endpoint).';
+    if (wiring) {
+      wiring.textContent = 'Select a module — Level A shows proven channel→logical assignments. Catalog schematics (Level B) are not required yet.';
+    }
+    return;
+  }
+  const { adapter: ad, module: mod } = hit;
+  const channels = mod.channels || [];
+  if (mod.is_adapter_card) {
+    detail.innerHTML = `
+      <div class="text-cyan-300 mono text-xs mb-2">${escapeHtml(ad.rio_name)} slot ${mod.slot} · ${escapeHtml(mod.catalog || mod.type || '')}</div>
+      <div class="text-slate-500 text-[11px]">Adapter / AENT head — no digital channels on this card.</div>`;
+  } else if (!channels.length) {
+    detail.innerHTML = `
+      <div class="text-cyan-300 mono text-xs mb-2">${escapeHtml(ad.rio_name)} slot ${mod.slot} · ${escapeHtml(mod.catalog || '')} · ${escapeHtml(mod.direction || '')}</div>
+      <div class="text-slate-500 text-[11px]">No by_word_bit channels for this module (unused or unresolved in Configio).</div>`;
+  } else {
+    const rows = channels.map((ch) => {
+      const logical = ch.logical_endpoint?.name || '— unresolved —';
+      const logicalCls = ch.logical_endpoint ? 'text-emerald-300' : 'text-amber-400/90';
+      const prov = ch.provenance?.assign_how || ch.assign_how || ch.provenance?.source_tables?.join('+') || '—';
+      return `<tr class="border-b border-slate-800/80">
+        <td class="py-1 px-1 mono text-slate-400">${ch.fortna_bit ?? '—'}</td>
+        <td class="py-1 px-1 mono text-cyan-200/90">${escapeHtml(ch.physical_address || '')}</td>
+        <td class="py-1 px-1 mono">${ch.fortna_word ?? '—'}.${ch.fortna_bit ?? '—'}</td>
+        <td class="py-1 px-1 mono ${logicalCls}">${escapeHtml(logical)}</td>
+        <td class="py-1 px-1 text-slate-600">${escapeHtml(String(prov))}</td>
+      </tr>`;
+    }).join('');
+    detail.innerHTML = `
+      <div class="text-cyan-300 mono text-xs mb-2">${escapeHtml(ad.rio_name)} [${mod.slot}] ${escapeHtml(mod.catalog || '')} · Data[${mod.data_index ?? '—'}]</div>
+      <table class="w-full text-left text-[10px]">
+        <thead class="text-slate-500 sticky top-0 bg-[#0c1219]">
+          <tr>
+            <th class="py-1 px-1">Ch</th>
+            <th class="py-1 px-1">Physical address</th>
+            <th class="py-1 px-1">Fortna word.bit</th>
+            <th class="py-1 px-1">Logical endpoint</th>
+            <th class="py-1 px-1">Provenance</th>
+          </tr>
+        </thead>
+        <tbody>${rows}</tbody>
+      </table>`;
+  }
+
+  if (wiring) {
+    // Level A: proven assignments only. Level B catalog not required. Level C: never invent.
+    const proven = channels.filter((c) => c.logical_endpoint?.name);
+    const catalogHint = `hardware_catalog/${(mod.catalog || mod.type || '').replace(/[^A-Za-z0-9._-]/g, '_')}`;
+    let html = `<div class="text-[10px] text-slate-500 mb-1">Level A · proven channel → logical</div>`;
+    if (proven.length) {
+      html += `<div class="space-y-0.5 mono text-[10px]">${proven.slice(0, 24).map((c) =>
+        `<div><span class="text-cyan-300">${escapeHtml(c.physical_address || '')}</span> → <span class="text-emerald-300">${escapeHtml(c.logical_endpoint.name)}</span></div>`
+      ).join('')}${proven.length > 24 ? `<div class="text-slate-600">… +${proven.length - 24} more</div>` : ''}</div>`;
+    } else {
+      html += `<div class="text-slate-500 text-[11px]">No proven channel→logical assignments on this module.</div>`;
+    }
+    html += `<div class="mt-2 text-[10px] text-slate-600">Level B · catalog schematic: not loaded (${escapeHtml(catalogHint)}).</div>`;
+    html += `<div class="text-[10px] text-slate-500 mt-1">Wiring diagram unavailable for this module.</div>`;
+    wiring.innerHTML = html;
+  }
+}
+
+async function refreshHardwareIo() {
+  if (!state.workspace) {
+    renderHardwareIo({ success: false, message: 'No RUN loaded' });
+    return;
+  }
+  if ($('hw-io-status')) {
+    $('hw-io-status').textContent = 'Loading…';
+    $('hw-io-status').className = 'status-pill status-busy';
+  }
+  if (typeof fortnaAPI.getHardwareIo !== 'function') {
+    renderHardwareIo({ success: false, message: 'getHardwareIo missing — relaunch Site Forge desktop app' });
+    return;
+  }
+  try {
+    const res = await fortnaAPI.getHardwareIo();
+    renderHardwareIo(res);
+  } catch (e) {
+    renderHardwareIo({ success: false, message: e?.message || String(e) });
+  }
+}
+
+$('hw-io-panel-select')?.addEventListener('change', (e) => {
+  ioState.hardwarePanelFilter = e.target?.value || '__all__';
+  ioState.selectedHwModuleKey = '';
+  renderHardwareRacks();
+  renderHardwareModuleDetail();
+});
 
 // I/O tab: load RUN tar.gz without using Workspace
 const ioRunDrop = $('io-run-dropzone');
@@ -3481,7 +3761,7 @@ const autogenState = {
   lastL5x: '',
   busy: false,
   workbook: null, // Inputdata replacement — auto from RUN, editable
-  wbTab: 'conveyors',
+  wbTab: 'io',
   selected: new Set(),
   // Sorter build UI
   sorter: {
@@ -3581,6 +3861,7 @@ function defaultSawtoothConfig() {
     collector_has_encoder: 'yes',
     collector_encoder_type: 'Enc_RIOCard',
     collector_encoder: '',
+    encoder_role: '', // collector_tracking | city_counter | … from RUN evidence
     clctr_speed_fpm: 140,
     clctr_runout_dist: 0,
     clctr_slug_gap_adder: 0,
@@ -3626,23 +3907,37 @@ function sawtoothBuildFromSiteModel(site) {
   const motor = merge.motor || merge.motor_io || '';
   let collector = merge.collector_conveyor || merge.collector || '';
   if (!collector) collector = collectorFromMotorIo(motor);
-  let encoder = merge.collector_encoder || merge.encoder || '';
+  // Prefer proven merge_encoder / collector_encoder from SawtoothMergeModel.
+  // Never pick the first ENC### in site.encoders — city-counter encoders (ENC424)
+  // must not displace collector tracking (ENC414) without association evidence.
+  let encoder = merge.collector_encoder || merge.merge_encoder || merge.encoder || '';
+  let encoderRole = merge.encoder_role || merge.merge_encoder_role || '';
   if (!encoder && Array.isArray(site?.encoders)) {
     const mergeName = String(merge.merge_identity || merge.normalized_name || merge.raw_name || '').toUpperCase();
+    const collectorNum = collector ? String(collector).replace(/^P/i, '') : '';
+    let assocHit = '';
+    let digitHit = '';
     for (const enc of site.encoders) {
       const name = enc.raw_name || enc.normalized_name || '';
+      const jam = String(enc.jamzone || enc.Jamzone || '').toUpperCase();
       const assocs = enc.associations || [];
       const hit = assocs.some((a) => {
-        const to = String(a.to || '').toUpperCase().replace(/\s+/g, '_');
-        return to && mergeName && (to === mergeName || to.replace(/_/g, ' ') === mergeName.replace(/_/g, ' '));
+        const to = String(a.to || a.rule || '').toUpperCase().replace(/\s+/g, '_');
+        return to && mergeName && (to.includes(mergeName) || to.replace(/_/g, ' ') === mergeName.replace(/_/g, ' '));
       });
-      if (hit) { encoder = name; break; }
-      if (!encoder && collector) {
-        const num = collector.replace(/^P/i, '');
-        if (String(name).toUpperCase() === `ENC${num}`) { encoder = name; break; }
+      if (hit || jam.includes('SAWTOOTH')) {
+        assocHit = name;
+        encoderRole = 'collector_tracking';
+        break;
+      }
+      if (!digitHit && collectorNum && String(name).toUpperCase() === `ENC${collectorNum}`) {
+        digitHit = name;
+        encoderRole = 'collector_tracking';
       }
     }
+    encoder = assocHit || digitHit || '';
   }
+  if (!encoderRole && encoder) encoderRole = 'collector_tracking';
   const lanes = lanesSrc.map((ln) => normalizeSawLaneRow({
     conveyor: ln.lane_conveyor || ln.conveyor || '',
     pe: ln.lane_pe || ln.photoeye || '',
@@ -3664,15 +3959,13 @@ function sawtoothBuildFromSiteModel(site) {
     field_provenance: ln.field_provenance || {},
   }));
   const mrgNum = (collector.match(/(\d+)/) || [])[1] || '';
-  const unresolved = [...(merge.configuration_required || merge.config_required || [])];
+  // Blocking readiness: collector + merge encoder only. Discharge / lane jam PE stay
+  // visible when empty but must not block Apply when RUN left them optional/unresolved.
+  const unresolved = [...(merge.configuration_required || merge.config_required || [])]
+    .filter((x) => !['discharge_conveyor', 'downstream_conveyor', 'downstream conveyor', 'jam_pe'].includes(String(x)));
   if (!collector && !unresolved.includes('collector_conveyor')) unresolved.push('collector_conveyor');
   if (!encoder && !unresolved.includes('collector_encoder') && !unresolved.includes('merge_encoder')) {
     unresolved.push('merge_encoder');
-  }
-  if (!(merge.downstream_conveyor || merge.downstream)
-    && !unresolved.includes('downstream_conveyor')
-    && !unresolved.includes('discharge_conveyor')) {
-    unresolved.push('discharge_conveyor');
   }
   return normalizeSawtoothConfig({
     ...defaultSawtoothConfig(),
@@ -3681,6 +3974,7 @@ function sawtoothBuildFromSiteModel(site) {
     collector_has_encoder: encoder ? 'yes' : 'no',
     collector_encoder_type: 'Enc_RIOCard',
     collector_encoder: encoder,
+    encoder_role: encoderRole || (encoder ? 'collector_tracking' : ''),
     // Do not invent site timing defaults — leave 0 / empty when RUN does not prove them.
     clctr_speed_fpm: Number(merge.clctr_speed_fpm) || 0,
     lane_count: lanes.length || Number(merge.lane_count) || 0,
@@ -4631,6 +4925,21 @@ function renderSawtoothBuild() {
   if (encType) encType.innerHTML = sorterEncTypeOptionsHtml(s.collector_encoder_type || 'Enc_RIOCard');
   const encTag = $('saw-collector-enc');
   if (encTag) encTag.innerHTML = sorterEncTagOptionsHtml(s.collector_encoder || '', encFallback);
+  const encRoleEl = $('saw-collector-enc-role');
+  if (encRoleEl) {
+    const role = s.encoder_role || s.collector_encoder_role || '';
+    const encName = s.collector_encoder || '';
+    if (encName && role === 'collector_tracking') {
+      encRoleEl.textContent = `${encName} · proven role: collector tracking (Sawtooth)`;
+      encRoleEl.classList.remove('hidden');
+    } else if (encName) {
+      encRoleEl.textContent = `${encName} · role: ${role || 'review associations'}`;
+      encRoleEl.classList.remove('hidden');
+    } else {
+      encRoleEl.textContent = '';
+      encRoleEl.classList.add('hidden');
+    }
+  }
 
   // Lane count comes from RUN discovery — do not invent empty lanes when none detected.
   let n = Math.max(0, Math.min(12, Number(s.lane_count) || (s.lanes || []).length || 0));
@@ -5281,7 +5590,7 @@ function renderWorkbook() {
 }
 
 function switchWbTab(tab) {
-  autogenState.wbTab = tab || 'conveyors';
+  autogenState.wbTab = tab || 'io';
   document.querySelectorAll('.wb-tab').forEach((btn) => {
     const on = btn.dataset.wbTab === autogenState.wbTab;
     btn.className = on
@@ -5373,7 +5682,7 @@ async function buildAutogenWorkbook({ mergeExisting = true } = {}) {
       path: r.path,
     }, null, 2);
   }
-  switchWbTab('conveyors');
+  switchWbTab('io');
 }
 
 async function saveAutogenWorkbook() {

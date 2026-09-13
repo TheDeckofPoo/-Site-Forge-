@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   selectArchive: (opts) => ipcRenderer.invoke('select-archive', opts || {}),
   exportPlc: (data) => ipcRenderer.invoke('export-plc', data),
   getIoBanks: () => ipcRenderer.invoke('get-io-banks'),
+  getHardwareIo: () => ipcRenderer.invoke('get-hardware-io'),
   ocrPrints: (data) => ipcRenderer.invoke('ocr-prints', data),
   autogenInspectExcel: (data) => ipcRenderer.invoke('autogen-inspect-excel', data || {}),
   autogenGenerate: (data) => ipcRenderer.invoke('autogen-generate', data || {}),

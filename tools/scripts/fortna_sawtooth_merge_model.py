@@ -23,10 +23,12 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
+from fortna_asc import read_asc  # noqa: E402
 from fortna_cp4_discovery import (  # noqa: E402
     discover_encoders,
     discover_sawtooth,
     discover_vfd,
+    resolve_asc,
 )
 
 RUN_EXPLICIT = "RUN_EXPLICIT"
@@ -95,6 +97,68 @@ def _encoder_for_merge(
     return "", UNRESOLVED
 
 
+def _discharge_from_mtrchain(
+    run_dir: Path,
+    machine: str,
+    collector: str,
+    motor_io: str,
+) -> tuple[str, str]:
+    """Next Motor_Chained P-tag after collector on the collector VFD row.
+
+    Example CP4: VFD414_EN Motor_Chained1=P414, Motor_Chained2=P416 → discharge P416.
+    Does not invent Convpath successors; co-driven chain order is RUN-explicit.
+    """
+    collector_u = _clean(collector).upper()
+    if not collector_u:
+        return "", UNRESOLVED
+    fortna = run_dir / "FORTNA"
+    if not fortna.is_dir():
+        return "", UNRESOLVED
+    path, _res = resolve_asc(fortna, "Mtrchain.asc", machine)
+    if path is None or not path.is_file():
+        return "", UNRESOLVED
+    _headers, rows = read_asc(path)
+    motor_u = _clean(motor_io).upper()
+    motor_base = ""
+    mm = re.match(r"^(VFD\d+[A-Z]?)", motor_u)
+    if mm:
+        motor_base = mm.group(1)
+
+    def _chain_tokens(row: dict[str, str]) -> list[str]:
+        out: list[str] = []
+        for i in range(1, 11):
+            tok = _clean(row.get(f"Motor_Chained{i}") or "").upper()
+            if not tok or tok in {"INVALID", "N/A", "NONE"}:
+                continue
+            out.append(tok)
+        return out
+
+    # Prefer the row whose Motor_Name matches collector VFD base (VFD414_EN for VFD414_AUX).
+    ranked: list[tuple[int, list[str]]] = []
+    for row in rows:
+        name = _clean(row.get("Motor_Name") or row.get("Motor_Ndx") or "").upper()
+        if not name:
+            continue
+        chain = _chain_tokens(row)
+        if collector_u not in chain:
+            continue
+        score = 0
+        if motor_base and name.startswith(motor_base):
+            score += 2
+        if motor_u and name == motor_u:
+            score += 3
+        ranked.append((score, chain))
+    if not ranked:
+        return "", UNRESOLVED
+    ranked.sort(key=lambda t: (-t[0], len(t[1])))
+    chain = ranked[0][1]
+    idx = chain.index(collector_u)
+    for nxt in chain[idx + 1 :]:
+        if re.fullmatch(r"P\d{2,4}[A-Z]?", nxt, re.I):
+            return nxt, RUN_DERIVED
+    return "", UNRESOLVED
+
+
 def build_sawtooth_merge_model(
     run_dir: Path | str,
     machine: str,
@@ -130,6 +194,9 @@ def build_sawtooth_merge_model(
         motor_io = _clean(m.get("motor_io"))
         collector = _collector_from_motor(motor_io)
         enc_name, enc_prov = _encoder_for_merge(enc_list, merge_name=name, motor_io=motor_io)
+        discharge, discharge_prov = _discharge_from_mtrchain(
+            run_dir, machine, collector, motor_io
+        )
         lane_rows = lanes_by_merge.get(name) or []
         # Sort by lane_index when present
         lane_rows = sorted(
@@ -280,11 +347,15 @@ def build_sawtooth_merge_model(
                 provenance=RUN_DERIVED if collector else UNRESOLVED,
             ),
             "discharge_conveyor": _field(
-                None,
-                source_table="",
+                discharge or None,
+                source_table="Mtrchain.asc" if discharge else "",
                 source_key=name,
-                relationship_rule="No Convpath successor; leave UNRESOLVED for engineer",
-                provenance=UNRESOLVED,
+                relationship_rule=(
+                    "Next Motor_Chained P-tag after collector on collector VFD row"
+                    if discharge
+                    else "No Mtrchain successor after collector; leave UNRESOLVED for engineer"
+                ),
+                provenance=discharge_prov,
             ),
             "merge_encoder": _field(
                 enc_name or None,
@@ -423,6 +494,9 @@ def model_to_editor_shape(model: dict[str, Any]) -> dict[str, Any]:
                 "collector_conveyor": _v(m.get("collector_conveyor")),
                 "collector_encoder": _v(m.get("merge_encoder")),
                 "encoder": _v(m.get("merge_encoder")),
+                "merge_encoder": _v(m.get("merge_encoder")),
+                "encoder_role": "collector_tracking" if _v(m.get("merge_encoder")) else "",
+                "merge_encoder_role": "collector_tracking" if _v(m.get("merge_encoder")) else "",
                 "downstream_conveyor": _v(m.get("discharge_conveyor")),
                 "reservation": _v(m.get("reservation")),
                 "slice_seconds": _v(m.get("slice_seconds_merge")),

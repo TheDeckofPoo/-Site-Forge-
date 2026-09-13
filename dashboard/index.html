@@ -1006,57 +1006,73 @@
             </button>
           </div>
           <div id="autogen-current-build" class="mt-3 hidden rounded-xl border border-emerald-800/60 bg-[#0c1612] px-3 py-2.5 space-y-1.5"></div>
-          <!-- Collapsible: extend dropdown catalogs (areas / safety / exit PE / types) -->
-          <details id="autogen-catalog-panel" class="mt-3 rounded-xl border border-slate-800/80 bg-[#0c1219]/
-            <summary class="cursor-pointer px-3 py-2 text-[11px] text-violet-300/90 font-medium select-none hover:bg-[#101820] rounded-xl">
-              <i class="fa-solid fa-plus-circle mr-1 text-violet-500"></i>
-              Customize dropdowns
-              <span class="text-[10px] font-normal text-slate-500 ml-1">add Area · Safety · Exit PE · TYPE</span>
+          <!-- Advanced / Diagnostics: conveyor catalogs (JS ids preserved) -->
+          <details id="autogen-advanced-diagnostics" class="mt-3 rounded-xl border border-slate-800/80 bg-[#0c1219]">
+            <summary class="cursor-pointer px-3 py-2 text-[11px] text-slate-400 font-medium select-none hover:bg-[#101820] rounded-xl">
+              <i class="fa-solid fa-wrench mr-1 text-slate-500"></i>
+              Advanced / Diagnostics
+              <span class="text-[10px] font-normal text-slate-600 ml-1">conveyor workbook · customize dropdowns</span>
             </summary>
             <div class="px-3 pb-3 pt-1 space-y-2 border-t border-slate-800/60">
-              <p class="text-[10px] text-slate-500 leading-relaxed">
-                New values appear in the conveyor table dropdowns. Names should match Studio-style tags
-                (e.g. <span class="mono text-slate-400">Zone9_Area</span>, <span class="mono text-slate-400">Trash_ESZone1</span>).
+              <details id="autogen-catalog-panel" class="rounded-xl border border-slate-800/80 bg-[#0a1018]">
+                <summary class="cursor-pointer px-3 py-2 text-[11px] text-violet-300/90 font-medium select-none hover:bg-[#101820] rounded-xl">
+                  <i class="fa-solid fa-plus-circle mr-1 text-violet-500"></i>
+                  Customize dropdowns
+                  <span class="text-[10px] font-normal text-slate-500 ml-1">add Area · Safety · Exit PE · TYPE</span>
+                </summary>
+                <div class="px-3 pb-3 pt-1 space-y-2 border-t border-slate-800/60">
+                  <p class="text-[10px] text-slate-500 leading-relaxed">
+                    New values appear in the conveyor table dropdowns. Names should match Studio-style tags
+                    (e.g. <span class="mono text-slate-400">Zone9_Area</span>, <span class="mono text-slate-400">Trash_ESZone1</span>).
+                  </p>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div class="flex gap-1.5 items-center">
+                      <label class="text-[10px] text-slate-500 w-14 shrink-0">Area</label>
+                      <input id="autogen-cat-area" type="text" placeholder="Zone9_Area"
+                        class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-slate-200">
+                      <button type="button" id="btn-autogen-cat-area" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
+                    </div>
+                    <div class="flex gap-1.5 items-center">
+                      <label class="text-[10px] text-slate-500 w-14 shrink-0">Safety</label>
+                      <input id="autogen-cat-safety" type="text" placeholder="Zone9_ESZone1"
+                        class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-slate-200">
+                      <button type="button" id="btn-autogen-cat-safety" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
+                    </div>
+                    <div class="flex gap-1.5 items-center">
+                      <label class="text-[10px] text-slate-500 w-14 shrink-0">Exit PE</label>
+                      <input id="autogen-cat-exitpe" type="text" placeholder="PE999_P"
+                        class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-sky-300">
+                      <button type="button" id="btn-autogen-cat-exitpe" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
+                    </div>
+                    <div class="flex gap-1.5 items-center">
+                      <label class="text-[10px] text-slate-500 w-14 shrink-0">TYPE</label>
+                      <input id="autogen-cat-type" type="text" placeholder="Transport with MS"
+                        class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-slate-200">
+                      <button type="button" id="btn-autogen-cat-type" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
+                    </div>
+                  </div>
+                  <div id="autogen-catalog-chips" class="flex flex-wrap gap-1 pt-1 text-[9px] text-slate-500"></div>
+                </div>
+              </details>
+              <p class="text-[10px] text-slate-600 leading-relaxed">
+                Conveyor zone edits live on the <strong class="text-slate-500">Conveyors</strong> workbook tab (diagnostics).
+                Default focus is <strong class="text-slate-400">IO map</strong>.
               </p>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                <div class="flex gap-1.5 items-center">
-                  <label class="text-[10px] text-slate-500 w-14 shrink-0">Area</label>
-                  <input id="autogen-cat-area" type="text" placeholder="Zone9_Area"
-                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-slate-200">
-                  <button type="button" id="btn-autogen-cat-area" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
-                </div>
-                <div class="flex gap-1.5 items-center">
-                  <label class="text-[10px] text-slate-500 w-14 shrink-0">Safety</label>
-                  <input id="autogen-cat-safety" type="text" placeholder="Zone9_ESZone1"
-                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-slate-200">
-                  <button type="button" id="btn-autogen-cat-safety" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
-                </div>
-                <div class="flex gap-1.5 items-center">
-                  <label class="text-[10px] text-slate-500 w-14 shrink-0">Exit PE</label>
-                  <input id="autogen-cat-exitpe" type="text" placeholder="PE999_P"
-                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-sky-300">
-                  <button type="button" id="btn-autogen-cat-exitpe" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
-                </div>
-                <div class="flex gap-1.5 items-center">
-                  <label class="text-[10px] text-slate-500 w-14 shrink-0">TYPE</label>
-                  <input id="autogen-cat-type" type="text" placeholder="Transport with MS"
-                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-slate-200">
-                  <button type="button" id="btn-autogen-cat-type" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Add</button>
-                </div>
-              </div>
-              <div id="autogen-catalog-chips" class="flex flex-wrap gap-1 pt-1 text-[9px] text-slate-500"></div>
             </div>
           </details>
         </div>
         <div class="card p-0 flex-1 min-h-0 flex flex-col overflow-hidden">
           <div class="flex gap-1 px-2 pt-2 border-b border-slate-800/80 shrink-0">
-            <button type="button" data-wb-tab="conveyors" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg bg-violet-950/50 text-violet-300 border border-b-0 border-violet-800/40">Conveyors</button>
-            <button type="button" data-wb-tab="io" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg text-slate-500 hover:text-slate-300">IO map</button>
+            <button type="button" data-wb-tab="io" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg bg-violet-950/50 text-violet-300 border border-b-0 border-violet-800/40">IO map</button>
             <button type="button" data-wb-tab="areas" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg text-slate-500 hover:text-slate-300">Areas</button>
+            <button type="button" data-wb-tab="conveyors" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg text-slate-500 hover:text-slate-300" title="Advanced tabular editor — Transportation Build is primary">Conveyors · Adv</button>
             <button type="button" data-wb-tab="report" class="wb-tab text-[10px] px-2.5 py-1.5 rounded-t-lg text-slate-500 hover:text-slate-300">Report</button>
             <span id="autogen-wb-count" class="ml-auto text-[10px] mono text-slate-600 self-center pr-2">0 rows</span>
           </div>
-          <div id="autogen-wb-panel-conveyors" class="flex-1 min-h-0 overflow-auto">
+          <div id="autogen-wb-panel-conveyors" class="flex-1 min-h-0 overflow-auto hidden">
+            <div class="px-3 py-2 text-[10px] text-amber-400/80 border-b border-slate-800/60 bg-amber-950/10">
+              Advanced / diagnostics tabular editor. Prefer <strong class="text-amber-200">Transportation Build</strong> for conveyor topology and configuration.
+            </div>
             <table class="w-full text-left text-[10px]">
               <thead class="sticky top-0 bg-[#0c1219] text-slate-500 uppercase tracking-wider z-10">
                 <tr>
@@ -1078,7 +1094,7 @@
               </tbody>
             </table>
           </div>
-          <div id="autogen-wb-panel-io" class="flex-1 min-h-0 overflow-auto hidden">
+          <div id="autogen-wb-panel-io" class="flex-1 min-h-0 overflow-auto">
             <table class="w-full text-left text-[10px]">
               <thead class="sticky top-0 bg-[#0c1219] text-slate-500 uppercase tracking-wider z-10">
                 <tr>
@@ -1396,16 +1412,60 @@
         </div>
       </div>
       <div class="flex-1 flex flex-col gap-3 min-h-0">
-        <div class="card p-4 flex-1 min-h-0 overflow-hidden flex flex-col">
-          <div class="flex items-center justify-between mb-2 shrink-0">
-            <div class="font-semibold">I/O banks (from program)</div>
-            <span id="io-banks-status" class="status-pill status-idle">No RUN</span>
+        <!-- Hardware / I/O — PhysicalWordResolver tree (source of truth for adapters/modules/channels) -->
+        <div class="card p-4 flex-[1.4] min-h-0 overflow-hidden flex flex-col border border-cyan-900/40">
+          <div class="flex flex-wrap items-center gap-2 mb-2 shrink-0">
+            <div class="font-semibold text-cyan-300">
+              <i class="fa-solid fa-microchip mr-1"></i>Hardware / I/O
+            </div>
+            <span id="hw-io-status" class="status-pill status-idle">No RUN</span>
+            <span class="text-[10px] text-slate-500 ml-auto mono" id="hw-io-controller">Controller: —</span>
           </div>
-          <div id="io-banks-stats" class="grid grid-cols-4 gap-2 mb-3 shrink-0 hidden"></div>
-          <div id="io-banks-list" class="flex-1 overflow-y-auto space-y-2 text-sm text-slate-400">
-            Load a RUN package to list Fortna banks (Bank&lt;word&gt;.bit from Conveyor.asc / Configio).
+          <div class="flex flex-wrap items-center gap-2 mb-2 shrink-0">
+            <label class="text-[10px] text-slate-500 uppercase tracking-wider" for="hw-io-panel-select">Control Panel</label>
+            <select id="hw-io-panel-select"
+              class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-xs text-slate-200 min-w-[9rem]">
+              <option value="__all__">All Panels</option>
+            </select>
+            <div id="hw-io-stats" class="flex flex-wrap gap-2 text-[10px] mono text-slate-500"></div>
+          </div>
+          <div class="flex-1 min-h-0 grid grid-cols-1 xl:grid-cols-5 gap-3 overflow-hidden">
+            <div class="xl:col-span-3 overflow-y-auto min-h-0 space-y-3" id="hw-io-racks">
+              <div class="text-sm text-slate-500 py-6 text-center">Load a RUN to show Remote I/O adapters from PhysicalWordResolver.</div>
+            </div>
+            <div class="xl:col-span-2 min-h-0 flex flex-col gap-2 overflow-hidden">
+              <div class="flex-1 min-h-0 overflow-hidden border border-slate-800 rounded-xl bg-[#0c1219] flex flex-col">
+                <div class="text-[10px] uppercase tracking-wider text-slate-500 px-3 py-2 border-b border-slate-800 shrink-0">Module channels</div>
+                <div id="hw-io-module-detail" class="flex-1 overflow-auto p-2 text-[11px] text-slate-400">
+                  Select a module card to list channels (physical address · Fortna word.bit · logical endpoint).
+                </div>
+              </div>
+              <div class="shrink-0 border border-slate-800 rounded-xl bg-[#0c1219] p-3">
+                <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Wiring diagram</div>
+                <div id="hw-io-wiring" class="text-[11px] text-slate-400 leading-relaxed">
+                  Select a module — Level A shows proven channel→logical assignments. Catalog schematics (Level B) are not required yet.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
+
+        <details class="card p-0 shrink-0 border border-slate-800/80 overflow-hidden">
+          <summary class="px-4 py-2.5 cursor-pointer list-none flex items-center justify-between gap-2 select-none hover:bg-[#101820]">
+            <span class="font-semibold text-sm text-slate-400">
+              I/O banks (from program)
+              <span class="text-[10px] font-normal text-slate-600 ml-1">diagnostics</span>
+            </span>
+            <span id="io-banks-status" class="status-pill status-idle">No RUN</span>
+          </summary>
+          <div class="px-4 pb-4 border-t border-slate-800/60">
+            <div id="io-banks-stats" class="grid grid-cols-4 gap-2 my-3 hidden"></div>
+            <div id="io-banks-list" class="max-h-48 overflow-y-auto space-y-2 text-sm text-slate-400">
+              Load a RUN package to list Fortna banks (Bank&lt;word&gt;.bit from Conveyor.asc / Configio).
+            </div>
+          </div>
+        </details>
+
         <div class="card p-4 flex-1 min-h-0 overflow-hidden flex flex-col">
           <div class="flex items-center justify-between mb-2 shrink-0">
             <div class="font-semibold"><i class="fa-solid fa-gears text-cyan-500 mr-2"></i>Devices (by type)</div>
@@ -1844,12 +1904,14 @@
             </div>
             <div class="rounded-lg border border-amber-900/50 bg-amber-950/20 p-2.5 space-y-2">
               <div class="text-[10px] font-semibold text-amber-300">
-                <i class="fa-solid fa-compact-disc mr-1"></i>Carton tracking encoder (collector)
+                <i class="fa-solid fa-compact-disc mr-1"></i>Collector tracking encoder
               </div>
               <p class="text-[9px] text-slate-500 leading-relaxed">
                 Required when <strong class="text-slate-400">Enable collector track</strong> is on.
-                Pick an <span class="mono text-amber-200/90">ENC###</span> / <span class="mono text-amber-200/90">P###_Enc</span> from the RUN (same pattern as Sorter Build).
+                Role must come from RUN evidence (Jamzone / MotorIO / associations) — not the first ENC### in the list.
+                City-counter encoders (e.g. ENC424 / CITY COUNTER) are a different function and must not be selected as the sawtooth collector tracker.
               </p>
+              <div id="saw-collector-enc-role" class="text-[9px] mono text-emerald-400/90 hidden"></div>
               <div class="flex flex-wrap gap-2 items-end">
                 <div class="min-w-[7rem]">
                   <label class="block text-[10px] text-slate-500 mb-1">Has encoder?</label>

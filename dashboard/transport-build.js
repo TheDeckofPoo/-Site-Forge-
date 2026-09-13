@@ -1401,7 +1401,19 @@
     return !!(KIND_META[kind] && KIND_META[kind].isConv);
   }
 
-  /** Canvas content coordinates (accounts for #tb-canvas scroll + presentation zoom). */
+  /**
+   * Screen/client pointer → world/model coordinates used by node.x/y and schematic pathCanvas.
+   *
+   * Pipeline (must stay in sync with applyViewportZoom + marquee):
+   *   clientX/Y
+   *   → subtract canvas getBoundingClientRect (viewport)
+   *   → add scrollLeft/Top (pan via overflow scroll)
+   *   → divide by view.zoom (CSS scale on #tb-nodes / #tb-schematic / #tb-marquee)
+   *   → world coordinates
+   *
+   * Do not apply hardcoded offsets. Marquee CSS left/top are world coords on a
+   * layer that receives the same scale(z) transform as the conveyors.
+   */
   function canvasPointFromEvent(ev) {
     const canvas = $('tb-canvas');
     if (!canvas) return { x: 0, y: 0 };
@@ -1411,6 +1423,12 @@
       x: (ev.clientX - rect.left + canvas.scrollLeft) / z,
       y: (ev.clientY - rect.top + canvas.scrollTop) / z,
     };
+  }
+
+  /** World → scroll-content CSS pixels (inverse of canvasPointFromEvent zoom step). */
+  function worldToContentCss(pt) {
+    const z = Math.max(0.05, Number(tb.view?.zoom) || 1);
+    return { x: (Number(pt?.x) || 0) * z, y: (Number(pt?.y) || 0) * z };
   }
 
   function presentationScale() {
@@ -2255,9 +2273,12 @@
     const wires = $('tb-wires');
     const schematic = $('tb-schematic');
     const bg = $('tb-canvas-bg');
+    // Marquee must share the same scale transform as nodes/schematic so
+    // world-coordinate left/top match conveyor rendering after pan/zoom.
+    const marquee = $('tb-marquee');
     const origin = '0 0';
     const t = `scale(${z})`;
-    [host, wires, schematic, bg].forEach((el) => {
+    [host, wires, schematic, bg, marquee].forEach((el) => {
       if (!el) return;
       el.style.transform = t;
       el.style.transformOrigin = origin;
