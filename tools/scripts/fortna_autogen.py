@@ -6184,6 +6184,14 @@ def audit_written_l5x(path: Path) -> dict:
     gm = re.search(r"Git=([0-9a-fA-F]+)", text)
     if gm:
         info["git_in_l5x"] = gm.group(1)
+    # Studio Controller Description max = 128; overlong aborts import (empty Tags/Tasks).
+    desc_m = re.search(
+        r"<Controller\b[^>]*>\s*<Description>(.*?)</Description>",
+        text,
+        re.S,
+    )
+    info["controller_description_len"] = len(desc_m.group(1)) if desc_m else 0
+    info["controller_description"] = (desc_m.group(1)[:160] if desc_m else "")
     return info
 
 
@@ -6289,6 +6297,14 @@ def validate_l5x_output_integrity(
         failures.append(
             f"BUILD FAILED — L5X embedded Git={got_git} does not match build "
             f"git_commit={expected_git}. Do not accept mismatched provenance."
+        )
+
+    desc_len = int(audit.get("controller_description_len") or 0)
+    stage["controller_description_len"] = desc_len
+    if desc_len > 128:
+        failures.append(
+            f"BUILD FAILED — Controller Description is {desc_len} chars "
+            "(Studio max 128). Import aborts with empty Tags/Programs/Tasks."
         )
 
     mod_n = int(audit.get("l5x_module_count") or 0)
@@ -6550,26 +6566,34 @@ def generate(
     source_run_hash = str(_meta2.get("run_fingerprint") or _meta2.get("run_hash") or "")
     git_commit = _git_commit_short()
     gen_ts_local = now.strftime("%Y-%m-%d %H:%M:%S")
-    prov_lines = [
-        f"SiteForge ORNCCP2 build" if file_stem.upper().startswith("ORNCCP") else f"SiteForge {file_stem} build",
-        f"Controller={file_stem}",
-        f"SourceRUN={source_run_filename}",
-        f"Generated={gen_ts_local}",
-        f"Output={l5x_basename}",
-        f"Git={git_commit or 'unknown'}",
-        f"BuildId={build_id}",
-    ]
-    # Keep description short for Studio; full detail lives in build_manifest.json
-    prov_desc = " | ".join(prov_lines[:6])
-    if "<Description>" not in l5x.split("<Controller", 1)[-1][:800]:
+    # Studio Controller Description max length is 128 chars. Exceeding it aborts
+    # L5X import with: Failed to set the 'Description' property (Text may be too long)
+    # — Tags/Programs/Tasks then appear empty even though XML contains them.
+    # Full provenance lives in build_manifest.json / LATEST.json only.
+    date_short = now.strftime("%Y-%m-%d")
+    prov_desc = f"SiteForge {file_stem} | Git={git_commit or 'unknown'} | {date_short}"
+    if len(prov_desc) > 128:
+        prov_desc = prov_desc[:128]
+    # Replace any existing Controller Description (library may ship one) so we
+    # never leave an overlong value from a prior inject / template.
+    ctrl_head = l5x.split("<Controller", 1)[-1][:4000] if "<Controller" in l5x else ""
+    if re.search(r"<Description\b", ctrl_head):
+        l5x = re.sub(
+            r"(<Controller\b[^>]*>\s*)<Description>.*?</Description>",
+            rf"\1<Description>{_xml_escape(prov_desc)}</Description>",
+            l5x,
+            count=1,
+            flags=re.S,
+        )
+    else:
         l5x = re.sub(
             r"(<Controller\b[^>]*>)",
-            rf'\1\n<Description>{_xml_escape(prov_desc)}</Description>',
+            rf"\1\n<Description>{_xml_escape(prov_desc)}</Description>",
             l5x,
             count=1,
         )
     # Owner carries short provenance (visible in RSLogix5000Content attrs)
-    owner = f"SiteForge {git_commit or build_id}".strip()
+    owner = f"SiteForge {git_commit or build_id}".strip()[:40]
     l5x = re.sub(r'Owner="[^"]*"', f'Owner="{_xml_escape(owner)}"', l5x, count=1)
 
     # Before write: drop confusing physical _LATEST.L5X only (keep prior dated files

@@ -40,6 +40,13 @@ class TestL5xDatatypeClosure(unittest.TestCase):
         self.assertIn("does not match build", AUTOGEN)
         self.assertIn("git_in_l5x", AUTOGEN)
 
+    def test_controller_description_max_128(self):
+        """Studio aborts L5X import if Controller Description > 128 chars."""
+        self.assertIn("Studio max 128", AUTOGEN)
+        self.assertIn("controller_description_len", AUTOGEN)
+        # Prov desc must be built short — not the old 6-field pipe join
+        self.assertNotIn('prov_desc = " | ".join(prov_lines[:6])', AUTOGEN)
+
     def test_latest_fixed_l5x_if_present(self):
         cur = ROOT / "exports/current"
         cands = sorted(cur.glob("ORNCCP4_*.L5X"), key=lambda p: p.stat().st_mtime, reverse=True)
