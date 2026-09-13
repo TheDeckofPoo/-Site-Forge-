@@ -4309,6 +4309,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             return f"{base}.I.Contactor_OK"
         if suffix in ("MS_OK", "OL", "OVERLOAD", "OVL"):
             return f"{base}.I.MS_OK"
+        # Discrete fault feedback (RUN Type often INVALID; desc "VFD### HAS FAULTED").
+        # Motor_Starter_UDT.Flt.Overload = "Motor Overload Fault" (library DOC_DEFINED).
+        # Contactor fault is a separate suffix when present.
+        if suffix in ("FLT", "FAULT", "FAULTED", "VFDFLT", "DRIVE_FLT", "DRV_FLT"):
+            return f"{base}.Flt.Overload"
+        if suffix in ("CONT_FLT", "CONTACTOR_FLT", "C_FLT", "CONTACTOR_FAULT"):
+            return f"{base}.Flt.Contactor"
         if suffix in ("EN", "ENABLE", "RUN", "CMD", "START"):
             # Output enable → UDT.O.Run; input-style EN rare → Contactor_OK
             if d in ("O", "OUT", "OUTPUT"):

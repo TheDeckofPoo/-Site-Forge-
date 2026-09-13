@@ -74,69 +74,406 @@ function activateTab(tab) {
   }
 }
 
-/** PLC Autogen compile hub — status from Transport Apply + Sorter Save */
-function refreshAutogenCompileHub() {
-  const tEl = $('autogen-hub-transport');
-  const sEl = $('autogen-hub-sorter');
-  const wEl = $('autogen-hub-workbook');
-  const merges = autogenState.merges_2to1 || [];
-  const wb = autogenState.workbook;
-  const tbRows = (wb?.conveyors || []).filter((r) => r && (r.transport_build || r.source === 'transport_build_graph'));
-  let hasTransportGraph = false;
+const READINESS_LABELS = {
+  NOT_DETECTED: 'NOT DETECTED',
+  REVIEW_REQUIRED: 'DETECTED — REVIEW REQUIRED',
+  CHANGED: 'CHANGED SINCE LAST APPLY',
+  READY: 'READY FOR AUTOGEN',
+  ERROR: 'ERROR / BLOCKED',
+};
+
+function emptyReadinessEntry(status = 'NOT_DETECTED') {
+  return { status, appliedAt: null, unresolved: 0, detail: '', dirty: false };
+}
+
+function ensureAutogenReadiness() {
+  if (!autogenState.readiness || typeof autogenState.readiness !== 'object') {
+    autogenState.readiness = {
+      hardware: emptyReadinessEntry(),
+      transport: emptyReadinessEntry(),
+      sawtooth: emptyReadinessEntry(),
+      sorter: emptyReadinessEntry(),
+      system: emptyReadinessEntry(),
+    };
+  }
+  ['hardware', 'transport', 'sawtooth', 'sorter', 'system'].forEach((k) => {
+    if (!autogenState.readiness[k]) autogenState.readiness[k] = emptyReadinessEntry();
+  });
+  return autogenState.readiness;
+}
+
+function formatAppliedAt(iso) {
+  if (!iso) return '';
+  try {
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return String(iso);
+    return d.toLocaleString();
+  } catch (_) {
+    return String(iso);
+  }
+}
+
+function hasTransportGraphEvidence() {
   try {
     const raw = localStorage.getItem('siteforge.transportBuild.v2')
       || localStorage.getItem('siteforge.transportBuild.v1');
-    if (raw) {
-      const data = JSON.parse(raw);
-      hasTransportGraph = Array.isArray(data.areas) && data.areas.some((a) => (a.nodes || []).length);
-    }
-  } catch (_) { /* ignore */ }
-  if (tEl) {
-    tEl.textContent = merges.length || tbRows.length
-      ? `${tbRows.length} transport row(s) · ${merges.length} merge(s)`
-      : (hasTransportGraph ? 'Graph on Transport Build — Apply when ready' : 'Empty — open Transport Build');
+    if (!raw) return false;
+    const data = JSON.parse(raw);
+    return Array.isArray(data.areas) && data.areas.some((a) => (a.nodes || []).length);
+  } catch (_) {
+    return false;
   }
+}
+
+function transportEvidence() {
+  const wb = autogenState.workbook;
+  const merges = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
+  const tbRows = (wb?.conveyors || []).filter((r) => r && (r.transport_build || r.source === 'transport_build_graph'));
+  const convN = (wb?.conveyors || []).filter((r) => r?.include !== false).length;
+  const graph = hasTransportGraphEvidence();
+  return {
+    detected: !!(graph || tbRows.length || merges.length || convN),
+    hasGraph: graph,
+    tbRows: tbRows.length,
+    merges: merges.length,
+    convN,
+  };
+}
+
+function sawtoothEvidence() {
+  const saw = autogenState.sawtooth || {};
+  const lanes = (saw.lanes || []).filter((l) => l && l.conveyor);
+  const unresolved = Array.isArray(saw.configuration_required) ? saw.configuration_required.length : 0;
+  const detected = !!(saw.collector_conveyor || lanes.length || saw.detected || saw.discovery_source === 'site_model');
+  return {
+    detected,
+    collector: saw.collector_conveyor || '',
+    lanes: lanes.length,
+    unresolved,
+    enc: saw.collector_has_encoder === 'no' ? 'NO_Enc' : (saw.collector_encoder || 'UNRESOLVED'),
+  };
+}
+
+function sorterEvidence() {
   const s = autogenState.sorter || {};
   const trackN = Number(s.tracking_count || 0);
   const divertN = Number(s.divert_count || 0);
-  const stype = s.sorter_type === 'shoe_sorter' ? 'shoe' : (s.sorter_type === 'popup_divert' ? 'popup' : '');
-  const hasSorter = !!(
-    s.induct_conveyor || trackN || divertN || stype
+  const gen = String(s.generation_state || '').toUpperCase();
+  const unresolved = Array.isArray(s.configuration_required) ? s.configuration_required.length : 0;
+  const detected = !!(
+    s.induct_conveyor || trackN || divertN || s.sorter_type
     || s.sorter_name || s.induct_encoder_tag || (s.known_sorters || []).length
+    || s.detected || s.sorters_detected
   );
-  if (sEl) {
-    sEl.textContent = hasSorter
-      ? `${s.sorter_name || stype || 'discovered'} · enc ${s.induct_encoder_tag || '—'} · track ${trackN} · divert ${divertN}`
-        + (s.generation_state ? ` · ${s.generation_state}` : '')
-      : 'Empty — open Sorter Build';
+  return {
+    detected,
+    name: s.sorter_name || s.sorter_type || '',
+    trackN,
+    divertN,
+    unresolved,
+    gen,
+    notSupported: gen.includes('NOT_SUPPORTED'),
+  };
+}
+
+function shippingSorterEvidence() {
+  const s = autogenState.sorter || {};
+  const siteOk = !!(s.shipping_sorter_supported || s.site_model_shippingsorter);
+  const typeShoe = s.sorter_type === 'shoe_sorter';
+  const typePopup = s.sorter_type === 'popup_divert';
+  return {
+    shoe: siteOk && typeShoe,
+    popup: siteOk && typePopup,
+    supported: siteOk && (typeShoe || typePopup),
+  };
+}
+
+function wcsEvidence() {
+  const wb = autogenState.workbook;
+  const site = wb?.wcs || wb?.site_model?.wcs || autogenState.wcs;
+  return !!(site && (site.detected || site.supported === true));
+}
+
+function runIsLoaded() {
+  const wb = autogenState.workbook;
+  if (wb && wb.source === 'cleared') return false;
+  if (wb && ((wb.conveyors || []).length || wb.machine || wb.site || wb.source)) return true;
+  return !!(state.workspace);
+}
+
+/**
+ * Recompute compile-hub readiness from evidence + appliedAt / dirty flags.
+ * Does not invent Sorter/WCS generation — only reflects Apply state.
+ */
+function computeCompileHubReadiness() {
+  const R = ensureAutogenReadiness();
+  const nowDetail = {};
+
+  // Hardware / IO
+  {
+    const e = R.hardware;
+    if (autogenState.lastGenerateIoMapError) {
+      e.status = 'ERROR';
+      e.unresolved = 1;
+      e.detail = autogenState.lastGenerateIoMapError;
+    } else if (!runIsLoaded()) {
+      e.status = 'NOT_DETECTED';
+      e.unresolved = 0;
+      e.detail = 'Load RUN on I/O & Prints';
+    } else if (e.dirty && e.appliedAt) {
+      e.status = 'CHANGED';
+      e.detail = `Edited since Apply · ${formatAppliedAt(e.appliedAt)}`;
+    } else {
+      e.status = 'READY';
+      e.unresolved = 0;
+      if (!e.appliedAt) e.appliedAt = new Date().toISOString();
+      e.detail = `RUN loaded · IO_MAP included${e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : ''}`;
+    }
+    nowDetail.hardware = e;
   }
-  const saw = autogenState.sawtooth || {};
-  const sawEl = $('autogen-hub-sawtooth');
-  const hasSaw = !!(saw.collector_conveyor || (saw.lanes || []).some((l) => l && l.conveyor));
-  if (sawEl) {
-    const ln = Number(saw.lane_count || (saw.lanes || []).length || 0);
-    const enc = saw.collector_has_encoder === 'no'
-      ? 'NO_Enc'
-      : (saw.collector_encoder || 'UNRESOLVED');
-    sawEl.textContent = hasSaw
-      ? `Collector ${saw.collector_conveyor || 'UNRESOLVED'} · enc ${enc} · ${ln} lane(s) · MRG${saw.mrg_id || '—'}`
-        + (saw.discovery_source === 'site_model' ? ' · from RUN' : '')
-      : 'Empty — open Sawtooth Merge';
+
+  // Transport
+  {
+    const ev = transportEvidence();
+    const e = R.transport;
+    if (!ev.detected) {
+      e.status = 'NOT_DETECTED';
+      e.unresolved = 0;
+      e.detail = 'No conveyors / Transport graph yet';
+    } else if (e.dirty && e.appliedAt) {
+      e.status = 'CHANGED';
+      e.unresolved = 0;
+      e.detail = `Edited since Apply · ${formatAppliedAt(e.appliedAt)}`;
+    } else if (e.appliedAt && e.status !== 'ERROR') {
+      e.status = 'READY';
+      e.detail = `${ev.convN || ev.tbRows} conveyor(s) · ${ev.merges} merge(s) · applied ${formatAppliedAt(e.appliedAt)}`;
+    } else {
+      e.status = 'REVIEW_REQUIRED';
+      e.unresolved = ev.hasGraph && !e.appliedAt ? 1 : 0;
+      e.detail = ev.hasGraph
+        ? 'Graph present — Apply on Transport Build'
+        : `${ev.convN} conveyor(s) — Apply on Transport Build`;
+    }
+    nowDetail.transport = e;
   }
-  const convN = (wb?.conveyors || []).filter((r) => r?.include !== false).length;
-  if (wEl) {
-    wEl.textContent = convN
-      ? `${convN} conveyor(s) · ${(wb.areas || []).length || '—'} area(s)`
-      : 'Empty — load RUN to build site config';
+
+  // Sawtooth
+  {
+    const ev = sawtoothEvidence();
+    const e = R.sawtooth;
+    if (!ev.detected) {
+      e.status = 'NOT_DETECTED';
+      e.unresolved = 0;
+      e.detail = 'Not detected on active RUN';
+    } else if (ev.unresolved > 0 && !(e.appliedAt && !e.dirty)) {
+      e.status = 'REVIEW_REQUIRED';
+      e.unresolved = ev.unresolved;
+      e.detail = `${ev.unresolved} unresolved · collector ${ev.collector || '—'} · ${ev.lanes} lane(s)`;
+    } else if (e.dirty && e.appliedAt) {
+      e.status = 'CHANGED';
+      e.unresolved = ev.unresolved;
+      e.detail = `Edited since Apply · ${ev.unresolved ? `${ev.unresolved} unresolved · ` : ''}${formatAppliedAt(e.appliedAt)}`;
+    } else if (e.appliedAt) {
+      e.status = ev.unresolved > 0 ? 'REVIEW_REQUIRED' : 'READY';
+      e.unresolved = ev.unresolved;
+      e.detail = ev.unresolved > 0
+        ? `${ev.unresolved} unresolved after Apply — review Sawtooth tab`
+        : `Collector ${ev.collector || '—'} · enc ${ev.enc} · ${ev.lanes} lane(s) · applied ${formatAppliedAt(e.appliedAt)}`;
+    } else {
+      e.status = 'REVIEW_REQUIRED';
+      e.unresolved = ev.unresolved;
+      e.detail = `Detected — Apply on Sawtooth Merge${ev.unresolved ? ` · ${ev.unresolved} unresolved` : ''}`;
+    }
+    nowDetail.sawtooth = e;
   }
-  // Show Apply/Save only when there is something to apply
-  const showTransportActions = hasTransportGraph || tbRows.length > 0 || merges.length > 0;
-  $('autogen-hub-transport-actions')?.classList.toggle('hidden', !showTransportActions);
+
+  // Sorter (no new generation — readiness / evidence only)
+  {
+    const ev = sorterEvidence();
+    const e = R.sorter;
+    if (!ev.detected) {
+      e.status = 'NOT_DETECTED';
+      e.unresolved = 0;
+      e.detail = 'Not detected on active RUN';
+    } else if (ev.notSupported) {
+      e.status = 'ERROR';
+      e.unresolved = Math.max(1, ev.unresolved);
+      e.detail = `GENERATION NOT SUPPORTED · ${ev.name || 'sorter'} (data shown only)`;
+    } else if (e.dirty && e.appliedAt) {
+      e.status = 'CHANGED';
+      e.unresolved = ev.unresolved;
+      e.detail = `Edited since Apply · ${formatAppliedAt(e.appliedAt)}`;
+    } else if (e.appliedAt && ev.unresolved === 0) {
+      e.status = 'READY';
+      e.detail = `${ev.name || 'sorter'} · track ${ev.trackN} · divert ${ev.divertN} · applied ${formatAppliedAt(e.appliedAt)}`;
+    } else {
+      e.status = 'REVIEW_REQUIRED';
+      e.unresolved = ev.unresolved;
+      e.detail = ev.unresolved
+        ? `${ev.unresolved} unresolved — Apply on Sorter Build`
+        : 'Detected — Apply on Sorter Build';
+    }
+    nowDetail.sorter = e;
+  }
+
+  // System / Core — mandatory packs once RUN present
+  {
+    const e = R.system;
+    if (!runIsLoaded()) {
+      e.status = 'NOT_DETECTED';
+      e.detail = 'Sys · Device Comms · System Logic · IO_MAP (pending RUN)';
+    } else {
+      e.status = 'READY';
+      if (!e.appliedAt) e.appliedAt = new Date().toISOString();
+      e.unresolved = 0;
+      e.detail = `Mandatory · applied ${formatAppliedAt(e.appliedAt)}`;
+    }
+    nowDetail.system = e;
+  }
+
+  return nowDetail;
+}
+
+function setReadinessApplied(key, detail = '') {
+  const R = ensureAutogenReadiness();
+  const e = R[key] || (R[key] = emptyReadinessEntry());
+  e.appliedAt = new Date().toISOString();
+  e.dirty = false;
+  e.status = 'READY';
+  if (detail) e.detail = detail;
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  return e;
+}
+
+function markReadinessDirty(key) {
+  const R = ensureAutogenReadiness();
+  const e = R[key];
+  if (!e) return;
+  if (!e.appliedAt) {
+    // Still detected/unapplied — keep REVIEW_REQUIRED via recompute
+    try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+    return;
+  }
+  e.dirty = true;
+  e.status = 'CHANGED';
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+}
+
+function readinessDisplayLabel(status) {
+  return READINESS_LABELS[status] || READINESS_LABELS.REVIEW_REQUIRED;
+}
+
+/** PLC Autogen compile hub — explicit readiness cards */
+function refreshAutogenCompileHub() {
+  const map = computeCompileHubReadiness();
+  const keys = [
+    ['hardware', 'autogen-hub-hardware', 'autogen-hub-hardware-detail'],
+    ['transport', 'autogen-hub-transport', 'autogen-hub-transport-detail'],
+    ['sawtooth', 'autogen-hub-sawtooth', 'autogen-hub-sawtooth-detail'],
+    ['sorter', 'autogen-hub-sorter', 'autogen-hub-sorter-detail'],
+    ['system', 'autogen-hub-system', 'autogen-hub-system-detail'],
+  ];
+  keys.forEach(([key, statusId, detailId]) => {
+    const e = map[key] || emptyReadinessEntry();
+    const card = document.querySelector(`.hub-ready-card[data-ready-key="${key}"]`);
+    if (card) card.setAttribute('data-status', e.status || 'NOT_DETECTED');
+    const sEl = $(statusId);
+    if (sEl) sEl.textContent = readinessDisplayLabel(e.status);
+    const dEl = $(detailId);
+    if (dEl) {
+      const bits = [];
+      if (e.detail) bits.push(e.detail);
+      if (e.status === 'REVIEW_REQUIRED' && e.unresolved > 0 && !/unresolved/i.test(e.detail || '')) {
+        bits.push(`${e.unresolved} unresolved`);
+      }
+      if (e.status === 'READY' && e.appliedAt && !/applied/i.test(e.detail || '')) {
+        bits.push(`applied ${formatAppliedAt(e.appliedAt)}`);
+      }
+      dEl.textContent = bits.join(' · ') || '—';
+    }
+  });
+
+  const evT = transportEvidence();
+  const evS = sawtoothEvidence();
+  const evR = sorterEvidence();
   $('autogen-hub-empty-hint')?.classList.toggle(
     'hidden',
-    !!(convN || hasTransportGraph || hasSorter || hasSaw || merges.length)
+    !!(runIsLoaded() || evT.detected || evS.detected || evR.detected),
   );
+  try { refreshAutogenPackEvidence(); } catch (_) { /* ignore */ }
+  try { updateSubsystemGenerationContract(); } catch (_) { /* ignore */ }
 }
+
+function refreshAutogenPackEvidence() {
+  const el = $('autogen-pack-evidence');
+  if (!el) return;
+  const R = ensureAutogenReadiness();
+  const sawReady = R.sawtooth?.status === 'READY';
+  const sorterReady = R.sorter?.status === 'READY';
+  const merges = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
+  const ship = shippingSorterEvidence();
+  const wcs = wcsEvidence();
+  const line = (name, text, tone) =>
+    `<div class="${tone || 'text-slate-400'}">${name} · ${text}</div>`;
+  el.innerHTML = [
+    line('Sawtooth_Merge', sawReady ? 'INCLUDE (READY)' : (sawtoothEvidence().detected ? 'waiting Apply' : 'NOT DETECTED'),
+      sawReady ? 'text-emerald-400' : 'text-slate-400'),
+    line('Sorter_Track', sorterReady ? 'INCLUDE (READY)' : (sorterEvidence().detected ? 'waiting Apply' : 'NOT DETECTED'),
+      sorterReady ? 'text-emerald-400' : 'text-slate-400'),
+    line('Merges', merges.length ? `INCLUDE via workbook (${merges.length})` : 'none',
+      merges.length ? 'text-emerald-400' : 'text-slate-500'),
+    line('ShippingSorter', ship.supported ? 'SiteModel supported' : 'NOT DETECTED / NOT SUPPORTED',
+      ship.supported ? 'text-cyan-300' : 'text-slate-500'),
+    line('WCS', wcs ? 'SiteModel supported' : 'NOT DETECTED / NOT SUPPORTED',
+      wcs ? 'text-cyan-300' : 'text-slate-500'),
+  ].join('');
+}
+
+/**
+ * Build PLC preflight — block Export when a detected subsystem is not READY.
+ * Returns { ok, blockers: [{ key, tab, message }] }.
+ */
+function autogenBuildPreflight() {
+  const map = computeCompileHubReadiness();
+  const blockers = [];
+  const need = [
+    { key: 'system', tab: 'autogen', label: 'System / Core', required: true },
+    { key: 'hardware', tab: 'io', label: 'Hardware / IO', required: true },
+    {
+      key: 'transport',
+      tab: 'transport',
+      label: 'Transportation',
+      required: transportEvidence().detected,
+    },
+    {
+      key: 'sawtooth',
+      tab: 'sawtooth',
+      label: 'Sawtooth',
+      required: sawtoothEvidence().detected,
+    },
+    {
+      key: 'sorter',
+      tab: 'sorter',
+      label: 'Sorter',
+      required: sorterEvidence().detected && !sorterEvidence().notSupported,
+    },
+  ];
+  need.forEach((n) => {
+    if (!n.required) return;
+    const e = map[n.key] || emptyReadinessEntry();
+    if (e.status === 'READY') return;
+    blockers.push({
+      key: n.key,
+      tab: n.tab,
+      message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
+    });
+  });
+  return { ok: blockers.length === 0, blockers };
+}
+
+window.markAutogenReadinessDirty = markReadinessDirty;
+window.setAutogenReadinessApplied = setReadinessApplied;
+window.activateTab = activateTab;
 
 // Tabs
 document.querySelectorAll('.tab-btn').forEach((btn) => {
@@ -3199,6 +3536,15 @@ const autogenState = {
   twinSelectedGapId: null,
   // PLC2-class 2:1 merges → Conv_Merge / Merge_2to1
   merges_2to1: [],
+  // Compile hub readiness (Apply-per-tab)
+  readiness: {
+    hardware: { status: 'NOT_DETECTED', appliedAt: null, unresolved: 0, detail: '', dirty: false },
+    transport: { status: 'NOT_DETECTED', appliedAt: null, unresolved: 0, detail: '', dirty: false },
+    sawtooth: { status: 'NOT_DETECTED', appliedAt: null, unresolved: 0, detail: '', dirty: false },
+    sorter: { status: 'NOT_DETECTED', appliedAt: null, unresolved: 0, detail: '', dirty: false },
+    system: { status: 'NOT_DETECTED', appliedAt: null, unresolved: 0, detail: '', dirty: false },
+  },
+  lastGenerateIoMapError: null,
 };
 
 /** Empty tracking-conveyor row (encoder No = Slow_Flt uses NO_Enc UDT stub). */
@@ -3555,34 +3901,43 @@ function updateSubsystemGenerationContract(siteOrDiscovery) {
     el = document.createElement('div');
     el.id = 'autogen-subsystem-contract';
     el.className = 'mt-3 rounded-lg border border-slate-800 bg-[#0c1219] p-3 text-[11px] space-y-1';
-    hub.appendChild(el);
+    const anchor = $('autogen-hub-readiness');
+    if (anchor && anchor.parentNode) anchor.parentNode.insertBefore(el, anchor.nextSibling);
+    else hub.appendChild(el);
   }
-  const ui = (siteOrDiscovery && siteOrDiscovery.ui_status_summary) || {};
-  const saw = autogenState.sawtooth || {};
-  const sorter = autogenState.sorter || {};
-  const sawReady = !!(saw.collector_conveyor || (saw.lanes || []).some((l) => l && l.conveyor));
-  const sawChecked = !!$('autogen-opt-sawtooth')?.checked;
-  const sorterKnown = !!(sorter.sorter_name || sorter.known_sorters?.length || sorter.induct_encoder_tag);
-  const sorterGen = String(sorter.generation_state || '').toUpperCase();
-  const ioChecked = !!$('autogen-opt-iomap')?.checked;
+  const R = ensureAutogenReadiness();
+  const map = {
+    hardware: R.hardware,
+    transport: R.transport,
+    sawtooth: R.sawtooth,
+    sorter: R.sorter,
+    system: R.system,
+  };
+  // Prefer live recompute when hub refresh already ran; otherwise use stored
+  try {
+    const live = computeCompileHubReadiness();
+    Object.assign(map, live);
+  } catch (_) { /* ignore */ }
+  const ship = shippingSorterEvidence();
+  const wcs = wcsEvidence();
   const rows = [
-    ['TRANSPORT', 'READY'],
-    ['IO', ioChecked ? 'READY' : 'BLOCKED (checkbox off)'],
-    ['SAWTOOTH', !sawReady && !(ui.SAWTOOTH?.detected)
-      ? 'N/A'
-      : (sawReady && sawChecked ? 'READY' : (sawReady ? 'CONFIG REQUIRED (pack off)' : 'CONFIG REQUIRED'))],
-    ['SORTER', !sorterKnown && !(ui.SORTER?.detected)
-      ? 'N/A'
-      : (sorterGen.includes('NOT_SUPPORTED')
-        ? 'PARTIAL / NOT SUPPORTED (data shown)'
-        : (sorterKnown ? 'PARTIAL / CONFIG REQUIRED' : 'CONFIG REQUIRED'))],
-    ['WCS', 'NOT SUPPORTED'],
+    ['HARDWARE / IO', readinessDisplayLabel(map.hardware?.status)],
+    ['TRANSPORT', readinessDisplayLabel(map.transport?.status)],
+    ['SAWTOOTH', map.sawtooth?.status === 'NOT_DETECTED' ? 'N/A' : readinessDisplayLabel(map.sawtooth?.status)],
+    ['SORTER', map.sorter?.status === 'NOT_DETECTED' ? 'N/A' : readinessDisplayLabel(map.sorter?.status)],
+    ['SYSTEM / CORE', readinessDisplayLabel(map.system?.status)],
+    ['WCS', wcs ? 'SiteModel supported' : 'NOT DETECTED / NOT SUPPORTED'],
+    ['SHIPPING SORTER', ship.supported ? 'SiteModel supported' : 'NOT DETECTED / NOT SUPPORTED'],
   ];
+  if (siteOrDiscovery?.ui_status_summary) {
+    /* discovery summary available for future badge sync */
+  }
   el.innerHTML = `<div class="text-[10px] uppercase tracking-wider text-violet-400 font-semibold mb-1">Subsystem generation contract</div>`
     + rows.map(([k, v]) => {
-      const tone = /READY/.test(v) && !/CONFIG|PARTIAL|BLOCKED|NOT/.test(v)
+      const tone = /READY FOR AUTOGEN/.test(v)
         ? 'text-emerald-400'
-        : (/N\/A/.test(v) ? 'text-slate-500' : (/NOT SUPPORTED|BLOCKED/.test(v) ? 'text-amber-400' : 'text-cyan-300'));
+        : (/N\/A|NOT DETECTED/.test(v) ? 'text-slate-500'
+          : (/ERROR|NOT SUPPORTED|BLOCKED/.test(v) ? 'text-amber-400' : 'text-cyan-300'));
       return `<div class="flex justify-between gap-2 mono"><span class="text-slate-500">${k}</span><span class="${tone}">${v}</span></div>`;
     }).join('');
 }
@@ -4034,6 +4389,7 @@ function wireSorterBuildUi() {
   const inductHasEnc = $('sorter-induct-has-enc');
   const inductEncType = $('sorter-induct-enc-type');
   const inductEncTag = $('sorter-induct-enc-tag');
+  const touchSorter = () => { try { markReadinessDirty('sorter'); } catch (_) { /* ignore */ } };
 
   trackCount?.addEventListener('change', () => {
     const n = Math.max(0, Math.min(40, parseInt(trackCount.value, 10) || 0));
@@ -4042,12 +4398,14 @@ function wireSorterBuildUi() {
     const arr = (autogenState.sorter.tracking || []).map(normalizeSorterTrackRow);
     while (arr.length < n) arr.push(emptySorterTrackRow());
     autogenState.sorter.tracking = arr.slice(0, n);
+    touchSorter();
     renderSorterBuild();
   });
   divertCount?.addEventListener('change', () => {
     const n = Math.max(0, Math.min(64, parseInt(divertCount.value, 10) || 0));
     divertCount.value = String(n);
     autogenState.sorter.divert_count = n;
+    touchSorter();
     updateSorterSummary();
   });
   peCount?.addEventListener('change', () => {
@@ -4057,14 +4415,17 @@ function wireSorterBuildUi() {
     const arr = autogenState.sorter.tracking_pes || [];
     while (arr.length < n) arr.push('');
     autogenState.sorter.tracking_pes = arr.slice(0, n);
+    touchSorter();
     renderSorterBuild();
   });
   inductC?.addEventListener('change', () => {
     autogenState.sorter.induct_conveyor = inductC.value || '';
+    touchSorter();
     updateSorterSummary();
   });
   inductP?.addEventListener('change', () => {
     autogenState.sorter.induct_pe = inductP.value || '';
+    touchSorter();
     updateSorterSummary();
   });
   inductHasEnc?.addEventListener('change', () => {
@@ -4075,19 +4436,23 @@ function wireSorterBuildUi() {
       opts.classList.toggle('hidden', !show);
       opts.classList.toggle('flex', show);
     }
+    touchSorter();
     updateSorterSummary();
   });
   inductEncType?.addEventListener('change', () => {
     autogenState.sorter.induct_encoder_type = inductEncType.value || 'Enc_RIOCard';
+    touchSorter();
     updateSorterSummary();
   });
   inductEncTag?.addEventListener('change', () => {
     autogenState.sorter.induct_encoder_tag = inductEncTag.value || '';
+    touchSorter();
     updateSorterSummary();
   });
 
   $('sorter-type')?.addEventListener('change', () => {
     autogenState.sorter.sorter_type = $('sorter-type').value || '';
+    touchSorter();
     updateSorterSummary();
   });
 
@@ -4095,7 +4460,6 @@ function wireSorterBuildUi() {
     if ($('sorter-type')) autogenState.sorter.sorter_type = $('sorter-type').value || '';
     persistSorterToWorkbook();
     const st = $('sorter-save-status');
-    // Auto-enable Program pack · Sorter Track when config has real content
     const s = autogenState.sorter || {};
     const hasData = !!(
       s.induct_conveyor
@@ -4103,46 +4467,59 @@ function wireSorterBuildUi() {
       || (s.divert_count || 0) > 0
       || (s.tracking || []).some((t) => t && t.conveyor)
       || s.sorter_type
+      || s.sorter_name
     );
-    if (hasData) {
-      const pack = $('autogen-opt-sorter-track');
-      if (pack && !pack.checked) {
-        pack.checked = true;
-        autogenLog('Saved sorter config → checked Program pack · Sorter Track for next generate.', 'ok');
-      }
-      if (s.sorter_type === 'shoe_sorter' && $('autogen-opt-shippingsorter')) {
-        $('autogen-opt-shippingsorter').checked = true;
-        autogenLog('Shoe Sorter → checked ShippingSorter (Shoe) pack.', 'ok');
-      }
-      if (s.sorter_type === 'popup_divert' && $('autogen-opt-shippingsorter-popup')) {
-        $('autogen-opt-shippingsorter-popup').checked = true;
-        autogenLog('Pop-Up Divert → checked ShippingSorter (PopUp) pack.', 'ok');
-      }
+    const unresolved = (s.configuration_required || []).length;
+    const gen = String(s.generation_state || '').toUpperCase();
+    if (hasData && !gen.includes('NOT_SUPPORTED') && $('autogen-opt-sorter-track')) {
+      $('autogen-opt-sorter-track').checked = true;
     }
     try {
       if (typeof fortnaAPI?.autogenWorkbookSave === 'function') {
         await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
       }
-      // Always mirror to localStorage for demo safety
       try {
         localStorage.setItem('fortna_sorter_build', JSON.stringify(autogenState.sorter));
       } catch (_) { /* ignore */ }
-      if (st) {
-        st.textContent = hasData ? 'Saved · Sorter Track pack ON' : 'Saved';
-        st.className = 'text-[10px] text-emerald-500 mono';
+      if (hasData && !gen.includes('NOT_SUPPORTED') && unresolved === 0) {
+        setReadinessApplied('sorter', `${s.sorter_name || s.sorter_type || 'sorter'} applied`);
+        if (st) {
+          st.textContent = 'Applied · READY FOR AUTOGEN';
+          st.className = 'text-[10px] text-emerald-500 mono';
+        }
+        autogenLog('Sorter Apply → Compile hub READY (Sorter_Track included on Export).', 'ok');
+      } else if (hasData) {
+        const e = ensureAutogenReadiness().sorter;
+        e.dirty = false;
+        e.appliedAt = null;
+        e.status = gen.includes('NOT_SUPPORTED') ? 'ERROR' : 'REVIEW_REQUIRED';
+        e.unresolved = unresolved;
+        e.detail = gen.includes('NOT_SUPPORTED')
+          ? 'GENERATION NOT SUPPORTED'
+          : `${unresolved || 0} unresolved — review before Export`;
+        refreshAutogenCompileHub();
+        if (st) {
+          st.textContent = gen.includes('NOT_SUPPORTED') ? 'Applied · NOT SUPPORTED' : 'Applied · REVIEW REQUIRED';
+          st.className = 'text-[10px] text-amber-400 mono';
+        }
+        autogenLog('Sorter Apply stored — readiness not READY yet.', 'warn');
+      } else {
+        if (st) { st.textContent = 'Nothing to apply'; st.className = 'text-[10px] text-slate-500 mono'; }
       }
-      autogenLog('Sorter build config saved (workbook + localStorage).', 'ok');
     } catch (e) {
-      if (st) { st.textContent = 'Save failed'; st.className = 'text-[10px] text-red-400 mono'; }
-      autogenLog(`Sorter save failed: ${e?.message || e}`, 'err');
+      if (st) { st.textContent = 'Apply failed'; st.className = 'text-[10px] text-red-400 mono'; }
+      autogenLog(`Sorter Apply failed: ${e?.message || e}`, 'err');
     }
   });
   $('btn-sorter-clear')?.addEventListener('click', () => {
     autogenState.sorter = defaultSorterConfig();
     persistSorterToWorkbook();
+    const e = ensureAutogenReadiness().sorter;
+    Object.assign(e, emptyReadinessEntry());
     renderSorterBuild();
     const st = $('sorter-save-status');
     if (st) { st.textContent = 'Cleared'; st.className = 'text-[10px] text-slate-500 mono'; }
+    refreshAutogenCompileHub();
   });
 
   // Restore localStorage if workbook empty
@@ -4368,17 +4745,20 @@ function wireSawtoothBuildOnce() {
   if (wireSawtoothBuildOnce._done) return;
   wireSawtoothBuildOnce._done = true;
 
+  const touchSaw = () => { try { markReadinessDirty('sawtooth'); } catch (_) { /* ignore */ } };
   $('saw-lane-count')?.addEventListener('change', () => {
     const n = Math.max(1, Math.min(12, parseInt($('saw-lane-count').value, 10) || 4));
     autogenState.sawtooth.lane_count = n;
+    touchSaw();
     renderSawtoothBuild();
   });
   $('saw-track-pe-count')?.addEventListener('change', () => {
     const n = Math.max(0, Math.min(16, parseInt($('saw-track-pe-count').value, 10) || 0));
     autogenState.sawtooth.track_pe_count = n;
+    touchSaw();
     renderSawtoothBuild();
   });
-  const bind = (id, fn) => $(id)?.addEventListener('change', fn);
+  const bind = (id, fn) => $(id)?.addEventListener('change', () => { touchSaw(); fn(); });
   bind('saw-collector-conv', () => { autogenState.sawtooth.collector_conveyor = $('saw-collector-conv').value || ''; updateSawtoothSummary(); });
   bind('saw-downstream-conv', () => { autogenState.sawtooth.downstream_conveyor = $('saw-downstream-conv').value || ''; updateSawtoothSummary(); });
   bind('saw-collector-has-enc', () => {
@@ -4469,23 +4849,39 @@ function wireSawtoothBuildOnce() {
     persistSawtoothToWorkbook();
     const s = autogenState.sawtooth || {};
     const hasData = !!(s.collector_conveyor || (s.lanes || []).some((l) => l && l.conveyor));
-    if (hasData && $('autogen-opt-sawtooth')) {
-      $('autogen-opt-sawtooth').checked = true;
-      autogenLog('Saved sawtooth config → checked Program pack · Sawtooth Merge.', 'ok');
-    }
+    const unresolved = (s.configuration_required || []).length;
+    if (hasData && $('autogen-opt-sawtooth')) $('autogen-opt-sawtooth').checked = true;
     try {
       if (typeof fortnaAPI?.autogenWorkbookSave === 'function') {
         await fortnaAPI.autogenWorkbookSave({ workbook: autogenState.workbook });
       }
       try { localStorage.setItem('fortna_sawtooth_build', JSON.stringify(autogenState.sawtooth)); } catch (_) { /* ignore */ }
       const st = $('saw-save-status');
-      if (st) { st.textContent = hasData ? 'Saved · Sawtooth pack ON' : 'Saved'; st.className = 'text-[10px] text-emerald-500 mono'; }
+      if (hasData && unresolved === 0) {
+        setReadinessApplied(
+          'sawtooth',
+          `Collector ${s.collector_conveyor || '—'} · ${(s.lanes || []).filter((l) => l && l.conveyor).length} lane(s)`,
+        );
+        if (st) { st.textContent = 'Applied · READY FOR AUTOGEN'; st.className = 'text-[10px] text-emerald-500 mono'; }
+        autogenLog('Sawtooth Apply → Compile hub READY (Sawtooth_Merge included on Export).', 'ok');
+      } else if (hasData) {
+        const e = ensureAutogenReadiness().sawtooth;
+        e.dirty = false;
+        e.appliedAt = null;
+        e.status = 'REVIEW_REQUIRED';
+        e.unresolved = unresolved;
+        e.detail = `${unresolved} unresolved — review before Export`;
+        refreshAutogenCompileHub();
+        if (st) { st.textContent = 'Applied · REVIEW REQUIRED'; st.className = 'text-[10px] text-amber-400 mono'; }
+        autogenLog(`Sawtooth Apply stored with ${unresolved} unresolved field(s).`, 'warn');
+      } else {
+        if (st) { st.textContent = 'Nothing to apply'; st.className = 'text-[10px] text-slate-500 mono'; }
+      }
       updateSawtoothSummary();
-      autogenLog('Sawtooth merge config saved.', 'ok');
     } catch (e) {
       const st = $('saw-save-status');
-      if (st) { st.textContent = 'Save failed'; st.className = 'text-[10px] text-red-400 mono'; }
-      autogenLog(`Sawtooth save failed: ${e?.message || e}`, 'err');
+      if (st) { st.textContent = 'Apply failed'; st.className = 'text-[10px] text-red-400 mono'; }
+      autogenLog(`Sawtooth Apply failed: ${e?.message || e}`, 'err');
     }
   });
 
@@ -4501,9 +4897,11 @@ function wireSawtoothBuildOnce() {
   $('btn-saw-clear')?.addEventListener('click', () => {
     autogenState.sawtooth = defaultSawtoothConfig();
     persistSawtoothToWorkbook();
+    Object.assign(ensureAutogenReadiness().sawtooth, emptyReadinessEntry());
     renderSawtoothBuild();
     const st = $('saw-save-status');
     if (st) { st.textContent = 'Cleared'; st.className = 'text-[10px] text-slate-500 mono'; }
+    refreshAutogenCompileHub();
   });
 
   try {
@@ -4959,10 +5357,12 @@ async function buildAutogenWorkbook({ mergeExisting = true } = {}) {
     setWorkbook(wb);
   }
   setAutogenStatus('Site config ready', 'ready');
+  autogenState.lastGenerateIoMapError = null;
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   const s = r.stats || {};
   autogenLog(
     `Site config ready — ${s.conveyor_count || 0} conveyors, ${s.io_mapped || 0}/${s.io_point_count || 0} IO mapped, `
-    + `${s.area_count || 0} areas. Use dropdowns for Area/Safety/TYPE/Exit PE, set program pack, then Generate PLC Project.`,
+    + `${s.area_count || 0} areas. Apply Transport / Sawtooth / Sorter tabs → Export L5X Package.`,
     'ok',
   );
   if ($('autogen-detail') && r.automation) {
@@ -5186,6 +5586,23 @@ async function runAutogenGenerate(mode) {
       return;
     }
   }
+
+  // Preflight: detected subsystems must be READY before Export L5X
+  if (mode === 'run') {
+    try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+    const pre = autogenBuildPreflight();
+    if (!pre.ok) {
+      setAutogenStatus('Blocked — readiness', 'error');
+      autogenLog('Export blocked — Compile hub readiness incomplete:', 'err');
+      pre.blockers.forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
+      const first = pre.blockers[0];
+      if (first?.tab) {
+        try { activateTab(first.tab); } catch (_) { /* ignore */ }
+      }
+      return;
+    }
+  }
+
   autogenState.busy = true;
   setAutogenStatus('Generating PLC project…', 'busy');
   if ($('btn-autogen-generate')) $('btn-autogen-generate').disabled = true;
@@ -5197,35 +5614,49 @@ async function runAutogenGenerate(mode) {
       : 'Legacy Excel path: exporting L5X files…',
     'info',
   );
-  // Program pack: Sys + optional IO_MAP (RUN banks) + site sorter/WCS
+
+  // Mandatory core packs — always on (Advanced checkboxes are display-only)
   const includePrograms = [];
-  // ShippingSorter (Shoe Sorter) still maps to existing gold program; PopUp Divert is UI placeholder
-  if ($('autogen-opt-shippingsorter')?.checked) includePrograms.push('ShippingSorter_Area_L3');
-  if ($('autogen-opt-shippingsorter-popup')?.checked) {
-    includePrograms.push('ShippingSorter_PopUp_Divert');
-    autogenLog('ShippingSorter (PopUp Divert) selected — pack mapping TBD (no L5X merge yet).', 'warn');
+  const noSys = false;
+  const includeIoMap = true;
+  includePrograms.push('Devices_Comm', 'NTP', 'System_Logic', 'System');
+
+  const R = ensureAutogenReadiness();
+  const ship = shippingSorterEvidence();
+  const wcsOn = wcsEvidence() || !!$('autogen-opt-wcs')?.checked;
+  // ShippingSorter / WCS only when SiteModel proves support (or Advanced override)
+  if (ship.shoe || !!$('autogen-opt-shippingsorter')?.checked) {
+    includePrograms.push('ShippingSorter_Area_L3');
   }
-  if ($('autogen-opt-wcs')?.checked) includePrograms.push('WCS_Interface_TCP_IP');
-  if ($('autogen-opt-sawtooth')?.checked) includePrograms.push('Sawtooth_Merge');
-  // Merges → workbook.merges_2to1 (emitted when pack checkbox on)
-  const mergeOn = !!$('autogen-opt-merges-2to1')?.checked;
+  if (ship.popup || !!$('autogen-opt-shippingsorter-popup')?.checked) {
+    includePrograms.push('ShippingSorter_PopUp_Divert');
+    autogenLog('ShippingSorter (PopUp Divert) — pack mapping TBD (no L5X merge yet).', 'warn');
+  }
+  if (wcsOn) includePrograms.push('WCS_Interface_TCP_IP');
+
+  // Evidence-driven: Sawtooth READY → Sawtooth_Merge
+  const sawReady = R.sawtooth?.status === 'READY' || !!$('autogen-opt-sawtooth')?.checked;
+  if (sawReady && sawtoothEvidence().detected) includePrograms.push('Sawtooth_Merge');
+
+  // Merges via workbook when present (Transport Apply already persisted)
   const mergeRows = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
   const merge2 = mergeRows.filter((m) => (Number(m.lanes) || 2) <= 2);
   const merge3 = mergeRows.filter((m) => (Number(m.lanes) || 2) >= 3);
-  if (mergeOn && mergeRows.length) {
+  const mergeOn = mergeRows.length > 0 || !!$('autogen-opt-merges-2to1')?.checked;
+  if (mergeRows.length) {
     persistMergesToWorkbook();
+    if ($('autogen-opt-merges-2to1')) $('autogen-opt-merges-2to1').checked = true;
     autogenLog(
-      `Merge ON — ${mergeRows.length} configured (${merge2.length}× 2:1 emit, ${merge3.length}× 3+:1 saved for later)`,
+      `Merges via workbook — ${mergeRows.length} configured (${merge2.length}× 2:1 emit, ${merge3.length}× 3+:1 saved for later)`,
       'ok',
     );
     if (merge3.length) {
       autogenLog('3:1+ merges are stored in the workbook; L5X scaffold still emits 2:1 only.', 'warn');
     }
-  } else if (mergeRows.length && !mergeOn) {
-    autogenLog('Merge rows present but Merge pack is OFF — not emitting Conv_Merge.', 'warn');
-  } else if (mergeOn && !mergeRows.length) {
-    autogenLog('Merge pack ON but no merge rows — set count in the Merge panel.', 'warn');
+  } else if (mergeOn) {
+    autogenLog('Merge override ON but no merge rows — set merges on Transport Build.', 'warn');
   }
+
   const sorterCfg = autogenState.sorter || defaultSorterConfig();
   const sorterConfigured = !!(
     sorterCfg.induct_conveyor
@@ -5233,56 +5664,33 @@ async function runAutogenGenerate(mode) {
     || (sorterCfg.divert_count || 0) > 0
     || (sorterCfg.tracking || []).some((t) => t && (t.conveyor || t.has_encoder === 'yes'))
   );
-  // Sorter Track pack: checkbox OR auto-on when Sorter build has real data
-  // (good automation — user still sees the box flip on so it's visible)
-  let sorterTrackChecked = !!$('autogen-opt-sorter-track')?.checked;
-  if (sorterConfigured && !sorterTrackChecked) {
-    const el = $('autogen-opt-sorter-track');
-    if (el) el.checked = true;
-    sorterTrackChecked = true;
-    autogenLog(
-      'Sorter build has data → auto-checked Program pack · Sorter Track (emits Sorter_Track_Program).',
-      'ok',
-    );
+  // Evidence-driven: Sorter READY → Sorter_Track (no new sorter generation beyond pack include)
+  const sorterTrackChecked = (R.sorter?.status === 'READY' && sorterConfigured)
+    || !!$('autogen-opt-sorter-track')?.checked;
+  if (sorterTrackChecked) {
+    includePrograms.push('Sorter_Track');
+    if ($('autogen-opt-sorter-track')) $('autogen-opt-sorter-track').checked = true;
   }
-  if (sorterTrackChecked) includePrograms.push('Sorter_Track');
   if (sorterConfigured) {
     persistSorterToWorkbook();
     const encYes = (sorterCfg.tracking || []).filter((t) => t && t.has_encoder === 'yes').length
       + (sorterCfg.induct_has_encoder === 'yes' ? 1 : 0);
     autogenLog(
       `Sorter build: induct=${sorterCfg.induct_conveyor || '—'} · `
-      + `track=${sorterCfg.tracking_count || 0} · diverts=${sorterCfg.divert_count || 0} · encYes=${encYes}`,
+      + `track=${sorterCfg.tracking_count || 0} · diverts=${sorterCfg.divert_count || 0} · encYes=${encYes}`
+      + (sorterTrackChecked ? ' · Sorter_Track INCLUDE' : ''),
       'info',
     );
   }
-  if (sorterTrackChecked && !sorterConfigured) {
-    autogenLog(
-      'Sorter Track pack ON — Sorter build panel empty (full gold pack, no site renames).',
-      'warn',
-    );
-  }
-  const noSys = !($('autogen-opt-sys')?.checked ?? true);
-  // IO_MAP checkbox: checked = include RUN bank map; unchecked = omit IO_MAP from L5X
-  const includeIoMap = !!($('autogen-opt-iomap')?.checked ?? true);
-  // System program routines (independent of Sys constants pack)
-  // Device Comms checkbox includes NTP (cookie-cutter) in the same pack.
-  const wantDeviceComms =
-    !!($('autogen-opt-system')?.checked ?? $('autogen-opt-device-comms')?.checked ?? true);
-  const wantNtp = wantDeviceComms; // NTP rides with Device Comms
-  const wantSystemLogic = !!($('autogen-opt-system-logic')?.checked ?? true);
-  if (wantDeviceComms) {
-    includePrograms.push('Devices_Comm');
-    includePrograms.push('NTP');
-  }
-  if (wantSystemLogic) includePrograms.push('System_Logic');
-  // Back-compat token so older exporters still emit the System program shell
-  if (wantDeviceComms || wantSystemLogic) includePrograms.push('System');
-  const packBits = [];
-  if (!noSys) packBits.push('Sys');
-  if (wantDeviceComms) packBits.push('DeviceComms+NTP');
-  if (wantSystemLogic) packBits.push('SystemLogic');
-  packBits.push(includeIoMap ? 'IO_MAP(RUN banks→RIO)' : 'IO_MAP(off)');
+
+  // Keep Advanced checkboxes in sync with forced core
+  if ($('autogen-opt-sys')) $('autogen-opt-sys').checked = true;
+  if ($('autogen-opt-system')) $('autogen-opt-system').checked = true;
+  if ($('autogen-opt-system-logic')) $('autogen-opt-system-logic').checked = true;
+  if ($('autogen-opt-iomap')) $('autogen-opt-iomap').checked = true;
+  if (sawReady && $('autogen-opt-sawtooth')) $('autogen-opt-sawtooth').checked = true;
+
+  const packBits = ['Sys', 'DeviceComms+NTP', 'SystemLogic', 'IO_MAP(RUN banks→RIO)'];
   const packExtra = includePrograms.filter(
     (p) => !['System', 'Devices_Comm', 'NTP', 'System_Logic'].includes(p)
   );
@@ -5298,14 +5706,7 @@ async function runAutogenGenerate(mode) {
       sawCfg.collector_conveyor
       || (sawCfg.lanes || []).some((l) => l && l.conveyor)
     );
-    if (sawConfigured) {
-      persistSawtoothToWorkbook();
-      if ($('autogen-opt-sawtooth') && !$('autogen-opt-sawtooth').checked) {
-        $('autogen-opt-sawtooth').checked = true;
-        if (!includePrograms.includes('Sawtooth_Merge')) includePrograms.push('Sawtooth_Merge');
-        autogenLog('Sawtooth populated → auto-checked Program pack · Sawtooth Merge.', 'ok');
-      }
-    }
+    if (sawConfigured) persistSawtoothToWorkbook();
     if (sorterConfigured) persistSorterToWorkbook();
     try { updateSubsystemGenerationContract(); } catch (_) { /* ignore */ }
 
@@ -5383,6 +5784,14 @@ async function runAutogenGenerate(mode) {
     const msg = res?.message || 'Generate failed (unknown error)';
     autogenLog(msg, 'err');
     if ($('autogen-detail')) $('autogen-detail').textContent = msg;
+    if (/IO_MAP|io_map|iomap|VFD/i.test(msg)) {
+      autogenState.lastGenerateIoMapError = msg;
+      try { markReadinessDirty('hardware'); } catch (_) { /* ignore */ }
+      const hw = ensureAutogenReadiness().hardware;
+      hw.status = 'ERROR';
+      hw.detail = msg;
+      try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+    }
     if (/no active run/i.test(msg)) {
       autogenLog('Tip: I/O & Prints → Load RUN .tar.gz first, wait until machine status is ready, then Generate PLC Project.', 'warn');
     }
@@ -5394,7 +5803,9 @@ async function runAutogenGenerate(mode) {
   autogenState.lastOut = r.out_dir || '';
   autogenState.lastL5x = r.l5x || '';
   autogenState.lastManifest = r.manifest || null;
+  autogenState.lastGenerateIoMapError = null;
   setAutogenStatus(r.recovered ? 'Complete (recovered)' : 'Complete', 'ready');
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   if ($('autogen-summary')) {
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
@@ -5853,6 +6264,15 @@ async function clearProjectBuilds() {
     try { localStorage.removeItem('fortna_sorter_build'); } catch (_) { /* ignore */ }
     try { renderSorterBuild(); } catch (_) { /* ignore */ }
 
+    autogenState.lastGenerateIoMapError = null;
+    autogenState.readiness = {
+      hardware: emptyReadinessEntry(),
+      transport: emptyReadinessEntry(),
+      sawtooth: emptyReadinessEntry(),
+      sorter: emptyReadinessEntry(),
+      system: emptyReadinessEntry(),
+    };
+
     try { localStorage.removeItem('fortna_last_equipment_names'); } catch (_) { /* ignore */ }
 
     // Uncheck all program-pack options
@@ -6002,16 +6422,19 @@ async function applyTransportMergesToAutogen(opts = {}) {
   const n = autogenState.merges_2to1.filter((m) => m && (m.name || m.lane_a)).length;
   const nAreas = (res.areas_applied || []).length;
   const nConv = (res.conveyors_updated || []).length + (res.conveyors_created || []).length;
+  setReadinessApplied(
+    'transport',
+    `${nAreas} area(s) · ${nConv} conv · ${n} merge(s)`,
+  );
   const st = $('merge-save-status');
   if (st) {
-    st.textContent = `Transport: ${nAreas} area(s), ${nConv} conv, ${n} merge(s)`;
+    st.textContent = `Applied · READY · ${nAreas} area(s), ${nConv} conv, ${n} merge(s)`;
     st.className = 'text-[10px] text-emerald-500 mono';
   }
   if (typeof autogenLog === 'function') {
     autogenLog(
-      `Transport Build → Autogen: ${res.summary || `${nAreas} areas / ${n} merges`} `
-      + `(${res.workbook_path || 'workbook saved'}). `
-      + `Simple transport follows area names; check Merge pack if merges present, then Generate.`,
+      `Transport Apply → Autogen READY: ${res.summary || `${nAreas} areas / ${n} merges`} `
+      + `(${res.workbook_path || 'workbook saved'}). Merges follow workbook on Export.`,
       'ok',
     );
     if ((res.areas_applied || []).length) {

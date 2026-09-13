@@ -1,0 +1,60 @@
+{
+  "title": "VFD*_FLT IO_MAP semantic resolution",
+  "machine_fixture": "ORNCCP4",
+  "rule": {
+    "pattern": "VFD{n}_FLT | VFD{n}_FAULT | …",
+    "endpoint": "P{n}_VFD.Flt.Overload",
+    "udt": "Motor_Starter_UDT.Flt (Motor_Starter_Flt)",
+    "member_doc": "Overload = Motor Overload Fault (library)",
+    "provenance": "RUN_EXPLICIT name+description + DOC_DEFINED UDT member",
+    "confidence": "PROVEN_CROSS_TABLE"
+  },
+  "points": [
+    {
+      "run_logical": "VFD216_FLT",
+      "conveyor_type": "INVALID",
+      "description": "VFD216 HAS FAULTED",
+      "machine": "ORNCCP4",
+      "io_address_word": "424",
+      "io_address_bit": "4",
+      "associated_vfd": "VFD216",
+      "resolved_endpoint": "P216_VFD.Flt.Overload",
+      "source_tables": ["Conveyor.asc", "library Motor_Starter_Flt"],
+      "relationship_rule": "VFD###_FLT discrete fault input → P###_VFD Motor_Starter_UDT.Flt.Overload"
+    },
+    {
+      "run_logical": "VFD219_FLT",
+      "description": "VFD219 HAS FAULTED",
+      "io_address_word": "1006",
+      "io_address_bit": "16",
+      "associated_vfd": "VFD219",
+      "resolved_endpoint": "P219_VFD.Flt.Overload"
+    },
+    {
+      "run_logical": "VFD410_FLT",
+      "description": "VFD410 HAS FAULTED",
+      "io_address_word": "424",
+      "io_address_bit": "7",
+      "associated_vfd": "VFD410",
+      "resolved_endpoint": "P410_VFD.Flt.Overload"
+    },
+    {
+      "run_logical": "VFD422_FLT",
+      "description": "VFD422 HAS FAULTED",
+      "io_address_word": "424",
+      "io_address_bit": "13",
+      "associated_vfd": "VFD422",
+      "resolved_endpoint": "P422_VFD.Flt.Overload"
+    },
+    {
+      "run_logical": "VFD834_FLT",
+      "description": "VFD834 HAS FAULTED",
+      "io_address_word": "424",
+      "io_address_bit": "16",
+      "associated_vfd": "VFD834",
+      "resolved_endpoint": "P834_VFD.Flt.Overload"
+    }
+  ],
+  "root_cause": "_vfd_ms_member previously returned None for FLT suffix, so IO_MAP emitted bare BOOL VFD###_FLT which was never created as a tag (VFD discretes create P###_VFD Motor_Starter_UDT only).",
+  "finished_plc": "validation-only — not used as generation source"
+}

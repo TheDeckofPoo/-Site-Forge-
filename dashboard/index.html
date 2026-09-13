@@ -497,6 +497,28 @@
       font-size: 8px; font-weight: 700; letter-spacing: 0.02em;
       padding: 0 3px; border-radius: 3px; border: 1px solid #334155;
     }
+    /* Compile hub readiness cards */
+    .hub-ready-card {
+      border-radius: 0.75rem; border: 1px solid #1e293b; background: #0c1219; padding: 0.75rem;
+    }
+    .hub-ready-card .hub-status { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; }
+    .hub-ready-card[data-status="READY"] { border-color: rgba(16,185,129,0.45); }
+    .hub-ready-card[data-status="READY"] .hub-status { color: #34d399; }
+    .hub-ready-card[data-status="REVIEW_REQUIRED"],
+    .hub-ready-card[data-status="CHANGED"] { border-color: rgba(245,158,11,0.45); }
+    .hub-ready-card[data-status="REVIEW_REQUIRED"] .hub-status,
+    .hub-ready-card[data-status="CHANGED"] .hub-status { color: #fbbf24; }
+    .hub-ready-card[data-status="ERROR"] { border-color: rgba(239,68,68,0.5); }
+    .hub-ready-card[data-status="ERROR"] .hub-status { color: #f87171; }
+    .hub-ready-card[data-status="NOT_DETECTED"] .hub-status { color: #64748b; }
+    .ss-card { border-radius: 0.5rem; border: 1px solid #1e293b; padding: 0.5rem 0.65rem; background: #0c1219; }
+    .ss-name { font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; }
+    .ss-status { font-family: 'JetBrains Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; margin-top: 2px; }
+    .ss-ready .ss-status { color: #34d399; }
+    .ss-cfg .ss-status { color: #fbbf24; }
+    .ss-partial .ss-status { color: #22d3ee; }
+    .ss-nosup .ss-status, .ss-blocked .ss-status { color: #f87171; }
+    .ss-na .ss-status { color: #64748b; }
     .tb-drive-vfd { color: #67e8f9; background: #083344; border-color: #155e75; }
     .tb-drive-ms { color: #fcd34d; background: #451a03; border-color: #b45309; }
     .tb-drive-unk { color: #94a3b8; background: #0f172a; }
@@ -745,16 +767,16 @@
         <div class="workflow-chart mt-3">
           <div class="workflow-box"><strong>① Load RUN</strong><span>I/O &amp; Prints<br>.tar.gz once</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box"><strong>② Transport</strong><span>Areas · merges · PE<br>Apply to workbook</span></div>
+          <div class="workflow-box"><strong>② Apply tabs</strong><span>Transport · Sawtooth<br>Sorter — each Apply</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box"><strong>③ Sorter</strong><span>Induct · track · divert<br>Save sorter config</span></div>
+          <div class="workflow-box"><strong>③ Compile hub</strong><span>All required cards<br>READY FOR AUTOGEN</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box violet"><strong>④ Autogen</strong><span>Program pack · review<br>Export L5X Package</span></div>
+          <div class="workflow-box violet"><strong>④ Export</strong><span>L5X Package<br>preflight checks READY</span></div>
           <span class="workflow-arrow">→</span>
           <div class="workflow-box"><strong>⑤ Studio</strong><span>File → Open L5X<br>as NEW project</span></div>
         </div>
         <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
-          <p><strong class="text-fuchsia-300">Transport Build</strong> and <strong class="text-cyan-300">Sorter Build</strong> are design tabs — Autogen compiles them with site config.</p>
+          <p><strong class="text-fuchsia-300">Apply on each tab</strong> — Compile hub shows NOT DETECTED / REVIEW REQUIRED / READY. Core packs are always included.</p>
           <p><strong class="text-emerald-500/90">Workbook</strong> = Inputdata replacement (areas · TYPE · Exit PE). Merges come from Transport Apply.</p>
           <p><strong class="text-amber-400/90">Studio:</strong> <em>File → Open</em> L5X as new project (do not Import into existing .acd).</p>
         </div>
@@ -791,110 +813,22 @@
           <div class="mt-3 rounded-xl border border-slate-800/80 bg-gradient-to-b from-[#0e1520] to-[#0a1018] overflow-hidden">
             <div class="px-3 py-2 border-b border-slate-800/80 flex items-center justify-between">
               <div class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Program pack</div>
-              <span class="text-[9px] text-slate-600 mono">library L5X merge</span>
+              <span class="text-[9px] text-slate-600 mono">evidence-driven</span>
             </div>
-            <div class="p-3 space-y-3">
-              <!-- Core (recommended on) -->
-              <div>
-                <div class="text-[9px] uppercase tracking-wider text-emerald-600/80 mb-1.5">Core · recommended</div>
-                <div class="grid grid-cols-1 gap-1.5">
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer hover:border-emerald-700/40 transition-colors">
-                    <input id="autogen-opt-sys" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">Sys</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">
-                        Constants / Type codes / null objects (<span class="mono">Sys</span> event task). Independent of Device Comms / NTP / System Logic.
-                      </span>
-                    </span>
-                  </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer hover:border-emerald-700/40 transition-colors">
-                    <input id="autogen-opt-system" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">Device Comms</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">
-                        RIO / Ethernet comm diagnostics
-                        (<span class="mono">Devices_Comm_Logic</span> · <span class="mono">AOI_CommDiag</span>)
-                        plus cookie-cutter <span class="mono">NTP</span> / <span class="mono">AOI_SNTP_QUERY</span>.
-                      </span>
-                    </span>
-                  </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer hover:border-emerald-700/40 transition-colors">
-                    <input id="autogen-opt-system-logic" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">System Logic</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">
-                        Cookie-cutter start / stop / reset HMI bits — stamped with this site’s
-                        <span class="mono">&lt;Site&gt;_System</span> tag.
-                      </span>
-                    </span>
-                  </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer hover:border-emerald-700/40 transition-colors">
-                    <input id="autogen-opt-iomap" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">IO_MAP</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">Include IO_MAP program (RUN banks → this site’s CPxRIOn modules). Uncheck to omit IO_MAP from the L5X.</span>
-                    </span>
-                  </label>
-                </div>
+            <div class="p-3 space-y-2">
+              <div class="rounded-lg border border-emerald-900/30 bg-emerald-950/20 px-2.5 py-2 text-[11px] text-slate-300">
+                <div class="text-[9px] uppercase tracking-wider text-emerald-600/80 mb-1">Always included</div>
+                <div class="mono text-[10px] text-emerald-300/90">Sys · Device Comms + NTP · System Logic · System · IO_MAP</div>
               </div>
-              <!-- Site optional -->
-              <div>
-                <div class="text-[9px] uppercase tracking-wider text-violet-500/80 mb-1.5">Site optional · transport / sorter / WCS</div>
-                <div class="grid grid-cols-1 gap-1.5">
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-cyan-900/40 bg-cyan-950/20 cursor-pointer hover:border-cyan-700/50 transition-colors">
-                    <input id="autogen-opt-merges-2to1" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">Merge</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">
-                        Transport merges from the panel below (2:1 / 3:1 lane counts). Emit scaffold for 2:1 now; 3:1 config saved for later.
-                      </span>
-                    </span>
-                  </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
-                    <input id="autogen-opt-shippingsorter" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">ShippingSorter (Shoe Sorter)</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">Shoe sorter area logic pack (rename site-specific later)</span>
-                    </span>
-                  </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
-                    <input id="autogen-opt-shippingsorter-popup" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">ShippingSorter (PopUp Divert)</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">Pop-up divert sorter pack — code mapping later</span>
-                    </span>
-                  </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
-                    <input id="autogen-opt-sorter-track" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">Sorter Track</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">
-                        Puts <span class="mono text-slate-400">Sorter_Track</span> on P02 (Sorter_Track_Program.L5X).
-                        Not ShippingSorter L3. Auto-on when sorter config is saved.
-                      </span>
-                    </span>
-                  </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
-                    <input id="autogen-opt-sawtooth" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">Sawtooth Merge</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">
-                        Collector track pack (<span class="mono text-slate-400">Sawtooth_Merge_Program.L5X</span> on P02). Auto-on when Sawtooth tab is saved.
-                      </span>
-                    </span>
-                  </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer hover:border-violet-800/50 transition-colors">
-                    <input id="autogen-opt-wcs" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
-                    <span class="min-w-0">
-                      <span class="block text-[11px] text-slate-200 font-medium">WCS TCP/IP</span>
-                      <span class="block text-[10px] text-slate-500 leading-snug">WCS socket interface (Helix / host messages)</span>
-                    </span>
-                  </label>
-                </div>
+              <div id="autogen-pack-evidence" class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-2 text-[10px] text-slate-400 space-y-1 mono">
+                <div>Sawtooth_Merge · evidence</div>
+                <div>Sorter_Track · evidence</div>
+                <div>Merges · workbook</div>
+                <div>WCS / ShippingSorter · NOT DETECTED</div>
               </div>
               <p class="text-[9px] text-slate-600 leading-relaxed">
                 Always built from RUN: zone Fast/Slow, PE logic, Flex I/O tree, tags.
-                Optional packs merge library programs from <span class="mono text-slate-500">tools/libraries/programs/</span>.
+                Subsystem packs follow Compile hub readiness — Apply on each tab, then Export.
               </p>
             </div>
           </div>
@@ -907,40 +841,89 @@
             <button id="btn-autogen-workbook-build" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Re-scan RUN and refresh the site config table (keeps your edits)">
               <i class="fa-solid fa-rotate mr-1"></i>Refresh site config
             </button>
-            <button id="btn-autogen-workbook-save" type="button" class="btn-ghost flex-1 py-1.5 rounded-xl text-xs" title="Save table edits">
-              <i class="fa-solid fa-floppy-disk mr-1"></i>Save config
-            </button>
           </div>
           <p class="text-[10px] text-cyan-600/80 mt-2 leading-relaxed">
             <strong>Site config</strong> (right) = our Inputdata — areas, safety, TYPE, exit PE.
-            No Excel / VBS. After edits + program pack → <strong>Export L5X Package</strong> (files only — Studio stays closed).
+            Apply each subsystem tab → readiness READY → <strong>Export L5X Package</strong>.
           </p>
           <details class="mt-3 text-[10px] text-slate-600">
-            <summary class="cursor-pointer text-slate-500 hover:text-slate-400">Legacy Excel path (optional — not required)</summary>
-            <div class="mt-2 space-y-2">
-              <div class="flex gap-2">
-                <input id="autogen-excel-path" type="text" readonly
-                  class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 mono text-[10px] text-slate-300"
-                  placeholder="Browse legacy Excel…">
-                <button id="btn-autogen-browse-excel" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs">Browse</button>
+            <summary class="cursor-pointer text-slate-500 hover:text-slate-400">Advanced / Development · pack overrides &amp; workbook save</summary>
+            <div class="mt-2 space-y-3">
+              <div>
+                <div class="text-[9px] uppercase tracking-wider text-emerald-600/80 mb-1.5">Core overrides (forced ON at generate)</div>
+                <div class="grid grid-cols-1 gap-1.5">
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer">
+                    <input id="autogen-opt-sys" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">Sys</span></span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer">
+                    <input id="autogen-opt-system" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">Device Comms</span></span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer">
+                    <input id="autogen-opt-system-logic" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">System Logic</span></span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer">
+                    <input id="autogen-opt-iomap" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">IO_MAP</span></span>
+                  </label>
+                </div>
               </div>
-              <div class="flex gap-2">
-                <button id="btn-autogen-inspect" type="button" class="btn-ghost flex-1 py-1.5 rounded-lg text-xs">
-                  <i class="fa-solid fa-stethoscope mr-1"></i>Inspect Excel
-                </button>
-                <button id="btn-autogen-generate" type="button" class="btn-ghost flex-1 py-1.5 rounded-lg text-xs">
-                  <i class="fa-solid fa-file-excel mr-1"></i>Generate from Excel
-                </button>
+              <div>
+                <div class="text-[9px] uppercase tracking-wider text-violet-500/80 mb-1.5">Evidence overrides (dev only)</div>
+                <div class="grid grid-cols-1 gap-1.5">
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer">
+                    <input id="autogen-opt-merges-2to1" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">Merge</span></span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer">
+                    <input id="autogen-opt-shippingsorter" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">ShippingSorter (Shoe)</span></span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer">
+                    <input id="autogen-opt-shippingsorter-popup" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">ShippingSorter (PopUp)</span></span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer">
+                    <input id="autogen-opt-sorter-track" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">Sorter Track</span></span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer">
+                    <input id="autogen-opt-sawtooth" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">Sawtooth Merge</span></span>
+                  </label>
+                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-slate-800 bg-[#0c1219] cursor-pointer">
+                    <input id="autogen-opt-wcs" type="checkbox" class="mt-0.5 rounded border-slate-600 bg-slate-900">
+                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">WCS TCP/IP</span></span>
+                  </label>
+                </div>
+              </div>
+              <button id="btn-autogen-workbook-save" type="button" class="btn-ghost w-full py-1.5 rounded-xl text-xs" title="Save table edits to disk">
+                <i class="fa-solid fa-floppy-disk mr-1"></i>Save workbook to disk
+              </button>
+              <div class="pt-2 border-t border-slate-800 space-y-2">
+                <div class="text-[9px] uppercase tracking-wider text-slate-500">Legacy Excel path</div>
+                <div class="flex gap-2">
+                  <input id="autogen-excel-path" type="text" readonly
+                    class="flex-1 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 mono text-[10px] text-slate-300"
+                    placeholder="Browse legacy Excel…">
+                  <button id="btn-autogen-browse-excel" type="button" class="btn-ghost px-3 py-1.5 rounded-lg text-xs">Browse</button>
+                </div>
+                <div class="flex gap-2">
+                  <button id="btn-autogen-inspect" type="button" class="btn-ghost flex-1 py-1.5 rounded-lg text-xs">
+                    <i class="fa-solid fa-stethoscope mr-1"></i>Inspect Excel
+                  </button>
+                  <button id="btn-autogen-generate" type="button" class="btn-ghost flex-1 py-1.5 rounded-lg text-xs">
+                    <i class="fa-solid fa-file-excel mr-1"></i>Generate from Excel
+                  </button>
+                </div>
               </div>
             </div>
           </details>
           <p class="text-[10px] text-emerald-600/80 mt-2 leading-relaxed">
-            <strong>Flow:</strong> I/O &amp; Prints → load .tar.gz (+ PDF) →
-            <strong>PLC Autogen</strong> (site config dropdowns auto-fill) → set program pack →
-            <strong>Export L5X Package</strong> → files under exports/autogen (open in Studio yourself when ready).
-          </p>
-          <p class="text-[10px] text-slate-600 mt-1 leading-relaxed">
-            Standalone Site Forge engine — no site Excel, no VBS. Only tar.gz + library + your dropdown choices.
+            <strong>Flow:</strong> I/O &amp; Prints → load .tar.gz → Apply on Transport / Sawtooth / Sorter →
+            Compile hub READY → <strong>Export L5X Package</strong>.
           </p>
         </div>
         <div class="card p-3 flex-1 min-h-0 overflow-y-auto">
@@ -1123,51 +1106,62 @@
       </div><!-- end autogen main row (program pack + site config) -->
 
       
-      <!-- Compile hub: Transport + Sorter status (design happens on other tabs) -->
+      <!-- Compile hub: readiness cards (Apply happens on each subsystem tab) -->
       <div id="autogen-compile-hub" class="card shrink-0 border border-violet-900/40 bg-gradient-to-b from-[#12101a] to-[#0a1018] p-4">
         <div class="flex flex-wrap items-center gap-2 mb-2">
           <i class="fa-solid fa-layer-group text-violet-400"></i>
           <span class="text-sm font-semibold text-violet-300">Compile hub</span>
-          <span class="text-[10px] text-slate-500">Transport + Sorter designs land here → Export L5X</span>
+          <span class="text-[10px] text-slate-500">Apply on each tab → READY → Export L5X</span>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-[11px]">
-          <div class="rounded-xl border border-fuchsia-900/40 bg-[#0c1219] p-3">
-            <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/90 font-semibold mb-1">Transport</div>
-            <div id="autogen-hub-transport" class="mono text-slate-400">Apply from Transport Build</div>
+        <div id="autogen-hub-readiness" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2 text-[11px]">
+          <div class="hub-ready-card" data-ready-key="hardware" data-status="NOT_DETECTED">
+            <div class="text-[10px] uppercase tracking-wider text-sky-400/90 font-semibold mb-1">Hardware / IO</div>
+            <div id="autogen-hub-hardware" class="hub-status">NOT DETECTED</div>
+            <div id="autogen-hub-hardware-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Load RUN on I/O &amp; Prints</div>
+            <button type="button" class="tab-jump mt-2 text-[10px] text-sky-300 hover:underline" data-jump-tab="io">Open I/O &amp; Prints →</button>
+          </div>
+          <div class="hub-ready-card" data-ready-key="transport" data-status="NOT_DETECTED">
+            <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/90 font-semibold mb-1">Transportation</div>
+            <div id="autogen-hub-transport" class="hub-status">NOT DETECTED</div>
+            <div id="autogen-hub-transport-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Apply on Transport Build</div>
             <button type="button" class="tab-jump mt-2 text-[10px] text-fuchsia-300 hover:underline" data-jump-tab="transport">Open Transport Build →</button>
           </div>
-          <div class="rounded-xl border border-cyan-900/40 bg-[#0c1219] p-3">
-            <div class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold mb-1">Sorter</div>
-            <div id="autogen-hub-sorter" class="mono text-slate-400">Save config on Sorter Build</div>
-            <button type="button" class="tab-jump mt-2 text-[10px] text-cyan-300 hover:underline" data-jump-tab="sorter">Open Sorter Build →</button>
-          </div>
-          <div class="rounded-xl border border-amber-900/40 bg-[#0c1219] p-3">
+          <div class="hub-ready-card" data-ready-key="sawtooth" data-status="NOT_DETECTED">
             <div class="text-[10px] uppercase tracking-wider text-amber-400/90 font-semibold mb-1">Sawtooth</div>
-            <div id="autogen-hub-sawtooth" class="mono text-slate-400">Save on Sawtooth Merge tab</div>
+            <div id="autogen-hub-sawtooth" class="hub-status">NOT DETECTED</div>
+            <div id="autogen-hub-sawtooth-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Apply on Sawtooth Merge</div>
             <button type="button" class="tab-jump mt-2 text-[10px] text-amber-300 hover:underline" data-jump-tab="sawtooth">Open Sawtooth Merge →</button>
           </div>
-          <div class="rounded-xl border border-violet-900/40 bg-[#0c1219] p-3">
-            <div class="text-[10px] uppercase tracking-wider text-violet-400/90 font-semibold mb-1">Site config</div>
-            <div id="autogen-hub-workbook" class="mono text-slate-400">Conveyors · areas · IO map</div>
-            <div class="text-[9px] text-slate-600 mt-2">Program pack checkboxes above · then Export</div>
+          <div class="hub-ready-card" data-ready-key="sorter" data-status="NOT_DETECTED">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold mb-1">Sorter</div>
+            <div id="autogen-hub-sorter" class="hub-status">NOT DETECTED</div>
+            <div id="autogen-hub-sorter-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Apply on Sorter Build</div>
+            <button type="button" class="tab-jump mt-2 text-[10px] text-cyan-300 hover:underline" data-jump-tab="sorter">Open Sorter Build →</button>
+          </div>
+          <div class="hub-ready-card" data-ready-key="system" data-status="NOT_DETECTED">
+            <div class="text-[10px] uppercase tracking-wider text-violet-400/90 font-semibold mb-1">System / Core</div>
+            <div id="autogen-hub-system" class="hub-status">NOT DETECTED</div>
+            <div id="autogen-hub-system-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Sys · Comms · Logic · IO_MAP</div>
+            <div id="autogen-hub-workbook" class="hidden"></div>
           </div>
         </div>
-        <!-- Transport actions (hidden until Transport Build has content) + full clear -->
         <div class="mt-3 pt-3 border-t border-slate-800/80 space-y-2">
-          <div id="autogen-hub-transport-actions" class="hidden space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/90 font-semibold">Transport Autogen</div>
-            <div class="flex flex-wrap gap-2">
-              <button type="button" id="btn-hub-from-transport" class="btn-ghost px-3 py-2 rounded-xl text-[11px] border border-fuchsia-800/50 text-fuchsia-300 hover:bg-fuchsia-950/40" title="Pull Transport Build graph into the Autogen workbook">
-                <i class="fa-solid fa-diagram-project mr-1"></i>Apply Transport Build → workbook
-              </button>
-              <button type="button" id="btn-hub-save-transport-wb" class="btn-ghost px-3 py-2 rounded-xl text-[11px] border border-violet-800/50 text-violet-300 hover:bg-violet-950/40" title="Save Autogen workbook to disk">
-                <i class="fa-solid fa-floppy-disk mr-1"></i>Save workbook
-              </button>
-            </div>
-          </div>
           <div id="autogen-hub-empty-hint" class="text-[10px] text-slate-500 leading-relaxed">
-            Empty project — load a RUN on <strong class="text-slate-400">I/O &amp; Prints</strong>, or design on Transport / Sorter / Sawtooth.
+            Empty project — load a RUN on <strong class="text-slate-400">I/O &amp; Prints</strong>, then Apply on Transport / Sawtooth / Sorter.
           </div>
+          <details class="text-[10px] text-slate-600">
+            <summary class="cursor-pointer text-slate-500 hover:text-slate-400">Advanced · hub workbook tools</summary>
+            <div id="autogen-hub-transport-actions" class="mt-2 space-y-2">
+              <div class="flex flex-wrap gap-2">
+                <button type="button" id="btn-hub-from-transport" class="btn-ghost px-3 py-2 rounded-xl text-[11px] border border-fuchsia-800/50 text-fuchsia-300 hover:bg-fuchsia-950/40" title="Pull Transport Build graph into the Autogen workbook">
+                  <i class="fa-solid fa-diagram-project mr-1"></i>Apply Transport Build → workbook
+                </button>
+                <button type="button" id="btn-hub-save-transport-wb" class="btn-ghost px-3 py-2 rounded-xl text-[11px] border border-violet-800/50 text-violet-300 hover:bg-violet-950/40" title="Save Autogen workbook to disk">
+                  <i class="fa-solid fa-floppy-disk mr-1"></i>Save workbook
+                </button>
+              </div>
+            </div>
+          </details>
           <button type="button" id="btn-clear-project-builds" class="w-full sm:w-auto px-3 py-2.5 rounded-xl text-[11px] font-semibold bg-red-950/70 border border-red-600/70 text-red-200 hover:bg-red-900/80 hover:border-red-500" title="Clear current project: RUN extract, edits, Transport/Sawtooth/Sorter, and generated outputs (not libraries/docs/fixtures)">
             <i class="fa-solid fa-triangle-exclamation mr-1"></i>Clear Current Project
           </button>
@@ -1800,8 +1794,8 @@
           </div>
 
           <div class="flex flex-wrap gap-2 items-center">
-            <button type="button" id="btn-sorter-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs">
-              <i class="fa-solid fa-floppy-disk mr-1"></i>Save sorter config
+            <button type="button" id="btn-sorter-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-cyan-800/50 text-cyan-200" title="Apply sorter config to Autogen workbook and mark Compile hub READY">
+              <i class="fa-solid fa-check mr-1"></i>Apply sorter → Autogen
             </button>
             <button type="button" id="btn-sorter-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">
               Clear sorter fields
@@ -1822,7 +1816,7 @@
           <p><strong class="text-slate-300">Example equipment (PLC4):</strong> lanes <span class="mono">P412 / P120 / P218</span> (+ buffers) → collector <span class="mono">P414</span> (+ <span class="mono">P418</span>), carton-track encoder <span class="mono">P414_Enc</span> (ENC* from RUN).</p>
           <p><strong class="text-amber-200/90">Encoders:</strong> set the <em>collector tracking encoder</em> in section 1 (required when track is enabled). Optional per-lane encoders are on each lane row.</p>
           <p><strong class="text-emerald-400">RUN tar.gz:</strong> yes — FortnaPlus tables <span class="mono">SawMerge.asc</span>, <span class="mono">SawLane.asc</span>, <span class="mono">HSSawLane.asc</span>, <span class="mono">HSSawParm.asc</span> (QNX saw-merge / C-side). Autogen emits Logix pack from gold L5X; Asc tables feed site parameters later.</p>
-          <p>Design here → Save → Autogen checks <strong>Sawtooth_Merge</strong> program pack → Export L5X.</p>
+          <p>Design here → <strong>Apply</strong> → Compile hub READY → Export L5X (Sawtooth_Merge included when READY).</p>
         </div>
       </details>
       <div class="flex-1 min-h-0 overflow-y-auto">
@@ -2038,8 +2032,8 @@
           </details>
 
           <div class="flex flex-wrap gap-2 items-center">
-            <button type="button" id="btn-saw-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-amber-800/50 text-amber-200">
-              <i class="fa-solid fa-floppy-disk mr-1"></i>Confirm overrides → Autogen
+            <button type="button" id="btn-saw-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-amber-800/50 text-amber-200" title="Apply sawtooth config to Autogen workbook and mark Compile hub READY">
+              <i class="fa-solid fa-check mr-1"></i>Apply sawtooth → Autogen
             </button>
             <button type="button" id="btn-saw-reload-sitemodel" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-400 border border-slate-700" title="Reload from active SiteModel (discards local edits)">
               Reload from RUN

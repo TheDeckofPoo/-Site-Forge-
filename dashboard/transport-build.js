@@ -388,6 +388,10 @@
         })
       );
     } catch (_) { /* ignore */ }
+    // After a successful Apply, any canvas edit requires re-Apply
+    if (tb.workflow?.apply && typeof window.markAutogenReadinessDirty === 'function') {
+      try { window.markAutogenReadinessDirty('transport'); } catch (_) { /* ignore */ }
+    }
   }
 
   function _nodeInControllerScope(n) {
@@ -3664,6 +3668,14 @@
         return;
       }
       tb.workflow.apply = true;
+      if (typeof window.setAutogenReadinessApplied === 'function') {
+        try {
+          window.setAutogenReadinessApplied(
+            'transport',
+            res.summary || 'Transport applied',
+          );
+        } catch (_) { /* ignore */ }
+      }
       setWorkflowStep('build', { done: true });
       $('tb-goto-build-plc')?.classList.remove('hidden');
       const areas = (res.areas_applied || []).join(', ') || '(none)';
