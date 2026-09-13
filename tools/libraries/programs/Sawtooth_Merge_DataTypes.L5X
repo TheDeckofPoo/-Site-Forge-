@@ -1,0 +1,717 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.01" TargetName="Sawtooth_Merge_DataTypes" TargetType="Controller" ContainsContext="false">
+<Controller Use="Target" Name="Sawtooth_Merge_DataTypes">
+<DataTypes>
+<DataType Name="ST_CollLaneMrgCapture" Family="NoFamily" Class="User">
+<Members>
+<Member Name="diLaneTrackId" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diLaneId" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diTrackId" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diDelta" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diCollMrgCapIndex_A" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diCollMrgCapIndex_B" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diNumCaptures" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ST_CollPeTrackCalibrate" Family="NoFamily" Class="User">
+<Members>
+<Member Name="diPlsCntSave" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diPlsAccum" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZST_CollPeT2" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xIsBlockedPrev" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollPeT2" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="xCntInProgress" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollPeT2" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="xDnStrmIsBlockedPrev" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollPeT2" BitNumber="2" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ST_CollStatus" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZST_CollSta0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xClctrRunning" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollSta0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Collector is running in normal mode]]>
+</Description>
+</Member>
+<Member Name="xClctrRunningPrev" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollSta0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Previous state of Collector Running]]>
+</Description>
+</Member>
+<Member Name="xClctrAllLanesMrgCmpt" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollSta0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[All lanes merge complete in startup mode]]>
+</Description>
+</Member>
+<Member Name="xClctrRunningAtSpeed" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollSta0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Set when collector is running at desired speed]]>
+</Description>
+</Member>
+<Member Name="diClctRunoutAccum" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Accumulator to determine when the collector has run-out after startup in psuedo encoder pulses]]>
+</Description>
+</Member>
+<Member Name="diClctrMode" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Mode of operation for merge 
+ 0 = Not Running in Auto Mode
+1= Startup Mode, running out Collector
+2= Startup  Mode, waiting for all lane to coplete their merge
+3= Normal Mode]]>
+</Description>
+</Member>
+<Member Name="diClctrModePrev" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Previous Mode of operation for merge]]>
+</Description>
+</Member>
+<Member Name="diClctrStrtSaftyTMR" DataType="FBD_TIMER" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Saftey Time for Startup mode]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="ST_CollTrkHistory" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZST_CollTrk0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xPeState" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollTrk0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="xPeStatePrev" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollTrk0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="xCollHistMatchFnd" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollTrk0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="rHistAvg" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="Histogram" DataType="DINT" Dimension="41" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diHistSampleCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diHistSum" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diCollHistTrackId" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diCollHistTrackIdInit" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diCollHistSrchCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diCollHistSrchIdx" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ST_CollTrkPeCfg" Family="NoFamily" Class="User">
+<Members>
+<Member Name="diPlsLocation" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Location of the PE offset from beggining of track array]]>
+</Description>
+</Member>
+<Member Name="diValueTo_OR" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Value to OR into Track Array when Pe is blocked]]>
+</Description>
+</Member>
+<Member Name="diValueTo_AND" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Value to AND into the Track Array when the PE is clear]]>
+</Description>
+</Member>
+<Member Name="diBlockedJamPre" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Preset for JAM distance counter]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="ST_CollTrkPeStatus" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZST_CollTrk0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xIsByPassed" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollTrk0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Photo-Eye is by passed for both Jam and Parcel detection]]>
+</Description>
+</Member>
+<Member Name="xIsJammed" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollTrk0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[TRUE when PE is jammed]]>
+</Description>
+</Member>
+<Member Name="xIsBlocked" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollTrk0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[True When PE is debounced blocked]]>
+</Description>
+</Member>
+<Member Name="diBlockedCount" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The number of encoder pulses the PE has been coniguously blocked]]>
+</Description>
+</Member>
+<Member Name="diClearCount" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The number of encoder pulses the PE has been coniguously clear]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="ST_CollTrkSysCfg" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZST_CollTrk0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xChkForCompromisedSlot" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollTrk0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Check for a comprimised slot]]>
+</Description>
+</Member>
+<Member Name="xCollOptimizeSearch" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_CollTrk0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="diCollLaneEmptyOptPreset" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diNumPE" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Number of PEs on the Collector]]>
+</Description>
+</Member>
+<Member Name="diNumLanes" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Number of Lanes]]>
+</Description>
+</Member>
+<Member Name="diClctrRunoutDist" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Number of psuedo encoder pulses  to run-out the Collector on startup]]>
+</Description>
+</Member>
+<Member Name="diPsuedoEncMaxCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Pseudo Encoder Maximum Count before rollover]]>
+</Description>
+</Member>
+<Member Name="diClctrSrtSafteyTmrPreset" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Millisecs for Saftey timeoutin Startup Mode]]>
+</Description>
+</Member>
+<Member Name="adiLaneLoc" DataType="DINT" Dimension="12" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Lane Location in Pseudo Encoder Pulses]]>
+</Description>
+</Member>
+<Member Name="adiStartupLaneLoc" DataType="DINT" Dimension="12" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Lane Location in Pseudo Encoder Pulses for startup]]>
+</Description>
+</Member>
+<Member Name="adiLaneCompareMask" DataType="DINT" Dimension="12" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="adiOptUpStrmSearchLimit" DataType="DINT" Dimension="12" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="adiOptDnStrmSearchLimit" DataType="DINT" Dimension="12" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="adiCollAvgSlotSize" DataType="DINT" Dimension="12" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rClctrSpd_FPM" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Collector speed in feet per minute]]>
+</Description>
+</Member>
+<Member Name="rClctrSpd_IPS" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Collector speed in inches per second]]>
+</Description>
+</Member>
+<Member Name="rClctrPsuedoEnc_IPP" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[PSeudo Encoder on the Collector resolution Inch Per Pulse]]>
+</Description>
+</Member>
+<Member Name="rClctrRealEnc_IPP" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Real Encoder on the Collector resulution Inch Per Pulse]]>
+</Description>
+</Member>
+<Member Name="diClctrSlugGapAdder" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Number of inches to add to the calcuolated Slug Train Length for extra gap]]>
+</Description>
+</Member>
+<Member Name="rSorterGap" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Gap required at sorter speed (inches)]]>
+</Description>
+</Member>
+<Member Name="rSorterSpeed_FPM" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Sorter speed (FPM)]]>
+</Description>
+</Member>
+<Member Name="rSorterSpeed_IPS" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Sorter speed (IPS)]]>
+</Description>
+</Member>
+<Member Name="rClctrMinGap" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Minimum gap on collector (inches)]]>
+</Description>
+</Member>
+<Member Name="rSlotReserveMultiple" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Multiplier to grow the slug by a percentage if required.]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="ST_LaneClctrSlotResCntrl" Family="NoFamily" Class="User">
+<Description>
+<![CDATA[Control Information pertaining to the Slot Reservation on the Collector : Set by Resv Mngr & Read by Lane]]>
+</Description>
+<Members>
+<Member Name="ZZZZZZZZZZST_LaneClc0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xOkToReleaseLane" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Collector is at a state where it can accept parcels]]>
+</Description>
+</Member>
+<Member Name="xSearchForSlotAck" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Acknowledgment that the search for slot was received]]>
+</Description>
+</Member>
+<Member Name="xSlotFound" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Indicator that a slot was found from the search request]]>
+</Description>
+</Member>
+<Member Name="xSlotReserved" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Indicator that a slot is reserved]]>
+</Description>
+</Member>
+<Member Name="xSlotResvRevoked" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Reservation is revoked]]>
+</Description>
+</Member>
+<Member Name="xSlotCompromised" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Indicates the slot became partially occupied after reservation]]>
+</Description>
+</Member>
+<Member Name="xSlotAtMergePoint" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="6" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Set when the slot reaches the merge point]]>
+</Description>
+</Member>
+<Member Name="xSlotPastMergePoint" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="7" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Set when the slot is past the merge point]]>
+</Description>
+</Member>
+<Member Name="diSlotSizePls" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Number of elemnts needed for the package to be merged]]>
+</Description>
+</Member>
+<Member Name="diSlotStartLoc" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Starting Location in the Tracking ArraY of the Slot to merge into]]>
+</Description>
+</Member>
+<Member Name="diLaneWaitingMask" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Mask to keep track of other lanes waiting for a reservation]]>
+</Description>
+</Member>
+<Member Name="diResvLaneLoc" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Location of Lane Merge point along Collector, varies based on Lane Mode]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="ST_LaneClctrSlotResCnts" Family="NoFamily" Class="User">
+<Members>
+<Member Name="diSlotAtMergeSearchCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diSlotAtMergeFndCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diSlotPastMergeCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diSChklotCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diSlotCompromisedCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diSearchForSlotCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diSlotFndCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diSlotResevedCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diWaitForLaneMaskCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ST_LaneClctrSlotResMngr" Family="NoFamily" Class="User">
+<Members>
+<Member Name="adiResvRqstOrder" DataType="DINT" Dimension="10" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Laner ID in the order reservation requested; first request in element [0]]]>
+</Description>
+</Member>
+<Member Name="adiResvRqstGrant" DataType="DINT" Dimension="10" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Laner ID in the order reservation was granted ; first granted request in element [0]]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="ST_LaneClctrSlotResStatus" Family="NoFamily" Class="User">
+<Description>
+<![CDATA[Status Information pertaining to the Slot Reservation on the Collector :
+Set by Lane & Read by Resv Mngr]]>
+</Description>
+<Members>
+<Member Name="ZZZZZZZZZZST_LaneClc0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xSearchForSlot" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="0" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Request to search for a slot]]>
+</Description>
+</Member>
+<Member Name="xSearchForSlotPrev" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="1" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Previous state of the Request to search for a slot]]>
+</Description>
+</Member>
+<Member Name="xLaneWaitingForResv" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="2" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Lane is waiting for a slot Reservation]]>
+</Description>
+</Member>
+<Member Name="xLaneWaitingForslot" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="3" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Lane is waiting for the slot to get to the merge position for this lane]]>
+</Description>
+</Member>
+<Member Name="xLaneMerging" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="4" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Package Train is merging from the lane]]>
+</Description>
+</Member>
+<Member Name="xLaneFaulted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="5" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The Lane has a fault which will prevent it from continuing to run]]>
+</Description>
+</Member>
+<Member Name="xStartupComplete" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_LaneClc0" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="rSlotSizeInch" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Slot size needed in inches]]>
+</Description>
+</Member>
+<Member Name="rStartupSlotSizeInch" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Slot size needed in inches during startup mode]]>
+</Description>
+</Member>
+<Member Name="diLanePkgSeqId" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Package Sequence Id]]>
+</Description>
+</Member>
+<Member Name="diLaneMode" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Mode of Lane: 0 = Stopped, 1= Startup, 2= Normal, 3 = Maint/Manual]]>
+</Description>
+</Member>
+<Member Name="diLaneModePrev" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Mode of Lane on Previous scan]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="ST_LaneOptimizeMrgCnt" Family="NoFamily" Class="User">
+<Members>
+<Member Name="diOptimizedDelayCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The number of parcels delayed merge to Optimize Collecotr belt space on the Lane]]>
+</Description>
+</Member>
+<Member Name="diLoadBalDelayCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The number of parcels delayed merge due to Load Balancing]]>
+</Description>
+</Member>
+<Member Name="diFarUpstreamResvCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[The number of times this lane made a reservation far upstream]]>
+</Description>
+</Member>
+<Member Name="diTotalMergeCnt" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Total number of parcels at Mrege Resv Location]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="ST_SlugBoxData" Family="NoFamily" Class="User">
+<Members>
+<Member Name="rLength" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rGapFront" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rGapBack" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ST_SlugBuildCfg" Family="NoFamily" Class="User">
+<Members>
+<Member Name="diQ2_NoCartonTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Q2 No Carton Detection Timer Preset]]>
+</Description>
+</Member>
+<Member Name="diQ2_SlugGapAdder" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Q2 Additional Gap added to the end of slug]]>
+</Description>
+</Member>
+<Member Name="diDoorID" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Integer value assigned by the building for the unload]]>
+</Description>
+</Member>
+<Member Name="diGPR_End_Loc" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES, Track out position from Gapper shift array]]>
+</Description>
+</Member>
+<Member Name="diGPR_Eval_Loc" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES, Postion upstream of End Loc too allow enough time to stop gapper if it can't transfer package to Q1 due to slug length being exceeded]]>
+</Description>
+</Member>
+<Member Name="diGPR_EntrPE_Loc" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES, Distance in inches from Gapper Entrance PE to the exit end of the conveyor.]]>
+</Description>
+</Member>
+<Member Name="diQ1_End_Loc" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES]]>
+</Description>
+</Member>
+<Member Name="diQ1_SafetyReleaseTimerPre" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diQ1_TrainStrandedTimerPre" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_ReleaseSpeed_IPS" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Q2 Release Speed in inches per second]]>
+</Description>
+</Member>
+<Member Name="rQ1_MatchSpeed_IPS" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Q1 Match Speed in inches per second]]>
+</Description>
+</Member>
+<Member Name="rQ1_ReleaseSpeed_IPS" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Q1 Release Speed in inches per second]]>
+</Description>
+</Member>
+<Member Name="rGPR_MatchSpeed_IPS" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Gapper Match Speed in inches per second]]>
+</Description>
+</Member>
+<Member Name="rQ1_MaxTrainLen" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES]]>
+</Description>
+</Member>
+<Member Name="rQ1_MaxTrainReleaseLen" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES]]>
+</Description>
+</Member>
+<Member Name="rQ1_MaxTrainTrailingGap" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES]]>
+</Description>
+</Member>
+<Member Name="rQ1_ConveyorLength" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES]]>
+</Description>
+</Member>
+<Member Name="rBFR_SpeedFollowRatio" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Ratio of Gapper velocity that the Buffer uses to follow]]>
+</Description>
+</Member>
+<Member Name="rBFR_ExitPeClearDist" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Distance from buffer exit PE to downstream belt junction]]>
+</Description>
+</Member>
+<Member Name="rQ2_MaxTrainLen" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Maximum size train length for Q2 in inches]]>
+</Description>
+</Member>
+<Member Name="rQ2_ConveyorLength" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[INCHES]]>
+</Description>
+</Member>
+<Member Name="rPT_HoldReleaseSpeedDistPre" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rPT_StartupDistPre" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rMRG_StartupDistPre" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rStartupSlugLenInch" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZST_SlugBui25" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xMaxTrainLen_EN" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui25" BitNumber="0" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ST_SlugBuildCtrl" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZST_SlugBui0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xLaneRunEnable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="xLaneFlowControlActive" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="xLaneDisabled" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="xLaneStop" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="xLaneMaintMode" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui0" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="xLaneAnyConvFaulted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui0" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="xLaneStartupEnable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui0" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="xGPR_PE_BlockedEntrMem" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui0" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZST_SlugBui9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xTransferPkgTo_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui9" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="xMaxSlugLen_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui9" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="xMaxTrainLenArm_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui9" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="xSlugAccepting_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui9" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="xSlugAccepted_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui9" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="xSlugAccepted_ONS_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui9" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="xSlugReleasing_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui9" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="xSlugReleased_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui9" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZST_SlugBui18" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xSlugReadyToRelease_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui18" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="xSlugAcceptingMeasure_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui18" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="xSlugLengthReleaseMeasureArm_Q1" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui18" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="xSlugAccepting_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui18" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="xSlugAccepted_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui18" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="xSlugAccepted_ONS_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui18" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="xSlugReleasing_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui18" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="xSlugReleased_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui18" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZST_SlugBui27" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xSlugReadyToRelease_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui27" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="xSlugHalted_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui27" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="xWaitRelease_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui27" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="xSlugLengthAcceptMeasureArm_Q2" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui27" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="xSlugApproachClctrSrch" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui27" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="xUnloaderInterlockOut" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui27" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="xHoldReleaseSpeed_PT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_SlugBui27" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="diONS" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diPkgID" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diPkgID_1_Transfer" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diPkgID_2_Transfer" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diGapStep" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diGPR_LE_Eval_Loc_IDMem" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diGPR_LE_End_Loc_IDMem" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="adiDataShiftArray_GPR" DataType="DINT" Dimension="100" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_SlugLength" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_SlugLengthReleaseMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_SlugLengthAcceptMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_SlugLengthCapture" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_AcceptGapLength" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_SlugAcceptLength" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_SlugGapReleaseMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_GapLength_Q" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_SlugLength_Q" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_SlotSizeMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ1_DecelTravelDist_S4" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_SlugLengthReleaseMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_SlugLengthAcceptMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_SlugGapLengthAcceptMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_SlugLengthAccept_Q" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_SlugGapLengthAccept_Q" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_SlugLength_Q" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_SlugGapLength_Q" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rQ2_SlotSizeMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rStartupSlugLengthMeasure" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rPkgLen_GPR" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rPkgGap_GPR" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rBox_1_Len_GPR_S2" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rBox_2_Len_GPR_S2" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rBox_1_Len_GPR_S4" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rBox_2_Len_GPR_S4" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rReqGapSize_GPR_S2" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rReqGapSize_GPR_S4" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rReqGapSize_GPR" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rGapDelta_GPR" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rExitPeClearDistAccum_BFR" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="tmrTrainStrand_Q1" DataType="FBD_TIMER" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="tmrSlugReleased_Q1" DataType="FBD_TIMER" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="tmrSafetyRelease_Q1" DataType="FBD_TIMER" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="tmrSlugReleased_Q2" DataType="FBD_TIMER" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="tmrStopped_Q2" DataType="FBD_TIMER" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="tmrSlugHalted_Q2" DataType="FBD_TIMER" Dimension="0" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="astGPR_PkgData" DataType="ST_SlugBoxData" Dimension="20" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="ST_UnlCnvCtrl" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ZZZZZZZZZZST_UnlCnvC0" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xCnvRunning" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC0" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="xCnvStopped" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC0" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="xCnvFaulted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC0" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="xCnvRunEnable" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC0" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="xCnvRestartReq" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC0" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="xCnvReadyToRun" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC0" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="xPE_BlockedEntr" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC0" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="xPE_BlockedExit" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC0" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZST_UnlCnvC9" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="xInterlock_IN" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC9" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="xInterlock_OUT" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZST_UnlCnvC9" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="diONS" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diCnvId" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="diTrkIdOut" DataType="DINT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rCurrSpd" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rPrevSpd" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rDeltaDist" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="arDeltaDistAccum" DataType="REAL" Dimension="3" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rDesireSpeed_IPS" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rDesireSpeed_FPM" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rDesireSpeed_Percent" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="rDesireAccel" DataType="REAL" Dimension="0" Radix="Float" Hidden="false" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+<DataType Name="SawMergeHMI_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="Lane" DataType="SawMergeLane_UDT" Dimension="12" Radix="NullType" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ClctrSpeed_FPM" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Collector Belt Speed]]>
+</Description>
+</Member>
+<Member Name="ClctrSlugGapAdder" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Additional Slug Gap]]>
+</Description>
+</Member>
+<Member Name="ClctrRunOutDist" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Collector Run Out Distance After Fault Clear]]>
+</Description>
+</Member>
+<Member Name="ClctrSrtSafteyTmrPreset" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write">
+<Description>
+<![CDATA[Merge Wait Time After Fault Clear]]>
+</Description>
+</Member>
+</Members>
+</DataType>
+<DataType Name="SawMergeLane_UDT" Family="NoFamily" Class="User">
+<Members>
+<Member Name="ReleaseLength" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ReleaseLengthFull" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="AddionalGap" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="NoProductTime" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="LaneOffsetMeasured" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="LaneOffsetCorr" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="LaneOffset" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="AcceptedSlugLength" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="SlugGapLength" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ReservedSlugLength" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="SlugTrackID" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ReleasingSlugLength" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="NoProductTimer" DataType="INT" Dimension="0" Radix="Decimal" Hidden="false" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZSawMergeLa13" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="AcceptingProduct" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa13" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="SlugAccepted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa13" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="SlugLengthReserved" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa13" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="ReadyToMerge" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa13" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="SlugReleasing" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa13" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="SlugReleaseDone" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa13" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="SlugHalted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa13" BitNumber="6" ExternalAccess="Read/Write"/>
+<Member Name="NoProductTimerOn" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa13" BitNumber="7" ExternalAccess="Read/Write"/>
+<Member Name="ZZZZZZZZZZSawMergeLa22" DataType="SINT" Dimension="0" Radix="Decimal" Hidden="true" ExternalAccess="Read/Write"/>
+<Member Name="RunEnabled" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa22" BitNumber="0" ExternalAccess="Read/Write"/>
+<Member Name="Disabled" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa22" BitNumber="1" ExternalAccess="Read/Write"/>
+<Member Name="Stopped" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa22" BitNumber="2" ExternalAccess="Read/Write"/>
+<Member Name="MaintenanceMode" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa22" BitNumber="3" ExternalAccess="Read/Write"/>
+<Member Name="FlowControlActive" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa22" BitNumber="4" ExternalAccess="Read/Write"/>
+<Member Name="AnyConveyorFaulted" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa22" BitNumber="5" ExternalAccess="Read/Write"/>
+<Member Name="StartUpEnabled" DataType="BIT" Dimension="0" Radix="Decimal" Hidden="false" Target="ZZZZZZZZZZSawMergeLa22" BitNumber="6" ExternalAccess="Read/Write"/>
+</Members>
+</DataType>
+</DataTypes>
+</Controller>
+</RSLogix5000Content>

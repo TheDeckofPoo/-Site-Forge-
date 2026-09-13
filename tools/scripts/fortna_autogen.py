@@ -60,6 +60,11 @@ OPTIONAL_PROGRAMS: dict[str, str] = {
     "Sawtooth_Merge": "Sawtooth_Merge_Program.L5X",
 }
 
+# Sawtooth_Merge_Program.L5X is Context/Dependencies export with tags but NO DataType
+# bodies. Studio aborts Tags/Programs import when ST_* / SawMergeHMI_UDT are missing.
+# Companion fragment holds those UDT definitions (extracted once from PLC4 library export).
+SAWTOOTH_MERGE_DATATYPES = "Sawtooth_Merge_DataTypes.L5X"
+
 # Fortna ASC mechanical types → Excel autogen TYPE strings
 FORTNA_TYPE_TO_AUTOGEN = {
     "STRAIGHT": "Transport with MS",
@@ -4798,6 +4803,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             _retarget_gold_site_names(gp["program_xml"], site_stem)
         )
         gold_program_names.append(gname)
+        # Sawtooth program export has Context tags but no DataType bodies — inject
+        # companion ST_* / SawMergeHMI_UDT fragment so Studio can import Tags/Programs.
+        if gname == "Sawtooth_Merge":
+            st_path = PROGRAM_LIBRARY_DIR / SAWTOOTH_MERGE_DATATYPES
+            st_pack = load_program_export(st_path) if st_path.is_file() else None
+            if st_pack and st_pack.get("datatypes_xml"):
+                extra_dt_chunks.append(st_pack["datatypes_xml"])
+                _emit_progress(
+                    f"Sawtooth DataTypes loaded from {SAWTOOTH_MERGE_DATATYPES}",
+                    40,
+                )
+            elif st_path.is_file():
+                # load_program_export expects a Program target; fragment is Controller-shaped.
+                st_txt = st_path.read_text(encoding="utf-8", errors="replace")
+                st_dt = re.search(r"<DataTypes\b[^>]*>.*?</DataTypes>", st_txt, re.S)
+                if st_dt:
+                    extra_dt_chunks.append(
+                        re.sub(r"<DataTypes\b[^>]*>", "<DataTypes>", st_dt.group(0), count=1)
+                    )
+                    _emit_progress(
+                        f"Sawtooth DataTypes loaded from {SAWTOOTH_MERGE_DATATYPES}",
+                        40,
+                    )
+            else:
+                _emit_progress(
+                    f"WARNING: {SAWTOOTH_MERGE_DATATYPES} missing — Studio may drop Tags",
+                    40,
+                )
 
     # --- Equipment plan from tar → auto-hint packs (Sorter Track, merges note) ---
     equip = dict(getattr(inp, "equipment_plan", None) or {})
@@ -5263,7 +5296,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     for _chunk in list(programs_xml) + list(all_tags):
         _used.update(re.findall(r"\b([A-Za-z][A-Za-z0-9_]{2,60})\s*\(", _chunk))
         _used.update(re.findall(r'DataType="([^"]+)"', _chunk))
-    _keep = _aoi_lib_names & _used
+    _keep: set[str] = _aoi_lib_names & _used
     # Always keep core transport AOIs if present (safety net)
     for _core in ("Fast_Conv", "Slow_Flt", "Slow_Jam", "PE_Logic", "Full_PE", "Merge_2to1"):
         if _core in _aoi_lib_names:
@@ -5323,6 +5356,56 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             return head + "\n" + "\n".join(out_parts) + "\n</DataTypes>"
 
         dt_xml = _strip_udts_for_missing_aois(dt_xml, _keep)
+
+    # Close DataType member dependencies left by AOI/UDT pruning (e.g. Divert_CFG →
+    # Track_TestOffset after Track_* strip). Studio validates DataTypes before Tags;
+    # unresolved members → controller name kept, Tags/Programs discarded.
+    def _close_datatype_member_deps(dt_block: str, keep_aois: set[str] | None = None) -> str:
+        builtins = {
+            "BOOL", "SINT", "INT", "DINT", "LINT", "USINT", "UINT", "UDINT", "ULINT",
+            "REAL", "LREAL", "STRING", "TIMER", "COUNTER", "CONTROL", "MESSAGE",
+            "BIT", "CONNECTION_STATUS", "ALARM_ANALOG", "ALARM_DIGITAL",
+            # Rockwell FBD / motion builtins (appear as members without local DataType)
+            "FBD_TIMER", "FBD_MATH", "FBD_CONVERT", "FBD_MASKED_MOVE",
+            "FBD_BOOLEAN_OR", "FBD_BOOLEAN_AND", "FBD_ONESHOT",
+        }
+        keep_aois = keep_aois or set()
+        m_wrap = re.match(r"(<DataTypes\b[^>]*>)", dt_block)
+        head = m_wrap.group(1) if m_wrap else "<DataTypes>"
+        blocks: dict[str, str] = {}
+        for dm in re.finditer(
+            r'<DataType\s+Name="([^"]+)"[^>]*>.*?</DataType>', dt_block, re.S
+        ):
+            blocks[dm.group(1)] = dm.group(0)
+        changed = True
+        while changed:
+            changed = False
+            names = set(blocks) | keep_aois | builtins
+            drop: list[str] = []
+            for name, body in blocks.items():
+                mem = re.search(r"<Members>(.*?)</Members>", body, re.S)
+                if not mem:
+                    continue
+                for mt in re.findall(r'DataType="([^"]+)"', mem.group(1)):
+                    if (
+                        mt.startswith("AB:")
+                        or mt.startswith("STRING")
+                        or mt.startswith("FBD_")
+                    ):
+                        continue
+                    if mt not in names:
+                        drop.append(name)
+                        break
+            for name in drop:
+                blocks.pop(name, None)
+                changed = True
+                _emit_progress(
+                    f"DataType closure dropped {name} (unresolved member type)",
+                    89,
+                )
+        return head + "\n" + "\n".join(blocks[n] for n in sorted(blocks)) + "\n</DataTypes>"
+
+    dt_xml = _close_datatype_member_deps(dt_xml, _keep)
 
     prog_names = []
     for p in programs_xml:
@@ -6047,6 +6130,60 @@ def audit_written_l5x(path: Path) -> dict:
     ]
     info["l5x_p_conv_tags"] = len(p_conv)
     info["p_conv_sample"] = p_conv[:20]
+    # Studio aborts Tags/Programs when tag DataTypes are missing from <DataTypes>
+    # or when a DataType member references a missing type (partial import).
+    builtins = {
+        "BOOL", "SINT", "INT", "DINT", "LINT", "USINT", "UINT", "UDINT", "ULINT",
+        "REAL", "LREAL", "STRING", "TIMER", "COUNTER", "CONTROL", "MESSAGE",
+        "BIT", "CONNECTION_STATUS", "ALARM_ANALOG", "ALARM_DIGITAL",
+        "FBD_TIMER", "FBD_MATH", "FBD_CONVERT", "FBD_MASKED_MOVE",
+        "FBD_BOOLEAN_OR", "FBD_BOOLEAN_AND", "FBD_ONESHOT",
+    }
+    dt_names = set(re.findall(r'<DataType Name="([^"]+)"', text))
+    aoi_names = set(
+        re.findall(
+            r'(?:EncodedData EncodedType="AddOnInstructionDefinition"|AddOnInstructionDefinition)'
+            r'[^>]*Name="([^"]+)"',
+            text,
+        )
+    )
+    tag_types = set(
+        re.findall(r'<Tag Name="[^"]+" TagType="Base" DataType="([^"]+)"', text)
+    )
+    unresolved_tag_types = sorted(
+        t
+        for t in tag_types
+        if t not in builtins
+        and not t.startswith("AB:")
+        and not t.startswith("STRING")
+        and not t.startswith("FBD_")
+        and t not in dt_names
+        and t not in aoi_names
+    )
+    unresolved_members: list[str] = []
+    known = dt_names | aoi_names | builtins
+    for dm in re.finditer(
+        r'<DataType\s+Name="([^"]+)"[^>]*>(.*?)</DataType>', text, re.S
+    ):
+        name, body = dm.group(1), dm.group(2)
+        mem = re.search(r"<Members>(.*?)</Members>", body, re.S)
+        if not mem:
+            continue
+        for mt in re.findall(r'DataType="([^"]+)"', mem.group(1)):
+            if (
+                mt.startswith("AB:")
+                or mt.startswith("STRING")
+                or mt.startswith("FBD_")
+                or mt in known
+            ):
+                continue
+            unresolved_members.append(f"{name}.{mt}")
+    info["unresolved_tag_datatypes"] = unresolved_tag_types
+    info["unresolved_datatype_members"] = unresolved_members[:40]
+    info["git_in_l5x"] = None
+    gm = re.search(r"Git=([0-9a-fA-F]+)", text)
+    if gm:
+        info["git_in_l5x"] = gm.group(1)
     return info
 
 
@@ -6118,6 +6255,40 @@ def validate_l5x_output_integrity(
         failures.append(
             f"BUILD FAILED — Transportation model contained {expected_conveyors} devices "
             f"but final L5X contains 0 transport devices."
+        )
+
+    # Studio empties Tags/Programs when DataType deps are broken (controller shell remains).
+    unresolved_tags = list(audit.get("unresolved_tag_datatypes") or [])
+    unresolved_mem = list(audit.get("unresolved_datatype_members") or [])
+    stage["unresolved_tag_datatypes"] = unresolved_tags
+    stage["unresolved_datatype_members"] = unresolved_mem
+    if unresolved_tags:
+        sample = ", ".join(unresolved_tags[:8])
+        more = f" (+{len(unresolved_tags) - 8} more)" if len(unresolved_tags) > 8 else ""
+        failures.append(
+            "BUILD FAILED — L5X tags reference DataTypes not present in <DataTypes>: "
+            f"{sample}{more}. Studio will open controller name but discard Tags/Programs."
+        )
+    if unresolved_mem:
+        sample = ", ".join(unresolved_mem[:6])
+        failures.append(
+            "BUILD FAILED — DataType member dependency unresolved "
+            f"({sample}). Studio partial-import risk."
+        )
+
+    # Never validate a commit with an L5X whose embedded Git provenance mismatches HEAD.
+    expected_git = str(report.get("git_commit") or _git_commit_short() or "").strip()
+    got_git = str(audit.get("git_in_l5x") or "").strip()
+    stage["expected_git"] = expected_git
+    stage["git_in_l5x"] = got_git
+    if expected_git and got_git and not (
+        got_git.lower() == expected_git.lower()
+        or expected_git.lower().startswith(got_git.lower())
+        or got_git.lower().startswith(expected_git.lower())
+    ):
+        failures.append(
+            f"BUILD FAILED — L5X embedded Git={got_git} does not match build "
+            f"git_commit={expected_git}. Do not accept mismatched provenance."
         )
 
     mod_n = int(audit.get("l5x_module_count") or 0)
