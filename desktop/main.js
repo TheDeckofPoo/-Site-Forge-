@@ -1542,7 +1542,18 @@ function createWindow() {
       const outDir = path.join(REPO_ROOT, 'exports', 'run-geometry', 'auto-build');
       fs.mkdirSync(outDir, { recursive: true });
       const args = [script, '--run-dir', runDir, '--out', outDir, '--stdout-graph'];
-      if (data?.machine) args.push('--machine', String(data.machine));
+      let machine = data?.machine ? String(data.machine) : '';
+      if (!machine) {
+        try {
+          const meta = readJson(ACTIVE_META, null);
+          machine = String(meta?.machine || meta?.controller || '');
+          if (!machine && meta?.project_name) {
+            const m = String(meta.project_name).match(/_([A-Z0-9]+)$/i);
+            if (m) machine = m[1].toUpperCase();
+          }
+        } catch (_) { /* ignore */ }
+      }
+      if (machine) args.push('--machine', machine);
       if (data?.connectThreshold) args.push('--connect-threshold', String(data.connectThreshold));
       const result = await runPythonAsync(args, REPO_ROOT);
       if (result.error && !result.stdout) {

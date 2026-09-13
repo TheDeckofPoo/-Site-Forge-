@@ -1,0 +1,8 @@
+{
+  "source": "C:/Users/curtiskricke/SiteForge/exports/plc2-fidelity/transport/transport_graph_from_run.json",
+  "png": "C:/Users/curtiskricke/SiteForge/exports/plc2-fidelity/electron_transport.png",
+  "local_displayed": 59,
+  "external_displayed": 1,
+  "site_wide_displayed": 0,
+  "note": "PNG rendered from ControllerScope-filtered Auto Build graph. Electron Transport Build patches clear localStorage on RUN import and filter Auto Build + drawSchematic to LOCAL+EXTERNAL_REFERENCE only. Full Electron window capture still required for Curtis visual PASS."
+}

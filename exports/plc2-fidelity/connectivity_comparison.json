@@ -1,0 +1,3976 @@
+{
+  "generated_at": "2026-09-13T05:29:09.649410+00:00",
+  "policy": [
+    "Ignore Area naming differences (ModuleB_Area vs ORNCCP2_Area)",
+    "Finished PLC is validation-only answer sheet",
+    "Relationship compare: Conv/AOI/motor/PE/VFD/downstream/routine participation"
+  ],
+  "aggregate": {
+    "required": 206,
+    "generated_ok": 206,
+    "finished_present": 147
+  },
+  "coverage": 1.0,
+  "P123": {
+    "conveyor": "P123",
+    "relationships": {
+      "Conv_exists": {
+        "required": true,
+        "generated": true,
+        "finished": true
+      },
+      "AOI": {
+        "required": true,
+        "generated": true,
+        "finished": true
+      },
+      "motor_MS": {
+        "required": true,
+        "generated": true,
+        "finished": true
+      },
+      "VFD": {
+        "required": false,
+        "generated": false,
+        "finished": false
+      },
+      "PE_refs": {
+        "required": false,
+        "generated": false,
+        "finished": false
+      },
+      "downstream": {
+        "generated": "NO_Conv",
+        "finished": "P124",
+        "match": false
+      },
+      "routine_participation": {
+        "Fast": {
+          "generated": true,
+          "finished": true
+        },
+        "Slow_Flt": {
+          "generated": true,
+          "finished": true
+        },
+        "Slow_Jam": {
+          "generated": true,
+          "finished": true
+        },
+        "PE": {
+          "generated": false,
+          "finished": false
+        },
+        "Full": {
+          "generated": false,
+          "finished": false
+        },
+        "L1": {
+          "generated": true,
+          "finished": true
+        },
+        "L2": {
+          "generated": false,
+          "finished": true
+        }
+      }
+    },
+    "seed_case": true
+  },
+  "conveyors": [
+    {
+      "conveyor": "P1000",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1001",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1001",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1002",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1002",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "NO_Conv",
+          "match": true
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1004",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1005",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1005",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1002",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1006",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1007",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1007",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1008",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1008",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1014",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1010",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1011",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1011",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1008",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1014",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1015",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1015",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1016",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1016",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P1018",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1018",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "NO_Conv",
+          "match": true
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P123",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P124",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": true
+    },
+    {
+      "conveyor": "P124",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P128",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P126",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P128",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P130A",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P130",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P132",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P136_P1_Conv",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P134",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P136",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": true,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P136A",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P138",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P406",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P139",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P140",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P140",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P144",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P142",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P144",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P145A",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P145",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P146",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P150_P1_Conv",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P148",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P150",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": true,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P150A",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P220",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P222",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P220A",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P220",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P222",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "NO_Conv",
+          "match": true
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P228",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P230",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": true,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P232",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P233",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P234",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P234",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P236",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P236",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P240",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P238",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P240",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P242",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P242",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P400",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": true,
+            "finished": true
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P309",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P310",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P310",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P312",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P312",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P314",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": true,
+            "finished": true
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P314",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P136_P2_Conv",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P316",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P317",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P318",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P318",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P320",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": false,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P320",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P322",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": true,
+            "finished": true
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P322",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P150_P2_Conv",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P324",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": false
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": null,
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": false
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": false
+          },
+          "PE": {
+            "generated": true,
+            "finished": false
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": false
+          },
+          "L2": {
+            "generated": false,
+            "finished": false
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P400",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "NO_Conv",
+          "match": true
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P402",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P404",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": true,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P404",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "P406",
+          "match": false
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P406",
+      "relationships": {
+        "Conv_exists": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "AOI": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "motor_MS": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished": false
+        },
+        "PE_refs": {
+          "required": true,
+          "generated": true,
+          "finished": true
+        },
+        "downstream": {
+          "generated": "NO_Conv",
+          "finished": "NO_Conv",
+          "match": true
+        },
+        "routine_participation": {
+          "Fast": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Flt": {
+            "generated": true,
+            "finished": true
+          },
+          "Slow_Jam": {
+            "generated": true,
+            "finished": true
+          },
+          "PE": {
+            "generated": true,
+            "finished": true
+          },
+          "Full": {
+            "generated": false,
+            "finished": false
+          },
+          "L1": {
+            "generated": true,
+            "finished": true
+          },
+          "L2": {
+            "generated": false,
+            "finished": true
+          }
+        }
+      },
+      "seed_case": false
+    }
+  ]
+}

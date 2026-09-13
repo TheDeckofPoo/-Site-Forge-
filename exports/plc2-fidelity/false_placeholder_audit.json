@@ -1,0 +1,293 @@
+{
+  "generated_at": "2026-09-13T05:29:09.316897+00:00",
+  "definition": "Generated NO_PointPlaceholder (or missing) where finished has an active logical point",
+  "count": 26,
+  "rows": [
+    {
+      "adapter": "CP2RIO0",
+      "direction": "I",
+      "Data_index": 1,
+      "bit": 7,
+      "channel": "CP2RIO0:I.Data[1].7",
+      "finished_logical_point": "CP2_ES.I.ES_OK",
+      "run_logical_point": "2ES",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO0",
+      "direction": "I",
+      "Data_index": 7,
+      "bit": 6,
+      "channel": "CP2RIO0:I.Data[7].6",
+      "finished_logical_point": "CP8_P229_MS.I.Auxiliary_Forward",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO0",
+      "direction": "I",
+      "Data_index": 7,
+      "bit": 8,
+      "channel": "CP2RIO0:I.Data[7].8",
+      "finished_logical_point": "CP4_P408_MS.I.Auxiliary_Forward",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO0",
+      "direction": "I",
+      "Data_index": 7,
+      "bit": 9,
+      "channel": "CP2RIO0:I.Data[7].9",
+      "finished_logical_point": "CP3_P1014_MS.I.Auxiliary_Forward",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO0",
+      "direction": "O",
+      "Data_index": 0,
+      "bit": 0,
+      "channel": "CP2RIO0:O.Data[0].0",
+      "finished_logical_point": "CP2_CS.O.Start_PB_LT",
+      "run_logical_point": "2PBSTART_PLT",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO0",
+      "direction": "O",
+      "Data_index": 0,
+      "bit": 1,
+      "channel": "CP2RIO0:O.Data[0].1",
+      "finished_logical_point": "CP2_CS.O.Stop_PB_LT",
+      "run_logical_point": "2PBSTOP_PLT",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO1",
+      "direction": "I",
+      "Data_index": 2,
+      "bit": 0,
+      "channel": "CP2RIO1:I.Data[2].0",
+      "finished_logical_point": "EZPWS136.I.PS_OK",
+      "run_logical_point": "EZPWS136",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO1",
+      "direction": "I",
+      "Data_index": 2,
+      "bit": 2,
+      "channel": "CP2RIO1:I.Data[2].2",
+      "finished_logical_point": "EZPWS312.I.PS_OK",
+      "run_logical_point": "EZPWS312",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO1",
+      "direction": "I",
+      "Data_index": 2,
+      "bit": 3,
+      "channel": "CP2RIO1:I.Data[2].3",
+      "finished_logical_point": "EZPWS402.I.PS_OK",
+      "run_logical_point": "EZPWS402",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO1",
+      "direction": "I",
+      "Data_index": 2,
+      "bit": 8,
+      "channel": "CP2RIO1:I.Data[2].8",
+      "finished_logical_point": "P406_CS.I.Reset_PB",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO1",
+      "direction": "I",
+      "Data_index": 2,
+      "bit": 9,
+      "channel": "CP2RIO1:I.Data[2].9",
+      "finished_logical_point": "P1002_CS.I.Reset_PB",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP2RIO1",
+      "direction": "I",
+      "Data_index": 2,
+      "bit": 12,
+      "channel": "CP2RIO1:I.Data[2].12",
+      "finished_logical_point": "PS312.I.Pressure_OK",
+      "run_logical_point": "PS312",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO0",
+      "direction": "I",
+      "Data_index": 1,
+      "bit": 8,
+      "channel": "CP3RIO0:I.Data[1].8",
+      "finished_logical_point": "CP3_ES.I.ES_OK",
+      "run_logical_point": "3ES",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO0",
+      "direction": "O",
+      "Data_index": 0,
+      "bit": 0,
+      "channel": "CP3RIO0:O.Data[0].0",
+      "finished_logical_point": "CP3_CS.O.Start_PB_LT",
+      "run_logical_point": "3PBSTART_PLT",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO0",
+      "direction": "O",
+      "Data_index": 0,
+      "bit": 1,
+      "channel": "CP3RIO0:O.Data[0].1",
+      "finished_logical_point": "CP3_CS.O.Stop_PB_LT",
+      "run_logical_point": "3PBSTOP_PLT",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 0,
+      "bit": 8,
+      "channel": "CP3RIO1:I.Data[0].8",
+      "finished_logical_point": "P402_MS.I.Auxiliary_Forward",
+      "run_logical_point": "M402_AUX",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 0,
+      "bit": 9,
+      "channel": "CP3RIO1:I.Data[0].9",
+      "finished_logical_point": "Trash_Compactor_Running",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 4,
+      "bit": 0,
+      "channel": "CP3RIO1:I.Data[4].0",
+      "finished_logical_point": "P400_CS.I.Reset_PB",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 4,
+      "bit": 1,
+      "channel": "CP3RIO1:I.Data[4].1",
+      "finished_logical_point": "P1008_CS.I.Reset_PB",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 4,
+      "bit": 2,
+      "channel": "CP3RIO1:I.Data[4].2",
+      "finished_logical_point": "P1014_CS.I.Reset_PB",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 4,
+      "bit": 7,
+      "channel": "CP3RIO1:I.Data[4].7",
+      "finished_logical_point": "PS320.I.Pressure_OK",
+      "run_logical_point": "PS320",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 4,
+      "bit": 11,
+      "channel": "CP3RIO1:I.Data[4].11",
+      "finished_logical_point": "EZPWS150.I.PS_OK",
+      "run_logical_point": "EZPWS150",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 4,
+      "bit": 12,
+      "channel": "CP3RIO1:I.Data[4].12",
+      "finished_logical_point": "EZPWS242.I.PS_OK",
+      "run_logical_point": "EZPWS242",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "I",
+      "Data_index": 4,
+      "bit": 13,
+      "channel": "CP3RIO1:I.Data[4].13",
+      "finished_logical_point": "EZPWS320.I.PS_OK",
+      "run_logical_point": "EZPWS320",
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "O",
+      "Data_index": 7,
+      "bit": 0,
+      "channel": "CP3RIO1:O.Data[7].0",
+      "finished_logical_point": "P1018_CS.O.Start_PB_LT",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    },
+    {
+      "adapter": "CP3RIO1",
+      "direction": "O",
+      "Data_index": 7,
+      "bit": 1,
+      "channel": "CP3RIO1:O.Data[7].1",
+      "finished_logical_point": "P1018_CS.O.Stop_PB_LT",
+      "run_logical_point": null,
+      "generated_logical_point": null,
+      "generated_is_placeholder": true
+    }
+  ]
+}

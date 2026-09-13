@@ -1,0 +1,136 @@
+{
+  "generated_at": "2026-09-13T05:29:09.653401+00:00",
+  "ok": true,
+  "machine": "ORNCCP2",
+  "generated_l5x": "C:\\Users\\curtiskricke\\SiteForge\\exports\\studio-validation\\ORNCCP2_transport_fidelity_candidate.L5X",
+  "finished_l5x": "C:\\Users\\curtiskricke\\SiteForge\\workspace\\validation\\ORLY_GreensboroPLC2_NC_Finished.L5X",
+  "channel_counts": {
+    "EXACT": 324,
+    "EQUIVALENT": 111,
+    "WRONG_DEVICE": 32,
+    "WRONG_MEMBER": 2,
+    "WRONG_ADAPTER": 1,
+    "WRONG_SLOT": 0,
+    "WRONG_BIT": 0,
+    "WRONG_DIRECTION": 0,
+    "FALSE_PLACEHOLDER": 26,
+    "SHOULD_BE_PLACEHOLDER": 16,
+    "RUN_UNRESOLVED": 0
+  },
+  "false_placeholders": 26,
+  "io_summary": {
+    "channels_compared": 512,
+    "generated_real_I": 147,
+    "generated_real_O": 78,
+    "finished_real_I": 159,
+    "finished_real_O": 75,
+    "generated_placeholders": 177,
+    "finished_placeholders": 274,
+    "exact_real_tag_channel": 173
+  },
+  "controller_scope": {
+    "LOCAL": 59,
+    "EXTERNAL_REFERENCE": 4,
+    "OUT_OF_SCOPE": 147,
+    "UNRESOLVED": 74
+  },
+  "P123": {
+    "device": {
+      "conveyor": "P123",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": true
+    },
+    "routines": {
+      "conveyor": "P123",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": true
+    }
+  },
+  "connectivity_coverage": 1.0,
+  "report": "C:\\Users\\curtiskricke\\SiteForge\\exports\\plc2-fidelity\\report.md"
+}

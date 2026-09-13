@@ -1,0 +1,2485 @@
+{
+  "generated_at": "2026-09-13T05:29:09.416261+00:00",
+  "local_conveyor_count": 59,
+  "seed_case": "P123",
+  "P123": {
+    "conveyor": "P123",
+    "type": "STRAIGHT",
+    "has_motor": true,
+    "has_vfd": false,
+    "photoeyes": [],
+    "families": {
+      "Conv": {
+        "required": true,
+        "generated": true,
+        "finished_present": true,
+        "result": "PRESENT"
+      },
+      "Conv_AOI": {
+        "required": true,
+        "generated": true,
+        "finished_present": true,
+        "result": "PRESENT"
+      },
+      "MS": {
+        "required": true,
+        "generated": true,
+        "finished_present": true,
+        "result": "PRESENT"
+      },
+      "VFD": {
+        "required": false,
+        "generated": false,
+        "finished_present": false,
+        "result": "N/A"
+      },
+      "PE": {
+        "required": false,
+        "generated": false,
+        "finished_present": false,
+        "result": "N/A"
+      }
+    },
+    "seed_case": true
+  },
+  "totals": {
+    "Conv_PRESENT": 59,
+    "Conv_AOI_PRESENT": 59,
+    "MS_PRESENT": 59,
+    "VFD_N/A": 59,
+    "PE_PRESENT": 29,
+    "PE_N/A": 30
+  },
+  "conveyors": [
+    {
+      "conveyor": "P1000",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE1000_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1001",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1002",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE1002_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1004",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE1004_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1005",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1006",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE1006_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1007",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1008",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE1008_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1010",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE1010_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1011",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1014",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE1014_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1015",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1016",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1018",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE1018_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P123",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": true
+    },
+    {
+      "conveyor": "P124",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P126",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE126_JF"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P128",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P130",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P132",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P134",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE134_JF"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P136",
+      "type": "ZEROPRESSURE",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "EZPE136_F1",
+        "EZPE136_F2",
+        "EZPE136_P1",
+        "EZPE136_P2"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P136A",
+      "type": "ZEROPRESSURE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P138",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE138_P"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P139",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P140",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P142",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE142_JF"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P144",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P145",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P146",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P148",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE148_JF"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P150",
+      "type": "ZEROPRESSURE",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "EZPE150_F1",
+        "EZPE150_F2",
+        "EZPE150_P2",
+        "EZPE150_P1"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P150A",
+      "type": "ZEROPRESSURE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P220",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P220A",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P222",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P228",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P230",
+      "type": "ZEROPRESSURE",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "EZPE230_P",
+        "EZPE230_F"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P232",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE232_P"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P233",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P234",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P236",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P238",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE238_JF"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P240",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P242",
+      "type": "ZEROPRESSURE",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "EZPE242_F",
+        "EZPE242_P"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P309",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P310",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P312",
+      "type": "ZEROPRESSURE",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "EZPE312_F",
+        "EZPE312_P"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P314",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE314_P"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P316",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE316_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P317",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P318",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P320",
+      "type": "ZEROPRESSURE",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "EZPE320_F",
+        "EZPE320_P"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P322",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE322_P"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P324",
+      "type": "CURVE",
+      "has_motor": false,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE324_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": false,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P400",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE400_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P402",
+      "type": "ZEROPRESSURE",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "EZPE402_P",
+        "EZPE402_F"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P404",
+      "type": "BELT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE404_P"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P406",
+      "type": "STRAIGHT",
+      "has_motor": true,
+      "has_vfd": false,
+      "photoeyes": [
+        "PE406_J"
+      ],
+      "families": {
+        "Conv": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "Conv_AOI": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "MS": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        },
+        "VFD": {
+          "required": false,
+          "generated": false,
+          "finished_present": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "required": true,
+          "generated": true,
+          "finished_present": true,
+          "result": "PRESENT"
+        }
+      },
+      "seed_case": false
+    }
+  ],
+  "note": "Required families derived from RUN motor/drive/PE evidence + mechanical type \u2014 not hard-coded device ids"
+}

@@ -1734,7 +1734,15 @@
     if (!svg) return;
     // Clean schematic is always drawn in normal mode. Advanced "Physical debug"
     // only adds extra cues — it does not replace the schematic.
-    const nodes = (area?.nodes || []).filter(isSchematicNode);
+    const nodes = (area?.nodes || []).filter((n) => {
+      if (!isSchematicNode(n)) return false;
+      // Controller-scoped canvas: LOCAL + EXTERNAL_REFERENCE only
+      if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') return true;
+      if (n.displayContext) return false;
+      if (n.plcOwned === false) return false;
+      if (n.scopeClass === 'OUT_OF_SCOPE' || n.scopeClass === 'UNRESOLVED') return false;
+      return true;
+    });
     const lod = detailLevel();
     const offsets = computePresentationOffsets(nodes, area);
     const debug = tb.viewMode === 'geom-debug' || !!tb.layers?.physical;
@@ -1762,8 +1770,10 @@
       let cls = `tb-schematic-body tb-rk-${rk}`;
       if (sel) cls += ' selected';
       if (amb) cls += ' tb-ambiguous';
-      if (n.displayContext) cls += ' tb-display-context';
-      const tag = (n.conveyorTag || n.label || '').trim() || 'P???';
+      if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') cls += ' tb-display-context tb-external-ref';
+      const tag = (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE')
+        ? (`→ External ${(n.conveyorTag || n.label || '').trim()}`.trim() || '→ External')
+        : ((n.conveyorTag || n.label || '').trim() || 'P???');
       const mid0 = n.entryCanvas && n.exitCanvas
         ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };

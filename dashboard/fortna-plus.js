@@ -711,6 +711,19 @@ async function importRunPackage(path, name) {
   } catch (e) {
     log(`SiteModel→editors: ${e?.message || e}`, 'warn');
   }
+  // Fresh RUN must not keep a prior site-wide Transport canvas (localStorage).
+  try {
+    localStorage.removeItem('siteforge.transportBuild.v1');
+    if (typeof window.transportBuildClearAll === 'function') {
+      window.transportBuildClearAll();
+    }
+    if (typeof window.transportBuildRefresh === 'function') {
+      window.transportBuildRefresh();
+    }
+    log('Transport canvas cleared for new RUN — use Auto Build for controller-scoped layout', 'ok');
+  } catch (e) {
+    log(`Transport clear on import: ${e?.message || e}`, 'warn');
+  }
   return true;
 }
 

@@ -1,0 +1,157 @@
+{
+  "aug28": {
+    "path": "workspace/validation/MSCRENO_MSCRENOSHIP_AUG28.L5X",
+    "size": 1971331,
+    "modules": 68,
+    "catalogs": {
+      "1756-L83E": 1,
+      "1756-EN2T": 1,
+      "1734-AENTR/C": 4,
+      "1734-IB8/C": 25,
+      "1734-IA4/C": 16,
+      "1734-OA4/C": 12,
+      "1734-OB8E/C": 9
+    },
+    "adapters": [
+      "AENTR15",
+      "AENTR15RP1",
+      "AENTR15RP2",
+      "AENTR16"
+    ],
+    "programs": [
+      "MSCRENOSHIP_Area_Slow",
+      "MSCRENOSHIP_Area_Fast",
+      "MSCRENOSHIP_Area_L1",
+      "MSCRENOSHIP_Area_L2",
+      "System",
+      "Sys",
+      "IO_MAP"
+    ],
+    "Conv_UDT": 99,
+    "Conv_AOI": 86,
+    "Motor_Starter_UDT": 91,
+    "VFD_UDT": 6,
+    "PE_UDT": 202,
+    "Conv_name": 176,
+    "Conv_AOI_name": 43,
+    "MS_name": 43,
+    "VFD_name": 7,
+    "CP_I": {
+      "rungs": 169,
+      "xic": 164,
+      "placeholders": 0,
+      "approx_real": 164
+    },
+    "CP_O": {
+      "rungs": 92,
+      "xic": 87,
+      "placeholders": 0,
+      "approx_real": 87
+    },
+    "routines": [
+      "Area",
+      "Area_Logic",
+      "Area_PI",
+      "CP_I",
+      "CP_O",
+      "CS",
+      "Constant_Values",
+      "Control_Station",
+      "Conv",
+      "Conv_Fast",
+      "Conv_Flt",
+      "Conv_Full",
+      "Conv_Jam",
+      "Conv_Merge",
+      "Conv_PE",
+      "Conv_PI",
+      "Conv_Speed",
+      "Devices_Comm_Logic",
+      "FullTime",
+      "HMI",
+      "MS_Time",
+      "Main_Routine",
+      "Merge",
+      "NTP",
+      "PETime",
+      "PLC_Init",
+      "PS_Time",
+      "PWS_Time",
+      "Stacklight",
+      "Sys",
+      "System_Logic"
+    ]
+  },
+  "current": {
+    "path": "exports/mscreno-aug28-regression/current/MSCRENO_MSCRENOSHIP.L5X",
+    "size": 1639294,
+    "modules": 68,
+    "catalogs": {
+      "1756-L83E": 1,
+      "1756-EN2T": 1,
+      "1734-AENTR/C": 4,
+      "1734-IB8/C": 25,
+      "1734-IA4/C": 16,
+      "1734-OA4/C": 12,
+      "1734-OB8E/C": 9
+    },
+    "adapters": [
+      "AENTR15",
+      "AENTR15RP1",
+      "AENTR15RP2",
+      "AENTR16"
+    ],
+    "programs": [
+      "MSCRENOSHIP_Area_Slow",
+      "MSCRENOSHIP_Area_Fast",
+      "MSCRENOSHIP_Area_L1",
+      "MSCRENOSHIP_Area_L2",
+      "Sys",
+      "IO_MAP"
+    ],
+    "Conv_UDT": 79,
+    "Conv_AOI": 66,
+    "Motor_Starter_UDT": 119,
+    "VFD_UDT": 6,
+    "PE_UDT": 202,
+    "Conv_name": 166,
+    "Conv_AOI_name": 33,
+    "MS_name": 57,
+    "VFD_name": 7,
+    "CP_I": {
+      "rungs": 278,
+      "xic": 269,
+      "placeholders": 105,
+      "approx_real": 164
+    },
+    "CP_O": {
+      "rungs": 134,
+      "xic": 125,
+      "placeholders": 38,
+      "approx_real": 87
+    },
+    "routines": [
+      "Area",
+      "CP_I",
+      "CP_O",
+      "CS",
+      "Constant_Values",
+      "Conv",
+      "Conv_Fast",
+      "Conv_Flt",
+      "Conv_Full",
+      "Conv_Jam",
+      "Conv_PE",
+      "Conv_Speed",
+      "FullTime",
+      "HMI",
+      "MS_Time",
+      "Main_Routine",
+      "PETime",
+      "PLC_Init",
+      "PS_Time",
+      "PWS_Time",
+      "Sys"
+    ]
+  }
+}

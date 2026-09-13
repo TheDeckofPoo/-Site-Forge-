@@ -1,0 +1,3347 @@
+{
+  "generated_at": "2026-09-13T05:29:09.573541+00:00",
+  "routine_keys": [
+    "Fast",
+    "Slow_Flt",
+    "Slow_Jam",
+    "Slow_PI",
+    "PE",
+    "Full",
+    "L1",
+    "L2"
+  ],
+  "derivation": "Expected participation from RUN mechanical type + motor/VFD/PE evidence: motorized \u2192 Fast/Slow_Flt/Slow_Jam/Slow_PI/L1/L2; PE evidence \u2192 PE/Full",
+  "summary": {
+    "Fast": {
+      "OK": 59
+    },
+    "Slow_Flt": {
+      "OK": 48,
+      "EXTRA": 11
+    },
+    "Slow_Jam": {
+      "OK": 59
+    },
+    "Slow_PI": {
+      "MISSING": 48,
+      "N/A": 11
+    },
+    "PE": {
+      "OK": 29,
+      "N/A": 30
+    },
+    "Full": {
+      "MISSING": 22,
+      "N/A": 30,
+      "OK": 7
+    },
+    "L1": {
+      "OK": 59
+    },
+    "L2": {
+      "MISSING": 59
+    }
+  },
+  "P123": {
+    "conveyor": "P123",
+    "type": "STRAIGHT",
+    "routines": {
+      "Fast": {
+        "expected": true,
+        "generated": true,
+        "finished": true,
+        "result": "OK"
+      },
+      "Slow_Flt": {
+        "expected": true,
+        "generated": true,
+        "finished": true,
+        "result": "OK"
+      },
+      "Slow_Jam": {
+        "expected": true,
+        "generated": true,
+        "finished": true,
+        "result": "OK"
+      },
+      "Slow_PI": {
+        "expected": true,
+        "generated": false,
+        "finished": true,
+        "result": "MISSING"
+      },
+      "PE": {
+        "expected": false,
+        "generated": false,
+        "finished": false,
+        "result": "N/A"
+      },
+      "Full": {
+        "expected": false,
+        "generated": false,
+        "finished": false,
+        "result": "N/A"
+      },
+      "L1": {
+        "expected": true,
+        "generated": true,
+        "finished": true,
+        "result": "OK"
+      },
+      "L2": {
+        "expected": true,
+        "generated": false,
+        "finished": true,
+        "result": "MISSING"
+      }
+    },
+    "seed_case": true
+  },
+  "conveyors": [
+    {
+      "conveyor": "P1000",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1001",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1002",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1004",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1005",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1006",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1007",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1008",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1010",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1011",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1014",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1015",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1016",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P1018",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P123",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": true
+    },
+    {
+      "conveyor": "P124",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": true,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P126",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P128",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P130",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P132",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": true,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P134",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P136",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P136A",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P138",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P139",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P140",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": true,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P142",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P144",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P145",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P146",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": true,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P148",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P150",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P150A",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P220",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P220A",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P222",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": true,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P228",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P230",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P232",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P233",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P234",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P236",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": true,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P238",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P240",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P242",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P309",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P310",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P312",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P314",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P316",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P317",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P318",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "Full": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P320",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P322",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P324",
+      "type": "CURVE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": false,
+          "generated": true,
+          "finished": false,
+          "result": "EXTRA"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": false,
+          "generated": false,
+          "finished": false,
+          "result": "N/A"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P400",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P402",
+      "type": "ZEROPRESSURE",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": true,
+          "finished": false,
+          "result": "OK"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P404",
+      "type": "BELT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    },
+    {
+      "conveyor": "P406",
+      "type": "STRAIGHT",
+      "routines": {
+        "Fast": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Flt": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_Jam": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Slow_PI": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        },
+        "PE": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "Full": {
+          "expected": true,
+          "generated": false,
+          "finished": false,
+          "result": "MISSING"
+        },
+        "L1": {
+          "expected": true,
+          "generated": true,
+          "finished": true,
+          "result": "OK"
+        },
+        "L2": {
+          "expected": true,
+          "generated": false,
+          "finished": true,
+          "result": "MISSING"
+        }
+      },
+      "seed_case": false
+    }
+  ]
+}

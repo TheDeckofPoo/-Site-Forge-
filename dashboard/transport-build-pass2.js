@@ -1410,7 +1410,17 @@
     status('Auto Build From RUN…');
     let res;
     try {
-      res = await api.transportAutoBuildFromRun({});
+      // Pass active machine so Auto Build uses ControllerScope, not plant-wide Conveyor.asc
+      let machine = '';
+      try {
+        const ws = await api.getWorkspace?.();
+        machine = ws?.active?.machine || ws?.active?.controller || '';
+        if (!machine && ws?.active?.project_name) {
+          const m = String(ws.active.project_name).match(/_([A-Z0-9]+)$/i);
+          if (m) machine = m[1].toUpperCase();
+        }
+      } catch (_) { /* ignore */ }
+      res = await api.transportAutoBuildFromRun(machine ? { machine } : {});
     } catch (err) {
       await showInfo('Auto Build failed', String(err?.message || err));
       status(`Auto Build error: ${err?.message || err}`);
@@ -1422,7 +1432,36 @@
       return;
     }
     const g = res.graph;
-    tb.areas = Array.isArray(g.areas) ? g.areas : [];
+    // ONE transport equipment source: ControllerScope LOCAL + EXTERNAL_REFERENCE only.
+    // displayContext neighbors used for geometry mating must NOT paint the whole site.
+    const rawAreas = Array.isArray(g.areas) ? g.areas : [];
+    const keptNodeIds = new Set();
+    tb.areas = rawAreas.map((area) => {
+      const nodes = (area.nodes || []).filter((n) => {
+        const external = !!(n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE');
+        const local = n.plcOwned !== false && !n.displayContext && !external
+          && n.scopeClass !== 'OUT_OF_SCOPE' && n.scopeClass !== 'UNRESOLVED';
+        // Keep compact external stubs; drop non-owned displayContext expansion
+        const keep = local || external;
+        if (keep && n.id) keptNodeIds.add(n.id);
+        return keep;
+      }).map((n) => {
+        if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') {
+          return {
+            ...n,
+            displayContext: true,
+            plcOwned: false,
+            externalReference: true,
+            scopeClass: 'EXTERNAL_REFERENCE',
+            label: n.label || `→ External ${n.conveyorTag || n.label || ''}`.trim(),
+            schematic: true,
+          };
+        }
+        return { ...n, scopeClass: n.scopeClass || 'LOCAL', plcOwned: true, displayContext: false };
+      });
+      const wires = (area.wires || []).filter((w) => keptNodeIds.has(w.from) && keptNodeIds.has(w.to));
+      return { ...area, nodes, wires };
+    }).filter((a) => (a.nodes || []).length > 0);
     tb.activeAreaId = g.activeAreaId || tb.areas[0]?.id || null;
     tb.selectedId = null;
     tb.selectedIds = [];
@@ -1438,6 +1477,14 @@
     // Presentation transform only — preserve RUN sourceX/Y/Angle/Length/Width
     tb.physicalLayout = !!g.physicalLayout;
     tb.metrics = mSafe(res.metrics || g.metrics || {});
+    const localN = (tb.areas || []).reduce((s, a) => s + (a.nodes || []).filter((n) => n.plcOwned && !n.externalReference).length, 0);
+    const extN = (tb.areas || []).reduce((s, a) => s + (a.nodes || []).filter((n) => n.externalReference).length, 0);
+    tb.metrics = {
+      ...tb.metrics,
+      ui_local_displayed: localN,
+      ui_external_displayed: extN,
+      ui_controller_scoped: true,
+    };
     if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
     if (!tb.layers) {
       tb.layers = {

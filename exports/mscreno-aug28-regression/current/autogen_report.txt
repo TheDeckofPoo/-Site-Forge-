@@ -1,0 +1,28 @@
+Site Forge PLC Autogen (Python) — 20260913-011359
+Project: MSCRENO_MSCRENOSHIP
+Processor: 1756-L83E  v35.00
+Library: OReilly_Library_v3.L5X
+Conveyors: 33  (with real PE: 22) — scoped to this master PLC only
+Areas: 1
+Tags: 495
+PE devices: 91  PE_Logic/Full_PE rungs: 30
+Slow_Flt rungs: 33
+EIP adapters: 4  RIO: ['AENTR15', 'AENTR15RP1', 'AENTR15RP2', 'AENTR16']
+EIP child cards: 62 (AB: typed C/I/O tags)
+IO_MAP source: run_tar_gz_banks_eip — Built from RUN Conveyor.asc banks + EIP word_map → CPxRIOn modules
+IO_MAP: 251 mapped, 25 unmapped (word map entries: 62)
+RIO modules: 62  names: AENTR15, AENTR15RP1, AENTR15RP2, AENTR16
+Physical map: 251 mapped / 25 unmapped → physical_io_map.csv
+Studio tag CSV: (none) (0 rows)
+Programs: MSCRENOSHIP_Area_Slow, MSCRENOSHIP_Area_Fast, MSCRENOSHIP_Area_L1, MSCRENOSHIP_Area_L2, Sys, IO_MAP
+Templates: {'P1000_Conv': 2, 'P3000_Conv': 31}
+Output: C:\Users\curtiskricke\SiteForge\exports\mscreno-aug28-regression\current\MSCRENO_MSCRENOSHIP.L5X
+
+Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File→Open L5X).
+Engine: fortna_autogen.py — IO_MAP from RUN/tar.gz banks + EIP modules by default.
+Gold Excel IO_MAP is optional (--io-map-gold / UI checkbox); it replaces RUN mapping.
+Logic: Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP CP_I/CP_O.
+I/O tree: RUN EIPAdapters/EIPModules/EIPCSV + eipcfg.xml → CPxRIOn (1734 POINT or 1794 Flex).
+Verify: open physical_io_map.csv + rio_inventory.json next to the L5X.
+OPEN as NEW project in Studio (File→Open). Do not Import into existing .acd.
+Excel templates not in library (used fallbacks): P7000_Conv

@@ -1879,7 +1879,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
     pe_by_conv: dict[str, list[dict]] = {}
     io_points: list[IoPoint] = []
     pe_devices: list[dict] = []
-    linked_conveyors: set[str] = set()  # P### owned via PE/IO on this machine
+    linked_conveyors: set[str] = set()  # P### owned via PE/VFD/motor IO on this machine
 
     # VFD tags on this controller only (for conveyor MS vs VFD classification)
     vfd_num_keys: set[str] = set()
@@ -1970,6 +1970,16 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 dm = re.search(r"(\d{2,4})", name)
                 if dm:
                     linked_conveyors.add(f"P{dm.group(1)}")
+            elif kind == "motor":
+                # M123 / M123_AUX → P123 (exact numeric+letter family, never prefix).
+                # Belts often have Machine_Name=N/A but motors are controller-tagged.
+                mm = re.match(
+                    r"^M(\d{2,4})([A-Z]*)(?:_AUX|_FLT|_OK|_RUN)?$",
+                    str(name or ""),
+                    re.I,
+                )
+                if mm:
+                    linked_conveyors.add(f"P{mm.group(1)}{mm.group(2)}".upper())
             io_dir = str(p.get("io_type") or "").upper()
             direction = "O" if io_dir in ("OUT", "O", "OUTPUT") else "I"
             # Encoders are inputs (pulse) — never force to output even if Type=BEACON
@@ -1995,8 +2005,8 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
                 )
             )
 
-    # Conveyors: explicit Machine_Name match OR linked from this controller's PE/VFD
-    # (plant-wide ASC often leaves conveyors as Machine_Name=N/A)
+    # Conveyors: explicit Machine_Name match OR linked from this controller's
+    # PE / VFD / motor IO (plant-wide ASC often leaves conveyors as Machine_Name=N/A)
     conveyors: list[ConveyorRow] = []
     areas: list[str] = []
     n = 0

@@ -1,0 +1,188 @@
+{
+  "fixture": "MSCRENO_MSCRENOSHIP",
+  "historical_l5x": "workspace/validation/MSCRENO_MSCRENOSHIP_AUG28.L5X",
+  "current_l5x": "exports/mscreno-aug28-regression/MSCRENO_MSCRENOSHIP_CURRENT.L5X",
+  "generating_context": {
+    "historical_timestamp": "2026-08-28T14:45:50",
+    "historical_code_snapshot": "exports/backups/suite-20260828-163000/FortnaPlus/tools/scripts/fortna_autogen.py",
+    "historical_commits": [
+      "0ce9e1e",
+      "88581bf",
+      "7b0ed46",
+      "b2e94d9"
+    ],
+    "pack_good_autogen": "exports/backups/good-autogen-20260826-184506/scripts/fortna_autogen.py",
+    "current_branch": "feature/plc2-transport-fidelity",
+    "run_archive": "workspace/inbox/20260813-1132-MSCRENO-MSCRENOSHIP-RUN.tar.gz"
+  },
+  "aug28": {
+    "path": "workspace/validation/MSCRENO_MSCRENOSHIP_AUG28.L5X",
+    "size_bytes": 1971331,
+    "modules": 68,
+    "adapters": 4,
+    "adapter_names": [
+      "AENTR15",
+      "AENTR15RP1",
+      "AENTR15RP2",
+      "AENTR16"
+    ],
+    "catalogs": {
+      "1734-IB8/C": 25,
+      "1734-IA4/C": 16,
+      "1734-OA4/C": 12,
+      "1734-OB8E/C": 9,
+      "1734-AENTR/C": 4,
+      "1756-L83E": 1,
+      "1756-EN2T": 1
+    },
+    "Conv_UDT": 44,
+    "Conv_AOI": 43,
+    "MS": 42,
+    "Motor_Starter_UDT": 45,
+    "VFD_tags": 5,
+    "PE_UDT": 94,
+    "programs": [
+      "MSCRENOSHIP_Area_Slow",
+      "MSCRENOSHIP_Area_Fast",
+      "MSCRENOSHIP_Area_L1",
+      "MSCRENOSHIP_Area_L2",
+      "System",
+      "Sys",
+      "IO_MAP"
+    ],
+    "program_count": 7,
+    "area_programs": [
+      "MSCRENOSHIP_Area_Slow",
+      "MSCRENOSHIP_Area_Fast",
+      "MSCRENOSHIP_Area_L1",
+      "MSCRENOSHIP_Area_L2"
+    ],
+    "has_Area_Fast": true,
+    "has_Area_Slow": true,
+    "has_Area_L1": true,
+    "has_Area_L2": true,
+    "CP_I": {
+      "present": true,
+      "rungs": 169,
+      "real": 164,
+      "nop": 5,
+      "placeholder": 0
+    },
+    "CP_O": {
+      "present": true,
+      "rungs": 92,
+      "real": 87,
+      "nop": 5,
+      "placeholder": 0
+    },
+    "has_IO_MAP": true
+  },
+  "current": {
+    "path": "exports/mscreno-aug28-regression/MSCRENO_MSCRENOSHIP_CURRENT.L5X",
+    "size_bytes": 1639294,
+    "modules": 68,
+    "adapters": 4,
+    "adapter_names": [
+      "AENTR15",
+      "AENTR15RP1",
+      "AENTR15RP2",
+      "AENTR16"
+    ],
+    "catalogs": {
+      "1734-IB8/C": 25,
+      "1734-IA4/C": 16,
+      "1734-OA4/C": 12,
+      "1734-OB8E/C": 9,
+      "1734-AENTR/C": 4,
+      "1756-L83E": 1,
+      "1756-EN2T": 1
+    },
+    "Conv_UDT": 34,
+    "Conv_AOI": 33,
+    "MS": 56,
+    "Motor_Starter_UDT": 59,
+    "VFD_tags": 5,
+    "PE_UDT": 94,
+    "programs": [
+      "MSCRENOSHIP_Area_Slow",
+      "MSCRENOSHIP_Area_Fast",
+      "MSCRENOSHIP_Area_L1",
+      "MSCRENOSHIP_Area_L2",
+      "Sys",
+      "IO_MAP"
+    ],
+    "program_count": 6,
+    "area_programs": [
+      "MSCRENOSHIP_Area_Slow",
+      "MSCRENOSHIP_Area_Fast",
+      "MSCRENOSHIP_Area_L1",
+      "MSCRENOSHIP_Area_L2"
+    ],
+    "has_Area_Fast": true,
+    "has_Area_Slow": true,
+    "has_Area_L1": true,
+    "has_Area_L2": true,
+    "CP_I": {
+      "present": true,
+      "rungs": 278,
+      "real": 164,
+      "nop": 9,
+      "placeholder": 105
+    },
+    "CP_O": {
+      "present": true,
+      "rungs": 134,
+      "real": 87,
+      "nop": 9,
+      "placeholder": 38
+    },
+    "has_IO_MAP": true
+  },
+  "delta": {
+    "modules": 0,
+    "adapters": 0,
+    "Conv_UDT": -10,
+    "Conv_AOI": -10,
+    "MS": 14,
+    "Motor_Starter_UDT": 14,
+    "VFD_tags": 0,
+    "PE_UDT": 0,
+    "program_count": -1,
+    "CP_I_real": 0,
+    "CP_O_real": 0,
+    "CP_I_placeholder": 105,
+    "CP_O_placeholder": 38
+  },
+  "missing_conv_only_in_aug28": [
+    "P130_Conv",
+    "P410_Conv",
+    "P52_Conv",
+    "P600_Conv",
+    "P601_Conv",
+    "P602_Conv",
+    "P604_Conv",
+    "P606_Conv",
+    "P608_Conv",
+    "P610_Conv"
+  ],
+  "missing_conv_cause": "load_from_run untagged-conveyor gate changed from string-prefix (P60 owns P600) to fortna_identity.linked_owns_conveyor exact-family match. Missing belts are Machine_Name=N/A false-positives of the Aug28 prefix rule; not deleted emitters.",
+  "gates": {
+    "modules_gt_50": true,
+    "real_CP_I_gt_100": true,
+    "Conv_gt_30": true,
+    "Conv_AOI_gt_30": true,
+    "MS_gt_30": true,
+    "has_Area_Fast": true,
+    "has_Area_Slow": true,
+    "has_Area_L1": true,
+    "has_Area_L2": true
+  },
+  "transport_generation_recovered": true,
+  "notes": [
+    "Modules/adapters/catalogs identical (68/4).",
+    "Real CP_I/CP_O counts identical (164/87); CURRENT adds IO_MAP placeholders by default.",
+    "Area_Fast/Slow/L1/L2 programs present on both.",
+    "CURRENT omits optional System (Sys_Comm) unless --include-programs System.",
+    "Conv/AOI emitters (clone_template_for_conveyor + build_l5x area family) preserved; no restore required."
+  ]
+}
