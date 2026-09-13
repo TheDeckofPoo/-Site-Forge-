@@ -3307,13 +3307,27 @@ function sawtoothBuildFromSiteModel(site) {
     encoder_tag: ln.encoder || '',
     drive: ln.drive || ln.vfd || '',
     motor: ln.motor || motor || '',
+    lane_index: ln.lane_index,
+    approach: ln.approach || '',
+    collision: ln.collision || '',
+    lane_input: ln.lane_input || '',
+    slice_seconds: ln.slice_seconds != null ? ln.slice_seconds : (ln.slice_time != null ? ln.slice_time : null),
+    reserve_seconds: ln.reserve_seconds != null ? ln.reserve_seconds : (ln.reserve_time != null ? ln.reserve_time : null),
+    allowed_to_run: ln.allowed_to_run || '',
     configuration_required: ln.configuration_required || [],
+    field_provenance: ln.field_provenance || {},
   }));
-  const mrgNum = (collector.match(/(\d+)/) || [])[1] || '414';
-  const unresolved = [];
-  if (!collector) unresolved.push('collector_conveyor');
-  if (!encoder) unresolved.push('collector_encoder');
-  if (!(merge.downstream_conveyor || merge.downstream)) unresolved.push('downstream_conveyor');
+  const mrgNum = (collector.match(/(\d+)/) || [])[1] || '';
+  const unresolved = [...(merge.configuration_required || merge.config_required || [])];
+  if (!collector && !unresolved.includes('collector_conveyor')) unresolved.push('collector_conveyor');
+  if (!encoder && !unresolved.includes('collector_encoder') && !unresolved.includes('merge_encoder')) {
+    unresolved.push('merge_encoder');
+  }
+  if (!(merge.downstream_conveyor || merge.downstream)
+    && !unresolved.includes('downstream_conveyor')
+    && !unresolved.includes('discharge_conveyor')) {
+    unresolved.push('discharge_conveyor');
+  }
   return normalizeSawtoothConfig({
     ...defaultSawtoothConfig(),
     collector_conveyor: collector,
@@ -3321,11 +3335,15 @@ function sawtoothBuildFromSiteModel(site) {
     collector_has_encoder: encoder ? 'yes' : 'no',
     collector_encoder_type: 'Enc_RIOCard',
     collector_encoder: encoder,
-    clctr_speed_fpm: Number(merge.clctr_speed_fpm) || 140,
+    // Do not invent site timing defaults — leave 0 / empty when RUN does not prove them.
+    clctr_speed_fpm: Number(merge.clctr_speed_fpm) || 0,
     lane_count: lanes.length || Number(merge.lane_count) || 0,
     lanes,
-    mrg_id: String(mrgNum),
+    mrg_id: String(mrgNum || ''),
     area_name: merge.area_name || '',
+    reservation: merge.reservation || '',
+    slice_seconds_merge: merge.slice_seconds != null ? merge.slice_seconds : null,
+    lane_enable_delay_tm: merge.lane_enable_delay_tm || '',
     enable_track: true,
     enable_reserve: true,
     discovery_source: 'site_model',
@@ -3582,6 +3600,17 @@ function emptySawLaneRow() {
     has_encoder: 'no',
     encoder_type: 'Enc_RIOCard',
     encoder_tag: '',
+    drive: '',
+    motor: '',
+    lane_index: null,
+    approach: '',
+    collision: '',
+    lane_input: '',
+    slice_seconds: null,
+    reserve_seconds: null,
+    allowed_to_run: '',
+    configuration_required: [],
+    field_provenance: {},
   };
 }
 
@@ -3592,6 +3621,13 @@ function normalizeSawLaneRow(row) {
     r.encoder_type = 'Enc_RIOCard';
   }
   r.encoder_tag = r.encoder_tag || r.enc_tag || '';
+  r.drive = r.drive || r.vfd || '';
+  r.motor = r.motor || '';
+  r.approach = r.approach || '';
+  r.collision = r.collision || '';
+  r.lane_input = r.lane_input || '';
+  if (r.slice_seconds === '' || r.slice_seconds === undefined) r.slice_seconds = null;
+  if (r.reserve_seconds === '' || r.reserve_seconds === undefined) r.reserve_seconds = null;
   return r;
 }
 
@@ -4129,11 +4165,26 @@ function updateSawtoothSummary() {
   const n = Number(s.lane_count || (s.lanes || []).length || 0);
   const enc = s.collector_has_encoder === 'no'
     ? 'NO_Enc'
-    : (s.collector_encoder || 'enc?');
-  const laneEnc = (s.lanes || []).filter((l) => l && l.has_encoder === 'yes').length;
+    : (s.collector_encoder || 'UNRESOLVED');
+  const unresolved = (s.configuration_required || []).length;
+  const src = s.discovery_source === 'site_model' ? 'RUN auto' : (s.discovery_source || 'manual');
+  const banner = $('sawtooth-detect-banner');
+  if (banner) {
+    if (s.collector_conveyor || n > 0) {
+      banner.classList.remove('hidden');
+      banner.innerHTML = `<span class="text-emerald-300 font-semibold">Sawtooth: ${escapeHtml(s.merge_identity || 'merge')} detected</span>`
+        + ` · ${n} lane(s) · collector <span class="mono">${escapeHtml(s.collector_conveyor || '—')}</span>`
+        + ` · enc <span class="mono">${escapeHtml(enc)}</span>`
+        + ` · <span class="text-slate-500">${escapeHtml(src)}</span>`
+        + (unresolved ? ` · <span class="text-amber-300">${unresolved} unresolved</span>` : '');
+    } else {
+      banner.classList.remove('hidden');
+      banner.innerHTML = '<span class="text-slate-500">Sawtooth: Not detected on active RUN</span>';
+    }
+  }
   el.textContent = s.collector_conveyor
-    ? `${s.collector_conveyor} · enc ${enc} · ${n} lane(s)${laneEnc ? ` · ${laneEnc} lane-enc` : ''} · MRG${s.mrg_id || '?'}`
-    : 'no config';
+    ? `${s.collector_conveyor} · enc ${enc} · ${n} lane(s)${unresolved ? ` · ${unresolved} unresolved` : ''}`
+    : 'Not detected';
 }
 
 function persistSawtoothToWorkbook() {
@@ -4204,57 +4255,53 @@ function renderSawtoothBuild() {
   const encTag = $('saw-collector-enc');
   if (encTag) encTag.innerHTML = sorterEncTagOptionsHtml(s.collector_encoder || '', encFallback);
 
-  const n = Math.max(1, Math.min(12, Number(s.lane_count) || 4));
+  // Lane count comes from RUN discovery — do not invent empty lanes when none detected.
+  let n = Math.max(0, Math.min(12, Number(s.lane_count) || (s.lanes || []).length || 0));
+  if (!n && (s.lanes || []).length) n = s.lanes.length;
   s.lane_count = n;
-  while ((s.lanes || []).length < n) s.lanes.push(emptySawLaneRow());
-  s.lanes = (s.lanes || []).slice(0, n).map((l) => normalizeSawLaneRow(l));
+  if (n > 0) {
+    while ((s.lanes || []).length < n) s.lanes.push(emptySawLaneRow());
+    s.lanes = (s.lanes || []).slice(0, n).map((l) => normalizeSawLaneRow(l));
+  } else {
+    s.lanes = [];
+  }
 
   const host = $('saw-lane-rows');
   if (host) {
     host.innerHTML = s.lanes.map((lane, i) => {
-      const showEnc = lane.has_encoder === 'yes';
+      const unresolved = (lane.configuration_required || []).length;
+      const idxLabel = lane.lane_index != null ? `Ndx ${lane.lane_index}` : `Lane ${i + 1}`;
+      const slice = lane.slice_seconds != null ? lane.slice_seconds : '—';
+      const reserve = lane.reserve_seconds != null ? lane.reserve_seconds : '—';
       return `
-      <div class="rounded-lg border border-slate-800 bg-[#070b12] p-2 space-y-2" data-saw-lane="${i}">
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+      <details class="rounded-lg border ${unresolved ? 'border-amber-800/50' : 'border-slate-800'} bg-[#070b12] p-2" data-saw-lane="${i}" open>
+        <summary class="cursor-pointer text-[11px] text-amber-200/90 font-medium select-none">
+          ${escapeHtml(idxLabel)} · <span class="mono text-slate-300">${escapeHtml(lane.conveyor || 'UNRESOLVED')}</span>
+          · PE <span class="mono text-sky-300">${escapeHtml(lane.pe || '—')}</span>
+          · Drive <span class="mono text-violet-300">${escapeHtml(lane.drive || '—')}</span>
+          ${unresolved ? '<span class="text-amber-400 text-[9px] ml-1">review</span>' : ''}
+        </summary>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 mt-2">
           <div>
-            <label class="block text-[9px] text-slate-500 mb-0.5">Lane ${i + 1} conveyor</label>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Conveyor</label>
             <select data-saw-field="conveyor" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-slate-200"></select>
           </div>
           <div>
-            <label class="block text-[9px] text-slate-500 mb-0.5">Lane PE</label>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Product PE</label>
             <select data-saw-field="pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
           </div>
           <div>
-            <label class="block text-[9px] text-slate-500 mb-0.5">Jam PE</label>
-            <select data-saw-field="jam_pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
-          </div>
-          <div>
-            <label class="block text-[9px] text-slate-500 mb-0.5">Merge-point PE</label>
-            <select data-saw-field="merge_pe" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-sky-300"></select>
+            <label class="block text-[9px] text-slate-500 mb-0.5">Drive / VFD</label>
+            <input data-saw-field="drive" type="text" class="w-full bg-[#101820] border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-violet-300" value="${escapeHtml(lane.drive || '')}">
           </div>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-2 border-t border-slate-800/80 pt-2">
-          <div>
-            <label class="block text-[9px] text-amber-600/90 mb-0.5">Lane encoder?</label>
-            <select data-saw-field="has_encoder" class="w-full bg-[#101820] border border-amber-900/40 rounded px-1.5 py-1 text-[10px] text-slate-200">
-              <option value="no" ${lane.has_encoder !== 'yes' ? 'selected' : ''}>No → NO_Enc</option>
-              <option value="yes" ${lane.has_encoder === 'yes' ? 'selected' : ''}>Yes</option>
-            </select>
-          </div>
-          <div class="${showEnc ? '' : 'hidden'}" data-saw-enc-opts>
-            <label class="block text-[9px] text-amber-600/90 mb-0.5">Encoder type</label>
-            <select data-saw-field="encoder_type" class="w-full bg-[#101820] border border-amber-900/40 rounded px-1.5 py-1 text-[10px] text-slate-200">
-              ${sorterEncTypeOptionsHtml(lane.encoder_type || 'Enc_RIOCard')}
-            </select>
-          </div>
-          <div class="${showEnc ? '' : 'hidden'}" data-saw-enc-opts>
-            <label class="block text-[9px] text-amber-600/90 mb-0.5">Encoder tag</label>
-            <select data-saw-field="encoder_tag" class="w-full bg-[#101820] border border-amber-900/40 rounded px-1.5 py-1 text-[10px] mono text-amber-200/90">
-              ${sorterEncTagOptionsHtml(lane.encoder_tag || '', encFallback)}
-            </select>
-          </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mt-2 text-[10px]">
+          <div class="text-slate-500">Slice s: <span class="mono text-slate-300">${escapeHtml(String(slice))}</span></div>
+          <div class="text-slate-500">Reserve s: <span class="mono text-slate-300">${escapeHtml(String(reserve))}</span></div>
+          <div class="text-slate-500">Approach: <span class="mono text-slate-300">${escapeHtml(lane.approach || '—')}</span></div>
+          <div class="text-slate-500">Collision: <span class="mono text-slate-300">${escapeHtml(lane.collision || '—')}</span></div>
         </div>
-      </div>`;
+      </details>`;
     }).join('');
     host.querySelectorAll('[data-saw-lane]').forEach((row) => {
       const i = Number(row.dataset.sawLane);
@@ -4262,23 +4309,10 @@ function renderSawtoothBuild() {
       row.querySelectorAll('[data-saw-field]').forEach((sel) => {
         const field = sel.dataset.sawField;
         if (field === 'conveyor') fillSawSelect(sel, convs, lane.conveyor || '');
-        else if (field === 'pe' || field === 'jam_pe' || field === 'merge_pe') {
-          fillSawSelect(sel, pes, lane[field] || '');
-        } else if (field === 'has_encoder') {
-          sel.value = lane.has_encoder === 'yes' ? 'yes' : 'no';
-        } else if (field === 'encoder_type') {
-          sel.value = lane.encoder_type || 'Enc_RIOCard';
-        } else if (field === 'encoder_tag') {
-          // already painted via sorterEncTagOptionsHtml
-          if (lane.encoder_tag) sel.value = lane.encoder_tag;
-        }
+        else if (field === 'pe') fillSawSelect(sel, pes, lane.pe || '');
+        else if (field === 'drive') sel.value = lane.drive || '';
         sel.addEventListener('change', () => {
           s.lanes[i] = normalizeSawLaneRow(s.lanes[i] || emptySawLaneRow());
-          if (field === 'has_encoder') {
-            s.lanes[i].has_encoder = sel.value === 'yes' ? 'yes' : 'no';
-            renderSawtoothBuild();
-            return;
-          }
           s.lanes[i][field] = sel.value || '';
           updateSawtoothSummary();
         });
@@ -4455,6 +4489,15 @@ function wireSawtoothBuildOnce() {
     }
   });
 
+  $('btn-saw-reload-sitemodel')?.addEventListener('click', async () => {
+    try {
+      await applySiteModelToEditors({ reason: 'sawtooth-reload' });
+      const st = $('saw-save-status');
+      if (st) st.textContent = 'Reloaded from SiteModel';
+    } catch (e) {
+      autogenLog(`Sawtooth reload failed: ${e?.message || e}`, 'err');
+    }
+  });
   $('btn-saw-clear')?.addEventListener('click', () => {
     autogenState.sawtooth = defaultSawtoothConfig();
     persistSawtoothToWorkbook();

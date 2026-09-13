@@ -671,8 +671,16 @@ def _build_sawtooth(
                         "jam_pe": ln.get("jam_pe") or ln.get("jam_photoeye") or "",
                         "merge_pe": ln.get("merge_pe") or "",
                         "drive": ln.get("drive") or ln.get("vfd"),
+                        "vfd": ln.get("vfd") or (
+                            ln.get("drive") if str(ln.get("drive") or "").upper().startswith("VFD") else ""
+                        ),
                         "lane_index": ln.get("lane_index"),
+                        "slice_seconds": ln.get("slice_seconds"),
                         "reserve_seconds": ln.get("reserve_seconds") or ln.get("ReserveSeconds"),
+                        "approach": ln.get("approach"),
+                        "collision": ln.get("collision"),
+                        "lane_input": ln.get("lane_input"),
+                        "allowed_to_run": ln.get("allowed_to_run"),
                         "provenance": ln.get("provenance") or PROV_RUN_EXPLICIT,
                         "conveyor_provenance": ln.get("conveyor_provenance"),
                     }
@@ -683,11 +691,8 @@ def _build_sawtooth(
                     for x in (
                         "collector parameterization" if not m.get("slice_seconds") else None,
                         "lane conveyor" if any(not ln.get("conveyor") for ln in lane_rows) else None,
-                        "lane jam/merge PE"
-                        if any(
-                            not (ln.get("jam_pe") or ln.get("merge_pe") or ln.get("photoeye"))
-                            for ln in lane_rows
-                        )
+                        "lane PE"
+                        if any(not ln.get("photoeye") for ln in lane_rows)
                         else None,
                     )
                     if x
@@ -696,12 +701,23 @@ def _build_sawtooth(
         )
 
     semantics: dict[str, Any] = {}
-    if build_semantic_model is not None and merges_out:
-        try:
-            # Optional semantic enrichment — discovery only
-            semantics = {"note": "fortna_sawtooth_semantics available for deeper slice"}
-        except Exception as exc:  # noqa: BLE001
-            semantics = {"error": str(exc)}
+    # Canonical SawtoothMergeModel (RUN cross-table) — auto on import; no Discover button.
+    try:
+        from fortna_sawtooth_merge_model import (
+            build_sawtooth_merge_model,
+            model_to_editor_shape,
+        )
+
+        smm = build_sawtooth_merge_model(run_dir, machine)
+        semantics = {
+            "sawtooth_merge_model": smm,
+            "editor": model_to_editor_shape(smm),
+            "note": "Canonical SawtoothMergeModel from RUN SawMerge/SawLane (+ VFD/encoder)",
+        }
+    except Exception as exc:  # noqa: BLE001
+        semantics = {"error": str(exc)}
+        if build_semantic_model is not None and merges_out:
+            semantics["note"] = "fortna_sawtooth_semantics fallback available"
     return merges_out, rels, saw, semantics
 
 
@@ -1713,6 +1729,20 @@ def discover(
         evaluate_supersession(site_dict)
     except Exception as exc:  # noqa: BLE001
         site_dict.setdefault("notes", []).append(f"knowledge enrichment skipped: {exc}")
+
+    # Attach canonical SawtoothMergeModel from RUN import (auto — no Discover button).
+    if isinstance(semantics, dict) and semantics.get("sawtooth_merge_model"):
+        site_dict["sawtooth_merge_model"] = semantics["sawtooth_merge_model"]
+        # Prefer model-backed editor shape when present (richer lane timing fields).
+        ed = site_dict.setdefault("editors", {})
+        if semantics.get("editor"):
+            ed["sawtooth"] = semantics["editor"]
+        site_dict.setdefault("ui_status_summary", {})["sawtooth"] = (
+            f"{semantics['sawtooth_merge_model'].get('merge_count', 0)} merge · "
+            f"{semantics['sawtooth_merge_model'].get('lane_count', 0)} lanes"
+            if semantics["sawtooth_merge_model"].get("detected")
+            else "Not detected"
+        )
     # sync classified buckets back onto model dict (classify mutates lists in site_dict)
     subsystems = build_subsystems(
         SiteModel(

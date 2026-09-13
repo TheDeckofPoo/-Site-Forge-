@@ -1829,12 +1829,15 @@
         <div class="card border border-amber-900/40 bg-gradient-to-b from-[#15120c] to-[#0a1018] p-4 space-y-4" id="sawtooth-panel">
           <div class="flex items-center gap-2 flex-wrap">
             <i class="fa-solid fa-bars-staggered text-amber-400"></i>
-            <span class="text-sm font-semibold text-amber-300">Sawtooth / collector merge</span>
-            <span id="sawtooth-summary" class="ml-auto text-[10px] mono text-slate-600">no config</span>
+            <span class="text-sm font-semibold text-amber-300">Sawtooth Merge Build</span>
+            <span id="sawtooth-summary" class="ml-auto text-[10px] mono text-slate-600">Not detected</span>
+          </div>
+          <div id="sawtooth-detect-banner" class="rounded-lg border border-slate-800 bg-[#0c1219] px-3 py-2 text-[11px] text-slate-400">
+            Import a RUN — Sawtooth auto-populates when SawMerge/SawLane evidence exists. No Discover button required.
           </div>
 
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">1 · Collector (takeaway)</div>
+            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">General · Collector</div>
             <div class="flex flex-wrap gap-2 items-end">
               <div class="min-w-[10rem] flex-1">
                 <label class="block text-[10px] text-slate-500 mb-1">Collector conveyor</label>
@@ -1891,19 +1894,24 @@
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
             <div class="flex flex-wrap items-end gap-3">
               <div>
-                <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold mb-1">2 · Induct lanes</div>
-                <label class="block text-[10px] text-slate-500 mb-1">How many lanes?</label>
-                <input id="saw-lane-count" type="number" min="1" max="12" value="4" class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
+                <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold mb-1">Lanes (RUN auto)</div>
+                <label class="block text-[10px] text-slate-500 mb-1">Lane count (from discovery)</label>
+                <input id="saw-lane-count" type="number" min="1" max="12" value="0" readonly class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-400" title="Set by RUN SawLane rows — do not invent">
               </div>
               <span class="text-[9px] text-slate-600 pb-2">
-                Each lane: conveyor · PE · jam · merge-point · optional <strong class="text-amber-300/90">lane encoder</strong> for carton tracking.
+                Review conveyor · PE · drive · slice/reserve from SawLane. Unresolved fields stay visible — do not invent values.
               </span>
             </div>
             <div id="saw-lane-rows" class="space-y-2 max-h-96 overflow-y-auto"></div>
           </div>
 
-          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">3 · Collector PEs / enables (PLC4)</div>
+          <details class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <summary class="cursor-pointer text-[10px] uppercase tracking-wider text-slate-500 font-semibold select-none">
+              Advanced · collector jam PEs / track / HMI timing (engineer CFG)
+            </summary>
+          <div class="mt-2 space-y-3">
+          <div class="rounded-xl border border-slate-800/80 bg-[#070b12] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-amber-600/90 font-semibold">Collector PEs / enables</div>
             <p class="text-[9px] text-slate-500 leading-relaxed">
               Maps to <span class="mono text-slate-400">Enable_Merge2_Trk</span>, <span class="mono text-slate-400">Enable_Merge1_Reserv</span>,
               <span class="mono text-slate-400">Use_GapStore_Belts</span>, jam PEs on collector (<span class="mono">PE414_J</span> / A–D), and EOW.
@@ -2026,14 +2034,23 @@
             </p>
           </div>
 
+          </div>
+          </details>
+
           <div class="flex flex-wrap gap-2 items-center">
             <button type="button" id="btn-saw-save" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-amber-800/50 text-amber-200">
-              <i class="fa-solid fa-floppy-disk mr-1"></i>Save sawtooth config
+              <i class="fa-solid fa-floppy-disk mr-1"></i>Confirm overrides → Autogen
             </button>
-            <button type="button" id="btn-saw-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-500">Clear</button>
-            <button type="button" id="btn-saw-defaults-plc4" class="btn-ghost px-3 py-1.5 rounded-xl text-xs border border-slate-700 text-slate-500" title="DEV ONLY — hardcoded Greensboro PLC4 demo tags. Normal RUN import must auto-populate Sawtooth; do not use this for acceptance.">
-              DEV: Prefill PLC4 demo
+            <button type="button" id="btn-saw-reload-sitemodel" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-400 border border-slate-700" title="Reload from active SiteModel (discards local edits)">
+              Reload from RUN
             </button>
+            <button type="button" id="btn-saw-clear" class="btn-ghost px-3 py-1.5 rounded-xl text-xs text-slate-600">Clear</button>
+            <details class="text-[10px] text-slate-600">
+              <summary class="cursor-pointer select-none">DEV</summary>
+              <button type="button" id="btn-saw-defaults-plc4" class="btn-ghost px-2 py-1 rounded text-[10px] border border-slate-700 text-slate-500 mt-1" title="DEV ONLY — hardcoded demo. Not for acceptance.">
+                Prefill PLC4 demo
+              </button>
+            </details>
             <span id="saw-save-status" class="text-[10px] text-slate-600 mono"></span>
           </div>
         </div>
@@ -2217,7 +2234,7 @@
       </div>
       <!-- Multi-select bulk bar — Area / ES Zone / Control Panel fast assign -->
       <div id="tb-bulk-bar" class="tb-bulk-bar hidden shrink-0 px-4 py-1.5 flex items-center gap-2 flex-wrap text-[11px]">
-        <span id="tb-bulk-count" class="text-sky-300 font-semibold">0 selected</span>
+        <span id="tb-bulk-count" class="text-sky-300 font-semibold" title="Marquee: drag empty canvas · Ctrl/Meta = add · Alt (or Ctrl+Shift) = subtract · Shift-click node = connect · Ctrl-click node = toggle select">Selected: 0 conveyors</span>
         <span class="text-[10px] text-slate-500">Assign to run:</span>
         <label class="flex items-center gap-1 text-slate-300 font-medium">Area
           <select id="tb-bulk-area" class="bg-slate-900 border border-fuchsia-800/60 rounded text-xs px-1.5 py-1 min-w-[120px]"></select>
@@ -2228,6 +2245,15 @@
         </label>
         <button type="button" id="tb-bulk-apply" class="btn-ghost text-[10px] px-2.5 py-1 rounded border border-emerald-600/70 text-emerald-200 font-semibold" title="Apply Area + ES Zone to the entire selection (engineer configuration)">
           Apply Area / ES
+        </button>
+        <button type="button" id="tb-bulk-create-area" class="btn-ghost text-[10px] px-2 py-1 rounded border border-fuchsia-700/60 text-fuchsia-200" title="Create a new Area from the current selection (prompt for name — never inferred from geometry). Area is engineer metadata.">
+          Create Area from Selection
+        </button>
+        <button type="button" id="tb-bulk-add-to-area" class="btn-ghost text-[10px] px-2 py-1 rounded border border-fuchsia-900/50 text-fuchsia-300/90" title="Move selection into an existing Area (defaults to Build Context). Topology preserved.">
+          Add Selection to Area
+        </button>
+        <button type="button" id="tb-bulk-remove-from-area" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700 text-slate-300" title="Move selection to Unassigned (or prompted destination). Does not invent controller ownership.">
+          Remove Selection from Area
         </button>
         <label class="flex items-center gap-1 text-slate-300 font-medium" title="Control Panel is organizational metadata only — not PLC / I/O ownership">CP
           <select id="tb-bulk-cp" class="bg-slate-900 border border-violet-800/60 rounded text-xs px-1.5 py-1 min-w-[88px]">

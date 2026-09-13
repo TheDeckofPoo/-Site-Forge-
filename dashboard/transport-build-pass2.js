@@ -551,8 +551,10 @@
     }
     if ($('tb-bulk-count')) {
       $('tb-bulk-count').textContent = n === 1
-        ? `1 conveyor selected`
-        : `${n} conveyors selected`;
+        ? `Selected: 1 conveyor`
+        : `Selected: ${n} conveyors`;
+      $('tb-bulk-count').title =
+        'Marquee: drag empty canvas · Ctrl/Meta = add · Alt (or Ctrl+Shift) = subtract · Shift-click node = connect · Ctrl-click node = toggle select';
     }
     const areaSel = $('tb-bulk-area');
     if (areaSel) {
@@ -671,6 +673,223 @@
     render();
     status(`Area/ES applied to ${ids.length} conveyor(s) — engineer configuration`);
     refreshPass2Chrome();
+  }
+
+  function selectionIds() {
+    const { tb } = A();
+    const ids = [...(tb.selectedIds || [])];
+    if (!ids.length && tb.selectedId) ids.push(tb.selectedId);
+    return ids;
+  }
+
+  function markAreaEngineer(node) {
+    if (!node) return;
+    node.areaRequired = false;
+    if (!node.provenance) node.provenance = {};
+    node.provenance.area = 'ENGINEER';
+  }
+
+  function findNodeAnywhere(nodeId) {
+    const { tb } = A();
+    for (const a of tb.areas || []) {
+      const n = (a.nodes || []).find((x) => x.id === nodeId);
+      if (n) return { node: n, area: a };
+    }
+    return null;
+  }
+
+  function ensureNamedArea(name) {
+    const { tb, uid } = A();
+    const want = String(name || '').trim();
+    if (!want) return null;
+    let a = (tb.areas || []).find(
+      (x) => String(x.name || '').trim().toLowerCase() === want.toLowerCase()
+    );
+    if (!a) {
+      tb.suppressDefaultArea = false;
+      a = { id: uid('area'), name: want, nodes: [], wires: [] };
+      tb.areas.push(a);
+    }
+    return a;
+  }
+
+  function resolveAreaByNameOrId(raw) {
+    const { tb } = A();
+    const key = String(raw || '').trim();
+    if (!key) return null;
+    return (
+      (tb.areas || []).find((a) => a.id === key) ||
+      (tb.areas || []).find(
+        (a) => String(a.name || '').trim().toLowerCase() === key.toLowerCase()
+      ) ||
+      null
+    );
+  }
+
+  async function pickExistingArea(title, message) {
+    const { tb, askText } = A();
+    ensureBuildContext();
+    const names = (tb.areas || []).map((a) => a.name).filter(Boolean);
+    const def =
+      tb.buildContext?.areaName ||
+      (tb.areas || []).find((a) => a.id === tb.buildContext?.areaId)?.name ||
+      names[0] ||
+      '';
+    const detail = names.length
+      ? `Existing areas:\n${names.map((n) => `• ${n}`).join('\n')}`
+      : 'No areas yet — create one first.';
+    const typed = await askText(
+      title || 'Pick Area',
+      `${message || 'Area name (or leave Build Context area):'}\n\n${detail}`,
+      def
+    );
+    if (typed === null) return null;
+    const trimmed = String(typed).trim();
+    if (!trimmed) return resolveAreaByNameOrId(def);
+    const resolved = resolveAreaByNameOrId(trimmed);
+    if (!resolved) {
+      A().status(`Unknown area “${trimmed}”`);
+      return null;
+    }
+    return resolved;
+  }
+
+  function moveSelectionToArea(dest, label) {
+    const { tb, moveNodeToArea, save, render, status } = A();
+    const ids = selectionIds();
+    if (!ids.length) {
+      status('Select conveyors first');
+      return 0;
+    }
+    if (!dest) {
+      status('No destination area');
+      return 0;
+    }
+    // Keep full selection across per-node moveNodeToArea calls
+    tb.selectedIds = [...ids];
+    tb.selectedId = ids[0];
+    ids.forEach((id) => {
+      moveNodeToArea(id, dest.id);
+      const found = findNodeAnywhere(id);
+      if (found) markAreaEngineer(found.node);
+    });
+    tb.activeAreaId = dest.id;
+    tb.selectedIds = ids.filter((id) => (dest.nodes || []).some((n) => n.id === id));
+    tb.selectedId = tb.selectedIds[0] || null;
+    save();
+    render();
+    status(
+      `${label || 'Moved'} ${tb.selectedIds.length} conveyor(s) → area “${dest.name}” (topology preserved)`
+    );
+    refreshPass2Chrome();
+    return tb.selectedIds.length;
+  }
+
+  /** Create a new Area from the current selection (name prompted — never inferred from geometry). */
+  async function createAreaFromSelection() {
+    const { tb, askText, askYesNo, uid, save, render, status } = A();
+    const ids = selectionIds();
+    if (!ids.length) {
+      status('Select conveyors first');
+      return;
+    }
+    const def = `Transport_${(tb.areas || []).length + 1}`;
+    const name = await askText(
+      'Create Area from Selection',
+      'Area name (engineer metadata — not inferred from geometry):',
+      def
+    );
+    if (name === null || !(String(name).trim())) return;
+    const areaName = String(name).trim();
+    pushHistory(`Create Area from Selection (${ids.length})`);
+    tb.suppressDefaultArea = false;
+    const a = { id: uid('area'), name: areaName, nodes: [], wires: [] };
+    tb.areas.push(a);
+    // Re-assert selection in case focus/dialog churn cleared it
+    tb.selectedIds = [...ids];
+    tb.selectedId = ids[0];
+    const moved = moveSelectionToArea(a, 'Moved');
+    ensureBuildContext();
+    tb.buildContext.areaId = a.id;
+    tb.buildContext.areaName = a.name;
+    save();
+    render();
+    status(`Created area “${a.name}” with ${moved} conveyor(s) — engineer metadata (not geometry-inferred)`);
+    refreshPass2Chrome();
+
+    // Optional Apply ES when Build Context already has a zone (do not force)
+    const zone = String(tb.buildContext.safetyZone || '').trim();
+    if (zone && tb.selectedIds.length) {
+      const apply = await askYesNo(
+        'Apply ES Zone?',
+        `Apply Build Context ES Zone “${zone}” to the ${tb.selectedIds.length} conveyor(s) in “${a.name}”?`
+      );
+      if (apply) {
+        pushHistory(`Apply ES ${zone}`);
+        tb.selectedIds.forEach((id) => {
+          const n = (a.nodes || []).find((x) => x.id === id);
+          if (!n) return;
+          n.safetyZone = zone;
+          n.esZoneRequired = false;
+          if (!n.provenance) n.provenance = {};
+          n.provenance.safetyZone = 'ENGINEER';
+        });
+        save();
+        render();
+        status(`ES Zone ${zone} applied to ${tb.selectedIds.length} conveyor(s)`);
+        refreshPass2Chrome();
+      }
+    }
+  }
+
+  /** Move selection into an existing Area (prompted; defaults to Build Context area). */
+  async function addSelectionToArea() {
+    const { status } = A();
+    const ids = selectionIds();
+    if (!ids.length) {
+      status('Select conveyors first');
+      return;
+    }
+    const dest = await pickExistingArea(
+      'Add Selection to Area',
+      'Move selected conveyors into which existing Area? (defaults to Build Context)'
+    );
+    if (!dest) {
+      status('Add to Area cancelled');
+      return;
+    }
+    pushHistory(`Add Selection to Area (${ids.length} → ${dest.name})`);
+    moveSelectionToArea(dest, 'Added');
+    ensureBuildContext();
+    const { tb, save } = A();
+    tb.buildContext.areaId = dest.id;
+    tb.buildContext.areaName = dest.name;
+    save();
+    refreshPass2Chrome();
+  }
+
+  /**
+   * Remove selection from its current Area(s) into dedicated Unassigned
+   * (or a prompted destination). Does not invent controller ownership.
+   */
+  async function removeSelectionFromArea() {
+    const { askText, status } = A();
+    const ids = selectionIds();
+    if (!ids.length) {
+      status('Select conveyors first');
+      return;
+    }
+    const typed = await askText(
+      'Remove Selection from Area',
+      'Destination area (default Unassigned — organizational only, not PLC ownership):',
+      'Unassigned'
+    );
+    if (typed === null) return;
+    const destName = String(typed).trim() || 'Unassigned';
+    pushHistory(`Remove Selection from Area (${ids.length} → ${destName})`);
+    const dest = ensureNamedArea(destName);
+    if (!dest) return;
+    moveSelectionToArea(dest, 'Removed to');
   }
 
   function deleteSelection() {
@@ -1095,15 +1314,48 @@
   }
 
   /* ---------- Marquee ---------- */
+  /** True when marquee should subtract hits (Alt, or Ctrl/Meta+Shift). */
+  function marqueeSubtract(ev) {
+    if (!ev) return false;
+    if (ev.altKey) return true;
+    if ((ev.ctrlKey || ev.metaKey) && ev.shiftKey) return true;
+    return false;
+  }
+
+  /** True when marquee should union hits (Ctrl/Meta without Shift). */
+  function marqueeAdd(ev) {
+    if (!ev) return false;
+    if (marqueeSubtract(ev)) return false;
+    return !!(ev.ctrlKey || ev.metaKey);
+  }
+
+  /**
+   * Generous AABB hit-test: prefer pathCanvas / entryCanvas / exitCanvas extents
+   * (via Pass1 nodesBBox) so schematic proxies are selectable by the box; else card box.
+   */
+  function nodeIntersectsMarquee(n, x, y, w, h) {
+    const { nodesBBox } = A();
+    const bb = typeof nodesBBox === 'function' ? nodesBBox([n]) : null;
+    if (bb && Number.isFinite(bb.minX)) {
+      return bb.maxX > x && bb.minX < x + w && bb.maxY > y && bb.minY < y + h;
+    }
+    const nx = Number(n.x) || 0;
+    const ny = Number(n.y) || 0;
+    const cardW = Math.max(NODE_W, 130);
+    const cardH = 70;
+    return nx + cardW > x && nx < x + w && ny + cardH > y && ny < y + h;
+  }
+
   function onCanvasMouseDown(ev) {
-    const { tb, canvasPointFromEvent, activeArea, isConv, selectNode } = A();
+    const { tb, canvasPointFromEvent } = A();
     if (ev.button !== 0) return;
     if (ev.target.closest?.('.tb-node') || ev.target.closest?.('.tb-port')) return;
     if (ev.target.closest?.('#tb-topo-panel')) return;
     // Start marquee
     const pt = canvasPointFromEvent(ev);
     tb.marquee = { x0: pt.x, y0: pt.y, x1: pt.x, y1: pt.y };
-    if (!ev.ctrlKey && !ev.metaKey) {
+    // Preserve selection for add (Ctrl/Meta) and subtract (Alt / Ctrl+Shift)
+    if (!marqueeAdd(ev) && !marqueeSubtract(ev)) {
       tb.selectedIds = [];
       tb.selectedId = null;
     }
@@ -1159,11 +1411,12 @@
     const hit = [];
     (area?.nodes || []).forEach((n) => {
       if (!isConv(n.kind)) return;
-      const nx = Number(n.x) || 0;
-      const ny = Number(n.y) || 0;
-      if (nx + NODE_W > x && nx < x + w && ny + 48 > y && ny < y + h) hit.push(n.id);
+      if (nodeIntersectsMarquee(n, x, y, w, h)) hit.push(n.id);
     });
-    if (ev.ctrlKey || ev.metaKey) {
+    if (marqueeSubtract(ev)) {
+      const remove = new Set(hit);
+      tb.selectedIds = (tb.selectedIds || []).filter((id) => !remove.has(id));
+    } else if (marqueeAdd(ev)) {
       const set = new Set(tb.selectedIds || []);
       hit.forEach((id) => set.add(id));
       tb.selectedIds = [...set];
@@ -1207,7 +1460,7 @@
       if (!n) return;
 
       // Connect mode handled by Pass1; if active, let it — but Pass1 binds per-node.
-      // Shift-click destination from selected source
+      // Shift-click = connect (EXIT→ENTRY). Ctrl/Meta-click = toggle select (not Shift).
       if (ev.shiftKey && !tb.connectMode && isConv(n.kind) && tb.selectedId && tb.selectedId !== id) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -1217,6 +1470,7 @@
         return;
       }
 
+      // Ctrl/Meta = toggle membership in multi-select (Shift remains connect-only)
       if (ev.ctrlKey || ev.metaKey) {
         ev.preventDefault();
         ev.stopPropagation();
@@ -1738,6 +1992,15 @@
     $('tb-ctx-apply-sel')?.addEventListener('click', () => applyContextToSelection());
 
     $('tb-bulk-apply')?.addEventListener('click', () => applyBulkEdit());
+    $('tb-bulk-create-area')?.addEventListener('click', () => {
+      createAreaFromSelection().catch((err) => A().status(`Create Area error: ${err?.message || err}`));
+    });
+    $('tb-bulk-add-to-area')?.addEventListener('click', () => {
+      addSelectionToArea().catch((err) => A().status(`Add to Area error: ${err?.message || err}`));
+    });
+    $('tb-bulk-remove-from-area')?.addEventListener('click', () => {
+      removeSelectionFromArea().catch((err) => A().status(`Remove from Area error: ${err?.message || err}`));
+    });
     $('tb-bulk-delete')?.addEventListener('click', () => deleteSelection());
     $('tb-bulk-chain')?.addEventListener('click', () => selectChainFromPrimary());
     $('tb-bulk-align')?.addEventListener('click', () => alignSelection());

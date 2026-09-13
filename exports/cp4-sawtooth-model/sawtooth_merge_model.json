@@ -1,0 +1,610 @@
+{
+  "generated_at": "2026-09-13T16:37:18.529195+00:00",
+  "machine": "ORNCCP4",
+  "run_dir": "workspace\\cp4-run\\RUN",
+  "source_of_truth": "RUN SawMerge/SawLane + VFD/encoder relationships \u2014 finished PLC4 never read",
+  "detected": true,
+  "merge_count": 1,
+  "lane_count": 5,
+  "merges": [
+    {
+      "name": "SAWTOOTH_MERGE",
+      "merge_identity": "SAWTOOTH_MERGE",
+      "lane_count": {
+        "value": 5,
+        "source_table": "SawLane.asc",
+        "source_row_key": "SAWTOOTH_MERGE",
+        "relationship_rule": "count of SawLane rows with SawMerge=this merge",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "collector_conveyor": {
+        "value": "P414",
+        "source_table": "SawMerge.asc",
+        "source_row_key": "SAWTOOTH_MERGE",
+        "relationship_rule": "VFD### from MotorIO \u2192 P### when MotorIO is VFD###_AUX/EN",
+        "provenance": "RUN_DERIVED"
+      },
+      "discharge_conveyor": {
+        "value": null,
+        "source_table": "",
+        "source_row_key": "SAWTOOTH_MERGE",
+        "relationship_rule": "No Convpath successor; leave UNRESOLVED for engineer",
+        "provenance": "UNRESOLVED"
+      },
+      "merge_encoder": {
+        "value": "ENC414",
+        "source_table": "Encoders / Conveyor associations",
+        "source_row_key": "ENC414",
+        "relationship_rule": "ENC### matching VFD### digits or encoder\u2192merge association",
+        "provenance": "RUN_DERIVED"
+      },
+      "motor_io": {
+        "value": "VFD414_AUX",
+        "source_table": "SawMerge.asc",
+        "source_row_key": "SAWTOOTH_MERGE",
+        "relationship_rule": "SawMerge.MotorIO",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "reservation": {
+        "value": "SAW_RESERVATION",
+        "source_table": "SawMerge.asc",
+        "source_row_key": "SAWTOOTH_MERGE",
+        "relationship_rule": "SawMerge.ReserveIN",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "lane_enable_delay_tm": {
+        "value": "tmSawMerge_DLY",
+        "source_table": "SawMerge.asc",
+        "source_row_key": "SAWTOOTH_MERGE",
+        "relationship_rule": "SawMerge.LaneEnableDelayTM",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "slice_seconds_merge": {
+        "value": 18.0,
+        "source_table": "SawMerge.asc",
+        "source_row_key": "SAWTOOTH_MERGE",
+        "relationship_rule": "SawMerge.pSliceSeconds",
+        "provenance": "RUN_EXPLICIT"
+      },
+      "parameters": {
+        "slice_seconds_merge": 18.0,
+        "reservation": "SAW_RESERVATION",
+        "lane_enable_delay_tm": "tmSawMerge_DLY"
+      },
+      "lanes": [
+        {
+          "lane_identity": {
+            "value": "LANE_0_P219",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.Name",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_index": {
+            "value": 1,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.LaneNdx",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "conveyor": {
+            "value": "P219",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "P-tag token in SawLane.Name (not LaneNdx order)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "product_pe": {
+            "value": "PE219_P",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.PhotoEyeIO",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "drive": {
+            "value": "VFD219",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.DisableIO (VFD when token starts with VFD)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "vfd": {
+            "value": "VFD219",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "DisableIO is VFD*",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "motor": {
+            "value": "VFD414_AUX",
+            "source_table": "SawMerge.asc",
+            "source_row_key": "SAWTOOTH_MERGE",
+            "relationship_rule": "SawMerge.MotorIO (shared merge motor / aux)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "approach": {
+            "value": "SAW_APP_LANE_0",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.ApproachUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "collision": {
+            "value": "SAW_COL_LANE_0",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.CollisionUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_input": {
+            "value": "SAW_MERGE_IN_0",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.LaneIN",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "slice_seconds": {
+            "value": 3.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.SliceSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "reserve_seconds": {
+            "value": 10.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.ReserveSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "allowed_to_run": {
+            "value": "Y",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "SawLane.AllowedToRun",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "jam_pe": {
+            "value": null,
+            "source_table": "",
+            "source_row_key": "LANE_0_P219",
+            "relationship_rule": "No dedicated jam PE column on SawLane for this RUN",
+            "provenance": "UNRESOLVED"
+          }
+        },
+        {
+          "lane_identity": {
+            "value": "LANE_1_P408",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.Name",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_index": {
+            "value": 2,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.LaneNdx",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "conveyor": {
+            "value": "P408",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "P-tag token in SawLane.Name (not LaneNdx order)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "product_pe": {
+            "value": "PE410_P",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.PhotoEyeIO",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "drive": {
+            "value": "VFD410_EN",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.DisableIO (VFD when token starts with VFD)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "vfd": {
+            "value": "VFD410_EN",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "DisableIO is VFD*",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "motor": {
+            "value": "VFD414_AUX",
+            "source_table": "SawMerge.asc",
+            "source_row_key": "SAWTOOTH_MERGE",
+            "relationship_rule": "SawMerge.MotorIO (shared merge motor / aux)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "approach": {
+            "value": "SAW_APP_LANE_1",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.ApproachUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "collision": {
+            "value": "SAW_COL_LANE_1",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.CollisionUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_input": {
+            "value": "SAW_MERGE_IN_1",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.LaneIN",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "slice_seconds": {
+            "value": 18.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.SliceSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "reserve_seconds": {
+            "value": 20.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.ReserveSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "allowed_to_run": {
+            "value": "Y",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "SawLane.AllowedToRun",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "jam_pe": {
+            "value": null,
+            "source_table": "",
+            "source_row_key": "LANE_1_P408",
+            "relationship_rule": "No dedicated jam PE column on SawLane for this RUN",
+            "provenance": "UNRESOLVED"
+          }
+        },
+        {
+          "lane_identity": {
+            "value": "LANE_3_P116",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.Name",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_index": {
+            "value": 3,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.LaneNdx",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "conveyor": {
+            "value": "P116",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "P-tag token in SawLane.Name (not LaneNdx order)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "product_pe": {
+            "value": "PE118_P",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.PhotoEyeIO",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "drive": {
+            "value": "VFD118_EN",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.DisableIO (VFD when token starts with VFD)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "vfd": {
+            "value": "VFD118_EN",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "DisableIO is VFD*",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "motor": {
+            "value": "VFD414_AUX",
+            "source_table": "SawMerge.asc",
+            "source_row_key": "SAWTOOTH_MERGE",
+            "relationship_rule": "SawMerge.MotorIO (shared merge motor / aux)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "approach": {
+            "value": "SAW_APP_LANE_3",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.ApproachUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "collision": {
+            "value": "SAW_COL_LANE_3",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.CollisionUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_input": {
+            "value": "SAW_MERGE_IN_3",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.LaneIN",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "slice_seconds": {
+            "value": 8.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.SliceSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "reserve_seconds": {
+            "value": 20.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.ReserveSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "allowed_to_run": {
+            "value": "Y",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "SawLane.AllowedToRun",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "jam_pe": {
+            "value": null,
+            "source_table": "",
+            "source_row_key": "LANE_3_P116",
+            "relationship_rule": "No dedicated jam PE column on SawLane for this RUN",
+            "provenance": "UNRESOLVED"
+          }
+        },
+        {
+          "lane_identity": {
+            "value": "LANE_4_P214",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.Name",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_index": {
+            "value": 4,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.LaneNdx",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "conveyor": {
+            "value": "P214",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "P-tag token in SawLane.Name (not LaneNdx order)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "product_pe": {
+            "value": "PE216_P",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.PhotoEyeIO",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "drive": {
+            "value": "VFD216_EN",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.DisableIO (VFD when token starts with VFD)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "vfd": {
+            "value": "VFD216_EN",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "DisableIO is VFD*",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "motor": {
+            "value": "VFD414_AUX",
+            "source_table": "SawMerge.asc",
+            "source_row_key": "SAWTOOTH_MERGE",
+            "relationship_rule": "SawMerge.MotorIO (shared merge motor / aux)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "approach": {
+            "value": "SAW_APP_LANE_4",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.ApproachUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "collision": {
+            "value": "SAW_COL_LANE_4",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.CollisionUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_input": {
+            "value": "SAW_MERGE_IN_4",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.LaneIN",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "slice_seconds": {
+            "value": 6.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.SliceSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "reserve_seconds": {
+            "value": 15.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.ReserveSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "allowed_to_run": {
+            "value": "Y",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "SawLane.AllowedToRun",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "jam_pe": {
+            "value": null,
+            "source_table": "",
+            "source_row_key": "LANE_4_P214",
+            "relationship_rule": "No dedicated jam PE column on SawLane for this RUN",
+            "provenance": "UNRESOLVED"
+          }
+        },
+        {
+          "lane_identity": {
+            "value": "LANE_5_P832",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.Name",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_index": {
+            "value": 5,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.LaneNdx",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "conveyor": {
+            "value": "P832",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "P-tag token in SawLane.Name (not LaneNdx order)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "product_pe": {
+            "value": "PE834_P",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.PhotoEyeIO",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "drive": {
+            "value": "VFD834_EN",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.DisableIO (VFD when token starts with VFD)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "vfd": {
+            "value": "VFD834_EN",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "DisableIO is VFD*",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "motor": {
+            "value": "VFD414_AUX",
+            "source_table": "SawMerge.asc",
+            "source_row_key": "SAWTOOTH_MERGE",
+            "relationship_rule": "SawMerge.MotorIO (shared merge motor / aux)",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "approach": {
+            "value": "SAW_APP_LANE_5",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.ApproachUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "collision": {
+            "value": "SAW_COL_LANE_5",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.CollisionUP",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "lane_input": {
+            "value": "SAW_MERGE_IN_5",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.LaneIN",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "slice_seconds": {
+            "value": 3.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.SliceSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "reserve_seconds": {
+            "value": 10.0,
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.ReserveSeconds",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "allowed_to_run": {
+            "value": "Y",
+            "source_table": "SawLane.asc",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "SawLane.AllowedToRun",
+            "provenance": "RUN_EXPLICIT"
+          },
+          "jam_pe": {
+            "value": null,
+            "source_table": "",
+            "source_row_key": "LANE_5_P832",
+            "relationship_rule": "No dedicated jam PE column on SawLane for this RUN",
+            "provenance": "UNRESOLVED"
+          }
+        }
+      ],
+      "tables_used": [
+        "SawMerge.asc",
+        "SawLane.asc",
+        "HSSawMerge.asc",
+        "HSSawLane.asc",
+        "HSSawParm.asc",
+        "Conveyor.asc",
+        "Encoders (associations)"
+      ],
+      "hs_tables_active": {},
+      "unresolved": [],
+      "provenance": "RUN_EXPLICIT",
+      "source_file": "FORTNA/SawMerge.asc.ORNCCP4",
+      "notes": [
+        "Lane conveyor identity is taken only from explicit tokens in SawLane Name (e.g. LANE_0_P219 \u2192 P219). LaneNdx / P-number order is never used as identity.",
+        "HSSaw* tables are inventoried; active configuration on this RUN lives in SawMerge.asc.ORNCCP4 / SawLane.asc.ORNCCP4."
+      ]
+    }
+  ],
+  "vfd_summary": {
+    "unique_bases": 13,
+    "mapped_to_conveyor_explicit": 13,
+    "mapped_to_saw_lane_explicit": 5
+  },
+  "encoder_summary": {
+    "count": 2
+  },
+  "raw_discovery_counts": {
+    "merges": 1,
+    "lanes": 5,
+    "lanes_with_conveyor_in_name": 5,
+    "lanes_missing_conveyor": 0,
+    "hs_active_tables": 0
+  }
+}

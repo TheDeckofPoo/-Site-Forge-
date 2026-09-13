@@ -2835,6 +2835,7 @@
     svg.innerHTML = html;
   }
 
+  /** Select a node. Pass { additive: true } for Ctrl/Meta toggle-select (Shift is connect, not select). */
   function selectNode(id, { additive } = {}) {
     if (!id) {
       tb.selectedId = null;
