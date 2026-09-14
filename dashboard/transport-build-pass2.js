@@ -827,7 +827,9 @@
       status('No destination area');
       return 0;
     }
-    // Keep full selection across per-node moveNodeToArea calls
+    // Keep full selection across per-node moveNodeToArea calls.
+    // Do NOT switch activeAreaId — assignment must leave the current view alone.
+    const keepView = tb.activeAreaId;
     tb.selectedIds = [...ids];
     tb.selectedId = ids[0];
     ids.forEach((id) => {
@@ -835,13 +837,13 @@
       const found = findNodeAnywhere(id);
       if (found) markAreaEngineer(found.node);
     });
-    tb.activeAreaId = dest.id;
+    tb.activeAreaId = keepView;
     tb.selectedIds = ids.filter((id) => (dest.nodes || []).some((n) => n.id === id));
     tb.selectedId = tb.selectedIds[0] || null;
     save();
     render();
     status(
-      `${label || 'Moved'} ${tb.selectedIds.length} conveyor(s) → area “${dest.name}” (topology preserved)`
+      `${label || 'Moved'} ${tb.selectedIds.length} conveyor(s) → area “${dest.name}” (view unchanged · topology preserved)`
     );
     refreshPass2Chrome();
     return tb.selectedIds.length;
@@ -858,14 +860,31 @@
     const def = `Transport_${(tb.areas || []).length + 1}`;
     const name = await askText(
       'Create Area from Selection',
-      'Area name (engineer metadata — not inferred from geometry):',
+      'Area name (operational grouping — not a Safety Zone):',
       def
     );
     if (name === null || !(String(name).trim())) return;
     const areaName = String(name).trim();
+    const { listSafetyZoneNames, ensureSafetyZone } = A();
+    const zoneHint = String(tb.buildContext?.safetyZone || '').trim()
+      || (typeof listSafetyZoneNames === 'function' ? (listSafetyZoneNames()[0] || '') : '');
+    const zoneIn = await askText(
+      'Default Safety Zone',
+      `Optional default Safety Zone for conveyors in “${areaName}”.\n`
+        + 'Area ≠ Safety Zone. Conveyor-level value stays authoritative.',
+      zoneHint
+    );
+    const defaultZone = zoneIn === null ? '' : String(zoneIn || '').trim();
+    if (defaultZone && typeof ensureSafetyZone === 'function') ensureSafetyZone(defaultZone);
     pushHistory(`Create Area from Selection (${ids.length})`);
     tb.suppressDefaultArea = false;
-    const a = { id: uid('area'), name: areaName, nodes: [], wires: [] };
+    const a = {
+      id: uid('area'),
+      name: areaName,
+      nodes: [],
+      wires: [],
+      defaultSafetyZone: defaultZone,
+    };
     tb.areas.push(a);
     // Re-assert selection in case focus/dialog churn cleared it
     tb.selectedIds = [...ids];
@@ -874,34 +893,25 @@
     ensureBuildContext();
     tb.buildContext.areaId = a.id;
     tb.buildContext.areaName = a.name;
+    if (defaultZone) tb.buildContext.safetyZone = defaultZone;
+    // Apply default Safety Zone to moved conveyors that have none yet
+    if (defaultZone) {
+      (a.nodes || []).forEach((n) => {
+        if (!String(n.safetyZone || '').trim()) {
+          n.safetyZone = defaultZone;
+          if (!n.provenance) n.provenance = {};
+          n.provenance.safetyZone = 'AREA_DEFAULT';
+        }
+      });
+    }
     save();
     render();
-    status(`Created area “${a.name}” with ${moved} conveyor(s) — engineer metadata (not geometry-inferred)`);
+    status(
+      `Created area “${a.name}” with ${moved} conveyor(s)`
+      + (defaultZone ? ` · default Safety Zone “${defaultZone}”` : '')
+      + ' (view unchanged)'
+    );
     refreshPass2Chrome();
-
-    // Optional Apply ES when Build Context already has a zone (do not force)
-    const zone = String(tb.buildContext.safetyZone || '').trim();
-    if (zone && tb.selectedIds.length) {
-      const apply = await askYesNo(
-        'Apply ES Zone?',
-        `Apply Build Context ES Zone “${zone}” to the ${tb.selectedIds.length} conveyor(s) in “${a.name}”?`
-      );
-      if (apply) {
-        pushHistory(`Apply ES ${zone}`);
-        tb.selectedIds.forEach((id) => {
-          const n = (a.nodes || []).find((x) => x.id === id);
-          if (!n) return;
-          n.safetyZone = zone;
-          n.esZoneRequired = false;
-          if (!n.provenance) n.provenance = {};
-          n.provenance.safetyZone = 'ENGINEER';
-        });
-        save();
-        render();
-        status(`ES Zone ${zone} applied to ${tb.selectedIds.length} conveyor(s)`);
-        refreshPass2Chrome();
-      }
-    }
   }
 
   /** Move selection into an existing Area (prompted; defaults to Build Context area). */
@@ -1446,10 +1456,26 @@
     if (ev.button !== 0) return;
     if (ev.target.closest?.('.tb-node') || ev.target.closest?.('.tb-port')) return;
     if (ev.target.closest?.('#tb-topo-panel')) return;
-    // Start marquee
+    const canvas = $('tb-canvas');
+    // Empty-scene left-drag = pan (CAD hand). Alt+drag keeps marquee select.
+    // Space held also forces pan.
+    const wantPan = !ev.altKey || !!tb.spacePan;
+    if (wantPan && !marqueeAdd(ev) && !marqueeSubtract(ev)) {
+      if (!canvas) return;
+      ev.preventDefault();
+      tb.panning = {
+        sx: ev.clientX,
+        sy: ev.clientY,
+        sl: canvas.scrollLeft,
+        st: canvas.scrollTop,
+      };
+      canvas.classList.add('tb-panning');
+      canvas.style.cursor = 'grabbing';
+      return;
+    }
+    // Alt (or Ctrl-add / Alt-subtract) → marquee
     const pt = canvasPointFromEvent(ev);
     tb.marquee = { x0: pt.x, y0: pt.y, x1: pt.x, y1: pt.y };
-    // Preserve selection for add (Ctrl/Meta) and subtract (Alt / Ctrl+Shift)
     if (!marqueeAdd(ev) && !marqueeSubtract(ev)) {
       tb.selectedIds = [];
       tb.selectedId = null;
@@ -1933,6 +1959,13 @@
     tb.viewMode = 'schematic';
     if (tb.layers) tb.layers.physical = false;
     if (tb.workflow) tb.workflow.autobuild = true;
+    // Seed first-class Safety Zones from RUN-proven conveyor.safetyZone only
+    // (never invent from Area names). Engineer zones remain authoritative later.
+    try {
+      if (typeof A().seedSafetyZonesFromNodes === 'function') {
+        A().seedSafetyZonesFromNodes({ preserveEngineer: true });
+      }
+    } catch (_) { /* ignore */ }
     try { A().setWorkflowStep?.('review', { done: true }); } catch (_) { /* ignore */ }
     // Frame visible working set (single Fit semantics)
     try {
@@ -1980,6 +2013,26 @@
     $('tb-fit-selection')?.addEventListener('click', () => {
       try { A().fitSelection?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Frame Selection: ${err?.message || err}`); }
     });
+    const reset100 = () => {
+      try {
+        if (typeof A().resetView100 === 'function') A().resetView100();
+        else {
+          const { tb, applyViewportZoom, render, status } = A();
+          if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
+          tb.view.zoom = 1;
+          applyViewportZoom?.();
+          const c = $('tb-canvas');
+          if (c) { c.scrollLeft = 0; c.scrollTop = 0; }
+          render?.();
+          status?.('Reset View · 100% (presentation only)');
+        }
+        document.getElementById('tb-fit-menu')?.removeAttribute('open');
+      } catch (err) {
+        A().status(`Reset View: ${err?.message || err}`);
+      }
+    };
+    $('tb-zoom-100')?.addEventListener('click', reset100);
+    $('tb-zoom-reset')?.addEventListener('click', reset100);
     $('tb-advanced-debug')?.addEventListener('change', (ev) => {
       const { tb, render, status } = A();
       tb.viewMode = ev.target.checked ? 'geom-debug' : 'schematic';
@@ -2145,6 +2198,7 @@
           st: canvas.scrollTop,
         };
         canvas.classList.add('tb-panning');
+        canvas.style.cursor = 'grabbing';
         return;
       }
       onCanvasMouseDown(ev);
@@ -2155,6 +2209,7 @@
       if (tb.panning) {
         tb.panning = null;
         canvas?.classList.remove('tb-panning');
+        if (canvas) canvas.style.cursor = tb.spacePan ? 'grab' : '';
       }
       if (tb.moving && tb._moveHistoryPushed) {
         tb._moveHistoryPushed = false;
@@ -2162,22 +2217,23 @@
       }
       onCanvasMouseUp(ev);
     });
-    // CAD-style navigation (presentation only — does not mutate RUN source geometry)
-    // wheel = zoom @ cursor · Shift+wheel = horizontal pan · scrollbars still work
+    // CAD-style navigation (presentation only — does not mutate equipment coordinates)
+    // CTRL+wheel = zoom @ cursor · plain wheel = native scroll · Mid/empty-drag = pan
     canvas?.addEventListener('wheel', (ev) => {
       const { tb, render, applyViewportZoom, viewportZoomLimits, status } = A();
       if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
 
-      // Shift+wheel → horizontal pan (keep vertical delta available without Shift)
-      if (ev.shiftKey && !ev.ctrlKey && !ev.metaKey) {
-        ev.preventDefault();
-        const delta = Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
-        canvas.scrollLeft += delta;
+      // Zoom ONLY with Ctrl/Meta + wheel (around cursor). Plain wheel must not zoom.
+      if (!(ev.ctrlKey || ev.metaKey)) {
+        // Shift+wheel → horizontal pan convenience; otherwise let native scroll work
+        if (ev.shiftKey) {
+          ev.preventDefault();
+          const delta = Math.abs(ev.deltaX) > Math.abs(ev.deltaY) ? ev.deltaX : ev.deltaY;
+          canvas.scrollLeft += delta;
+        }
         return;
       }
 
-      // Plain wheel (or Ctrl+wheel) → zoom centered on cursor
-      // Allow unmodified wheel so CAD navigation works; scrollbars remain for pan.
       ev.preventDefault();
       const lim = typeof viewportZoomLimits === 'function'
         ? viewportZoomLimits()
@@ -2196,13 +2252,26 @@
       else render();
       canvas.scrollLeft = cx * next - (ev.clientX - rect.left);
       canvas.scrollTop = cy * next - (ev.clientY - rect.top);
-      status(`Zoom ${Math.round(next * 100)}% (wheel · presentation only)`);
-      // Re-render for LOD label density
+      status(`Zoom ${Math.round(next * 100)}% (Ctrl+wheel · presentation only)`);
       render();
     }, { passive: false });
     // Prevent middle-click autoscroll chrome behavior
     canvas?.addEventListener('auxclick', (ev) => {
       if (ev.button === 1) ev.preventDefault();
+    });
+    // Space = temporary hand/pan cursor (does not mutate topology)
+    document.addEventListener('keydown', (ev) => {
+      if (ev.code !== 'Space' || ev.repeat) return;
+      if (ev.target && /^(INPUT|TEXTAREA|SELECT)$/i.test(ev.target.tagName)) return;
+      const { tb } = A();
+      tb.spacePan = true;
+      if (canvas && !tb.panning) canvas.style.cursor = 'grab';
+    });
+    document.addEventListener('keyup', (ev) => {
+      if (ev.code !== 'Space') return;
+      const { tb } = A();
+      tb.spacePan = false;
+      if (canvas && !tb.panning) canvas.style.cursor = '';
     });
 
     // When area select changes, sync build context area id if matching

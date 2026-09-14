@@ -1096,6 +1096,88 @@ function resetWorkspaceUi() {
 }
 
 /** Import RUN from I/O tab or Workspace — same backend. */
+/**
+ * Wipe ALL project-scoped site/engineer state before a new RUN loads.
+ * Prevents Site A / Controller A caches from contaminating Site B.
+ * Does NOT touch cosmetic UI prefs.
+ */
+function resetProjectScopedState({ reason = 'new RUN' } = {}) {
+  // Subsystem editor configs
+  try { autogenState.sawtooth = defaultSawtoothConfig(); } catch (_) { /* ignore */ }
+  try { autogenState.sorter = defaultSorterConfig(); } catch (_) { /* ignore */ }
+  try { autogenState.merges_2to1 = []; } catch (_) { /* ignore */ }
+  try { autogenState.wcs = null; } catch (_) { /* ignore */ }
+  try {
+    if (autogenState.workbook) {
+      delete autogenState.workbook.sawtooth_build;
+      delete autogenState.workbook.sorter_build;
+      delete autogenState.workbook.wcs;
+      delete autogenState.workbook.transport_build;
+      delete autogenState.workbook.transport_graph;
+      autogenState.workbook.merges_2to1 = [];
+      // Drop engineer Areas / Safety Zones / conveyor rows — rebuilt from new RUN
+      autogenState.workbook.areas = [];
+      autogenState.workbook.conveyors = [];
+      if (autogenState.workbook.options && typeof autogenState.workbook.options === 'object') {
+        autogenState.workbook.options.areas = [];
+        autogenState.workbook.options.safety_zones = [];
+      }
+    }
+  } catch (_) { /* ignore */ }
+
+  // Compile-hub readiness — force NOT_DETECTED until current RUN re-detects
+  try {
+    autogenState.readiness = {
+      hardware: emptyReadinessEntry(),
+      transport: emptyReadinessEntry(),
+      sawtooth: emptyReadinessEntry(),
+      sorter: emptyReadinessEntry(),
+      system: emptyReadinessEntry(),
+    };
+    autogenState.lastGenerateIoMapError = null;
+  } catch (_) { /* ignore */ }
+
+  // Pack option checkboxes that were evidence-driven
+  [
+    'autogen-opt-merges-2to1',
+    'autogen-opt-shippingsorter',
+    'autogen-opt-shippingsorter-popup',
+    'autogen-opt-sorter-track',
+    'autogen-opt-sawtooth',
+    'autogen-opt-wcs',
+  ].forEach((id) => {
+    try { if ($(id)) $(id).checked = false; } catch (_) { /* ignore */ }
+  });
+
+  // Project-scoped localStorage keys (identity + subsystem caches)
+  [
+    'fortna_sawtooth_build',
+    'fortna_sorter_build',
+    'fortna_merges_2to1',
+    'siteforge.transportBuild.v1',
+    'siteforge.transportBuild.v2',
+    'siteforge.projectIdentity',
+  ].forEach((k) => {
+    try { localStorage.removeItem(k); } catch (_) { /* ignore */ }
+  });
+  try { state.projectIdentity = null; } catch (_) { /* ignore */ }
+
+  // Transport canvas (Areas, Safety Zones, topology, selection, viewport)
+  try {
+    if (typeof window.transportBuildClearAll === 'function') {
+      window.transportBuildClearAll({ leaveEmpty: true });
+    }
+  } catch (_) { /* ignore */ }
+
+  // Re-render subsystem UIs empty
+  try { renderSawtoothBuild(); } catch (_) { /* ignore */ }
+  try { renderSorterBuild(); } catch (_) { /* ignore */ }
+  try { renderMergeBuild(); } catch (_) { /* ignore */ }
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+
+  log(`Project state reset (${reason}) — prior RUN subsystems cleared`, 'ok');
+}
+
 async function importRunPackage(path, name) {
   if (!path) return false;
   if (typeof fortnaAPI?.importRun !== 'function') {
@@ -1104,6 +1186,9 @@ async function importRunPackage(path, name) {
     setIoRunStatus(msg, 'error');
     return false;
   }
+  // Identity guard: always wipe prior project before importing a new archive
+  resetProjectScopedState({ reason: `loading ${name || path}` });
+
   setBusy(true);
   setIoRunStatus(`Importing ${name || 'archive'}…`, 'busy');
   setStatus('workspace-status', 'Importing…', 'busy');
@@ -1127,6 +1212,17 @@ async function importRunPackage(path, name) {
     return false;
   }
   state.workspace = res.meta;
+  // Stamp project identity so future restores can refuse cross-site contamination
+  try {
+    const identity = {
+      machine: res.meta?.machine || '',
+      run_fingerprint: res.meta?.run_fingerprint || '',
+      archive: res.meta?.archive_name || res.meta?.export_name || name || '',
+      loadedAt: new Date().toISOString(),
+    };
+    localStorage.setItem('siteforge.projectIdentity', JSON.stringify(identity));
+    state.projectIdentity = identity;
+  } catch (_) { /* ignore */ }
   if ($('drop-filename')) {
     $('drop-filename').textContent = name || path.split(/[/\\]/).pop();
     $('drop-filename').classList.remove('hidden');
@@ -4588,8 +4684,26 @@ async function applySiteModelToEditors({ discovery = null, reason = 'discovery' 
     if ((saw.configuration_required || []).length) {
       log(`Sawtooth unresolved (visible): ${(saw.configuration_required || []).join(', ')}`, 'warn');
     }
-  } else if (discovery?.has_sawtooth || (site?.sawtooth_merges || []).length) {
-    log('Sawtooth detected in SiteModel but editor mapping produced empty config — FAIL soft', 'err');
+  } else {
+    // CRITICAL: no usable Sawtooth editor config from CURRENT RUN.
+    // Clear residual prior-project state so Compile Hub is NOT DETECTED
+    // and cannot block export. Do not forcibly mark READY.
+    if (discovery?.has_sawtooth || (site?.sawtooth_merges || []).length) {
+      log('Sawtooth flagged in SiteModel but editor mapping empty — clearing stale editor (FAIL soft)', 'err');
+    } else {
+      log(`Sawtooth NOT DETECTED on current RUN (${reason}) — prior project Sawtooth cleared`, 'ok');
+    }
+    autogenState.sawtooth = defaultSawtoothConfig();
+    try {
+      if (autogenState.workbook) delete autogenState.workbook.sawtooth_build;
+    } catch (_) { /* ignore */ }
+    try { localStorage.removeItem('fortna_sawtooth_build'); } catch (_) { /* ignore */ }
+    try { renderSawtoothBuild(); } catch (_) { /* ignore */ }
+    if ($('autogen-opt-sawtooth')) $('autogen-opt-sawtooth').checked = false;
+    try {
+      Object.assign(ensureAutogenReadiness().sawtooth, emptyReadinessEntry('NOT_DETECTED'));
+    } catch (_) { /* ignore */ }
+    summary.sawtooth = false;
   }
 
   const sorterPopulated = !!(
@@ -4641,6 +4755,22 @@ async function applySiteModelToEditors({ discovery = null, reason = 'discovery' 
     }
   } else if (discovery?.has_sorter || (site?.sorters || []).length) {
     log('Sorter detected in SiteModel but editor mapping produced empty config — FAIL soft', 'err');
+  } else {
+    // No proven Sorter on current RUN — clear residual prior-project sorter state
+    try { autogenState.sorter = defaultSorterConfig(); } catch (_) { /* ignore */ }
+    try {
+      if (autogenState.workbook) delete autogenState.workbook.sorter_build;
+    } catch (_) { /* ignore */ }
+    try { localStorage.removeItem('fortna_sorter_build'); } catch (_) { /* ignore */ }
+    try { renderSorterBuild(); } catch (_) { /* ignore */ }
+    if ($('autogen-opt-sorter-track')) $('autogen-opt-sorter-track').checked = false;
+    if ($('autogen-opt-shippingsorter')) $('autogen-opt-shippingsorter').checked = false;
+    if ($('autogen-opt-shippingsorter-popup')) $('autogen-opt-shippingsorter-popup').checked = false;
+    try {
+      Object.assign(ensureAutogenReadiness().sorter, emptyReadinessEntry('NOT_DETECTED'));
+    } catch (_) { /* ignore */ }
+    summary.sorter = false;
+    log(`Sorter NOT DETECTED on current RUN (${reason}) — prior project Sorter cleared`, 'ok');
   }
 
   // Persist workbook so Build PLC consumes the same canonical overrides

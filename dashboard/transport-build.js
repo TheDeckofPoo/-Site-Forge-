@@ -174,6 +174,9 @@
   const tb = {
     areas: [],
     activeAreaId: null,
+    // First-class Safety Zones (E-stop grouping) — independent of Areas
+    safetyZones: [], // [{ id, name }]
+    activeSafetyZoneId: null,
     suppressDefaultArea: false, // Clear Current Project: leave canvas empty until Auto Build / New Area
     selectedId: null, // conveyor node id (primary)
     selectedIds: [], // multi-select (includes selectedId when set)
@@ -191,6 +194,7 @@
     showPorts: false,
     continueOpen: false,
     _moveHistoryPushed: false,
+    spacePan: false, // Space held → temporary hand cursor / pan
     // Presentation transform (does NOT mutate RUN sourceX/Y/Angle/Length/Width)
     view: {
       zoom: 1,
@@ -218,7 +222,7 @@
     },
     // Control Panel filter toggles — keys discovered from RUN after Auto Build
     cpFilters: {},
-    panning: null, // middle-mouse pan: { sx, sy, sl, st }
+    panning: null, // middle-mouse / empty-drag pan: { sx, sy, sl, st }
     workflow: { import: false, autobuild: false, review: true, apply: false, build: false },
   };
 
@@ -408,6 +412,20 @@
     }
   }
 
+  function currentProjectIdentity() {
+    try {
+      const raw = localStorage.getItem('siteforge.projectIdentity');
+      return raw ? JSON.parse(raw) : (window.state?.projectIdentity || null);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function identityKey(id) {
+    if (!id || typeof id !== 'object') return '';
+    return [id.machine || '', id.run_fingerprint || '', id.archive || ''].join('|');
+  }
+
   function save() {
     try {
       localStorage.setItem(
@@ -415,10 +433,14 @@
         JSON.stringify({
           areas: tb.areas,
           activeAreaId: tb.activeAreaId,
+          safetyZones: tb.safetyZones || [],
+          activeSafetyZoneId: tb.activeSafetyZoneId || null,
           autoConnectNew: !!tb.autoConnectNew,
           // Additive v2 fields — controlPanel lives on nodes; filters/layers are UI prefs
           cpFilters: tb.cpFilters || {},
           layers: tb.layers || null,
+          // Identity guard — refuse restore into a different site/controller
+          projectIdentity: currentProjectIdentity(),
         })
       );
     } catch (_) { /* ignore */ }
@@ -460,6 +482,18 @@
       const raw = localStorage.getItem(STORE_KEY);
       if (!raw) return;
       const data = JSON.parse(raw);
+      // Project identity guard: Site A cache must not restore into Site B
+      const savedId = identityKey(data.projectIdentity);
+      const liveId = identityKey(currentProjectIdentity());
+      if (savedId && liveId && savedId !== liveId) {
+        try { localStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
+        tb.areas = [];
+        tb.safetyZones = [];
+        tb.activeAreaId = null;
+        tb.activeSafetyZoneId = null;
+        status('Discarded prior-site Transport cache (project identity mismatch)');
+        return;
+      }
       if (Array.isArray(data.areas)) {
         const filtered = _filterAreasToControllerScope(data.areas);
         const before = (data.areas || []).reduce((s, a) => s + ((a.nodes || []).length), 0);
@@ -479,6 +513,18 @@
       if (tb.activeAreaId && !(tb.areas || []).some((a) => a.id === tb.activeAreaId)) {
         tb.activeAreaId = (tb.areas[0] && tb.areas[0].id) || null;
       }
+      if (Array.isArray(data.safetyZones)) {
+        tb.safetyZones = data.safetyZones
+          .filter((z) => z && (z.name || z.id))
+          .map((z) => ({ id: z.id || uid('szone'), name: String(z.name || '').trim() }))
+          .filter((z) => z.name);
+      } else {
+        // Seed from conveyor safetyZone values already on the canvas
+        seedSafetyZonesFromNodes({ preserveEngineer: false });
+      }
+      tb.activeSafetyZoneId = data.activeSafetyZoneId
+        || (tb.safetyZones[0] && tb.safetyZones[0].id)
+        || null;
       if ((tb.areas || []).length) tb.suppressDefaultArea = false;
       if (typeof data.autoConnectNew === 'boolean') tb.autoConnectNew = data.autoConnectNew;
       if (data.cpFilters && typeof data.cpFilters === 'object') {
@@ -492,8 +538,10 @@
       }
       // Ensure controlPanel exists on restored nodes (presentation metadata only)
       (tb.areas || []).forEach((area) => {
+        if (area.defaultSafetyZone == null) area.defaultSafetyZone = '';
         (area.nodes || []).forEach((n) => {
           if (n.controlPanel == null) n.controlPanel = '';
+          if (n.safetyZone == null) n.safetyZone = '';
         });
       });
     } catch (_) { /* ignore */ }
@@ -978,6 +1026,97 @@
     return `${base}_ESZone1`;
   }
 
+  /** All known Safety Zone names (first-class list + any conveyor values). */
+  function listSafetyZoneNames() {
+    const names = new Set();
+    (tb.safetyZones || []).forEach((z) => {
+      const n = String(z?.name || '').trim();
+      if (n) names.add(n);
+    });
+    (tb.areas || []).forEach((a) => {
+      const d = String(a.defaultSafetyZone || '').trim();
+      if (d) names.add(d);
+      (a.nodes || []).forEach((n) => {
+        const z = String(n.safetyZone || '').trim();
+        if (z) names.add(z);
+      });
+    });
+    const ctx = String(tb.buildContext?.safetyZone || '').trim();
+    if (ctx) names.add(ctx);
+    return [...names].sort((a, b) => a.localeCompare(b));
+  }
+
+  /** Ensure a Safety Zone exists by name; returns the zone record. */
+  function ensureSafetyZone(name) {
+    const nm = String(name || '').trim();
+    if (!nm) return null;
+    tb.safetyZones = tb.safetyZones || [];
+    let z = tb.safetyZones.find((x) => String(x.name || '').trim().toLowerCase() === nm.toLowerCase());
+    if (!z) {
+      z = { id: uid('szone'), name: nm };
+      tb.safetyZones.push(z);
+    }
+    return z;
+  }
+
+  /**
+   * Seed Safety Zones from RUN-proven conveyor.safetyZone values.
+   * Does NOT invent zones from Area names. Engineer-created zones stay authoritative.
+   */
+  function seedSafetyZonesFromNodes({ preserveEngineer = true } = {}) {
+    const engineerNames = new Set(
+      preserveEngineer
+        ? (tb.safetyZones || []).map((z) => String(z.name || '').trim()).filter(Boolean)
+        : []
+    );
+    const found = new Set(engineerNames);
+    (tb.areas || []).forEach((a) => {
+      (a.nodes || []).forEach((n) => {
+        const z = String(n.safetyZone || '').trim();
+        if (z) found.add(z);
+      });
+    });
+    tb.safetyZones = [...found].sort((a, b) => a.localeCompare(b)).map((name) => {
+      const prev = (tb.safetyZones || []).find(
+        (z) => String(z.name || '').trim().toLowerCase() === name.toLowerCase()
+      );
+      return prev || { id: uid('szone'), name };
+    });
+    if (!tb.activeSafetyZoneId || !(tb.safetyZones || []).some((z) => z.id === tb.activeSafetyZoneId)) {
+      tb.activeSafetyZoneId = (tb.safetyZones[0] && tb.safetyZones[0].id) || null;
+    }
+    return tb.safetyZones;
+  }
+
+  function refreshSafetyZoneSelect() {
+    const sel = $('tb-szone-select');
+    if (!sel) return;
+    const zones = tb.safetyZones || [];
+    if (!zones.length) {
+      sel.innerHTML = '<option value="">— none —</option>';
+      return;
+    }
+    sel.innerHTML = zones
+      .map(
+        (z) =>
+          `<option value="${escapeHtml(z.id)}" ${z.id === tb.activeSafetyZoneId ? 'selected' : ''}>${escapeHtml(z.name)}</option>`
+      )
+      .join('');
+  }
+
+  function resetView100() {
+    if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
+    tb.view.zoom = 1;
+    applyViewportZoom();
+    const canvas = $('tb-canvas');
+    if (canvas) {
+      canvas.scrollLeft = 0;
+      canvas.scrollTop = 0;
+    }
+    render();
+    status('Reset View · 100% (presentation only)');
+  }
+
   function renderTopologyTable() {
     const body = $('tb-topo-body');
     if (!body) return;
@@ -1013,6 +1152,15 @@
               })
           )
           .join('');
+        // Conveyor-level Safety Zone is authoritative (not Area-derived).
+        const curZone = String(n.safetyZone || '').trim();
+        const zoneNames = listSafetyZoneNames();
+        if (curZone && !zoneNames.includes(curZone)) zoneNames.push(curZone);
+        const zoneOpts = [`<option value="">—</option>`]
+          .concat(zoneNames.map((z) =>
+            `<option value="${escapeHtml(z)}" ${z === curZone ? 'selected' : ''}>${escapeHtml(z)}</option>`
+          ))
+          .join('');
         rows.push(`<tr class="${sel}" data-topo-id="${escapeHtml(n.id)}" data-topo-area="${escapeHtml(area.id)}">
           <td class="mono text-cyan-300">${escapeHtml(tag || n.label || n.id)}</td>
           <td><select data-topo-area-sel="${escapeHtml(n.id)}">${areaOpts}</select></td>
@@ -1023,7 +1171,7 @@
           <td class="mono">${escapeHtml(addPe || '—')}</td>
           <td class="mono">${escapeHtml(jamPe || '—')}</td>
           <td class="mono">${escapeHtml(fullPe || '—')}</td>
-          <td class="mono text-slate-500">${escapeHtml(safetyForAreaName(area.name))}</td>
+          <td><select data-topo-szone="${escapeHtml(n.id)}" class="mono text-amber-200 max-w-[9rem]" title="Conveyor Safety Zone (independent of Area)">${zoneOpts}</select></td>
           <td class="text-slate-500">${escapeHtml(st.join(', ') || 'ok')}</td>
         </tr>`);
       });
@@ -1176,6 +1324,25 @@
         moveNodeToArea(nodeId, destAreaId);
       });
     });
+    body.querySelectorAll('select[data-topo-szone]').forEach((sel) => {
+      sel.addEventListener('change', () => {
+        const nodeId = sel.getAttribute('data-topo-szone');
+        const zone = String(sel.value || '').trim();
+        let node = null;
+        for (const a of tb.areas || []) {
+          node = (a.nodes || []).find((n) => n.id === nodeId);
+          if (node) break;
+        }
+        if (!node) return;
+        node.safetyZone = zone;
+        if (!node.provenance) node.provenance = {};
+        node.provenance.safetyZone = 'ENGINEER';
+        if (zone) ensureSafetyZone(zone);
+        save();
+        render();
+        status(`Safety Zone → ${zone || '(none)'} on ${nodeLabel(node)}`);
+      });
+    });
   }
 
   /**
@@ -1234,7 +1401,17 @@
       syncWiresFromDownstream(a);
     });
 
-    tb.activeAreaId = dest.id;
+    // Area assignment must NOT switch the displayed Area / viewport.
+    // Engineer navigates Areas explicitly via the Area dropdown.
+    // Apply Area default Safety Zone only when conveyor has none yet.
+    if (!String(node.safetyZone || '').trim()) {
+      const defZ = String(dest.defaultSafetyZone || '').trim();
+      if (defZ) {
+        node.safetyZone = defZ;
+        if (!node.provenance) node.provenance = {};
+        node.provenance.safetyZone = 'AREA_DEFAULT';
+      }
+    }
     tb.selectedId = node.id;
     if (Array.isArray(tb.selectedIds)) {
       tb.selectedIds = tb.selectedIds.includes(node.id) ? tb.selectedIds : [node.id];
@@ -1242,7 +1419,7 @@
     save();
     render();
     status(
-      `Moved ${nodeLabel(node)} → area ${dest.name} (topology preserved` +
+      `Moved ${nodeLabel(node)} → area ${dest.name} (view unchanged · topology preserved` +
         (keptDownstream ? `; downstream ${keptDownstream}` : '') +
         ')'
     );
@@ -1531,6 +1708,7 @@
           `<option value="${a.id}" ${a.id === tb.activeAreaId ? 'selected' : ''}>${escapeHtml(a.name)}</option>`
       )
       .join('');
+    refreshSafetyZoneSelect();
   }
 
   function escapeHtml(s) {
@@ -3521,31 +3699,143 @@
       try {
         tb.suppressDefaultArea = false;
         const def = `Transport_${tb.areas.length + 1}`;
-        // Always create immediately so the click never feels dead, then offer rename.
-        const a = { id: uid('area'), name: def, nodes: [], wires: [] };
+        const name = await askText(
+          'New transport Area',
+          'Area name (operational conveyor grouping — not a Safety Zone):',
+          def
+        );
+        if (name === null || !(String(name).trim())) return;
+        const areaName = String(name).trim();
+        const zoneHint = listSafetyZoneNames()[0] || '';
+        const zoneIn = await askText(
+          'Default Safety Zone',
+          `Optional default Safety Zone for equipment assigned into “${areaName}”.\n`
+            + 'This is a convenience default only — Area ≠ Safety Zone.\n'
+            + 'Conveyor-level Safety Zone remains authoritative.',
+          zoneHint
+        );
+        const defaultZone = zoneIn === null ? '' : String(zoneIn || '').trim();
+        if (defaultZone) ensureSafetyZone(defaultZone);
+        const a = {
+          id: uid('area'),
+          name: areaName,
+          nodes: [],
+          wires: [],
+          defaultSafetyZone: defaultZone,
+        };
         tb.areas.push(a);
         tb.activeAreaId = a.id;
         tb.selectedId = null;
         tb.selectedDeviceId = null;
+        if (defaultZone) {
+          tb.buildContext = tb.buildContext || {};
+          tb.buildContext.safetyZone = defaultZone;
+        }
         save();
         render();
-        status(`Created area “${a.name}”`);
-
-        const name = await askText(
-          'New transport area',
-          'Rename this area? (matches a Fast/Slow area in Autogen later)',
-          def
+        status(
+          `Area “${a.name}” ready`
+          + (defaultZone ? ` · default Safety Zone “${defaultZone}”` : '')
+          + ' — drag a conveyor onto the grid'
         );
-        if (name !== null && (name || '').trim() && (name || '').trim() !== a.name) {
-          a.name = name.trim();
-          save();
-          render();
-        }
-        status(`Area “${a.name}” ready — drag a conveyor onto the grid`);
       } catch (err) {
         status(`New area error: ${err?.message || err}`);
         try { await showInfo('New area failed', String(err?.message || err)); } catch (_) { /* ignore */ }
       }
+    });
+
+    // ---- Safety Zone CRUD (first-class, independent of Areas) ----
+    $('tb-szone-select')?.addEventListener('change', (e) => {
+      tb.activeSafetyZoneId = e.target.value || null;
+      const z = (tb.safetyZones || []).find((x) => x.id === tb.activeSafetyZoneId);
+      if (z) {
+        tb.buildContext = tb.buildContext || {};
+        tb.buildContext.safetyZone = z.name;
+      }
+      save();
+    });
+    $('tb-szone-new')?.addEventListener('click', async () => {
+      try {
+        const name = await askText(
+          'Create Safety Zone',
+          'Safety Zone name (E-stop / safety grouping — independent of Area):',
+          'SafetyZone_1'
+        );
+        if (name === null || !(String(name).trim())) return;
+        const z = ensureSafetyZone(String(name).trim());
+        if (!z) return;
+        tb.activeSafetyZoneId = z.id;
+        tb.buildContext = tb.buildContext || {};
+        tb.buildContext.safetyZone = z.name;
+        save();
+        render();
+        status(`Created Safety Zone “${z.name}”`);
+      } catch (err) {
+        status(`Create Safety Zone error: ${err?.message || err}`);
+      }
+    });
+    $('tb-szone-rename')?.addEventListener('click', async () => {
+      const z = (tb.safetyZones || []).find((x) => x.id === tb.activeSafetyZoneId);
+      if (!z) {
+        status('Select a Safety Zone first');
+        return;
+      }
+      const name = await askText('Rename Safety Zone', 'New Safety Zone name:', z.name);
+      if (name === null || !(String(name).trim())) return;
+      const oldName = z.name;
+      const newName = String(name).trim();
+      z.name = newName;
+      // Propagate rename to conveyor assignments + area defaults that used the old name
+      (tb.areas || []).forEach((a) => {
+        if (String(a.defaultSafetyZone || '').trim() === oldName) a.defaultSafetyZone = newName;
+        (a.nodes || []).forEach((n) => {
+          if (String(n.safetyZone || '').trim() === oldName) {
+            n.safetyZone = newName;
+            if (!n.provenance) n.provenance = {};
+            n.provenance.safetyZone = 'ENGINEER';
+          }
+        });
+      });
+      if (String(tb.buildContext?.safetyZone || '').trim() === oldName) {
+        tb.buildContext.safetyZone = newName;
+      }
+      save();
+      render();
+      status(`Renamed Safety Zone “${oldName}” → “${newName}”`);
+    });
+    $('tb-szone-delete')?.addEventListener('click', async () => {
+      const z = (tb.safetyZones || []).find((x) => x.id === tb.activeSafetyZoneId);
+      if (!z) {
+        status('Select a Safety Zone first');
+        return;
+      }
+      const refs = [];
+      (tb.areas || []).forEach((a) => {
+        (a.nodes || []).forEach((n) => {
+          if (isConv(n.kind) && String(n.safetyZone || '').trim() === z.name) {
+            refs.push(n.conveyorTag || n.label || n.id);
+          }
+        });
+      });
+      if (refs.length) {
+        await showInfo(
+          'Safety Zone in use',
+          `Cannot delete “${z.name}” — referenced by ${refs.length} conveyor(s).\n`
+            + 'Reassign those conveyors first (topology Safety Zone column).',
+          refs.slice(0, 24).join(', ') + (refs.length > 24 ? '…' : '')
+        );
+        return;
+      }
+      const ok = await askYesNo('Delete Safety Zone', `Delete unused Safety Zone “${z.name}”?`);
+      if (!ok) return;
+      tb.safetyZones = (tb.safetyZones || []).filter((x) => x.id !== z.id);
+      tb.activeSafetyZoneId = (tb.safetyZones[0] && tb.safetyZones[0].id) || null;
+      (tb.areas || []).forEach((a) => {
+        if (String(a.defaultSafetyZone || '').trim() === z.name) a.defaultSafetyZone = '';
+      });
+      save();
+      render();
+      status(`Deleted Safety Zone “${z.name}”`);
     });
 
     $('tb-area-rename')?.addEventListener('click', async () => {
@@ -3755,6 +4045,7 @@
     const areas = (tb.areas || []).map((area) => ({
       id: area.id,
       name: area.name || '',
+      defaultSafetyZone: area.defaultSafetyZone || '',
       nodes: (area.nodes || [])
         // Presentation-only displayContext neighbors never enter Autogen/workbook.
         .filter((n) => !n.displayContext && n.plcOwned !== false)
@@ -3818,6 +4109,10 @@
       exportedAt: new Date().toISOString(),
       applyMode: 'canonical',
       areas,
+      safetyZones: (tb.safetyZones || []).map((z) => ({
+        id: z.id,
+        name: z.name || '',
+      })),
       activeAreaId: tb.activeAreaId,
     };
   }
@@ -4627,10 +4922,14 @@
     tb.suppressDefaultArea = leaveEmpty;
     tb.areas = [];
     tb.activeAreaId = null;
+    tb.safetyZones = [];
+    tb.activeSafetyZoneId = null;
     tb.selectedId = null;
     tb.selectedIds = [];
     tb.selectedDeviceId = null;
+    tb.buildContext = { areaId: null, areaName: '', safetyZone: '' };
     tb.history = { past: [], future: [], max: 50 };
+    if (tb.view) tb.view.zoom = 1;
     try { localStorage.removeItem(STORE_KEY); } catch (_) { /* ignore */ }
     try { localStorage.removeItem('siteforge.transportBuild.v1'); } catch (_) { /* ignore */ }
     if (!leaveEmpty) {
@@ -4712,6 +5011,11 @@
     renderTopologyTable,
     renderInspector,
     safetyForAreaName,
+    listSafetyZoneNames,
+    ensureSafetyZone,
+    seedSafetyZonesFromNodes,
+    refreshSafetyZoneSelect,
+    resetView100,
     STORE_KEY,
     isPhysicalSeg,
     isSchematicNode,

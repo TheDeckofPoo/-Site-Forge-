@@ -2352,7 +2352,7 @@
           </div>
           <p class="lg:col-span-2 text-[10px] text-slate-500">
             <strong class="text-slate-400">Control Panel ≠ Area.</strong> CP filters are organization/highlight only.
-            Wheel = zoom · Mid-drag or Shift+wheel = pan · Fit frames the view after pan/zoom.
+            Ctrl+wheel = zoom · empty-drag / mid-drag / Space+drag = pan · Alt+drag = marquee · Fit View / 100% are presentation-only.
           </p>
         </div>
       </details>
@@ -2363,11 +2363,23 @@
         <div class="flex items-center gap-2 ml-auto flex-wrap">
           <label class="text-[10px] text-slate-500 uppercase tracking-wider">Area</label>
           <select id="tb-area-select" class="bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200 min-w-[140px]"></select>
-          <button type="button" id="tb-area-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-900/50 text-fuchsia-300" title="New area">
+          <button type="button" id="tb-area-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-900/50 text-fuchsia-300" title="New Area (optional default Safety Zone)">
             <i class="fa-solid fa-plus mr-1"></i>New
           </button>
           <button type="button" id="tb-area-delete-btn" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-red-900/50 text-red-300" title="Delete current area">
             <i class="fa-solid fa-trash mr-1"></i>Delete
+          </button>
+          <span class="w-px h-5 bg-slate-800 mx-1"></span>
+          <label class="text-[10px] text-slate-500 uppercase tracking-wider" title="E-stop / safety grouping — independent of Area">Safety Zone</label>
+          <select id="tb-szone-select" class="bg-slate-900 border border-amber-900/50 rounded-lg text-xs px-2 py-1.5 text-amber-200 min-w-[140px] mono" title="Safety Zones (E-stop grouping — not Areas)"></select>
+          <button type="button" id="tb-szone-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-amber-800/60 text-amber-300" title="Create Safety Zone">
+            <i class="fa-solid fa-plus mr-1"></i>New
+          </button>
+          <button type="button" id="tb-szone-rename" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Rename selected Safety Zone">
+            <i class="fa-solid fa-pen"></i>
+          </button>
+          <button type="button" id="tb-szone-delete" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-red-900/50 text-red-300" title="Delete Safety Zone (blocked if referenced)">
+            <i class="fa-solid fa-trash"></i>
           </button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
           <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-600/70 text-emerald-200 font-semibold" title="Auto Build from imported RUN">
@@ -2376,8 +2388,11 @@
           <button type="button" id="tb-connect-mode" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-rose-900/50 text-rose-300" title="Connect EXIT → ENTRY">
             <i class="fa-solid fa-link mr-1"></i>Connect
           </button>
-          <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit the current visible working set (~8% padding). Does not alter RUN geometry.">
-            <i class="fa-solid fa-expand mr-1"></i>Fit
+          <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit View — current visible working set. Does not alter equipment coordinates.">
+            <i class="fa-solid fa-expand mr-1"></i>Fit View
+          </button>
+          <button type="button" id="tb-zoom-100" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Reset View to 100% zoom (presentation only)">
+            100%
           </button>
           <details id="tb-fit-menu" class="relative">
             <summary class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400 cursor-pointer list-none" title="More fit options">▾</summary>
@@ -2387,6 +2402,7 @@
               <button type="button" id="tb-fit-selection" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Frame Selection</button>
               <button type="button" id="tb-fit-area" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Area</button>
               <button type="button" id="tb-fit-site" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Site</button>
+              <button type="button" id="tb-zoom-reset" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Reset View (100%)</button>
             </div>
           </details>
           <button type="button" id="tb-undo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
@@ -2462,7 +2478,7 @@
         <div id="tb-cp-filters" class="flex items-center gap-2 flex-wrap min-h-[1.5rem]">
           <span class="text-[10px] text-slate-600">Auto Build to discover panels…</span>
         </div>
-        <span class="text-[9px] text-slate-600 ml-auto">Wheel zoom · Mid-drag pan · filters highlight only</span>
+        <span class="text-[9px] text-slate-600 ml-auto">Ctrl+wheel zoom · empty/mid-drag pan · filters highlight only</span>
       </div>
       <!-- Continue Run sticky bar -->
       <div id="tb-continue-bar" class="tb-continue-bar hidden shrink-0 px-4 py-1.5 flex items-center gap-2 flex-wrap">
@@ -2478,7 +2494,7 @@
       </div>
       <!-- Multi-select bulk bar — Area / ES Zone / Control Panel fast assign -->
       <div id="tb-bulk-bar" class="tb-bulk-bar hidden shrink-0 px-4 py-1.5 flex items-center gap-2 flex-wrap text-[11px]">
-        <span id="tb-bulk-count" class="text-sky-300 font-semibold" title="Marquee: drag empty canvas · Ctrl/Meta = add · Alt (or Ctrl+Shift) = subtract · Shift-click node = connect · Ctrl-click node = toggle select">Selected: 0 conveyors</span>
+        <span id="tb-bulk-count" class="text-sky-300 font-semibold" title="Pan: empty-drag / mid-drag / Space+drag · Marquee: Alt+drag · Ctrl/Meta = add · Ctrl+Shift = subtract · Shift-click node = connect · Ctrl-click = toggle select · Ctrl+wheel = zoom">Selected: 0 conveyors</span>
         <span class="text-[10px] text-slate-500">Assign to run:</span>
         <label class="flex items-center gap-1 text-slate-300 font-medium">Area
           <select id="tb-bulk-area" class="bg-slate-900 border border-fuchsia-800/60 rounded text-xs px-1.5 py-1 min-w-[120px]"></select>

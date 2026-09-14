@@ -443,9 +443,14 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         aname = (area.get("name") or "").strip()
         if not aname or aname in existing_area_names:
             continue
+        # Area defaultSafetyZone is a convenience default only — not Area==Zone.
+        area_default_sz = (
+            str(area.get("defaultSafetyZone") or area.get("default_safety_zone") or "").strip()
+            or _safety_for_area(aname)
+        )
         wb.setdefault("areas", []).append({
             "name": aname,
-            "safety_zone": _safety_for_area(aname),
+            "safety_zone": area_default_sz,
             "conveyor_count": 0,
         })
         existing_area_names.add(aname)
@@ -455,6 +460,28 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             area_opts.append(aname)
         opts["areas"] = area_opts
         wb["options"] = opts
+
+    # First-class Safety Zones from Transport Build (engineer + RUN-seeded).
+    # Do not invent from Area names — merge explicit graph.safetyZones + conveyor values.
+    opts = wb.get("options") if isinstance(wb.get("options"), dict) else {}
+    safety_opts = list(opts.get("safety_zones") or [])
+    for z in graph.get("safetyZones") or graph.get("safety_zones") or []:
+        if isinstance(z, dict):
+            nm = str(z.get("name") or "").strip()
+        else:
+            nm = str(z or "").strip()
+        if nm and nm not in safety_opts:
+            safety_opts.append(nm)
+    for area in graph.get("areas") or []:
+        dsz = str(area.get("defaultSafetyZone") or area.get("default_safety_zone") or "").strip()
+        if dsz and dsz not in safety_opts:
+            safety_opts.append(dsz)
+        for n in area.get("nodes") or []:
+            sz = str(n.get("safetyZone") or n.get("safety_zone") or "").strip()
+            if sz and sz not in safety_opts:
+                safety_opts.append(sz)
+    opts["safety_zones"] = safety_opts
+    wb["options"] = opts
 
     # Buildable PE names from workbook (same set Autogen will emit)
     buildable_pe: set[str] = set()
