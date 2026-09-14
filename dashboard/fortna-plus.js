@@ -1664,6 +1664,8 @@ const ioState = {
   hardwareIo: null,
   hardwarePanelFilter: '__all__',
   hardwareRioFilter: '__all__',
+  /** Expanded AENT card (rio_name) — click AENT to show associated I/O modules */
+  hardwareExpandedRio: '',
   selectedHwModuleKey: '',
   selectedHwChannel: null,
   /** @type {Array<object>} */
@@ -3448,10 +3450,37 @@ function hwEthernetLabel(model) {
 
 function bindHwModuleClicks(root) {
   if (!root) return;
+  // AENT primary card — toggle expand / show associated I/O modules
+  root.querySelectorAll('[data-hw-aent-toggle]').forEach((btn) => {
+    btn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      const rio = btn.getAttribute('data-hw-aent-toggle') || '';
+      if (!rio) return;
+      const collapsing = ioState.hardwareExpandedRio === rio;
+      ioState.hardwareExpandedRio = collapsing ? '' : rio;
+      // Selecting the AENT itself when expanding
+      const modKey = btn.getAttribute('data-hw-mod') || '';
+      if (!collapsing && modKey) {
+        ioState.selectedHwModuleKey = modKey;
+        ioState.selectedHwChannel = null;
+      }
+      renderHardwareRacks();
+      renderHardwareModuleDetail();
+    });
+  });
   root.querySelectorAll('[data-hw-mod]').forEach((btn) => {
-    btn.addEventListener('click', () => {
+    // Skip the AENT toggle button — handled above (it also has data-hw-mod)
+    if (btn.hasAttribute('data-hw-aent-toggle')) return;
+    btn.addEventListener('click', (ev) => {
+      ev.stopPropagation();
       ioState.selectedHwModuleKey = btn.getAttribute('data-hw-mod') || '';
       ioState.selectedHwChannel = null;
+      // Expand parent AENT when picking a child module
+      const card = btn.closest('[data-hw-rio]');
+      if (card) {
+        const rio = card.getAttribute('data-hw-rio') || '';
+        if (rio) ioState.hardwareExpandedRio = rio;
+      }
       renderHardwareRacks();
       renderHardwareModuleDetail();
     });
@@ -3476,8 +3505,18 @@ function renderHardwareRacksFlex(adapters) {
   if (!globalThis.FlexRack || typeof FlexRack.renderRacks !== 'function') {
     return `<div class="text-sm text-slate-500 py-6 text-center">FLEX rack renderer not loaded (flex-rack.js).</div>`;
   }
+  // Keep expanded AENT in sync with Remote I/O filter / single-adapter views
+  let expanded = ioState.hardwareExpandedRio || '';
+  if (adapters.length === 1) {
+    expanded = adapters[0].rio_name || expanded;
+    ioState.hardwareExpandedRio = expanded;
+  } else if (expanded && !adapters.some((a) => a.rio_name === expanded)) {
+    expanded = '';
+    ioState.hardwareExpandedRio = '';
+  }
   return FlexRack.renderRacks(adapters, {
     selectedKey: ioState.selectedHwModuleKey || '',
+    expandedRio: expanded,
     moduleKeyFn: hwModuleKey,
   });
 }

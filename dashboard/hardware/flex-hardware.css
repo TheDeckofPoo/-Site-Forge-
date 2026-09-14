@@ -1,103 +1,467 @@
-/* Physical 1794 FLEX I/O rack — center pane only */
+/* Physical 1794 FLEX I/O — visual language from site_forge_flexio_reference.html
+   Center pane only. Data comes from HardwareIOModel (never hardcode sample RIO). */
 
 .flex-phys-wrap {
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  min-height: 100%;
 }
 
 .flex-phys-rack-card {
-  border: 1px solid #1e293b;
-  border-radius: 12px;
-  background: #0a1018;
-  padding: 0.65rem 0.75rem;
-}
-
-.flex-phys-rack {
-  position: relative;
-  overflow-x: auto;
-  padding: 16px 12px 8px;
-  background:
-    linear-gradient(180deg, #121820 0%, #0a0e14 55%, #070a0e 100%);
-  border: 1px solid #1e293b;
+  border: 1px solid #0e4f75;
   border-radius: 8px;
+  background: rgba(7, 16, 24, 0.98);
+  overflow: hidden;
 }
 
-.flex-phys-row {
+.flex-phys-rack-card.expanded {
+  border-color: #1fc9ff;
+  box-shadow: 0 0 0 1px rgba(31, 201, 255, 0.25);
+}
+
+.flex-phys-rack-meta {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: flex-end;
-  gap: 3px;
-  position: relative;
-  z-index: 1;
-  min-height: 260px;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 10px;
+  color: #7391a5;
+  border-bottom: 1px solid #123950;
+  background: #07101a;
 }
 
-.flex-phys-rail {
-  margin-top: -8px;
-  padding: 0 2px 6px;
-  line-height: 0;
-  overflow: visible;
-  min-width: 100%;
+.flex-phys-rack-meta .rio {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #67e8f9;
 }
 
-.flex-phys-din {
-  display: block;
-  height: 14px;
-  min-width: 100%;
-}
-
-.flex-phys-mod {
-  position: relative;
-  z-index: 1;
-  flex: 0 0 auto;
+/* —— AENT primary card (click to expand child modules) —— */
+.flex-aent-card {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  width: 100%;
   padding: 0;
   margin: 0;
-  border: 2px solid transparent;
-  border-radius: 5px;
+  border: none;
   background: transparent;
   cursor: pointer;
-  line-height: 0;
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.55);
-  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+  text-align: left;
+  color: inherit;
 }
 
-.flex-phys-mod--adapter {
-  width: 172px;
+.flex-aent-card:hover .flex-aent-face {
+  outline: 1px solid #64748b;
 }
 
-.flex-phys-mod--io {
-  width: 100px;
+.flex-aent-card.selected .flex-aent-face,
+.flex-aent-card.expanded .flex-aent-face {
+  outline: 2px solid #10c5ff;
+  box-shadow: 0 0 10px #0bb8ff99, 0 4px 10px #0009;
 }
 
-.flex-phys-mod .flex-phys-svg {
+.flex-aent-body {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 4px;
+  background: #07111a;
+}
+
+.flex-aent-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #e6f2fb;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.flex-aent-sub {
+  font-size: 11px;
+  color: #9fc8dd;
+}
+
+.flex-aent-stats {
+  font-size: 10px;
+  color: #7391a5;
+  margin-top: 2px;
+}
+
+.flex-aent-chevron {
+  width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #27cfff;
+  font-size: 12px;
+  background: #07111a;
+  border-left: 1px solid #123950;
+  flex-shrink: 0;
+}
+
+.flex-aent-card.expanded .flex-aent-chevron {
+  transform: none;
+}
+
+.flex-aent-card.expanded .flex-aent-chevron i {
+  transform: rotate(180deg);
+}
+
+.flex-aent-face {
+  flex: 0 0 auto;
+  margin: 8px;
+}
+
+/* —— Expanded module dropdown + physical rack —— */
+.flex-aent-dropdown {
+  display: none;
+  border-top: 1px solid #123950;
+  background: #05090d;
+}
+
+.flex-phys-rack-card.expanded .flex-aent-dropdown {
   display: block;
-  width: 100%;
-  height: auto;
+}
+
+.flex-mod-menu {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 8px 10px;
+  border-bottom: 1px solid #123950;
+  background: #07101a;
+}
+
+.flex-mod-menu-btn {
+  font-size: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid #0d3c5a;
+  background: #091a28;
+  color: #9fc8dd;
+  cursor: pointer;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.flex-mod-menu-btn:hover {
+  border-color: #0da7ef;
+  color: #fff;
+}
+
+.flex-mod-menu-btn.selected {
+  border-color: #10c5ff;
+  color: #fff;
+  background: #082c4a;
+  box-shadow: 0 0 0 1px rgba(16, 197, 255, 0.35);
+}
+
+.flex-mod-menu-btn .slot {
+  color: #7391a5;
+  margin-right: 4px;
+}
+
+/* —— Rack viewport (reference geometry) —— */
+.flex-rack-viewport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  min-height: 280px;
+  padding: 8px;
+  background:
+    radial-gradient(circle at center, #0a1720 0, #061018 60%, #040a0f 100%);
+}
+
+.flex-rack-wrap-inner {
+  position: relative;
+  padding: 52px 20px 44px;
+  min-width: max-content;
+}
+
+.flex-slot-labels {
+  display: flex;
+  position: absolute;
+  left: 20px;
+  top: 6px;
+  height: 46px;
+  gap: 3px;
+  z-index: 4;
+}
+
+.flex-slot-labels.with-adapter {
+  left: 20px;
+}
+
+.flex-slot-label {
+  width: 96px;
+  border: 1px solid #735a24;
+  border-radius: 5px;
+  background: #07121a;
+  text-align: center;
+  padding-top: 5px;
+  color: #eef7fb;
+  font-size: 11px;
+  line-height: 15px;
+  flex: 0 0 auto;
+}
+
+.flex-slot-label.adapter-slot {
+  width: 142px;
+}
+
+.flex-slot-label.selected {
+  border-color: #00bfff;
+  box-shadow: 0 0 0 1px #087ab2 inset;
+}
+
+.flex-din-rail {
+  position: absolute;
+  left: 8px;
+  right: 6px;
+  bottom: 38px;
+  height: 22px;
+  background: linear-gradient(#929ba0, #5d666c);
+  border: 1px solid #aeb5b9;
+  box-shadow: 0 4px 8px #000a;
+  z-index: 1;
   pointer-events: none;
 }
 
-.flex-phys-mod:hover {
-  border-color: #64748b;
+.flex-rack-row {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  z-index: 3;
 }
 
-.flex-phys-mod.selected,
-.flex-phys-mod.hw-selected {
-  border-color: #22d3ee;
-  border-width: 2px;
-  box-shadow:
-    0 0 0 2px rgba(34, 211, 238, 0.35),
-    0 0 14px rgba(34, 211, 238, 0.28),
-    0 8px 18px rgba(0, 0, 0, 0.55);
+/* —— Physical module faces (reference CSS, not KPI cards) —— */
+.flex-adapter,
+.flex-io {
+  position: relative;
+  background: linear-gradient(145deg, #f0f2f2, #c7ccce 60%, #b1b6b9);
+  border: 1px solid #8a9297;
+  color: #111;
+  box-shadow: 0 4px 10px #0009;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  flex: 0 0 auto;
+  display: block;
+  text-align: left;
 }
 
-/* Kill legacy KPI card fills if any old .flex-mod markup remains inside phys rack */
-.flex-phys-rack .flex-mod,
-.flex-phys-wrap .flex-mod {
-  background: transparent !important;
-  border-color: transparent !important;
-  width: auto !important;
-  min-height: 0 !important;
-  padding: 0 !important;
-  color: inherit !important;
+.flex-adapter {
+  width: 142px;
+  height: 207px;
+  border-radius: 7px 7px 4px 4px;
+}
+
+.flex-io {
+  width: 96px;
+  height: 188px;
+  border-radius: 5px;
+}
+
+.flex-adapter:hover,
+.flex-io:hover {
+  filter: brightness(1.03);
+}
+
+.flex-adapter.selected,
+.flex-io.selected {
+  outline: 2px solid #10c5ff;
+  box-shadow: 0 0 10px #0bb8ff99, 0 4px 10px #0009;
+}
+
+.flex-module-top {
+  height: 64px;
+  padding: 7px 8px 5px;
+  border-bottom: 1px solid #a6adb0;
+  position: relative;
+}
+
+.flex-brand-tiny {
+  font-size: 8px;
+  font-weight: 700;
+  color: #111;
+}
+
+.flex-label-italic {
+  position: absolute;
+  right: 7px;
+  top: 9px;
+  font-size: 11px;
+  font-style: italic;
+  color: #222;
+}
+
+.flex-cat {
+  font-size: 10px;
+  font-weight: 800;
+  text-align: center;
+  margin-top: 8px;
+  color: #111;
+  word-break: break-all;
+  line-height: 1.15;
+}
+
+.flex-adapter .flex-cat {
+  font-size: 11px;
+}
+
+.flex-status-leds {
+  position: absolute;
+  left: 13px;
+  top: 80px;
+  font-size: 8px;
+  line-height: 19px;
+  color: #222;
+}
+
+.flex-status-leds span {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  background: #27d96e;
+  border-radius: 50%;
+  margin-right: 5px;
+}
+
+.flex-eth {
+  position: absolute;
+  right: 10px;
+  top: 111px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #222;
+}
+
+.flex-port {
+  position: absolute;
+  width: 29px;
+  height: 31px;
+  background: #20272b;
+  border: 1px solid #4b5357;
+  bottom: 15px;
+}
+
+.flex-port.p1 { left: 41px; }
+.flex-port.p2 { left: 76px; }
+
+.flex-term-base {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 111px;
+  background: linear-gradient(#dfe2e3, #bfc4c7);
+  border-top: 1px solid #91989c;
+}
+
+.flex-io .flex-term-base {
+  height: 122px;
+}
+
+.flex-channel-strip {
+  height: 48px;
+  margin: 5px 6px 3px;
+  border: 1px solid #aab0b4;
+  background: #e5e6e6;
+  display: flex;
+  gap: 2px;
+  align-items: flex-end;
+  padding: 4px;
+}
+
+.flex-indicator {
+  flex: 1;
+  height: 22px;
+  border-radius: 1px;
+  background: #27c979;
+  border: 1px solid #55826c;
+  min-width: 0;
+}
+
+.flex-indicator.amber {
+  background: #d79a2b;
+  border-color: #8a6a2a;
+}
+
+.flex-indicator.off {
+  background: #9aa1a5;
+  border-color: #7a8084;
+}
+
+.flex-screws {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 3px;
+  padding: 3px 5px;
+}
+
+.flex-screw {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin: auto;
+  background: #40474b;
+  border: 1px solid #a1a7aa;
+  box-shadow: inset 0 0 0 2px #1d2327;
+}
+
+.flex-screws.screw2 {
+  margin-top: 2px;
+}
+
+.flex-base-foot {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  bottom: 4px;
+  height: 20px;
+  border: 1px solid #777f83;
+  background: #b7bdc0;
+}
+
+/* Side keying tabs — visible on module sides */
+.flex-side-key {
+  position: absolute;
+  width: 4px;
+  height: 36px;
+  top: 72px;
+  background: #8a9297;
+  border: 1px solid #6a7277;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.flex-side-key.left { left: -2px; border-radius: 1px 0 0 1px; }
+.flex-side-key.right { right: -2px; border-radius: 0 1px 1px 0; }
+
+.flex-adapter .flex-side-key { top: 88px; height: 42px; }
+
+/* Empty / collapsed hint */
+.flex-aent-hint {
+  padding: 10px 14px;
+  font-size: 11px;
+  color: #7391a5;
+  border-top: 1px solid #123950;
+}
+
+/* Legacy KPI cards neutralized */
+.flex-mod { display: none !important; }
+
+@media (max-width: 1300px) {
+  .flex-io { width: 84px; }
+  .flex-slot-label { width: 84px; }
+  .flex-slot-label.adapter-slot { width: 142px; }
 }

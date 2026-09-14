@@ -1336,7 +1336,7 @@
         </div>
         <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
           <p><strong class="text-slate-300">This tab owns the active RUN</strong> used by Autogen and Export — you do not reload on those tabs.</p>
-          <p>Hardware CAD is driven only by PhysicalWordResolver / getHardwareIo. Banks &amp; device tables live under Advanced Diagnostics.</p>
+          <p>Hardware CAD is driven only by PhysicalWordResolver / getHardwareIo. Click an <strong class="text-slate-400">AENT</strong> to expand its I/O modules. Banks &amp; device tables live under Advanced Diagnostics.</p>
         </div>
       </details>
 
@@ -1382,10 +1382,10 @@
           <div class="flex-1 min-h-0 overflow-hidden rounded-xl border border-cyan-900/40 bg-[#05090D] flex flex-col">
             <div class="flex items-center gap-2 px-3 py-1.5 border-b border-slate-800/80 shrink-0">
               <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Physical FLEX I/O Rack</span>
-              <span class="text-[9px] text-slate-600">adapter + modules · click a module</span>
+              <span class="text-[9px] text-slate-600">AENT is primary · click adapter to show its I/O modules</span>
             </div>
             <div id="hw-io-racks" class="flex-1 overflow-auto min-h-0 p-2">
-              <div class="text-sm text-slate-500 py-10 text-center">Load a RUN to show the FLEX assembly from PhysicalWordResolver.</div>
+              <div class="text-sm text-slate-500 py-10 text-center">Load a RUN to show AENT adapters from HardwareIOModel.</div>
             </div>
           </div>
           <div class="shrink-0 max-h-[38%] min-h-[7rem] overflow-hidden rounded-xl border border-slate-800/80 bg-[#070b10] flex flex-col">
