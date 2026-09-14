@@ -1336,7 +1336,7 @@
         </div>
         <div class="text-[10px] text-slate-500 mt-2 space-y-1 leading-relaxed">
           <p><strong class="text-slate-300">This tab owns the active RUN</strong> used by Autogen and Export — you do not reload on those tabs.</p>
-          <p>Hardware CAD is driven only by PhysicalWordResolver / getHardwareIo. Click an <strong class="text-slate-400">AENT</strong> to expand its I/O modules. Banks &amp; device tables live under Advanced Diagnostics.</p>
+          <p>Hardware CAD is driven only by PhysicalWordResolver / getHardwareIo. In the <strong class="text-slate-400">Hardware tree</strong>, click an AENT to expand/collapse its modules. Banks &amp; device tables live under Advanced Diagnostics.</p>
         </div>
       </details>
 
@@ -1382,37 +1382,29 @@
           <div class="flex-1 min-h-0 overflow-hidden rounded-xl border border-cyan-900/40 bg-[#05090D] flex flex-col">
             <div class="flex items-center gap-2 px-3 py-1.5 border-b border-slate-800/80 shrink-0">
               <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Physical FLEX I/O Rack</span>
-              <span class="text-[9px] text-slate-600">AENT is primary · click adapter to show its I/O modules</span>
+              <span class="text-[9px] text-slate-600">full assembly · click a module</span>
             </div>
             <div id="hw-io-racks" class="flex-1 overflow-auto min-h-0 p-2">
-              <div class="text-sm text-slate-500 py-10 text-center">Load a RUN to show AENT adapters from HardwareIOModel.</div>
+              <div class="text-sm text-slate-500 py-10 text-center">Load a RUN to show the FLEX assembly from HardwareIOModel.</div>
             </div>
           </div>
-          <div class="shrink-0 max-h-[38%] min-h-[7rem] overflow-hidden rounded-xl border border-slate-800/80 bg-[#070b10] flex flex-col">
-            <div class="text-[10px] uppercase tracking-wider text-slate-500 px-3 py-1.5 border-b border-slate-800 shrink-0">
+          <div class="shrink-0 max-h-[40%] min-h-[8rem] overflow-hidden rounded-xl border border-cyan-900/30 bg-[#070b10] flex flex-col">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-400/80 font-semibold px-3 py-1.5 border-b border-slate-800 shrink-0">
               Selected module · channel table
             </div>
-            <div id="hw-io-channel-table" class="flex-1 overflow-auto min-h-0 p-2 text-[11px] text-slate-400">
-              Select a module on the rack to list channels (physical address · Fortna word.bit · logical endpoint).
+            <div id="hw-io-channel-table" class="flex-1 overflow-auto min-h-0 p-0 text-[11px] text-slate-400">
+              Select a module on the rack to list channels.
             </div>
           </div>
         </div>
 
-        <!-- RIGHT: Vertical module terminals -->
-        <div class="w-[25%] min-w-[12rem] flex flex-col gap-2 min-h-0 shrink-0">
-          <div class="flex-1 min-h-0 overflow-hidden rounded-xl border border-slate-800/80 bg-[#070b10] flex flex-col">
-            <div class="text-[10px] uppercase tracking-wider text-slate-500 px-3 py-1.5 border-b border-slate-800 shrink-0">
-              Module terminals
-            </div>
-            <div id="hw-io-module-detail" class="flex-1 overflow-auto p-2 text-[11px] text-slate-400">
-              Select a module for the vertical terminal face (CH0●── …).
-            </div>
+        <!-- RIGHT: Vertical module terminals + channel detail -->
+        <div class="w-[25%] min-w-[14rem] flex flex-col min-h-0 shrink-0 rounded-xl border border-slate-800/80 bg-[#070b10] overflow-hidden">
+          <div id="hw-io-term-title" class="text-[10px] uppercase tracking-wider text-slate-500 px-3 py-1.5 border-b border-slate-800 shrink-0">
+            Module terminals
           </div>
-          <div class="shrink-0 max-h-28 overflow-auto rounded-xl border border-slate-800/80 bg-[#070b10] p-2">
-            <div class="text-[9px] uppercase tracking-wider text-slate-600 mb-1">Wiring</div>
-            <div id="hw-io-wiring" class="text-[10px] text-slate-500 leading-relaxed">
-              Level A = proven RUN assignments. Level B = catalog pin layout if approved. Level C = unavailable — never invent schematics.
-            </div>
+          <div id="hw-io-module-detail" class="flex-1 overflow-auto min-h-0 p-2 text-[11px] text-slate-400">
+            Select a module for the vertical terminal face.
           </div>
         </div>
       </div>
@@ -1627,70 +1619,97 @@
         /* Legacy .flex-mod KPI cards — neutralized; physical modules use .flex-phys-mod */
         .flex-mod { display: none !important; }
 
-        /* Left tree */
+        /* Left tree — AENT expand/collapse */
         .hw-io-tree { font-family: ui-monospace, 'JetBrains Mono', monospace; font-size: 11px; color: #cbd5e1; }
         .hw-io-tree-row {
-          display: block; width: 100%; text-align: left; padding: 3px 6px; border-radius: 4px;
-          border: 1px solid transparent; background: transparent; color: inherit; cursor: default;
-          line-height: 1.35;
+          display: flex; align-items: center; gap: 4px; width: 100%; text-align: left;
+          padding: 4px 6px; border-radius: 4px; border: 1px solid transparent;
+          background: transparent; color: inherit; cursor: default; line-height: 1.35;
         }
-        .hw-io-tree-row.hw-mod { cursor: pointer; }
-        .hw-io-tree-row.hw-mod:hover { background: rgba(15,23,42,0.85); border-color: #1e293b; }
+        .hw-io-tree-row.hw-mod, .hw-io-tree-row.hw-aent-toggle { cursor: pointer; }
+        .hw-io-tree-row.hw-mod:hover, .hw-io-tree-row.hw-aent-toggle:hover {
+          background: rgba(15,23,42,0.85); border-color: #1e293b;
+        }
         .hw-io-tree-row.hw-selected, .hw-io-tree-row.selected {
           border-color: #22d3ee; background: rgba(8,51,68,0.35);
           box-shadow: 0 0 0 1px rgba(34,211,238,0.25);
         }
-        .hw-io-tree-indent { color: #475569; white-space: pre; }
+        .hw-io-tree-tw { width: 12px; color: #8bb7ca; flex-shrink: 0; font-size: 10px; }
+        .hw-io-tree-indent { color: #475569; white-space: pre; flex-shrink: 0; }
         .hw-io-tree-ctrl { color: #67e8f9; font-weight: 600; }
         .hw-io-tree-enet { color: #94a3b8; }
         .hw-io-tree-rio { color: #a5f3fc; font-weight: 600; }
+        .hw-io-tree-ok { color: #20d98a; }
+        .hw-io-tree-children { display: none; }
+        .hw-io-tree-children.open { display: block; }
 
-        /* Vertical terminal face */
-        .flex-term-face {
-          border: 1px solid #1e293b; border-radius: 10px;
-          background: linear-gradient(180deg, #101820, #070b10);
-          padding: 8px 8px 10px; min-height: 100%;
+        /* Channel table */
+        .hw-ch-table-wrap { min-height: 100%; }
+        .hw-ch-table-head {
+          padding: 8px 10px 6px; border-bottom: 1px solid #123950;
+          background: linear-gradient(180deg, #0c1822, #070b10);
         }
-        .flex-term-head {
-          font-family: ui-monospace, monospace; font-size: 10px; color: #67e8f9;
-          margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid #1e293b;
+        .hw-ch-table-head .title { font-family: ui-monospace, monospace; font-size: 12px; color: #67e8f9; font-weight: 700; }
+        .hw-ch-table-head .sub { font-size: 10px; color: #7391a5; margin-top: 2px; }
+        .hw-ch-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .hw-ch-table th {
+          background: #081722; color: #9fc7da; border: 1px solid #10344b;
+          padding: 7px 8px; text-align: left; font-weight: 600; position: sticky; top: 0; z-index: 1;
         }
-        .flex-term-col { display: flex; flex-direction: column; gap: 1px; }
-        .flex-term-row {
-          display: grid; grid-template-columns: 2.4rem 12px 1fr; gap: 4px; align-items: center;
-          padding: 3px 4px; border-radius: 4px; border: 1px solid transparent;
-          font-family: ui-monospace, monospace; font-size: 10px;
-          width: 100%; background: transparent; color: inherit; cursor: pointer; text-align: left;
+        .hw-ch-table td {
+          border: 1px solid #10344b; padding: 6px 8px; color: #dbeef8;
         }
-        .flex-term-row:hover { background: rgba(15,23,42,0.85); border-color: #1e293b; }
-        .flex-term-row.selected {
-          border-color: #22d3ee; background: rgba(8,51,68,0.4);
-          box-shadow: 0 0 0 1px rgba(34,211,238,0.25);
-        }
-        .flex-term-ch { color: #64748b; }
-        .flex-term-dot {
-          width: 9px; height: 9px; border-radius: 50%; display: inline-block;
-          background: #334155;
-        }
-        .flex-term-dot.on { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.5); }
-        .flex-term-dot.warn { background: #f59e0b; box-shadow: 0 0 6px rgba(245,158,11,0.4); }
-        .flex-term-line { color: #334155; letter-spacing: -1px; }
-        .flex-term-label { color: #94a3b8; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-        .flex-term-label.ok { color: #86efac; }
-        .flex-term-label.warn { color: #fbbf24; }
+        .hw-ch-table tr.hw-ch-selected td { background: #0c4d8b; }
+        .hw-ch-table tr[data-hw-ch] { cursor: pointer; }
+        .hw-ch-table tr[data-hw-ch]:hover td { background: #0a2a40; }
+        .hw-ch-status-ok { color: #2ae99a; }
+        .hw-ch-status-spare { color: #94a3b8; }
+        .hw-ch-status-warn { color: #f5c84e; }
 
-        /* legacy aliases kept for any leftover class refs */
-        .hw-term-col { display: flex; flex-direction: column; gap: 2px; }
-        .hw-term-row {
-          display: grid; grid-template-columns: 2.2rem 1fr; gap: 6px; align-items: center;
-          padding: 3px 4px; border-radius: 4px; border: 1px solid transparent;
+        /* Vertical terminal face — reference Image #2 */
+        .hw-term-panel { display: flex; flex-direction: column; gap: 10px; min-height: 100%; }
+        .hw-term-body { display: grid; grid-template-columns: 132px 1fr; gap: 10px; align-items: start; }
+        .hw-vert-mod {
+          width: 132px; min-height: 360px; margin: 0 auto;
+          background: linear-gradient(145deg, #edf0f1, #bdc3c6);
+          border: 1px solid #899196; border-radius: 8px; color: #111;
+          position: relative; box-shadow: 0 3px 10px #0009;
         }
-        .hw-term-dot {
-          width: 9px; height: 9px; border-radius: 50%; display: inline-block;
-          background: #334155; margin-right: 4px; vertical-align: middle;
+        .hw-vert-mod .vhead { height: 72px; padding: 8px; font-size: 9px; border-bottom: 1px solid #a6adb0; }
+        .hw-vert-mod .vcat { text-align: center; font-weight: 800; margin-top: 8px; font-size: 11px; }
+        .hw-vert-rows { position: absolute; left: 10px; right: 10px; top: 76px; bottom: 16px; overflow: auto; }
+        .hw-trow {
+          height: 22px; display: grid; grid-template-columns: 24px 22px 14px; align-items: center;
+          gap: 2px; margin-bottom: 1px; width: 100%; padding: 0; border: none; background: transparent; cursor: pointer;
         }
-        .hw-term-dot.on { background: #22c55e; box-shadow: 0 0 6px rgba(34,197,94,0.5); }
-        .hw-term-dot.warn { background: #f59e0b; }
+        .hw-trow.selected .hw-tnum { background: #10c5ff; }
+        .hw-tnum {
+          background: #0d8fd9; color: #051016; text-align: center; height: 20px; line-height: 20px;
+          font-weight: 700; font-size: 10px; border-radius: 2px;
+        }
+        .hw-tscrew {
+          width: 13px; height: 13px; border-radius: 50%; background: #1e2326;
+          border: 2px solid #80878b; margin: auto;
+        }
+        .hw-tled { width: 5px; height: 11px; background: #2b563c; margin: auto; border-radius: 1px; }
+        .hw-tled.on { background: #27c979; box-shadow: 0 0 4px rgba(39,201,121,0.55); }
+        .hw-tled.warn { background: #d79a2b; }
+        .hw-tled.off { background: #6b7280; }
+        .hw-term-map { font-size: 11px; padding-top: 4px; min-width: 0; }
+        .hw-map-row {
+          height: 22px; display: flex; align-items: center; gap: 8px; white-space: nowrap;
+          color: #c5d8e4; overflow: hidden; text-overflow: ellipsis; cursor: pointer;
+          border: none; background: transparent; padding: 0; width: 100%; text-align: left; font: inherit;
+        }
+        .hw-map-row .line { width: 38px; border-top: 1px solid #cfd8dd; flex-shrink: 0; }
+        .hw-map-row.selected { color: #36d8ff; }
+        .hw-map-row.selected .line { border-top: 2px solid #0eb7ff; }
+        .hw-ch-detail {
+          border-top: 1px solid #123950; padding: 10px 4px 4px; font-size: 11px; line-height: 18px; color: #9ebbc9;
+        }
+        .hw-ch-detail h3 { margin: 0 0 6px; color: #31d5ff; font-size: 13px; }
+        .hw-ch-detail .green { color: #2ae99a; }
+        .hw-ch-detail .amber { color: #f5c84e; }
       </style>
     </section>
 

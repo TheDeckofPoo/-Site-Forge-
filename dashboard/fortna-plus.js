@@ -942,7 +942,10 @@ function clearDevicesPanelUi() {
     ioState.hardwareIo = null;
     ioState.hardwarePanelFilter = '__all__';
     ioState.hardwareRioFilter = '__all__';
+    ioState.hardwareTreeExpanded = null;
+    ioState._hwTreeInited = false;
     ioState.selectedHwModuleKey = '';
+    ioState.selectedHwChannel = null;
     ioState.drives = [];
     ioState.devices = [];
     ioState.motorChains = [];
@@ -1664,8 +1667,8 @@ const ioState = {
   hardwareIo: null,
   hardwarePanelFilter: '__all__',
   hardwareRioFilter: '__all__',
-  /** Expanded AENT card (rio_name) — click AENT to show associated I/O modules */
-  hardwareExpandedRio: '',
+  /** Hardware tree: Set of expanded AENT rio_name keys (click AENT to expand modules) */
+  hardwareTreeExpanded: null,
   selectedHwModuleKey: '',
   selectedHwChannel: null,
   /** @type {Array<object>} */
@@ -3368,6 +3371,8 @@ function renderHardwareIo(data) {
 
   if (!data || !data.success) {
     ioState.hardwareIo = null;
+    ioState.hardwareTreeExpanded = null;
+    ioState._hwTreeInited = false;
     if (status) {
       status.textContent = 'No RUN';
       status.className = 'status-pill status-idle';
@@ -3448,19 +3453,27 @@ function hwEthernetLabel(model) {
   return name ? String(name) : 'Ethernet';
 }
 
+function ensureHwTreeExpandedSet() {
+  if (!(ioState.hardwareTreeExpanded instanceof Set)) {
+    ioState.hardwareTreeExpanded = new Set();
+  }
+  return ioState.hardwareTreeExpanded;
+}
+
 function bindHwModuleClicks(root) {
   if (!root) return;
-  // AENT primary card — toggle expand / show associated I/O modules
-  root.querySelectorAll('[data-hw-aent-toggle]').forEach((btn) => {
+  // Hardware tree — AENT expand/collapse
+  root.querySelectorAll('[data-hw-tree-toggle]').forEach((btn) => {
     btn.addEventListener('click', (ev) => {
       ev.stopPropagation();
-      const rio = btn.getAttribute('data-hw-aent-toggle') || '';
+      const rio = btn.getAttribute('data-hw-tree-toggle') || '';
       if (!rio) return;
-      const collapsing = ioState.hardwareExpandedRio === rio;
-      ioState.hardwareExpandedRio = collapsing ? '' : rio;
-      // Selecting the AENT itself when expanding
+      const set = ensureHwTreeExpandedSet();
+      if (set.has(rio)) set.delete(rio);
+      else set.add(rio);
+      // Also select the AENT module when expanding
       const modKey = btn.getAttribute('data-hw-mod') || '';
-      if (!collapsing && modKey) {
+      if (modKey && set.has(rio)) {
         ioState.selectedHwModuleKey = modKey;
         ioState.selectedHwChannel = null;
       }
@@ -3469,17 +3482,21 @@ function bindHwModuleClicks(root) {
     });
   });
   root.querySelectorAll('[data-hw-mod]').forEach((btn) => {
-    // Skip the AENT toggle button — handled above (it also has data-hw-mod)
-    if (btn.hasAttribute('data-hw-aent-toggle')) return;
+    if (btn.hasAttribute('data-hw-tree-toggle')) return;
     btn.addEventListener('click', (ev) => {
       ev.stopPropagation();
       ioState.selectedHwModuleKey = btn.getAttribute('data-hw-mod') || '';
       ioState.selectedHwChannel = null;
-      // Expand parent AENT when picking a child module
+      // Ensure parent AENT is expanded in the tree
+      const parent = btn.closest('[data-hw-tree-rio]');
+      if (parent) {
+        const rio = parent.getAttribute('data-hw-tree-rio') || '';
+        if (rio) ensureHwTreeExpandedSet().add(rio);
+      }
       const card = btn.closest('[data-hw-rio]');
       if (card) {
         const rio = card.getAttribute('data-hw-rio') || '';
-        if (rio) ioState.hardwareExpandedRio = rio;
+        if (rio) ensureHwTreeExpandedSet().add(rio);
       }
       renderHardwareRacks();
       renderHardwareModuleDetail();
@@ -3505,18 +3522,9 @@ function renderHardwareRacksFlex(adapters) {
   if (!globalThis.FlexRack || typeof FlexRack.renderRacks !== 'function') {
     return `<div class="text-sm text-slate-500 py-6 text-center">FLEX rack renderer not loaded (flex-rack.js).</div>`;
   }
-  // Keep expanded AENT in sync with Remote I/O filter / single-adapter views
-  let expanded = ioState.hardwareExpandedRio || '';
-  if (adapters.length === 1) {
-    expanded = adapters[0].rio_name || expanded;
-    ioState.hardwareExpandedRio = expanded;
-  } else if (expanded && !adapters.some((a) => a.rio_name === expanded)) {
-    expanded = '';
-    ioState.hardwareExpandedRio = '';
-  }
+  // Full physical rack always visible — no click-to-reveal
   return FlexRack.renderRacks(adapters, {
     selectedKey: ioState.selectedHwModuleKey || '',
-    expandedRio: expanded,
     moduleKeyFn: hwModuleKey,
   });
 }
@@ -3524,55 +3532,75 @@ function renderHardwareRacksFlex(adapters) {
 function renderHardwareRacksTree(model, adapters) {
   const machine = model.controller?.machine || model.machine || '—';
   const enet = hwEthernetLabel(model);
+  const expanded = ensureHwTreeExpandedSet();
+  // First paint: expand all AENTs so the tree matches the Studio-like screenshot
+  if (!ioState._hwTreeInited) {
+    adapters.forEach((ad) => { if (ad.rio_name) expanded.add(ad.rio_name); });
+    ioState._hwTreeInited = true;
+  }
   const rows = [];
-  rows.push(`<div class="hw-io-tree-row"><span class="hw-io-tree-ctrl">Controller: ${escapeHtml(machine)}</span></div>`);
-  rows.push(`<div class="hw-io-tree-row"><span class="hw-io-tree-indent"> └ </span><span class="hw-io-tree-enet">Ethernet (${escapeHtml(enet)})</span></div>`);
+  rows.push(`<div class="hw-io-tree-row"><span class="hw-io-tree-tw">⌄</span><span class="hw-io-tree-ctrl">${escapeHtml(machine)}</span></div>`);
+  rows.push(`<div class="hw-io-tree-row" style="padding-left:18px"><span class="hw-io-tree-tw">›</span><span class="hw-io-tree-enet">Ethernet (${escapeHtml(enet)})</span></div>`);
 
-  adapters.forEach((ad, ai) => {
+  adapters.forEach((ad) => {
     const aent = (ad.modules || []).find((m) => m.is_adapter_card);
-    const aentCat = aent ? (aent.catalog || aent.type || 'AENT') : (ad.eipcfg_name || ad.name || '—');
+    const aentCat = aent ? (aent.catalog || aent.type || '1794-AENT') : (ad.eipcfg_name || ad.name || 'AENT');
     const ip = ad.targetip || '';
-    const panel = ad.panel || '—';
-    const rioLast = ai === adapters.length - 1;
-    const rioBranch = rioLast ? ' └─ ' : ' ├─ ';
-    const childPad = rioLast ? '    ' : ' │  ';
+    const panel = ad.panel || '';
+    const rio = ad.rio_name || '';
+    const open = expanded.has(rio);
     const aentKey = aent ? hwModuleKey(ad.rio_name, aent.slot) : '';
     const aentSelected = aentKey && aentKey === ioState.selectedHwModuleKey;
-    const aentTag = aentKey ? 'button' : 'div';
-    const aentAttrs = aentKey
-      ? `type="button" data-hw-mod="${escapeHtml(aentKey)}" class="hw-io-tree-row hw-mod ${aentSelected ? 'hw-selected' : ''}" title="${escapeHtml(aentCat)}"`
-      : 'class="hw-io-tree-row"';
-    rows.push(`<${aentTag} ${aentAttrs}>
-      <span class="hw-io-tree-indent">${rioBranch}</span>
-      <span class="hw-io-tree-rio">${escapeHtml(ad.rio_name || '—')}</span>
-      <span class="text-slate-500"> ${escapeHtml(aentCat)}</span>
-      ${ip ? `<span class="text-slate-600"> ${escapeHtml(ip)}</span>` : ''}
-      <span class="text-slate-600"> · ${escapeHtml(panel)}</span>
-    </${aentTag}>`);
-
-    const mods = [...(ad.modules || [])]
+    const ioMods = [...(ad.modules || [])]
       .filter((m) => !m.is_adapter_card)
       .sort((a, b) => (Number(a.slot) || 0) - (Number(b.slot) || 0));
-    mods.forEach((mod, mi) => {
+
+    rows.push(`<div data-hw-tree-rio="${escapeHtml(rio)}">
+      <button type="button" class="hw-io-tree-row hw-aent-toggle ${aentSelected ? 'hw-selected' : ''}"
+        data-hw-tree-toggle="${escapeHtml(rio)}"
+        ${aentKey ? `data-hw-mod="${escapeHtml(aentKey)}"` : ''}
+        title="Click to ${open ? 'collapse' : 'expand'} modules on ${escapeHtml(rio)}"
+        style="padding-left:18px">
+        <span class="hw-io-tree-tw">${open ? '⌄' : '›'}</span>
+        <span class="hw-io-tree-ok">▣</span>
+        <span class="hw-io-tree-rio">${escapeHtml(rio || '—')}</span>
+        <span class="text-slate-500"> ${escapeHtml(aentCat)}</span>
+        ${ip ? `<span class="text-slate-600"> · ${escapeHtml(ip)}</span>` : ''}
+        ${panel ? `<span class="text-slate-600"> · ${escapeHtml(panel)}</span>` : ''}
+      </button>
+      <div class="hw-io-tree-children ${open ? 'open' : ''}">`);
+
+    // Show AENT slot 0 as first child when present
+    if (aent) {
+      const key = hwModuleKey(ad.rio_name, aent.slot);
+      const selected = key === ioState.selectedHwModuleKey;
+      rows.push(`<button type="button" data-hw-mod="${escapeHtml(key)}"
+        class="hw-io-tree-row hw-mod ${selected ? 'hw-selected' : ''}"
+        style="padding-left:40px"
+        title="${escapeHtml(aentCat)}">
+        <span class="text-slate-500">▥ [${aent.slot ?? 0}]</span>
+        <span class="text-slate-200"> ${escapeHtml(aentCat)}</span>
+      </button>`);
+    }
+
+    ioMods.forEach((mod) => {
       const key = hwModuleKey(ad.rio_name, mod.slot);
       const selected = key === ioState.selectedHwModuleKey;
       const used = mod.channels_used ?? (mod.channels || []).length;
       const total = mod.channel_capacity || 0;
-      const unres = mod.channels_unresolved ?? 0;
       const cat = mod.catalog || mod.type || '—';
-      const name = mod.name || cat;
-      const chLabel = `${used}/${total || '—'}${unres ? ` · ${unres}?` : ''}`;
-      const modLast = mi === mods.length - 1;
-      const modBranch = modLast ? ' └─ ' : ' ├─ ';
+      const chLabel = total ? `${used}/${total}` : `${used}`;
       rows.push(`<button type="button" data-hw-mod="${escapeHtml(key)}"
         class="hw-io-tree-row hw-mod ${selected ? 'hw-selected' : ''}"
+        style="padding-left:40px"
         title="${escapeHtml(cat)} slot ${mod.slot}">
-        <span class="hw-io-tree-indent">${childPad}${modBranch}</span>
-        <span class="text-slate-500">[${mod.slot ?? '—'}]</span>
-        <span class="text-slate-200"> ${escapeHtml(name)}</span>
+        <span class="text-slate-500">▥ [${mod.slot ?? '—'}]</span>
+        <span class="text-slate-200"> ${escapeHtml(cat)}</span>
         <span class="text-slate-600"> · ${escapeHtml(chLabel)}</span>
       </button>`);
     });
+
+    rows.push('</div></div>');
   });
 
   return `<div class="hw-io-tree">${rows.join('')}</div>`;
@@ -3621,55 +3649,19 @@ function renderHardwareRacks() {
   bindHwModuleClicks(tree);
 }
 
-function renderHardwareChannelTable(ad, mod) {
-  const channels = mod.channels || [];
-  if (mod.is_adapter_card) {
-    return `<div class="text-slate-500 text-[11px]">Adapter / AENT head — no digital channels on this card.</div>`;
-  }
-  if (!channels.length) {
-    return `<div class="text-slate-500 text-[11px]">No by_word_bit channels for this module (unused or unresolved in Configio).</div>`;
-  }
-  const selBit = ioState.selectedHwChannel;
-  const rows = channels.map((ch) => {
-    const logical = ch.logical_endpoint?.name || '— unresolved —';
-    const logicalCls = ch.logical_endpoint ? 'text-emerald-300' : 'text-amber-400/90';
-    const prov = ch.provenance?.assign_how || ch.assign_how || ch.provenance?.source_tables?.join('+') || '—';
-    const bit = ch.fortna_bit;
-    const selected = selBit != null && Number(bit) === Number(selBit);
-    return `<tr class="border-b border-slate-800/80 hw-ch-row ${selected ? 'hw-ch-selected' : ''}" data-hw-ch="${escapeHtml(String(bit ?? ''))}" style="cursor:pointer${selected ? ';background:rgba(8,51,68,0.45)' : ''}">
-      <td class="py-1 px-1 mono text-slate-400">${bit ?? '—'}</td>
-      <td class="py-1 px-1 mono text-cyan-200/90">${escapeHtml(ch.physical_address || '')}</td>
-      <td class="py-1 px-1 mono">${ch.fortna_word ?? '—'}.${bit ?? '—'}</td>
-      <td class="py-1 px-1 mono ${logicalCls}">${escapeHtml(logical)}</td>
-      <td class="py-1 px-1 text-slate-600">${escapeHtml(String(prov))}</td>
-    </tr>`;
-  }).join('');
-  return `
-    <div class="text-cyan-300 mono text-xs mb-1">${escapeHtml(ad.rio_name)} · slot ${mod.slot} · ${escapeHtml(mod.catalog || '')} · ${escapeHtml(mod.direction || '')}</div>
-    <table class="w-full text-left text-[10px]">
-      <thead class="text-slate-500 sticky top-0 bg-[#070b10]">
-        <tr>
-          <th class="py-1 px-1">Ch</th>
-          <th class="py-1 px-1">Physical address</th>
-          <th class="py-1 px-1">Configio</th>
-          <th class="py-1 px-1">RUN / endpoint</th>
-          <th class="py-1 px-1">Provenance</th>
-        </tr>
-      </thead>
-      <tbody>${rows}</tbody>
-    </table>`;
+/** Channel endpoint label: resolved name, SPARE, or truly unresolved. */
+function hwChannelEndpointLabel(ch) {
+  if (!ch) return { text: 'SPARE', kind: 'spare' };
+  const name = ch.logical_endpoint?.name || '';
+  if (name) return { text: name, kind: 'ok' };
+  const truly = (typeof FlexRack !== 'undefined' && FlexRack.isTrulyUnresolved)
+    ? FlexRack.isTrulyUnresolved(ch)
+    : false;
+  if (truly) return { text: 'unresolved', kind: 'warn' };
+  return { text: 'SPARE', kind: 'spare' };
 }
 
-function renderHardwareTerminalFace(ad, mod) {
-  const cat = mod.catalog || mod.type || '';
-  const head = `${ad.rio_name || ''} · [${mod.slot ?? '—'}] ${cat}`;
-  if (mod.is_adapter_card) {
-    return `
-      <div class="flex-term-face">
-        <div class="flex-term-head">${escapeHtml(head)}</div>
-        <div class="text-slate-500 text-[11px]">FlexAdapter1794 — Ethernet head · no digital terminals.</div>
-      </div>`;
-  }
+function hwChannelRows(mod) {
   const channels = mod.channels || [];
   const byBit = new Map();
   for (const ch of channels) {
@@ -3677,69 +3669,171 @@ function renderHardwareTerminalFace(ad, mod) {
     if (bit == null || bit === '') continue;
     byBit.set(Number(bit), ch);
   }
-  // Catalog capacity from model only — unused bits show SPARE (empty ○), never invent endpoints.
-  const cap = Number(mod.channel_capacity) || 0;
+  const visual = (typeof FlexRack !== 'undefined' && FlexRack.resolveVisual)
+    ? FlexRack.resolveVisual(mod)
+    : '';
+  const cap = (typeof FlexRack !== 'undefined' && FlexRack.channelCapacity)
+    ? FlexRack.channelCapacity(mod, visual)
+    : (Number(mod.channel_capacity) || channels.length);
   const maxBit = channels.reduce((m, ch) => Math.max(m, Number(ch.fortna_bit) || 0), -1);
   const n = cap > 0 ? cap : (maxBit >= 0 ? maxBit + 1 : 0);
-  if (!n) {
-    return `
-      <div class="flex-term-face">
-        <div class="flex-term-head">${escapeHtml(head)}</div>
-        <div class="text-slate-500 text-[11px]">No proven channels on this module.</div>
+  const rows = [];
+  for (let i = 0; i < n; i += 1) {
+    rows.push({ bit: i, ch: byBit.get(i) || null });
+  }
+  return rows;
+}
+
+function renderHardwareChannelTable(ad, mod) {
+  if (mod.is_adapter_card) {
+    return `<div class="hw-ch-table-wrap"><div class="hw-ch-table-head">
+      <div class="title">${escapeHtml(ad.rio_name)} · slot ${mod.slot ?? 0} · ${escapeHtml(mod.catalog || 'AENT')}</div>
+      <div class="sub">Ethernet adapter — no digital channels</div>
+    </div></div>`;
+  }
+  const rows = hwChannelRows(mod);
+  if (!rows.length) {
+    return `<div class="p-3 text-slate-500 text-[11px]">No channels for this module in HardwareIOModel.</div>`;
+  }
+  const selBit = ioState.selectedHwChannel;
+  const cat = mod.catalog || mod.type || '';
+  const body = rows.map(({ bit, ch }) => {
+    const ep = hwChannelEndpointLabel(ch);
+    const selected = selBit != null && Number(bit) === Number(selBit);
+    const addr = ch?.physical_address || `${ad.rio_name}:${(mod.direction || 'I').charAt(0)}.Data[${mod.data_index ?? mod.slot ?? '?'}].${bit}`;
+    const cfg = ch
+      ? `${cat.replace(/\/[A-Z]$/i, '')}/${mod.slot ?? '?'}/${bit}`
+      : '—';
+    const statusCls = ep.kind === 'ok' ? 'hw-ch-status-ok'
+      : ep.kind === 'warn' ? 'hw-ch-status-warn'
+      : 'hw-ch-status-spare';
+    const statusTxt = ep.kind === 'ok' ? '● Resolved'
+      : ep.kind === 'warn' ? '● Unresolved'
+      : '○ Spare';
+    const sfTag = ep.kind === 'ok' ? `${ep.text}.I` : '—';
+    return `<tr class="${selected ? 'hw-ch-selected' : ''}" data-hw-ch="${bit}">
+      <td class="mono">${bit}</td>
+      <td class="mono text-cyan-200/90">${escapeHtml(addr)}</td>
+      <td class="mono">${escapeHtml(cfg)}</td>
+      <td class="mono ${ep.kind === 'ok' ? 'text-emerald-300' : ep.kind === 'warn' ? 'text-amber-300' : 'text-slate-500'}">${escapeHtml(ep.text)}</td>
+      <td class="mono text-slate-400">${escapeHtml(sfTag)}</td>
+      <td class="${statusCls}">${statusTxt}</td>
+    </tr>`;
+  }).join('');
+  return `
+    <div class="hw-ch-table-wrap">
+      <div class="hw-ch-table-head">
+        <div class="title">${escapeHtml(cat)} — ${escapeHtml(mod.direction === 'O' || /OA|OB|OW/i.test(cat) ? 'Digital Output' : 'Digital Input')}</div>
+        <div class="sub">${escapeHtml(ad.rio_name)} · slot ${mod.slot ?? '—'} · Data[${mod.data_index ?? '—'}] · ${rows.length} channels</div>
+      </div>
+      <table class="hw-ch-table">
+        <thead>
+          <tr>
+            <th>Ch</th>
+            <th>Address (Studio 5000)</th>
+            <th>ConfigIO</th>
+            <th>RUN Point / Device</th>
+            <th>Site Forge Endpoint</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>${body}</tbody>
+      </table>
+    </div>`;
+}
+
+function renderHardwareTerminalFace(ad, mod) {
+  const cat = mod.catalog || mod.type || '';
+  const titleEl = $('hw-io-term-title');
+  if (titleEl) {
+    const ch = ioState.selectedHwChannel;
+    const ep = ch != null
+      ? hwChannelEndpointLabel((mod.channels || []).find((c) => Number(c.fortna_bit) === Number(ch)))
+      : null;
+    titleEl.textContent = ch != null
+      ? `${ad.rio_name || ''}  |  Channel ${ch}  |  ${ep?.text || '—'}`
+      : `${ad.rio_name || ''}  |  ${cat}`;
+  }
+  if (mod.is_adapter_card) {
+    return `<div class="hw-term-panel">
+      <div class="text-slate-500 text-[11px]">1794-AENT — Ethernet adapter head · no digital terminals.</div>
+    </div>`;
+  }
+  const rows = hwChannelRows(mod);
+  if (!rows.length) {
+    return `<div class="hw-term-panel"><div class="text-slate-500 text-[11px]">No proven channels on this module.</div></div>`;
+  }
+  const sel = ioState.selectedHwChannel;
+  const termRows = rows.map(({ bit, ch }) => {
+    const ep = hwChannelEndpointLabel(ch);
+    const led = ep.kind === 'ok' ? 'on' : ep.kind === 'warn' ? 'warn' : 'off';
+    const selected = sel != null && Number(sel) === bit;
+    return `<button type="button" class="hw-trow ${selected ? 'selected' : ''}" data-hw-ch="${bit}">
+      <div class="hw-tnum">${bit}</div>
+      <div class="hw-tscrew"></div>
+      <div class="hw-tled ${led}"></div>
+    </button>`;
+  }).join('');
+  const mapRows = rows.map(({ bit, ch }) => {
+    const ep = hwChannelEndpointLabel(ch);
+    const selected = sel != null && Number(sel) === bit;
+    return `<button type="button" class="hw-map-row ${selected ? 'selected' : ''}" data-hw-ch="${bit}">
+      <span class="line"></span>
+      <span>${escapeHtml(ep.text)}${selected ? ' ← selected' : ''}</span>
+    </button>`;
+  }).join('');
+
+  let detailHtml = '';
+  if (sel != null) {
+    const hit = rows.find((r) => r.bit === Number(sel));
+    const ch = hit?.ch || null;
+    const ep = hwChannelEndpointLabel(ch);
+    const addr = ch?.physical_address
+      || `${ad.rio_name}:${(mod.direction || 'I').charAt(0)}.Data[${mod.data_index ?? mod.slot ?? '?'}].${sel}`;
+    const cfg = `${cat.replace(/\/[A-Z]$/i, '')}/${mod.slot ?? '?'}/${sel}`;
+    const statusHtml = ep.kind === 'ok'
+      ? '<span class="green">● Resolved</span>'
+      : ep.kind === 'warn'
+        ? '<span class="amber">● Unresolved</span>'
+        : '<span>○ Spare</span>';
+    detailHtml = `
+      <div class="hw-ch-detail">
+        <h3>Channel ${sel} — ${escapeHtml(ep.text)}</h3>
+        Field Device: &nbsp;&nbsp;&nbsp; ${escapeHtml(ep.kind === 'ok' ? ep.text : '—')}<br>
+        ConfigIO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(cfg)}<br>
+        PLC Address: &nbsp;&nbsp;&nbsp; ${escapeHtml(addr)}<br>
+        Site Forge Tag: &nbsp; ${escapeHtml(ep.kind === 'ok' ? `${ep.text}.I` : '—')}<br>
+        Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${statusHtml}
       </div>`;
   }
-  const terms = [];
-  for (let i = 0; i < n; i += 1) {
-    const ch = byBit.get(i);
-    const logical = ch?.logical_endpoint?.name || '';
-    let dotCls = '';
-    let labelCls = '';
-    let label = 'SPARE';
-    if (ch) {
-      if (logical) {
-        dotCls = 'on';
-        labelCls = 'ok';
-        label = logical;
-      } else {
-        dotCls = 'warn';
-        labelCls = 'warn';
-        label = 'unresolved';
-      }
-    }
-    const selected = ioState.selectedHwChannel != null && Number(ioState.selectedHwChannel) === i;
-    terms.push(`<button type="button" class="flex-term-row ${selected ? 'selected' : ''}" data-hw-ch="${i}">
-      <span class="flex-term-ch">${String(i).padStart(2, '0')}</span>
-      <span class="flex-term-dot ${dotCls}"></span>
-      <span class="flex-term-label ${labelCls}"><span class="flex-term-line">──</span> ${escapeHtml(label)}</span>
-    </button>`);
-  }
+
   return `
-    <div class="flex-term-face">
-      <div class="flex-term-head">${escapeHtml(head)} · Data[${mod.data_index ?? '—'}]</div>
-      <div class="flex-term-col">${terms.join('')}</div>
+    <div class="hw-term-panel">
+      <div class="hw-term-body">
+        <div class="hw-vert-mod">
+          <div class="vhead"><b>Allen-Bradley</b><div class="vcat">${escapeHtml(cat)}</div></div>
+          <div class="hw-vert-rows">${termRows}</div>
+        </div>
+        <div class="hw-term-map">${mapRows}</div>
+      </div>
+      ${detailHtml}
     </div>`;
 }
 
 function renderHardwareModuleDetail() {
   const detail = $('hw-io-module-detail');
   const table = $('hw-io-channel-table');
-  const wiring = $('hw-io-wiring');
   const model = ioState.hardwareIo;
   if (!detail) return;
   const hit = findHwModule(model, ioState.selectedHwModuleKey);
   if (!hit) {
-    detail.innerHTML = 'Select a module for the vertical terminal face (CH0●── …).';
-    if (table) {
-      table.innerHTML = 'Select a module on the rack to list channels (physical address · Fortna word.bit · logical endpoint).';
-    }
-    if (wiring) {
-      wiring.textContent = 'Select a module — Level A shows proven channel→logical assignments. Catalog schematics (Level B) are not required yet.';
-    }
+    detail.innerHTML = 'Select a module for the vertical terminal face.';
+    if (table) table.innerHTML = 'Select a module on the rack to list channels.';
+    const titleEl = $('hw-io-term-title');
+    if (titleEl) titleEl.textContent = 'Module terminals';
     return;
   }
   const { adapter: ad, module: mod } = hit;
-  const channels = mod.channels || [];
-
   detail.innerHTML = renderHardwareTerminalFace(ad, mod);
   if (table) table.innerHTML = renderHardwareChannelTable(ad, mod);
   const onChClick = (el) => {
@@ -3755,25 +3849,6 @@ function renderHardwareModuleDetail() {
     table.querySelectorAll('[data-hw-ch]').forEach((el) => {
       el.addEventListener('click', () => onChClick(el));
     });
-  }
-
-  if (wiring) {
-    // Level A: proven assignments only. Level B catalog not required. Level C: never invent.
-    const proven = channels.filter((c) => c.logical_endpoint?.name);
-    const catalogHint = `hardware_catalog/${(mod.catalog || mod.type || '').replace(/[^A-Za-z0-9._-]/g, '_')}`;
-    let html = `<div class="text-[10px] text-slate-500 mb-1">Level A · proven channel → logical</div>`;
-    if (proven.length) {
-      html += `<div class="space-y-0.5 mono text-[10px]">${proven.slice(0, 24).map((c) =>
-        `<div><span class="text-cyan-300">${escapeHtml(c.physical_address || '')}</span> → <span class="text-emerald-300">${escapeHtml(c.logical_endpoint.name)}</span></div>`
-      ).join('')}${proven.length > 24 ? `<div class="text-slate-600">… +${proven.length - 24} more</div>` : ''}</div>`;
-    } else if (mod.is_adapter_card) {
-      html += `<div class="text-slate-500 text-[11px]">Adapter head — no channel wiring.</div>`;
-    } else {
-      html += `<div class="text-slate-500 text-[11px]">No proven channel→logical assignments on this module.</div>`;
-    }
-    html += `<div class="mt-2 text-[10px] text-slate-600">Level B · catalog schematic: not loaded (${escapeHtml(catalogHint)}).</div>`;
-    html += `<div class="text-[10px] text-slate-500 mt-1">Wiring diagram unavailable for this module.</div>`;
-    wiring.innerHTML = html;
   }
 }
 

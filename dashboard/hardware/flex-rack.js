@@ -1,7 +1,7 @@
 /**
  * Physical Allen-Bradley 1794 FLEX I/O rack — visual language from
  * site_forge_flexio_reference.html. Wired only to HardwareIOModel data.
- * AENT is the primary card; click expands associated I/O modules.
+ * Full rack always visible (AENT + all I/O modules). Tree expand is separate.
  */
 (function (global) {
   'use strict';
@@ -77,7 +77,6 @@
     return (mod.channels || []).length;
   }
 
-  /** LED states from model channels only. */
   function ledStates(mod, visual) {
     if (visual === 'adapter') return [];
     const cap = channelCapacity(mod, visual);
@@ -94,9 +93,22 @@
       const ch = byBit.get(i);
       if (!ch) out.push('off');
       else if (ch.logical_endpoint && ch.logical_endpoint.name) out.push('ok');
-      else out.push('amber');
+      else if (isTrulyUnresolved(ch)) out.push('amber');
+      else out.push('off');
     }
     return out;
+  }
+
+  /** True only when the model marks a failed/pending assignment — not empty spare. */
+  function isTrulyUnresolved(ch) {
+    if (!ch) return false;
+    if (ch.logical_endpoint && ch.logical_endpoint.name) return false;
+    const st = String(ch.status || ch.resolve_status || ch.endpoint_status || '').toLowerCase();
+    if (/unresolv|error|fail|missing|conflict/.test(st)) return true;
+    const how = String(ch.provenance?.assign_how || ch.assign_how || '').toLowerCase();
+    if (/unresolv|error|fail|conflict/.test(how)) return true;
+    if (ch.unresolved === true || ch.is_unresolved === true) return true;
+    return false;
   }
 
   function screwGrid(count) {
@@ -116,11 +128,7 @@
     const cat = mod.catalog || mod.type || '1794-AENT';
     const key = opts.moduleKey || '';
     const sel = opts.selected ? ' selected' : '';
-    const tag = opts.asButton === false ? 'div' : 'button';
-    const typeAttr = opts.asButton === false ? '' : 'type="button"';
-    const dataAttr = key ? `data-hw-mod="${escapeHtml(key)}"` : '';
-    const aentAttr = opts.rioName ? `data-hw-aent="${escapeHtml(opts.rioName)}"` : '';
-    return `<${tag} ${typeAttr} ${dataAttr} ${aentAttr} class="flex-adapter${sel}" title="${escapeHtml(cat)}">
+    return `<button type="button" data-hw-mod="${escapeHtml(key)}" class="flex-adapter${sel}" title="${escapeHtml(cat)}">
       ${sideKeys()}
       <div class="flex-module-top">
         <div class="flex-brand-tiny">Allen-Bradley</div>
@@ -137,7 +145,7 @@
       <div class="flex-port p1"></div>
       <div class="flex-port p2"></div>
       <div class="flex-base-foot"></div>
-    </${tag}>`;
+    </button>`;
   }
 
   function renderIoFace(mod, opts) {
@@ -171,33 +179,14 @@
     </button>`;
   }
 
-  /**
-   * Single module face (used by fortna-plus renderFlexModuleCard).
-   */
   function renderModule(ad, mod, opts) {
     opts = opts || {};
     const visual = resolveVisual(mod);
     const key = opts.moduleKey || `${ad?.rio_name || ''}::${mod.slot}`;
     if (visual === 'adapter') {
-      return renderAdapterFace(mod, {
-        selected: !!opts.selected,
-        moduleKey: key,
-        rioName: ad?.rio_name,
-      });
+      return renderAdapterFace(mod, { selected: !!opts.selected, moduleKey: key });
     }
     return renderIoFace(mod, { selected: !!opts.selected, moduleKey: key });
-  }
-
-  function moduleMenuItem(ad, mod, selectedKey, keyFn) {
-    const key = keyFn(ad.rio_name, mod.slot);
-    const visual = resolveVisual(mod);
-    const short = shortName(mod, visual);
-    const cat = mod.catalog || mod.type || short;
-    const sel = key === selectedKey ? ' selected' : '';
-    return `<button type="button" class="flex-mod-menu-btn${sel}" data-hw-mod="${escapeHtml(key)}"
-      title="${escapeHtml(cat)}">
-      <span class="slot">[${mod.slot ?? '—'}]</span>${escapeHtml(short)}
-    </button>`;
   }
 
   function physicalRackHtml(ad, mods, selectedKey, keyFn) {
@@ -227,16 +216,12 @@
   }
 
   /**
-   * AENT-first rack list: each adapter is a primary card.
-   * Click AENT expands dropdown of associated I/O modules + physical rack.
-   *
-   * opts:
-   *   selectedKey, expandedRio, moduleKeyFn
+   * Always show full physical rack(s) — AENT + all I/O modules visible.
+   * Expand/collapse of AENT children lives in the Hardware tree, not here.
    */
   function renderRacks(adapters, opts) {
     opts = opts || {};
     const selectedKey = opts.selectedKey || '';
-    const expandedRio = opts.expandedRio || '';
     const keyFn = opts.moduleKeyFn || ((rio, slot) => `${rio || ''}::${slot}`);
 
     if (!(adapters || []).length) {
@@ -246,59 +231,21 @@
     const cards = adapters.map((ad) => {
       const aent = (ad.modules || []).find((m) => m.is_adapter_card);
       const mods = [...(ad.modules || [])].sort((a, b) => (Number(a.slot) || 0) - (Number(b.slot) || 0));
-      const ioMods = mods.filter((m) => !m.is_adapter_card);
       const aentCat = aent ? (aent.catalog || aent.type || '1794-AENT') : '1794-AENT';
-      const aentKey = aent ? keyFn(ad.rio_name, aent.slot) : '';
       const rio = ad.rio_name || '';
-      const expanded = expandedRio === rio || (!expandedRio && adapters.length === 1);
-      const aentSelected = aentKey && aentKey === selectedKey;
-      const used = ioMods.reduce((s, m) => s + (m.channels_used ?? (m.channels || []).length), 0);
-      const unres = ioMods.reduce((s, m) => s + (m.channels_unresolved ?? 0), 0);
-
-      const aentFace = aent
-        ? renderAdapterFace(aent, {
-          selected: aentSelected || expanded,
-          moduleKey: aentKey,
-          rioName: rio,
-          asButton: false,
-        })
-        : `<div class="flex-adapter"><div class="flex-module-top"><div class="flex-cat">AENT</div></div></div>`;
-
-      const menu = mods.map((m) => moduleMenuItem(ad, m, selectedKey, keyFn)).join('');
       const rack = physicalRackHtml(ad, mods, selectedKey, keyFn);
 
       return `
-        <div class="flex-phys-rack-card${expanded ? ' expanded' : ''}" data-hw-rio="${escapeHtml(rio)}">
+        <div class="flex-phys-rack-card expanded" data-hw-rio="${escapeHtml(rio)}">
           <div class="flex-phys-rack-meta">
             <span class="rio">${escapeHtml(rio || '—')}</span>
             <span class="mono">${escapeHtml(ad.eipcfg_name || ad.name || '')}</span>
             <span>${escapeHtml(aentCat)}</span>
             <span class="ml-auto mono">${escapeHtml(ad.targetip || '')} · ${escapeHtml(ad.panel || '—')}</span>
           </div>
-          <button type="button" class="flex-aent-card${expanded ? ' expanded' : ''}${aentSelected ? ' selected' : ''}"
-            data-hw-aent-toggle="${escapeHtml(rio)}"
-            ${aentKey ? `data-hw-mod="${escapeHtml(aentKey)}"` : ''}
-            title="Click to show I/O modules on ${escapeHtml(rio)}">
-            <div class="flex-aent-face">${aentFace}</div>
-            <div class="flex-aent-body">
-              <div class="flex-aent-title">${escapeHtml(rio || 'Remote I/O')}</div>
-              <div class="flex-aent-sub">${escapeHtml(aentCat)} · EtherNet/IP adapter</div>
-              <div class="flex-aent-stats">
-                ${ioMods.length} I/O module${ioMods.length === 1 ? '' : 's'}
-                · ${used} channel${used === 1 ? '' : 's'} mapped
-                ${unres ? ` · <span style="color:#e2a93b">${unres} unresolved</span>` : ''}
-              </div>
-              <div class="flex-aent-stats" style="color:#27cfff">
-                ${expanded ? '▼ Modules on this adapter' : '▶ Click AENT to show modules'}
-              </div>
-            </div>
-            <div class="flex-aent-chevron"><i class="fa-solid fa-chevron-down"></i></div>
-          </button>
-          <div class="flex-aent-dropdown">
-            ${mods.length
-              ? `<div class="flex-mod-menu">${menu}</div>${rack}`
-              : `<div class="flex-aent-hint">No I/O modules on this adapter in HardwareIOModel.</div>`}
-          </div>
+          ${mods.length
+            ? rack
+            : `<div class="flex-aent-hint">No modules on this adapter in HardwareIOModel.</div>`}
         </div>`;
     }).join('');
 
@@ -310,9 +257,11 @@
     normalizeCatalog,
     resolveVisual,
     ledStates,
+    isTrulyUnresolved,
     renderModule,
     renderRacks,
     shortName,
     descLabel,
+    channelCapacity,
   };
 })(typeof window !== 'undefined' ? window : globalThis);
