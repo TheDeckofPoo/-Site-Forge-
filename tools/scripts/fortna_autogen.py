@@ -768,6 +768,10 @@ def _io_point_want_dir(device_name: str, device_type: str, direction: str) -> st
         return "I"
     if n.startswith("ENC") or "ENCODER" in n:
         return "I"
+    # Fortna INT### interlocks are sense/enable inputs even when Conveyor.asc
+    # Type=MOTOR (common). Finished PLC maps them as *.I.Auxiliary_Forward.
+    if re.match(r"^INT\d+", n) or re.match(r"^T_INT\d+", n):
+        return "I"
     # E-stop PB / pullcord / light-curtain feedbacks are inputs even when Conveyor
     # Type is BEACON or direction=O (common Greensboro miscategorization).
     if (
@@ -4270,13 +4274,21 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     configio_map = dict(getattr(inp, "configio_octal_map", None) or {})
 
     def _word_info(word: str, *, want_dir: str = "", bit: str = "") -> dict | None:
-        """Resolve Fortna word → module. Prefer Configio physical, then bank map, then EIPCSV."""
+        """Resolve Fortna word → module. Prefer Configio physical, then bank map, then EIPCSV.
+
+        CRITICAL: configio_physical card direction is authoritative. Never steal a
+        neighboring even/odd bank's module when device want_dir conflicts with the
+        physical card (caused INT229 Bank207.I → duplicate OTE on Bank206.O).
+        """
         w = str(word or "").strip()
         if not w:
             return None
 
+        def _raw_word_map(key: str) -> dict | None:
+            return word_map.get(key) if key in word_map else None
+
         def _from_word_map(key: str) -> dict | None:
-            info = word_map.get(key)
+            info = _raw_word_map(key)
             if not info:
                 return None
             # Direction filter when known
@@ -4284,12 +4296,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 return None
             return info
 
-        # 0) Configio-primary physical map (Greensboro PANEL-TYPE-INDEX)
-        info = _from_word_map(w)
-        if info and (info.get("resolve_how") or "") == "configio_physical":
-            return info
+        # 0) Configio-primary physical map (Greensboro PANEL-TYPE-INDEX).
+        # Physical card wins even when Conveyor.asc direction/Type is wrong.
+        for key in (w,):
+            info = _raw_word_map(key)
+            if info and (info.get("resolve_how") or "") == "configio_physical":
+                return info
         try:
-            info = _from_word_map(str(int(float(w))))
+            info = _raw_word_map(str(int(float(w))))
             if info and (info.get("resolve_how") or "") == "configio_physical":
                 return info
         except Exception:
@@ -4316,8 +4330,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             info = None
         if info:
             return info
+        # Odd→even fallback only when THIS word has no map entry at all.
+        # Never cross-map onto a neighbor that already has configio_physical.
         if w.isdigit() and int(w) % 2 == 1:
-            return _from_word_map(str(int(w) - 1))
+            neighbor = str(int(w) - 1)
+            if not _raw_word_map(w) and not _raw_word_map(neighbor):
+                return _from_word_map(neighbor)
+            neigh = _raw_word_map(neighbor)
+            if neigh and (neigh.get("resolve_how") or "") == "configio_physical":
+                return None
+            if not _raw_word_map(w):
+                return _from_word_map(neighbor)
         return None
 
     def _vfd_ms_member(tname: str, direction: str) -> str | None:
@@ -4626,6 +4649,30 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             r["tname"],
         )
     )
+
+    # One physical OUTPUT bit = one logical owner. Detect collisions before emit.
+    # Keep preflight as the Studio-side blocker; fail build here with both writers.
+    _out_owners: dict[str, list[dict]] = {}
+    for row in resolved_rows:
+        if row.get("mod_dir") != "O":
+            continue
+        ch = str(row.get("channel") or "")
+        if not ch:
+            continue
+        _out_owners.setdefault(ch, []).append(row)
+    _dup_out = {ch: owners for ch, owners in _out_owners.items() if len(owners) > 1}
+    if _dup_out:
+        lines = [
+            "BUILD FAILED: duplicate physical OUTPUT ownership in IO_MAP "
+            "(one bit = one logical owner unless explicit source proves otherwise):"
+        ]
+        for ch, owners in sorted(_dup_out.items()):
+            detail = "; ".join(
+                f"{o.get('tname')} ({o.get('comment')})" for o in owners
+            )
+            lines.append(f"  {ch} ← {detail}")
+        raise RuntimeError("\n".join(lines))
+
     last_rio_i = ""
     last_rio_o = ""
     for row in resolved_rows:

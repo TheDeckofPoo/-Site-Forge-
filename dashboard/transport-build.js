@@ -3700,21 +3700,24 @@
         tb.suppressDefaultArea = false;
         const def = `Transport_${tb.areas.length + 1}`;
         const name = await askText(
-          'New transport Area',
-          'Area name (operational conveyor grouping — not a Safety Zone):',
+          'Create Area',
+          'Area Name (operational conveyor grouping — not a Safety Zone):',
           def
         );
         if (name === null || !(String(name).trim())) return;
         const areaName = String(name).trim();
-        const zoneHint = listSafetyZoneNames()[0] || '';
-        const zoneIn = await askText(
-          'Default Safety Zone',
-          `Optional default Safety Zone for equipment assigned into “${areaName}”.\n`
-            + 'This is a convenience default only — Area ≠ Safety Zone.\n'
-            + 'Conveyor-level Safety Zone remains authoritative.',
-          zoneHint
-        );
-        const defaultZone = zoneIn === null ? '' : String(zoneIn || '').trim();
+        const existing = listSafetyZoneNames();
+        const zoneHint = existing[0] || `${areaName.replace(/_Area$/i, '')}_ESZone1`;
+        const zonePrompt = existing.length
+          ? `Default Safety Zone for “${areaName}”.\n`
+            + `Existing: ${existing.slice(0, 8).join(', ')}${existing.length > 8 ? '…' : ''}\n`
+            + 'Pick an existing name, or type a new Safety Zone name to create it.\n'
+            + 'Area ≠ Safety Zone — conveyor Safety Zone stays editable in topology.'
+          : `Create New Safety Zone for “${areaName}” (or leave blank).\n`
+            + 'Area ≠ Safety Zone — conveyor-level value remains authoritative.';
+        const zoneIn = await askText('Safety Zone', zonePrompt, zoneHint);
+        if (zoneIn === null) return; // cancelled
+        const defaultZone = String(zoneIn || '').trim();
         if (defaultZone) ensureSafetyZone(defaultZone);
         const a = {
           id: uid('area'),
@@ -3729,6 +3732,8 @@
         tb.selectedDeviceId = null;
         if (defaultZone) {
           tb.buildContext = tb.buildContext || {};
+          tb.buildContext.areaId = a.id;
+          tb.buildContext.areaName = a.name;
           tb.buildContext.safetyZone = defaultZone;
         }
         save();
@@ -3736,106 +3741,12 @@
         status(
           `Area “${a.name}” ready`
           + (defaultZone ? ` · default Safety Zone “${defaultZone}”` : '')
-          + ' — drag a conveyor onto the grid'
+          + ' — topology Safety Zone dropdown remains authoritative'
         );
       } catch (err) {
         status(`New area error: ${err?.message || err}`);
         try { await showInfo('New area failed', String(err?.message || err)); } catch (_) { /* ignore */ }
       }
-    });
-
-    // ---- Safety Zone CRUD (first-class, independent of Areas) ----
-    $('tb-szone-select')?.addEventListener('change', (e) => {
-      tb.activeSafetyZoneId = e.target.value || null;
-      const z = (tb.safetyZones || []).find((x) => x.id === tb.activeSafetyZoneId);
-      if (z) {
-        tb.buildContext = tb.buildContext || {};
-        tb.buildContext.safetyZone = z.name;
-      }
-      save();
-    });
-    $('tb-szone-new')?.addEventListener('click', async () => {
-      try {
-        const name = await askText(
-          'Create Safety Zone',
-          'Safety Zone name (E-stop / safety grouping — independent of Area):',
-          'SafetyZone_1'
-        );
-        if (name === null || !(String(name).trim())) return;
-        const z = ensureSafetyZone(String(name).trim());
-        if (!z) return;
-        tb.activeSafetyZoneId = z.id;
-        tb.buildContext = tb.buildContext || {};
-        tb.buildContext.safetyZone = z.name;
-        save();
-        render();
-        status(`Created Safety Zone “${z.name}”`);
-      } catch (err) {
-        status(`Create Safety Zone error: ${err?.message || err}`);
-      }
-    });
-    $('tb-szone-rename')?.addEventListener('click', async () => {
-      const z = (tb.safetyZones || []).find((x) => x.id === tb.activeSafetyZoneId);
-      if (!z) {
-        status('Select a Safety Zone first');
-        return;
-      }
-      const name = await askText('Rename Safety Zone', 'New Safety Zone name:', z.name);
-      if (name === null || !(String(name).trim())) return;
-      const oldName = z.name;
-      const newName = String(name).trim();
-      z.name = newName;
-      // Propagate rename to conveyor assignments + area defaults that used the old name
-      (tb.areas || []).forEach((a) => {
-        if (String(a.defaultSafetyZone || '').trim() === oldName) a.defaultSafetyZone = newName;
-        (a.nodes || []).forEach((n) => {
-          if (String(n.safetyZone || '').trim() === oldName) {
-            n.safetyZone = newName;
-            if (!n.provenance) n.provenance = {};
-            n.provenance.safetyZone = 'ENGINEER';
-          }
-        });
-      });
-      if (String(tb.buildContext?.safetyZone || '').trim() === oldName) {
-        tb.buildContext.safetyZone = newName;
-      }
-      save();
-      render();
-      status(`Renamed Safety Zone “${oldName}” → “${newName}”`);
-    });
-    $('tb-szone-delete')?.addEventListener('click', async () => {
-      const z = (tb.safetyZones || []).find((x) => x.id === tb.activeSafetyZoneId);
-      if (!z) {
-        status('Select a Safety Zone first');
-        return;
-      }
-      const refs = [];
-      (tb.areas || []).forEach((a) => {
-        (a.nodes || []).forEach((n) => {
-          if (isConv(n.kind) && String(n.safetyZone || '').trim() === z.name) {
-            refs.push(n.conveyorTag || n.label || n.id);
-          }
-        });
-      });
-      if (refs.length) {
-        await showInfo(
-          'Safety Zone in use',
-          `Cannot delete “${z.name}” — referenced by ${refs.length} conveyor(s).\n`
-            + 'Reassign those conveyors first (topology Safety Zone column).',
-          refs.slice(0, 24).join(', ') + (refs.length > 24 ? '…' : '')
-        );
-        return;
-      }
-      const ok = await askYesNo('Delete Safety Zone', `Delete unused Safety Zone “${z.name}”?`);
-      if (!ok) return;
-      tb.safetyZones = (tb.safetyZones || []).filter((x) => x.id !== z.id);
-      tb.activeSafetyZoneId = (tb.safetyZones[0] && tb.safetyZones[0].id) || null;
-      (tb.areas || []).forEach((a) => {
-        if (String(a.defaultSafetyZone || '').trim() === z.name) a.defaultSafetyZone = '';
-      });
-      save();
-      render();
-      status(`Deleted Safety Zone “${z.name}”`);
     });
 
     $('tb-area-rename')?.addEventListener('click', async () => {

@@ -2370,18 +2370,6 @@
             <i class="fa-solid fa-trash mr-1"></i>Delete
           </button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
-          <label class="text-[10px] text-slate-500 uppercase tracking-wider" title="E-stop / safety grouping — independent of Area">Safety Zone</label>
-          <select id="tb-szone-select" class="bg-slate-900 border border-amber-900/50 rounded-lg text-xs px-2 py-1.5 text-amber-200 min-w-[140px] mono" title="Safety Zones (E-stop grouping — not Areas)"></select>
-          <button type="button" id="tb-szone-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-amber-800/60 text-amber-300" title="Create Safety Zone">
-            <i class="fa-solid fa-plus mr-1"></i>New
-          </button>
-          <button type="button" id="tb-szone-rename" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Rename selected Safety Zone">
-            <i class="fa-solid fa-pen"></i>
-          </button>
-          <button type="button" id="tb-szone-delete" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-red-900/50 text-red-300" title="Delete Safety Zone (blocked if referenced)">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-          <span class="w-px h-5 bg-slate-800 mx-1"></span>
           <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-600/70 text-emerald-200 font-semibold" title="Auto Build from imported RUN">
             <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Auto Build
           </button>
@@ -2453,32 +2441,16 @@
           </details>
         </div>
       </div>
-      <!-- Build Context (future nodes inherit Area + ES Zone) -->
-      <div class="tb-ctx-bar shrink-0 px-4 py-1.5 flex items-center gap-3 flex-wrap text-[11px]">
-        <span class="text-[10px] uppercase tracking-widest text-fuchsia-400/80 font-semibold">Build Context</span>
-        <label class="flex items-center gap-1.5 text-slate-400">
-          Area
-          <select id="tb-ctx-area" class="bg-slate-900 border border-slate-700 rounded text-xs px-2 py-1 text-slate-200 min-w-[120px]"></select>
-        </label>
-        <label class="flex items-center gap-1.5 text-slate-400">
-          ES Zone
-          <input id="tb-ctx-eszone" type="text" list="tb-ctx-eszone-list"
-            class="bg-slate-900 border border-slate-700 rounded text-xs px-2 py-1 text-amber-200 min-w-[140px] mono"
-            placeholder="ModuleB_ESZone1" />
-          <datalist id="tb-ctx-eszone-list"></datalist>
-        </label>
-        <button type="button" id="tb-ctx-apply-sel" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700 text-slate-300" title="Apply Build Context Area + ES Zone to selected conveyors only">
-          Apply to Selection
-        </button>
-        <span class="text-[9px] text-slate-600 ml-auto">New conveyors inherit these · changing context does not rewrite existing nodes</span>
+      <!-- Build Context + Control Panel removed from normal working screen (model retained).
+           Hidden hosts keep IDs alive for bulk/topology helpers without visual chrome. -->
+      <div class="tb-ctx-bar hidden" aria-hidden="true" style="display:none">
+        <select id="tb-ctx-area"></select>
+        <input id="tb-ctx-eszone" type="text" list="tb-ctx-eszone-list" />
+        <datalist id="tb-ctx-eszone-list"></datalist>
+        <button type="button" id="tb-ctx-apply-sel"></button>
       </div>
-      <!-- Control Panel filter / highlight — built dynamically from RUN evidence after Auto Build -->
-      <div class="tb-cp-bar shrink-0 px-4 py-1 flex items-center gap-3 flex-wrap text-[11px] border-b border-slate-800 bg-[#0b1219]">
-        <span class="text-[10px] uppercase tracking-widest text-violet-400/80 font-semibold" title="Control Panel is presentation/metadata only. Checkboxes appear from RUN evidence after Auto Build — not hard-coded CP1/CP2/CP3.">Control Panel</span>
-        <div id="tb-cp-filters" class="flex items-center gap-2 flex-wrap min-h-[1.5rem]">
-          <span class="text-[10px] text-slate-600">Auto Build to discover panels…</span>
-        </div>
-        <span class="text-[9px] text-slate-600 ml-auto">Ctrl+wheel zoom · empty/mid-drag pan · filters highlight only</span>
+      <div class="tb-cp-bar hidden" aria-hidden="true" style="display:none">
+        <div id="tb-cp-filters"></div>
       </div>
       <!-- Continue Run sticky bar -->
       <div id="tb-continue-bar" class="tb-continue-bar hidden shrink-0 px-4 py-1.5 flex items-center gap-2 flex-wrap">
@@ -2515,13 +2487,13 @@
         <button type="button" id="tb-bulk-remove-from-area" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700 text-slate-300" title="Move selection to Unassigned (or prompted destination). Does not invent controller ownership.">
           Remove Selection from Area
         </button>
-        <label class="flex items-center gap-1 text-slate-300 font-medium" title="Control Panel is organizational metadata only — not PLC / I/O ownership">CP
+        <label class="hidden items-center gap-1 text-slate-300 font-medium" title="Control Panel (hidden from normal workflow; model retained)" style="display:none">CP
           <select id="tb-bulk-cp" class="bg-slate-900 border border-violet-800/60 rounded text-xs px-1.5 py-1 min-w-[88px]">
             <option value="">—</option>
             <option value="clear">Clear</option>
           </select>
         </label>
-        <button type="button" id="tb-bulk-cp-apply" class="btn-ghost text-[10px] px-2 py-1 rounded border border-violet-700/60 text-violet-200" title="Assign Control Panel to selection (presentation only)">
+        <button type="button" id="tb-bulk-cp-apply" class="hidden" style="display:none" title="Assign Control Panel (hidden)">
           Set CP
         </button>
         <button type="button" id="tb-bulk-chain" class="btn-ghost text-[10px] px-2 py-1 rounded border border-slate-700" title="Expand selection to the connected chain">Select Chain</button>

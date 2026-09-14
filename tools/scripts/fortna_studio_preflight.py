@@ -237,6 +237,7 @@ def _check_iomap_duplicate_otes(text: str, add) -> None:
     """Fail when IO_MAP routines contain duplicate OTE targets.
 
     NO_PointPlaceholder is an intentional multi-rung sink for unused bits — excluded.
+    One physical OUTPUT bit must have exactly one logical owner.
     """
     prog = re.search(
         r'<Program\b[^>]*\bName="IO_MAP"[^>]*>(.*?)</Program>',
@@ -246,27 +247,43 @@ def _check_iomap_duplicate_otes(text: str, add) -> None:
     if not prog:
         return
     body = prog.group(1)
-    ote_targets: list[str] = []
-    for rm in re.finditer(r"<Text>\s*<!\[CDATA\[(.*?)\]\]>\s*</Text>", body, re.S):
-        rung = rm.group(1)
-        ote_targets.extend(re.findall(r"\bOTE\s*\(\s*([^)]+?)\s*\)", rung, re.I))
-    seen: set[str] = set()
-    dups: set[str] = set()
-    _allow_multi = {"NO_PointPlaceholder"}
-    for t in ote_targets:
-        key = t.strip()
-        if not key or key in _allow_multi:
+    # Collect OTE target → list of (xic writers, comment) for diagnostics
+    writers: dict[str, list[dict[str, str]]] = {}
+    for rm in re.finditer(r"<Rung\b[^>]*>(.*?)</Rung>", body, re.S):
+        inner = rm.group(1)
+        tm = re.search(r"<Text>\s*<!\[CDATA\[(.*?)\]\]>\s*</Text>", inner, re.S)
+        if not tm:
             continue
-        if key in seen:
-            dups.add(key)
-        else:
-            seen.add(key)
-    for t in sorted(dups)[:40]:
+        rung = tm.group(1)
+        cm = re.search(r"<Comment>\s*<!\[CDATA\[(.*?)\]\]>\s*</Comment>", inner, re.S)
+        comment = (cm.group(1) if cm else "").strip()
+        xics = re.findall(r"\bXIC\s*\(\s*([^)]+?)\s*\)", rung, re.I)
+        for t in re.findall(r"\bOTE\s*\(\s*([^)]+?)\s*\)", rung, re.I):
+            key = t.strip()
+            if not key:
+                continue
+            writers.setdefault(key, []).append(
+                {
+                    "xic": ",".join(x.strip() for x in xics) or "",
+                    "comment": comment,
+                }
+            )
+    _allow_multi = {"NO_PointPlaceholder"}
+    for t, hits in sorted(writers.items()):
+        if t in _allow_multi:
+            continue
+        if len(hits) < 2:
+            continue
+        detail = " | ".join(
+            f"writer{i+1}={h.get('xic') or '?'} ({h.get('comment') or 'no comment'})"
+            for i, h in enumerate(hits[:4])
+        )
         add(
             "ERROR",
             "iomap_duplicate_ote",
-            f"IO_MAP duplicate OTE target: {t}",
+            f"IO_MAP duplicate OTE target: {t} — {detail}",
             target=t,
+            writers=hits,
         )
 
 
