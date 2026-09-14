@@ -1,0 +1,1074 @@
+{
+  "generated_at": "2026-09-14T04:39:45.035599+00:00",
+  "machine": "ORNCCP2",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_plc2_run_peek\\RUN",
+  "source_of_truth": "RUN tables only \u2014 MergeBoss/MergeInputs/MergeRoute/Mtrchain/Jamcheck/Fulljam/Fullline/Conveyor; finished PLC L5X not read",
+  "firewall": {
+    "finished_l5x_read": false,
+    "hardcoded_merge_names": false,
+    "forbidden_path_needles": [
+      "Finished.L5X",
+      "PLC2Finished",
+      "PLC4Finished",
+      "PLC5Finished",
+      "ORLY_Greensboro_NC_PLC2",
+      "ORLY_Greensboro_NC_PLC4",
+      "ORLY_Greensboro_NC_PLC5",
+      "ORLY_Greensboro_NC_PLC2s",
+      "ORLY_Greensboro_NC_PLC4S",
+      "ORLY_Greensboro_NC_PLC5S"
+    ],
+    "tables_read": [
+      "Conveyor",
+      "MergeBoss",
+      "MergeInputs",
+      "MergeRoute",
+      "MergeRunOutputs",
+      "Mtrchain",
+      "Jamcheck",
+      "Fulljam",
+      "Fullline",
+      "Configio",
+      "FORTNADT",
+      "Stop"
+    ]
+  },
+  "counts": {
+    "candidate": 0,
+    "proven": 4,
+    "unresolved": 0,
+    "total": 4,
+    "topology_indegree_eq_2": 2,
+    "mergeboss_2to1": 4
+  },
+  "topology_indegree_2": {
+    "P400": [
+      "P150_P2",
+      "P242"
+    ],
+    "P406": [
+      "P138",
+      "P404"
+    ]
+  },
+  "section_suffix_preserved": [
+    {
+      "merge": "MERGE_316_SPUR",
+      "field": "mainLane",
+      "value": "P136_P1"
+    },
+    {
+      "merge": "MERGE_316_SPUR",
+      "field": "downstream",
+      "value": "P136_P2"
+    },
+    {
+      "merge": "MERGE_316_SPUR",
+      "field": "mergeSection1",
+      "value": "P136_P1"
+    },
+    {
+      "merge": "MERGE_400_2-1",
+      "field": "inductLane",
+      "value": "P150_P2"
+    },
+    {
+      "merge": "MERGE_400_2-1",
+      "field": "mergeSection2",
+      "value": "P150_P2"
+    },
+    {
+      "merge": "MERGE_324_SPUR",
+      "field": "mainLane",
+      "value": "P150_P1"
+    },
+    {
+      "merge": "MERGE_324_SPUR",
+      "field": "downstream",
+      "value": "P150_P2"
+    },
+    {
+      "merge": "MERGE_324_SPUR",
+      "field": "mergeSection1",
+      "value": "P150_P1"
+    }
+  ],
+  "merges": [
+    {
+      "type": "Merge_2to1",
+      "name": "MERGE_406_3-1",
+      "bossNumber": "406",
+      "mainLane": "P404",
+      "inductLane": "P138",
+      "mergeSection1": "P404",
+      "mergeSection2": "P138",
+      "mergeSection3": null,
+      "downstream": "P406",
+      "PEs": {
+        "main": "PE404_P",
+        "induct": "PE138_P",
+        "jam": "PE406_J"
+      },
+      "area": null,
+      "jamZone": "3-1 MERGE",
+      "numInputs": 2,
+      "lanes": [
+        {
+          "input_name": "LANE1_P404",
+          "index": 0,
+          "section": "P404",
+          "presense": "PE404_P",
+          "release_io": "M404",
+          "merge_route": "LANE1_P404"
+        },
+        {
+          "input_name": "LANE2_P138",
+          "index": 1,
+          "section": "P138",
+          "presense": "PE138_P",
+          "release_io": "M138",
+          "merge_route": "LANE2_P138"
+        }
+      ],
+      "topology": {
+        "downstream": "P406",
+        "inbound": [
+          "P138",
+          "P404"
+        ],
+        "indegree": 2
+      },
+      "evidence": [
+        {
+          "kind": "mergeboss",
+          "table": "MergeBoss.asc",
+          "name": "MERGE_406_3-1",
+          "num_inputs": 2,
+          "owner": "ORNCCP2",
+          "operable_input": "M406_AUX",
+          "valid": "Y"
+        },
+        {
+          "kind": "mergeinputs_presense",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P404",
+          "presense": "PE404_P",
+          "section": "P404"
+        },
+        {
+          "kind": "mergeinputs_releaseio",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P404",
+          "release_io": "M404",
+          "section": "P404"
+        },
+        {
+          "kind": "mergeinputs_timer",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P404",
+          "sections": [
+            "P402"
+          ]
+        },
+        {
+          "kind": "mergeinputs_lane_name",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P404",
+          "section": "P404"
+        },
+        {
+          "kind": "mtrchain_merge_ssv",
+          "table": "Mtrchain.asc",
+          "boss_number": "406",
+          "sections": [
+            "P406"
+          ]
+        },
+        {
+          "kind": "lane_section_resolution",
+          "lane": "LANE1_P404",
+          "section": "P404",
+          "sources": [
+            "mergeinputs_lane_name",
+            "mergeinputs_presense",
+            "mergeinputs_releaseio"
+          ],
+          "source_count": 3,
+          "score": [
+            5,
+            3,
+            0
+          ]
+        },
+        {
+          "kind": "mergeroute",
+          "table": "MergeRoute.asc",
+          "name": "LANE1_P404",
+          "merge_inputs": "LANE1_P404"
+        },
+        {
+          "kind": "mergeinputs_presense",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P138",
+          "presense": "PE138_P",
+          "section": "P138"
+        },
+        {
+          "kind": "mergeinputs_releaseio",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P138",
+          "release_io": "M138",
+          "section": "P138"
+        },
+        {
+          "kind": "mergeinputs_timer",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P138",
+          "sections": [
+            "P136",
+            "P136_P2"
+          ]
+        },
+        {
+          "kind": "mergeinputs_lane_name",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P138",
+          "section": "P138"
+        },
+        {
+          "kind": "mtrchain_merge_ssv",
+          "table": "Mtrchain.asc",
+          "boss_number": "406",
+          "sections": [
+            "P406"
+          ]
+        },
+        {
+          "kind": "lane_section_resolution",
+          "lane": "LANE2_P138",
+          "section": "P138",
+          "sources": [
+            "mergeinputs_lane_name",
+            "mergeinputs_presense",
+            "mergeinputs_releaseio"
+          ],
+          "source_count": 3,
+          "score": [
+            5,
+            3,
+            0
+          ]
+        },
+        {
+          "kind": "mergeroute",
+          "table": "MergeRoute.asc",
+          "name": "LANE2_P138",
+          "merge_inputs": "LANE2_P138"
+        },
+        {
+          "kind": "lane_role_assignment",
+          "rule": "MergeInputs Index ascending: 0\u2192mainLane, 1\u2192inductLane",
+          "main_input": "LANE1_P404",
+          "induct_input": "LANE2_P138",
+          "mainLane": "P404",
+          "inductLane": "P138"
+        },
+        {
+          "kind": "mtrchain_latch_discharge",
+          "table": "Mtrchain.asc",
+          "boss_number": "406",
+          "section": "P406"
+        },
+        {
+          "kind": "jamcheck_conveyor",
+          "table": "Jamcheck.asc",
+          "conveyor": "P406",
+          "zone": "3-1 MERGE",
+          "sensor": "PE406_J"
+        },
+        {
+          "kind": "topology_convergence",
+          "downstream": "P406",
+          "sources": [
+            "P138",
+            "P404"
+          ]
+        },
+        {
+          "kind": "downstream_resolution",
+          "downstream": "P406",
+          "method": "mtrchain_latch_motor",
+          "all_candidates": [
+            {
+              "section": "P406",
+              "method": "mtrchain_latch_motor"
+            },
+            {
+              "section": "P406",
+              "method": "topology_indegree_lanes"
+            }
+          ]
+        },
+        {
+          "kind": "topology_candidate_match",
+          "downstream": "P406",
+          "inbound": [
+            "P138",
+            "P404"
+          ],
+          "indegree": 2
+        },
+        {
+          "kind": "jam_zone_label",
+          "zone": "3-1 MERGE",
+          "note": "Zone label is not plant Area; Area remains engineer-configured"
+        }
+      ],
+      "unresolved": [],
+      "confidence": "HIGH",
+      "classification": "PROVEN"
+    },
+    {
+      "type": "Merge_2to1",
+      "name": "MERGE_316_SPUR",
+      "bossNumber": "316",
+      "mainLane": "P136_P1",
+      "inductLane": "P312",
+      "mergeSection1": "P136_P1",
+      "mergeSection2": "P312",
+      "mergeSection3": "P316",
+      "downstream": "P136_P2",
+      "PEs": {
+        "main": "EZPE136_P1",
+        "induct": "PE314_P",
+        "jam": "PE316_J"
+      },
+      "area": null,
+      "jamZone": "MERGE 316",
+      "numInputs": 2,
+      "lanes": [
+        {
+          "input_name": "LANE1_P136",
+          "index": 0,
+          "section": "P136_P1",
+          "presense": "EZPE136_P1",
+          "release_io": "SSVEZPE136_P1",
+          "merge_route": "LANE1_P136"
+        },
+        {
+          "input_name": "LANE2_P312",
+          "index": 1,
+          "section": "P312",
+          "presense": "PE314_P",
+          "release_io": "M314",
+          "merge_route": ""
+        }
+      ],
+      "topology": null,
+      "evidence": [
+        {
+          "kind": "mergeboss",
+          "table": "MergeBoss.asc",
+          "name": "MERGE_316_SPUR",
+          "num_inputs": 2,
+          "owner": "ORNCCP2",
+          "operable_input": "ENABLE_MERGEBOSS_316",
+          "valid": "Y"
+        },
+        {
+          "kind": "mergeinputs_presense",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P136",
+          "presense": "EZPE136_P1",
+          "section": "P136_P1"
+        },
+        {
+          "kind": "mergeinputs_releaseio",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P136",
+          "release_io": "SSVEZPE136_P1",
+          "section": "P136_P1"
+        },
+        {
+          "kind": "mergeinputs_timer",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P136",
+          "sections": [
+            "P136",
+            "P136_P1"
+          ]
+        },
+        {
+          "kind": "mergeinputs_lane_name",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P136",
+          "section": "P136"
+        },
+        {
+          "kind": "mtrchain_merge_ssv",
+          "table": "Mtrchain.asc",
+          "boss_number": "316",
+          "sections": [
+            "P136",
+            "P136_P1",
+            "P312",
+            "P314",
+            "P316"
+          ]
+        },
+        {
+          "kind": "lane_section_resolution",
+          "lane": "LANE1_P136",
+          "section": "P136_P1",
+          "sources": [
+            "mergeinputs_presense",
+            "mergeinputs_releaseio",
+            "mergeinputs_timer",
+            "mtrchain_merge_ssv"
+          ],
+          "source_count": 4,
+          "score": [
+            7,
+            4,
+            1
+          ]
+        },
+        {
+          "kind": "mergeroute",
+          "table": "MergeRoute.asc",
+          "name": "LANE1_P136",
+          "merge_inputs": "LANE1_P136"
+        },
+        {
+          "kind": "mergeinputs_presense",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P312",
+          "presense": "PE314_P",
+          "section": "P314"
+        },
+        {
+          "kind": "mergeinputs_releaseio",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P312",
+          "release_io": "M314",
+          "section": "P314"
+        },
+        {
+          "kind": "mergeinputs_timer",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P312",
+          "sections": [
+            "P312"
+          ]
+        },
+        {
+          "kind": "mergeinputs_lane_name",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P312",
+          "section": "P312"
+        },
+        {
+          "kind": "mtrchain_merge_ssv",
+          "table": "Mtrchain.asc",
+          "boss_number": "316",
+          "sections": [
+            "P136",
+            "P136_P1",
+            "P312",
+            "P314",
+            "P316"
+          ]
+        },
+        {
+          "kind": "lane_section_resolution",
+          "lane": "LANE2_P312",
+          "section": "P312",
+          "sources": [
+            "mergeinputs_lane_name",
+            "mergeinputs_timer",
+            "mtrchain_merge_ssv"
+          ],
+          "source_count": 3,
+          "score": [
+            8,
+            3,
+            0
+          ]
+        },
+        {
+          "kind": "lane_role_assignment",
+          "rule": "MergeInputs Index ascending: 0\u2192mainLane, 1\u2192inductLane",
+          "main_input": "LANE1_P136",
+          "induct_input": "LANE2_P312",
+          "mainLane": "P136_P1",
+          "inductLane": "P312"
+        },
+        {
+          "kind": "jamcheck_conveyor",
+          "table": "Jamcheck.asc",
+          "conveyor": "P316",
+          "zone": "MERGE 316",
+          "sensor": "PE316_J"
+        },
+        {
+          "kind": "spur_downstream_p2",
+          "rule": "SPUR MergeBoss + mainLane P{n}_P1 + proven section P{n}_P2 \u2192 downstream continuation",
+          "main_lane": "P136_P1",
+          "downstream": "P136_P2"
+        },
+        {
+          "kind": "topology_convergence",
+          "downstream": "P316",
+          "sources": [
+            "P136",
+            "P136_P1",
+            "P312",
+            "P314"
+          ]
+        },
+        {
+          "kind": "downstream_resolution",
+          "downstream": "P136_P2",
+          "method": "spur_main_p2_continuation",
+          "all_candidates": [
+            {
+              "section": "P136_P2",
+              "method": "spur_main_p2_continuation"
+            },
+            {
+              "section": "P316",
+              "method": "topology_indegree_lanes"
+            }
+          ]
+        },
+        {
+          "kind": "jam_zone_label",
+          "zone": "MERGE 316",
+          "note": "Zone label is not plant Area; Area remains engineer-configured"
+        },
+        {
+          "kind": "section_suffix_preserved",
+          "field": "mainLane",
+          "value": "P136_P1",
+          "rule": "Never flatten P{n}_P1/_P2 to P{n}"
+        },
+        {
+          "kind": "section_suffix_preserved",
+          "field": "downstream",
+          "value": "P136_P2",
+          "rule": "Never flatten P{n}_P1/_P2 to P{n}"
+        },
+        {
+          "kind": "section_suffix_preserved",
+          "field": "mergeSection1",
+          "value": "P136_P1",
+          "rule": "Never flatten P{n}_P1/_P2 to P{n}"
+        }
+      ],
+      "unresolved": [],
+      "confidence": "HIGH",
+      "classification": "PROVEN"
+    },
+    {
+      "type": "Merge_2to1",
+      "name": "MERGE_400_2-1",
+      "bossNumber": "400",
+      "mainLane": "P242",
+      "inductLane": "P150_P2",
+      "mergeSection1": "P242",
+      "mergeSection2": "P150_P2",
+      "mergeSection3": null,
+      "downstream": "P400",
+      "PEs": {
+        "main": "EZPE242_P",
+        "induct": "EZPE150_P2",
+        "jam": "PE400_J"
+      },
+      "area": null,
+      "jamZone": "2-1 MERGE",
+      "numInputs": 2,
+      "lanes": [
+        {
+          "input_name": "LANE1_P242",
+          "index": 0,
+          "section": "P242",
+          "presense": "EZPE242_P",
+          "release_io": "SSVEZPE242_P",
+          "merge_route": "LANE1_P242"
+        },
+        {
+          "input_name": "LANE2_P150_2-1",
+          "index": 1,
+          "section": "P150_P2",
+          "presense": "EZPE150_P2",
+          "release_io": "SSVEZPE150_P2",
+          "merge_route": ""
+        }
+      ],
+      "topology": {
+        "downstream": "P400",
+        "inbound": [
+          "P150_P2",
+          "P242"
+        ],
+        "indegree": 2
+      },
+      "evidence": [
+        {
+          "kind": "mergeboss",
+          "table": "MergeBoss.asc",
+          "name": "MERGE_400_2-1",
+          "num_inputs": 2,
+          "owner": "ORNCCP2",
+          "operable_input": "M400_AUX",
+          "valid": "Y"
+        },
+        {
+          "kind": "mergeinputs_presense",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P242",
+          "presense": "EZPE242_P",
+          "section": "P242"
+        },
+        {
+          "kind": "mergeinputs_releaseio",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P242",
+          "release_io": "SSVEZPE242_P",
+          "section": "P242"
+        },
+        {
+          "kind": "mergeinputs_timer",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P242",
+          "sections": [
+            "P242"
+          ]
+        },
+        {
+          "kind": "mergeinputs_lane_name",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P242",
+          "section": "P242"
+        },
+        {
+          "kind": "mtrchain_merge_ssv",
+          "table": "Mtrchain.asc",
+          "boss_number": "400",
+          "sections": [
+            "P150_P2",
+            "P242",
+            "P400"
+          ]
+        },
+        {
+          "kind": "lane_section_resolution",
+          "lane": "LANE1_P242",
+          "section": "P242",
+          "sources": [
+            "mergeinputs_lane_name",
+            "mergeinputs_presense",
+            "mergeinputs_releaseio",
+            "mergeinputs_timer",
+            "mtrchain_merge_ssv"
+          ],
+          "source_count": 5,
+          "score": [
+            10,
+            5,
+            0
+          ]
+        },
+        {
+          "kind": "mergeroute",
+          "table": "MergeRoute.asc",
+          "name": "LANE1_P242",
+          "merge_inputs": "LANE1_P242"
+        },
+        {
+          "kind": "mergeinputs_presense",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P150_2-1",
+          "presense": "EZPE150_P2",
+          "section": "P150_P2"
+        },
+        {
+          "kind": "mergeinputs_releaseio",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P150_2-1",
+          "release_io": "SSVEZPE150_P2",
+          "section": "P150_P2"
+        },
+        {
+          "kind": "mergeinputs_timer",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P150_2-1",
+          "sections": [
+            "P150",
+            "P150_P2"
+          ]
+        },
+        {
+          "kind": "mergeinputs_lane_name",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P150_2-1",
+          "section": "P150"
+        },
+        {
+          "kind": "mtrchain_merge_ssv",
+          "table": "Mtrchain.asc",
+          "boss_number": "400",
+          "sections": [
+            "P150_P2",
+            "P242",
+            "P400"
+          ]
+        },
+        {
+          "kind": "lane_section_resolution",
+          "lane": "LANE2_P150_2-1",
+          "section": "P150_P2",
+          "sources": [
+            "mergeinputs_presense",
+            "mergeinputs_releaseio",
+            "mergeinputs_timer",
+            "mtrchain_merge_ssv"
+          ],
+          "source_count": 4,
+          "score": [
+            7,
+            4,
+            1
+          ]
+        },
+        {
+          "kind": "lane_role_assignment",
+          "rule": "MergeInputs Index ascending: 0\u2192mainLane, 1\u2192inductLane",
+          "main_input": "LANE1_P242",
+          "induct_input": "LANE2_P150_2-1",
+          "mainLane": "P242",
+          "inductLane": "P150_P2"
+        },
+        {
+          "kind": "mtrchain_latch_discharge",
+          "table": "Mtrchain.asc",
+          "boss_number": "400",
+          "section": "P400"
+        },
+        {
+          "kind": "jamcheck_conveyor",
+          "table": "Jamcheck.asc",
+          "conveyor": "P400",
+          "zone": "2-1 MERGE",
+          "sensor": "PE400_J"
+        },
+        {
+          "kind": "topology_convergence",
+          "downstream": "P400",
+          "sources": [
+            "P150_P2",
+            "P242"
+          ]
+        },
+        {
+          "kind": "downstream_resolution",
+          "downstream": "P400",
+          "method": "mtrchain_latch_motor",
+          "all_candidates": [
+            {
+              "section": "P400",
+              "method": "mtrchain_latch_motor"
+            },
+            {
+              "section": "P400",
+              "method": "topology_indegree_lanes"
+            }
+          ]
+        },
+        {
+          "kind": "topology_candidate_match",
+          "downstream": "P400",
+          "inbound": [
+            "P150_P2",
+            "P242"
+          ],
+          "indegree": 2
+        },
+        {
+          "kind": "jam_zone_label",
+          "zone": "2-1 MERGE",
+          "note": "Zone label is not plant Area; Area remains engineer-configured"
+        },
+        {
+          "kind": "section_suffix_preserved",
+          "field": "inductLane",
+          "value": "P150_P2",
+          "rule": "Never flatten P{n}_P1/_P2 to P{n}"
+        },
+        {
+          "kind": "section_suffix_preserved",
+          "field": "mergeSection2",
+          "value": "P150_P2",
+          "rule": "Never flatten P{n}_P1/_P2 to P{n}"
+        }
+      ],
+      "unresolved": [],
+      "confidence": "HIGH",
+      "classification": "PROVEN"
+    },
+    {
+      "type": "Merge_2to1",
+      "name": "MERGE_324_SPUR",
+      "bossNumber": "324",
+      "mainLane": "P150_P1",
+      "inductLane": "P320",
+      "mergeSection1": "P150_P1",
+      "mergeSection2": "P320",
+      "mergeSection3": "P324",
+      "downstream": "P150_P2",
+      "PEs": {
+        "main": "EZPE150_P1",
+        "induct": "PE322_P",
+        "jam": "PE324_J"
+      },
+      "area": null,
+      "jamZone": "MERGE 324",
+      "numInputs": 2,
+      "lanes": [
+        {
+          "input_name": "LANE1_P150_SPUR",
+          "index": 0,
+          "section": "P150_P1",
+          "presense": "EZPE150_P1",
+          "release_io": "SSVEZPE150_P1",
+          "merge_route": "LANE1_P150_SPUR"
+        },
+        {
+          "input_name": "LANE2_P320",
+          "index": 1,
+          "section": "P320",
+          "presense": "PE322_P",
+          "release_io": "M322",
+          "merge_route": ""
+        }
+      ],
+      "topology": null,
+      "evidence": [
+        {
+          "kind": "mergeboss",
+          "table": "MergeBoss.asc",
+          "name": "MERGE_324_SPUR",
+          "num_inputs": 2,
+          "owner": "ORNCCP2",
+          "operable_input": "ENABLE_MERGEBOSS_324",
+          "valid": "Y"
+        },
+        {
+          "kind": "mergeinputs_presense",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P150_SPUR",
+          "presense": "EZPE150_P1",
+          "section": "P150_P1"
+        },
+        {
+          "kind": "mergeinputs_releaseio",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P150_SPUR",
+          "release_io": "SSVEZPE150_P1",
+          "section": "P150_P1"
+        },
+        {
+          "kind": "mergeinputs_timer",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P150_SPUR",
+          "sections": [
+            "P150",
+            "P150_P1"
+          ]
+        },
+        {
+          "kind": "mergeinputs_lane_name",
+          "table": "MergeInputs.asc",
+          "lane": "LANE1_P150_SPUR",
+          "section": "P150"
+        },
+        {
+          "kind": "mtrchain_merge_ssv",
+          "table": "Mtrchain.asc",
+          "boss_number": "324",
+          "sections": [
+            "P150",
+            "P150_P1",
+            "P320",
+            "P322",
+            "P324"
+          ]
+        },
+        {
+          "kind": "lane_section_resolution",
+          "lane": "LANE1_P150_SPUR",
+          "section": "P150_P1",
+          "sources": [
+            "mergeinputs_presense",
+            "mergeinputs_releaseio",
+            "mergeinputs_timer",
+            "mtrchain_merge_ssv"
+          ],
+          "source_count": 4,
+          "score": [
+            7,
+            4,
+            1
+          ]
+        },
+        {
+          "kind": "mergeroute",
+          "table": "MergeRoute.asc",
+          "name": "LANE1_P150_SPUR",
+          "merge_inputs": "LANE1_P150_SPUR"
+        },
+        {
+          "kind": "mergeinputs_presense",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P320",
+          "presense": "PE322_P",
+          "section": "P322"
+        },
+        {
+          "kind": "mergeinputs_releaseio",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P320",
+          "release_io": "M322",
+          "section": "P322"
+        },
+        {
+          "kind": "mergeinputs_timer",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P320",
+          "sections": [
+            "P320"
+          ]
+        },
+        {
+          "kind": "mergeinputs_lane_name",
+          "table": "MergeInputs.asc",
+          "lane": "LANE2_P320",
+          "section": "P320"
+        },
+        {
+          "kind": "mtrchain_merge_ssv",
+          "table": "Mtrchain.asc",
+          "boss_number": "324",
+          "sections": [
+            "P150",
+            "P150_P1",
+            "P320",
+            "P322",
+            "P324"
+          ]
+        },
+        {
+          "kind": "lane_section_resolution",
+          "lane": "LANE2_P320",
+          "section": "P320",
+          "sources": [
+            "mergeinputs_lane_name",
+            "mergeinputs_timer",
+            "mtrchain_merge_ssv"
+          ],
+          "source_count": 3,
+          "score": [
+            8,
+            3,
+            0
+          ]
+        },
+        {
+          "kind": "lane_role_assignment",
+          "rule": "MergeInputs Index ascending: 0\u2192mainLane, 1\u2192inductLane",
+          "main_input": "LANE1_P150_SPUR",
+          "induct_input": "LANE2_P320",
+          "mainLane": "P150_P1",
+          "inductLane": "P320"
+        },
+        {
+          "kind": "jamcheck_conveyor",
+          "table": "Jamcheck.asc",
+          "conveyor": "P324",
+          "zone": "MERGE 324",
+          "sensor": "PE324_J"
+        },
+        {
+          "kind": "spur_downstream_p2",
+          "rule": "SPUR MergeBoss + mainLane P{n}_P1 + proven section P{n}_P2 \u2192 downstream continuation",
+          "main_lane": "P150_P1",
+          "downstream": "P150_P2"
+        },
+        {
+          "kind": "topology_convergence",
+          "downstream": "P324",
+          "sources": [
+            "P150",
+            "P150_P1",
+            "P320",
+            "P322"
+          ]
+        },
+        {
+          "kind": "downstream_resolution",
+          "downstream": "P150_P2",
+          "method": "spur_main_p2_continuation",
+          "all_candidates": [
+            {
+              "section": "P150_P2",
+              "method": "spur_main_p2_continuation"
+            },
+            {
+              "section": "P324",
+              "method": "topology_indegree_lanes"
+            }
+          ]
+        },
+        {
+          "kind": "jam_zone_label",
+          "zone": "MERGE 324",
+          "note": "Zone label is not plant Area; Area remains engineer-configured"
+        },
+        {
+          "kind": "section_suffix_preserved",
+          "field": "mainLane",
+          "value": "P150_P1",
+          "rule": "Never flatten P{n}_P1/_P2 to P{n}"
+        },
+        {
+          "kind": "section_suffix_preserved",
+          "field": "downstream",
+          "value": "P150_P2",
+          "rule": "Never flatten P{n}_P1/_P2 to P{n}"
+        },
+        {
+          "kind": "section_suffix_preserved",
+          "field": "mergeSection1",
+          "value": "P150_P1",
+          "rule": "Never flatten P{n}_P1/_P2 to P{n}"
+        }
+      ],
+      "unresolved": [],
+      "confidence": "HIGH",
+      "classification": "PROVEN"
+    }
+  ],
+  "section_model_summary": {
+    "section_count": 77,
+    "preferred_induct": {
+      "P136": "P136_P1",
+      "P150": "P150_P1"
+    },
+    "suffix_sections": [
+      "P136_P1",
+      "P136_P2",
+      "P150_P1",
+      "P150_P2"
+    ]
+  }
+}

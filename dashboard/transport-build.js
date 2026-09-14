@@ -374,6 +374,40 @@
     if (!activeArea()) tb.activeAreaId = tb.areas[0].id;
   }
 
+  function canonicalTransportHash() {
+    // Stable hash of engineer-authoritative Transport topology (Areas + bound tags + wires).
+    // Excludes presentation/geometry so Apply cannot be blamed for viz-only drift.
+    try {
+      const areas = (tb.areas || []).map((a) => ({
+        id: a.id,
+        name: a.name || '',
+        nodes: (a.nodes || [])
+          .filter((n) => n && !n.displayContext && n.plcOwned !== false)
+          .map((n) => ({
+            id: n.id,
+            kind: n.kind,
+            tag: (n.conveyorTag || '').trim(),
+            downstream: (n.downstream || '').trim(),
+            terminal: !!n.terminal,
+            safetyZone: n.safetyZone || '',
+          }))
+          .sort((x, y) => String(x.id).localeCompare(String(y.id))),
+        wires: (a.wires || [])
+          .map((w) => ({ from: w.from, to: w.to, toPort: w.toPort || 'in' }))
+          .sort((x, y) => `${x.from}|${x.to}|${x.toPort}`.localeCompare(`${y.from}|${y.to}|${y.toPort}`)),
+      })).sort((x, y) => String(x.id).localeCompare(String(y.id)));
+      const raw = JSON.stringify(areas);
+      let h = 0;
+      for (let i = 0; i < raw.length; i += 1) {
+        h = ((h << 5) - h) + raw.charCodeAt(i);
+        h |= 0;
+      }
+      return `h${(h >>> 0).toString(16)}:${areas.length}:${raw.length}`;
+    } catch (_) {
+      return 'h0';
+    }
+  }
+
   function save() {
     try {
       localStorage.setItem(
@@ -388,8 +422,13 @@
         })
       );
     } catch (_) { /* ignore */ }
-    // After a successful Apply, any canvas edit requires re-Apply
-    if (tb.workflow?.apply && typeof window.markAutogenReadinessDirty === 'function') {
+    // After a successful Apply, any canvas edit requires re-Apply —
+    // but never mark dirty while Apply itself is in progress (persistence guard).
+    if (
+      tb.workflow?.apply
+      && !tb.applyingAutogen
+      && typeof window.markAutogenReadinessDirty === 'function'
+    ) {
       try { window.markAutogenReadinessDirty('transport'); } catch (_) { /* ignore */ }
     }
   }
@@ -989,7 +1028,113 @@
         </tr>`);
       });
     });
-    body.innerHTML = rows.join('') || `<tr><td colspan="11" class="text-slate-600">No conveyors yet</td></tr>`;
+    // Always exactly one blank Add Conveyor row (never enters Apply graph)
+    const curArea = activeArea();
+    const addAreaOpts = (tb.areas || [])
+      .map((a) => `<option value="${escapeHtml(a.id)}" ${curArea && a.id === curArea.id ? 'selected' : ''}>${escapeHtml(a.name)}</option>`)
+      .join('');
+    rows.push(`<tr id="tb-topo-add-row" class="tb-topo-add-row" data-topo-add="1">
+      <td>
+        <input id="tb-topo-add-tag" type="text" placeholder="Add conveyor…" autocomplete="off" spellcheck="false"
+          class="w-full bg-slate-950 border border-fuchsia-900/50 rounded px-1.5 py-1 text-[10px] mono text-cyan-200"
+          style="-webkit-app-region:no-drag" />
+      </td>
+      <td>
+        <select id="tb-topo-add-area" class="bg-slate-950 border border-slate-700 rounded px-1 text-[10px] text-slate-200 max-w-[8.5rem]">
+          ${addAreaOpts || '<option value="">— create Area first —</option>'}
+        </select>
+      </td>
+      <td class="text-slate-600">—</td>
+      <td>
+        <input id="tb-topo-add-ds" type="text" placeholder="Downstream (opt)"
+          class="w-full bg-slate-950 border border-slate-700 rounded px-1.5 py-1 text-[10px] mono text-slate-300"
+          style="-webkit-app-region:no-drag" />
+      </td>
+      <td class="text-slate-600">Straight</td>
+      <td class="text-slate-600" colspan="5">—</td>
+      <td>
+        <button type="button" id="tb-topo-add-btn" class="btn-ghost text-[10px] px-2 py-0.5 rounded border border-fuchsia-700/60 text-fuchsia-200" title="Add conveyor to Area + canvas">+</button>
+      </td>
+    </tr>`);
+    body.innerHTML = rows.join('');
+
+    const commitAddConveyor = () => {
+      const tagInput = $('tb-topo-add-tag');
+      const areaSel = $('tb-topo-add-area');
+      const dsInput = $('tb-topo-add-ds');
+      const raw = String(tagInput?.value || '').trim();
+      if (!raw) {
+        status('Enter a conveyor tag (e.g. P100)');
+        return;
+      }
+      // Validate: P### / sectioned P###_P# or known RUN inventory tag
+      const okTag = /^P\d+[A-Z0-9_]*$/i.test(raw)
+        || (typeof runInventory === 'function' && (runInventory()?.conveyors || []).some(
+          (c) => String(c).trim().toUpperCase() === raw.toUpperCase()
+        ));
+      if (!okTag) {
+        status(`Invalid conveyor tag “${raw}” — use P### (sections like P136_P1 OK)`);
+        return;
+      }
+      ensureArea();
+      let area = (tb.areas || []).find((a) => a.id === (areaSel?.value || '')) || activeArea();
+      if (!area) {
+        status('Create an Area first');
+        return;
+      }
+      // Reject duplicates across all areas
+      const want = raw.toUpperCase();
+      for (const a of tb.areas || []) {
+        if ((a.nodes || []).some((n) => isConv(n.kind) && String(n.conveyorTag || '').trim().toUpperCase() === want)) {
+          status(`Conveyor ${raw} already on canvas (area “${a.name}”)`);
+          return;
+        }
+      }
+      const ds = String(dsInput?.value || '').trim();
+      // Place to the right of existing nodes in this area
+      const xs = (area.nodes || []).filter((n) => isConv(n.kind)).map((n) => Number(n.x) || 0);
+      const ys = (area.nodes || []).filter((n) => isConv(n.kind)).map((n) => Number(n.y) || 0);
+      const x = (xs.length ? Math.max(...xs) + 140 : 80);
+      const y = (ys.length ? ys.reduce((s, v) => s + v, 0) / ys.length : 120);
+      let node = null;
+      if (typeof window.__tbPass2CreateConv === 'function') {
+        node = window.__tbPass2CreateConv({ tag: raw, x, y, area });
+      } else {
+        // Fallback: addNode then bind tag
+        tb.activeAreaId = area.id;
+        addNode('conv_straight', x, y, null);
+        node = (area.nodes || [])[(area.nodes || []).length - 1];
+        if (node) {
+          node.conveyorTag = raw;
+          node.label = raw;
+        }
+      }
+      if (!node) {
+        status('Failed to create conveyor node');
+        return;
+      }
+      if (ds) {
+        node.downstream = ds;
+        try { setDownstream(node.id, ds, { skipMergePrompt: true }); } catch (_) { /* ignore */ }
+      }
+      tb.activeAreaId = area.id;
+      tb.selectedId = node.id;
+      tb.selectedIds = [node.id];
+      save();
+      render();
+      status(`Added ${raw} → area “${area.name}”`);
+    };
+    $('tb-topo-add-btn')?.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      ev.stopPropagation();
+      commitAddConveyor();
+    });
+    $('tb-topo-add-tag')?.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        commitAddConveyor();
+      }
+    });
 
     body.querySelectorAll('tr[data-topo-id]').forEach((tr) => {
       tr.addEventListener('click', (ev) => {
@@ -3688,11 +3833,26 @@
   }
 
   async function applyMergesToAutogenUi() {
-    ensurePlaceholderConveyorTags();
-    const graph = buildCanonicalApplyGraph();
-    status('Applying Transport → Autogen workbook (canonical topology only)…');
-    setWorkflowStep('apply');
+    // Persistence guard: engineer canvas is authoritative. Apply serializes only —
+    // never clear localStorage, never rebuild from RUN, never replace tb.areas.
+    const areasBefore = (tb.areas || []).map((a) => ({
+      id: a.id,
+      name: a.name,
+      n: (a.nodes || []).length,
+    }));
+    const hashBefore = canonicalTransportHash();
+    tb.applyingAutogen = true;
     try {
+      save(); // persist engineer edits before serialization
+      ensurePlaceholderConveyorTags();
+      const graph = buildCanonicalApplyGraph();
+      // Empty engineer Areas must still travel in the graph (even with 0 bound tags)
+      const graphAreaNames = (graph.areas || []).map((a) => (a.name || '').trim()).filter(Boolean);
+      if (areasBefore.length && graphAreaNames.length < areasBefore.filter((a) => a.name).length) {
+        status('Apply warning: canonical graph dropped an Area name — check unbound filters');
+      }
+      status('Applying Transport → Autogen workbook (canonical topology only)…');
+      setWorkflowStep('apply');
       let res;
       if (typeof window.applyTransportMergesToAutogen === 'function') {
         res = await window.applyTransportMergesToAutogen({ graph });
@@ -3709,6 +3869,21 @@
         status(`Apply failed: ${res?.error || 'unknown'}`);
         return;
       }
+      // Assert canvas was not mutated by Apply
+      const areasAfter = (tb.areas || []).map((a) => ({
+        id: a.id,
+        name: a.name,
+        n: (a.nodes || []).length,
+      }));
+      const hashAfter = canonicalTransportHash();
+      if (hashBefore !== hashAfter) {
+        status(`Apply persistence ERROR: Transport hash changed ${hashBefore} → ${hashAfter}`);
+        await showInfo(
+          'Apply persistence error',
+          `Transport canvas changed during Apply (should be impossible).\n`
+          + `Before: ${JSON.stringify(areasBefore)}\nAfter: ${JSON.stringify(areasAfter)}`
+        );
+      }
       tb.workflow.apply = true;
       if (typeof window.setAutogenReadinessApplied === 'function') {
         try {
@@ -3720,12 +3895,8 @@
       }
       setWorkflowStep('build', { done: true });
       $('tb-goto-build-plc')?.classList.remove('hidden');
+      save(); // persist workflow.apply without dirtying hub
       const areas = (res.areas_applied || []).join(', ') || '(none)';
-      const warn = [
-        ...(res.area_warnings || []),
-        'Presentation / geometry-debug state was NOT applied.',
-        'Replace any placeholder tags with real P### before Generate if needed.',
-      ].join('\n');
       const go = await askYesNo(
         'Applied to Autogen',
         `${res.summary || 'Transport applied to workbook.'}\n\n`
@@ -3734,7 +3905,7 @@
           + 'Next step: Build PLC (Export L5X Package) on the PLC Autogen tab.\n\n'
           + 'Open PLC Autogen now?'
       );
-      status(`Applied → Autogen — ${go ? 'opening Build PLC' : 'ready for Build PLC'}`);
+      status(`Applied → Autogen — ${go ? 'opening Build PLC' : 'ready for Build PLC'} · hash ${hashAfter}`);
       if (go) {
         try {
           if (typeof window.activateTab === 'function') window.activateTab('autogen');
@@ -3753,6 +3924,8 @@
     } catch (err) {
       await showInfo('Apply error', String(err?.message || err));
       status(`Apply error: ${err?.message || err}`);
+    } finally {
+      tb.applyingAutogen = false;
     }
   }
 
@@ -4562,6 +4735,7 @@
     schematicPathD,
     buildCanonicalApplyGraph,
     applyMergesToAutogenUi,
+    canonicalTransportHash,
     setWorkflowStep,
     computePresentationOffsets,
     normalizeControlPanel,

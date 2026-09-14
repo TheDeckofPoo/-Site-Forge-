@@ -590,6 +590,9 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         if key and key in tag_area:
             kept_rows.append(row)
             continue
+        # Narrow restore: ONLY explicit Transport-owned stubs/rows may be removed
+        # or restored. Never treat "main_area in graph_area_set" alone as cleared —
+        # that wiped engineer Areas when Apply under-reported bound tags.
         is_stub = (
             row.get("source") == "transport_build_graph"
             or (row.get("transport_build") and row.get("source") != "run")
@@ -597,7 +600,6 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         was_transport = bool(
             row.get("transport_build")
             or row.get("source") == "transport_build_graph"
-            or (row.get("main_area") or "").strip() in graph_area_set
         )
         if not was_transport:
             kept_rows.append(row)
@@ -618,6 +620,28 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
     for i, row in enumerate(wb["conveyors"], start=1):
         row["number"] = i
     _rebuild_workbook_areas(wb)
+    # Re-ensure every engineer graph Area survives even with 0 bound conveyors
+    existing_area_names = {
+        str(a.get("name") or "").strip()
+        for a in (wb.get("areas") or [])
+        if a.get("name")
+    }
+    for area in graph.get("areas") or []:
+        aname = (area.get("name") or "").strip()
+        if not aname or aname in existing_area_names:
+            continue
+        wb.setdefault("areas", []).append({
+            "name": aname,
+            "safety_zone": _safety_for_area(aname),
+            "conveyor_count": 0,
+        })
+        existing_area_names.add(aname)
+        opts = wb.get("options") if isinstance(wb.get("options"), dict) else {}
+        area_opts = list(opts.get("areas") or [])
+        if aname not in area_opts:
+            area_opts.append(aname)
+        opts["areas"] = area_opts
+        wb["options"] = opts
 
     area_names = [a.get("name") for a in (wb.get("areas") or []) if a.get("name")]
     return {

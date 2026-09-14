@@ -983,21 +983,6 @@
           <div id="autogen-stats" class="grid grid-cols-4 gap-2 mt-2 hidden"></div>
           <div id="autogen-wb-type-bar" class="flex flex-wrap gap-1.5 mt-2 hidden"></div>
           <div class="flex flex-wrap gap-2 mt-2 items-center">
-            <select id="autogen-wb-bulk-type" class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-slate-300 max-w-[11rem]">
-              <option value="">Bulk TYPE…</option>
-              <option>Transport with MS</option>
-              <option>Accumulation with MS</option>
-              <option>Transport with VFD</option>
-              <option>Accumulation with VFD</option>
-              <option>Transport with MDR</option>
-              <option>Accumulation with MDR</option>
-              <option>Gravity</option>
-            </select>
-            <button id="btn-autogen-wb-apply-type" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Apply TYPE</button>
-            <select id="autogen-wb-bulk-area" class="bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] text-slate-300 max-w-[10rem]">
-              <option value="">Bulk area…</option>
-            </select>
-            <button id="btn-autogen-wb-apply-area" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px]">Apply area</button>
             <button id="btn-autogen-open-out" type="button" class="btn-ghost px-2 py-1 rounded-lg text-[10px] ml-auto" disabled title="Open exports/current (authoritative engineer L5X folder)">
               <i class="fa-solid fa-folder-open mr-1"></i>Open Output Folder
             </button>
@@ -2570,65 +2555,14 @@
         <button type="button" data-tb-ctx="delete" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-red-400">Delete</button>
       </div>
       <div class="flex-1 min-h-0 flex">
-        <!-- Palette -->
-        <aside class="w-[220px] shrink-0 border-r border-slate-800 bg-[#0d141c] flex flex-col min-h-0">
-          <div class="px-3 py-2 text-[10px] uppercase tracking-widest text-slate-500 border-b border-slate-800">Palette</div>
+        <!-- Left rail: RUN inventory + validation (device palette removed — topology-first) -->
+        <aside class="w-[200px] shrink-0 border-r border-slate-800 bg-[#0d141c] flex flex-col min-h-0">
+          <div class="px-3 py-2 text-[10px] uppercase tracking-widest text-slate-500 border-b border-slate-800">Topology tools</div>
           <div class="flex-1 overflow-y-auto p-2 space-y-3">
-            <div>
-              <div class="text-[10px] text-fuchsia-400/80 font-semibold mb-1.5 px-1">Conveyor</div>
-              <div class="space-y-1.5">
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="conv_straight" data-tb-label="Straight">
-                  <span class="w-8 h-8 rounded-md bg-sky-950/80 border border-sky-800/60 flex items-center justify-center text-sky-300"><i class="fa-solid fa-minus"></i></span>
-                  <div><div class="text-xs text-slate-200">Straight</div><div class="text-[9px] text-slate-500">Entrance → Exit</div></div>
-                </div>
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="conv_right" data-tb-label="90° Right">
-                  <span class="w-8 h-8 rounded-md bg-sky-950/80 border border-sky-800/60 flex items-center justify-center text-sky-300"><i class="fa-solid fa-arrow-turn-up fa-rotate-90"></i></span>
-                  <div><div class="text-xs text-slate-200">90° Right</div><div class="text-[9px] text-slate-500">Curve R</div></div>
-                </div>
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="conv_left" data-tb-label="90° Left">
-                  <span class="w-8 h-8 rounded-md bg-sky-950/80 border border-sky-800/60 flex items-center justify-center text-sky-300"><i class="fa-solid fa-arrow-turn-down fa-rotate-270"></i></span>
-                  <div><div class="text-xs text-slate-200">90° Left</div><div class="text-[9px] text-slate-500">Curve L</div></div>
-                </div>
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-orange-800/50" draggable="true" data-tb-kind="conv_merge" data-tb-label="Merge">
-                  <span class="w-8 h-8 rounded-md bg-orange-950/80 border border-orange-800/60 flex items-center justify-center text-orange-300"><i class="fa-solid fa-code-merge"></i></span>
-                  <div><div class="text-xs text-slate-200">Merge</div><div class="text-[9px] text-slate-500">2:1 / 3:1 lanes</div></div>
-                </div>
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-teal-800/50" draggable="true" data-tb-kind="conv_spiral" data-tb-label="Spiral">
-                  <span class="w-8 h-8 rounded-md bg-teal-950/80 border border-teal-800/60 flex items-center justify-center text-teal-300"><i class="fa-solid fa-dharmachakra"></i></span>
-                  <div><div class="text-xs text-slate-200">Spiral</div><div class="text-[9px] text-slate-500">1–6 motors</div></div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <div class="text-[10px] text-amber-400/80 font-semibold mb-1.5 px-1">Devices</div>
-              <div class="space-y-1.5">
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="motor" data-tb-label="Motor">
-                  <span class="w-8 h-8 rounded-md bg-amber-950/70 border border-amber-800/50 flex items-center justify-center" data-tb-ico="motor"></span>
-                  <div class="text-xs text-slate-200">Motor</div>
-                </div>
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="estop" data-tb-label="E-Stop">
-                  <span class="w-8 h-8 rounded-md bg-red-950/70 border border-red-800/50 flex items-center justify-center" data-tb-ico="estop"></span>
-                  <div class="text-xs text-slate-200">E-Stop</div>
-                </div>
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="pws" data-tb-label="Power Supply">
-                  <span class="w-8 h-8 rounded-md bg-yellow-950/70 border border-yellow-800/50 flex items-center justify-center text-yellow-300"><i class="fa-solid fa-bolt"></i></span>
-                  <div class="text-xs text-slate-200">Power Supply</div>
-                </div>
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="encoder" data-tb-label="Encoder">
-                  <span class="w-8 h-8 rounded-md bg-violet-950/70 border border-violet-800/50 flex items-center justify-center" data-tb-ico="encoder"></span>
-                  <div class="text-xs text-slate-200">Encoder</div>
-                </div>
-                <div class="tb-palette-item flex items-center gap-2 px-2 py-2 rounded-lg border border-slate-700/80" draggable="true" data-tb-kind="photoeye" data-tb-label="Photoeye">
-                  <span class="w-8 h-8 rounded-md bg-emerald-950/70 border border-emerald-800/50 flex items-center justify-center" data-tb-ico="photoeye"></span>
-                  <div class="text-xs text-slate-200">Photoeye</div>
-                </div>
-              </div>
-            </div>
-            <p class="text-[9px] text-slate-600 leading-relaxed px-1 pt-2 border-t border-slate-800/80">
-              Prefer <strong class="text-rose-300">Connect</strong> or <strong class="text-fuchsia-300">Auto Connect New</strong> for topology.
-              Port-drag remains for advanced merge lanes. Devices: drop onto a conveyor or Attach in inspector.
+            <p class="text-[9px] text-slate-600 leading-relaxed px-1">
+              Add conveyors in the <strong class="text-fuchsia-300">Topology table</strong> blank row.
+              Devices (motor / PE / encoder / ES / PWS) attach via the inspector.
             </p>
-            <!-- RUN inventory — active build palette -->
             <div class="border-t border-slate-800/80 pt-2 mt-1">
               <div class="text-[10px] text-emerald-400/80 font-semibold mb-1 px-1">RUN inventory</div>
               <div id="tb-inv-summary" class="text-[9px] text-slate-500 px-1 space-y-0.5 mono leading-relaxed">
@@ -2640,7 +2574,6 @@
               <div id="tb-inv-list" class="mt-1 max-h-52 overflow-y-auto px-1 space-y-0.5"></div>
               <p class="text-[9px] text-slate-600 px-1 mt-1 leading-relaxed">Double-click unplaced while a conveyor is selected to Continue Run.</p>
             </div>
-            <!-- Live validation -->
             <div class="border-t border-slate-800/80 pt-2 mt-2">
               <div class="text-[10px] text-amber-400/80 font-semibold mb-1 px-1">Validation</div>
               <div id="tb-validation" class="text-[9px] px-1 space-y-0.5 max-h-36 overflow-y-auto leading-relaxed">
@@ -2655,8 +2588,8 @@
           <div id="tb-canvas-empty" class="absolute inset-0 z-10 flex items-center justify-center pointer-events-none">
             <div class="text-center text-slate-600 max-w-sm px-6">
               <i class="fa-solid fa-vector-square text-3xl mb-3 text-slate-700"></i>
-              <div class="text-sm text-slate-500 mb-1">Create or select an area, then drag a conveyor onto the grid</div>
-              <div class="text-[11px] text-slate-600">Use Connect or Auto Connect New for fast PDF topology authoring</div>
+              <div class="text-sm text-slate-500 mb-1">Auto Build from RUN, or add conveyors in the Topology table</div>
+              <div class="text-[11px] text-slate-600">Use Connect for topology · inspector for devices</div>
             </div>
           </div>
           <div id="tb-canvas" class="tb-grid flex-1 min-h-0 relative overflow-auto">

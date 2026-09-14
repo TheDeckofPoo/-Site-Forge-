@@ -274,6 +274,8 @@
       terminal: false,
       asMerge: false,
       safetyZone: safetyZone || ctx.safetyZone || '',
+      plcOwned: true,
+      scopeClass: 'LOCAL',
     };
     // Prefill motor only if known from workbook
     const motor = tag ? knownMotorForConveyor(tag) : '';
@@ -289,6 +291,8 @@
     (area.nodes || (area.nodes = [])).push(node);
     return node;
   }
+  // Expose for topology blank-row Add Conveyor (no palette drag required)
+  window.__tbPass2CreateConv = createConvNode;
 
   function findOrCreateInContext(tag, index, total) {
     const { tb, findNodeByTag, moveNodeToArea } = A();

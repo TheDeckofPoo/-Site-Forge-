@@ -3026,10 +3026,12 @@ def _build_sys_comm_program_xml(
             _ensure_aoi_comm(aoi_tag)
             info_read = "DeviceInfo_Read" if parent is None else "0"
             reset_arg = f"{reset_udt}.Reset"
-            # Only emit live AOI call when backing AOI tag was successfully cloned
+            # Only emit live AOI call when backing AOI tag was successfully cloned.
+            # Arg order: AOI, UpStrm Comm_UDT, Comm_UDT, MODULE, …
+            # 4th arg must be the module name (dsafe), never *_Comm Comm_UDT.
             if safe_emit and aoi_tag in seen_tag_names and comm_tag in seen_tag_names:
                 text = (
-                    f"AOI_CommDiag({aoi_tag},{parent_arg},{comm_tag},{comm_tag},"
+                    f"AOI_CommDiag({aoi_tag},{parent_arg},{comm_tag},{dsafe},"
                     f"GET_Firmware,GET_MACID,MACID_Bytes,Firmware_Bytes,{info_read},"
                     f"{reset_arg},CommsDiag_Group{g}.Index);"
                 )
@@ -3415,10 +3417,29 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "Type2",
     ):
         _ensure_library_tag(lib_tag, fallback_bool=(lib_tag in ("HMI_StatsClear",)))
-    # NO_PS (PS_UDT) — used by Slow_Flt; Studio requires StructureMember form.
+    # NO_PS (PS_UDT) — used by Slow_Flt; members must match PS_UDT (I/Flt/PS_FltTime).
+    # Never emit O_Reset — that member is not in PS_UDT and fails Studio import.
     if "NO_PS" not in seen_tag_names:
         ps_block = extract_tag_block(library_text, "NO_PS")
-        if ps_block and "<StructureMember" in ps_block:
+        if not ps_block:
+            # Clone a known-good PS_UDT Decorated blob from IO_MAP program pack
+            _iomap_ps = PROGRAM_LIBRARY_DIR / "IO_MAP_Program.L5X"
+            if _iomap_ps.is_file():
+                try:
+                    _iomap_txt = _iomap_ps.read_text(encoding="utf-8", errors="replace")
+                except Exception:
+                    _iomap_txt = ""
+                for _cand in ("EZPWS442", "EZPWS530", "EZPWS536"):
+                    ps_block = extract_tag_block(_iomap_txt, _cand)
+                    if ps_block and 'DataType="PS_UDT"' in ps_block:
+                        ps_block = re.sub(
+                            r'Tag Name="[^"]+"',
+                            'Tag Name="NO_PS"',
+                            ps_block,
+                            count=1,
+                        )
+                        break
+        if ps_block and ("<StructureMember" in ps_block or "<Structure DataType=\"PS_UDT\"" in ps_block):
             # Prefer Decorated StructureMember; L5K alone is rejected by Studio.
             ps_block = re.sub(
                 r'<Data Format="L5K">.*?</Data>\s*',
@@ -3427,8 +3448,15 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 count=1,
                 flags=re.S,
             )
+            # Scrub any illegal top-level PS_UDT members (historical O_Reset fallback)
+            ps_block = re.sub(
+                r'<DataValueMember Name="O_Reset"[^/]*/>\s*',
+                "",
+                ps_block,
+            )
             _add_tag_block(ps_block)
         else:
+            # Correct PS_UDT shape: I (PS_I), Flt (PS_Fault), PS_FltTime (INT)
             _add_tag_block(
                 '<Tag Name="NO_PS" TagType="Base" DataType="PS_UDT" Constant="false" '
                 'ExternalAccess="Read/Write">'
@@ -3446,7 +3474,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 '</StructureMember>'
                 '<DataValueMember Name="PS_Flt" DataType="BOOL" Value="0"/>'
                 '</StructureMember>'
-                '<DataValueMember Name="O_Reset" DataType="BOOL" Value="0"/>'
+                '<DataValueMember Name="PS_FltTime" DataType="INT" Radix="Decimal" Value="0"/>'
                 '</Structure></Data></Tag>'
             )
 
@@ -5542,6 +5570,40 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 continue
             scrubbed.append(blk)
         all_tags = scrubbed
+
+    # SNTP_MSG_* cookie-cutter tags ship with ConnectionPath="PLC2_ENET1".
+    # Rewrite to the proven Ethernet module actually emitted (e.g. CPXXENET1).
+    # Never guess — if no proven ENET module, set a build blocker.
+    studio_blockers: list[str] = []
+    _proven_enet = ""
+    if enet_mod and enet_parent and enet_parent in _module_names:
+        _proven_enet = enet_parent
+    elif enet_mod and enet_parent:
+        # Module XML present but name scrape missed it — still trust enet_parent
+        _proven_enet = enet_parent
+    _sntp_msg_tags = [
+        blk
+        for blk in all_tags
+        if re.search(r'<Tag[^>]*\bName="SNTP_MSG_', blk)
+    ]
+    if _sntp_msg_tags:
+        if _proven_enet:
+            rewritten_tags: list[str] = []
+            for blk in all_tags:
+                if re.search(r'<Tag[^>]*\bName="SNTP_MSG_', blk):
+                    blk = re.sub(
+                        r'ConnectionPath="[^"]*"',
+                        f'ConnectionPath="{_xml_escape(_proven_enet)}"',
+                        blk,
+                    )
+                rewritten_tags.append(blk)
+            all_tags = rewritten_tags
+        else:
+            studio_blockers.append(
+                "BUILD FAILED: SNTP_MSG_* tags need ConnectionPath to a proven "
+                "Ethernet module, but no Ethernet module was emitted"
+            )
+
     tags_block = "<Tags>\n" + "".join(all_tags) + "\n</Tags>"
     programs_block = "<Programs>\n" + "".join(programs_xml) + "\n</Programs>"
     tasks_block = '<Tasks>\n'
@@ -5714,6 +5776,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         ),
         l5x_text=l5x,
     )
+    # Studio import blockers (e.g. SNTP ConnectionPath without proven ENET)
+    if studio_blockers:
+        assertion_failures = list(assertion_failures) + list(studio_blockers)
+    report["studio_blockers"] = list(studio_blockers)
+    report["sntp_connection_path"] = _proven_enet or None
     report["generation_assertions"] = {
         "ok": not assertion_failures,
         "failures": assertion_failures,
@@ -6737,6 +6804,67 @@ def generate(
             "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
             "l5x_filename": l5x_basename,
             "error": str(integrity_failures[0]),
+            "report": report,
+        }
+
+    # Studio static preflight — block build on ERROR (NO_PS, SNTP path, dup OTE, …)
+    try:
+        from fortna_studio_preflight import preflight_l5x as _preflight_l5x
+
+        preflight_report = _preflight_l5x(l5x_path)
+    except Exception as exc:
+        preflight_report = {
+            "ok": False,
+            "issues": [
+                {
+                    "severity": "ERROR",
+                    "kind": "preflight_exception",
+                    "message": f"Studio preflight failed to run: {exc}",
+                }
+            ],
+        }
+    report["studio_preflight"] = {
+        "ok": bool(preflight_report.get("ok")),
+        "counts": preflight_report.get("counts") or {},
+        "issues": preflight_report.get("issues") or [],
+    }
+    if not preflight_report.get("ok"):
+        pf_errors = [
+            i.get("message") or i.get("kind") or "preflight error"
+            for i in (preflight_report.get("issues") or [])
+            if (i.get("severity") or "").upper() == "ERROR"
+        ]
+        err = pf_errors[0] if pf_errors else "BUILD FAILED: Studio preflight reported errors"
+        report["ok"] = False
+        report["build_failed"] = True
+        report["error"] = str(err)
+        assertion = dict(report.get("generation_assertions") or {})
+        assertion["ok"] = False
+        assertion["failures"] = list(assertion.get("failures") or []) + [
+            f"PREFLIGHT: {e}" for e in pf_errors
+        ]
+        report["generation_assertions"] = assertion
+        try:
+            (diag_dir / "autogen_report.json").write_text(
+                json.dumps(report, indent=2), encoding="utf-8"
+            )
+            (diag_dir / "studio_preflight.json").write_text(
+                json.dumps(preflight_report, indent=2), encoding="utf-8"
+            )
+        except Exception:
+            pass
+        _emit_progress(str(err), 100)
+        return {
+            "ok": False,
+            "engine": "python",
+            "export_name": result_export_name,
+            "source_label": archive_stem,
+            "out_dir": str(engineer_export_dir),
+            "diagnostics_dir": str(diag_dir),
+            "build_id": build_id,
+            "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
+            "l5x_filename": l5x_basename,
+            "error": str(err),
             "report": report,
         }
 
