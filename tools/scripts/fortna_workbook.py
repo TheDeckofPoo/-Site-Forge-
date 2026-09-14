@@ -538,6 +538,12 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
             ):
                 _add_zone(f"{base}_ESZone1")
         inp.safety_zones = zones
+    # Engineer Safety Zone membership IR for ES program emit
+    sb = workbook.get("safety_build")
+    if isinstance(sb, dict):
+        inp.safety_build = sb
+        if isinstance(sb.get("zones"), list):
+            inp.safety_zone_members = list(sb.get("zones") or [])
     if workbook.get("project_name"):
         inp.project_name = str(workbook["project_name"])
     if workbook.get("processor"):

@@ -359,6 +359,10 @@ function createWindow() {
       const r = await runPythonAsync([APPLY_SCRIPT, 'import', archivePath]);
       if (!r.ok) return { success: false, message: r.error };
       const meta = JSON.parse(r.stdout);
+      // New RUN → wipe prior-project Hardware I/O engineer overrides (isolation)
+      try {
+        await runPythonAsync([HARDWARE_IO_SCRIPT, '--clear-overrides']);
+      } catch (_) { /* ignore */ }
       // Unified RUN discovery (SiteModel) — automatic; no separate Discover buttons.
       // Failure here must not fail the import itself.
       let discovery = null;
@@ -490,6 +494,11 @@ function createWindow() {
     clearDir(path.join(REPO_ROOT, 'workspace', 'active_work'));
     try {
       if (fs.existsSync(ACTIVE_META)) fs.unlinkSync(ACTIVE_META);
+    } catch (_) { /* ignore */ }
+    // Project-scoped Hardware I/O engineer overrides
+    try {
+      const ov = path.join(REPO_ROOT, 'workspace', 'hardware_io_overrides.json');
+      if (fs.existsSync(ov)) fs.unlinkSync(ov);
     } catch (_) { /* ignore */ }
   }
 
@@ -656,6 +665,52 @@ function createWindow() {
       const data = JSON.parse(r.stdout);
       if (!data.ok) return { success: false, message: data.error || 'Failed to load Hardware I/O model' };
       return { success: true, ...data };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
+  });
+
+  // Persist engineer channel name / Generate (mute) override
+  ipcMain.handle('save-hardware-io-channel', async (_event, data) => {
+    try {
+      const addr = String(data?.address || data?.physical_address || '').trim();
+      if (!addr) return { success: false, message: 'physical address required' };
+      const args = [HARDWARE_IO_SCRIPT, '--save-override', '--address', addr];
+      if (data && Object.prototype.hasOwnProperty.call(data, 'name')) {
+        args.push('--name', String(data.name ?? ''));
+      }
+      if (data?.sourceName) args.push('--source-name', String(data.sourceName));
+      if (data && Object.prototype.hasOwnProperty.call(data, 'generate')) {
+        args.push('--generate', data.generate ? 'true' : 'false');
+      }
+      if (data?.projectIdentity) {
+        args.push('--project-identity', JSON.stringify(data.projectIdentity));
+      }
+      const r = await runPythonAsync(args);
+      let parsed = {};
+      try { parsed = JSON.parse(r.stdout || r.error || '{}'); } catch (_) { /* ignore */ }
+      if (!r.ok || parsed.ok === false) {
+        return { success: false, message: parsed.error || r.error || 'Save override failed' };
+      }
+      return { success: true, ...parsed };
+    } catch (e) {
+      return { success: false, message: e.message };
+    }
+  });
+
+  ipcMain.handle('clear-hardware-io-overrides', async (_event, data) => {
+    try {
+      const args = [HARDWARE_IO_SCRIPT, '--clear-overrides'];
+      if (data?.projectIdentity) {
+        args.push('--project-identity', JSON.stringify(data.projectIdentity));
+      }
+      const r = await runPythonAsync(args);
+      let parsed = {};
+      try { parsed = JSON.parse(r.stdout || '{}'); } catch (_) { /* ignore */ }
+      if (!r.ok && parsed.ok === false) {
+        return { success: false, message: parsed.error || r.error || 'Clear failed' };
+      }
+      return { success: true, cleared: true };
     } catch (e) {
       return { success: false, message: e.message };
     }

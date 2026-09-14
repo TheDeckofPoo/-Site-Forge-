@@ -17,6 +17,10 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
+from fortna_hardware_io_overrides import (  # noqa: E402
+    apply_overrides_to_hardware_model,
+    load_overrides,
+)
 from fortna_io_extract import extract_io_points, read_project_meta  # noqa: E402
 from fortna_physical_word_resolver import PhysicalWordResolver  # noqa: E402
 
@@ -210,7 +214,7 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
         elif panel:
             adapters_by_panel.setdefault(panel, []).append(adapter_tree)
 
-    return {
+    model = {
         "ok": True,
         "controller": {
             "machine": pm.get("machine") or mach,
@@ -234,6 +238,12 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             "panel_order": panel_order,
         },
     }
+    # Engineer overrides (name / Generate) — do not wipe RUN evidence
+    try:
+        apply_overrides_to_hardware_model(model, load_overrides())
+    except Exception:
+        pass
+    return model
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -241,7 +251,75 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--run-dir", type=Path, default=None)
     ap.add_argument("--machine", default="")
     ap.add_argument("--out", type=Path, default=None)
+    ap.add_argument(
+        "--save-override",
+        action="store_true",
+        help="Upsert one channel override from --address / --name / --generate",
+    )
+    ap.add_argument("--address", default="", help="physical_address for --save-override")
+    ap.add_argument("--name", default=None, help="engineer logical name (empty clears)")
+    ap.add_argument("--source-name", default="", help="RUN-discovered source name")
+    ap.add_argument("--generate", default=None, help="true/false — include in IO_MAP")
+    ap.add_argument("--clear-overrides", action="store_true", help="Wipe engineer overrides")
+    ap.add_argument("--project-identity", default="", help="JSON identity stamp")
     args = ap.parse_args(argv)
+
+    if args.clear_overrides:
+        from fortna_hardware_io_overrides import clear_overrides, empty_overrides, save_overrides
+
+        clear_overrides()
+        ident = {}
+        if args.project_identity:
+            try:
+                ident = json.loads(args.project_identity)
+            except Exception:
+                ident = {}
+        save_overrides(empty_overrides(ident))
+        print(json.dumps({"ok": True, "cleared": True}))
+        return 0
+
+    if args.save_override:
+        from fortna_hardware_io_overrides import (
+            load_overrides,
+            save_overrides,
+            upsert_channel_override,
+            validate_logical_name,
+        )
+
+        ov = load_overrides()
+        if args.project_identity:
+            try:
+                ov["projectIdentity"] = json.loads(args.project_identity)
+            except Exception:
+                pass
+        gen = None
+        if args.generate is not None and str(args.generate).strip() != "":
+            gen = str(args.generate).strip().lower() in ("1", "true", "yes", "y")
+        name = args.name
+        clear_eng = False
+        if name is not None:
+            ok, err = validate_logical_name(name)
+            if not ok:
+                print(json.dumps({"ok": False, "error": err}))
+                return 1
+            if not str(name).strip():
+                clear_eng = True
+                name = ""
+        try:
+            cur = upsert_channel_override(
+                ov,
+                physical_address=args.address,
+                source_name=args.source_name or "",
+                engineer_name=None if clear_eng else name,
+                generate=gen,
+                clear_engineer=clear_eng,
+            )
+            save_overrides(ov)
+            print(json.dumps({"ok": True, "override": cur, "address": args.address}))
+            return 0
+        except Exception as e:
+            print(json.dumps({"ok": False, "error": str(e)}))
+            return 1
 
     run_dir = args.run_dir
     if run_dir is None:

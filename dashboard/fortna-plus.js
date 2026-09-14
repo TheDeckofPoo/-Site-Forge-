@@ -94,12 +94,27 @@ function ensureAutogenReadiness() {
       sawtooth: emptyReadinessEntry(),
       sorter: emptyReadinessEntry(),
       system: emptyReadinessEntry(),
+      safety: emptyReadinessEntry(),
     };
   }
-  ['hardware', 'transport', 'sawtooth', 'sorter', 'system'].forEach((k) => {
+  ['hardware', 'transport', 'sawtooth', 'sorter', 'system', 'safety'].forEach((k) => {
     if (!autogenState.readiness[k]) autogenState.readiness[k] = emptyReadinessEntry();
   });
   return autogenState.readiness;
+}
+
+function safetyEvidence() {
+  const wb = autogenState.workbook || {};
+  const build = wb.safety_build || autogenState.safety_build || {};
+  const zones = Array.isArray(build.zones) ? build.zones : [];
+  const withMembers = zones.filter((z) => z && (z.members || []).length);
+  const last = autogenState.lastEsReport || null;
+  return {
+    detected: withMembers.length > 0 || (last && last.status && last.status !== 'NOT_DETECTED'),
+    zones: withMembers.length || (last?.zones?.length || 0),
+    members: withMembers.reduce((n, z) => n + ((z.members || []).length), 0),
+    last,
+  };
 }
 
 function formatAppliedAt(iso) {
@@ -342,6 +357,31 @@ function computeCompileHubReadiness() {
     nowDetail.system = e;
   }
 
+  // Safety / ES Program — only blocks when detected/configured but incomplete
+  {
+    const ev = safetyEvidence();
+    const e = R.safety;
+    const last = ev.last;
+    if (last?.status === 'ERROR') {
+      e.status = 'ERROR';
+      e.unresolved = last.unresolved || 1;
+      e.detail = last.detail || 'ES program emit error';
+    } else if (!ev.detected) {
+      e.status = 'NOT_DETECTED';
+      e.unresolved = 0;
+      e.detail = 'No Safety Zone membership (proven or engineer-assigned)';
+    } else if (last?.status === 'READY' || (ev.zones > 0 && ev.members > 0 && e.appliedAt && !e.dirty)) {
+      e.status = 'READY';
+      e.detail = last?.detail || `${ev.zones} zone(s) · ${ev.members} member(s)`;
+    } else {
+      e.status = 'REVIEW_REQUIRED';
+      e.unresolved = last?.unresolved || 1;
+      e.detail = last?.detail
+        || `${ev.zones} zone(s) need valid Area + members before ES emit`;
+    }
+    nowDetail.safety = e;
+  }
+
   return nowDetail;
 }
 
@@ -407,6 +447,7 @@ function refreshAutogenCompileHub() {
     ['transport', 'autogen-hub-transport', 'autogen-hub-transport-detail'],
     ['sawtooth', 'autogen-hub-sawtooth', 'autogen-hub-sawtooth-detail'],
     ['sorter', 'autogen-hub-sorter', 'autogen-hub-sorter-detail'],
+    ['safety', 'autogen-hub-safety', 'autogen-hub-safety-detail'],
     ['system', 'autogen-hub-system', 'autogen-hub-system-detail'],
   ], { buildFacing: false });
   // Ready For Build strip removed from I/O & Prints — Compile hub on Autogen only.
@@ -551,6 +592,12 @@ function autogenBuildPreflight() {
       tab: 'sorter',
       label: 'Sorter',
       required: sorterEvidence().detected && !sorterEvidence().notSupported,
+    },
+    {
+      key: 'safety',
+      tab: 'transport',
+      label: 'Safety / ES',
+      required: safetyEvidence().detected,
     },
   ];
   need.forEach((n) => {
@@ -1133,8 +1180,11 @@ function resetProjectScopedState({ reason = 'new RUN' } = {}) {
       sawtooth: emptyReadinessEntry(),
       sorter: emptyReadinessEntry(),
       system: emptyReadinessEntry(),
+      safety: emptyReadinessEntry(),
     };
     autogenState.lastGenerateIoMapError = null;
+    autogenState.lastEsReport = null;
+    autogenState.safety_build = null;
   } catch (_) { /* ignore */ }
 
   // Pack option checkboxes that were evidence-driven
@@ -1161,6 +1211,12 @@ function resetProjectScopedState({ reason = 'new RUN' } = {}) {
     try { localStorage.removeItem(k); } catch (_) { /* ignore */ }
   });
   try { state.projectIdentity = null; } catch (_) { /* ignore */ }
+  // Hardware I/O engineer overrides (name / Generate) — project-scoped
+  try {
+    if (typeof fortnaAPI?.clearHardwareIoOverrides === 'function') {
+      fortnaAPI.clearHardwareIoOverrides({});
+    }
+  } catch (_) { /* ignore */ }
 
   // Transport canvas (Areas, Safety Zones, topology, selection, viewport)
   try {
@@ -3745,16 +3801,134 @@ function renderHardwareRacks() {
   bindHwModuleClicks(tree);
 }
 
-/** Channel endpoint label: resolved name, SPARE, or truly unresolved. */
+/** Channel endpoint label: effective (engineer) name, RUN source, SPARE, or unresolved. */
 function hwChannelEndpointLabel(ch) {
-  if (!ch) return { text: 'SPARE', kind: 'spare' };
-  const name = ch.logical_endpoint?.name || '';
-  if (name) return { text: name, kind: 'ok' };
+  if (!ch) return { text: 'SPARE', kind: 'spare', source: '', engineer: '', generate: true };
+  const engineer = String(
+    ch.engineerName
+    || (ch.logical_endpoint?.engineer_override ? (ch.logical_endpoint?.name || '') : '')
+    || ''
+  ).trim();
+  const source = String(
+    ch.sourceName
+    || ch.logical_endpoint?.source_name
+    || (!engineer ? (ch.logical_endpoint?.name || '') : '')
+    || ''
+  ).trim();
+  const effective = String(
+    ch.effectiveName || engineer || source || ch.logical_endpoint?.name || ''
+  ).trim();
+  const generate = ch.generate !== false && !ch.muted;
+  if (effective) {
+    return {
+      text: effective,
+      kind: 'ok',
+      source,
+      engineer: engineer || '',
+      generate,
+      overridden: !!(engineer && engineer !== source),
+    };
+  }
   const truly = (typeof FlexRack !== 'undefined' && FlexRack.isTrulyUnresolved)
     ? FlexRack.isTrulyUnresolved(ch)
     : false;
-  if (truly) return { text: 'unresolved', kind: 'warn' };
-  return { text: 'SPARE', kind: 'spare' };
+  if (truly) return { text: 'unresolved', kind: 'warn', source: '', engineer: '', generate };
+  return { text: 'SPARE', kind: 'spare', source: '', engineer: '', generate };
+}
+
+function hwChannelPhysicalAddress(ad, mod, bit, ch) {
+  if (ch?.physical_address) return ch.physical_address;
+  const dir = (mod.direction || 'I').charAt(0).toUpperCase();
+  return `${ad.rio_name}:${dir}.Data[${mod.data_index ?? mod.slot ?? '?'}].${bit}`;
+}
+
+function hwChannelDirectionLabel(mod) {
+  const cat = mod.catalog || mod.type || '';
+  if (mod.direction === 'O' || /OA|OB|OW/i.test(cat)) return 'OUTPUT';
+  return 'INPUT';
+}
+
+async function saveHwChannelOverride({ address, name, sourceName, generate }) {
+  if (typeof fortnaAPI?.saveHardwareIoChannel !== 'function') {
+    log('saveHardwareIoChannel missing — relaunch Site Forge desktop app', 'err');
+    return { success: false, message: 'API missing' };
+  }
+  const payload = {
+    address,
+    projectIdentity: state.projectIdentity || null,
+  };
+  if (name !== undefined) payload.name = name;
+  if (sourceName) payload.sourceName = sourceName;
+  if (generate !== undefined) payload.generate = !!generate;
+  const res = await fortnaAPI.saveHardwareIoChannel(payload);
+  if (!res?.success) {
+    log(res?.message || 'Failed to save channel override', 'err');
+  }
+  return res;
+}
+
+/** Patch in-memory HardwareIOModel channel after a successful override save. */
+function patchHwChannelInModel(address, patch) {
+  const model = ioState.hardwareIo;
+  if (!model?.adapters || !address) return;
+  for (const ad of model.adapters) {
+    for (const mod of ad.modules || []) {
+      for (const ch of mod.channels || []) {
+        if (ch.physical_address === address) {
+          Object.assign(ch, patch);
+          if (patch.engineerName) {
+            ch.logical_endpoint = {
+              ...(ch.logical_endpoint || {}),
+              name: patch.engineerName,
+              source_name: patch.sourceName || ch.sourceName || '',
+              engineer_override: true,
+            };
+            ch.effectiveName = patch.engineerName;
+          } else if (patch.engineerName === '' || patch.engineerName === null) {
+            const src = patch.sourceName || ch.sourceName || '';
+            ch.engineerName = null;
+            ch.effectiveName = src || null;
+            if (ch.logical_endpoint) {
+              ch.logical_endpoint = {
+                ...ch.logical_endpoint,
+                name: src || ch.logical_endpoint.source_name || '',
+                engineer_override: false,
+              };
+            }
+          }
+          if (patch.generate !== undefined) {
+            ch.generate = !!patch.generate;
+            ch.muted = !patch.generate;
+          }
+          return;
+        }
+      }
+      // Spare with no channel record yet — create one so override sticks in UI
+      if ((mod.channels || []).every((c) => c.physical_address !== address)) {
+        const m = String(address).match(/\.Data\[(\d+)\]\.(\d+)$/);
+        const bit = m ? Number(m[2]) : null;
+        if (bit == null) continue;
+        const dir = (mod.direction || 'I').charAt(0);
+        const expect = `${ad.rio_name}:${dir}.Data[${mod.data_index ?? mod.slot}].${bit}`;
+        if (expect !== address) continue;
+        mod.channels = mod.channels || [];
+        mod.channels.push({
+          fortna_bit: bit,
+          physical_address: address,
+          direction: mod.direction,
+          sourceName: patch.sourceName || '',
+          engineerName: patch.engineerName || null,
+          effectiveName: patch.engineerName || patch.sourceName || null,
+          generate: patch.generate !== false,
+          muted: patch.generate === false,
+          logical_endpoint: patch.engineerName
+            ? { name: patch.engineerName, engineer_override: true, source_name: patch.sourceName || '' }
+            : null,
+        });
+        return;
+      }
+    }
+  }
 }
 
 function hwChannelRows(mod) {
@@ -3793,43 +3967,52 @@ function renderHardwareChannelTable(ad, mod) {
   }
   const selBit = ioState.selectedHwChannel;
   const cat = mod.catalog || mod.type || '';
+  const typ = hwChannelDirectionLabel(mod);
   const body = rows.map(({ bit, ch }) => {
     const ep = hwChannelEndpointLabel(ch);
     const selected = selBit != null && Number(bit) === Number(selBit);
-    const addr = ch?.physical_address || `${ad.rio_name}:${(mod.direction || 'I').charAt(0)}.Data[${mod.data_index ?? mod.slot ?? '?'}].${bit}`;
-    const cfg = ch
-      ? `${cat.replace(/\/[A-Z]$/i, '')}/${mod.slot ?? '?'}/${bit}`
-      : '—';
-    const statusCls = ep.kind === 'ok' ? 'hw-ch-status-ok'
+    const addr = hwChannelPhysicalAddress(ad, mod, bit, ch);
+    const statusCls = !ep.generate ? 'hw-ch-status-spare'
+      : ep.kind === 'ok' ? 'hw-ch-status-ok'
       : ep.kind === 'warn' ? 'hw-ch-status-warn'
       : 'hw-ch-status-spare';
-    const statusTxt = ep.kind === 'ok' ? '● Resolved'
+    const statusTxt = !ep.generate ? '○ Muted'
+      : ep.kind === 'ok' ? (ep.overridden ? '● Engineer' : '● Active')
       : ep.kind === 'warn' ? '● Unresolved'
       : '○ Spare';
-    const sfTag = ep.kind === 'ok' ? `${ep.text}.I` : '—';
-    return `<tr class="${selected ? 'hw-ch-selected' : ''}" data-hw-ch="${bit}">
+    const nameVal = ep.kind === 'spare' && !ep.engineer ? '' : ep.text;
+    const namePlaceholder = ep.kind === 'spare' ? 'SPARE — click to name' : (ep.source || 'logical name');
+    return `<tr class="${selected ? 'hw-ch-selected' : ''}${!ep.generate ? ' hw-ch-muted' : ''}" data-hw-ch="${bit}" data-hw-addr="${escapeHtml(addr)}">
       <td class="mono">${bit}</td>
       <td class="mono text-cyan-200/90">${escapeHtml(addr)}</td>
-      <td class="mono">${escapeHtml(cfg)}</td>
-      <td class="mono ${ep.kind === 'ok' ? 'text-emerald-300' : ep.kind === 'warn' ? 'text-amber-300' : 'text-slate-500'}">${escapeHtml(ep.text)}</td>
-      <td class="mono text-slate-400">${escapeHtml(sfTag)}</td>
+      <td class="mono text-slate-400">${escapeHtml(typ)}</td>
+      <td class="hw-ch-name-cell" onclick="event.stopPropagation()">
+        <input type="text" class="hw-ch-name-input mono" data-hw-name="${escapeHtml(addr)}"
+          value="${escapeHtml(nameVal === 'SPARE' ? '' : nameVal)}"
+          placeholder="${escapeHtml(namePlaceholder)}"
+          spellcheck="false" autocomplete="off"
+          title="${escapeHtml(ep.source ? `RUN source: ${ep.source}` : 'Engineer logical name')}" />
+      </td>
+      <td class="hw-ch-gen-cell" onclick="event.stopPropagation()" title="Uncheck to mute — keep visible, exclude from IO_MAP">
+        <label class="hw-ch-gen-label"><input type="checkbox" class="hw-ch-gen-input" data-hw-gen="${escapeHtml(addr)}" ${ep.generate ? 'checked' : ''} /> Generate</label>
+      </td>
       <td class="${statusCls}">${statusTxt}</td>
     </tr>`;
   }).join('');
   return `
     <div class="hw-ch-table-wrap">
       <div class="hw-ch-table-head">
-        <div class="title">${escapeHtml(cat)} — ${escapeHtml(mod.direction === 'O' || /OA|OB|OW/i.test(cat) ? 'Digital Output' : 'Digital Input')}</div>
-        <div class="sub">${escapeHtml(ad.rio_name)} · slot ${mod.slot ?? '—'} · Data[${mod.data_index ?? '—'}] · ${rows.length} channels</div>
+        <div class="title">${escapeHtml(cat)} — ${escapeHtml(typ === 'OUTPUT' ? 'Digital Output' : 'Digital Input')}</div>
+        <div class="sub">${escapeHtml(ad.rio_name)} · slot ${mod.slot ?? '—'} · Data[${mod.data_index ?? '—'}] · ${rows.length} channels · Name + Generate are engineer overrides</div>
       </div>
       <table class="hw-ch-table">
         <thead>
           <tr>
             <th>Ch</th>
-            <th>Address (Studio 5000)</th>
-            <th>ConfigIO</th>
-            <th>RUN Point / Device</th>
-            <th>Site Forge Endpoint</th>
+            <th>Address</th>
+            <th>Type</th>
+            <th>Name</th>
+            <th>Generate</th>
             <th>Status</th>
           </tr>
         </thead>
@@ -3884,22 +4067,27 @@ function renderHardwareTerminalFace(ad, mod) {
     const hit = rows.find((r) => r.bit === Number(sel));
     const ch = hit?.ch || null;
     const ep = hwChannelEndpointLabel(ch);
-    const addr = ch?.physical_address
-      || `${ad.rio_name}:${(mod.direction || 'I').charAt(0)}.Data[${mod.data_index ?? mod.slot ?? '?'}].${sel}`;
+    const addr = hwChannelPhysicalAddress(ad, mod, sel, ch);
     const cfg = `${cat.replace(/\/[A-Z]$/i, '')}/${mod.slot ?? '?'}/${sel}`;
-    const statusHtml = ep.kind === 'ok'
-      ? '<span class="green">● Resolved</span>'
-      : ep.kind === 'warn'
-        ? '<span class="amber">● Unresolved</span>'
-        : '<span>○ Spare</span>';
+    const typ = hwChannelDirectionLabel(mod);
+    const statusHtml = !ep.generate
+      ? '<span>○ Muted (excluded from IO_MAP)</span>'
+      : ep.kind === 'ok'
+        ? `<span class="green">● ${ep.overridden ? 'Engineer override' : 'Active'}</span>`
+        : ep.kind === 'warn'
+          ? '<span class="amber">● Unresolved</span>'
+          : '<span>○ Spare</span>';
     detailHtml = `
       <div class="hw-ch-detail">
         <h3>Channel ${sel} — ${escapeHtml(ep.text)}</h3>
-        Field Device: &nbsp;&nbsp;&nbsp; ${escapeHtml(ep.kind === 'ok' ? ep.text : '—')}<br>
+        Type: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(typ)} (from physical module)<br>
+        RUN source: &nbsp;&nbsp;&nbsp; ${escapeHtml(ep.source || '—')}<br>
+        Engineer name: ${escapeHtml(ep.engineer || '—')}<br>
+        Effective: &nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.text)}<br>
         ConfigIO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(cfg)}<br>
         PLC Address: &nbsp;&nbsp;&nbsp; ${escapeHtml(addr)}<br>
-        Site Forge Tag: &nbsp; ${escapeHtml(ep.kind === 'ok' ? `${ep.text}.I` : '—')}<br>
-        Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${statusHtml}
+        Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${statusHtml}<br>
+        <span class="text-slate-500">Edit Name / Generate in the channel table. Muted channels stay visible but are not emitted to IO_MAP.</span>
       </div>`;
   }
 
@@ -3942,8 +4130,79 @@ function renderHardwareModuleDetail() {
     el.addEventListener('click', () => onChClick(el));
   });
   if (table) {
-    table.querySelectorAll('[data-hw-ch]').forEach((el) => {
-      el.addEventListener('click', () => onChClick(el));
+    table.querySelectorAll('tr[data-hw-ch]').forEach((el) => {
+      el.addEventListener('click', (ev) => {
+        if (ev.target.closest?.('input')) return;
+        onChClick(el);
+      });
+    });
+    table.querySelectorAll('.hw-ch-name-input').forEach((inp) => {
+      const commit = async () => {
+        const addr = inp.getAttribute('data-hw-name');
+        if (!addr) return;
+        const raw = String(inp.value || '').trim();
+        // Find source name from current model
+        let sourceName = '';
+        let chHit = null;
+        for (const a of model.adapters || []) {
+          for (const m of a.modules || []) {
+            const c = (m.channels || []).find((x) => x.physical_address === addr);
+            if (c) { chHit = c; break; }
+          }
+          if (chHit) break;
+        }
+        sourceName = chHit?.sourceName || chHit?.logical_endpoint?.source_name
+          || (!chHit?.engineerName ? (chHit?.logical_endpoint?.name || '') : '') || '';
+        const res = await saveHwChannelOverride({
+          address: addr,
+          name: raw,
+          sourceName,
+        });
+        if (!res?.success) {
+          inp.classList.add('hw-ch-name-invalid');
+          return;
+        }
+        inp.classList.remove('hw-ch-name-invalid');
+        patchHwChannelInModel(addr, {
+          engineerName: raw || null,
+          sourceName,
+          effectiveName: raw || sourceName || null,
+        });
+        // Ensure spare channels exist after first name
+        if (!chHit && raw) {
+          patchHwChannelInModel(addr, {
+            engineerName: raw,
+            sourceName: '',
+            effectiveName: raw,
+            generate: true,
+          });
+        }
+        renderHardwareModuleDetail();
+        log(`Hardware I/O name → ${addr} = ${raw || '(cleared to RUN/SPARE)'}`, 'ok');
+      };
+      inp.addEventListener('keydown', (ev) => {
+        if (ev.key === 'Enter') { ev.preventDefault(); commit(); }
+        if (ev.key === 'Escape') {
+          ev.preventDefault();
+          renderHardwareModuleDetail();
+        }
+      });
+      inp.addEventListener('blur', () => { commit(); });
+    });
+    table.querySelectorAll('.hw-ch-gen-input').forEach((cb) => {
+      cb.addEventListener('change', async () => {
+        const addr = cb.getAttribute('data-hw-gen');
+        if (!addr) return;
+        const generate = !!cb.checked;
+        const res = await saveHwChannelOverride({ address: addr, generate });
+        if (!res?.success) {
+          cb.checked = !generate;
+          return;
+        }
+        patchHwChannelInModel(addr, { generate, muted: !generate });
+        renderHardwareModuleDetail();
+        log(`Hardware I/O Generate → ${addr} = ${generate ? 'ON' : 'MUTED'}`, 'ok');
+      });
     });
   }
 }
@@ -4830,6 +5089,7 @@ function updateSubsystemGenerationContract(siteOrDiscovery) {
     ['TRANSPORT', readinessDisplayLabel(map.transport?.status)],
     ['SAWTOOTH', map.sawtooth?.status === 'NOT_DETECTED' ? 'N/A' : readinessDisplayLabel(map.sawtooth?.status)],
     ['SORTER', map.sorter?.status === 'NOT_DETECTED' ? 'N/A' : readinessDisplayLabel(map.sorter?.status)],
+    ['SAFETY / ES', map.safety?.status === 'NOT_DETECTED' ? 'N/A' : readinessDisplayLabel(map.safety?.status)],
     ['SYSTEM / CORE', readinessDisplayLabel(map.system?.status)],
     ['WCS', wcs ? 'SiteModel supported' : 'NOT DETECTED / NOT SUPPORTED'],
     ['SHIPPING SORTER', ship.supported ? 'SiteModel supported' : 'NOT DETECTED / NOT SUPPORTED'],
@@ -6701,6 +6961,10 @@ async function runAutogenGenerate(mode) {
 
   let res;
   try {
+    const wbForGen = (mode === 'run' && autogenState.workbook) ? { ...autogenState.workbook } : undefined;
+    if (wbForGen && autogenState.safety_build) {
+      wbForGen.safety_build = autogenState.safety_build;
+    }
     res = await fortnaAPI.autogenGenerate({
       mode,
       excel: excel || undefined,
@@ -6710,9 +6974,10 @@ async function runAutogenGenerate(mode) {
       includeIoMap,
       noIoMap: !includeIoMap,
       // Pass merged workbook so Build PLC == editor state (one canonical model).
-      workbook: (mode === 'run' && autogenState.workbook) ? autogenState.workbook : undefined,
+      workbook: wbForGen,
       sorterBuild: sorterTrackChecked ? sorterCfg : undefined,
-    });  } catch (e) {
+    });
+  } catch (e) {
     res = { success: false, message: e?.message || String(e) };
   }
   autogenState.busy = false;
@@ -6749,6 +7014,22 @@ async function runAutogenGenerate(mode) {
     : rawL5x;
   autogenState.lastManifest = r.manifest || null;
   autogenState.lastGenerateIoMapError = null;
+  if (rep.es_program) {
+    autogenState.lastEsReport = rep.es_program;
+    try {
+      const st = String(rep.es_program.status || '').toUpperCase();
+      const e = ensureAutogenReadiness().safety;
+      if (st === 'READY' || rep.es_program.emitted) {
+        Object.assign(e, emptyReadinessEntry('READY'));
+        e.detail = rep.es_program.detail || 'ES program emitted';
+        e.appliedAt = new Date().toISOString();
+      } else if (st && st !== 'NOT_DETECTED') {
+        e.status = st === 'ERROR' ? 'ERROR' : 'REVIEW_REQUIRED';
+        e.detail = rep.es_program.detail || st;
+        e.unresolved = rep.es_program.unresolved || 1;
+      }
+    } catch (_) { /* ignore */ }
+  }
   setAutogenStatus(r.recovered ? 'Complete (recovered)' : 'Complete', 'ready');
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }

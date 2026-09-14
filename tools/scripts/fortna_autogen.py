@@ -188,6 +188,10 @@ class AutogenInput:
     minor_rev: str = "00"
     areas: list[str] = field(default_factory=list)
     safety_zones: list[str] = field(default_factory=list)
+    # Engineer Safety Zone IR: [{name, area, members:[...]}] — not inferred from Area alone
+    safety_zone_members: list = field(default_factory=list)
+    safety_build: dict = field(default_factory=dict)
+    run_dir: str = ""
     conveyors: list[ConveyorRow] = field(default_factory=list)
     modules: list[IoModule] = field(default_factory=list)
     io_points: list[IoPoint] = field(default_factory=list)
@@ -4267,6 +4271,58 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             include_system_logic=want_system_logic,
         ))
 
+    # --- Program ES (PLC4/PLC5 structural pattern) — only with proven/engineer membership ---
+    es_emit_report: dict | None = None
+    _es_pack = None
+    try:
+        from fortna_es_compiler import build_safety_zone_irs, emit_es_program, safety_readiness
+        from fortna_estop_model import build_estop_model
+
+        _eng_zones = list(getattr(inp, "safety_zone_members", None) or [])
+        _wb_sz = getattr(inp, "safety_build", None) or {}
+        if isinstance(_wb_sz, dict) and _wb_sz.get("zones"):
+            _eng_zones = list(_wb_sz.get("zones") or _eng_zones)
+        _estop = None
+        try:
+            _run_hint = getattr(inp, "run_dir", None)
+            if _run_hint:
+                _estop = build_estop_model(_run_hint, inp.machine or "")
+        except Exception:
+            _estop = None
+        _default_area = (inp.areas or ["Main_Area"])[0] if (inp.areas or []) else "Main_Area"
+        _sz_irs = build_safety_zone_irs(
+            safety_zones=list(inp.safety_zones or []),
+            areas=list(inp.areas or []),
+            estop_model=_estop,
+            engineer_zones=_eng_zones,
+            default_area=_default_area,
+        )
+        _lib_ok = bool(
+            re.search(r'\bName="ES_SIL1_Cat1"', library_text)
+            and re.search(r'\bName="ES_PI20"', library_text)
+        )
+        es_emit_report = safety_readiness(_sz_irs, library_has_aois=_lib_ok)
+        if any(z.members for z in _sz_irs):
+            _ensure_library_tag("NO_ESLS")
+            _es_pack = emit_es_program(
+                _sz_irs,
+                _rung_xml=_rung_xml,
+                routine=routine,
+                extract_tag_block=extract_tag_block,
+                library_text=library_text,
+                ensure_tag=_ensure_library_tag,
+                add_tag_block=_add_tag_block,
+            )
+            if _es_pack and _es_pack.get("program_xml"):
+                programs_xml.append(_es_pack["program_xml"])
+                es_emit_report = dict(es_emit_report or {})
+                es_emit_report["emitted"] = True
+                es_emit_report["zones"] = _es_pack.get("zones") or []
+                if es_emit_report.get("status") == "NOT_DETECTED":
+                    es_emit_report["status"] = "READY"
+    except Exception as _es_err:
+        es_emit_report = {"status": "ERROR", "detail": str(_es_err), "unresolved": 1}
+
     # --- IO_MAP from RUN/tar.gz (default): Conveyor.asc Bank.Bit → AENTR:I/O.Data[slot] ---
     # Gold Excel IO_MAP_Program.L5X is optional (include_io_map_gold) and replaces this scaffold.
     word_map = dict(getattr(inp, "io_word_map", None) or {})
@@ -4577,8 +4633,28 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         and (p.fortna_bank or p.fortna_bit)
         and not _is_spare_io_point(p)
     ]
+    # Engineer Hardware/I/O overrides (name + Generate/mute)
+    try:
+        from fortna_hardware_io_overrides import overrides_for_iomap
+
+        _hw_ov = overrides_for_iomap()
+    except Exception:
+        _hw_ov = {}
+    io_map_muted = 0
+
+    def _member_from_override(eng_name: str, fallback_member: str, direction: str) -> str:
+        """Engineer name is authoritative. Full member paths used as-is."""
+        n = (eng_name or "").strip()
+        if not n:
+            return fallback_member
+        if "." in n:
+            return n  # e.g. P402_Conv.O.Run
+        # Bare tag — map through device-member rules when possible
+        return _device_member("io", _safe(n) or n, direction) or n
+
     # Resolve first, then emit in numerical adapter/slot order (AENTR3…AENTR14)
     resolved_rows: list[dict] = []
+    muted_channels: set[str] = set()
     for p in map_points:
         tname = _safe(p.device_name)
         if not tname:
@@ -4629,6 +4705,16 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             io_map_skipped_dir += 1
             continue
         channel = f"{rio}:{mod_dir}.Data[{slot}].{data_bit}"
+        ov = _hw_ov.get(channel) or {}
+        if ov.get("generate") is False:
+            muted_channels.add(channel)
+            io_map_muted += 1
+            # Keep evidence; do not emit logical mapping (and block placeholder fill)
+            continue
+        if ov.get("engineerName"):
+            member = _member_from_override(ov["engineerName"], member, mod_dir)
+            comment = f"{ov['engineerName']} (eng) · was {tname} · Bank{word}.{fbit}"
+            tname = _safe(ov["engineerName"].split(".")[0]) or tname
         resolved_rows.append({
             "rio": rio,
             "slot": slot,
@@ -4640,6 +4726,38 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "tname": tname,
         })
         io_map_mapped += 1
+
+    # Engineer-named SPARE channels: inject when override names a physical bit
+    # that had no RUN io_point mapping.
+    _resolved_chs = {r["channel"] for r in resolved_rows} | muted_channels
+    for addr, ov in (_hw_ov or {}).items():
+        if not ov.get("generate", True):
+            muted_channels.add(addr)
+            continue
+        eng = (ov.get("engineerName") or ov.get("effectiveName") or "").strip()
+        if not eng or addr in _resolved_chs:
+            continue
+        m = re.match(
+            r"^([A-Za-z0-9_]+):(I|O)\.Data\[(\d+)\]\.(\d+)$",
+            str(addr).strip(),
+            re.I,
+        )
+        if not m:
+            continue
+        rio, mod_dir, slot_s, bit_s = m.group(1), m.group(2).upper(), m.group(3), m.group(4)
+        member = _member_from_override(eng, eng, mod_dir)
+        resolved_rows.append({
+            "rio": rio,
+            "slot": int(slot_s),
+            "data_bit": int(bit_s),
+            "mod_dir": mod_dir,
+            "member": member,
+            "channel": addr,
+            "comment": f"{eng} · engineer spare → {addr}",
+            "tname": _safe(eng.split(".")[0]) or eng,
+        })
+        io_map_mapped += 1
+        _resolved_chs.add(addr)
 
     resolved_rows.sort(
         key=lambda r: (
@@ -4664,7 +4782,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     if _dup_out:
         lines = [
             "BUILD FAILED: duplicate physical OUTPUT ownership in IO_MAP "
-            "(one bit = one logical owner unless explicit source proves otherwise):"
+            "(one bit = one logical owner). Mute one Generate checkbox in Hardware/I/O "
+            "to keep evidence while excluding that mapping:"
         ]
         for ch, owners in sorted(_dup_out.items()):
             detail = "; ".join(
@@ -4701,7 +4820,20 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             (r["rio"], r["mod_dir"], int(r["slot"]), int(r["data_bit"]))
             for r in resolved_rows
         }
-        used_rios = {r["rio"] for r in resolved_rows}
+        # Muted channels still occupy the physical bit — no placeholder, no logical rung
+        for addr in muted_channels:
+            mm = re.match(
+                r"^([A-Za-z0-9_]+):(I|O)\.Data\[(\d+)\]\.(\d+)$",
+                str(addr).strip(),
+                re.I,
+            )
+            if mm:
+                used_bits.add((mm.group(1), mm.group(2).upper(), int(mm.group(3)), int(mm.group(4))))
+        used_rios = {r["rio"] for r in resolved_rows} | {
+            re.match(r"^([A-Za-z0-9_]+):", a).group(1)
+            for a in muted_channels
+            if re.match(r"^([A-Za-z0-9_]+):", a)
+        }
         topo_for_ph = list(getattr(inp, "eip_topology", None) or [])
         # Prefer RIO adapters that already have real mappings; else all topology.
         adapters = [
@@ -5530,7 +5662,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # Own tasks — match finished gold: P02_Track = IO_MAP + Sorter_Track; Sys alone.
     # Sys_Comm (gold System) rides P11_Slow_200ms with area Slow programs.
     # WCS / ShippingSorter L3 stay on P11 Slow until area packs are site-wired.
-    own_task_programs = {"IO_MAP", "Sys", "Sorter_Track"}
+    own_task_programs = {"IO_MAP", "Sys", "Sorter_Track", "ES"}
     optional_slow = {
         "WCS_Interface_TCP_IP", "ShippingSorter_Area_L3", "System", "Sys_Comm",
     }
@@ -5665,6 +5797,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     if "Sys" in prog_names:
         # Gold: P15_Config_Sys_Event — keep periodic Sys task for constants pack
         tasks_block += _task_xml("Sys", rate=100, priority=13, watchdog=250, programs=["Sys"])
+    if "ES" in prog_names:
+        # PLC4/PLC5: P01_Safety_20ms schedules Program ES
+        tasks_block += _task_xml(
+            "P01_Safety_20ms", rate=20, priority=1, watchdog=500, programs=["ES"]
+        )
     if sched_fast:
         tasks_block += (
             '<Task Name="P10_Fast_50ms" Type="PERIODIC" Rate="50" Priority="10" '
@@ -5755,6 +5892,8 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_mapped": io_map_mapped,
         "io_map_unmapped": io_map_unmapped,
         "io_map_placeholders": io_map_placeholders,
+        "io_map_muted": locals().get("io_map_muted", 0),
+        "es_program": es_emit_report,
         "io_map_fill_placeholders": fill_placeholders,
         "io_map_mappable": len(map_points),
         "io_map_source": (
