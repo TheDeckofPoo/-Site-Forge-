@@ -446,7 +446,84 @@ function refreshAutogenCompileHub() {
     !!(runIsLoaded() || evT.detected || evS.detected || evR.detected),
   );
   try { refreshAutogenPackEvidence(); } catch (_) { /* ignore */ }
+  try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }
   try { updateSubsystemGenerationContract(); } catch (_) { /* ignore */ }
+}
+
+/** Autogen Build tracker — live pack / export / integrity (replaces redundant workbook tabs). */
+function refreshAutogenBuildTracker() {
+  const root = $('autogen-build-tracker');
+  if (!root) return;
+  const wb = autogenState.workbook;
+  const rows = wb?.conveyors || [];
+  const on = rows.filter((r) => r && r.include !== false).length;
+  const R = ensureAutogenReadiness();
+  const hw = ioState?.hardwareIo;
+  const machine = (hw?.controller?.machine || hw?.machine
+    || wb?.project_name || wb?.controller_name
+    || (typeof runIsLoaded === 'function' && runIsLoaded() ? 'RUN loaded' : '—'));
+  const ctrlEl = $('bt-controller');
+  if (ctrlEl) ctrlEl.textContent = machine || '—';
+  const convEl = $('bt-conveyors');
+  if (convEl) {
+    convEl.textContent = rows.length
+      ? `${on}/${rows.length} on · ${wb?.stats?.io_mapped ?? '—'} IO`
+      : '0';
+  }
+  const l5xEl = $('bt-l5x');
+  if (l5xEl) {
+    const path = autogenState.lastL5x || '';
+    l5xEl.textContent = path ? path.split(/[\\/]/).pop() : '— none yet —';
+    l5xEl.title = path || '';
+  }
+  const progEl = $('bt-programs');
+  if (progEl) {
+    const line = (name, st, tone) =>
+      `<div class="${tone || 'text-slate-400'}"><span class="text-slate-500">${name}</span> · ${st}</div>`;
+    const hubTone = (st) => (st === 'READY' ? 'text-emerald-400' : st === 'ERROR' ? 'text-red-400' : 'text-slate-400');
+    const hubLabel = (st) => (st === 'READY' ? 'READY' : st === 'NOT_DETECTED' ? 'not detected' : (st || '—').toLowerCase());
+    progEl.innerHTML = [
+      line('HW / IO', hubLabel(R.hardware?.status), hubTone(R.hardware?.status)),
+      line('Transport', hubLabel(R.transport?.status), hubTone(R.transport?.status)),
+      line('Sawtooth', hubLabel(R.sawtooth?.status), hubTone(R.sawtooth?.status)),
+      line('Sorter', hubLabel(R.sorter?.status), hubTone(R.sorter?.status)),
+      line('System', hubLabel(R.system?.status), hubTone(R.system?.status)),
+    ].join('');
+  }
+  const intEl = $('bt-integrity');
+  if (intEl) {
+    const bits = [];
+    const man = autogenState.lastManifest;
+    const git = man?.git_commit || man?.git || '';
+    if (autogenState.lastL5x) {
+      bits.push(`<div class="text-emerald-400">Last L5X recorded</div>`);
+      if (git) bits.push(`<div>git <span class="text-slate-300">${escapeHtml(String(git).slice(0, 12))}</span></div>`);
+      const sha = man?.output_sha256 || man?.l5x_sha256 || '';
+      if (sha) bits.push(`<div>SHA <span class="text-slate-500">${escapeHtml(String(sha).slice(0, 12))}…</span></div>`);
+    } else {
+      bits.push(`<div class="text-slate-500">No export yet — Build PLC when hub is READY</div>`);
+    }
+    bits.push(`<div class="text-slate-600 mt-1">Desc ≤128 · DataTypes closed · track enables</div>`);
+    if (autogenState.lastGenerateIoMapError) {
+      bits.push(`<div class="text-red-400 mt-1">${escapeHtml(String(autogenState.lastGenerateIoMapError).slice(0, 120))}</div>`);
+    }
+    intEl.innerHTML = bits.join('');
+  }
+  const stagesEl = $('bt-stages');
+  if (stagesEl) {
+    const pre = typeof autogenBuildPreflight === 'function' ? autogenBuildPreflight() : { ok: false };
+    const stages = [
+      { id: 'run', label: 'RUN', ok: typeof runIsLoaded === 'function' && runIsLoaded() },
+      { id: 'wb', label: 'Workbook', ok: rows.length > 0 },
+      { id: 'hub', label: 'Hub READY', ok: !!pre.ok },
+      { id: 'l5x', label: 'L5X', ok: !!autogenState.lastL5x },
+    ];
+    stagesEl.innerHTML = stages.map((s) =>
+      `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded border ${
+        s.ok ? 'border-emerald-800/60 text-emerald-300 bg-emerald-950/30' : 'border-slate-800 text-slate-500 bg-[#0a1018]'
+      }"><span class="w-1.5 h-1.5 rounded-full ${s.ok ? 'bg-emerald-400' : 'bg-slate-600'}"></span>${s.label}</span>`
+    ).join('');
+  }
 }
 
 function refreshAutogenPackEvidence() {
@@ -891,6 +968,7 @@ function clearDevicesPanelUi() {
     ioState.banks = null;
     ioState.hardwareIo = null;
     ioState.hardwarePanelFilter = '__all__';
+    ioState.hardwareRioFilter = '__all__';
     ioState.selectedHwModuleKey = '';
     ioState.drives = [];
     ioState.devices = [];
@@ -905,11 +983,17 @@ function clearDevicesPanelUi() {
     $('hw-io-status').className = 'status-pill status-idle';
   }
   if ($('hw-io-controller')) $('hw-io-controller').textContent = 'Controller: —';
+  if ($('hw-io-tree')) {
+    $('hw-io-tree').innerHTML = '<div class="text-sm text-slate-500 py-6 text-center px-2">Load a RUN to show the resolver tree.</div>';
+  }
   if ($('hw-io-racks')) {
-    $('hw-io-racks').innerHTML = '<div class="text-sm text-slate-500 py-6 text-center">Load a RUN to show Remote I/O adapters from PhysicalWordResolver.</div>';
+    $('hw-io-racks').innerHTML = '<div class="text-sm text-slate-500 py-10 text-center">Load a RUN to show the FLEX assembly from PhysicalWordResolver.</div>';
+  }
+  if ($('hw-io-channel-table')) {
+    $('hw-io-channel-table').innerHTML = 'Select a module on the rack to list channels (physical address · Fortna word.bit · logical endpoint).';
   }
   if ($('hw-io-module-detail')) {
-    $('hw-io-module-detail').innerHTML = 'Select a module card to list channels (physical address · Fortna word.bit · logical endpoint).';
+    $('hw-io-module-detail').innerHTML = 'Select a module for the vertical terminal face (CH0●── …).';
   }
   if ($('hw-io-wiring')) {
     $('hw-io-wiring').textContent = 'Select a module — Level A shows proven channel→logical assignments. Catalog schematics (Level B) are not required yet.';
@@ -917,6 +1001,9 @@ function clearDevicesPanelUi() {
   if ($('hw-io-stats')) $('hw-io-stats').innerHTML = '';
   if ($('hw-io-panel-select')) {
     $('hw-io-panel-select').innerHTML = '<option value="__all__">All Panels</option>';
+  }
+  if ($('hw-io-rio-select')) {
+    $('hw-io-rio-select').innerHTML = '<option value="__all__">All adapters</option>';
   }
   // Banks
   if ($('io-banks-status')) {
@@ -1604,8 +1691,8 @@ const ioState = {
   hardwareIo: null,
   hardwarePanelFilter: '__all__',
   hardwareRioFilter: '__all__',
-  hardwareFlexView: false,
   selectedHwModuleKey: '',
+  selectedHwChannel: null,
   /** @type {Array<object>} */
   drives: [],
   /** Unified device list (I/O points + drives) for type filter browser */
@@ -3311,9 +3398,15 @@ function renderHardwareIo(data) {
       status.className = 'status-pill status-idle';
     }
     if (ctrl) ctrl.textContent = 'Controller: —';
-    racks.innerHTML = `<div class="text-sm text-slate-500 py-6 text-center">${escapeHtml(data?.message || 'Load a RUN to show Hardware / I/O.')}</div>`;
+    racks.innerHTML = `<div class="text-sm text-slate-500 py-10 text-center">${escapeHtml(data?.message || 'Load a RUN to show Hardware / I/O.')}</div>`;
+    if ($('hw-io-tree')) {
+      $('hw-io-tree').innerHTML = `<div class="text-sm text-slate-500 py-6 text-center px-2">${escapeHtml(data?.message || 'Load a RUN to show the resolver tree.')}</div>`;
+    }
+    if ($('hw-io-channel-table')) {
+      $('hw-io-channel-table').innerHTML = 'Select a module on the rack to list channels.';
+    }
     if ($('hw-io-module-detail')) {
-      $('hw-io-module-detail').innerHTML = 'Select a module card to list channels.';
+      $('hw-io-module-detail').innerHTML = 'Select a module for the vertical terminal face (CH0●── …).';
     }
     if ($('hw-io-wiring')) {
       $('hw-io-wiring').textContent = 'Wiring diagram unavailable until a module is selected.';
@@ -3325,7 +3418,7 @@ function renderHardwareIo(data) {
   ioState.hardwareIo = data;
   const machine = data.controller?.machine || data.machine || '—';
   if (status) {
-    status.textContent = 'Resolver tree';
+    status.textContent = 'CAD · resolver';
     status.className = 'status-pill status-ready';
   }
   if (ctrl) ctrl.textContent = `Controller: ${machine}`;
@@ -3381,77 +3474,161 @@ function hwEthernetLabel(model) {
 }
 
 function bindHwModuleClicks(root) {
+  if (!root) return;
   root.querySelectorAll('[data-hw-mod]').forEach((btn) => {
     btn.addEventListener('click', () => {
       ioState.selectedHwModuleKey = btn.getAttribute('data-hw-mod') || '';
+      ioState.selectedHwChannel = null;
       renderHardwareRacks();
       renderHardwareModuleDetail();
     });
   });
 }
 
+/** Map catalog → CAD component kind (FlexAdapter1794 / FlexDI16 / FlexDO8…). */
+function flexModKind(mod) {
+  if (!mod) return 'unk';
+  const cat = String(mod.catalog || mod.type || '').toUpperCase();
+  if (mod.is_adapter_card || /AENT/.test(cat)) return 'aent';
+  if (/I[AB]16|IW16/.test(cat)) return 'di16';
+  if (/I[AB]8/.test(cat)) return 'di8';
+  if (/I[AB]4/.test(cat)) return 'di4';
+  if (/O[ABW]16/.test(cat)) return 'do16';
+  if (/O[ABW]8/.test(cat)) return 'do8';
+  if (/O[ABW]4/.test(cat)) return 'do4';
+  const dir = String(mod.direction || '').toUpperCase();
+  if (dir === 'I') return 'di';
+  if (dir === 'O') return 'do';
+  return 'unk';
+}
+
+function flexModClass(kind) {
+  const map = {
+    aent: 'flex-mod flex-mod-aent',
+    di16: 'flex-mod flex-mod-di flex-mod-di16',
+    di8: 'flex-mod flex-mod-di flex-mod-di8',
+    di4: 'flex-mod flex-mod-di flex-mod-di4',
+    di: 'flex-mod flex-mod-di',
+    do16: 'flex-mod flex-mod-do flex-mod-do16',
+    do8: 'flex-mod flex-mod-do flex-mod-do8',
+    do4: 'flex-mod flex-mod-do flex-mod-do4',
+    do: 'flex-mod flex-mod-do',
+    unk: 'flex-mod flex-mod-unk',
+  };
+  return map[kind] || map.unk;
+}
+
+function flexModKindLabel(kind) {
+  const map = {
+    aent: 'AENT',
+    di16: 'DI16', di8: 'DI8', di4: 'DI4', di: 'DI',
+    do16: 'DO16', do8: 'DO8', do4: 'DO4', do: 'DO',
+    unk: 'MOD',
+  };
+  return map[kind] || 'MOD';
+}
+
+/** LED states from model channels only — empty sockets for unused capacity, never invent endpoints. */
+function flexLedStates(mod) {
+  const cap = Number(mod.channel_capacity) || 0;
+  const channels = mod.channels || [];
+  const byBit = new Map();
+  for (const ch of channels) {
+    const bit = ch.fortna_bit;
+    if (bit == null || bit === '') continue;
+    byBit.set(Number(bit), ch);
+  }
+  const n = cap > 0 ? cap : channels.length;
+  const out = [];
+  for (let i = 0; i < n; i += 1) {
+    const ch = byBit.get(i);
+    if (!ch) out.push('off');
+    else if (ch.logical_endpoint?.name) out.push('on');
+    else out.push('warn');
+  }
+  return out;
+}
+
+/** FlexAdapter1794 / FlexDI* / FlexDO* CAD module face from HardwareIOModel catalog. */
+function renderFlexModuleCard(ad, mod) {
+  const key = hwModuleKey(ad.rio_name, mod.slot);
+  const selected = key === ioState.selectedHwModuleKey;
+  const kind = flexModKind(mod);
+  const cat = mod.catalog || mod.type || '—';
+  const used = mod.channels_used ?? (mod.channels || []).length;
+  const total = mod.channel_capacity || 0;
+  const unres = mod.channels_unresolved ?? 0;
+  const cls = `${flexModClass(kind)}${selected ? ' selected' : ''}`;
+  const dirHint = kind === 'aent' ? 'Ethernet adapter'
+    : kind.startsWith('di') ? `${total || used || '?'}-channel digital input`
+    : kind.startsWith('do') ? `${total || used || '?'}-channel digital output`
+    : 'module';
+  const title = kind === 'aent'
+    ? `Slot ${mod.slot ?? 0}\n${cat}\n${dirHint}`
+    : `Slot ${mod.slot ?? '—'}\n${cat}\n${dirHint}\n${used} resolved · ${unres} unresolved`;
+
+  if (kind === 'aent') {
+    return `
+      <button type="button" data-hw-mod="${escapeHtml(key)}" class="${cls}" title="${escapeHtml(title)}">
+        <div class="fm-slot">[${mod.slot ?? 0}]</div>
+        <div class="fm-cat">${escapeHtml(cat)}</div>
+        <div class="fm-kind">FlexAdapter1794</div>
+        <div class="fm-ch">adapter</div>
+        <div class="fm-ports" aria-hidden="true"><span class="fm-port"></span><span class="fm-port"></span></div>
+        <div class="fm-led-net" title="network"></div>
+      </button>`;
+  }
+
+  const leds = flexLedStates(mod);
+  const ledCols = leds.length > 8 ? 'cols-16' : 'cols-8';
+  const ledHtml = leds.map((st) => `<span class="fm-led ${st === 'on' ? 'on' : st === 'warn' ? 'warn' : ''}"></span>`).join('');
+  const chHtml = total
+    ? `<span class="ok">${used}</span>/<span>${total}</span>${unres ? ` · <span class="warn">${unres}?</span>` : ''}`
+    : `${used}${unres ? ` · <span class="warn">${unres}?</span>` : ''}`;
+  const component = kind.startsWith('di') ? `FlexDI${kind.replace(/\D/g, '') || ''}`
+    : kind.startsWith('do') ? `FlexDO${kind.replace(/\D/g, '') || ''}`
+    : 'FlexMod';
+
+  return `
+    <button type="button" data-hw-mod="${escapeHtml(key)}" class="${cls}" title="${escapeHtml(title)}">
+      <div class="fm-slot">[${mod.slot ?? '—'}]</div>
+      <div class="fm-cat">${escapeHtml(cat)}</div>
+      <div class="fm-kind">${escapeHtml(component || flexModKindLabel(kind))}</div>
+      <div class="fm-ch">${chHtml}</div>
+      <div class="fm-leds ${ledCols}" aria-hidden="true">${ledHtml}</div>
+    </button>`;
+}
+
 function renderHardwareRacksFlex(adapters) {
-  // Legacy horizontal FLEX rail — optional toggle only
-  return adapters.map((ad) => {
+  // ONE continuous FLEX assembly per adapter (adapter + modules side-by-side)
+  return `<div class="flex-rack-wrap">${adapters.map((ad) => {
     const aent = (ad.modules || []).find((m) => m.is_adapter_card);
     const aentLabel = aent ? (aent.catalog || aent.type || 'AENT') : '—';
     const mods = [...(ad.modules || [])].sort((a, b) => (Number(a.slot) || 0) - (Number(b.slot) || 0));
-    const cards = mods.map((mod) => {
-      const key = hwModuleKey(ad.rio_name, mod.slot);
-      const selected = key === ioState.selectedHwModuleKey;
-      const isHead = !!mod.is_adapter_card;
-      const used = mod.channels_used ?? (mod.channels || []).length;
-      const total = mod.channel_capacity || 0;
-      const unres = mod.channels_unresolved ?? 0;
-      const dir = mod.direction || (isHead ? 'AENT' : '—');
-      const cat = mod.catalog || mod.type || '—';
-      return `
-        <button type="button" data-hw-mod="${escapeHtml(key)}"
-          class="hw-flex-mod ${isHead ? 'hw-head' : ''} ${selected ? 'hw-selected' : ''}"
-          title="${escapeHtml(cat)} slot ${mod.slot}">
-          <div class="hw-slot">[${mod.slot ?? '—'}]</div>
-          <div class="hw-cat">${escapeHtml(cat)}</div>
-          <div class="hw-dir">${escapeHtml(dir)}</div>
-          <div class="hw-ch">${isHead ? 'adapter' : `${used}/${total || '—'}`}${!isHead && unres ? ` · ${unres}?` : ''}</div>
-          <div class="hw-led"></div>
-        </button>`;
-    }).join('');
-
+    const cards = mods.map((mod) => renderFlexModuleCard(ad, mod)).join('');
     return `
-      <div class="rounded-xl border border-slate-800/80 bg-[#060a0f] p-3 mb-3">
-        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
-          <div class="font-semibold text-sm text-cyan-300 mono">${escapeHtml(ad.rio_name || '—')}</div>
-          <div class="text-[10px] text-slate-500 mono">${escapeHtml(ad.eipcfg_name || ad.name || '')}</div>
-          <div class="text-[10px] text-slate-600">AENT ${escapeHtml(aentLabel)}</div>
-          <div class="text-[10px] text-slate-600 ml-auto">${escapeHtml(ad.targetip || '')} · ${escapeHtml(ad.panel || '—')}</div>
+      <div class="flex-rack-card">
+        <div class="flex-rack-meta">
+          <span class="rio">${escapeHtml(ad.rio_name || '—')}</span>
+          <span class="mono">${escapeHtml(ad.eipcfg_name || ad.name || '')}</span>
+          <span>AENT ${escapeHtml(aentLabel)}</span>
+          <span class="ml-auto mono">${escapeHtml(ad.targetip || '')} · ${escapeHtml(ad.panel || '—')}</span>
         </div>
-        <div class="hw-flex-rail">${cards}</div>
+        <div class="flex-rack">${cards}</div>
       </div>`;
-  }).join('');
+  }).join('')}</div>`;
 }
 
 function renderHardwareRacksTree(model, adapters) {
   const machine = model.controller?.machine || model.machine || '—';
   const enet = hwEthernetLabel(model);
   const rows = [];
-  rows.push(`<div class="hw-io-tree-head">
-    <div>Name</div><div>Catalog</div><div>Vendor</div><div>Dir</div><div>Channels</div>
-  </div>`);
-  rows.push(`<div class="hw-io-tree-row">
-    <div><span class="hw-io-tree-ctrl">Controller: ${escapeHtml(machine)}</span></div>
-    <div class="text-slate-600">—</div><div class="text-slate-600">—</div>
-    <div class="text-slate-600">—</div><div class="text-slate-600">—</div>
-  </div>`);
-  rows.push(`<div class="hw-io-tree-row">
-    <div><span class="hw-io-tree-indent"> └ </span><span class="hw-io-tree-enet">Ethernet (${escapeHtml(enet)})</span></div>
-    <div class="text-slate-600">—</div><div class="text-slate-600">—</div>
-    <div class="text-slate-600">—</div><div class="text-slate-600">—</div>
-  </div>`);
+  rows.push(`<div class="hw-io-tree-row"><span class="hw-io-tree-ctrl">Controller: ${escapeHtml(machine)}</span></div>`);
+  rows.push(`<div class="hw-io-tree-row"><span class="hw-io-tree-indent"> └ </span><span class="hw-io-tree-enet">Ethernet (${escapeHtml(enet)})</span></div>`);
 
   adapters.forEach((ad, ai) => {
     const aent = (ad.modules || []).find((m) => m.is_adapter_card);
     const aentCat = aent ? (aent.catalog || aent.type || 'AENT') : (ad.eipcfg_name || ad.name || '—');
-    const aentVendor = hwModuleVendor(aent || { catalog: aentCat });
     const ip = ad.targetip || '';
     const panel = ad.panel || '—';
     const rioLast = ai === adapters.length - 1;
@@ -3464,17 +3641,11 @@ function renderHardwareRacksTree(model, adapters) {
       ? `type="button" data-hw-mod="${escapeHtml(aentKey)}" class="hw-io-tree-row hw-mod ${aentSelected ? 'hw-selected' : ''}" title="${escapeHtml(aentCat)}"`
       : 'class="hw-io-tree-row"';
     rows.push(`<${aentTag} ${aentAttrs}>
-      <div>
-        <span class="hw-io-tree-indent"> ${rioBranch}</span>
-        <span class="hw-io-tree-rio">${escapeHtml(ad.rio_name || '—')}</span>
-        <span class="text-slate-500"> ${escapeHtml(aentCat)}</span>
-        ${ip ? `<span class="text-slate-600"> ${escapeHtml(ip)}</span>` : ''}
-        <span class="text-slate-600"> panel=${escapeHtml(panel)}</span>
-      </div>
-      <div class="text-cyan-300/80">${escapeHtml(aentCat)}</div>
-      <div class="text-slate-400">${escapeHtml(aentVendor)}</div>
-      <div class="text-slate-500">${escapeHtml(aent?.direction || 'AENT')}</div>
-      <div class="text-slate-500">adapter</div>
+      <span class="hw-io-tree-indent">${rioBranch}</span>
+      <span class="hw-io-tree-rio">${escapeHtml(ad.rio_name || '—')}</span>
+      <span class="text-slate-500"> ${escapeHtml(aentCat)}</span>
+      ${ip ? `<span class="text-slate-600"> ${escapeHtml(ip)}</span>` : ''}
+      <span class="text-slate-600"> · ${escapeHtml(panel)}</span>
     </${aentTag}>`);
 
     const mods = [...(ad.modules || [])]
@@ -3486,34 +3657,28 @@ function renderHardwareRacksTree(model, adapters) {
       const used = mod.channels_used ?? (mod.channels || []).length;
       const total = mod.channel_capacity || 0;
       const unres = mod.channels_unresolved ?? 0;
-      const dir = mod.direction || '—';
       const cat = mod.catalog || mod.type || '—';
       const name = mod.name || cat;
-      const vendor = hwModuleVendor(mod);
       const chLabel = `${used}/${total || '—'}${unres ? ` · ${unres}?` : ''}`;
       const modLast = mi === mods.length - 1;
       const modBranch = modLast ? ' └─ ' : ' ├─ ';
       rows.push(`<button type="button" data-hw-mod="${escapeHtml(key)}"
         class="hw-io-tree-row hw-mod ${selected ? 'hw-selected' : ''}"
         title="${escapeHtml(cat)} slot ${mod.slot}">
-        <div>
-          <span class="hw-io-tree-indent"> ${childPad}${modBranch}</span>
-          <span class="text-slate-500">[${mod.slot ?? '—'}]</span>
-          <span class="text-slate-200"> ${escapeHtml(name)}</span>
-        </div>
-        <div class="text-cyan-300">${escapeHtml(cat)}</div>
-        <div class="text-slate-400">${escapeHtml(vendor)}</div>
-        <div class="text-slate-300">${escapeHtml(dir)}</div>
-        <div class="text-slate-400">${escapeHtml(chLabel)}</div>
+        <span class="hw-io-tree-indent">${childPad}${modBranch}</span>
+        <span class="text-slate-500">[${mod.slot ?? '—'}]</span>
+        <span class="text-slate-200"> ${escapeHtml(name)}</span>
+        <span class="text-slate-600"> · ${escapeHtml(chLabel)}</span>
       </button>`);
     });
   });
 
-  return `<div class="hw-io-tree rounded-xl border border-slate-800/80 bg-[#060a0f] py-1">${rows.join('')}</div>`;
+  return `<div class="hw-io-tree">${rows.join('')}</div>`;
 }
 
 function renderHardwareRacks() {
   const racks = $('hw-io-racks');
+  const tree = $('hw-io-tree');
   const model = ioState.hardwareIo;
   if (!racks || !model) return;
   let adapters = adaptersForSelectedPanel(model);
@@ -3533,6 +3698,7 @@ function renderHardwareRacks() {
       rioSel.addEventListener('change', () => {
         ioState.hardwareRioFilter = rioSel.value || '__all__';
         renderHardwareRacks();
+        renderHardwareModuleDetail();
       });
     }
   }
@@ -3540,34 +3706,130 @@ function renderHardwareRacks() {
     adapters = adapters.filter((a) => a.rio_name === ioState.hardwareRioFilter);
   }
   if (!adapters.length) {
-    racks.innerHTML = `<div class="text-sm text-slate-500 py-6 text-center">No adapters for this control panel (Configio evidence).</div>`;
+    const empty = `<div class="text-sm text-slate-500 py-6 text-center">No adapters for this control panel (Configio evidence).</div>`;
+    racks.innerHTML = empty;
+    if (tree) tree.innerHTML = empty;
     return;
   }
 
-  const flexToggle = $('hw-io-flex-toggle');
-  if (flexToggle && !flexToggle._hwBound) {
-    flexToggle._hwBound = true;
-    flexToggle.checked = !!ioState.hardwareFlexView;
-    flexToggle.addEventListener('change', () => {
-      ioState.hardwareFlexView = !!flexToggle.checked;
-      renderHardwareRacks();
-    });
-  }
-  const useFlex = !!(flexToggle?.checked || ioState.hardwareFlexView);
-  racks.innerHTML = useFlex
-    ? renderHardwareRacksFlex(adapters)
-    : renderHardwareRacksTree(model, adapters);
+  // Primary: CAD FLEX assembly in center; Studio-like tree on the left
+  racks.innerHTML = renderHardwareRacksFlex(adapters);
+  if (tree) tree.innerHTML = renderHardwareRacksTree(model, adapters);
   bindHwModuleClicks(racks);
+  bindHwModuleClicks(tree);
+}
+
+function renderHardwareChannelTable(ad, mod) {
+  const channels = mod.channels || [];
+  if (mod.is_adapter_card) {
+    return `<div class="text-slate-500 text-[11px]">Adapter / AENT head — no digital channels on this card.</div>`;
+  }
+  if (!channels.length) {
+    return `<div class="text-slate-500 text-[11px]">No by_word_bit channels for this module (unused or unresolved in Configio).</div>`;
+  }
+  const selBit = ioState.selectedHwChannel;
+  const rows = channels.map((ch) => {
+    const logical = ch.logical_endpoint?.name || '— unresolved —';
+    const logicalCls = ch.logical_endpoint ? 'text-emerald-300' : 'text-amber-400/90';
+    const prov = ch.provenance?.assign_how || ch.assign_how || ch.provenance?.source_tables?.join('+') || '—';
+    const bit = ch.fortna_bit;
+    const selected = selBit != null && Number(bit) === Number(selBit);
+    return `<tr class="border-b border-slate-800/80 hw-ch-row ${selected ? 'hw-ch-selected' : ''}" data-hw-ch="${escapeHtml(String(bit ?? ''))}" style="cursor:pointer${selected ? ';background:rgba(8,51,68,0.45)' : ''}">
+      <td class="py-1 px-1 mono text-slate-400">${bit ?? '—'}</td>
+      <td class="py-1 px-1 mono text-cyan-200/90">${escapeHtml(ch.physical_address || '')}</td>
+      <td class="py-1 px-1 mono">${ch.fortna_word ?? '—'}.${bit ?? '—'}</td>
+      <td class="py-1 px-1 mono ${logicalCls}">${escapeHtml(logical)}</td>
+      <td class="py-1 px-1 text-slate-600">${escapeHtml(String(prov))}</td>
+    </tr>`;
+  }).join('');
+  return `
+    <div class="text-cyan-300 mono text-xs mb-1">${escapeHtml(ad.rio_name)} · slot ${mod.slot} · ${escapeHtml(mod.catalog || '')} · ${escapeHtml(mod.direction || '')}</div>
+    <table class="w-full text-left text-[10px]">
+      <thead class="text-slate-500 sticky top-0 bg-[#070b10]">
+        <tr>
+          <th class="py-1 px-1">Ch</th>
+          <th class="py-1 px-1">Physical address</th>
+          <th class="py-1 px-1">Configio</th>
+          <th class="py-1 px-1">RUN / endpoint</th>
+          <th class="py-1 px-1">Provenance</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+}
+
+function renderHardwareTerminalFace(ad, mod) {
+  const cat = mod.catalog || mod.type || '';
+  const head = `${ad.rio_name || ''} · [${mod.slot ?? '—'}] ${cat}`;
+  if (mod.is_adapter_card) {
+    return `
+      <div class="flex-term-face">
+        <div class="flex-term-head">${escapeHtml(head)}</div>
+        <div class="text-slate-500 text-[11px]">FlexAdapter1794 — Ethernet head · no digital terminals.</div>
+      </div>`;
+  }
+  const channels = mod.channels || [];
+  const byBit = new Map();
+  for (const ch of channels) {
+    const bit = ch.fortna_bit;
+    if (bit == null || bit === '') continue;
+    byBit.set(Number(bit), ch);
+  }
+  // Catalog capacity from model only — unused bits show SPARE (empty ○), never invent endpoints.
+  const cap = Number(mod.channel_capacity) || 0;
+  const maxBit = channels.reduce((m, ch) => Math.max(m, Number(ch.fortna_bit) || 0), -1);
+  const n = cap > 0 ? cap : (maxBit >= 0 ? maxBit + 1 : 0);
+  if (!n) {
+    return `
+      <div class="flex-term-face">
+        <div class="flex-term-head">${escapeHtml(head)}</div>
+        <div class="text-slate-500 text-[11px]">No proven channels on this module.</div>
+      </div>`;
+  }
+  const terms = [];
+  for (let i = 0; i < n; i += 1) {
+    const ch = byBit.get(i);
+    const logical = ch?.logical_endpoint?.name || '';
+    let dotCls = '';
+    let labelCls = '';
+    let label = 'SPARE';
+    if (ch) {
+      if (logical) {
+        dotCls = 'on';
+        labelCls = 'ok';
+        label = logical;
+      } else {
+        dotCls = 'warn';
+        labelCls = 'warn';
+        label = 'unresolved';
+      }
+    }
+    const selected = ioState.selectedHwChannel != null && Number(ioState.selectedHwChannel) === i;
+    terms.push(`<button type="button" class="flex-term-row ${selected ? 'selected' : ''}" data-hw-ch="${i}">
+      <span class="flex-term-ch">${String(i).padStart(2, '0')}</span>
+      <span class="flex-term-dot ${dotCls}"></span>
+      <span class="flex-term-label ${labelCls}"><span class="flex-term-line">──</span> ${escapeHtml(label)}</span>
+    </button>`);
+  }
+  return `
+    <div class="flex-term-face">
+      <div class="flex-term-head">${escapeHtml(head)} · Data[${mod.data_index ?? '—'}]</div>
+      <div class="flex-term-col">${terms.join('')}</div>
+    </div>`;
 }
 
 function renderHardwareModuleDetail() {
   const detail = $('hw-io-module-detail');
+  const table = $('hw-io-channel-table');
   const wiring = $('hw-io-wiring');
   const model = ioState.hardwareIo;
   if (!detail) return;
   const hit = findHwModule(model, ioState.selectedHwModuleKey);
   if (!hit) {
-    detail.innerHTML = 'Select a module card to list channels (physical address · Fortna word.bit · logical endpoint).';
+    detail.innerHTML = 'Select a module for the vertical terminal face (CH0●── …).';
+    if (table) {
+      table.innerHTML = 'Select a module on the rack to list channels (physical address · Fortna word.bit · logical endpoint).';
+    }
     if (wiring) {
       wiring.textContent = 'Select a module — Level A shows proven channel→logical assignments. Catalog schematics (Level B) are not required yet.';
     }
@@ -3575,60 +3837,22 @@ function renderHardwareModuleDetail() {
   }
   const { adapter: ad, module: mod } = hit;
   const channels = mod.channels || [];
-  if (mod.is_adapter_card) {
-    detail.innerHTML = `
-      <div class="text-cyan-300 mono text-xs mb-2">${escapeHtml(ad.rio_name)} slot ${mod.slot} · ${escapeHtml(mod.catalog || mod.type || '')}</div>
-      <div class="text-slate-500 text-[11px]">Adapter / AENT head — no digital channels on this card.</div>`;
-  } else if (!channels.length) {
-    detail.innerHTML = `
-      <div class="text-cyan-300 mono text-xs mb-2">${escapeHtml(ad.rio_name)} slot ${mod.slot} · ${escapeHtml(mod.catalog || '')} · ${escapeHtml(mod.direction || '')}</div>
-      <div class="text-slate-500 text-[11px]">No by_word_bit channels for this module (unused or unresolved in Configio).</div>`;
-  } else {
-    // Vertical terminal strip (Studio-like module face) + provenance table
-    const terms = channels.map((ch) => {
-      const logical = ch.logical_endpoint?.name || '';
-      const dotCls = logical ? 'on' : 'warn';
-      return `<div class="hw-term-row" data-hw-ch="${escapeHtml(String(ch.fortna_bit ?? ''))}">
-        <div class="mono text-slate-500"><span class="hw-term-dot ${dotCls}"></span>CH${ch.fortna_bit ?? '—'}</div>
-        <div class="mono text-[10px] truncate">
-          <span class="text-cyan-300/90">${escapeHtml(ch.physical_address || '')}</span>
-          ${logical
-            ? ` → <span class="text-emerald-300">${escapeHtml(logical)}</span>`
-            : ' → <span class="text-amber-400/80">unresolved</span>'}
-        </div>
-      </div>`;
-    }).join('');
-    const rows = channels.map((ch) => {
-      const logical = ch.logical_endpoint?.name || '— unresolved —';
-      const logicalCls = ch.logical_endpoint ? 'text-emerald-300' : 'text-amber-400/90';
-      const prov = ch.provenance?.assign_how || ch.assign_how || ch.provenance?.source_tables?.join('+') || '—';
-      return `<tr class="border-b border-slate-800/80">
-        <td class="py-1 px-1 mono text-slate-400">${ch.fortna_bit ?? '—'}</td>
-        <td class="py-1 px-1 mono text-cyan-200/90">${escapeHtml(ch.physical_address || '')}</td>
-        <td class="py-1 px-1 mono">${ch.fortna_word ?? '—'}.${ch.fortna_bit ?? '—'}</td>
-        <td class="py-1 px-1 mono ${logicalCls}">${escapeHtml(logical)}</td>
-        <td class="py-1 px-1 text-slate-600">${escapeHtml(String(prov))}</td>
-      </tr>`;
-    }).join('');
-    detail.innerHTML = `
-      <div class="text-cyan-300 mono text-xs mb-1">${escapeHtml(ad.rio_name)} · ${escapeHtml(ad.panel || '')}</div>
-      <div class="text-slate-300 text-[11px] mb-2">Slot ${mod.slot} · ${escapeHtml(mod.catalog || '')} · Data[${mod.data_index ?? '—'}] · ${escapeHtml(mod.direction || '')}</div>
-      <div class="rounded-lg border border-slate-800 bg-[#05080c] p-2 mb-3">
-        <div class="text-[9px] uppercase tracking-wider text-slate-600 mb-1">Terminals (vertical)</div>
-        <div class="hw-term-col">${terms}</div>
-      </div>
-      <table class="w-full text-left text-[10px]">
-        <thead class="text-slate-500 sticky top-0 bg-[#070b10]">
-          <tr>
-            <th class="py-1 px-1">Ch</th>
-            <th class="py-1 px-1">Physical address</th>
-            <th class="py-1 px-1">Configio</th>
-            <th class="py-1 px-1">RUN / endpoint</th>
-            <th class="py-1 px-1">Provenance</th>
-          </tr>
-        </thead>
-        <tbody>${rows}</tbody>
-      </table>`;
+
+  detail.innerHTML = renderHardwareTerminalFace(ad, mod);
+  if (table) table.innerHTML = renderHardwareChannelTable(ad, mod);
+  const onChClick = (el) => {
+    const raw = el.getAttribute('data-hw-ch');
+    if (raw == null || raw === '') return;
+    ioState.selectedHwChannel = Number(raw);
+    renderHardwareModuleDetail();
+  };
+  detail.querySelectorAll('[data-hw-ch]').forEach((el) => {
+    el.addEventListener('click', () => onChClick(el));
+  });
+  if (table) {
+    table.querySelectorAll('[data-hw-ch]').forEach((el) => {
+      el.addEventListener('click', () => onChClick(el));
+    });
   }
 
   if (wiring) {
@@ -3640,6 +3864,8 @@ function renderHardwareModuleDetail() {
       html += `<div class="space-y-0.5 mono text-[10px]">${proven.slice(0, 24).map((c) =>
         `<div><span class="text-cyan-300">${escapeHtml(c.physical_address || '')}</span> → <span class="text-emerald-300">${escapeHtml(c.logical_endpoint.name)}</span></div>`
       ).join('')}${proven.length > 24 ? `<div class="text-slate-600">… +${proven.length - 24} more</div>` : ''}</div>`;
+    } else if (mod.is_adapter_card) {
+      html += `<div class="text-slate-500 text-[11px]">Adapter head — no channel wiring.</div>`;
     } else {
       html += `<div class="text-slate-500 text-[11px]">No proven channel→logical assignments on this module.</div>`;
     }
@@ -3648,6 +3874,7 @@ function renderHardwareModuleDetail() {
     wiring.innerHTML = html;
   }
 }
+
 
 async function refreshHardwareIo() {
   if (!state.workspace) {
@@ -5676,6 +5903,7 @@ function renderWorkbook() {
     if (typeBar) { typeBar.classList.add('hidden'); typeBar.innerHTML = ''; }
     if (areasEl) areasEl.textContent = '—';
     if ($('autogen-detail')) $('autogen-detail').textContent = '—';
+    try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }
     return;
   }
   const opts = wb.options || {};
@@ -5882,6 +6110,7 @@ function renderWorkbook() {
         <div class="text-sm font-semibold text-violet-300 mono">${v}</div>
       </div>`).join('');
   }
+  try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }
 }
 
 function switchWbTab(tab) {
@@ -6415,6 +6644,7 @@ async function runAutogenGenerate(mode) {
   autogenState.lastGenerateIoMapError = null;
   setAutogenStatus(r.recovered ? 'Complete (recovered)' : 'Complete', 'ready');
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+  try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }
   if ($('autogen-summary')) {
     $('autogen-summary').innerHTML = `
       <div class="space-y-1 text-sm">
