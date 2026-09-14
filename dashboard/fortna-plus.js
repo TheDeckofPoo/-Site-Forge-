@@ -409,34 +409,7 @@ function refreshAutogenCompileHub() {
     ['sorter', 'autogen-hub-sorter', 'autogen-hub-sorter-detail'],
     ['system', 'autogen-hub-system', 'autogen-hub-system-detail'],
   ], { buildFacing: false });
-  // I/O tab Ready For Build — same truth; user-facing READY FOR BUILD label
-  paintHubReadinessCards(map, [
-    ['hardware', 'io-hub-hardware', 'io-hub-hardware-detail'],
-    ['transport', 'io-hub-transport', 'io-hub-transport-detail'],
-    ['sawtooth', 'io-hub-sawtooth', 'io-hub-sawtooth-detail'],
-    ['sorter', 'io-hub-sorter', 'io-hub-sorter-detail'],
-    ['system', 'io-hub-system', 'io-hub-system-detail'],
-  ], { buildFacing: true });
-
-  const pre = autogenBuildPreflight();
-  const hint = $('io-hub-build-hint');
-  const goBtn = $('btn-io-goto-autogen');
-  if (hint) {
-    hint.textContent = pre.ok
-      ? 'Required cards READY FOR BUILD — open Autogen and Build PLC.'
-      : (pre.blockers?.[0]?.message
-        ? `Waiting: ${pre.blockers[0].message}`
-        : 'Jump to Autogen when required cards show READY FOR BUILD.');
-    hint.className = pre.ok
-      ? 'text-[9px] text-emerald-400/90 leading-relaxed'
-      : 'text-[9px] text-slate-500 leading-relaxed';
-  }
-  if (goBtn) {
-    goBtn.classList.toggle('opacity-60', !pre.ok);
-    goBtn.title = pre.ok
-      ? 'Open PLC Autogen · Build PLC'
-      : 'Open Autogen (some subsystems still need Apply)';
-  }
+  // Ready For Build strip removed from I/O & Prints — Compile hub on Autogen only.
 
   const evT = transportEvidence();
   const evS = sawtoothEvidence();
@@ -3485,138 +3458,28 @@ function bindHwModuleClicks(root) {
   });
 }
 
-/** Map catalog → CAD component kind (FlexAdapter1794 / FlexDI16 / FlexDO8…). */
-function flexModKind(mod) {
-  if (!mod) return 'unk';
-  const cat = String(mod.catalog || mod.type || '').toUpperCase();
-  if (mod.is_adapter_card || /AENT/.test(cat)) return 'aent';
-  if (/I[AB]16|IW16/.test(cat)) return 'di16';
-  if (/I[AB]8/.test(cat)) return 'di8';
-  if (/I[AB]4/.test(cat)) return 'di4';
-  if (/O[ABW]16/.test(cat)) return 'do16';
-  if (/O[ABW]8/.test(cat)) return 'do8';
-  if (/O[ABW]4/.test(cat)) return 'do4';
-  const dir = String(mod.direction || '').toUpperCase();
-  if (dir === 'I') return 'di';
-  if (dir === 'O') return 'do';
-  return 'unk';
-}
-
-function flexModClass(kind) {
-  const map = {
-    aent: 'flex-mod flex-mod-aent',
-    di16: 'flex-mod flex-mod-di flex-mod-di16',
-    di8: 'flex-mod flex-mod-di flex-mod-di8',
-    di4: 'flex-mod flex-mod-di flex-mod-di4',
-    di: 'flex-mod flex-mod-di',
-    do16: 'flex-mod flex-mod-do flex-mod-do16',
-    do8: 'flex-mod flex-mod-do flex-mod-do8',
-    do4: 'flex-mod flex-mod-do flex-mod-do4',
-    do: 'flex-mod flex-mod-do',
-    unk: 'flex-mod flex-mod-unk',
-  };
-  return map[kind] || map.unk;
-}
-
-function flexModKindLabel(kind) {
-  const map = {
-    aent: 'AENT',
-    di16: 'DI16', di8: 'DI8', di4: 'DI4', di: 'DI',
-    do16: 'DO16', do8: 'DO8', do4: 'DO4', do: 'DO',
-    unk: 'MOD',
-  };
-  return map[kind] || 'MOD';
-}
-
-/** LED states from model channels only — empty sockets for unused capacity, never invent endpoints. */
-function flexLedStates(mod) {
-  const cap = Number(mod.channel_capacity) || 0;
-  const channels = mod.channels || [];
-  const byBit = new Map();
-  for (const ch of channels) {
-    const bit = ch.fortna_bit;
-    if (bit == null || bit === '') continue;
-    byBit.set(Number(bit), ch);
-  }
-  const n = cap > 0 ? cap : channels.length;
-  const out = [];
-  for (let i = 0; i < n; i += 1) {
-    const ch = byBit.get(i);
-    if (!ch) out.push('off');
-    else if (ch.logical_endpoint?.name) out.push('on');
-    else out.push('warn');
-  }
-  return out;
-}
-
-/** FlexAdapter1794 / FlexDI* / FlexDO* CAD module face from HardwareIOModel catalog. */
+/** Physical 1794 FLEX module face — delegated to dashboard/hardware/flex-rack.js */
 function renderFlexModuleCard(ad, mod) {
-  const key = hwModuleKey(ad.rio_name, mod.slot);
-  const selected = key === ioState.selectedHwModuleKey;
-  const kind = flexModKind(mod);
-  const cat = mod.catalog || mod.type || '—';
-  const used = mod.channels_used ?? (mod.channels || []).length;
-  const total = mod.channel_capacity || 0;
-  const unres = mod.channels_unresolved ?? 0;
-  const cls = `${flexModClass(kind)}${selected ? ' selected' : ''}`;
-  const dirHint = kind === 'aent' ? 'Ethernet adapter'
-    : kind.startsWith('di') ? `${total || used || '?'}-channel digital input`
-    : kind.startsWith('do') ? `${total || used || '?'}-channel digital output`
-    : 'module';
-  const title = kind === 'aent'
-    ? `Slot ${mod.slot ?? 0}\n${cat}\n${dirHint}`
-    : `Slot ${mod.slot ?? '—'}\n${cat}\n${dirHint}\n${used} resolved · ${unres} unresolved`;
-
-  if (kind === 'aent') {
-    return `
-      <button type="button" data-hw-mod="${escapeHtml(key)}" class="${cls}" title="${escapeHtml(title)}">
-        <div class="fm-slot">[${mod.slot ?? 0}]</div>
-        <div class="fm-cat">${escapeHtml(cat)}</div>
-        <div class="fm-kind">FlexAdapter1794</div>
-        <div class="fm-ch">adapter</div>
-        <div class="fm-ports" aria-hidden="true"><span class="fm-port"></span><span class="fm-port"></span></div>
-        <div class="fm-led-net" title="network"></div>
-      </button>`;
-  }
-
-  const leds = flexLedStates(mod);
-  const ledCols = leds.length > 8 ? 'cols-16' : 'cols-8';
-  const ledHtml = leds.map((st) => `<span class="fm-led ${st === 'on' ? 'on' : st === 'warn' ? 'warn' : ''}"></span>`).join('');
-  const chHtml = total
-    ? `<span class="ok">${used}</span>/<span>${total}</span>${unres ? ` · <span class="warn">${unres}?</span>` : ''}`
-    : `${used}${unres ? ` · <span class="warn">${unres}?</span>` : ''}`;
-  const component = kind.startsWith('di') ? `FlexDI${kind.replace(/\D/g, '') || ''}`
-    : kind.startsWith('do') ? `FlexDO${kind.replace(/\D/g, '') || ''}`
-    : 'FlexMod';
-
-  return `
-    <button type="button" data-hw-mod="${escapeHtml(key)}" class="${cls}" title="${escapeHtml(title)}">
-      <div class="fm-slot">[${mod.slot ?? '—'}]</div>
-      <div class="fm-cat">${escapeHtml(cat)}</div>
-      <div class="fm-kind">${escapeHtml(component || flexModKindLabel(kind))}</div>
-      <div class="fm-ch">${chHtml}</div>
-      <div class="fm-leds ${ledCols}" aria-hidden="true">${ledHtml}</div>
+  if (!globalThis.FlexRack || typeof FlexRack.renderModule !== 'function') {
+    return `<button type="button" data-hw-mod="${escapeHtml(hwModuleKey(ad.rio_name, mod.slot))}" class="flex-phys-mod flex-phys-mod--io">
+      <span style="color:#94a3b8;font-size:11px;padding:8px;line-height:1.3">FLEX SVG missing</span>
     </button>`;
+  }
+  const key = hwModuleKey(ad.rio_name, mod.slot);
+  return FlexRack.renderModule(ad, mod, {
+    selected: key === ioState.selectedHwModuleKey,
+    moduleKey: key,
+  });
 }
 
 function renderHardwareRacksFlex(adapters) {
-  // ONE continuous FLEX assembly per adapter (adapter + modules side-by-side)
-  return `<div class="flex-rack-wrap">${adapters.map((ad) => {
-    const aent = (ad.modules || []).find((m) => m.is_adapter_card);
-    const aentLabel = aent ? (aent.catalog || aent.type || 'AENT') : '—';
-    const mods = [...(ad.modules || [])].sort((a, b) => (Number(a.slot) || 0) - (Number(b.slot) || 0));
-    const cards = mods.map((mod) => renderFlexModuleCard(ad, mod)).join('');
-    return `
-      <div class="flex-rack-card">
-        <div class="flex-rack-meta">
-          <span class="rio">${escapeHtml(ad.rio_name || '—')}</span>
-          <span class="mono">${escapeHtml(ad.eipcfg_name || ad.name || '')}</span>
-          <span>AENT ${escapeHtml(aentLabel)}</span>
-          <span class="ml-auto mono">${escapeHtml(ad.targetip || '')} · ${escapeHtml(ad.panel || '—')}</span>
-        </div>
-        <div class="flex-rack">${cards}</div>
-      </div>`;
-  }).join('')}</div>`;
+  if (!globalThis.FlexRack || typeof FlexRack.renderRacks !== 'function') {
+    return `<div class="text-sm text-slate-500 py-6 text-center">FLEX rack renderer not loaded (flex-rack.js).</div>`;
+  }
+  return FlexRack.renderRacks(adapters, {
+    selectedKey: ioState.selectedHwModuleKey || '',
+    moduleKeyFn: hwModuleKey,
+  });
 }
 
 function renderHardwareRacksTree(model, adapters) {

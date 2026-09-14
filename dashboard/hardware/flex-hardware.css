@@ -1,0 +1,103 @@
+/* Physical 1794 FLEX I/O rack — center pane only */
+
+.flex-phys-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.flex-phys-rack-card {
+  border: 1px solid #1e293b;
+  border-radius: 12px;
+  background: #0a1018;
+  padding: 0.65rem 0.75rem;
+}
+
+.flex-phys-rack {
+  position: relative;
+  overflow-x: auto;
+  padding: 16px 12px 8px;
+  background:
+    linear-gradient(180deg, #121820 0%, #0a0e14 55%, #070a0e 100%);
+  border: 1px solid #1e293b;
+  border-radius: 8px;
+}
+
+.flex-phys-row {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: flex-end;
+  gap: 3px;
+  position: relative;
+  z-index: 1;
+  min-height: 260px;
+}
+
+.flex-phys-rail {
+  margin-top: -8px;
+  padding: 0 2px 6px;
+  line-height: 0;
+  overflow: visible;
+  min-width: 100%;
+}
+
+.flex-phys-din {
+  display: block;
+  height: 14px;
+  min-width: 100%;
+}
+
+.flex-phys-mod {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  padding: 0;
+  margin: 0;
+  border: 2px solid transparent;
+  border-radius: 5px;
+  background: transparent;
+  cursor: pointer;
+  line-height: 0;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.55);
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
+}
+
+.flex-phys-mod--adapter {
+  width: 172px;
+}
+
+.flex-phys-mod--io {
+  width: 100px;
+}
+
+.flex-phys-mod .flex-phys-svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  pointer-events: none;
+}
+
+.flex-phys-mod:hover {
+  border-color: #64748b;
+}
+
+.flex-phys-mod.selected,
+.flex-phys-mod.hw-selected {
+  border-color: #22d3ee;
+  border-width: 2px;
+  box-shadow:
+    0 0 0 2px rgba(34, 211, 238, 0.35),
+    0 0 14px rgba(34, 211, 238, 0.28),
+    0 8px 18px rgba(0, 0, 0, 0.55);
+}
+
+/* Kill legacy KPI card fills if any old .flex-mod markup remains inside phys rack */
+.flex-phys-rack .flex-mod,
+.flex-phys-wrap .flex-mod {
+  background: transparent !important;
+  border-color: transparent !important;
+  width: auto !important;
+  min-height: 0 !important;
+  padding: 0 !important;
+  color: inherit !important;
+}

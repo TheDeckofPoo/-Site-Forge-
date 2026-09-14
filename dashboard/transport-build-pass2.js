@@ -609,12 +609,70 @@
     refreshPass2Chrome();
   }
 
+  /** Rebuild Control Panel checkboxes from RUN-discovered tags (not hard-coded CP1/CP2/CP3). */
   function refreshCpFilterUi() {
-    const { tb } = A();
-    if (!tb.cpFilters) tb.cpFilters = { CP1: false, CP2: false, CP3: false };
-    ['CP1', 'CP2', 'CP3'].forEach((cp) => {
-      const el = $(`tb-cp-filter-${cp}`);
-      if (el) el.checked = !!tb.cpFilters[cp];
+    const { tb, escapeHtml, discoveredControlPanels } = A();
+    if (!tb.cpFilters || typeof tb.cpFilters !== 'object') tb.cpFilters = {};
+    const host = $('tb-cp-filters');
+    const panels = typeof discoveredControlPanels === 'function'
+      ? discoveredControlPanels()
+      : [];
+    // Keep filter keys for panels that still exist; drop stale hard-coded ones
+    Object.keys(tb.cpFilters).forEach((k) => {
+      if (!panels.includes(k)) delete tb.cpFilters[k];
+    });
+    panels.forEach((cp) => {
+      if (tb.cpFilters[cp] == null) tb.cpFilters[cp] = false;
+    });
+    // Bulk CP dropdown options from discovered panels
+    const bulk = $('tb-bulk-cp');
+    if (bulk) {
+      const cur = bulk.value;
+      const opts = ['<option value="">—</option>']
+        .concat(panels.map((cp) =>
+          `<option value="${escapeHtml(cp)}">${escapeHtml(cp)}</option>`))
+        .concat(['<option value="Other">Other</option>', '<option value="clear">Clear</option>']);
+      bulk.innerHTML = opts.join('');
+      if ([...bulk.options].some((o) => o.value === cur)) bulk.value = cur;
+    }
+    if (!host) return;
+    const sig = panels.join('|') + '::' + panels.map((cp) => (tb.cpFilters[cp] ? '1' : '0')).join('');
+    if (host.dataset.cpSig === sig) return;
+    host.dataset.cpSig = sig;
+    if (!panels.length) {
+      host.innerHTML = '<span class="text-[10px] text-slate-600">No Control Panels on this graph yet — Auto Build or assign CP on selection</span>';
+      return;
+    }
+    const palette = ['text-cyan-300/90 border-cyan-900/50', 'text-violet-300/90 border-violet-900/50',
+      'text-amber-300/90 border-amber-900/50', 'text-emerald-300/90 border-emerald-900/50',
+      'text-rose-300/90 border-rose-900/50', 'text-sky-300/90 border-sky-900/50'];
+    host.innerHTML = panels.map((cp, i) => {
+      const tone = palette[i % palette.length];
+      const checked = tb.cpFilters[cp] ? 'checked' : '';
+      const id = `tb-cp-filter-${cp.replace(/[^A-Za-z0-9_-]/g, '_')}`;
+      const sid = `tb-cp-select-${cp.replace(/[^A-Za-z0-9_-]/g, '_')}`;
+      return `<label class="flex items-center gap-1 ${tone.split(' ')[0]} cursor-pointer" title="Highlight ${escapeHtml(cp)}">
+        <input type="checkbox" id="${id}" data-tb-cp="${escapeHtml(cp)}" class="rounded border-slate-600 bg-slate-900" ${checked}> ${escapeHtml(cp)}
+      </label>
+      <button type="button" id="${sid}" data-tb-cp-select="${escapeHtml(cp)}" class="btn-ghost text-[9px] px-1.5 py-0.5 rounded border ${tone}" title="Select all ${escapeHtml(cp)} nodes">Select</button>`;
+    }).join('');
+    host.querySelectorAll('[data-tb-cp]').forEach((el) => {
+      el.addEventListener('change', () => {
+        const cp = el.getAttribute('data-tb-cp') || '';
+        if (!cp) return;
+        if (!tb.cpFilters) tb.cpFilters = {};
+        tb.cpFilters[cp] = !!el.checked;
+        host.dataset.cpSig = ''; // force rebuild after save/render
+        try { A().save(); } catch (_) { /* ignore */ }
+        A().render();
+        A().status(`CP filter ${cp}: ${tb.cpFilters[cp] ? 'ON' : 'OFF'} (highlight only)`);
+      });
+    });
+    host.querySelectorAll('[data-tb-cp-select]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const cp = btn.getAttribute('data-tb-cp-select') || '';
+        if (cp) selectCpGroup(cp);
+      });
     });
   }
 
@@ -1307,6 +1365,39 @@
     const m = $('tb-ctx-menu');
     if (!m) return;
     m.dataset.nodeId = nodeId || '';
+    // Populate Move-to-Area choices from existing areas (exclude current home of node)
+    const moveHost = $('tb-ctx-move-areas');
+    if (moveHost) {
+      const { tb, escapeHtml } = A();
+      let homeId = '';
+      (tb.areas || []).forEach((a) => {
+        if ((a.nodes || []).some((n) => n.id === nodeId)) homeId = a.id;
+      });
+      const areas = (tb.areas || []).filter((a) => a.id !== homeId);
+      if (!areas.length) {
+        moveHost.innerHTML = '<div class="px-3 py-1 text-slate-600">No other areas yet — use New Area</div>';
+      } else {
+        moveHost.innerHTML = areas.map((a) =>
+          `<button type="button" data-tb-ctx-move="${escapeHtml(a.id)}" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-fuchsia-200">→ ${escapeHtml(a.name || a.id)}</button>`
+        ).join('');
+        moveHost.querySelectorAll('[data-tb-ctx-move]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const destId = btn.getAttribute('data-tb-ctx-move');
+            hideCtxMenu();
+            const dest = (tb.areas || []).find((a) => a.id === destId);
+            if (!dest) return;
+            // Ensure the right-clicked node is in selection
+            if (!(tb.selectedIds || []).includes(nodeId)) {
+              tb.selectedIds = [nodeId];
+              tb.selectedId = nodeId;
+            } else if (nodeId && !tb.selectedId) {
+              tb.selectedId = nodeId;
+            }
+            moveSelectionToArea(dest, 'Moved');
+          });
+        });
+      }
+    }
     m.classList.remove('hidden');
     m.style.display = 'block';
     m.style.left = `${x}px`;
@@ -2016,18 +2107,7 @@
       if (!v) return;
       applyControlPanelToSelection(v === 'clear' ? '' : v);
     });
-    ['CP1', 'CP2', 'CP3'].forEach((cp) => {
-      $(`tb-cp-filter-${cp}`)?.addEventListener('change', (ev) => {
-        const { tb, save, render, status } = A();
-        if (!tb.cpFilters) tb.cpFilters = { CP1: false, CP2: false, CP3: false };
-        tb.cpFilters[cp] = !!ev.target.checked;
-        try { save(); } catch (_) { /* ignore */ }
-        render();
-        status(`CP filter ${cp}: ${tb.cpFilters[cp] ? 'ON' : 'OFF'} (highlight only)`);
-        refreshPass2Chrome();
-      });
-      $(`tb-cp-select-${cp}`)?.addEventListener('click', () => selectCpGroup(cp));
-    });
+    // CP filter checkboxes are bound dynamically in refreshCpFilterUi() after Auto Build
 
     $('tb-inv-filter')?.addEventListener('input', () => renderInventoryPalette());
 

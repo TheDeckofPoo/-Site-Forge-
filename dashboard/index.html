@@ -864,10 +864,13 @@
                     <input id="autogen-opt-system-logic" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
                     <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">System Logic</span></span>
                   </label>
-                  <label class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20 cursor-pointer">
-                    <input id="autogen-opt-iomap" type="checkbox" checked class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500">
-                    <span class="min-w-0"><span class="block text-[11px] text-slate-200 font-medium">IO_MAP</span></span>
-                  </label>
+                  <div class="flex items-start gap-2.5 p-2 rounded-lg border border-emerald-900/30 bg-emerald-950/20">
+                    <input id="autogen-opt-iomap" type="checkbox" checked disabled class="mt-0.5 rounded border-slate-600 bg-slate-900 text-emerald-500 opacity-70">
+                    <span class="min-w-0">
+                      <span class="block text-[11px] text-slate-200 font-medium">IO_MAP</span>
+                      <span class="block text-[9px] text-slate-500">Always included automatically — reference only on Hardware/I/O</span>
+                    </span>
+                  </div>
                 </div>
               </div>
               <div>
@@ -1092,7 +1095,7 @@
                 <strong class="text-slate-300">Advanced · workbook tables</strong> (diagnostics only).
                 Day-to-day editing: <strong class="text-fuchsia-300">Transportation</strong>,
                 <strong class="text-cyan-300">Hardware/I/O</strong>, <strong class="text-amber-300">Sawtooth</strong>.
-                Compile hub below still drives Build PLC — same READY truth as Hardware/I/O Ready For Build.
+                Compile hub below still drives Build PLC. IO_MAP is always included automatically.
               </div>
             </div>
             <pre id="autogen-detail" class="mono text-[10px] text-slate-600 whitespace-pre-wrap max-h-40 overflow-auto border border-slate-800/60 rounded-lg p-2 bg-[#070b12]">—</pre>
@@ -1362,48 +1365,6 @@
         </div>
       </div>
 
-      <!-- Slim Ready For Build strip (does not steal center from rack) -->
-      <div id="io-ready-for-build" class="shrink-0 rounded-xl border border-violet-900/40 bg-gradient-to-r from-[#12101a] to-[#0a1018] px-3 py-1.5">
-        <div class="flex flex-wrap items-center gap-2">
-          <i class="fa-solid fa-layer-group text-violet-400 text-xs"></i>
-          <span class="text-[11px] font-semibold text-violet-300 mr-1">Ready For Build</span>
-          <div id="io-hub-readiness" class="flex flex-wrap gap-1.5 text-[10px] flex-1 min-w-0">
-            <div class="hub-ready-card px-2 py-1 rounded-lg border border-slate-800/80 bg-[#0c1219]" data-ready-key="hardware" data-status="NOT_DETECTED">
-              <span class="text-sky-400/90 font-semibold">HW</span>
-              <span id="io-hub-hardware" class="hub-status ml-1">NOT DETECTED</span>
-              <span id="io-hub-hardware-detail" class="hidden">Load RUN</span>
-            </div>
-            <div class="hub-ready-card px-2 py-1 rounded-lg border border-slate-800/80 bg-[#0c1219]" data-ready-key="transport" data-status="NOT_DETECTED">
-              <span class="text-fuchsia-400/90 font-semibold">TR</span>
-              <span id="io-hub-transport" class="hub-status ml-1">NOT DETECTED</span>
-              <span id="io-hub-transport-detail" class="hidden">Apply on Transport Build</span>
-              <button type="button" class="tab-jump hidden" data-jump-tab="transport">Open Transport →</button>
-            </div>
-            <div class="hub-ready-card px-2 py-1 rounded-lg border border-slate-800/80 bg-[#0c1219]" data-ready-key="sawtooth" data-status="NOT_DETECTED">
-              <span class="text-amber-400/90 font-semibold">ST</span>
-              <span id="io-hub-sawtooth" class="hub-status ml-1">NOT DETECTED</span>
-              <span id="io-hub-sawtooth-detail" class="hidden">Apply on Sawtooth Merge</span>
-              <button type="button" class="tab-jump hidden" data-jump-tab="sawtooth">Open Sawtooth →</button>
-            </div>
-            <div class="hub-ready-card px-2 py-1 rounded-lg border border-slate-800/80 bg-[#0c1219]" data-ready-key="sorter" data-status="NOT_DETECTED">
-              <span class="text-cyan-400/90 font-semibold">SO</span>
-              <span id="io-hub-sorter" class="hub-status ml-1">NOT DETECTED</span>
-              <span id="io-hub-sorter-detail" class="hidden">Apply on Sorter Build</span>
-              <button type="button" class="tab-jump hidden" data-jump-tab="sorter">Open Sorter →</button>
-            </div>
-            <div class="hub-ready-card px-2 py-1 rounded-lg border border-slate-800/80 bg-[#0c1219]" data-ready-key="system" data-status="NOT_DETECTED">
-              <span class="text-violet-400/90 font-semibold">SYS</span>
-              <span id="io-hub-system" class="hub-status ml-1">NOT DETECTED</span>
-              <span id="io-hub-system-detail" class="hidden">Sys · Comms · Logic · IO_MAP</span>
-            </div>
-          </div>
-          <button type="button" id="btn-io-goto-autogen" class="btn-primary px-3 py-1 rounded-lg text-[10px] font-semibold shrink-0" data-jump-tab="autogen">
-            <i class="fa-solid fa-microchip mr-1"></i>Autogen
-          </button>
-          <div id="io-hub-build-hint" class="text-[9px] text-slate-600 max-w-[14rem] truncate">Jump to Autogen when ready.</div>
-        </div>
-      </div>
-
       <!-- MAIN CAD: tree 18% | rack 57% | terminals 25% -->
       <div class="flex-1 min-h-0 flex gap-2">
         <!-- LEFT: Hardware tree -->
@@ -1652,7 +1613,7 @@
       </details>
 
       <style>
-        /* Hardware CAD — FLEX assembly */
+        /* Hardware CAD — FLEX assembly (physical SVG via hardware/flex-hardware.css) */
         .flex-rack-wrap { display: flex; flex-direction: column; gap: 0.75rem; }
         .flex-rack-card {
           border: 1px solid #1e293b; border-radius: 12px; background: #0a1018;
@@ -1663,83 +1624,8 @@
           margin-bottom: 0.45rem; font-size: 10px; color: #64748b;
         }
         .flex-rack-meta .rio { font-family: ui-monospace, monospace; font-size: 12px; font-weight: 600; color: #67e8f9; }
-        .flex-rack {
-          display: flex; flex-wrap: nowrap; align-items: stretch; gap: 2px;
-          overflow-x: auto; padding: 14px 10px 18px;
-          background:
-            linear-gradient(180deg, #0c1219 0%, #05090d 40%, #05090d 100%);
-          border: 1px solid #1e293b; border-radius: 8px;
-          position: relative;
-        }
-        .flex-rack::before {
-          content: ""; position: absolute; left: 8px; right: 8px; bottom: 8px; height: 6px;
-          border-radius: 2px; background: linear-gradient(90deg, #334155, #475569, #334155);
-          box-shadow: inset 0 1px 0 rgba(148,163,184,0.25);
-          pointer-events: none;
-        }
-        .flex-mod {
-          position: relative; z-index: 1;
-          flex: 0 0 auto; width: 4.4rem; min-height: 9.2rem;
-          border-radius: 3px 3px 1px 1px; border: 1px solid #334155;
-          background: linear-gradient(180deg, #1a2433 0%, #101820 45%, #0a0f16 100%);
-          box-shadow: inset 0 1px 0 rgba(148,163,184,0.14), 0 6px 14px rgba(0,0,0,0.55);
-          padding: 5px 4px 8px; text-align: center; cursor: pointer; color: #cbd5e1;
-          display: flex; flex-direction: column; align-items: center; gap: 2px;
-        }
-        .flex-mod:hover { border-color: #64748b; }
-        .flex-mod.selected, .flex-mod.hw-selected {
-          border-color: #22d3ee;
-          box-shadow: 0 0 0 2px rgba(34,211,238,0.4), 0 6px 16px rgba(0,0,0,0.55);
-        }
-        .flex-mod-aent {
-          width: 5.6rem; min-height: 9.6rem;
-          background: linear-gradient(180deg, #243044 0%, #152033 50%, #0d1520 100%);
-          border-color: #475569;
-        }
-        .flex-mod-di {
-          background: linear-gradient(180deg, #14241c 0%, #0d1814 50%, #080f0c 100%);
-          border-color: #14532d;
-        }
-        .flex-mod-do {
-          background: linear-gradient(180deg, #241814 0%, #18100d 50%, #0f0a08 100%);
-          border-color: #7c2d12;
-        }
-        .flex-mod-unk { opacity: 0.92; }
-        .flex-mod .fm-slot { font-size: 9px; color: #64748b; letter-spacing: 0.06em; }
-        .flex-mod .fm-cat {
-          font-size: 10px; font-family: ui-monospace, monospace; color: #67e8f9;
-          font-weight: 700; line-height: 1.15; word-break: break-all; margin-top: 2px;
-        }
-        .flex-mod-aent .fm-cat { color: #93c5fd; }
-        .flex-mod-di .fm-cat { color: #6ee7b7; }
-        .flex-mod-do .fm-cat { color: #fdba74; }
-        .flex-mod .fm-kind { font-size: 8px; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; margin-top: 2px; }
-        .flex-mod .fm-ch { font-size: 9px; color: #64748b; margin-top: 2px; }
-        .flex-mod .fm-ch .ok { color: #22c55e; }
-        .flex-mod .fm-ch .warn { color: #f59e0b; }
-        .flex-mod .fm-leds {
-          display: grid; gap: 2px; margin-top: auto; padding-top: 6px;
-          justify-items: center;
-        }
-        .flex-mod .fm-leds.cols-8 { grid-template-columns: repeat(4, 1fr); width: 100%; }
-        .flex-mod .fm-leds.cols-16 { grid-template-columns: repeat(4, 1fr); width: 100%; }
-        .flex-mod .fm-led {
-          width: 7px; height: 7px; border-radius: 50%;
-          background: #1e293b; box-shadow: inset 0 0 0 1px #334155;
-        }
-        .flex-mod .fm-led.on { background: #22c55e; box-shadow: 0 0 5px rgba(34,197,94,0.55); }
-        .flex-mod .fm-led.warn { background: #f59e0b; box-shadow: 0 0 5px rgba(245,158,11,0.45); }
-        .flex-mod-aent .fm-ports {
-          display: flex; gap: 4px; margin-top: auto; padding-top: 8px;
-        }
-        .flex-mod-aent .fm-port {
-          width: 14px; height: 10px; border-radius: 1px;
-          background: #0f172a; border: 1px solid #334155;
-        }
-        .flex-mod-aent .fm-led-net {
-          width: 8px; height: 8px; border-radius: 50%; margin-top: 6px;
-          background: #1d4ed8; box-shadow: 0 0 6px rgba(59,130,246,0.5);
-        }
+        /* Legacy .flex-mod KPI cards — neutralized; physical modules use .flex-phys-mod */
+        .flex-mod { display: none !important; }
 
         /* Left tree */
         .hw-io-tree { font-family: ui-monospace, 'JetBrains Mono', monospace; font-size: 11px; color: #cbd5e1; }
@@ -2442,7 +2328,7 @@
             <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/90 font-semibold">A · Create a new Area from conveyors</div>
             <ol class="list-decimal list-inside space-y-1 text-slate-300">
               <li>Click <strong class="text-emerald-300">Auto Build</strong> (loads RUN conveyors onto the canvas).</li>
-              <li>Optional: use <strong class="text-violet-300">Control Panel</strong> checkboxes to highlight CP1/CP2/CP3.</li>
+              <li>Optional: use <strong class="text-violet-300">Control Panel</strong> checkboxes (built from RUN after Auto Build — e.g. CP4 on PLC4).</li>
               <li>Drag on empty canvas to <strong class="text-sky-300">box-select</strong> conveyors (purple dashed rectangle). Ctrl/Meta = add · Alt = subtract.</li>
               <li>When the blue bar shows <span class="mono text-sky-300">Selected: N conveyors</span>, click
                 <strong class="text-fuchsia-200">Create Area from Selection</strong> and name it (e.g. <span class="mono">ModuleB_Area</span>).</li>
@@ -2475,6 +2361,9 @@
           <select id="tb-area-select" class="bg-slate-900 border border-slate-700 rounded-lg text-xs px-2 py-1.5 text-slate-200 min-w-[140px]"></select>
           <button type="button" id="tb-area-new" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-fuchsia-900/50 text-fuchsia-300" title="New area">
             <i class="fa-solid fa-plus mr-1"></i>New
+          </button>
+          <button type="button" id="tb-area-delete-btn" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-red-900/50 text-red-300" title="Delete current area">
+            <i class="fa-solid fa-trash mr-1"></i>Delete
           </button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
           <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-600/70 text-emerald-200 font-semibold" title="Auto Build from imported RUN">
@@ -2563,22 +2452,13 @@
         </button>
         <span class="text-[9px] text-slate-600 ml-auto">New conveyors inherit these · changing context does not rewrite existing nodes</span>
       </div>
-      <!-- Control Panel filter / highlight (organizational — not PLC ownership) -->
+      <!-- Control Panel filter / highlight — built dynamically from RUN evidence after Auto Build -->
       <div class="tb-cp-bar shrink-0 px-4 py-1 flex items-center gap-3 flex-wrap text-[11px] border-b border-slate-800 bg-[#0b1219]">
-        <span class="text-[10px] uppercase tracking-widest text-violet-400/80 font-semibold" title="Control Panel is presentation/metadata only. Does not change controller ownership, I/O, Area, or PLC logic.">Control Panel</span>
-        <label class="flex items-center gap-1 text-cyan-300/90 cursor-pointer" title="Highlight CP1">
-          <input type="checkbox" id="tb-cp-filter-CP1" class="rounded border-slate-600 bg-slate-900"> CP1
-        </label>
-        <button type="button" id="tb-cp-select-CP1" class="btn-ghost text-[9px] px-1.5 py-0.5 rounded border border-cyan-900/50 text-cyan-400" title="Select all CP1 nodes (group move)">Select</button>
-        <label class="flex items-center gap-1 text-violet-300/90 cursor-pointer" title="Highlight CP2">
-          <input type="checkbox" id="tb-cp-filter-CP2" class="rounded border-slate-600 bg-slate-900"> CP2
-        </label>
-        <button type="button" id="tb-cp-select-CP2" class="btn-ghost text-[9px] px-1.5 py-0.5 rounded border border-violet-900/50 text-violet-300" title="Select all CP2 nodes (group move)">Select</button>
-        <label class="flex items-center gap-1 text-amber-300/90 cursor-pointer" title="Highlight CP3">
-          <input type="checkbox" id="tb-cp-filter-CP3" class="rounded border-slate-600 bg-slate-900"> CP3
-        </label>
-        <button type="button" id="tb-cp-select-CP3" class="btn-ghost text-[9px] px-1.5 py-0.5 rounded border border-amber-900/50 text-amber-300" title="Select all CP3 nodes (group move)">Select</button>
-        <span class="text-[9px] text-slate-600">Wheel zoom · Mid-drag pan · Shift+wheel pan · filters highlight only</span>
+        <span class="text-[10px] uppercase tracking-widest text-violet-400/80 font-semibold" title="Control Panel is presentation/metadata only. Checkboxes appear from RUN evidence after Auto Build — not hard-coded CP1/CP2/CP3.">Control Panel</span>
+        <div id="tb-cp-filters" class="flex items-center gap-2 flex-wrap min-h-[1.5rem]">
+          <span class="text-[10px] text-slate-600">Auto Build to discover panels…</span>
+        </div>
+        <span class="text-[9px] text-slate-600 ml-auto">Wheel zoom · Mid-drag pan · filters highlight only</span>
       </div>
       <!-- Continue Run sticky bar -->
       <div id="tb-continue-bar" class="tb-continue-bar hidden shrink-0 px-4 py-1.5 flex items-center gap-2 flex-wrap">
@@ -2618,10 +2498,6 @@
         <label class="flex items-center gap-1 text-slate-300 font-medium" title="Control Panel is organizational metadata only — not PLC / I/O ownership">CP
           <select id="tb-bulk-cp" class="bg-slate-900 border border-violet-800/60 rounded text-xs px-1.5 py-1 min-w-[88px]">
             <option value="">—</option>
-            <option value="CP1">CP1</option>
-            <option value="CP2">CP2</option>
-            <option value="CP3">CP3</option>
-            <option value="Other">Other</option>
             <option value="clear">Clear</option>
           </select>
         </label>
@@ -2663,11 +2539,15 @@
         </div>
       </div>
       <!-- Node context menu -->
-      <div id="tb-ctx-menu" class="hidden fixed z-[220] min-w-[160px] rounded-lg border border-slate-700 bg-[#121820] shadow-xl py-1 text-[11px]" style="display:none">
+      <div id="tb-ctx-menu" class="hidden fixed z-[220] min-w-[200px] rounded-lg border border-slate-700 bg-[#121820] shadow-xl py-1 text-[11px]" style="display:none">
         <button type="button" data-tb-ctx="continue" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-cyan-300">Continue Run…</button>
         <button type="button" data-tb-ctx="terminal" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-amber-300">Mark Terminal</button>
         <button type="button" data-tb-ctx="unterminate" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-slate-300">Clear Terminal</button>
         <button type="button" data-tb-ctx="select-chain" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-slate-300">Select Chain</button>
+        <div class="border-t border-slate-800 my-1"></div>
+        <div class="px-3 py-1 text-[9px] uppercase tracking-wider text-slate-600">Move to Area</div>
+        <div id="tb-ctx-move-areas" class="max-h-40 overflow-y-auto"></div>
+        <div class="border-t border-slate-800 my-1"></div>
         <button type="button" data-tb-ctx="delete" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-red-400">Delete</button>
       </div>
       <div class="flex-1 min-h-0 flex">
@@ -3029,6 +2909,8 @@
     </section>
   </main>
 
+  <link rel="stylesheet" href="hardware/flex-hardware.css">
+  <script src="hardware/flex-rack.js"></script>
   <script src="fortna-plus.js"></script>
   <script src="transport-build.js"></script>
   <script src="transport-build-pass2.js"></script>

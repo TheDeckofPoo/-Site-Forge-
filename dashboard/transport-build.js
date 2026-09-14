@@ -216,8 +216,8 @@
       controller: false,
       tracking: false,
     },
-    // Control Panel filter toggles (presentation only — multiple may be on)
-    cpFilters: { CP1: false, CP2: false, CP3: false },
+    // Control Panel filter toggles — keys discovered from RUN after Auto Build
+    cpFilters: {},
     panning: null, // middle-mouse pan: { sx, sy, sl, st }
     workflow: { import: false, autobuild: false, review: true, apply: false, build: false },
   };
@@ -383,7 +383,7 @@
           activeAreaId: tb.activeAreaId,
           autoConnectNew: !!tb.autoConnectNew,
           // Additive v2 fields — controlPanel lives on nodes; filters/layers are UI prefs
-          cpFilters: tb.cpFilters || { CP1: false, CP2: false, CP3: false },
+          cpFilters: tb.cpFilters || {},
           layers: tb.layers || null,
         })
       );
@@ -443,11 +443,10 @@
       if ((tb.areas || []).length) tb.suppressDefaultArea = false;
       if (typeof data.autoConnectNew === 'boolean') tb.autoConnectNew = data.autoConnectNew;
       if (data.cpFilters && typeof data.cpFilters === 'object') {
-        tb.cpFilters = {
-          CP1: !!data.cpFilters.CP1,
-          CP2: !!data.cpFilters.CP2,
-          CP3: !!data.cpFilters.CP3,
-        };
+        tb.cpFilters = {};
+        Object.keys(data.cpFilters).forEach((k) => {
+          if (k) tb.cpFilters[k] = !!data.cpFilters[k];
+        });
       }
       if (data.layers && typeof data.layers === 'object') {
         tb.layers = { ...(tb.layers || {}), ...data.layers };
@@ -1496,19 +1495,35 @@
     return n.controlPanel || '';
   }
 
+  /** Unique Control Panel tags present on the current Transport graph (RUN-derived). */
+  function discoveredControlPanels() {
+    const set = new Set();
+    (tb.areas || []).forEach((a) => {
+      (a.nodes || []).forEach((n) => {
+        const cp = normalizeControlPanel(n?.controlPanel);
+        if (cp) set.add(cp);
+      });
+    });
+    return [...set].sort((a, b) => {
+      const na = a.match(/^CP(\d+)$/i);
+      const nb = b.match(/^CP(\d+)$/i);
+      if (na && nb) return Number(na[1]) - Number(nb[1]);
+      if (na) return -1;
+      if (nb) return 1;
+      return a.localeCompare(b);
+    });
+  }
+
   function cpFilterActive() {
     const f = tb.cpFilters || {};
-    return !!(f.CP1 || f.CP2 || f.CP3);
+    return Object.keys(f).some((k) => !!f[k]);
   }
 
   function nodeMatchesCpFilter(n) {
     if (!cpFilterActive()) return true;
     const cp = normalizeControlPanel(n?.controlPanel);
     const f = tb.cpFilters || {};
-    if (f.CP1 && cp === 'CP1') return true;
-    if (f.CP2 && cp === 'CP2') return true;
-    if (f.CP3 && cp === 'CP3') return true;
-    return false;
+    return !!(cp && f[cp]);
   }
 
   /** Snapshot canvas geometry for undo-safe group moves (does not touch sourceX/Y). */
@@ -3406,7 +3421,7 @@
       });
     }
 
-    $('tb-area-delete')?.addEventListener('click', async () => {
+    async function deleteActiveArea() {
       const a = activeArea();
       if (!a) return;
       const ok = await askYesNo('Delete area', `Delete area “${a.name}” and its canvas?`);
@@ -3419,7 +3434,13 @@
       ensureArea();
       save();
       render();
-      status('Area deleted — PE roles reset');
+      status(`Deleted area “${a.name}”`);
+    }
+    $('tb-area-delete')?.addEventListener('click', () => {
+      deleteActiveArea().catch((err) => status(`Delete area error: ${err?.message || err}`));
+    });
+    $('tb-area-delete-btn')?.addEventListener('click', () => {
+      deleteActiveArea().catch((err) => status(`Delete area error: ${err?.message || err}`));
     });
 
     $('tb-clear-canvas')?.addEventListener('click', async () => {
@@ -4546,6 +4567,7 @@
     normalizeControlPanel,
     inferControlPanelFromEvidence,
     ensureControlPanel,
+    discoveredControlPanels,
     cpFilterActive,
     nodeMatchesCpFilter,
     captureNodeGeom,
