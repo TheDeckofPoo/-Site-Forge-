@@ -1060,6 +1060,28 @@
     ].map((s) => `<div>${escapeHtml(s)}</div>`).join('');
   }
 
+  /** Highlight conveyors belonging to a Safety Zone (canonical Transport viz). */
+  function highlightSafetyZone(zoneName) {
+    const zname = String(zoneName || '').trim();
+    const area = activeArea();
+    if (!area) return;
+    (area.nodes || []).forEach((n) => {
+      const el = document.querySelector(`[data-id="${CSS.escape(n.id)}"]`);
+      if (!el) return;
+      const match = zname && String(n.safetyZone || '').trim() === zname;
+      el.classList.toggle('tb-safety-zone-hl', !!match);
+      if (match) el.classList.add('selected');
+    });
+    // Also mark schematic hit paths
+    document.querySelectorAll('.tb-schematic-hit, .tb-schematic-body').forEach((el) => {
+      const id = el.getAttribute('data-id');
+      const n = (area.nodes || []).find((x) => x.id === id);
+      const match = n && zname && String(n.safetyZone || '').trim() === zname;
+      el.classList.toggle('tb-safety-zone-hl', !!match);
+    });
+    status(zname ? `Safety Zone highlighted: ${zname}` : 'Safety Zone highlight cleared');
+  }
+
   function showUnresolvedTopology() {
     renderTopologyAccounting();
     const tags = tb.topologyAccounting?.unresolvedTags || [];
@@ -5303,6 +5325,10 @@
   }
 
   // Expose refresh when tab opens (conveyor dropdown)
+  window.transportHighlightSafetyZone = function (zoneName) {
+    try { highlightSafetyZone(zoneName); } catch (_) { /* ignore */ }
+  };
+
   window.transportBuildRefresh = function () {
     render();
     try {
@@ -5435,6 +5461,7 @@
     computeConnectedComponents,
     renderTopologyAccounting,
     showUnresolvedTopology,
+    highlightSafetyZone,
     placeSchematicLabels,
     drawSchematic,
     schematicPathD,

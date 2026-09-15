@@ -1,0 +1,5141 @@
+{
+  "kind": "SafetyModel",
+  "version": 1,
+  "machine": "ORNCCP2",
+  "generated_at": "2026-09-15T07:07:21.415481+00:00",
+  "devices": [
+    {
+      "id": "4ES",
+      "name": "4ES",
+      "kind": "ESTOP",
+      "normalized": "4ES",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "5ES",
+      "name": "5ES",
+      "kind": "ESTOP",
+      "normalized": "5ES",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "6ES",
+      "name": "6ES",
+      "kind": "ESTOP",
+      "normalized": "6ES",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES422",
+      "name": "ES422",
+      "kind": "ESTOP",
+      "normalized": "ES422",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES500",
+      "name": "ES500",
+      "kind": "ESTOP",
+      "normalized": "ES500",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610F",
+      "name": "ES610F",
+      "kind": "ESTOP",
+      "normalized": "ES610F",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610G",
+      "name": "ES610G",
+      "kind": "ESTOP",
+      "normalized": "ES610G",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610H",
+      "name": "ES610H",
+      "kind": "ESTOP",
+      "normalized": "ES610H",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610I",
+      "name": "ES610I",
+      "kind": "ESTOP",
+      "normalized": "ES610I",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610J",
+      "name": "ES610J",
+      "kind": "ESTOP",
+      "normalized": "ES610J",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610K",
+      "name": "ES610K",
+      "kind": "ESTOP",
+      "normalized": "ES610K",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612F",
+      "name": "ES612F",
+      "kind": "ESTOP",
+      "normalized": "ES612F",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612G",
+      "name": "ES612G",
+      "kind": "ESTOP",
+      "normalized": "ES612G",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612H",
+      "name": "ES612H",
+      "kind": "ESTOP",
+      "normalized": "ES612H",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612I",
+      "name": "ES612I",
+      "kind": "ESTOP",
+      "normalized": "ES612I",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612J",
+      "name": "ES612J",
+      "kind": "ESTOP",
+      "normalized": "ES612J",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612K",
+      "name": "ES612K",
+      "kind": "ESTOP",
+      "normalized": "ES612K",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES708B",
+      "name": "ES708B",
+      "kind": "ESTOP",
+      "normalized": "ES708B",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES708C",
+      "name": "ES708C",
+      "kind": "ESTOP",
+      "normalized": "ES708C",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES710B",
+      "name": "ES710B",
+      "kind": "ESTOP",
+      "normalized": "ES710B",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES710C",
+      "name": "ES710C",
+      "kind": "ESTOP",
+      "normalized": "ES710C",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES812",
+      "name": "ES812",
+      "kind": "ESTOP",
+      "normalized": "ES812",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS101",
+      "name": "ESLS101",
+      "kind": "ESLS",
+      "normalized": "ESLS101",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS103",
+      "name": "ESLS103",
+      "kind": "ESLS",
+      "normalized": "ESLS103",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS201",
+      "name": "ESLS201",
+      "kind": "ESLS",
+      "normalized": "ESLS201",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS203",
+      "name": "ESLS203",
+      "kind": "ESLS",
+      "normalized": "ESLS203",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS301",
+      "name": "ESLS301",
+      "kind": "ESLS",
+      "normalized": "ESLS301",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS301A",
+      "name": "ESLS301A",
+      "kind": "ESLS",
+      "normalized": "ESLS301A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS303",
+      "name": "ESLS303",
+      "kind": "ESLS",
+      "normalized": "ESLS303",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS303A",
+      "name": "ESLS303A",
+      "kind": "ESLS",
+      "normalized": "ESLS303A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS414",
+      "name": "ESLS414",
+      "kind": "ESLS",
+      "normalized": "ESLS414",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS418",
+      "name": "ESLS418",
+      "kind": "ESLS",
+      "normalized": "ESLS418",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS464",
+      "name": "ESLS464",
+      "kind": "ESLS",
+      "normalized": "ESLS464",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS466",
+      "name": "ESLS466",
+      "kind": "ESLS",
+      "normalized": "ESLS466",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS506",
+      "name": "ESLS506",
+      "kind": "ESLS",
+      "normalized": "ESLS506",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS508",
+      "name": "ESLS508",
+      "kind": "ESLS",
+      "normalized": "ESLS508",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS801",
+      "name": "ESLS801",
+      "kind": "ESLS",
+      "normalized": "ESLS801",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS805",
+      "name": "ESLS805",
+      "kind": "ESLS",
+      "normalized": "ESLS805",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "2ES",
+      "name": "2ES",
+      "kind": "ESTOP",
+      "normalized": "2ES",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES406",
+      "name": "ES406",
+      "kind": "ESTOP",
+      "normalized": "ES406",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES1002",
+      "name": "ES1002",
+      "kind": "ESTOP",
+      "normalized": "ES1002",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS125",
+      "name": "ESLS125",
+      "kind": "ESLS",
+      "normalized": "ESLS125",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS127",
+      "name": "ESLS127",
+      "kind": "ESLS",
+      "normalized": "ESLS127",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS221",
+      "name": "ESLS221",
+      "kind": "ESLS",
+      "normalized": "ESLS221",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS223",
+      "name": "ESLS223",
+      "kind": "ESLS",
+      "normalized": "ESLS223",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS311",
+      "name": "ESLS311",
+      "kind": "ESLS",
+      "normalized": "ESLS311",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS313",
+      "name": "ESLS313",
+      "kind": "ESLS",
+      "normalized": "ESLS313",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS237",
+      "name": "ESLS237",
+      "kind": "ESLS",
+      "normalized": "ESLS237",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS319",
+      "name": "ESLS319",
+      "kind": "ESLS",
+      "normalized": "ESLS319",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS321",
+      "name": "ESLS321",
+      "kind": "ESLS",
+      "normalized": "ESLS321",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "3ES",
+      "name": "3ES",
+      "kind": "ESTOP",
+      "normalized": "3ES",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES400",
+      "name": "ES400",
+      "kind": "ESTOP",
+      "normalized": "ES400",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES1008",
+      "name": "ES1008",
+      "kind": "ESTOP",
+      "normalized": "ES1008",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES1014",
+      "name": "ES1014",
+      "kind": "ESTOP",
+      "normalized": "ES1014",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES1018",
+      "name": "ES1018",
+      "kind": "ESTOP",
+      "normalized": "ES1018",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS143",
+      "name": "ESLS143",
+      "kind": "ESLS",
+      "normalized": "ESLS143",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS235",
+      "name": "ESLS235",
+      "kind": "ESLS",
+      "normalized": "ESLS235",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS141",
+      "name": "ESLS141",
+      "kind": "ESLS",
+      "normalized": "ESLS141",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610C",
+      "name": "ES610C",
+      "kind": "ESTOP",
+      "normalized": "ES610C",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612C",
+      "name": "ES612C",
+      "kind": "ESTOP",
+      "normalized": "ES612C",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610D",
+      "name": "ES610D",
+      "kind": "ESTOP",
+      "normalized": "ES610D",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612D",
+      "name": "ES612D",
+      "kind": "ESTOP",
+      "normalized": "ES612D",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612E",
+      "name": "ES612E",
+      "kind": "ESTOP",
+      "normalized": "ES612E",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610E",
+      "name": "ES610E",
+      "kind": "ESTOP",
+      "normalized": "ES610E",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES708A",
+      "name": "ES708A",
+      "kind": "ESTOP",
+      "normalized": "ES708A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES710A",
+      "name": "ES710A",
+      "kind": "ESTOP",
+      "normalized": "ES710A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "8ES",
+      "name": "8ES",
+      "kind": "ESTOP",
+      "normalized": "8ES",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES215",
+      "name": "ES215",
+      "kind": "ESTOP",
+      "normalized": "ES215",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "7ES",
+      "name": "7ES",
+      "kind": "ESTOP",
+      "normalized": "7ES",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610M",
+      "name": "ES610M",
+      "kind": "ESTOP",
+      "normalized": "ES610M",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610N",
+      "name": "ES610N",
+      "kind": "ESTOP",
+      "normalized": "ES610N",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612M",
+      "name": "ES612M",
+      "kind": "ESTOP",
+      "normalized": "ES612M",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612N",
+      "name": "ES612N",
+      "kind": "ESTOP",
+      "normalized": "ES612N",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS509",
+      "name": "ESLS509",
+      "kind": "ESLS",
+      "normalized": "ESLS509",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS319A",
+      "name": "ESLS319A",
+      "kind": "ESLS",
+      "normalized": "ESLS319A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS321A",
+      "name": "ESLS321A",
+      "kind": "ESLS",
+      "normalized": "ESLS321A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS235A",
+      "name": "ESLS235A",
+      "kind": "ESLS",
+      "normalized": "ESLS235A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS237A",
+      "name": "ESLS237A",
+      "kind": "ESLS",
+      "normalized": "ESLS237A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS141A",
+      "name": "ESLS141A",
+      "kind": "ESLS",
+      "normalized": "ESLS141A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS143A",
+      "name": "ESLS143A",
+      "kind": "ESLS",
+      "normalized": "ESLS143A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS125A",
+      "name": "ESLS125A",
+      "kind": "ESLS",
+      "normalized": "ESLS125A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS127A",
+      "name": "ESLS127A",
+      "kind": "ESLS",
+      "normalized": "ESLS127A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS221A",
+      "name": "ESLS221A",
+      "kind": "ESLS",
+      "normalized": "ESLS221A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS223A",
+      "name": "ESLS223A",
+      "kind": "ESLS",
+      "normalized": "ESLS223A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS311A",
+      "name": "ESLS311A",
+      "kind": "ESLS",
+      "normalized": "ESLS311A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ESLS313A",
+      "name": "ESLS313A",
+      "kind": "ESLS",
+      "normalized": "ESLS313A",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610O",
+      "name": "ES610O",
+      "kind": "ESTOP",
+      "normalized": "ES610O",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612O",
+      "name": "ES612O",
+      "kind": "ESTOP",
+      "normalized": "ES612O",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES610P",
+      "name": "ES610P",
+      "kind": "ESTOP",
+      "normalized": "ES610P",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    },
+    {
+      "id": "ES612P",
+      "name": "ES612P",
+      "kind": "ESTOP",
+      "normalized": "ES612P",
+      "io_word": "",
+      "io_bit": "",
+      "reset_station": "",
+      "origin": "AUTO_RUN_PROVEN",
+      "evidence": [
+        {
+          "kind": "estop_table_row",
+          "table": "EStop.asc",
+          "provenance": "RUN_EXPLICIT"
+        }
+      ],
+      "physicalIoRef": null
+    }
+  ],
+  "zones": [
+    {
+      "id": "ORNCCP2_ESZone1",
+      "name": "ORNCCP2_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "ORNCCP2_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "test1_ESZone1",
+      "name": "test1_ESZone1",
+      "areaRef": "test1",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P138",
+        "P222",
+        "P404",
+        "P406"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "test1.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "test1.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "test1_ESZone1",
+          "area": "test1",
+          "conveyors": 4
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES406",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES406",
+              "matched_digits": [
+                "406"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone1_ESZone1",
+      "name": "Zone1_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone1_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone2_ESZone1",
+      "name": "Zone2_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone2_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone3_ESZone1",
+      "name": "Zone3_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone3_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone4_ESZone1",
+      "name": "Zone4_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone4_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone5_ESZone1",
+      "name": "Zone5_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone5_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone6_ESZone1",
+      "name": "Zone6_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone6_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone7_ESZone1",
+      "name": "Zone7_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone7_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone8_ESZone1",
+      "name": "Zone8_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone8_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    },
+    {
+      "id": "Zone9_ESZone1",
+      "name": "Zone9_ESZone1",
+      "areaRef": "ORNCCP2_Area",
+      "areaOrigin": "AUTO_RUN_PROVEN",
+      "conveyorRefs": [
+        "P1000",
+        "P1001",
+        "P1002",
+        "P1004",
+        "P1005",
+        "P1006",
+        "P1007",
+        "P1008",
+        "P1010",
+        "P1011",
+        "P1014",
+        "P1015",
+        "P1016",
+        "P1018",
+        "P123",
+        "P124",
+        "P126",
+        "P128",
+        "P130A",
+        "P130B",
+        "P130C",
+        "P130D",
+        "P130E",
+        "P132",
+        "P134",
+        "P136_P1",
+        "P136_P2",
+        "P139",
+        "P140",
+        "P142",
+        "P144",
+        "P145A",
+        "P145B",
+        "P145C",
+        "P145D",
+        "P145E",
+        "P146",
+        "P148",
+        "P150_P1",
+        "P150_P2",
+        "P215",
+        "P220A",
+        "P226",
+        "P228",
+        "P229",
+        "P230",
+        "P232",
+        "P233",
+        "P234",
+        "P236",
+        "P238",
+        "P240",
+        "P242",
+        "P309",
+        "P310",
+        "P312",
+        "P314",
+        "P316",
+        "P317",
+        "P318",
+        "P320",
+        "P322",
+        "P324",
+        "P400",
+        "P402",
+        "P408",
+        "P130",
+        "P136",
+        "P136A",
+        "P145",
+        "P150",
+        "P150A",
+        "P220"
+      ],
+      "conveyorsOrigin": "AUTO_RUN_PROVEN",
+      "members": [],
+      "membersOrigin": "UNRESOLVED",
+      "eStops": [],
+      "esrDevices": [],
+      "mcrDevices": [],
+      "resetSource": "ORNCCP2_Area.Reset",
+      "resetOrigin": "AUTO_RUN_PROVEN",
+      "silenceSource": "ORNCCP2_Area.Silence",
+      "silenceOrigin": "AUTO_RUN_PROVEN",
+      "physicalIORefs": [],
+      "evidence": [
+        {
+          "kind": "transport_zone_seed",
+          "zone": "Zone9_ESZone1",
+          "area": "ORNCCP2_Area",
+          "conveyors": 73
+        }
+      ],
+      "unresolved": [
+        "SafetyDevices"
+      ],
+      "suggestions": [
+        {
+          "name": "ES1002",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1002",
+              "matched_digits": [
+                "1002"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES400",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES400",
+              "matched_digits": [
+                "400"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1008",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1008",
+              "matched_digits": [
+                "1008"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1014",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1014",
+              "matched_digits": [
+                "1014"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES1018",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES1018",
+              "matched_digits": [
+                "1018"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        },
+        {
+          "name": "ES215",
+          "kind": "ESTOP",
+          "origin": "SUGGESTED_DIGIT_MATCH",
+          "evidence": [
+            {
+              "kind": "digit_match_suggestion",
+              "device": "ES215",
+              "matched_digits": [
+                "215"
+              ],
+              "note": "Suggestion only \u2014 not RUN-proven zone membership"
+            }
+          ]
+        }
+      ],
+      "engineerEdited": false,
+      "status": "REVIEW_REQUIRED",
+      "fields": {
+        "Area": "READY",
+        "Conveyors": "READY",
+        "E-Stops": "UNRESOLVED",
+        "ESR": "UNRESOLVED",
+        "MCR": "UNRESOLVED",
+        "SafetyDevices": "UNRESOLVED",
+        "Reset": "READY",
+        "Silence": "READY",
+        "AOI_ES_SIL1_Cat1": "READY",
+        "AOI_ES_PI20": "READY"
+      },
+      "missing": [
+        "E-Stops",
+        "ESR",
+        "MCR",
+        "SafetyDevices"
+      ],
+      "hard_missing": [
+        "SafetyDevices"
+      ]
+    }
+  ],
+  "unassignedDevices": [
+    "4ES",
+    "5ES",
+    "6ES",
+    "ES422",
+    "ES500",
+    "ES610F",
+    "ES610G",
+    "ES610H",
+    "ES610I",
+    "ES610J",
+    "ES610K",
+    "ES612F",
+    "ES612G",
+    "ES612H",
+    "ES612I",
+    "ES612J",
+    "ES612K",
+    "ES708B",
+    "ES708C",
+    "ES710B",
+    "ES710C",
+    "ES812",
+    "ESLS101",
+    "ESLS103",
+    "ESLS201",
+    "ESLS203",
+    "ESLS301",
+    "ESLS301A",
+    "ESLS303",
+    "ESLS303A",
+    "ESLS414",
+    "ESLS418",
+    "ESLS464",
+    "ESLS466",
+    "ESLS506",
+    "ESLS508",
+    "ESLS801",
+    "ESLS805",
+    "2ES",
+    "ES406",
+    "ES1002",
+    "ESLS125",
+    "ESLS127",
+    "ESLS221",
+    "ESLS223",
+    "ESLS311",
+    "ESLS313",
+    "ESLS237",
+    "ESLS319",
+    "ESLS321",
+    "3ES",
+    "ES400",
+    "ES1008",
+    "ES1014",
+    "ES1018",
+    "ESLS143",
+    "ESLS235",
+    "ESLS141",
+    "ES610C",
+    "ES612C",
+    "ES610D",
+    "ES612D",
+    "ES612E",
+    "ES610E",
+    "ES708A",
+    "ES710A",
+    "8ES",
+    "ES215",
+    "7ES",
+    "ES610M",
+    "ES610N",
+    "ES612M",
+    "ES612N",
+    "ESLS509",
+    "ESLS319A",
+    "ESLS321A",
+    "ESLS235A",
+    "ESLS237A",
+    "ESLS141A",
+    "ESLS143A",
+    "ESLS125A",
+    "ESLS127A",
+    "ESLS221A",
+    "ESLS223A",
+    "ESLS311A",
+    "ESLS313A",
+    "ES610O",
+    "ES612O",
+    "ES610P",
+    "ES612P"
+  ],
+  "counts": {
+    "zones": 11,
+    "ready": 0,
+    "review_required": 11,
+    "devices": 90,
+    "estops": 49,
+    "unassigned_estops": 49,
+    "unresolved_io": 11
+  },
+  "readiness": {
+    "status": "REVIEW_REQUIRED",
+    "detail": "Safety Zone: ORNCCP2_ESZone1 | Area: ORNCCP2_Area | Conveyors: 73 | E-Stops: UNRESOLVED | Reset: ORNCCP2_Area.Reset | Silence: ORNCCP2_Area.Silence | Missing: SafetyDevices | Safety Zone: test1_ESZone1 | Area: test1 | Conveyors: 4 | E-Stops: UNRESOLVED | Reset: test1.Reset | Silence: test1.Silence | Missing: SafetyDevices | Safety Zone: Zone1_ESZone1 | Area: ORNCCP2_Area | Conveyors: 73 | E-Stops: UNRESOLVED | Reset: ORNCCP2_Area.Reset | Silence: ORNCCP2_Area.Silence | Missing: SafetyDevices | Safety Zone: Zone2_ESZone1 | Area: ORNCCP2_Area | Conveyors: 73 | E-Stops: UNRESOLVED | Reset: ORNCCP2_Area.Reset | Silence: ORNCCP2_Area.Silence | Missing: SafetyDevices | Safety Zone: Zone3_ESZone1 | Area: ORNCCP2_Area | Conveyors: 73 | E-Stops: UNRESOLVED | Reset: ORNCCP2_Area.Reset | Silence: ORNCCP2_Area.Silence | Missing: SafetyDevices | Safety Zone: Zone4_ESZone1 | Area: ORNCCP2_Area | Conveyors: 73 | E-Stops: UNRESOLVED | Reset: ORNCCP2_Area.Reset | Silence: ORNCCP2_Area.Silence | Missing: SafetyDevices",
+    "unresolved": 11,
+    "zones": [
+      {
+        "name": "ORNCCP2_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "test1_ESZone1",
+        "area": "test1",
+        "conveyors": [
+          "P138",
+          "P222",
+          "P404",
+          "P406"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "test1.Reset",
+        "silence_source": "test1.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone1_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone2_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone3_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone4_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone5_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone6_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone7_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone8_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      },
+      {
+        "name": "Zone9_ESZone1",
+        "area": "ORNCCP2_Area",
+        "conveyors": [
+          "P1000",
+          "P1001",
+          "P1002",
+          "P1004",
+          "P1005",
+          "P1006",
+          "P1007",
+          "P1008",
+          "P1010",
+          "P1011",
+          "P1014",
+          "P1015",
+          "P1016",
+          "P1018",
+          "P123",
+          "P124",
+          "P126",
+          "P128",
+          "P130A",
+          "P130B",
+          "P130C",
+          "P130D",
+          "P130E",
+          "P132",
+          "P134",
+          "P136_P1",
+          "P136_P2",
+          "P139",
+          "P140",
+          "P142",
+          "P144",
+          "P145A",
+          "P145B",
+          "P145C",
+          "P145D",
+          "P145E",
+          "P146",
+          "P148",
+          "P150_P1",
+          "P150_P2",
+          "P215",
+          "P220A",
+          "P226",
+          "P228",
+          "P229",
+          "P230",
+          "P232",
+          "P233",
+          "P234",
+          "P236",
+          "P238",
+          "P240",
+          "P242",
+          "P309",
+          "P310",
+          "P312",
+          "P314",
+          "P316",
+          "P317",
+          "P318",
+          "P320",
+          "P322",
+          "P324",
+          "P400",
+          "P402",
+          "P408",
+          "P130",
+          "P136",
+          "P136A",
+          "P145",
+          "P150",
+          "P150A",
+          "P220"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP2_Area.Reset",
+        "silence_source": "ORNCCP2_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      }
+    ],
+    "silent_omit_forbidden": true
+  },
+  "discovery_error": null,
+  "policy": {
+    "area_ne_safety_zone": true,
+    "engineer_overrides_survive_rediscovery": true,
+    "no_silent_es_omit": true,
+    "suggestions_are_not_auto_assign": true
+  }
+}

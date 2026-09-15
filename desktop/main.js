@@ -1345,6 +1345,33 @@ function createWindow() {
     }
   });
 
+  ipcMain.handle('build-safety-model', async (_event, data) => {
+    try {
+      const script = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_safety_model.py');
+      if (!fs.existsSync(script)) {
+        return { ok: false, success: false, error: `Missing ${script}` };
+      }
+      const runDir = data?.run_dir
+        || (fs.existsSync(path.join(REPO_ROOT, 'workspace', 'active', 'RUN', 'project.cfg'))
+          ? path.join(REPO_ROOT, 'workspace', 'active', 'RUN')
+          : path.join(REPO_ROOT, 'workspace', '_plc2_run_peek', 'RUN'));
+      const machine = data?.machine || 'ORNCCP2';
+      const outPath = path.join(REPO_ROOT, 'exports', 'plc2-safety', 'safety_model.json');
+      fs.mkdirSync(path.dirname(outPath), { recursive: true });
+      const wbPath = resolveAutogenWorkbookPath();
+      const args = [script, '--run-dir', runDir, '--machine', machine, '--out', outPath];
+      if (fs.existsSync(wbPath)) args.push('--workbook', wbPath);
+      const r = await runPythonAsync(args, REPO_ROOT);
+      if (r.error && !fs.existsSync(outPath)) {
+        return { ok: false, success: false, error: r.error || r.stderr || 'safety model failed' };
+      }
+      const model = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+      return { ok: true, success: true, model, path: outPath };
+    } catch (e) {
+      return { ok: false, success: false, error: e.message || String(e) };
+    }
+  });
+
   ipcMain.handle('autogen-workbook-load', async () => {
     try {
       const workbookPath = resolveAutogenWorkbookPath();

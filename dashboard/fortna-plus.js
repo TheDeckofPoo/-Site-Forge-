@@ -40,7 +40,7 @@ function setBusy(busy) {
 
 // All main panes — must include every data-tab value or that tab stays blank
 // plc + ignition kept in DOM (legacy) but removed from nav
-const ALL_TABS = ['search', 'workspace', 'io', 'recipes', 'plc', 'autogen', 'ignition', 'transport', 'sorter', 'sawtooth'];
+const ALL_TABS = ['search', 'workspace', 'io', 'recipes', 'plc', 'autogen', 'ignition', 'transport', 'safety', 'sorter', 'sawtooth'];
 
 function activateTab(tab) {
   if (!tab) return;
@@ -63,6 +63,11 @@ function activateTab(tab) {
   }
   if (tab === 'transport' && typeof window.transportBuildRefresh === 'function') {
     window.transportBuildRefresh();
+  }
+  if (tab === 'safety') {
+    try {
+      if (typeof window.safetyBuildRefresh === 'function') window.safetyBuildRefresh();
+    } catch (_) { /* ignore */ }
   }
   if (tab === 'sorter') {
     try { renderSorterBuild(); } catch (_) { /* ignore */ }
@@ -147,21 +152,27 @@ function safetyEvidence() {
   const wb = autogenState.workbook || {};
   const build = wb.safety_build || autogenState.safety_build || {};
   const zones = Array.isArray(build.zones) ? build.zones : [];
-  // Transportation engineer Safety Zone assignments count as detected
-  const withConveyors = zones.filter((z) => z && ((z.conveyors || []).length || (z.members || []).length));
+  // Safety Build (canonical) + Transportation seeds
+  const withConveyors = zones.filter((z) => z && (
+    (z.conveyors || z.conveyorRefs || []).length || (z.members || []).length
+  ));
   const withMembers = zones.filter((z) => z && (z.members || []).length);
   const last = autogenState.lastEsReport || null;
+  const readyN = zones.filter((z) => String(z.status || '').toUpperCase() === 'READY').length;
+  const reviewN = zones.filter((z) => String(z.status || '').toUpperCase() === 'REVIEW_REQUIRED'
+    || (!(z.members || []).length && (z.conveyors || z.conveyorRefs || []).length)).length;
   const diagZones = (last && Array.isArray(last.zones) && last.zones.length)
     ? last.zones
     : withConveyors.map((z) => ({
       name: z.name || z.safetyZone,
-      area: z.area || '',
-      conveyors: z.conveyors || [],
+      area: z.area || z.areaRef || '',
+      conveyors: z.conveyors || z.conveyorRefs || [],
       members: z.members || [],
       safety_device_membership: (z.members || []).length ? 'RESOLVED' : 'UNRESOLVED',
       gap: (z.members || []).length
         ? ''
-        : 'No proven E-stop/ESR/MCR membership found.',
+        : 'SafetyDevices unresolved — assign in Safety Build',
+      fields: z.fields || {},
     }));
   const diagnostics = formatSafetyZoneDiagnostics(diagZones);
   return {
@@ -170,7 +181,9 @@ function safetyEvidence() {
       || (last && last.status && last.status !== 'NOT_DETECTED'),
     zones: withConveyors.length || last?.zones?.length || 0,
     members: withMembers.reduce((n, z) => n + ((z.members || []).length), 0),
-    conveyors: withConveyors.reduce((n, z) => n + ((z.conveyors || []).length), 0),
+    conveyors: withConveyors.reduce((n, z) => n + ((z.conveyors || z.conveyorRefs || []).length), 0),
+    ready: readyN,
+    reviewRequired: reviewN,
     last,
     diagnostics,
     diagZones,
@@ -524,7 +537,7 @@ function paintProjectHealthStrip(map) {
     { key: 'run', label: 'RUN', tab: 'io', get: () => (runIsLoaded() ? { status: 'READY', detail: 'loaded' } : { status: 'NOT_DETECTED', detail: 'none' }) },
     { key: 'hardware', label: 'HW', tab: 'io' },
     { key: 'transport', label: 'TRANSPORT', tab: 'transport' },
-    { key: 'safety', label: 'SAFETY', tab: 'transport' },
+    { key: 'safety', label: 'SAFETY', tab: 'safety' },
     { key: 'sawtooth', label: 'SAW', tab: 'sawtooth' },
     { key: 'system', label: 'CORE', tab: 'autogen' },
   ];

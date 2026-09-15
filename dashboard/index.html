@@ -438,6 +438,14 @@
     }
     .tb-mate-mark { fill: #22c55e; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
     .tb-schematic-hit { fill: transparent; stroke: transparent; cursor: pointer; pointer-events: stroke; }
+    .tb-schematic-body.tb-safety-zone-hl,
+    .tb-schematic-hit.tb-safety-zone-hl {
+      stroke: #fb7185 !important;
+      filter: drop-shadow(0 0 4px rgba(251,113,133,0.7));
+    }
+    .tb-node.tb-safety-zone-hl {
+      box-shadow: 0 0 0 2px rgba(251, 113, 133, 0.55), 0 2px 10px rgba(0,0,0,0.45);
+    }
     .tb-node.tb-schematic-proxy {
       min-width: 0; max-width: none; width: 18px; height: 18px; margin: 0;
       border: none; background: transparent; box-shadow: none; padding: 0;
@@ -702,6 +710,9 @@
     <button class="tab-btn active py-3 px-3 text-sm" data-tab="io"><i class="fa-solid fa-server mr-2"></i>I/O &amp; Prints</button>
     <button class="tab-btn py-3 px-3 text-sm" data-tab="transport" title="Design transport areas, merges, PE roles">
       <i class="fa-solid fa-diagram-project mr-2"></i>Transport Build
+    </button>
+    <button class="tab-btn py-3 px-3 text-sm" data-tab="safety" title="Safety Zones, E-Stops, Reset/Silence — Apply before Build PLC">
+      <i class="fa-solid fa-shield-halved mr-2"></i>Safety Build
     </button>
     <button class="tab-btn py-3 px-3 text-sm" data-tab="sorter" title="Design sorter induct / tracking / diverts">
       <i class="fa-solid fa-shuffle mr-2"></i>Sorter Build
@@ -1187,7 +1198,7 @@
           <div class="hub-ready-card" data-ready-key="safety" data-status="NOT_DETECTED">
             <div class="text-[10px] uppercase tracking-wider text-rose-400/90 font-semibold mb-1">Safety / ES</div>
             <div id="autogen-hub-safety" class="hub-status">NOT DETECTED</div>
-            <div id="autogen-hub-safety-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Zone membership required</div>
+            <div id="autogen-hub-safety-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Review in Safety Build</div>
             <button type="button" class="tab-jump mt-2 text-[10px] text-rose-300 hover:underline" data-jump-tab="transport">Open Transport →</button>
           </div>
           <div class="hub-ready-card" data-ready-key="system" data-status="NOT_DETECTED">
@@ -1893,6 +1904,49 @@
     <!-- Transport Build POC — Node-RED style conveyor graph (visual first) -->
     
     <!-- Sorter Build — design induct / tracking / diverts (compiled in PLC Autogen) -->
+    <section id="tab-safety" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
+      <details class="workflow-help shrink-0 px-4 py-3">
+        <summary class="text-sm font-semibold text-rose-400">How to build Safety — workflow</summary>
+        <div class="workflow-chart mt-3">
+          <div class="workflow-box"><strong>① Load RUN</strong><span>Auto-discover<br>E-Stops / devices</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box"><strong>② Transport</strong><span>Areas + conveyors<br>seed Safety Zones</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box accent"><strong>③ Safety Build</strong><span>Review AUTO<br>assign unresolved</span></div>
+          <span class="workflow-arrow">→</span>
+          <div class="workflow-box violet"><strong>④ Apply → Autogen</strong><span>Program ES when<br>all zones READY</span></div>
+        </div>
+        <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
+          Site Forge auto-discovers proven Safety evidence. You only complete unresolved relationships.
+          Engineer assignments survive Apply, tab changes, and restart. Area ≠ Safety Zone.
+        </p>
+      </details>
+      <div class="flex items-center gap-2 flex-wrap shrink-0">
+        <i class="fa-solid fa-shield-halved text-rose-400"></i>
+        <span class="text-sm font-semibold text-rose-300">Safety Build</span>
+        <span id="sb-status" class="text-[10px] text-slate-500 mono ml-2"></span>
+        <div class="ml-auto flex items-center gap-2">
+          <button type="button" id="sb-refresh" class="btn-ghost text-[10px] px-2.5 py-1.5 rounded-lg border border-slate-700">
+            <i class="fa-solid fa-rotate mr-1"></i>Refresh discovery
+          </button>
+          <button type="button" id="sb-apply" class="btn-primary text-[10px] px-3 py-1.5 rounded-lg bg-rose-700 hover:bg-rose-600 border border-rose-500/40">
+            <i class="fa-solid fa-check mr-1"></i>Apply Safety
+          </button>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0 text-[10px] mono">
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Zones</span> <span id="sb-count-zones" class="text-rose-200 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Ready</span> <span id="sb-count-ready" class="text-emerald-400 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Review</span> <span id="sb-count-review" class="text-amber-300 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">E-Stops</span> <span id="sb-count-estops" class="text-slate-200 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Unassigned</span> <span id="sb-count-unassigned" class="text-amber-200 float-right">—</span></div>
+      </div>
+      <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden">
+        <div id="sb-zone-list" class="lg:col-span-4 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-2"></div>
+        <div id="sb-zone-detail" class="lg:col-span-8 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-3"></div>
+      </div>
+    </section>
+
     <section id="tab-sorter" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
       <details class="workflow-help shrink-0 px-4 py-3">
         <summary class="text-sm font-semibold text-cyan-400">How to build a sorter — workflow</summary>
@@ -2889,6 +2943,7 @@
   <script src="fortna-plus.js"></script>
   <script src="transport-build.js"></script>
   <script src="transport-build-pass2.js"></script>
+  <script src="safety-build.js"></script>
   <script src="subsystem-status.js"></script>
 </body>
 </html>

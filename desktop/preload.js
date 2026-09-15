@@ -32,6 +32,7 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   autogenWorkbookBuild: (data) => ipcRenderer.invoke('autogen-workbook-build', data || {}),
   autogenWorkbookSave: (data) => ipcRenderer.invoke('autogen-workbook-save', data || {}),
   autogenWorkbookLoad: () => ipcRenderer.invoke('autogen-workbook-load'),
+  buildSafetyModel: (data) => ipcRenderer.invoke('build-safety-model', data || {}),
   autogenDefaults: () => ipcRenderer.invoke('autogen-defaults'),
   autogenVerify: () => ipcRenderer.invoke('autogen-verify'),
   autogenSelectExcel: () => ipcRenderer.invoke('autogen-select-excel'),
