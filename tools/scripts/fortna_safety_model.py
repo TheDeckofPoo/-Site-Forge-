@@ -34,8 +34,26 @@ ORIGIN_ENGINEER = "ENGINEER_ASSIGNED"
 ORIGIN_SUGGESTED = "SUGGESTED_DIGIT_MATCH"
 ORIGIN_UNRESOLVED = "UNRESOLVED"
 
+# Engineer Hardware I/O prefixes (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS) + RUN names
+# (2ES, 2ESR1_AUX, 2MCR1, ESLS125).
 _DEVICE_RE = re.compile(
-    r"^(?:T_)?(?:\d*ES\d[\w]*|ES\d[\w]*|ESR\d[\w]*|MCR\d[\w]*|ESLS\d[\w]*|\d+ES)$",
+    r"^(?:"
+    r"T_\d+ES\d*\w*"  # T_2ES, T_2ES1
+    r"|T_\d+MCR\d*\w*"  # T_2MCR1
+    r"|T_\d+ESR\d*\w*"  # T_2ESR1
+    r"|CP\d+_ESR\d*\w*"  # CP2_ESR1
+    r"|CP\d+_MCR\d*\w*"  # CP2_MCR1
+    r"|CP\d+_CS\d*"  # CP2_CS control station / reset
+    r"|CP\d+_ES\d*\w*"  # CP2_ES…
+    r"|\d+ESR\d*\w*"  # 2ESR1_AUX
+    r"|\d+MCR\d*\w*"  # 2MCR1, 2MCR1_AUX
+    r"|ESR\d*\w*"
+    r"|MCR\d*\w*"
+    r"|ESLS\d*\w*"
+    r"|ES\d[\w]*"  # ES400, ES406, ESLS handled above
+    r"|\d+ES\d*\w*"  # 2ES, 4ES
+    r"|T_\d+ES$"
+    r")$",
     re.I,
 )
 
@@ -49,52 +67,157 @@ def _safe(s: Any) -> str:
 
 
 def _classify_device(name: str) -> str:
-    u = (name or "").upper()
-    if "ESR" in u:
-        return "ESR"
-    if "MCR" in u:
-        return "MCR"
-    if "ESLS" in u or u.endswith("LS") and u.startswith("ES"):
+    """Classify Safety device kind from RUN or engineer Hardware I/O name."""
+    u = (name or "").strip().upper().replace("-", "_")
+    if not u:
+        return ""
+    if "ESLS" in u:
         return "ESLS"
-    if _DEVICE_RE.match(name or ""):
+    if re.search(r"ESR\d*|ESR_", u) or "_ESR" in u or u.startswith("ESR"):
+        return "ESR"
+    if re.search(r"MCR\d*", u) or "_MCR" in u or u.startswith("MCR"):
+        return "MCR"
+    # Control station used for Area reset/silence (CP2_CS)
+    if re.match(r"^CP\d+_CS\d*$", u) or u.endswith("_CS"):
+        return "CS"
+    if _DEVICE_RE.match(u) or re.search(r"(^|_)ES\d", u) or re.match(r"^(?:T_)?\d+ES$", u):
         return "ESTOP"
-    return "OTHER"
+    return ""
 
 
 def _digits(token: str) -> set[str]:
     return set(re.findall(r"\d{2,4}", token or ""))
 
 
+def _add_device(
+    out: list[dict[str, Any]],
+    seen: set[str],
+    *,
+    name: str,
+    evidence: list[dict[str, Any]],
+    io_word: str = "",
+    io_bit: str = "",
+    reset_station: str = "",
+    normalized: str = "",
+) -> None:
+    name = str(name or "").strip()
+    if not name or name.upper() in {"N/A", "INVALID", "NONE"}:
+        return
+    kind = _classify_device(name)
+    if not kind:
+        return
+    key = name.upper()
+    if key in seen:
+        return
+    seen.add(key)
+    out.append(
+        {
+            "id": name,
+            "name": name,
+            "kind": kind,
+            "normalized": normalized or _safe(name),
+            "io_word": io_word or "",
+            "io_bit": io_bit or "",
+            "reset_station": reset_station or "",
+            "origin": ORIGIN_AUTO,
+            "evidence": evidence,
+            "physicalIoRef": {"io_word": io_word, "io_bit": io_bit}
+            if (io_word or io_bit)
+            else None,
+        }
+    )
+
+
 def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str, Any]]:
-    """Inventory of Safety devices from RUN (EStop model). Refs only — no invent."""
+    """Inventory of Safety devices from RUN.
+
+    Sources:
+      - EStop.asc (via estop model)
+      - Conveyor.asc IO_Name matching ES / ESR / MCR / ESLS / CP#_CS prefixes
+        (includes 2ES, 2ESR1_AUX, 2MCR1 — engineer may rename to T_2ES / CP2_ESR1)
+    """
+    from fortna_site_model import merge_table_rows  # local import
+
+    run_dir = Path(run_dir)
     em = build_estop_model(run_dir, machine)
     out: list[dict[str, Any]] = []
     seen: set[str] = set()
     for d in em.get("devices") or []:
-        name = str(d.get("name") or "").strip()
-        if not name or name.upper() in seen:
-            continue
-        seen.add(name.upper())
-        kind = _classify_device(name)
-        out.append(
-            {
-                "id": name,
-                "name": name,
-                "kind": kind,
-                "normalized": d.get("normalized_name") or _safe(name),
-                "io_word": d.get("io_word") or "",
-                "io_bit": d.get("io_bit") or "",
-                "reset_station": d.get("reset_station") or "",
-                "origin": ORIGIN_AUTO,
-                "evidence": list(d.get("evidence") or []),
-                "physicalIoRef": {
-                    "io_word": d.get("io_word") or "",
-                    "io_bit": d.get("io_bit") or "",
-                }
-                if (d.get("io_word") or d.get("io_bit"))
-                else None,
-            }
+        _add_device(
+            out,
+            seen,
+            name=str(d.get("name") or ""),
+            evidence=list(d.get("evidence") or []),
+            io_word=str(d.get("io_word") or ""),
+            io_bit=str(d.get("io_bit") or ""),
+            reset_station=str(d.get("reset_station") or ""),
+            normalized=str(d.get("normalized_name") or ""),
         )
+
+    fortna = run_dir / "FORTNA"
+    if fortna.is_dir():
+        try:
+            merged = merge_table_rows(fortna, "Conveyor.asc", machine)
+            for item in merged.get("rows") or []:
+                row = item.get("row") or {}
+                name = str(
+                    row.get("IO_Name") or row.get("Name") or row.get("Desc") or ""
+                ).strip()
+                if not name or not _classify_device(name):
+                    continue
+                _add_device(
+                    out,
+                    seen,
+                    name=name,
+                    evidence=[
+                        {
+                            "kind": "conveyor_asc_safety_name",
+                            "table": "Conveyor.asc",
+                            "io_name": name,
+                            "provenance": item.get("provenance") or "RUN_EXPLICIT",
+                        }
+                    ],
+                    io_word=str(row.get("IO_Address_Word") or ""),
+                    io_bit=str(row.get("IO_Address_Bit") or ""),
+                )
+        except Exception:
+            pass
+
+        # Also pick engineer-style aliases if present as separate IO_Name rows
+        # (some sites store CP2_ESR1 / T_2ES directly in Conveyor.asc)
+        # Already covered by _classify_device + Conveyor scan above.
+
+    # Hardware I/O engineer Names (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS, …)
+    try:
+        from fortna_hardware_io_overrides import load_overrides
+
+        ov = load_overrides()
+        for _addr, ch in (ov.get("channels") or {}).items():
+            if not isinstance(ch, dict):
+                continue
+            ename = str(
+                ch.get("engineerName")
+                or ch.get("engineer_name")
+                or ch.get("name")
+                or ""
+            ).strip()
+            if not ename or not _classify_device(ename):
+                continue
+            _add_device(
+                out,
+                seen,
+                name=ename,
+                evidence=[
+                    {
+                        "kind": "hardware_io_engineer_name",
+                        "physical_address": str(_addr),
+                        "engineer_name": ename,
+                    }
+                ],
+            )
+    except Exception:
+        pass
+
     return out
 
 

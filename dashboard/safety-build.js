@@ -171,18 +171,20 @@
       byName.set(name, cur);
     });
 
-    // Ensure area-named default zones exist for each workbook area
+    // Ensure area-named default zones exist for each *current* workbook area only
+    const areaSet = new Set(areas.map((a) => String(a || '').trim()).filter(Boolean));
     areas.forEach((a) => {
       const an = String(a || '').trim();
       if (!an) return;
-      const zname = `${an.replace(/_Area$/i, '')}_ESZone1`.replace(/^_/, '');
-      // Prefer Test1_ESZone1 style from an
-      const preferred = an.toLowerCase() === 'test1' || an === 'Test1'
-        ? 'test1_ESZone1'
-        : (an.endsWith('_Area') ? `${an}_ESZone1` : `${an}_ESZone1`);
-      const existing = [...byName.keys()].find((k) => k.toLowerCase().includes(an.toLowerCase().replace(/_area$/i, '')));
+      const stem = an.replace(/_Area$/i, '');
+      const preferred = `${stem}_ESZone1`;
+      const existing = [...byName.keys()].find((k) => {
+        const kl = k.toLowerCase();
+        return kl === preferred.toLowerCase()
+          || kl.startsWith(`${stem.toLowerCase()}_eszone`);
+      });
       if (existing) return;
-      if (!byName.has(preferred) && !byName.has(zname)) {
+      if (!byName.has(preferred)) {
         byName.set(preferred, {
           id: preferred,
           name: preferred,
@@ -206,6 +208,25 @@
         });
       }
     });
+
+    // Drop stale zones from prior projects (saved localStorage) unless their Area
+    // still exists on this project OR they appear on the Transport canvas.
+    const transportNames = new Set(transportZones.map((z) => String(z.name || '').trim()));
+    for (const [name, z] of [...byName.entries()]) {
+      const area = String(z.areaRef || '').trim();
+      const keep = transportNames.has(name)
+        || (area && areaSet.has(area))
+        || (areaSet.size === 0 && transportNames.size === 0 && z.engineerEdited);
+      // If we have current areas and this zone's area is gone → drop
+      if (areaSet.size > 0 && area && !areaSet.has(area) && !transportNames.has(name)) {
+        byName.delete(name);
+        continue;
+      }
+      // Orphan zone with no area and not on canvas → drop
+      if (!keep && areaSet.size > 0 && !transportNames.has(name)) {
+        byName.delete(name);
+      }
+    }
 
     const classify = (n) => {
       const u = String(n || '').toUpperCase();
@@ -276,10 +297,20 @@
   }
 
   function classifyDevName(name) {
-    const u = String(name || '').toUpperCase();
-    if (u.includes('ESR')) return 'ESR';
-    if (u.includes('MCR')) return 'MCR';
-    if (/^(?:T_)?(?:\d*ES\d|ES\d|ESLS\d|\d+ES)/.test(u)) return 'ESTOP';
+    const u = String(name || '').trim().toUpperCase().replace(/-/g, '_');
+    if (!u) return '';
+    if (u.includes('ESLS')) return 'ESLS';
+    if (/ESR\d*|ESR_/.test(u) || u.includes('_ESR') || u.startsWith('ESR')) return 'ESR';
+    if (/MCR\d*/.test(u) || u.includes('_MCR') || u.startsWith('MCR')) return 'MCR';
+    if (/^CP\d+_CS\d*$/.test(u) || /_CS\d*$/.test(u)) return 'CS';
+    // T_2ES, CP2_ES…, 2ES, ES400, ES406
+    if (
+      /^T_\d+ES\d*\w*$/.test(u)
+      || /^CP\d+_ES\d*\w*$/.test(u)
+      || /^ES\d[\w]*$/.test(u)
+      || /^\d+ES\d*\w*$/.test(u)
+      || /(^|_)ES\d/.test(u)
+    ) return 'ESTOP';
     return '';
   }
 
@@ -329,7 +360,7 @@
       lastErr = 'buildSafetyModel API missing — restart Site Forge after update';
     }
 
-    // 2) listDevices — scan ALL categories for ES*/ESR*/MCR* names
+    // 2) listDevices — scan ALL categories for ES*/ESR*/MCR*/T_*/CP*_ names
     if (typeof A.listDevices === 'function') {
       try {
         const res = await A.listDevices({});
@@ -340,6 +371,39 @@
           if (!AS.safety_build) AS.safety_build = { zones: [] };
           AS.safety_build.devices = mapped;
           return mapped;
+        }
+      } catch (_) { /* ignore */ }
+    }
+
+    // 2b) Hardware I/O engineer Names (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS, …)
+    if (typeof A.getHardwareIo === 'function') {
+      try {
+        const res = await A.getHardwareIo();
+        const names = [];
+        const walk = (obj) => {
+          if (!obj || typeof obj !== 'object') return;
+          if (Array.isArray(obj)) {
+            obj.forEach(walk);
+            return;
+          }
+          const nm = obj.engineer_name || obj.engineerName || obj.Name || obj.name || obj.tag;
+          if (nm && classifyDevName(String(nm))) names.push(String(nm));
+          Object.values(obj).forEach((v) => {
+            if (v && typeof v === 'object') walk(v);
+          });
+        };
+        walk(res);
+        const mapped = normalizeDeviceList(names);
+        if (mapped.length) {
+          // Merge with any prior list
+          const prev = normalizeDeviceList(AS.safetyDevices || []);
+          const by = new Map(prev.map((d) => [d.name.toUpperCase(), d]));
+          mapped.forEach((d) => { if (!by.has(d.name.toUpperCase())) by.set(d.name.toUpperCase(), d); });
+          const merged = [...by.values()];
+          AS.safetyDevices = merged;
+          if (!AS.safety_build) AS.safety_build = { zones: [] };
+          AS.safety_build.devices = merged;
+          if (merged.length) return merged;
         }
       } catch (_) { /* ignore */ }
     }
@@ -784,6 +848,18 @@
   window.safetyBuildRefresh = () => refreshModel();
   window.safetyBuildGetModel = () => state.model;
   window.safetyBuildApply = () => applySafety();
+
+  /** Wipe in-memory + local draft (called from Clear Current Project). */
+  window.safetyBuildClear = function safetyBuildClear() {
+    try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (_) { /* ignore */ }
+    const AS = ensureAutogenState();
+    AS.safety_build = { version: 1, source: 'cleared', zones: [], devices: [] };
+    AS.safetyDevices = [];
+    state.model = null;
+    state.selectedZoneId = null;
+    state.dirty = false;
+    try { render(); } catch (_) { /* ignore */ }
+  };
 
   document.addEventListener('DOMContentLoaded', () => {
     bind();

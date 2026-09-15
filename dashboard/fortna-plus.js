@@ -1387,10 +1387,12 @@ function resetProjectScopedState({ reason = 'new RUN' } = {}) {
     'fortna_merges_2to1',
     'siteforge.transportBuild.v1',
     'siteforge.transportBuild.v2',
+    'siteforge.safetyBuild.v1',
     'siteforge.projectIdentity',
   ].forEach((k) => {
     try { localStorage.removeItem(k); } catch (_) { /* ignore */ }
   });
+  try { autogenState.safetyDevices = []; } catch (_) { /* ignore */ }
   try { state.projectIdentity = null; } catch (_) { /* ignore */ }
   // Hardware I/O engineer overrides (name / Generate) — project-scoped
   try {
@@ -7856,6 +7858,19 @@ async function clearProjectBuilds() {
     try { localStorage.removeItem('fortna_sorter_build'); } catch (_) { /* ignore */ }
     try { renderSorterBuild(); } catch (_) { /* ignore */ }
 
+    // Safety Build — wipe draft + in-memory model (old zones must not survive Clear)
+    try {
+      if (typeof window.safetyBuildClear === 'function') window.safetyBuildClear();
+      else localStorage.removeItem('siteforge.safetyBuild.v1');
+    } catch (_) {
+      try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (__) { /* ignore */ }
+    }
+    try {
+      autogenState.safety_build = { version: 1, source: 'cleared', zones: [], devices: [] };
+      autogenState.safetyDevices = [];
+      autogenState.lastEsReport = null;
+    } catch (_) { /* ignore */ }
+
     autogenState.lastGenerateIoMapError = null;
     autogenState.readiness = {
       hardware: emptyReadinessEntry(),
@@ -7863,6 +7878,7 @@ async function clearProjectBuilds() {
       sawtooth: emptyReadinessEntry(),
       sorter: emptyReadinessEntry(),
       system: emptyReadinessEntry(),
+      safety: emptyReadinessEntry(),
     };
 
     try { localStorage.removeItem('fortna_last_equipment_names'); } catch (_) { /* ignore */ }
@@ -7892,6 +7908,8 @@ async function clearProjectBuilds() {
       io_map: [],
       areas: [],
       merges_2to1: [],
+      safety_build: { version: 1, source: 'cleared', zones: [], devices: [] },
+      safety_zones: [],
       options: { areas: [], safety_zones: [], exit_pe: [], types: [] },
       stats: { conveyor_count: 0, io_mapped: 0 },
       type_counts: {},

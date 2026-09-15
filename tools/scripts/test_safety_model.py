@@ -20,6 +20,20 @@ RUN = ROOT / "workspace" / "_plc2_run_peek" / "RUN"
 
 
 class TestSafetyModel(unittest.TestCase):
+    def test_classify_engineer_and_run_prefixes(self) -> None:
+        from fortna_safety_model import _classify_device
+
+        self.assertEqual(_classify_device("T_2ES"), "ESTOP")
+        self.assertEqual(_classify_device("2ES"), "ESTOP")
+        self.assertEqual(_classify_device("CP2_ESR1"), "ESR")
+        self.assertEqual(_classify_device("2ESR1_AUX"), "ESR")
+        self.assertEqual(_classify_device("T_2MCR1"), "MCR")
+        self.assertEqual(_classify_device("2MCR1"), "MCR")
+        self.assertEqual(_classify_device("CP2_CS"), "CS")
+        self.assertEqual(_classify_device("ESLS125"), "ESLS")
+        self.assertEqual(_classify_device("ES406"), "ESTOP")
+        self.assertEqual(_classify_device("P406"), "")
+
     def test_discovers_devices_and_zone_stubs(self) -> None:
         if not (RUN / "FORTNA").is_dir():
             self.skipTest("PLC2 RUN peek missing")
