@@ -390,6 +390,139 @@ def build_transport_graph(
     except Exception:
         pass
 
+    # Overlay PROVEN blind MergeBoss relationships (PLC2 RUN only).
+    # Adds semantic wires MAIN/INDUCT(/spur) → discharge. Does not invent geometry
+    # mates — only applies relationships already proven in blind_report.json.
+    # Logical section tags (P136_P1) map to mechanical graph tags (P136) via
+    # preferred_induct reverse lookup when the exact tag is absent from geometry.
+    try:
+        root = Path(__file__).resolve().parents[2]
+        report_path = root / "exports" / "plc2-merge-discovery" / "blind_report.json"
+        if report_path.is_file():
+            report = json.loads(report_path.read_text(encoding="utf-8"))
+            logical_to_mech: dict[str, str] = {}
+            try:
+                from fortna_conveyor_section_model import discover_sections as _disc
+
+                _sm = _disc(run_dir, machine)
+                for mech, logical in (_sm.get("preferred_induct") or {}).items():
+                    mu = str(mech or "").strip().upper()
+                    lu = str(logical or "").strip().upper()
+                    if mu and lu:
+                        logical_to_mech.setdefault(lu, mu)
+                        # P136_P2 often pairs with sibling mechanical P136A when present
+                        if lu.endswith("_P1") and f"{mu}A" in id_by_tag:
+                            logical_to_mech.setdefault(lu[:-3] + "_P2", f"{mu}A")
+            except Exception:
+                logical_to_mech = {}
+
+            def _resolve_graph_tag(tag: str) -> str:
+                t = str(tag or "").strip().upper()
+                if not t:
+                    return ""
+                if t in id_by_tag:
+                    return t
+                alt = logical_to_mech.get(t, "")
+                if alt and alt in id_by_tag:
+                    return alt
+                # Soft fallback: strip _P1/_P2 suffix when parent mechanical exists
+                base = re.sub(r"_P[12]$", "", t)
+                if base and base in id_by_tag:
+                    return base
+                if base and f"{base}A" in id_by_tag and t.endswith("_P2"):
+                    return f"{base}A"
+                return ""
+
+            existing_pairs = {
+                (
+                    next(
+                        (
+                            str(n.get("conveyorTag") or "").strip().upper()
+                            for n in nodes
+                            if n["id"] == w.get("from")
+                        ),
+                        "",
+                    ),
+                    next(
+                        (
+                            str(n.get("conveyorTag") or "").strip().upper()
+                            for n in nodes
+                            if n["id"] == w.get("to")
+                        ),
+                        "",
+                    ),
+                )
+                for w in wires
+            }
+            for m in report.get("merges") or []:
+                cls = str(m.get("classification") or "PROVEN").upper()
+                if cls and cls not in ("PROVEN",):
+                    continue
+                discharge_raw = str(m.get("downstream") or m.get("discharge") or "").strip().upper()
+                discharge = _resolve_graph_tag(discharge_raw)
+                if not discharge:
+                    continue
+                lanes: list[str] = []
+                for key in ("mainLane", "inductLane", "mergeSection3"):
+                    tag = _resolve_graph_tag(str(m.get(key) or ""))
+                    if tag and tag != discharge and tag not in lanes:
+                        lanes.append(tag)
+                for key in ("mergeSection1", "mergeSection2"):
+                    tag = _resolve_graph_tag(str(m.get(key) or ""))
+                    if tag and tag != discharge and tag not in lanes and len(lanes) < 3:
+                        lanes.append(tag)
+                for i, frm in enumerate(lanes):
+                    pair = (frm, discharge)
+                    if pair in existing_pairs:
+                        continue
+                    src = next(n for n in nodes if n["id"] == id_by_tag[frm])
+                    dst = next(n for n in nodes if n["id"] == id_by_tag[discharge])
+                    if not (src.get("downstream") or "").strip():
+                        src["downstream"] = dst["conveyorTag"]
+                        src["terminal"] = False
+                    src.setdefault(
+                        "topologyProvenance",
+                        {
+                            "rule": "blind_merge_proven",
+                            "confidence": "PROVEN_MERGE",
+                            "source_table": "MergeBoss/MergeInputs",
+                            "merge": str(m.get("name") or ""),
+                            "logical_from": str(m.get("mainLane") or m.get("inductLane") or ""),
+                            "logical_to": discharge_raw,
+                        },
+                    )
+                    wires.append(
+                        {
+                            "id": _uid("wire"),
+                            "from": id_by_tag[frm],
+                            "to": id_by_tag[discharge],
+                            "toPort": f"in{i}",
+                            "physical": False,
+                            "fromAnchor": "exit",
+                            "toAnchor": "entry",
+                            "confidence": "PROVEN_MERGE",
+                            "provenance": "blind_merge_discovery",
+                            "mergeName": str(m.get("name") or ""),
+                        }
+                    )
+                    existing_pairs.add(pair)
+                    auto_connected += 1
+                    inbound_count[discharge] = inbound_count.get(discharge, 0) + 1
+                dst = next(n for n in nodes if n["id"] == id_by_tag[discharge])
+                dst["asMerge"] = True
+                dst["mergeDetected"] = True
+                dst["inPorts"] = max(2, int(m.get("numInputs") or len(lanes) or 2))
+                dst["mergeGenSupported"] = dst["inPorts"] == 2
+                dst["mergeProvenance"] = {
+                    "source": "blind_merge_discovery",
+                    "name": str(m.get("name") or ""),
+                    "main": str(m.get("mainLane") or ""),
+                    "induct": str(m.get("inductLane") or ""),
+                    "graph_discharge": discharge,
+                }
+    except Exception:
+        pass
+
     # Merge detection: 2+ auto inbound → asMerge
     merges_detected = 0
     for tag_u, count in inbound_count.items():

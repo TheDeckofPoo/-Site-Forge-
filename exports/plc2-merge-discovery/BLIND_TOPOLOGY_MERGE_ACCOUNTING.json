@@ -1,0 +1,450 @@
+{
+  "machine": "ORNCCP2",
+  "topology": {
+    "total": 60,
+    "local": 59,
+    "connected_local": 51,
+    "unresolved_local": 8,
+    "external_reference": 1,
+    "merge_nodes": 4,
+    "connected_components": 19,
+    "primary_component_size": 24,
+    "island_components": 18,
+    "component_summary": [
+      {
+        "id": 1,
+        "size": 24,
+        "tags": [
+          "P136",
+          "P136A",
+          "P312",
+          "P314",
+          "P310",
+          "P309",
+          "P316",
+          "P138",
+          "P406",
+          "P404",
+          "P402",
+          "P400",
+          "P150A",
+          "P324",
+          "P320",
+          "P318",
+          "P317",
+          "P322",
+          "P150",
+          "P242",
+          "P240",
+          "P236",
+          "P234",
+          "P233"
+        ],
+        "is_primary": true
+      },
+      {
+        "id": 2,
+        "size": 4,
+        "tags": [
+          "P123",
+          "P124",
+          "P126",
+          "P128"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 3,
+        "size": 4,
+        "tags": [
+          "P139",
+          "P140",
+          "P142",
+          "P144"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 4,
+        "size": 3,
+        "tags": [
+          "P1000",
+          "P1001",
+          "P1002"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 5,
+        "size": 3,
+        "tags": [
+          "P1006",
+          "P1007",
+          "P1008"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 6,
+        "size": 3,
+        "tags": [
+          "P1015",
+          "P1016",
+          "P1018"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 7,
+        "size": 3,
+        "tags": [
+          "P220",
+          "P222",
+          "P220A"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 8,
+        "size": 3,
+        "tags": [
+          "P228",
+          "P230",
+          "P232"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 9,
+        "size": 2,
+        "tags": [
+          "P1004",
+          "P1005"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 10,
+        "size": 2,
+        "tags": [
+          "P1010",
+          "P1011"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 11,
+        "size": 1,
+        "tags": [
+          "P1014"
+        ],
+        "is_primary": false
+      },
+      {
+        "id": 12,
+        "size": 1,
+        "tags": [
+          "P130"
+        ],
+        "is_primary": false
+      }
+    ],
+    "external_tags": [
+      "P226"
+    ],
+    "unresolved_tags": []
+  },
+  "merge_tables": {
+    "MergeBoss": 10,
+    "MergeInputs": 15,
+    "MergeNotBusy": 30,
+    "MergeRoute": 15,
+    "MergeRunOutputs": 15,
+    "MergeStopOutputs": 15,
+    "Merges": 10,
+    "SimpleMerge": 25,
+    "ZipperMerge": 20,
+    "Mtrchain": 400
+  },
+  "merge_boss": [
+    {
+      "merge_id": "N/A",
+      "lane1": "N/A",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 15,
+      "classification": "PARTIAL",
+      "unresolved": [
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_1",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_2",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_3",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_4",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_5",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_6",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_7",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_8",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    },
+    {
+      "merge_id": "BOSS_9",
+      "lane1": "",
+      "lane2": "",
+      "output": "",
+      "area": "",
+      "pe": "",
+      "input_rows": 0,
+      "classification": "UNRESOLVED",
+      "unresolved": [
+        "lane1",
+        "lane2",
+        "output"
+      ],
+      "raw_keys": [
+        "CurrInput",
+        "IsSwitchDelay",
+        "Name",
+        "NumInputs",
+        "OperableInput",
+        "Owner",
+        "Process",
+        "SwitchDelayTimer",
+        "SwitchDelayTimerPreset",
+        "Valid",
+        "pStatus"
+      ]
+    }
+  ]
+}

@@ -124,13 +124,22 @@ def _default_scalar_value(dt: str) -> str:
 
 
 def _emit_string_udt(dt_name: str, text: str = "") -> str:
-    """Gold Fortna string UDT Decorated form (String_15 / String_20)."""
+    """Gold Fortna string UDT Decorated form (String_15 / String_20).
+
+    Empty DATA uses bare CDATA (`<![CDATA[]]>`); non-empty wraps the ASCII
+    payload in single quotes inside CDATA (`<![CDATA['text']]>`), matching
+    Studio-exported Fortna library / finished PLC tags.
+    """
     s = text or ""
+    if s:
+        cdata = f"<![CDATA['{_xml_escape(s)}']]>"
+    else:
+        cdata = "<![CDATA[]]>"
     return (
         f'<StructureMember Name="{{NAME}}" DataType="{_xml_escape(dt_name)}">'
         f'<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="{len(s)}"/>'
         f'<DataValueMember Name="DATA" DataType="{_xml_escape(dt_name)}" Radix="ASCII">'
-        f"<![CDATA['{_xml_escape(s)}']]>"
+        f"{cdata}"
         f"</DataValueMember>"
         f"</StructureMember>"
     )
@@ -242,35 +251,65 @@ def emit_decorated_structure(
     return f'<Structure DataType="{_xml_escape(dt_name)}">{inner}</Structure>'
 
 
+def _string_l5k_empty(dim: int) -> str:
+    """Rockwell L5K empty string: LEN=0 + $00 padding to DATA dimension."""
+    pad = "$00" * max(0, int(dim))
+    return f"[0,'{pad}']"
+
+
 def emit_comm_udt_tag(name: str, defs: dict[str, DataTypeDef] | None = None) -> str:
-    """Known-good Comm_UDT tag: L5K zero-init + Decorated StructureMembers (string form)."""
-    # Gold L5K zero template (empty MAC/IP)
-    l5k = "[[[0,0,0],[0],0,0.00000000e+000,[0,''],[0,'']]]"
-    defs = defs or {}
-    struct = ""
-    if "Comm_UDT" in defs:
-        struct = emit_decorated_structure("Comm_UDT", defs)
-    if not struct or 'DataType="SINT" Dimensions="' in struct:
-        # Hardcoded gold shape — String DATA as String_N CDATA (not SINT Dimensions)
-        struct = (
-            '<Structure DataType="Comm_UDT">'
-            f'{_emit_timer("CommLoss_Tmr")}'
-            '<StructureMember Name="Flt" DataType="Comm_Flt">'
-            '<DataValueMember Name="CommLoss" DataType="BOOL" Value="0"/>'
-            '<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>'
-            "</StructureMember>"
-            '<DataValueMember Name="Comm_Code" DataType="DINT" Radix="Decimal" Value="0"/>'
-            '<DataValueMember Name="Firmware" DataType="REAL" Radix="Float" Value="0.0"/>'
-            '<StructureMember Name="MACId" DataType="String_20">'
-            '<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>'
-            '<DataValueMember Name="DATA" DataType="String_20" Radix="ASCII"><![CDATA[\'\']]></DataValueMember>'
-            "</StructureMember>"
-            '<StructureMember Name="IP_Address" DataType="String_15">'
-            '<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>'
-            '<DataValueMember Name="DATA" DataType="String_15" Radix="ASCII"><![CDATA[\'\']]></DataValueMember>'
-            "</StructureMember>"
-            "</Structure>"
-        )
+    """Comm_UDT tag matched to Fortna library datatype (verbatim gold shape).
+
+    Studio 'Data type mismatch' root causes observed on ORNCCP2:
+      1. Extra L5K array wrap (`[[[...]]]` instead of gold `[[...]]`)
+      2. Invalid empty-string L5K (`[0,'']`) — need $00-padded DATA to dimension
+      3. Decorated empty string CDATA must be bare `<![CDATA[]]>` (not `['']`)
+
+    L5K member order matches Comm_UDT in THIS L5X / library:
+      CommLoss_Tmr(TIMER), Flt(Comm_Flt), Comm_Code, Firmware, MACId, IP_Address
+    """
+    # Prefer walking THIS L5X datatype when provided (matched pair).
+    ddef = (defs or {}).get("Comm_UDT")
+    if ddef is not None:
+        expected = [m.name for m in ddef.members if not (m.hidden and m.name.startswith("ZZZZ"))]
+        # Current Fortna Comm_UDT always includes CommLoss_Tmr; refuse silent drift.
+        if expected and expected[0] != "CommLoss_Tmr":
+            raise ValueError(
+                f"Comm_UDT member order unexpected for emitter: {expected}"
+            )
+    mac = _string_l5k_empty(20)
+    ip = _string_l5k_empty(15)
+    # ONE outer structure array — matches library CP2N6_RIO / Studio exports.
+    l5k = f"[[0,0,0],[0],0,0.00000000e+000,{mac},{ip}]"
+    struct = (
+        "<Structure DataType=\"Comm_UDT\">"
+        "<StructureMember Name=\"CommLoss_Tmr\" DataType=\"TIMER\">"
+        "<DataValueMember Name=\"PRE\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+        "<DataValueMember Name=\"ACC\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+        "<DataValueMember Name=\"EN\" DataType=\"BOOL\" Value=\"0\"/>"
+        "<DataValueMember Name=\"TT\" DataType=\"BOOL\" Value=\"0\"/>"
+        "<DataValueMember Name=\"DN\" DataType=\"BOOL\" Value=\"0\"/>"
+        "</StructureMember>"
+        "<StructureMember Name=\"Flt\" DataType=\"Comm_Flt\">"
+        "<DataValueMember Name=\"CommLoss\" DataType=\"BOOL\" Value=\"0\"/>"
+        "<DataValueMember Name=\"UpStrmCommLoss\" DataType=\"BOOL\" Value=\"0\"/>"
+        "</StructureMember>"
+        "<DataValueMember Name=\"Comm_Code\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+        "<DataValueMember Name=\"Firmware\" DataType=\"REAL\" Radix=\"Float\" Value=\"0.0\"/>"
+        "<StructureMember Name=\"MACId\" DataType=\"String_20\">"
+        "<DataValueMember Name=\"LEN\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+        "<DataValueMember Name=\"DATA\" DataType=\"String_20\" Radix=\"ASCII\">"
+        "<![CDATA[]]>"
+        "</DataValueMember>"
+        "</StructureMember>"
+        "<StructureMember Name=\"IP_Address\" DataType=\"String_15\">"
+        "<DataValueMember Name=\"LEN\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"0\"/>"
+        "<DataValueMember Name=\"DATA\" DataType=\"String_15\" Radix=\"ASCII\">"
+        "<![CDATA[]]>"
+        "</DataValueMember>"
+        "</StructureMember>"
+        "</Structure>"
+    )
     return (
         f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="Comm_UDT" '
         f'Constant="false" ExternalAccess="Read/Write">'
@@ -281,49 +320,51 @@ def emit_comm_udt_tag(name: str, defs: dict[str, DataTypeDef] | None = None) -> 
 
 def emit_merge_time_tag(
     name: str,
-    defs: dict[str, DataTypeDef],
+    defs: dict[str, DataTypeDef] | None = None,
     *,
-    clear: int = 8000,
-    no_cartons: int = 8000,
+    clear: int = 10000,
+    no_cartons: int = 10000,
     release: int = 10000,
     release_full: int = 15000,
 ) -> str:
-    """Merge_Time UDT with gold HMI defaults + L5K."""
-    values = {
-        "HMI": {
-            "FltClearTime": 0,
-            "ReleaseTime": release,
-            "ReleaseTimeFull": release_full,
-            "ClearTime": clear,
-            "NoCartonsTime": no_cartons,
-            "Enable_CX": 0,
-            "CX_TimeReset": 0,
-        },
-        "ReleaseTime": release,
-        "ClearTime": clear,
-        "NoCartonsTime": no_cartons,
-    }
-    struct = emit_decorated_structure("Merge_Time", defs, values=values)
-    # L5K from PLC5 gold: [[[HMI...],Release,Clear,NoCartons]]
-    l5k = f"[[[0,{release},{release_full},{clear},{no_cartons},0],{release},{clear},{no_cartons}]]"
-    if not struct:
-        # Minimal hand-built if datatype missing from defs
-        struct = (
-            '<Structure DataType="Merge_Time">'
-            '<StructureMember Name="HMI" DataType="Merge_Time_HMI">'
-            f'<DataValueMember Name="FltClearTime" DataType="INT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="ReleaseTime" DataType="DINT" Radix="Decimal" Value="{release}"/>'
-            f'<DataValueMember Name="ReleaseTimeFull" DataType="DINT" Radix="Decimal" Value="{release_full}"/>'
-            f'<DataValueMember Name="ClearTime" DataType="INT" Radix="Decimal" Value="{clear}"/>'
-            f'<DataValueMember Name="NoCartonsTime" DataType="INT" Radix="Decimal" Value="{no_cartons}"/>'
-            f'<DataValueMember Name="Enable_CX" DataType="BOOL" Value="0"/>'
-            f'<DataValueMember Name="CX_TimeReset" DataType="BOOL" Value="0"/>'
-            "</StructureMember>"
-            f'<DataValueMember Name="ReleaseTime" DataType="DINT" Radix="Decimal" Value="{release}"/>'
-            f'<DataValueMember Name="ClearTime" DataType="INT" Radix="Decimal" Value="{clear}"/>'
-            f'<DataValueMember Name="NoCartonsTime" DataType="INT" Radix="Decimal" Value="{no_cartons}"/>'
-            "</Structure>"
-        )
+    """Merge_Time tag matched to datatype in current L5X (PLC5 P444_MergeTime shape).
+
+    Member order must match DataType Merge_Time / Merge_Time_HMI exactly:
+      HMI: FltClearTime, ReleaseTime, ReleaseTimeFull, ClearTime, NoCartonsTime,
+           (hidden SINT packing Enable_CX/CX_TimeReset) → L5K 6th HMI element
+      then ReleaseTime, ClearTime, NoCartonsTime
+    """
+    # Matched pair: L5K shape must equal Studio-exported Merge_Time (ONE outer []).
+    # Extra wrap `[[[...]]]` is the Studio "Data type mismatch" failure mode.
+    ddef = (defs or {}).get("Merge_Time")
+    if ddef is not None:
+        expected = [m.name for m in ddef.members if not (m.hidden and m.name.startswith("ZZZZ"))]
+        if expected != ["HMI", "ReleaseTime", "ClearTime", "NoCartonsTime"]:
+            raise ValueError(
+                f"Merge_Time member order unexpected for emitter: {expected}"
+            )
+    # L5K: [ [HMI 6 elems], ReleaseTime, ClearTime, NoCartonsTime ]
+    l5k = (
+        f"[[0,{release},{release_full},{clear},{no_cartons},0],"
+        f"{release},{clear},{no_cartons}]"
+    )
+    # Verbatim Decorated from PLC5 gold (Enable_CX/CX_TimeReset as BOOL)
+    struct = (
+        "<Structure DataType=\"Merge_Time\">"
+        "<StructureMember Name=\"HMI\" DataType=\"Merge_Time_HMI\">"
+        f"<DataValueMember Name=\"FltClearTime\" DataType=\"INT\" Radix=\"Decimal\" Value=\"0\"/>"
+        f"<DataValueMember Name=\"ReleaseTime\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"{release}\"/>"
+        f"<DataValueMember Name=\"ReleaseTimeFull\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"{release_full}\"/>"
+        f"<DataValueMember Name=\"ClearTime\" DataType=\"INT\" Radix=\"Decimal\" Value=\"{clear}\"/>"
+        f"<DataValueMember Name=\"NoCartonsTime\" DataType=\"INT\" Radix=\"Decimal\" Value=\"{no_cartons}\"/>"
+        "<DataValueMember Name=\"Enable_CX\" DataType=\"BOOL\" Value=\"0\"/>"
+        "<DataValueMember Name=\"CX_TimeReset\" DataType=\"BOOL\" Value=\"0\"/>"
+        "</StructureMember>"
+        f"<DataValueMember Name=\"ReleaseTime\" DataType=\"DINT\" Radix=\"Decimal\" Value=\"{release}\"/>"
+        f"<DataValueMember Name=\"ClearTime\" DataType=\"INT\" Radix=\"Decimal\" Value=\"{clear}\"/>"
+        f"<DataValueMember Name=\"NoCartonsTime\" DataType=\"INT\" Radix=\"Decimal\" Value=\"{no_cartons}\"/>"
+        "</Structure>"
+    )
     return (
         f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="Merge_Time" '
         f'Constant="false" ExternalAccess="Read/Write">'
@@ -332,7 +373,8 @@ def emit_merge_time_tag(
     )
 
 
-# Gold L5K zero-init for Merge_2to1 AOI instance (from PLC5 EDITED export)
+# Gold L5K zero-init for Merge_2to1 AOI instance (from PLC5 EDITED export).
+# ONE outer [] — do not add an extra wrap.
 _MERGE_2TO1_L5K = (
     "[1,0,0,0,0,0,0,0,0,0,0,0,0,"
     "[[0,0,0],[0,0,0],[0,0,0],0,0,0,0],"
@@ -396,4 +438,104 @@ def validate_decorated_structure(xml_fragment: str, dt_name: str) -> list[str]:
         issues.append(f"{dt_name}: empty Structure shell (needs StructureMember/DataValueMember)")
     if "DataType=\"SINT\" Dimensions=" in xml_fragment and "String_" in xml_fragment:
         issues.append(f"{dt_name}: String DATA emitted as SINT Dimensions (use String_N CDATA form)")
+    if dt_name == "Comm_UDT" and "[0,'']" in xml_fragment:
+        issues.append(f"{dt_name}: empty string L5K [0,''] is invalid — need $00-padded DATA")
+    if "<![CDATA['']]>" in xml_fragment:
+        issues.append(f"{dt_name}: Decorated empty string must be bare CDATA, not ['']")
+    return issues
+
+
+def _top_level_decorated_members(structure_inner_xml: str) -> list[tuple[str, str]]:
+    """Parse direct children of a Structure body into (name, dataType) list."""
+    body = structure_inner_xml or ""
+    found: list[tuple[str, str]] = []
+    i = 0
+    sm_depth = 0
+    while i < len(body):
+        if body.startswith("</StructureMember>", i):
+            sm_depth = max(0, sm_depth - 1)
+            i += len("</StructureMember>")
+            continue
+        m = re.match(
+            r"<(StructureMember|DataValueMember)\s+Name=\"([^\"]+)\"\s+DataType=\"([^\"]+)\"([^>]*)(/?)>",
+            body[i:],
+        )
+        if not m:
+            i += 1
+            continue
+        kind, nm, dtype, _rest, self_close = (
+            m.group(1),
+            m.group(2),
+            m.group(3),
+            m.group(4),
+            m.group(5),
+        )
+        if sm_depth == 0:
+            found.append((nm, dtype))
+        if kind == "StructureMember" and self_close != "/":
+            sm_depth += 1
+        i += m.end()
+    return found
+
+
+def validate_tag_matches_datatype(
+    tag_xml: str,
+    defs: dict[str, DataTypeDef],
+    *,
+    dt_name: str,
+) -> list[str]:
+    """Member-by-member: Decorated top-level members must match DataType definition order.
+
+    Skips hidden ZZZZ packing SINTs (represented as BOOL bit members in Decorated).
+    """
+    issues: list[str] = []
+    ddef = defs.get(dt_name)
+    if not ddef:
+        issues.append(f"{dt_name}: datatype definition missing from L5X")
+        return issues
+    root = re.search(
+        rf'<Structure DataType="{re.escape(dt_name)}">(.*)</Structure>\s*</Data>',
+        tag_xml or "",
+        re.S,
+    )
+    if not root:
+        issues.append(f"{dt_name}: no Decorated Structure root")
+        return issues
+    found = _top_level_decorated_members(root.group(1))
+    expected: list[tuple[str, str]] = []
+    for mem in ddef.members:
+        if mem.hidden and mem.name.startswith("ZZZZ"):
+            continue
+        if mem.data_type.upper() == "BIT":
+            expected.append((mem.name, "BOOL"))
+        else:
+            expected.append((mem.name, mem.data_type))
+
+    if [x[0] for x in found] != [x[0] for x in expected]:
+        issues.append(
+            f"{dt_name}: Decorated member names {[x[0] for x in found]} "
+            f"!= datatype {[x[0] for x in expected]}"
+        )
+    else:
+        for (fn, ft), (_en, et) in zip(found, expected):
+            if ft != et:
+                issues.append(f"{dt_name}.{fn}: Decorated DataType {ft} != datatype {et}")
+
+    if 'Format="L5K"' not in (tag_xml or ""):
+        issues.append(f"{dt_name}: missing L5K Data (gold Fortna tags include L5K+Decorated)")
+    if "[0,'']" in (tag_xml or ""):
+        issues.append(f"{dt_name}: L5K contains invalid empty string [0,'']")
+    if "<![CDATA['']]>" in (tag_xml or ""):
+        issues.append(f"{dt_name}: Decorated empty string must be bare CDATA, not ['']")
+
+    # L5K must use ONE outer structure array (Studio rejects extra wrap).
+    l5k_m = re.search(r'Format="L5K"\s*>\s*<!\[CDATA\[(.*?)\]\]>', tag_xml or "", re.S)
+    if l5k_m:
+        l5k = (l5k_m.group(1) or "").strip()
+        if dt_name in ("Merge_Time", "Comm_UDT") and l5k.startswith("[[["):
+            issues.append(
+                f"{dt_name}: L5K has extra array wrap [[[...]]] — Studio gold is [[...]]"
+            )
+        if l5k.count("[") != l5k.count("]"):
+            issues.append(f"{dt_name}: L5K bracket imbalance")
     return issues

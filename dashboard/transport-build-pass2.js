@@ -1375,11 +1375,22 @@
     }
   }
 
+  /** Keep multi-select when right-clicking an already-selected conveyor. */
+  function ensureCtxSelection(nodeId) {
+    const { tb, selectNode } = A();
+    if (!nodeId) return;
+    if ((tb.selectedIds || []).includes(nodeId)) {
+      tb.selectedId = nodeId;
+    } else {
+      selectNode(nodeId);
+    }
+  }
+
   function showCtxMenu(x, y, nodeId) {
     const m = $('tb-ctx-menu');
     if (!m) return;
     m.dataset.nodeId = nodeId || '';
-    // Populate Move-to-Area choices from existing areas (exclude current home of node)
+    // Populate quick-move choices from existing areas (exclude current home of node)
     const moveHost = $('tb-ctx-move-areas');
     if (moveHost) {
       const { tb, escapeHtml } = A();
@@ -1389,7 +1400,7 @@
       });
       const areas = (tb.areas || []).filter((a) => a.id !== homeId);
       if (!areas.length) {
-        moveHost.innerHTML = '<div class="px-3 py-1 text-slate-600">No other areas yet — use New Area</div>';
+        moveHost.innerHTML = '<div class="px-3 py-1 text-slate-600">No other areas yet — use Add to New Area</div>';
       } else {
         moveHost.innerHTML = areas.map((a) =>
           `<button type="button" data-tb-ctx-move="${escapeHtml(a.id)}" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-fuchsia-200">→ ${escapeHtml(a.name || a.id)}</button>`
@@ -1400,13 +1411,7 @@
             hideCtxMenu();
             const dest = (tb.areas || []).find((a) => a.id === destId);
             if (!dest) return;
-            // Ensure the right-clicked node is in selection
-            if (!(tb.selectedIds || []).includes(nodeId)) {
-              tb.selectedIds = [nodeId];
-              tb.selectedId = nodeId;
-            } else if (nodeId && !tb.selectedId) {
-              tb.selectedId = nodeId;
-            }
+            ensureCtxSelection(nodeId);
             moveSelectionToArea(dest, 'Moved');
           });
         });
@@ -1646,7 +1651,21 @@
       if (!nodeEl) return;
       ev.preventDefault();
       const id = nodeEl.dataset.id;
-      A().selectNode(id);
+      ensureCtxSelection(id);
+      showCtxMenu(ev.clientX, ev.clientY, id);
+    });
+
+    // Schematic belt bodies live in #tb-schematic (not .tb-node) — restore right-click Area workflow
+    const canvas = $('tb-canvas');
+    canvas?.addEventListener('contextmenu', (ev) => {
+      if (A().tb.connectMode) return;
+      const hit = ev.target.closest?.('.tb-schematic-hit');
+      if (!hit) return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      const id = hit.getAttribute('data-id');
+      if (!id) return;
+      ensureCtxSelection(id);
       showCtxMenu(ev.clientX, ev.clientY, id);
     });
   }
@@ -2020,6 +2039,14 @@
     $('tb-auto-build-run')?.addEventListener('click', () => {
       autoBuildFromRun({ rebuild: true }).catch((err) => A().status(`Rebuild Layout error: ${err?.message || err}`));
     });
+    $('tb-show-unresolved-topo')?.addEventListener('click', () => {
+      try {
+        if (typeof A().showUnresolvedTopology === 'function') A().showUnresolvedTopology();
+        else A().status('Show Unresolved Topology unavailable');
+      } catch (err) {
+        A().status(`Unresolved topology: ${err?.message || err}`);
+      }
+    });
     $('tb-fit')?.addEventListener('click', () => {
       try { A().fitVisible?.(); } catch (err) { A().status(`Fit: ${err?.message || err}`); }
     });
@@ -2210,12 +2237,18 @@
         const act = btn.getAttribute('data-tb-ctx');
         const id = $('tb-ctx-menu')?.dataset.nodeId;
         hideCtxMenu();
-        if (id) A().selectNode(id);
+        if (id) ensureCtxSelection(id);
         if (act === 'continue') openContinueRun();
         else if (act === 'terminal') markTerminalSelection(true);
         else if (act === 'unterminate') markTerminalSelection(false);
         else if (act === 'select-chain') selectChainFromPrimary();
-        else if (act === 'delete') deleteSelection();
+        else if (act === 'area-new') {
+          createAreaFromSelection().catch((err) => A().status(`Add to New Area: ${err?.message || err}`));
+        } else if (act === 'area-existing') {
+          addSelectionToArea().catch((err) => A().status(`Add to Existing Area: ${err?.message || err}`));
+        } else if (act === 'area-remove') {
+          removeSelectionFromArea().catch((err) => A().status(`Remove from Area: ${err?.message || err}`));
+        } else if (act === 'delete') deleteSelection();
       });
     });
     document.addEventListener('click', (ev) => {

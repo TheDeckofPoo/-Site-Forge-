@@ -3798,6 +3798,28 @@ function ensureHwTreeExpandedSet() {
   return ioState.hardwareTreeExpanded;
 }
 
+/** Scroll selected module face into rack viewport and matching tree row into view. */
+function scrollSelectedHwModuleIntoView() {
+  const key = ioState.selectedHwModuleKey;
+  if (!key) return;
+  try {
+    const match = (el) => el.getAttribute('data-hw-mod') === key;
+    const racks = $('hw-io-racks');
+    if (racks) {
+      const faces = [...racks.querySelectorAll('[data-hw-mod]')].filter(match);
+      const face = faces.find((el) =>
+        el.matches('.flex-adapter, .flex-io, .point-adapter, .point-module')) || faces[0];
+      face?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    }
+    const tree = $('hw-io-tree');
+    if (tree) {
+      const rows = [...tree.querySelectorAll('[data-hw-mod]')].filter(match);
+      const row = rows.find((el) => el.classList.contains('hw-mod')) || rows[0];
+      row?.scrollIntoView?.({ block: 'nearest', inline: 'nearest' });
+    }
+  } catch (_) { /* ignore */ }
+}
+
 function bindHwModuleClicks(root) {
   if (!root) return;
   // Hardware tree — AENT expand/collapse
@@ -3809,14 +3831,15 @@ function bindHwModuleClicks(root) {
       const set = ensureHwTreeExpandedSet();
       if (set.has(rio)) set.delete(rio);
       else set.add(rio);
-      // Also select the AENT module when expanding
+      // Selecting AENT keeps tree ↔ rack highlight in sync (expand or collapse)
       const modKey = btn.getAttribute('data-hw-mod') || '';
-      if (modKey && set.has(rio)) {
+      if (modKey) {
         ioState.selectedHwModuleKey = modKey;
         ioState.selectedHwChannel = null;
       }
       renderHardwareRacks();
       renderHardwareModuleDetail();
+      scrollSelectedHwModuleIntoView();
     });
   });
   root.querySelectorAll('[data-hw-mod]').forEach((btn) => {
@@ -3838,6 +3861,7 @@ function bindHwModuleClicks(root) {
       }
       renderHardwareRacks();
       renderHardwareModuleDetail();
+      scrollSelectedHwModuleIntoView();
     });
   });
 }

@@ -403,20 +403,15 @@
     .tb-schematic-body.tb-rk-straight { stroke: #cbd5e1; }
     .tb-schematic-body.tb-rk-zeropressure { stroke: #a5b4fc; }
     .tb-schematic-body.tb-rk-belt { stroke: #67e8f9; stroke-dasharray: 10 4; }
-    .tb-schematic-body.tb-rk-curve { stroke: #c4b5fd; }
+    /* Curve elbow: same belt color/width language as straight; butt caps (not round pill) */
+    .tb-schematic-body.tb-rk-curve {
+      stroke: #cbd5e1;
+      stroke-linecap: butt;
+      stroke-linejoin: round;
+    }
     .tb-schematic-body.tb-rk-unknown { stroke: #64748b; stroke-dasharray: 3 3; }
     .tb-schematic-body.selected { stroke: #e879f9; filter: drop-shadow(0 0 3px rgba(232,121,249,0.7)); }
     .tb-schematic-body.tb-ambiguous { stroke: #f59e0b; }
-    /* True 90° curve belt — filled annulus (not round-cap stroke pill) */
-    .tb-schematic-curve-body {
-      fill: #7c6bb8; stroke: #c4b5fd; stroke-width: 1.25; stroke-linejoin: round;
-      opacity: 0.92; pointer-events: none;
-    }
-    .tb-schematic-curve-body.selected { fill: #a78bfa; stroke: #e879f9; filter: drop-shadow(0 0 3px rgba(232,121,249,0.7)); }
-    .tb-schematic-curve-body.tb-ambiguous { fill: #b45309; stroke: #f59e0b; }
-    .tb-schematic-curve-body.tb-cp-dim { opacity: 0.25; }
-    .tb-schematic-curve-cl { fill: none; stroke: #ddd6fe; stroke-width: 1.5; stroke-linecap: round; opacity: 0.85; pointer-events: none; }
-    .tb-schematic-curve-cl.selected { stroke: #f5d0fe; }
     .tb-schematic-label {
       fill: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 11px; font-weight: 700; text-anchor: middle; dominant-baseline: middle;
@@ -2566,8 +2561,12 @@
         <button type="button" data-tb-ctx="unterminate" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-slate-300">Clear Terminal</button>
         <button type="button" data-tb-ctx="select-chain" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-slate-300">Select Chain</button>
         <div class="border-t border-slate-800 my-1"></div>
-        <div class="px-3 py-1 text-[9px] uppercase tracking-wider text-slate-600">Move to Area</div>
+        <div class="px-3 py-1 text-[9px] uppercase tracking-wider text-slate-600">Area</div>
+        <button type="button" data-tb-ctx="area-new" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-fuchsia-200">Add to New Area…</button>
+        <button type="button" data-tb-ctx="area-existing" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-fuchsia-300">Add to Existing Area…</button>
+        <div class="px-3 py-0.5 text-[9px] text-slate-600">Quick move</div>
         <div id="tb-ctx-move-areas" class="max-h-40 overflow-y-auto"></div>
+        <button type="button" data-tb-ctx="area-remove" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-slate-300">Remove from Area…</button>
         <div class="border-t border-slate-800 my-1"></div>
         <button type="button" data-tb-ctx="delete" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-red-400">Delete</button>
       </div>
@@ -2596,6 +2595,10 @@
               <div id="tb-validation" class="text-[9px] px-1 space-y-0.5 max-h-36 overflow-y-auto leading-relaxed">
                 <div class="tb-val-ok">Ready</div>
               </div>
+              <button type="button" id="tb-show-unresolved-topo" class="mt-2 mx-1 w-[calc(100%-0.5rem)] btn-ghost text-[10px] px-2 py-1 rounded border border-amber-900/50 text-amber-300" title="Frame/select conveyors with unresolved topology (still accounted — never hidden)">
+                Show Unresolved Topology
+              </button>
+              <div id="tb-topo-accounting" class="text-[9px] text-slate-500 px-1 mt-1 mono leading-relaxed"></div>
             </div>
           </div>
         </aside>

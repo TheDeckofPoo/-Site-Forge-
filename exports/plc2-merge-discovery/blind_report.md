@@ -1,6 +1,6 @@
 # PLC2 Blind 2:1 Merge Discovery
 
-- Generated: `2026-09-14T04:39:45.035599+00:00`
+- Generated: `2026-09-15T04:58:58.263755+00:00`
 - Machine: `ORNCCP2`
 - RUN: `C:\dev\worktree\FortnaPlus\workspace\_plc2_run_peek\RUN`
 - Source: RUN tables only — MergeBoss/MergeInputs/MergeRoute/Mtrchain/Jamcheck/Fulljam/Fullline/Conveyor; finished PLC L5X not read

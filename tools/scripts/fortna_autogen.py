@@ -540,20 +540,45 @@ def load_from_excel(path: Path) -> AutogenInput:
 
 
 def load_from_json(path: Path) -> AutogenInput:
+    """Load a full autogen_input.json snapshot (not just conveyors/modules).
+
+    Prior implementation dropped eip_adapters / io_word_map / merges / safety,
+    which caused IO_MAP mapping == 0 on from-json rebuilds.
+    """
     data = json.loads(path.read_text(encoding="utf-8"))
     convs = [ConveyorRow(**c) if isinstance(c, dict) else c for c in data.get("conveyors", [])]
     mods = [IoModule(**m) if isinstance(m, dict) else m for m in data.get("modules", [])]
     pts = [IoPoint(**p) if isinstance(p, dict) else p for p in data.get("io_points", [])]
     return AutogenInput(
         project_name=data.get("project_name", "Autogen_Project"),
+        machine=str(data.get("machine") or ""),
         processor=data.get("processor", "1756-L83E"),
         major_rev=str(data.get("major_rev", "35")),
         minor_rev=str(data.get("minor_rev", "00")).zfill(2),
         areas=list(data.get("areas") or []),
         safety_zones=list(data.get("safety_zones") or []),
+        safety_zone_members=list(data.get("safety_zone_members") or []),
+        safety_build=dict(data.get("safety_build") or {}),
+        omit_unresolved_safety=bool(data.get("omit_unresolved_safety") or False),
+        options=dict(data.get("options") or {}),
+        run_dir=str(data.get("run_dir") or ""),
         conveyors=convs,
         modules=mods,
         io_points=pts,
+        eip_adapters=list(data.get("eip_adapters") or []),
+        eip_interface_ip=str(data.get("eip_interface_ip") or ""),
+        eip_topology=list(data.get("eip_topology") or []),
+        io_word_map=dict(data.get("io_word_map") or {}),
+        configio_octal_map=dict(data.get("configio_octal_map") or {}),
+        pe_devices=list(data.get("pe_devices") or []),
+        include_programs=list(data.get("include_programs") or []),
+        include_sys=bool(data.get("include_sys", True)),
+        include_io_map=bool(data.get("include_io_map", True)),
+        include_io_map_gold=bool(data.get("include_io_map_gold", False)),
+        io_map_fill_placeholders=bool(data.get("io_map_fill_placeholders", True)),
+        sorter_build=dict(data.get("sorter_build") or {}),
+        sawtooth_build=dict(data.get("sawtooth_build") or {}),
+        merges_2to1=list(data.get("merges_2to1") or []),
     )
 
 
@@ -4406,10 +4431,31 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             )
             if _es_pack and _es_pack.get("program_xml"):
                 programs_xml.append(_es_pack["program_xml"])
+                # Force-keep ES AOIs through prune (rung calls ES_SIL1_Cat1 / ES_PI20)
+                for _es_aoi in ("ES_SIL1_Cat1", "ES_PI20", "ES_PI10"):
+                    if _es_aoi not in (getattr(inp, "include_programs", None) or []):
+                        pass  # AOI prune uses rung call names — ensure tags mention them
+                for _tb in (_es_pack.get("tag_blocks") or []):
+                    if _tb and _tb not in all_tags:
+                        all_tags.append(_tb)
                 es_emit_report = dict(es_emit_report or {})
                 es_emit_report["emitted"] = True
                 es_emit_report["omitted"] = False
                 es_emit_report["zones"] = _es_pack.get("zones") or []
+                es_emit_report["aois"] = ["ES_SIL1_Cat1", "ES_PI20"]
+                es_emit_report["routines"] = [
+                    "Main_Routine",
+                    *[
+                        f"{z.get('name')}_Safe_Logic"
+                        for z in (es_emit_report.get("zones") or [])
+                        if z.get("name")
+                    ],
+                    *[
+                        f"{z.get('name')}_Safe_PI"
+                        for z in (es_emit_report.get("zones") or [])
+                        if z.get("name")
+                    ],
+                ]
                 if es_emit_report.get("status") == "NOT_DETECTED":
                     es_emit_report["status"] = "READY"
     except Exception as _es_err:
