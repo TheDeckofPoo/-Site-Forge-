@@ -17,6 +17,13 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 REPO_ROOT = SCRIPT_DIR.parent.parent
 sys.path.insert(0, str(SCRIPT_DIR))
 
+from fortna_hardware_family import (  # noqa: E402
+    adapter_family_from_modules,
+    channel_capacity_for_catalog,
+    detect_family_from_catalog,
+    family_scheme_description,
+    renderer_for_family,
+)
 from fortna_hardware_io_overrides import (  # noqa: E402
     apply_overrides_to_hardware_model,
     load_overrides,
@@ -26,19 +33,8 @@ from fortna_physical_word_resolver import PhysicalWordResolver  # noqa: E402
 
 
 def _module_channel_capacity(mod_type: str, connection: str = "") -> int:
-    """Digital channel capacity from catalog type (same bounds as resolver bits)."""
-    u = (mod_type or "").upper()
-    conn = (connection or "").upper()
-    if conn == "HEADNODE" or "AENT" in u:
-        return 0
-    if any(x in u for x in ("OA8", "OB8", "IA8", "IB8")):
-        return 8
-    if any(x in u for x in ("IA16", "IB16", "OB16", "OW16", "OA16")):
-        return 16
-    if any(x in u for x in ("IA4", "IB4", "OA4", "OB4")):
-        return 4
-    # Unknown bridged card — capacity unknown; UI shows used only
-    return 0
+    """Digital channel capacity from catalog type (family-aware bounds)."""
+    return channel_capacity_for_catalog(mod_type, connection=connection)
 
 
 def _logical_by_channel(resolver: PhysicalWordResolver) -> dict[str, dict[str, Any]]:
@@ -179,6 +175,10 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             capacity = _module_channel_capacity(mtype, conn)
             used = len(channels)
             unresolved_ch = sum(1 for c in channels if not c.get("logical_endpoint"))
+            mod_family = (
+                mod.get("family")
+                or detect_family_from_catalog(mtype)
+            )
             modules_out.append(
                 {
                     "slot": mod.get("slot"),
@@ -187,15 +187,24 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
                     "catalog": mtype,
                     "direction": direction,
                     "connection": conn,
-                    "family": mod.get("family"),
+                    "family": mod_family,
                     "data_index": data_index,
                     "is_adapter_card": bool(is_head),
                     "channel_capacity": capacity,
                     "channels_used": used,
                     "channels_unresolved": unresolved_ch,
                     "channels": channels,
+                    "visual_support": (
+                        "modeled"
+                        if mod_family in ("1794", "1734") and capacity >= 0
+                        else "generic"
+                    ),
                 }
             )
+        ad_family = (
+            ad.get("family")
+            or adapter_family_from_modules(modules_out)
+        )
         adapter_tree = {
             "rio_name": rio,
             "eipcfg_name": ad.get("name") or "",
@@ -206,6 +215,8 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             "input_address": ad.get("input_address"),
             "output_address": ad.get("output_address"),
             "adapter_index": ad.get("adapter_index"),
+            "family": ad_family,
+            "renderer": renderer_for_family(ad_family),
             "modules": modules_out,
         }
         adapters_out.append(adapter_tree)
@@ -214,12 +225,26 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
         elif panel:
             adapters_by_panel.setdefault(panel, []).append(adapter_tree)
 
+    families_present = sorted(
+        {
+            str(a.get("family") or "")
+            for a in adapters_out
+            if a.get("family") and a.get("family") != "UNKNOWN"
+        }
+    )
+    scheme = pm.get("data_index_scheme") or topo.get("data_index_scheme")
+    if len(families_present) == 1:
+        scheme = family_scheme_description(families_present[0])
+    elif families_present:
+        scheme = "; ".join(family_scheme_description(f) for f in families_present)
+
     model = {
         "ok": True,
         "controller": {
             "machine": pm.get("machine") or mach,
             "eipcfg_path": pm.get("eipcfg_path") or topo.get("eipcfg_path"),
-            "data_index_scheme": pm.get("data_index_scheme") or topo.get("data_index_scheme"),
+            "data_index_scheme": scheme,
+            "hardware_families": families_present,
         },
         "control_panels": {
             # Configio Desc evidence only — UI adds "All Panels"; never invent CPs

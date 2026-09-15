@@ -4,9 +4,11 @@
 Maps Configio.asc Octal_Word + Desc (PANEL-CATALOG-INDEX) onto eipcfg adapters/modules
 to produce CP2RIO*/CP3RIO* channels. Does NOT hard-code word→adapter tables.
 
-Data index scheme (1794 Flex, reverse-traced from finished RUN-reconstructable maps):
-  eipcfg bridged module at chassis slot S>0 → Logix Data[S-1]
-  (head/AENT is slot 0; 2PBSTART word 201 bit0 → Data[1] with IA16-3 at slot 2).
+Data index scheme is FAMILY-AWARE (see fortna_hardware_family):
+  1794 Flex: eipcfg bridged module at chassis slot S>0 → Logix Data[S-1]
+             (head/AENT is slot 0; 2PBSTART word 201 bit0 → Data[1] with IA16-3 at slot 2).
+  1734 POINT: keep chassis slot (print-accurate) — never apply Flex slot-1 shift.
+  Unknown: raw slot — never silently assume 1794.
 """
 from __future__ import annotations
 
@@ -16,6 +18,17 @@ import xml.etree.ElementTree as ET
 from collections import defaultdict
 from pathlib import Path
 from typing import Any
+
+from fortna_hardware_family import (  # noqa: E402
+    FAMILY_FLEX,
+    FAMILY_POINT,
+    FAMILY_UNKNOWN,
+    adapter_family_from_modules,
+    data_index_for_module as _family_data_index,
+    detect_family_from_catalog,
+    family_scheme_description,
+    max_bits_for_catalog,
+)
 
 # PANEL-CATALOG-INDEX — allow missing hyphen after panel (CP31794-IA16-31)
 _DESC_RE = re.compile(
@@ -135,15 +148,10 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
     return out
 
 
-def _data_index_for_module(slot: int, family: str = "1794") -> int:
-    """Logix Data[] index for a bridged module.
-
-    1794 Flex reverse-trace: chassis slot 2 → Data[1] (subtract head at slot 0).
-    """
-    s = int(slot or 0)
-    if (family or "1794").startswith("1794") and s > 0:
-        return s - 1
-    return s
+def _data_index_for_module(slot: int, family: str | None = None) -> int:
+    """Logix Data[] index for a bridged module — family-aware (no silent 1794 default)."""
+    fam = (family or "").strip() or None
+    return _family_data_index(slot, fam)
 
 
 def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
@@ -175,9 +183,11 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 mt = (m.attrib.get("type") or "").strip()
                 mname = (m.attrib.get("name") or "").strip()
                 conn = (m.attrib.get("connection") or "").strip()
-                family = "1794" if "1794" in mt or "1794" in mname else (
-                    "1734" if "1734" in mt or "1734" in mname else "1794"
-                )
+                family = detect_family_from_catalog(mt) or detect_family_from_catalog(mname)
+                if family == FAMILY_UNKNOWN:
+                    # Do not invent FLEX — leave UNKNOWN so callers cannot silently
+                    # apply 1794 word/channel assumptions.
+                    family = FAMILY_UNKNOWN
                 modules.append(
                     {
                         "name": mname,
@@ -196,6 +206,7 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     "input_address": a.attrib.get("InputAddress") or a.attrib.get("inputaddress") or "",
                     "output_address": a.attrib.get("OutputAddress") or a.attrib.get("outputaddress") or "",
                     "modules": modules,
+                    "family": adapter_family_from_modules(modules),
                     "adapter_index": ai,
                 }
             )
@@ -300,8 +311,8 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
         "panel_need": panel_need,
         "configio_row_count": len(configio_rows),
         "data_index_scheme": (
-            "1794 bridged: Data[slot-1] when slot>0 (head=slot0); "
-            "proven by 2PBSTART word201→Data[1] with eipcfg IA16-3 slot=2"
+            "family-aware: 1794 Flex Data[slot-1] when slot>0; "
+            "1734 POINT Data[slot] (no Flex shift); unknown → raw slot"
         ),
     }
 
@@ -520,7 +531,11 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             continue
 
         eip_slot = int(chosen.get("slot") or 0)
-        family = chosen.get("family") or "1794"
+        family = (
+            chosen.get("family")
+            or detect_family_from_catalog(chosen.get("type") or "")
+            or FAMILY_UNKNOWN
+        )
         data_index = int(
             chosen.get("data_index")
             if chosen.get("data_index") is not None
@@ -568,11 +583,8 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         }
         words_out[str(w)] = entry
 
-        # Index all 16 bits (High half uses same module; bits 8-15)
-        max_bits = 16
-        mt_u = mod_type.upper()
-        if "OA8" in mt_u or "OB8" in mt_u:
-            max_bits = 8
+        # Bit fan-out from catalog capacity (POINT 4/8-pt must not assume 16)
+        max_bits = max_bits_for_catalog(mod_type)
         for bit in range(max_bits):
             bit_half = "high" if bit >= 8 else "low"
             channel = f"{channel_base}.{bit}"
@@ -593,7 +605,7 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
             "type": e["type"],
             "catalog": e["type"],
             "direction": e["direction"],
-            "family": e.get("family") or "1794",
+            "family": e.get("family") or FAMILY_UNKNOWN,
             "resolve_how": "configio_physical",
             "panel": e.get("panel"),
             "module_name": e.get("module_name"),
@@ -615,6 +627,8 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 "input_address": a.get("input_address"),
                 "output_address": a.get("output_address"),
                 "naming_how": a.get("naming_how"),
+                "family": a.get("family")
+                or adapter_family_from_modules(a.get("modules") or []),
                 "modules": [
                     {
                         "name": m.get("name"),
@@ -623,6 +637,8 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                         "data_index": m.get("data_index"),
                         "direction": m.get("direction"),
                         "connection": m.get("connection"),
+                        "family": m.get("family")
+                        or detect_family_from_catalog(m.get("type") or ""),
                     }
                     for m in (a.get("modules") or [])
                 ],
@@ -687,9 +703,17 @@ def resolve_word_bit(
 
 
 def physical_map_to_topology(physical_map: dict[str, Any]) -> list[dict[str, Any]]:
-    """Convert resolver adapters into fortna_autogen eip_topology children shape."""
+    """Convert resolver adapters into fortna_autogen eip_topology children shape.
+
+    Preserves proven hardware FAMILY — never hardcodes 1794 for POINT racks.
+    """
     topo: list[dict[str, Any]] = []
     for ad in physical_map.get("adapters") or []:
+        ad_family = (
+            ad.get("family")
+            or adapter_family_from_modules(ad.get("modules") or [])
+            or FAMILY_UNKNOWN
+        )
         children = []
         for m in ad.get("modules") or []:
             if (m.get("connection") or "").upper() == "HEADNODE":
@@ -697,10 +721,15 @@ def physical_map_to_topology(physical_map: dict[str, Any]) -> list[dict[str, Any
             if "AENT" in (m.get("type") or "").upper():
                 continue
             eip_slot = int(m.get("slot") or 0)
+            m_family = (
+                m.get("family")
+                or detect_family_from_catalog(m.get("type") or "")
+                or ad_family
+            )
             data_index = int(
                 m.get("data_index")
                 if m.get("data_index") is not None
-                else _data_index_for_module(eip_slot, "1794")
+                else _data_index_for_module(eip_slot, m_family)
             )
             children.append(
                 {
@@ -710,7 +739,7 @@ def physical_map_to_topology(physical_map: dict[str, Any]) -> list[dict[str, Any
                     "eip_slot": eip_slot,
                     "flex_slot": data_index,
                     "direction": m.get("direction") or _module_direction(m.get("type") or ""),
-                    "family": "1794",
+                    "family": m_family,
                     "module_name": m.get("name") or "",
                 }
             )
@@ -720,7 +749,7 @@ def physical_map_to_topology(physical_map: dict[str, Any]) -> list[dict[str, Any
                 "name": ad.get("name"),
                 "ip": ad.get("targetip") or "",
                 "rack": ad.get("panel") or "",
-                "family": "1794",
+                "family": ad_family,
                 "panel": ad.get("panel"),
                 "naming_how": ad.get("naming_how"),
                 "children": children,

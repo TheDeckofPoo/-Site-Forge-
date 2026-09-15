@@ -75,6 +75,9 @@ class TestEsCompiler(unittest.TestCase):
         ready = safety_readiness(irs, library_has_aois=True)
         self.assertEqual(ready["status"], "REVIEW_REQUIRED")
         self.assertIn("UNRESOLVED", ready["detail"])
+        self.assertIn("Safety Zone:", ready["detail"])
+        self.assertTrue(ready.get("zones"))
+        self.assertEqual(ready["zones"][0].get("gap"), "safety-device membership UNRESOLVED")
         pack = emit_es_program(
             irs,
             _rung_xml=_rung_xml,

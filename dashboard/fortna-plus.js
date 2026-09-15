@@ -103,6 +103,33 @@ function ensureAutogenReadiness() {
   return autogenState.readiness;
 }
 
+function formatSafetyZoneDiagnostics(zones) {
+  /** Actionable per-zone REVIEW lines for Compile hub / activity log. */
+  const list = Array.isArray(zones) ? zones : [];
+  return list.map((z) => {
+    if (!z) return '';
+    const name = z.name || z.safetyZone || '—';
+    const area = z.area || '—';
+    const convs = Array.isArray(z.conveyors) ? z.conveyors.length : Number(z.conveyor_count || 0);
+    const mems = Array.isArray(z.members) ? z.members : [];
+    const memStatus = z.safety_device_membership
+      || z.device_membership_status
+      || (mems.length ? 'RESOLVED' : 'UNRESOLVED');
+    const gap = z.gap
+      || (memStatus === 'UNRESOLVED'
+        ? 'No proven E-stop/ESR/MCR membership found.'
+        : (z.missing || ''));
+    const lines = [
+      `Safety Zone: ${name}`,
+      `Area: ${area}`,
+      `Conveyors: ${convs}`,
+      `Safety members: ${memStatus}${mems.length ? ` (${mems.length})` : ''}`,
+    ];
+    if (gap && memStatus !== 'RESOLVED') lines.push(`Missing: ${gap}`);
+    return lines.join('\n');
+  }).filter(Boolean);
+}
+
 function safetyEvidence() {
   const wb = autogenState.workbook || {};
   const build = wb.safety_build || autogenState.safety_build || {};
@@ -111,6 +138,19 @@ function safetyEvidence() {
   const withConveyors = zones.filter((z) => z && ((z.conveyors || []).length || (z.members || []).length));
   const withMembers = zones.filter((z) => z && (z.members || []).length);
   const last = autogenState.lastEsReport || null;
+  const diagZones = (last && Array.isArray(last.zones) && last.zones.length)
+    ? last.zones
+    : withConveyors.map((z) => ({
+      name: z.name || z.safetyZone,
+      area: z.area || '',
+      conveyors: z.conveyors || [],
+      members: z.members || [],
+      safety_device_membership: (z.members || []).length ? 'RESOLVED' : 'UNRESOLVED',
+      gap: (z.members || []).length
+        ? ''
+        : 'No proven E-stop/ESR/MCR membership found.',
+    }));
+  const diagnostics = formatSafetyZoneDiagnostics(diagZones);
   return {
     detected: withConveyors.length > 0
       || withMembers.length > 0
@@ -119,6 +159,8 @@ function safetyEvidence() {
     members: withMembers.reduce((n, z) => n + ((z.members || []).length), 0),
     conveyors: withConveyors.reduce((n, z) => n + ((z.conveyors || []).length), 0),
     last,
+    diagnostics,
+    diagZones,
   };
 }
 
@@ -367,22 +409,29 @@ function computeCompileHubReadiness() {
     const ev = safetyEvidence();
     const e = R.safety;
     const last = ev.last;
+    const diagText = (ev.diagnostics || []).slice(0, 3).join(' | ');
     if (last?.status === 'ERROR') {
       e.status = 'ERROR';
       e.unresolved = last.unresolved || 1;
       e.detail = last.detail || 'ES program emit error';
+      e.diagnostics = ev.diagnostics || [];
     } else if (!ev.detected) {
       e.status = 'NOT_DETECTED';
       e.unresolved = 0;
       e.detail = 'No Safety Zone membership (proven or engineer-assigned)';
+      e.diagnostics = [];
     } else if (last?.status === 'READY' || (ev.zones > 0 && ev.members > 0 && e.appliedAt && !e.dirty)) {
       e.status = 'READY';
       e.detail = last?.detail || `${ev.zones} zone(s) · ${ev.members} member(s)`;
+      e.diagnostics = ev.diagnostics || [];
     } else {
       e.status = 'REVIEW_REQUIRED';
-      e.unresolved = last?.unresolved || 1;
-      e.detail = last?.detail
+      e.unresolved = last?.unresolved || Math.max(1, ev.zones - (ev.members > 0 ? 0 : 0) || 1);
+      // Actionable: zone / area / conveyors / members / gap — not just a count
+      e.detail = diagText
+        || last?.detail
         || `${ev.zones} zone(s) need valid Area + members before ES emit`;
+      e.diagnostics = ev.diagnostics || [];
     }
     nowDetail.safety = e;
   }
@@ -431,15 +480,22 @@ function paintHubReadinessCards(map, targets, { buildFacing = false } = {}) {
     if (sEl) sEl.textContent = readinessDisplayLabel(status, { buildFacing });
     const dEl = $(detailId);
     if (dEl) {
-      const bits = [];
-      if (e.detail) bits.push(e.detail);
-      if (e.status === 'REVIEW_REQUIRED' && e.unresolved > 0 && !/unresolved/i.test(e.detail || '')) {
-        bits.push(`${e.unresolved} unresolved`);
+      // Safety: show multi-line actionable diagnostics when present
+      if (key === 'safety' && Array.isArray(e.diagnostics) && e.diagnostics.length) {
+        dEl.style.whiteSpace = 'pre-wrap';
+        dEl.textContent = e.diagnostics.slice(0, 4).join('\n\n');
+      } else {
+        dEl.style.whiteSpace = '';
+        const bits = [];
+        if (e.detail) bits.push(e.detail);
+        if (e.status === 'REVIEW_REQUIRED' && e.unresolved > 0 && !/unresolved/i.test(e.detail || '')) {
+          bits.push(`${e.unresolved} unresolved`);
+        }
+        if (e.status === 'READY' && e.appliedAt && !/applied/i.test(e.detail || '')) {
+          bits.push(`applied ${formatAppliedAt(e.appliedAt)}`);
+        }
+        dEl.textContent = bits.join(' · ') || '—';
       }
-      if (e.status === 'READY' && e.appliedAt && !/applied/i.test(e.detail || '')) {
-        bits.push(`applied ${formatAppliedAt(e.appliedAt)}`);
-      }
-      dEl.textContent = bits.join(' · ') || '—';
     }
   });
 }
@@ -572,11 +628,16 @@ function refreshAutogenPackEvidence() {
 
 /**
  * Build PLC preflight — block Export when a detected subsystem is not READY.
- * Returns { ok, blockers: [{ key, tab, message }] }.
+ * Returns { ok, blockers, softSafetyReview }.
+ *
+ * Safety REVIEW_REQUIRED (unresolved members) is a soft review item — engineer
+ * may explicitly choose commissioning "BUILD WITHOUT UNRESOLVED SAFETY".
+ * Safety ERROR remains a hard blocker. Normal complete build still requires READY.
  */
-function autogenBuildPreflight() {
+function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
   const map = computeCompileHubReadiness();
   const blockers = [];
+  const softSafetyReview = [];
   const need = [
     { key: 'system', tab: 'autogen', label: 'System / Core', required: true },
     { key: 'hardware', tab: 'io', label: 'Hardware / IO', required: true },
@@ -609,13 +670,50 @@ function autogenBuildPreflight() {
     if (!n.required) return;
     const e = map[n.key] || emptyReadinessEntry();
     if (e.status === 'READY') return;
+    // Soft path: Safety REVIEW_REQUIRED can be omitted with explicit engineer confirm
+    if (
+      n.key === 'safety'
+      && e.status === 'REVIEW_REQUIRED'
+      && allowOmitUnresolvedSafety
+    ) {
+      softSafetyReview.push({
+        key: n.key,
+        tab: n.tab,
+        message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
+        diagnostics: e.diagnostics || safetyEvidence().diagnostics || [],
+      });
+      return;
+    }
+    if (n.key === 'safety' && e.status === 'REVIEW_REQUIRED') {
+      softSafetyReview.push({
+        key: n.key,
+        tab: n.tab,
+        message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
+        diagnostics: e.diagnostics || safetyEvidence().diagnostics || [],
+      });
+      // Still a blocker for COMPLETE build until engineer opts into review build
+      blockers.push({
+        key: n.key,
+        tab: n.tab,
+        message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
+        soft: true,
+      });
+      return;
+    }
     blockers.push({
       key: n.key,
       tab: n.tab,
       message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
     });
   });
-  return { ok: blockers.length === 0, blockers };
+  return {
+    ok: blockers.length === 0,
+    blockers,
+    softSafetyReview,
+    onlySoftSafety: blockers.length > 0
+      && blockers.every((b) => b.key === 'safety' && b.soft)
+      && blockers.length === softSafetyReview.length,
+  };
 }
 
 window.markAutogenReadinessDirty = markReadinessDirty;
@@ -3595,12 +3693,12 @@ function adaptersForSelectedPanel(model) {
   return (model.adapters || []).filter((a) => a.panel === filter);
 }
 
-/** Vendor from resolver module only; AB 1794 family → "1"; else "—". Never invent. */
+/** Vendor from resolver module only; AB 1794/1734 family → "1"; else "—". Never invent. */
 function hwModuleVendor(mod) {
   if (!mod) return '—';
   if (mod.vendor != null && String(mod.vendor).trim() !== '') return String(mod.vendor).trim();
   const cat = String(mod.catalog || mod.type || '');
-  if (/^1794([-_]|$)/i.test(cat)) return '1';
+  if (/^1794([-_]|$)/i.test(cat) || /^1734([-_]|$)/i.test(cat) || /^1738([-_]|$)/i.test(cat)) return '1';
   return '—';
 }
 
@@ -3661,29 +3759,37 @@ function bindHwModuleClicks(root) {
   });
 }
 
-/** Physical 1794 FLEX module face — delegated to dashboard/hardware/flex-rack.js */
+/** Physical module face — family dispatcher (1794 FLEX / 1734 POINT). */
 function renderFlexModuleCard(ad, mod) {
-  if (!globalThis.FlexRack || typeof FlexRack.renderModule !== 'function') {
-    return `<button type="button" data-hw-mod="${escapeHtml(hwModuleKey(ad.rio_name, mod.slot))}" class="flex-phys-mod flex-phys-mod--io">
-      <span style="color:#94a3b8;font-size:11px;padding:8px;line-height:1.3">FLEX SVG missing</span>
-    </button>`;
-  }
   const key = hwModuleKey(ad.rio_name, mod.slot);
-  return FlexRack.renderModule(ad, mod, {
+  const opts = {
     selected: key === ioState.selectedHwModuleKey,
     moduleKey: key,
-  });
+  };
+  if (globalThis.HardwareFamily && typeof HardwareFamily.renderModule === 'function') {
+    return HardwareFamily.renderModule(ad, mod, opts);
+  }
+  if (!globalThis.FlexRack || typeof FlexRack.renderModule !== 'function') {
+    return `<button type="button" data-hw-mod="${escapeHtml(key)}" class="flex-phys-mod flex-phys-mod--io">
+      <span style="color:#94a3b8;font-size:11px;padding:8px;line-height:1.3">Hardware rack renderer missing</span>
+    </button>`;
+  }
+  return FlexRack.renderModule(ad, mod, opts);
 }
 
 function renderHardwareRacksFlex(adapters) {
-  if (!globalThis.FlexRack || typeof FlexRack.renderRacks !== 'function') {
-    return `<div class="text-sm text-slate-500 py-6 text-center">FLEX rack renderer not loaded (flex-rack.js).</div>`;
-  }
-  // Full physical rack always visible — no click-to-reveal
-  return FlexRack.renderRacks(adapters, {
+  const opts = {
     selectedKey: ioState.selectedHwModuleKey || '',
     moduleKeyFn: hwModuleKey,
-  });
+  };
+  // Family registry dispatches 1794→FlexRack, 1734→PointRack
+  if (globalThis.HardwareFamily && typeof HardwareFamily.renderRacks === 'function') {
+    return HardwareFamily.renderRacks(adapters, opts);
+  }
+  if (!globalThis.FlexRack || typeof FlexRack.renderRacks !== 'function') {
+    return `<div class="text-sm text-slate-500 py-6 text-center">Hardware rack renderer not loaded.</div>`;
+  }
+  return FlexRack.renderRacks(adapters, opts);
 }
 
 function renderHardwareRacksTree(model, adapters) {
@@ -4039,8 +4145,12 @@ function renderHardwareTerminalFace(ad, mod) {
       : `${ad.rio_name || ''}  |  ${cat}`;
   }
   if (mod.is_adapter_card) {
+    const fam = String(mod.family || ad?.family || '');
+    const headLabel = fam === '1734' || /^1734/i.test(cat)
+      ? `${cat || '1734-AENTR'} — POINT I/O EtherNet/IP adapter · no digital terminals.`
+      : `${cat || '1794-AENT'} — FLEX I/O Ethernet adapter head · no digital terminals.`;
     return `<div class="hw-term-panel">
-      <div class="text-slate-500 text-[11px]">1794-AENT — Ethernet adapter head · no digital terminals.</div>
+      <div class="text-slate-500 text-[11px]">${escapeHtml(headLabel)}</div>
     </div>`;
   }
   const rows = hwChannelRows(mod);
@@ -6830,19 +6940,65 @@ async function runAutogenGenerate(mode) {
     }
   }
 
-  // Preflight: detected subsystems must be READY before Export L5X
+  // Preflight: detected subsystems must be READY before Export L5X.
+  // Safety REVIEW_REQUIRED may be explicitly omitted for commissioning builds only.
+  autogenState.omitUnresolvedSafety = false;
   if (mode === 'run') {
     try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
-    const pre = autogenBuildPreflight();
+    let pre = autogenBuildPreflight();
     if (!pre.ok) {
-      setAutogenStatus('Blocked — readiness', 'error');
-      autogenLog('Export blocked — Compile hub readiness incomplete:', 'err');
-      pre.blockers.forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
-      const first = pre.blockers[0];
-      if (first?.tab) {
-        try { activateTab(first.tab); } catch (_) { /* ignore */ }
+      const hard = (pre.blockers || []).filter((b) => !b.soft);
+      if (hard.length) {
+        setAutogenStatus('Blocked — readiness', 'error');
+        autogenLog('Export blocked — Compile hub readiness incomplete:', 'err');
+        hard.forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
+        const first = hard[0] || pre.blockers[0];
+        if (first?.tab) {
+          try { activateTab(first.tab); } catch (_) { /* ignore */ }
+        }
+        return;
       }
-      return;
+      // Only soft Safety REVIEW_REQUIRED — offer commissioning review build
+      if (pre.onlySoftSafety || (pre.softSafetyReview || []).length) {
+        const diag = (pre.softSafetyReview[0]?.diagnostics || safetyEvidence().diagnostics || [])
+          .slice(0, 4)
+          .join('\n\n');
+        const msg = [
+          'COMPLETE BUILD blocked — Safety / ES is DETECTED — REVIEW REQUIRED.',
+          '',
+          diag || pre.softSafetyReview[0]?.message || 'Unresolved Safety Zone members.',
+          '',
+          'Choose BUILD WITHOUT UNRESOLVED SAFETY for a commissioning/review L5X?',
+          '',
+          '• Program ES will be OMITTED',
+          '• Safety stays REVIEW REQUIRED (not marked READY)',
+          '• Resulting controller is NOT complete / commissioning-ready',
+          '',
+          'OK = BUILD WITHOUT UNRESOLVED SAFETY',
+          'Cancel = keep blocked (resolve Safety members for complete build)',
+        ].join('\n');
+        const ok = confirm(msg);
+        if (!ok) {
+          setAutogenStatus('Blocked — Safety REVIEW REQUIRED', 'error');
+          autogenLog('Export blocked — Safety REVIEW REQUIRED (complete build needs members):', 'err');
+          (pre.softSafetyReview || []).forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
+          (safetyEvidence().diagnostics || []).forEach((d) => {
+            String(d).split('\n').forEach((line) => autogenLog(`    ${line}`, 'warn'));
+          });
+          try { activateTab('transport'); } catch (_) { /* ignore */ }
+          return;
+        }
+        autogenState.omitUnresolvedSafety = true;
+        autogenLog('COMMISSIONING REVIEW BUILD — engineer chose BUILD WITHOUT UNRESOLVED SAFETY', 'warn');
+        (safetyEvidence().diagnostics || []).forEach((d) => {
+          String(d).split('\n').forEach((line) => autogenLog(`  ${line}`, 'warn'));
+        });
+      } else {
+        setAutogenStatus('Blocked — readiness', 'error');
+        autogenLog('Export blocked — Compile hub readiness incomplete:', 'err');
+        pre.blockers.forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
+        return;
+      }
     }
   }
 
@@ -7008,6 +7164,10 @@ async function runAutogenGenerate(mode) {
     if (wbForGen && autogenState.safety_build) {
       wbForGen.safety_build = autogenState.safety_build;
     }
+    if (wbForGen && autogenState.omitUnresolvedSafety) {
+      wbForGen.options = { ...(wbForGen.options || {}), omit_unresolved_safety: true };
+      wbForGen.omit_unresolved_safety = true;
+    }
     res = await fortnaAPI.autogenGenerate({
       mode,
       excel: excel || undefined,
@@ -7016,6 +7176,7 @@ async function runAutogenGenerate(mode) {
       noSys,
       includeIoMap,
       noIoMap: !includeIoMap,
+      omitUnresolvedSafety: !!autogenState.omitUnresolvedSafety,
       // Pass merged workbook so Build PLC == editor state (one canonical model).
       workbook: wbForGen,
       sorterBuild: sorterTrackChecked ? sorterCfg : undefined,
@@ -7062,7 +7223,21 @@ async function runAutogenGenerate(mode) {
     try {
       const st = String(rep.es_program.status || '').toUpperCase();
       const e = ensureAutogenReadiness().safety;
-      if (st === 'READY' || rep.es_program.emitted) {
+      const omitted = !!(rep.es_program.omitted || autogenState.omitUnresolvedSafety);
+      if (omitted) {
+        // Commissioning review build — keep REVIEW REQUIRED; never claim READY
+        e.status = 'REVIEW_REQUIRED';
+        e.detail = rep.es_program.detail
+          || 'Safety omitted from this build — REVIEW REQUIRED';
+        e.unresolved = rep.es_program.unresolved || 1;
+        e.diagnostics = formatSafetyZoneDiagnostics(rep.es_program.zones || safetyEvidence().diagZones || []);
+        autogenLog('BUILD GENERATED WITH REVIEW ITEMS', 'warn');
+        autogenLog(
+          `Omitted: Safety / ES — ${(rep.es_program.omitted_zones || []).join(', ') || 'unresolved members'}`,
+          'warn',
+        );
+        autogenLog('Controller is NOT complete / commissioning-ready until Safety is READY.', 'warn');
+      } else if (st === 'READY' || rep.es_program.emitted) {
         Object.assign(e, emptyReadinessEntry('READY'));
         e.detail = rep.es_program.detail || 'ES program emitted';
         e.appliedAt = new Date().toISOString();
@@ -7070,10 +7245,25 @@ async function runAutogenGenerate(mode) {
         e.status = st === 'ERROR' ? 'ERROR' : 'REVIEW_REQUIRED';
         e.detail = rep.es_program.detail || st;
         e.unresolved = rep.es_program.unresolved || 1;
+        e.diagnostics = formatSafetyZoneDiagnostics(rep.es_program.zones || []);
       }
     } catch (_) { /* ignore */ }
+  } else if (autogenState.omitUnresolvedSafety) {
+    try {
+      const e = ensureAutogenReadiness().safety;
+      e.status = 'REVIEW_REQUIRED';
+      e.detail = 'Safety omitted from commissioning review build';
+      e.diagnostics = safetyEvidence().diagnostics || [];
+      autogenLog('BUILD GENERATED WITH REVIEW ITEMS', 'warn');
+      autogenLog('Omitted: Safety / ES — unresolved members', 'warn');
+    } catch (_) { /* ignore */ }
   }
-  setAutogenStatus(r.recovered ? 'Complete (recovered)' : 'Complete', 'ready');
+  setAutogenStatus(
+    r.recovered
+      ? 'Complete (recovered)'
+      : (autogenState.omitUnresolvedSafety ? 'Complete · REVIEW ITEMS' : 'Complete'),
+    autogenState.omitUnresolvedSafety ? 'warn' : 'ready',
+  );
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }
   if ($('autogen-summary')) {

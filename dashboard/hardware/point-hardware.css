@@ -1,0 +1,292 @@
+/* Physical 1734 POINT I/O — visual language from site_forge_1734_pointio_reference.html
+   Narrow slice modules. Do NOT reuse 1794 FLEX card proportions. */
+
+.point-phys-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 100%;
+}
+
+.point-phys-rack-card {
+  border: 1px solid #0e4f75;
+  border-radius: 8px;
+  background: rgba(7, 16, 24, 0.98);
+  overflow: hidden;
+}
+
+.point-phys-rack-card.expanded {
+  border-color: #1fc9ff;
+  box-shadow: 0 0 0 1px rgba(31, 201, 255, 0.25);
+}
+
+.point-phys-rack-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+  padding: 0.45rem 0.75rem;
+  font-size: 10px;
+  color: #7391a5;
+  border-bottom: 1px solid #123950;
+  background: #07101a;
+}
+
+.point-phys-rack-meta .rio {
+  font-family: ui-monospace, Consolas, monospace;
+  font-size: 12px;
+  font-weight: 700;
+  color: #67e8f9;
+}
+
+.point-family-badge {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #0b1220;
+  background: #58d0ff;
+  border-radius: 3px;
+  padding: 1px 6px;
+}
+
+.point-rack-viewport {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: auto;
+  min-height: 300px;
+  padding: 8px;
+  background:
+    radial-gradient(circle at center, #0a1720 0, #061018 60%, #040a0f 100%);
+}
+
+.point-rack-wrap-inner {
+  position: relative;
+  padding: 52px 20px 50px;
+  min-width: max-content;
+}
+
+.point-slot-labels {
+  display: flex;
+  position: absolute;
+  left: 20px;
+  top: 6px;
+  height: 46px;
+  gap: 3px;
+  z-index: 4;
+}
+
+.point-slot-label {
+  width: 58px;
+  border: 1px solid #735a24;
+  border-radius: 5px;
+  background: #07121a;
+  text-align: center;
+  padding-top: 5px;
+  color: #eef7fb;
+  font-size: 10px;
+  line-height: 14px;
+  flex: 0 0 auto;
+}
+
+.point-slot-label.adapter-slot {
+  width: 112px;
+}
+
+.point-slot-label.selected {
+  border-color: #00bfff;
+  box-shadow: 0 0 0 1px #087ab2 inset;
+}
+
+.point-din-rail {
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 42px;
+  height: 13px;
+  background: linear-gradient(#b9bec2, #6e777e, #aeb5ba);
+  border: 1px solid #d7dcdf;
+  box-shadow: 0 4px 8px #0008;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.point-rack-row {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  z-index: 3;
+}
+
+.point-adapter,
+.point-module {
+  position: relative;
+  z-index: 2;
+  height: 222px;
+  border: 1px solid #777;
+  box-shadow: 0 7px 14px #0008;
+  background: linear-gradient(90deg, #c9c4b3, #e1dcc9 48%, #bdb7a6);
+  color: #111;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  flex: 0 0 auto;
+  display: block;
+  text-align: left;
+}
+
+.point-adapter {
+  width: 112px;
+  border-radius: 5px 3px 3px 5px;
+}
+
+.point-module {
+  width: 58px;
+  border-radius: 3px;
+}
+
+.point-module.point-unknown {
+  outline: 1px dashed #ffca58;
+}
+
+.point-adapter:hover,
+.point-module:hover {
+  filter: brightness(1.03);
+}
+
+.point-adapter.selected,
+.point-module.selected {
+  outline: 2px solid #10c5ff;
+  box-shadow: 0 0 10px #0bb8ff99, 0 4px 10px #0009;
+}
+
+.point-cat {
+  height: 28px;
+  background: #23292e;
+  color: #eee;
+  font-weight: 700;
+  font-size: 10px;
+  padding: 7px 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  font-family: ui-monospace, Consolas, monospace;
+}
+
+.point-brand {
+  font-size: 9px;
+  color: #222;
+  padding: 5px 6px;
+  font-weight: 700;
+}
+
+.point-leds {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4px;
+  padding: 5px 8px;
+}
+
+.point-leds.adapter {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.point-led {
+  height: 9px;
+  border-radius: 5px;
+  background: #26343b;
+  border: 1px solid #111;
+}
+
+.point-led.on {
+  background: #39c46a;
+}
+
+.point-led.amber {
+  background: #ffca58;
+}
+
+.point-thumb {
+  margin: 6px 18px;
+  background: #31383e;
+  color: #eee;
+  text-align: center;
+  font: 10px monospace;
+  padding: 4px;
+  border: 1px solid #777;
+}
+
+.point-port {
+  height: 31px;
+  margin: 5px 10px;
+  background: #151b20;
+  border: 2px solid #5d656b;
+  border-radius: 2px;
+  position: relative;
+}
+
+.point-port::after {
+  content: 'RJ45';
+  position: absolute;
+  color: #8d9aa4;
+  font-size: 8px;
+  left: 7px;
+  top: 8px;
+}
+
+.point-term {
+  position: absolute;
+  left: 5px;
+  right: 5px;
+  bottom: 22px;
+  height: 82px;
+  background: #4b555d;
+  border: 1px solid #252b30;
+  border-radius: 2px;
+  padding: 5px;
+}
+
+.point-module .point-term {
+  height: 102px;
+}
+
+.point-screws {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 5px;
+}
+
+.point-module .point-screws {
+  gap: 4px;
+}
+
+.point-screw {
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #e0e3e5 0 22%, #727b81 25% 60%, #333 63%);
+  border: 1px solid #222;
+}
+
+.point-module .point-screw {
+  height: 12px;
+}
+
+.point-slot-tag {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: #2a3540;
+  font: 9px monospace;
+  font-weight: 700;
+}
+
+.point-aent-hint {
+  padding: 16px;
+  text-align: center;
+  color: #7391a5;
+  font-size: 12px;
+}

@@ -539,6 +539,19 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
                 _add_zone(f"{base}_ESZone1")
         inp.safety_zones = zones
     # Engineer Safety Zone membership IR for ES program emit
+    if workbook.get("omit_unresolved_safety") or (
+        isinstance(workbook.get("options"), dict)
+        and (workbook.get("options") or {}).get("omit_unresolved_safety")
+    ):
+        try:
+            inp.omit_unresolved_safety = True
+        except Exception:
+            pass
+        try:
+            if isinstance(workbook.get("options"), dict):
+                inp.options = dict(workbook.get("options") or {})
+        except Exception:
+            pass
     sb = workbook.get("safety_build")
     if isinstance(sb, dict):
         inp.safety_build = sb

@@ -206,9 +206,21 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
             "zones": zone_diag,
         }
     if zones and issues:
+        # Prefer actionable per-zone lines for UI / activity log
+        actionable = []
+        for zd in zone_diag:
+            if zd.get("safety_device_membership") == "RESOLVED" and zd.get("area"):
+                continue
+            gap = zd.get("gap") or "needs review"
+            actionable.append(
+                f"Safety Zone: {zd.get('name') or '—'} | Area: {zd.get('area') or '—'} | "
+                f"Conveyors: {len(zd.get('conveyors') or [])} | "
+                f"Safety members: {zd.get('safety_device_membership') or 'UNRESOLVED'} | "
+                f"Missing: {gap}"
+            )
         return {
             "status": "REVIEW_REQUIRED",
-            "detail": "; ".join(issues[:6]),
+            "detail": " | ".join(actionable[:4]) if actionable else "; ".join(issues[:6]),
             "unresolved": len(issues),
             "zones": zone_diag,
         }

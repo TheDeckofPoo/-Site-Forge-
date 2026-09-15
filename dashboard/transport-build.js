@@ -1022,7 +1022,20 @@
   }
 
   function safetyForAreaName(name) {
-    const base = String(name || 'Transport').replace(/_Area$/i, '').trim() || 'Transport';
+    return nextSafetyZoneName(name);
+  }
+
+  /**
+   * Default Safety Zone suggestion from Area/layout name.
+   * ORNCCP2_Area → ORNCCP2_ESZone1 (next free N if taken). Suggestion only.
+   */
+  function nextSafetyZoneName(areaName) {
+    const base = String(areaName || 'Transport').replace(/_Area$/i, '').trim() || 'Transport';
+    const existing = new Set(listSafetyZoneNames().map((z) => z.toLowerCase()));
+    for (let n = 1; n < 100; n++) {
+      const candidate = `${base}_ESZone${n}`;
+      if (!existing.has(candidate.toLowerCase())) return candidate;
+    }
     return `${base}_ESZone1`;
   }
 
@@ -1108,13 +1121,26 @@
     if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
     tb.view.zoom = 1;
     applyViewportZoom();
-    const canvas = $('tb-canvas');
-    if (canvas) {
-      canvas.scrollLeft = 0;
-      canvas.scrollTop = 0;
+    // Center current area at 100% — do not jump to top-left (biases right on next zoom).
+    const area = activeArea();
+    const nodes = area?.nodes || [];
+    if (nodes.length) {
+      fitViewToNodes(nodes, {
+        mode: 'area',
+        paddingFrac: 0.08,
+        minZoom: 1,
+        maxZoom: 1,
+        excludeOutliers: !tb.physicalLayout,
+      });
+    } else {
+      const canvas = $('tb-canvas');
+      if (canvas) {
+        canvas.scrollLeft = 0;
+        canvas.scrollTop = 0;
+      }
     }
     render();
-    status('Reset View · 100% (presentation only)');
+    status('Reset View · 100% centered (presentation only)');
   }
 
   /** Zoom +/- around viewport center (presentation only — no model mutation). */
@@ -1960,11 +1986,143 @@
     return parts.join(' ');
   }
 
+  function isCurveNode(n) {
+    if (!n) return false;
+    const rk = String(n.renderKind || n.equipmentType || '').toLowerCase();
+    if (rk.includes('curve')) return true;
+    if (n.kind === 'conv_right' || n.kind === 'conv_left') return true;
+    const sweep = Number(n.sweepDeg ?? n.sweep_deg);
+    if (Number.isFinite(sweep) && Math.abs(Math.abs(sweep) - 90) < 20) return true;
+    return false;
+  }
+
+  /** True when pathCanvas has a usable SVG arc (not a near-straight chord). */
+  function pathHasValidArc(pathCanvas) {
+    if (!pathCanvas || !pathCanvas.length) return false;
+    const arc = pathCanvas.find((c) => String(c.cmd || '').toLowerCase() === 'arc');
+    if (!arc) return false;
+    const r = Number(arc.radius);
+    if (!(r > 1)) return false;
+    const sweep = Math.abs(Number(arc.sweep_deg));
+    if (Number.isFinite(sweep) && sweep > 0 && sweep < 25) return false;
+    return true;
+  }
+
+  /**
+   * DISPLAY-ONLY quarter-circle for proven CURVE / 90° conveyors when pathCanvas
+   * is missing or degenerate (line fallback looks like a straight diagonal).
+   * Does not mutate topology / canonical sourceX/Y / pathCanvas on the node.
+   */
+  function synthesizeCurveDisplayPath(n) {
+    const entry = n?.entryCanvas;
+    const exit = n?.exitCanvas;
+    if (!entry || !exit) return null;
+    const dx = Number(exit.x) - Number(entry.x);
+    const dy = Number(exit.y) - Number(entry.y);
+    const chord = Math.hypot(dx, dy);
+    if (!(chord > 2)) return null;
+
+    const s = presentationScale();
+    const width = Number(n.width);
+    let rCl = 0;
+    const existingArc = (n.pathCanvas || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
+    if (existingArc && Number(existingArc.radius) > 1) rCl = Number(existingArc.radius);
+    else if (n.insideRadius != null && Number.isFinite(Number(n.insideRadius))) {
+      rCl = (Number(n.insideRadius) + (Number.isFinite(width) && width > 0 ? width : 200) / 2) * s;
+    }
+    // 90° chord length = r√2 → r = chord/√2
+    if (!(rCl > 1) || Math.abs(rCl * Math.SQRT2 - chord) > chord * 0.55) {
+      rCl = chord / Math.SQRT2;
+    }
+
+    let signedSweep = null;
+    if (n.sweepDeg != null || n.sweep_deg != null) {
+      signedSweep = Number(n.sweepDeg ?? n.sweep_deg);
+    } else if (existingArc && existingArc.sweep_deg != null) {
+      signedSweep = Number(existingArc.sweep_deg);
+    } else if (n.sourceAngle != null && n.angleOut != null && n.angleOut !== '') {
+      let d = Number(n.angleOut) - Number(n.sourceAngle);
+      while (d > 180) d -= 360;
+      while (d < -180) d += 360;
+      // Canvas Y-flip reverses sweep relative to RUN
+      signedSweep = -d;
+    } else if (n.kind === 'conv_left') {
+      signedSweep = 90;
+    } else {
+      signedSweep = -90;
+    }
+    if (!Number.isFinite(signedSweep) || Math.abs(signedSweep) < 1) {
+      signedSweep = n.kind === 'conv_left' ? 90 : -90;
+    }
+    // Snap near-90 sweeps to a true quarter-turn
+    if (Math.abs(Math.abs(signedSweep) - 90) <= 45) {
+      signedSweep = signedSweep >= 0 ? 90 : -90;
+    } else if (Math.abs(signedSweep) > 170) {
+      signedSweep = signedSweep >= 0 ? 90 : -90;
+    }
+
+    // Quarter-circle center from chord midpoint ± perpendicular (display only)
+    const mx = (Number(entry.x) + Number(exit.x)) / 2;
+    const my = (Number(entry.y) + Number(exit.y)) / 2;
+    const hx = dx / 2;
+    const hy = dy / 2;
+    const c1 = { x: mx - hy, y: my + hx };
+    const c2 = { x: mx + hy, y: my - hx };
+    const crossOf = (c) => (entry.x - c.x) * (exit.y - c.y) - (entry.y - c.y) * (exit.x - c.x);
+    // SVG Y-down: sweep_flag 1 = CW screen = positive cross in screen coords
+    const wantCw = signedSweep < 0; // canvas samples: -90 → sweep_flag 0 (CCW screen)
+    // Samples: sweep_deg -90 → flag 0; +90 → flag 1. flag 1 = CW in SVG Y-down.
+    // signedSweep > 0 → flag 1 (CW); want positive cross for CW.
+    const wantPositiveCross = signedSweep > 0;
+    let center = (crossOf(c1) > 0) === wantPositiveCross ? c1 : c2;
+    if (existingArc?.center && existingArc.center.x != null) {
+      const ec = {
+        x: Number(existingArc.center.x),
+        y: Number(existingArc.center.y),
+      };
+      const er = Math.hypot(entry.x - ec.x, entry.y - ec.y);
+      if (er > 1) {
+        center = ec;
+        rCl = er;
+      }
+    } else {
+      rCl = Math.hypot(entry.x - center.x, entry.y - center.y) || rCl;
+    }
+
+    const sweep_flag = signedSweep > 0 ? 1 : 0;
+    void wantCw;
+    return [
+      { cmd: 'move', x: Number(entry.x), y: Number(entry.y) },
+      {
+        cmd: 'arc',
+        x: Number(exit.x),
+        y: Number(exit.y),
+        radius: Math.max(1, rCl),
+        sweep_deg: signedSweep > 0 ? 90 : -90,
+        sweep_flag,
+        large_arc: 0,
+        center: { x: center.x, y: center.y },
+      },
+    ];
+  }
+
+  /** Resolve display path for a node — prefers valid pathCanvas arc; synthesizes curves. */
+  function displayPathCanvasForNode(n) {
+    if (pathHasValidArc(n?.pathCanvas)) return n.pathCanvas;
+    if (isCurveNode(n)) {
+      const synth = synthesizeCurveDisplayPath(n);
+      if (synth) return synth;
+    }
+    return n?.pathCanvas || null;
+  }
+
   function schematicStrokeWidth(n) {
     const s = presentationScale();
     const w = Number(n.width);
     const px = (Number.isFinite(w) && w > 0 ? w : 200) * s;
-    const isCurve = String(n.renderKind || n.equipmentType || '').toLowerCase().includes('curve');
+    const isCurve = typeof isCurveNode === 'function'
+      ? isCurveNode(n)
+      : String(n.renderKind || n.equipmentType || '').toLowerCase().includes('curve');
     if (isCurve) {
       // Keep curve stroke ≤ ~0.55× centerline radius so the arc shape stays readable
       // (site-scale canvas often yields radius of only a few px).
@@ -2374,8 +2532,10 @@
     const labelCandidates = [];
     nodes.forEach((n) => {
       const off = offsets[n.id] || { dx: 0, dy: 0 };
-      let d = offsetPathD(n.pathCanvas, off);
-      if (!d && n.entryCanvas && n.exitCanvas) {
+      // Prefer proven pathCanvas arc; synthesize quarter-turn for CURVE when degenerate
+      const displayPath = displayPathCanvasForNode(n);
+      let d = offsetPathD(displayPath, off);
+      if (!d && n.entryCanvas && n.exitCanvas && !isCurveNode(n)) {
         const a = applyPresOffset(n.entryCanvas, off);
         const b = applyPresOffset(n.exitCanvas, off);
         d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
@@ -2785,12 +2945,19 @@
     return outlierInfo;
   }
 
-  /** Fit currently displayed equipment — center complete topology with padding. */
+  /** Fit currently displayed equipment — center active Area conveyance X+Y. */
   function fitVisible() {
-    // Prefer ALL areas so Fit View shows the complete controller layout
+    const area = activeArea();
+    // Prefer CURRENTLY VISIBLE Area conveyance so Fit View balances padding
+    // on both axes for the selected Area (Fit Site / Fit All for full plant).
+    const areaNodes = area?.nodes || [];
     const nodes = [];
-    (tb.areas || []).forEach((a) => (a.nodes || []).forEach((n) => nodes.push(n)));
-    const useNodes = nodes.length ? nodes : (activeArea()?.nodes || []);
+    if (areaNodes.length) {
+      areaNodes.forEach((n) => nodes.push(n));
+    } else {
+      (tb.areas || []).forEach((a) => (a.nodes || []).forEach((n) => nodes.push(n)));
+    }
+    const useNodes = nodes.length ? nodes : areaNodes;
     const info = fitViewToNodes(useNodes, {
       mode: 'visible',
       paddingFrac: 0.1,
@@ -2799,14 +2966,13 @@
       // Physical layouts already have real XY — do not drop "outlier" chains.
       excludeOutliers: !tb.physicalLayout,
     });
-    const area = activeArea();
     drawSchematic(area);
     drawWires();
     const nOut = info?.outliers?.length || 0;
     status(
       nOut
         ? `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · centered · ${nOut} OUTLIER (use Fit All)`
-        : `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · topology centered`
+        : `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · Area centered X/Y`
     );
     return info;
   }
@@ -3132,11 +3298,14 @@
     };
   }
 
-  /** Grow the drawable grid when nodes sit near the edge (fixes deep-scroll drop/wire). */
+  /** Grow the drawable grid when nodes sit near the edge (fixes deep-scroll drop/wire).
+   *  Also pad by ~½ viewport (world units) so Fit/Area-switch can center X+Y without
+   *  clamping scroll to the origin (which biases topology left/right). */
   function ensureCanvasExtents(area) {
     const host = $('tb-nodes');
     const wires = $('tb-wires');
     const schematic = $('tb-schematic');
+    const canvas = $('tb-canvas');
     if (!host) return;
     let maxX = 1600;
     let maxY = 1000;
@@ -3160,6 +3329,12 @@
         maxY = Math.max(maxY, (Number(n.y) || 0) + 180);
       }
     });
+    // Room to scroll so visibleCenter maps to viewportCenter (balanced padding)
+    const z = Math.max(0.05, Number(tb.view?.zoom) || 1);
+    if (canvas) {
+      maxX = Math.max(maxX, (canvas.clientWidth / z) + 200);
+      maxY = Math.max(maxY, (canvas.clientHeight / z) + 200);
+    }
     host.style.minWidth = `${maxX}px`;
     host.style.minHeight = `${maxY}px`;
     [wires, schematic].forEach((el) => {
@@ -3716,8 +3891,16 @@
     $('tb-area-select')?.addEventListener('change', (e) => {
       tb.activeAreaId = e.target.value;
       tb.selectedId = null;
+      // Drop prior Area pan — do not retain another Area's scroll offset
       save();
       render();
+      // SELECT AREA → FIT/CENTER visible conveyance on X and Y
+      requestAnimationFrame(() => {
+        try {
+          fitArea();
+          status(`Area centered · ${(activeArea()?.name || '').trim() || '—'}`);
+        } catch (_) { /* ignore */ }
+      });
     });
 
     $('tb-area-new')?.addEventListener('click', async () => {
@@ -3732,14 +3915,16 @@
         if (name === null || !(String(name).trim())) return;
         const areaName = String(name).trim();
         const existing = listSafetyZoneNames();
-        const zoneHint = existing[0] || `${areaName.replace(/_Area$/i, '')}_ESZone1`;
+        // Seed from current Area/layout name (ORNCCP2_Area → ORNCCP2_ESZoneN). Suggestion only.
+        const zoneHint = nextSafetyZoneName(areaName);
         const zonePrompt = existing.length
           ? `Default Safety Zone for “${areaName}”.\n`
+            + `Suggested: ${zoneHint}\n`
             + `Existing: ${existing.slice(0, 8).join(', ')}${existing.length > 8 ? '…' : ''}\n`
             + 'Pick an existing name, or type a new Safety Zone name to create it.\n'
-            + 'Area ≠ Safety Zone — conveyor Safety Zone stays editable in topology.'
-          : `Create New Safety Zone for “${areaName}” (or leave blank).\n`
-            + 'Area ≠ Safety Zone — conveyor-level value remains authoritative.';
+            + 'Area ≠ Safety Zone — engineer may edit; not permanently derived from Area.'
+          : `Default Safety Zone for “${areaName}” (suggested from Area name).\n`
+            + 'Area ≠ Safety Zone — conveyor-level value remains authoritative and editable.';
         const zoneIn = await askText('Safety Zone', zonePrompt, zoneHint);
         if (zoneIn === null) return; // cancelled
         const defaultZone = String(zoneIn || '').trim();

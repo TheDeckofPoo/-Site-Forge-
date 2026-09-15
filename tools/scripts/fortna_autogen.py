@@ -191,6 +191,10 @@ class AutogenInput:
     # Engineer Safety Zone IR: [{name, area, members:[...]}] — not inferred from Area alone
     safety_zone_members: list = field(default_factory=list)
     safety_build: dict = field(default_factory=dict)
+    # Commissioning review build: omit Program ES when Safety is REVIEW REQUIRED
+    # (engineer-explicit). Never auto-bypass; never invent members.
+    omit_unresolved_safety: bool = False
+    options: dict = field(default_factory=dict)
     run_dir: str = ""
     conveyors: list[ConveyorRow] = field(default_factory=list)
     modules: list[IoModule] = field(default_factory=list)
@@ -710,14 +714,86 @@ EIP_PARENT_TYPE = {
 
 
 def _eip_family_from_types(types: list[str]) -> str:
-    """Return '1734' (POINT) or '1794' (Flex) from module type strings in the tar."""
-    joined = " ".join(types or []).upper()
-    if "1734" in joined or "1738" in joined:
-        return "1734"
-    if "1794" in joined:
+    """Return '1734' (POINT) or '1794' (Flex) from module type strings.
+
+    Uses fortna_hardware_family registry. POINT evidence always wins over Flex.
+    Never silently translate 1734 → 1794. Legacy empty/unknown defaults to Flex
+    only when no POINT catalog strings are present (Greensboro path).
+    """
+    try:
+        from fortna_hardware_family import (
+            FAMILY_FLEX,
+            FAMILY_POINT,
+            FAMILY_UNKNOWN,
+            detect_family_from_types,
+        )
+
+        fam = detect_family_from_types(list(types or []))
+        if fam == FAMILY_POINT:
+            return FAMILY_POINT
+        if fam == FAMILY_FLEX:
+            return FAMILY_FLEX
+        # UNKNOWN — legacy Greensboro default ONLY when no 1734/1738 text
+        joined = " ".join(types or []).upper()
+        if "1734" in joined or "1738" in joined:
+            return FAMILY_POINT
+        return FAMILY_FLEX
+    except Exception:
+        joined = " ".join(types or []).upper()
+        if "1734" in joined or "1738" in joined:
+            return "1734"
+        if "1794" in joined:
+            return "1794"
         return "1794"
-    # Default Flex (legacy Greensboro path)
-    return "1794"
+
+
+def _normalize_eip_catalog_key(raw: str) -> str:
+    s = str(raw or "").strip().upper()
+    s = re.sub(r"[/_\-][A-Z]\d*$", "", s)
+    return s
+
+
+def _unsupported_point_catalog_error(catalog: str) -> str:
+    cat = str(catalog or "").strip() or "(empty)"
+    return f"Unsupported POINT I/O catalog:\n{cat}"
+
+
+def _require_supported_eip_child(mt: str, family: str) -> str | None:
+    """Return precise error string if catalog cannot be emitted; else None.
+
+    POINT catalogs without a library template must BLOCK — never crash, never
+    substitute a 1794 module definition.
+    """
+    key = _normalize_eip_catalog_key(mt)
+    if not key:
+        return None
+    if family == "1734" or key.startswith("1734") or key.startswith("1738"):
+        if key in EIP_CHILD_TEMPLATE or any(
+            key.startswith(k) for k in EIP_CHILD_TEMPLATE if k.startswith("1734")
+        ):
+            # Exact or already-mapped POINT child
+            if key in EIP_CHILD_TEMPLATE:
+                return None
+            # Try stripped forms already in map
+            for k in EIP_CHILD_TEMPLATE:
+                if key == k or key.startswith(k + "/"):
+                    return None
+        if key in EIP_CHILD_TEMPLATE:
+            return None
+        # Adapter heads are not children
+        if "AENT" in key:
+            return None
+        try:
+            from fortna_hardware_family import compiler_supports_catalog
+
+            ok, reason = compiler_supports_catalog(key)
+            if ok:
+                return None
+            return reason or _unsupported_point_catalog_error(key)
+        except Exception:
+            if key not in EIP_CHILD_TEMPLATE:
+                return _unsupported_point_catalog_error(key)
+    return None
 
 
 def _fortna_bit_to_data_bit(bit: str | int, *, max_bit: int = 15) -> int | None:
@@ -3987,7 +4063,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             if lane_n > 2:
                 # Config captured from prints; codegen TBD
                 continue
-            name = _safe(m.get("name") or m.get("merge") or "")
+            name = _safe(m.get("name") or m.get("merge") or m.get("discharge") or "")
             if not name:
                 continue
             if not name.endswith("_Merge"):
@@ -4302,7 +4378,34 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             and re.search(r'\bName="ES_PI20"', library_text)
         )
         es_emit_report = safety_readiness(_sz_irs, library_has_aois=_lib_ok)
-        if any(z.members for z in _sz_irs):
+        # Commissioning review build: engineer explicitly omitted unresolved Safety
+        _omit_safety = bool(
+            getattr(inp, "omit_unresolved_safety", False)
+            or (isinstance(getattr(inp, "options", None), dict)
+                and (inp.options or {}).get("omit_unresolved_safety"))
+            or (isinstance(_wb_sz, dict) and _wb_sz.get("omit_unresolved_safety"))
+        )
+        _ready_members = any(z.members for z in _sz_irs)
+        if _omit_safety and not _ready_members:
+            # Omit Program ES — keep REVIEW REQUIRED; never claim READY / never invent members
+            omitted_names = [
+                z.name for z in _sz_irs
+                if z.conveyors and not z.members
+            ] or [z.name for z in _sz_irs]
+            es_emit_report = dict(es_emit_report or {})
+            es_emit_report["status"] = "REVIEW_REQUIRED"
+            es_emit_report["emitted"] = False
+            es_emit_report["omitted"] = True
+            es_emit_report["omitted_zones"] = omitted_names
+            es_emit_report["detail"] = (
+                "Safety omitted from commissioning review build — "
+                + "; ".join(
+                    f"{z.name}: {(z.device_membership_status or 'UNRESOLVED')}"
+                    for z in _sz_irs
+                )
+            )
+            _es_pack = None
+        elif _ready_members:
             _ensure_library_tag("NO_ESLS")
             _es_pack = emit_es_program(
                 _sz_irs,
@@ -4317,6 +4420,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 programs_xml.append(_es_pack["program_xml"])
                 es_emit_report = dict(es_emit_report or {})
                 es_emit_report["emitted"] = True
+                es_emit_report["omitted"] = False
                 es_emit_report["zones"] = _es_pack.get("zones") or []
                 if es_emit_report.get("status") == "NOT_DETECTED":
                     es_emit_report["status"] = "READY"
@@ -5359,10 +5463,48 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             prepared_kids: list[tuple[dict, str, int, str]] = []
             for c in kids:
                 mt = (c.get("type") or "").strip()
-                tmpl = child_tmpls.get(mt)
+                mt_key = _normalize_eip_catalog_key(mt)
+                # Never emit a 1794 template for a proven 1734 module
+                child_fam = (
+                    (c.get("family") or "").strip()
+                    or family
+                    or _eip_family_from_types([mt])
+                )
+                if child_fam == "1734" and mt_key.startswith("1794"):
+                    raise ValueError(
+                        f"Hardware family substitution blocked: proven POINT child "
+                        f"cannot emit as FLEX catalog {mt}"
+                    )
+                if family == "1734" and mt_key.startswith("1794"):
+                    raise ValueError(
+                        f"Hardware family substitution blocked: POINT adapter "
+                        f"{rio_name} cannot host FLEX catalog {mt}"
+                    )
+                # Unsupported POINT catalog → precise BLOCK (no crash / no 1794 sub)
+                block_msg = _require_supported_eip_child(mt, child_fam or family)
+                if block_msg:
+                    raise ValueError(block_msg)
+                tmpl = child_tmpls.get(mt) or child_tmpls.get(mt_key)
                 if not tmpl:
-                    # unknown card — skip (Studio needs a real template for AB: types)
+                    # Try normalized catalog keys in template map
+                    for k, v in child_tmpls.items():
+                        if _normalize_eip_catalog_key(k) == mt_key:
+                            tmpl = v
+                            break
+                if not tmpl:
+                    if child_fam == "1734" or mt_key.startswith("1734"):
+                        raise ValueError(_unsupported_point_catalog_error(mt or mt_key))
+                    # unknown Flex card — skip (Studio needs a real template)
                     continue
+                # Guard: POINT family must not receive Flex (IO_1N90_*) child XML
+                if (child_fam == "1734" or family == "1734") and "1794" in (tmpl[:200] if isinstance(tmpl, str) else ""):
+                    # Template body check — also verify catalog map family
+                    mapped = EIP_CHILD_TEMPLATE.get(mt_key) or EIP_CHILD_TEMPLATE.get(mt) or ""
+                    if mapped.startswith("IO_1N90"):
+                        raise ValueError(
+                            f"Hardware family substitution blocked: {mt} mapped to "
+                            f"FLEX template {mapped}"
+                        )
                 cname = c.get("name") or f"{rio_name}_{c.get('flex_slot')}"
                 port_addr = None
                 # 1) numeric suffix on module name (CP2RIO0_0 → 0)
@@ -7463,6 +7605,18 @@ def generate(
                 "l5x_bytes": l5x_path.stat().st_size if l5x_path.is_file() else 0,
                 "conveyor_count": report.get("conveyor_count"),
                 "program_count": report.get("program_count"),
+                "es_program": report.get("es_program"),
+                "review_items": (
+                    {
+                        "omitted": ["Safety / ES"],
+                        "detail": (report.get("es_program") or {}).get("detail"),
+                        "omitted_zones": (report.get("es_program") or {}).get("omitted_zones") or [],
+                        "complete": False,
+                        "note": "Commissioning review build — Safety REVIEW REQUIRED; controller not complete",
+                    }
+                    if (report.get("es_program") or {}).get("omitted")
+                    else None
+                ),
             },
         )
         # Per-build manifest beside the dated filename as well
@@ -7656,6 +7810,18 @@ def main() -> int:
                             inp.merges_2to1 = m2
                             _emit_progress(
                                 f"2:1 merges from workbook: {len(m2)}",
+                                12,
+                            )
+                        # Commissioning review build flag (engineer-explicit)
+                        if wb.get("omit_unresolved_safety") or (
+                            isinstance(wb.get("options"), dict)
+                            and (wb.get("options") or {}).get("omit_unresolved_safety")
+                        ):
+                            inp.omit_unresolved_safety = True
+                            if isinstance(wb.get("options"), dict):
+                                inp.options = dict(wb.get("options") or {})
+                            _emit_progress(
+                                "Safety omit flag set — Program ES will be skipped if unresolved",
                                 12,
                             )
                         # Guard: workbook must not silently wipe RUN transport
