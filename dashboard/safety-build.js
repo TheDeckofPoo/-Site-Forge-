@@ -34,6 +34,8 @@
     filter: '',
     inventoryFilter: '',
     dirty: false,
+    /** Zone names engineer deleted — must not reappear from Transport canvas seeds. */
+    deletedZones: new Set(),
   };
 
   function $(id) {
@@ -113,9 +115,11 @@
     const cached = normalizeDeviceList(eng.devices || []);
     const devices = live.length ? live : cached;
 
-    // Merge transport + engineer zones
+    // Merge transport + engineer zones (skip engineer-deleted names)
+    const deleted = state.deletedZones;
     const byName = new Map();
     transportZones.forEach((z) => {
+      if (deleted.has(String(z.name || '').trim())) return;
       byName.set(z.name, {
         id: z.name,
         name: z.name,
@@ -140,7 +144,7 @@
     });
     (eng.zones || []).forEach((ez) => {
       const name = String(ez.name || ez.id || '').trim();
-      if (!name) return;
+      if (!name || deleted.has(name)) return;
       const cur = byName.get(name) || {
         id: name,
         name,
@@ -195,6 +199,7 @@
       if (!an) return;
       const stem = an.replace(/_Area$/i, '');
       const preferred = `${stem}_ESZone1`;
+      if (deleted.has(preferred)) return;
       const existing = [...byName.keys()].find((k) => {
         const kl = k.toLowerCase();
         return kl === preferred.toLowerCase()
@@ -686,19 +691,32 @@
       const st = z.status === 'READY'
         ? '<span class="text-emerald-400">READY</span>'
         : '<span class="text-amber-300">REVIEW REQUIRED</span>';
-      return `<button type="button" data-sb-zone="${escapeHtml(z.name)}" class="w-full text-left rounded-xl border ${sel} px-3 py-2.5 mb-2 transition">
-        <div class="flex items-center gap-2">
-          <span class="mono text-sm text-rose-200 font-semibold">${escapeHtml(z.name)}</span>
-          <span class="ml-auto text-[10px]">${st}</span>
-        </div>
-        <div class="text-[10px] text-slate-500 mt-1">Area ${escapeHtml(z.areaRef || '—')} · Conv ${(z.conveyorRefs || []).length} · Devices ${(z.members || []).length}</div>
-      </button>`;
+      return `<div class="rounded-xl border ${sel} px-3 py-2.5 mb-2 transition flex items-start gap-2">
+        <button type="button" data-sb-zone="${escapeHtml(z.name)}" class="flex-1 text-left min-w-0">
+          <div class="flex items-center gap-2">
+            <span class="mono text-sm text-rose-200 font-semibold truncate">${escapeHtml(z.name)}</span>
+            <span class="ml-auto text-[10px] shrink-0">${st}</span>
+          </div>
+          <div class="text-[10px] text-slate-500 mt-1">Area ${escapeHtml(z.areaRef || '—')} · Conv ${(z.conveyorRefs || []).length} · Devices ${(z.members || []).length}</div>
+        </button>
+        <button type="button" data-sb-zone-del="${escapeHtml(z.name)}" title="Delete Safety Zone"
+          class="shrink-0 mt-0.5 btn-ghost text-[10px] px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300 hover:bg-rose-950/40">
+          <i class="fa-solid fa-trash"></i>
+        </button>
+      </div>`;
     }).join('');
     host.querySelectorAll('[data-sb-zone]').forEach((btn) => {
       btn.addEventListener('click', () => {
         state.selectedZoneId = btn.getAttribute('data-sb-zone');
         render();
         highlightTransportZone(state.selectedZoneId);
+      });
+    });
+    host.querySelectorAll('[data-sb-zone-del]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        deleteSafetyZone(btn.getAttribute('data-sb-zone-del'));
       });
     });
   }
@@ -726,6 +744,9 @@
         <span class="text-[11px]">${z.status === 'READY' ? badge('READY') : badge('REVIEW')}</span>
         <button type="button" id="sb-show-on-transport" class="ml-auto btn-ghost text-[10px] px-2 py-1 rounded-lg border border-slate-700">
           <i class="fa-solid fa-route mr-1"></i>Show on Transportation
+        </button>
+        <button type="button" id="sb-delete-zone" class="btn-ghost text-[10px] px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300" title="Delete this Safety Zone">
+          <i class="fa-solid fa-trash mr-1"></i>Delete zone
         </button>
       </div>
       <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 mb-3">
@@ -790,6 +811,7 @@
     $('sb-add-selected')?.addEventListener('click', () => addSelectedDevices(z));
     $('sb-remove-selected')?.addEventListener('click', () => removeSelectedDevices(z));
     $('sb-accept-suggestions')?.addEventListener('click', () => acceptSuggestions(z));
+    $('sb-delete-zone')?.addEventListener('click', () => deleteSafetyZone(z.name));
   }
 
   function serializeDevice(d) {
@@ -899,12 +921,80 @@
       unassignedDevices: state.model?.unassignedDevices || [],
       inventory: state.model?.inventory || {},
       counts: state.model?.counts || {},
+      deletedZones: [...state.deletedZones],
       draft: true,
       dirty: state.dirty,
     };
     try {
       localStorage.setItem('siteforge.safetyBuild.v1', JSON.stringify(AS.safety_build));
     } catch (_) { /* ignore */ }
+  }
+
+  /** Clear zone name off Transportation conveyors + tb.safetyZones registry. */
+  function clearZoneFromTransport(zoneName) {
+    const zname = String(zoneName || '').trim();
+    if (!zname) return;
+    try {
+      if (typeof window.transportDeleteSafetyZone === 'function') {
+        window.transportDeleteSafetyZone(zname);
+        return;
+      }
+    } catch (_) { /* fall through */ }
+    try {
+      const key = localStorage.getItem('siteforge.transportBuild.v2')
+        ? 'siteforge.transportBuild.v2'
+        : 'siteforge.transportBuild.v1';
+      const raw = localStorage.getItem(key);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      (data.areas || []).forEach((area) => {
+        (area.nodes || []).forEach((n) => {
+          if (String(n.safetyZone || '').trim() === zname) n.safetyZone = '';
+        });
+      });
+      data.safetyZones = (data.safetyZones || []).filter(
+        (z) => String(z.name || z.id || '').trim() !== zname,
+      );
+      localStorage.setItem(key, JSON.stringify(data));
+    } catch (_) { /* ignore */ }
+  }
+
+  function deleteSafetyZone(zoneName) {
+    const zname = String(zoneName || '').trim();
+    if (!zname) return;
+    const ok = confirm(
+      `Delete Safety Zone "${zname}"?\n\n`
+      + '• Removes it from Safety Build\n'
+      + '• Clears this zone off conveyors on Transportation\n'
+      + '• Assigned devices become UNASSIGNED\n\n'
+      + 'This does not delete physical devices — only the zone membership.',
+    );
+    if (!ok) return;
+    state.deletedZones.add(zname);
+    clearZoneFromTransport(zname);
+    const AS = ensureAutogenState();
+    if (AS.safety_build && Array.isArray(AS.safety_build.zones)) {
+      AS.safety_build.zones = AS.safety_build.zones.filter(
+        (z) => String(z.name || z.id || '').trim() !== zname,
+      );
+      AS.safety_build.deletedZones = [...state.deletedZones];
+    }
+    if (AS.workbook?.safety_build && Array.isArray(AS.workbook.safety_build.zones)) {
+      AS.workbook.safety_build.zones = AS.workbook.safety_build.zones.filter(
+        (z) => String(z.name || z.id || '').trim() !== zname,
+      );
+      AS.workbook.safety_build.deletedZones = [...state.deletedZones];
+    }
+    if (state.selectedZoneId === zname) state.selectedZoneId = null;
+    state.dirty = true;
+    state.model = buildClientModel();
+    if (!state.selectedZoneId && (state.model.zones || []).length) {
+      state.selectedZoneId = state.model.zones[0].name;
+    }
+    persistLocalDraft();
+    render();
+    syncReadiness();
+    status(`Deleted Safety Zone ${zname}`);
   }
 
   function addSelectedDevices(z) {
@@ -1075,6 +1165,7 @@
         ]),
       ),
       counts: state.model?.counts || {},
+      deletedZones: [...state.deletedZones],
     };
     AS.safety_build = payload;
     if (AS.workbook) AS.workbook.safety_build = payload;
@@ -1130,12 +1221,15 @@
       refreshModel().then(() => status('Safety model refreshed (engineer overrides kept)'));
     });
     $('sb-apply')?.addEventListener('click', () => applySafety());
-    // Restore draft
+    // Restore draft (+ engineer-deleted zone names so they do not re-seed)
     try {
       const raw = localStorage.getItem('siteforge.safetyBuild.v1');
       if (raw) {
         const draft = JSON.parse(raw);
         ensureAutogenState().safety_build = draft;
+        state.deletedZones = new Set(
+          (draft.deletedZones || []).map((n) => String(n || '').trim()).filter(Boolean),
+        );
       }
     } catch (_) { /* ignore */ }
   }
@@ -1148,6 +1242,7 @@
   window.safetyBuildClear = function safetyBuildClear() {
     try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (_) { /* ignore */ }
     const AS = ensureAutogenState();
+    state.deletedZones = new Set();
     AS.safety_build = {
       version: 1,
       source: 'cleared',
@@ -1156,6 +1251,7 @@
       unassignedDevices: [],
       inventory: {},
       counts: {},
+      deletedZones: [],
     };
     AS.safetyDevices = [];
     state.model = null;

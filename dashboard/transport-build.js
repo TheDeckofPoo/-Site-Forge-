@@ -1164,6 +1164,34 @@
   }
 
   /**
+   * Delete a Safety Zone from Transportation: drop registry entry and clear
+   * conveyor.safetyZone assignments that pointed at it. Display-only membership.
+   */
+  function deleteSafetyZone(name) {
+    const nm = String(name || '').trim();
+    if (!nm) return false;
+    const lower = nm.toLowerCase();
+    tb.safetyZones = (tb.safetyZones || []).filter(
+      (z) => String(z.name || '').trim().toLowerCase() !== lower,
+    );
+    (tb.areas || []).forEach((area) => {
+      (area.nodes || []).forEach((n) => {
+        if (String(n.safetyZone || '').trim().toLowerCase() === lower) n.safetyZone = '';
+      });
+    });
+    if (tb.activeSafetyZoneId && !(tb.safetyZones || []).some((z) => z.id === tb.activeSafetyZoneId)) {
+      tb.activeSafetyZoneId = (tb.safetyZones[0] && tb.safetyZones[0].id) || null;
+    }
+    if (String(tb.buildContext?.safetyZone || '').trim().toLowerCase() === lower) {
+      tb.buildContext.safetyZone = '';
+    }
+    try { save(); } catch (_) { /* ignore */ }
+    try { refreshSafetyZoneSelect(); } catch (_) { /* ignore */ }
+    try { render(); } catch (_) { /* ignore */ }
+    return true;
+  }
+
+  /**
    * Seed Safety Zones from RUN-proven conveyor.safetyZone values.
    * Does NOT invent zones from Area names. Engineer-created zones stay authoritative.
    */
@@ -2102,6 +2130,16 @@
     return true;
   }
 
+  /**
+   * Display elbow radius must be >> belt stroke or a quarter-turn collapses into a
+   * fat diagonal (sagitta ≈ 0.29·r; stroke 12–22px swallows r≈28). Prefer a clear L.
+   */
+  function curveDisplayMinRadius(n) {
+    const sw = schematicStrokeWidth(n);
+    // Sagitta ≈ 0.29·r must exceed ~stroke so the elbow reads as a turn, not a diagonal.
+    return Math.max(72, sw * 4);
+  }
+
   /** Inflate a RUN-derived arc radius for readability without changing sweep direction. */
   function inflateCurvePathForDisplay(pathCanvas, n) {
     if (!pathCanvas || !pathCanvas.length) return pathCanvas;
@@ -2109,7 +2147,7 @@
     if (arcIdx < 0) return pathCanvas;
     const arc = pathCanvas[arcIdx];
     const r = Number(arc.radius);
-    const minR = 28;
+    const minR = curveDisplayMinRadius(n);
     if (!(r > 0) || r >= minR) return pathCanvas;
     const grow = minR / r;
     const move = pathCanvas.find((c) => String(c.cmd || '').toLowerCase() === 'move');
@@ -2169,9 +2207,10 @@
     const existingArc = (n.pathCanvas || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
     // Radius ALWAYS from chord: 90° → r = chord/√2
     let rCl = chord / Math.SQRT2;
-    // Inflate tiny site-scale chords so the DISPLAY quarter-turn is readable.
+    // Inflate tiny site-scale chords so the DISPLAY quarter-turn is a clear elbow.
     // Canonical entryCanvas/exitCanvas (PE/wires) stay untouched — only this path.
-    const minR = 28;
+    // minR must beat belt stroke or the arc sagitta disappears into the stroke.
+    const minR = curveDisplayMinRadius(n);
     if (rCl < minR) {
       const needChord = minR * Math.SQRT2;
       const grow = needChord / chord;
@@ -2553,9 +2592,12 @@
       const midDist = Math.hypot(ma.x - mb.x, ma.y - mb.y);
       const layerA = String(a.layer || '');
       const layerB = String(b.layer || '');
-      if (layerA && layerB && layerA !== layerB && midDist < 40) return 'DIFFERENT_LAYER';
-      if (da < 18 && midDist < 36) return 'PARALLEL_CONVEYOR';
-      if (da > 50 && midDist < 40) return 'VALID_PHYSICAL_OVERLAP';
+      if (layerA && layerB && layerA !== layerB && midDist < 56) return 'DIFFERENT_LAYER';
+      // Plenty of canvas room — treat near midpoints as stacks even when angles differ
+      // (curve elbows often differ ~90° but still paint on top of each other).
+      if (da < 22 && midDist < 56) return 'PARALLEL_CONVEYOR';
+      if (midDist < 40) return 'OVERLAPPING_BODY';
+      if (da > 50 && midDist < 56) return 'VALID_PHYSICAL_OVERLAP';
       return 'UNKNOWN';
     };
     const groups = [];
@@ -2569,10 +2611,15 @@
       sorted.forEach((o) => {
         if (used.has(o.id)) return;
         const mo = midOf(o);
-        if (Math.hypot(mn.x - mo.x, mn.y - mo.y) >= 36) return;
+        if (Math.hypot(mn.x - mo.x, mn.y - mo.y) >= 56) return;
         const cls = classifyPair(n, o);
-        // Only cluster candidates that look like parallel stacks for separation.
-        if (cls === 'PARALLEL_CONVEYOR' || cls === 'PARALLEL') {
+        // Separate parallel stacks AND near-coincident overlapping bodies (incl. curves).
+        if (
+          cls === 'PARALLEL_CONVEYOR'
+          || cls === 'PARALLEL'
+          || cls === 'OVERLAPPING_BODY'
+          || cls === 'VALID_PHYSICAL_OVERLAP'
+        ) {
           group.push(o);
           used.add(o.id);
         } else if (
@@ -2587,8 +2634,8 @@
       });
       if (group.length > 1) groups.push(group);
     });
-    // Wider gap so controller-scoped canvases (fewer belts, denser clusters) stay readable.
-    const laneGap = 36;
+    // Generous gap — canvas has room; stacked belts must not hide each other.
+    const laneGap = 64;
     groups.forEach((group) => {
       group.sort((a, b) => String(a.conveyorTag || '').localeCompare(String(b.conveyorTag || '')));
       // Re-check: if any pair in the group is actually serial-connected, skip separation.
@@ -2623,13 +2670,11 @@
       });
     });
 
-    // --- Pass 1b: light nudge only for true near-coincident LOCAL bodies ---
-    // With fixed RUN→canvas scale (no viewport squash), most belts already have
-    // real separation. Keep a small minSep for duplicate/zero-length overlaps only;
-    // do not invent a second topology via aggressive CLUSTER_SPREAD.
+    // --- Pass 1b: nudge near-coincident LOCAL bodies farther apart ---
+    // Canvas has room — prefer readable spacing over exact RUN midpoint coincidence.
     {
       const locals = list.filter((n) => !n.externalReference && n.plcOwned !== false);
-      const minSep = 18;
+      const minSep = 40;
       for (let iter = 0; iter < 2; iter++) {
         for (let i = 0; i < locals.length; i++) {
           for (let j = i + 1; j < locals.length; j++) {
@@ -5446,6 +5491,10 @@
     try { highlightSafetyZone(zoneName); } catch (_) { /* ignore */ }
   };
 
+  window.transportDeleteSafetyZone = function (zoneName) {
+    try { return deleteSafetyZone(zoneName); } catch (_) { return false; }
+  };
+
   window.transportBuildRefresh = function () {
     render();
     try {
@@ -5553,6 +5602,7 @@
     safetyForAreaName,
     listSafetyZoneNames,
     ensureSafetyZone,
+    deleteSafetyZone,
     seedSafetyZonesFromNodes,
     refreshSafetyZoneSelect,
     resetView100,
