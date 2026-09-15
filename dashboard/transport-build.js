@@ -2261,22 +2261,23 @@
 
   /** Resolve display path for a node — prefers valid pathCanvas arc; synthesizes curves. */
   function displayPathCanvasForNode(n) {
-    if (pathHasValidArc(n?.pathCanvas)) {
-      return inflateCurvePathForDisplay(n.pathCanvas, n);
-    }
+    // Curves: always synthesize a readable belt-width 90° elbow from entry→exit.
+    // Tiny projected RUN arcs (r≈16) look like crescents; synthesis uses RUN sweep.
     if (isCurveNode(n)) {
       const synth = synthesizeCurveDisplayPath(n);
       if (synth) return synth;
+      if (pathHasValidArc(n?.pathCanvas)) return inflateCurvePathForDisplay(n.pathCanvas, n);
+    }
+    if (pathHasValidArc(n?.pathCanvas)) {
+      return inflateCurvePathForDisplay(n.pathCanvas, n);
     }
     return n?.pathCanvas || null;
   }
 
   function schematicStrokeWidth(n) {
-    const s = presentationScale();
-    const w = Number(n.width);
-    const px = (Number.isFinite(w) && w > 0 ? w : 200) * s;
-    // Curves use the same belt stroke width as straights (elbow replaces geometry; not a thin overlay)
-    return Math.max(4, Math.min(16, px > 0 ? Math.max(px, 4) : 8));
+    // Match physical segment belt thickness (segSize.W) so curves ≠ thin crescents
+    const { W } = segSize(n);
+    return Math.max(12, Math.min(22, W || 14));
   }
 
   /**
@@ -2711,10 +2712,11 @@
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
       const mid = applyPresOffset(mid0, off);
       const tip = cp ? `${tag} · ${cp}` : tag;
-      // CURVE + straight share .tb-schematic-body stroke language (belt-width elbow, not crescent fill)
+      // CURVE + straight share belt-width stroke (elbow replaces body; not a thin crescent)
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
-      // Generous invisible hit stroke — entire belt body is easy to select/right-click
-      const hitSw = Math.max(sw * 3.5, sw + 28, 36);
+      // Wide invisible hit stroke — visual belt stays `sw`; click/right-click uses a fat target
+      // so you do not have to aim between the green ENTRY / red EXIT dots.
+      const hitSw = Math.max(sw * 5, 72);
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${hitSw}" />`;
       // Canvas labels: P-tag only by default. Area/ES stay in the inspector — never
       // paint missing-config words or zone names across the drawing. Small warn dot if needed.
@@ -2812,7 +2814,7 @@
       html += `<text class="tb-mate-mark" x="${mx}" y="${my}" title="EXIT ▶◀ ENTRY">▶◀</text>`;
     });
     svg.innerHTML = html;
-    svg.querySelectorAll('.tb-schematic-hit').forEach((el) => {
+    const bindSchematicPick = (el) => {
       el.style.pointerEvents = 'stroke';
       el.addEventListener('mousedown', (ev) => {
         const id = el.getAttribute('data-id');
@@ -2828,6 +2830,20 @@
         const pt = canvasPointFromEvent(ev);
         tb.moving = { id: n.id, ox: pt.x - n.x, oy: pt.y - n.y };
       });
+      // Right-click: select node; pass2 canvas listener opens Area context menu
+      el.addEventListener('contextmenu', (ev) => {
+        const id = el.getAttribute('data-id');
+        const n = (area.nodes || []).find((x) => x.id === id);
+        if (!n) return;
+        selectNode(n.id);
+        // Do not stopPropagation — pass2 handles showCtxMenu on .tb-schematic-hit/body
+      });
+    };
+    svg.querySelectorAll('.tb-schematic-hit').forEach(bindSchematicPick);
+    // Also allow picking the visible body if the hit path misses
+    svg.querySelectorAll('.tb-schematic-body').forEach((el) => {
+      el.style.pointerEvents = 'stroke';
+      bindSchematicPick(el);
     });
   }
 

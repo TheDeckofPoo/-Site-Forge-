@@ -1362,12 +1362,34 @@ function createWindow() {
       const args = [script, '--run-dir', runDir, '--machine', machine, '--out', outPath];
       if (fs.existsSync(wbPath)) args.push('--workbook', wbPath);
       const r = await runPythonAsync(args, REPO_ROOT);
-      if (r.error && !fs.existsSync(outPath)) {
-        return { ok: false, success: false, error: r.error || r.stderr || 'safety model failed' };
+      // Prefer freshly written file even when Python prints warnings on stderr
+      if (fs.existsSync(outPath)) {
+        const model = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+        const nDev = Array.isArray(model.devices) ? model.devices.length : 0;
+        if (nDev > 0 || r.ok) {
+          return {
+            ok: true,
+            success: true,
+            model,
+            path: outPath,
+            warning: r.ok ? undefined : (r.error || r.stderr || undefined),
+          };
+        }
       }
-      const model = JSON.parse(fs.readFileSync(outPath, 'utf8'));
-      return { ok: true, success: true, model, path: outPath };
+      return {
+        ok: false,
+        success: false,
+        error: r.error || r.stderr || 'safety model produced no devices',
+      };
     } catch (e) {
+      // Last-chance: return cached model if present
+      try {
+        const outPath = path.join(REPO_ROOT, 'exports', 'plc2-safety', 'safety_model.json');
+        if (fs.existsSync(outPath)) {
+          const model = JSON.parse(fs.readFileSync(outPath, 'utf8'));
+          return { ok: true, success: true, model, path: outPath, warning: e.message || String(e) };
+        }
+      } catch (_) { /* ignore */ }
       return { ok: false, success: false, error: e.message || String(e) };
     }
   });

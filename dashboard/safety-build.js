@@ -91,9 +91,10 @@
     const transportZones = transportZonesFromCanvas();
     const areaConvs = areaConveyorsFromWorkbook();
     const areas = Array.isArray(wb.areas) ? wb.areas.slice() : [];
-    const devices = Array.isArray(eng.devices) && eng.devices.length
-      ? eng.devices.map((d) => (typeof d === 'string' ? { name: d, kind: 'ESTOP' } : d))
-      : (AS.safetyDevices || []);
+    // Prefer live discovered devices; workbook cache is fallback only
+    const live = normalizeDeviceList(AS.safetyDevices || []);
+    const cached = normalizeDeviceList(eng.devices || []);
+    const devices = live.length ? live : cached;
 
     // Merge transport + engineer zones
     const byName = new Map();
@@ -274,45 +275,102 @@
     };
   }
 
+  function classifyDevName(name) {
+    const u = String(name || '').toUpperCase();
+    if (u.includes('ESR')) return 'ESR';
+    if (u.includes('MCR')) return 'MCR';
+    if (/^(?:T_)?(?:\d*ES\d|ES\d|ESLS\d|\d+ES)/.test(u)) return 'ESTOP';
+    return '';
+  }
+
+  function normalizeDeviceList(list) {
+    const out = [];
+    const seen = new Set();
+    (list || []).forEach((d) => {
+      const name = typeof d === 'string'
+        ? d
+        : (d?.name || d?.Desc || d?.Part || d?.tag || '');
+      const nm = String(name || '').trim();
+      if (!nm || seen.has(nm.toUpperCase())) return;
+      const kind = (typeof d === 'object' && d?.kind) || classifyDevName(nm);
+      if (!kind) return; // only Safety-looking names
+      seen.add(nm.toUpperCase());
+      out.push({ name: nm, kind, origin: (d && d.origin) || 'AUTO_RUN_PROVEN' });
+    });
+    return out;
+  }
+
   async function loadDevicesFromRun() {
     const A = api();
-    // Prefer Python safety model when desktop exposes it; else listDevices / workbook cache
+    const AS = ensureAutogenState();
+    let lastErr = '';
+
+    // 1) Canonical SafetyModel (EStop.asc via fortna_safety_model.py)
     if (typeof A.buildSafetyModel === 'function') {
       try {
         const res = await A.buildSafetyModel({});
-        if (res?.ok && res.model) {
-          ensureAutogenState().safetyDevices = res.model.devices || [];
-          return res.model.devices || [];
+        if ((res?.ok || res?.success) && res.model) {
+          const mapped = normalizeDeviceList(res.model.devices || []);
+          if (mapped.length) {
+            AS.safetyDevices = mapped;
+            // Keep devices on safety_build so rebuilds don't drop them
+            if (!AS.safety_build) AS.safety_build = { zones: [] };
+            AS.safety_build.devices = mapped;
+            return mapped;
+          }
+          lastErr = 'SafetyModel returned 0 devices';
+        } else {
+          lastErr = res?.error || res?.message || 'buildSafetyModel failed';
         }
-      } catch (_) { /* fall through */ }
+      } catch (err) {
+        lastErr = err?.message || String(err);
+      }
+    } else {
+      lastErr = 'buildSafetyModel API missing — restart Site Forge after update';
     }
+
+    // 2) listDevices — scan ALL categories for ES*/ESR*/MCR* names
     if (typeof A.listDevices === 'function') {
       try {
-        const res = await A.listDevices({ kind: 'estop' });
+        const res = await A.listDevices({});
         const list = res?.devices || res?.rows || res?.items || [];
-        const mapped = list.map((d) => ({
-          name: d.name || d.Desc || d.Part || d.tag,
-          kind: 'ESTOP',
-          origin: 'AUTO_RUN_PROVEN',
-        })).filter((d) => d.name);
+        const mapped = normalizeDeviceList(list);
         if (mapped.length) {
-          ensureAutogenState().safetyDevices = mapped;
+          AS.safetyDevices = mapped;
+          if (!AS.safety_build) AS.safety_build = { zones: [] };
+          AS.safety_build.devices = mapped;
           return mapped;
         }
       } catch (_) { /* ignore */ }
     }
-    // Fallback: cached devices from last apply / workbook
-    const wb = ensureAutogenState().workbook || {};
-    const cached = (wb.safety_build || {}).devices || ensureAutogenState().safetyDevices || [];
-    return cached;
+
+    // 3) Cached workbook / prior session
+    const wb = AS.workbook || {};
+    const cached = normalizeDeviceList(
+      (wb.safety_build || {}).devices || AS.safetyDevices || [],
+    );
+    if (cached.length) {
+      AS.safetyDevices = cached;
+      return cached;
+    }
+
+    status(`No Safety devices loaded — ${lastErr || 'unknown'}. Click Refresh discovery.`);
+    return [];
   }
 
   async function refreshModel() {
-    await loadDevicesFromRun();
+    status('Discovering Safety devices…');
+    const devices = await loadDevicesFromRun();
     state.model = buildClientModel();
-    // Prefer server model merge when available later
+    // If model still has 0 devices but we loaded some, force them in
+    if (devices.length && !(state.model.devices || []).length) {
+      state.model.devices = devices;
+    }
     render();
     syncReadiness();
+    const n = (state.model?.devices || []).length;
+    if (n) status(`Loaded ${n} Safety device(s). Assign E-Stops to the zone, then Apply Safety.`);
+    else status('Still no devices — check RUN is loaded, then Refresh discovery.');
   }
 
   function selectedZone() {

@@ -1656,10 +1656,11 @@
     });
 
     // Schematic belt bodies live in #tb-schematic (not .tb-node) — restore right-click Area workflow
+    // Hit target is intentionally much wider than the visible belt stroke.
     const canvas = $('tb-canvas');
     canvas?.addEventListener('contextmenu', (ev) => {
       if (A().tb.connectMode) return;
-      const hit = ev.target.closest?.('.tb-schematic-hit');
+      const hit = ev.target.closest?.('.tb-schematic-hit, .tb-schematic-body');
       if (!hit) return;
       ev.preventDefault();
       ev.stopPropagation();
