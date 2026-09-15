@@ -12,10 +12,27 @@
     UNRESOLVED: 'UNRESOLVED',
   };
 
+  const KIND_ORDER = ['ESTOP', 'ESR', 'MCR', 'CS', 'ESLS', 'OTHER'];
+  const KIND_LABEL = {
+    ESTOP: 'ESTOPS',
+    ESR: 'ESR',
+    MCR: 'MCR',
+    CS: 'CONTROL STATIONS',
+    ESLS: 'ESLS',
+    OTHER: 'OTHER',
+  };
+
+  const DEVICE_PROVENANCE_KEYS = [
+    'safetyZoneRef', 'status', 'source', 'sourceTable', 'originalName',
+    'engineerName', 'physicalEndpoint', 'classification', 'confidence',
+    'evidence', 'physicalIoRef', 'origin', 'kind',
+  ];
+
   const state = {
     model: null,
     selectedZoneId: null,
     filter: '',
+    inventoryFilter: '',
     dirty: false,
   };
 
@@ -228,17 +245,8 @@
       }
     }
 
-    const classify = (n) => {
-      const u = String(n || '').toUpperCase();
-      if (u.includes('ESR')) return 'ESR';
-      if (u.includes('MCR')) return 'MCR';
-      return 'ESTOP';
-    };
-
     const zones = [...byName.values()].map((z) => {
-      z.eStops = (z.members || []).filter((m) => classify(m) === 'ESTOP');
-      z.esrDevices = (z.members || []).filter((m) => classify(m) === 'ESR');
-      z.mcrDevices = (z.members || []).filter((m) => classify(m) === 'MCR');
+      splitZoneMembers(z);
       const fields = {
         Area: z.areaRef ? 'READY' : 'UNRESOLVED',
         Conveyors: (z.conveyorRefs || []).length ? 'READY' : 'NONE',
@@ -246,6 +254,8 @@
         'E-Stops': z.eStops.length ? 'READY' : ((z.conveyorRefs || []).length ? 'UNRESOLVED' : 'NONE'),
         ESR: z.esrDevices.length ? 'READY' : 'N/A',
         MCR: z.mcrDevices.length ? 'READY' : 'N/A',
+        CS: (z.csDevices || []).length ? 'READY' : 'N/A',
+        ESLS: (z.eslsDevices || []).length ? 'READY' : 'N/A',
         Reset: z.resetSource ? 'READY' : 'UNRESOLVED',
         Silence: z.silenceSource ? 'READY' : 'UNRESOLVED',
         'Physical I/O': 'READY',
@@ -270,13 +280,77 @@
         .map((d) => (typeof d === 'string' ? { name: d } : d))
         .filter((d) => d && d.name && !assigned.has(String(d.name).toUpperCase()))
         .filter((d) => (String(d.name).match(/\d{2,4}/g) || []).some((x) => digs.has(x)))
-        .map((d) => ({ name: d.name, kind: d.kind || classify(d.name), origin: 'SUGGESTED_DIGIT_MATCH' }));
+        .map((d) => ({
+          name: d.name,
+          kind: d.kind || classifyDevName(d.name) || 'OTHER',
+          origin: 'SUGGESTED_DIGIT_MATCH',
+        }));
       return z;
     });
 
-    const assignedAll = new Set(zones.flatMap((z) => (z.members || []).map((m) => String(m).toUpperCase())));
-    const deviceList = (devices || []).map((d) => (typeof d === 'string' ? { name: d, kind: classify(d) } : d));
-    const unassigned = deviceList.filter((d) => d && d.name && !assignedAll.has(String(d.name).toUpperCase()));
+    // Zone membership → device.safetyZoneRef / status / assignment origin
+    const memberToZone = new Map();
+    const memberOrigin = new Map();
+    zones.forEach((z) => {
+      const zOrigin = z.membersOrigin || (z.engineerEdited ? 'ENGINEER_ASSIGNED' : 'AUTO_RUN_PROVEN');
+      (z.members || []).forEach((m) => {
+        const key = String(m).toUpperCase();
+        if (!memberToZone.has(key)) {
+          memberToZone.set(key, z.name);
+          memberOrigin.set(key, zOrigin);
+        }
+      });
+    });
+
+    const deviceList = (devices || []).map((d) => {
+      const base = typeof d === 'string'
+        ? { name: d, kind: classifyDevName(d) || 'OTHER' }
+        : { ...d };
+      const key = String(base.name || '').toUpperCase();
+      const zoneRef = memberToZone.get(key) || base.safetyZoneRef || '';
+      const assignOrigin = zoneRef
+        ? (memberOrigin.get(key) || base.origin || 'AUTO_RUN_PROVEN')
+        : (base.origin || 'UNRESOLVED');
+      base.kind = base.kind || classifyDevName(base.name) || 'OTHER';
+      base.classification = base.classification || base.kind;
+      base.safetyZoneRef = zoneRef || null;
+      if (zoneRef) {
+        if (assignOrigin === 'ENGINEER_ASSIGNED') {
+          base.status = 'ENGINEER_ASSIGNED';
+          base.origin = 'ENGINEER_ASSIGNED';
+        } else {
+          base.status = 'AUTO_RESOLVED';
+          if (!base.origin || base.origin === 'UNRESOLVED') base.origin = assignOrigin || 'AUTO_RUN_PROVEN';
+        }
+      } else {
+        base.status = 'UNASSIGNED';
+        base.safetyZoneRef = null;
+      }
+      return base;
+    });
+
+    const unassigned = deviceList.filter((d) => d && d.name && d.status === 'UNASSIGNED');
+    const autoResolved = deviceList.filter((d) => d.status === 'AUTO_RESOLVED');
+    const engAssigned = deviceList.filter((d) => d.status === 'ENGINEER_ASSIGNED');
+    const kindOf = (d) => d.kind || classifyDevName(d.name) || 'OTHER';
+    const devicesFound = deviceList.length;
+    const assignedN = devicesFound - unassigned.length;
+    const completionPct = devicesFound
+      ? Math.round((1000 * assignedN) / devicesFound) / 10
+      : 0;
+
+    const inventory = {};
+    KIND_ORDER.forEach((k) => { inventory[k] = []; });
+    deviceList.forEach((d) => {
+      const k = KIND_ORDER.includes(kindOf(d)) ? kindOf(d) : 'OTHER';
+      inventory[k].push({
+        name: d.name,
+        kind: k,
+        status: d.status,
+        safetyZoneRef: d.safetyZoneRef || '',
+        origin: d.origin || '',
+      });
+    });
 
     return {
       kind: 'SafetyModel',
@@ -284,16 +358,36 @@
       devices: deviceList,
       zones,
       unassignedDevices: unassigned.map((d) => d.name),
+      inventory,
       counts: {
         zones: zones.length,
         ready: zones.filter((z) => z.status === 'READY').length,
         review_required: zones.filter((z) => z.status === 'REVIEW_REQUIRED').length,
-        devices: deviceList.length,
-        estops: deviceList.filter((d) => (d.kind || classify(d.name)) === 'ESTOP').length,
-        unassigned_estops: unassigned.filter((d) => (d.kind || classify(d.name)) === 'ESTOP').length,
+        devices: devicesFound,
+        devices_found: devicesFound,
+        estops: deviceList.filter((d) => kindOf(d) === 'ESTOP').length,
+        esr: deviceList.filter((d) => kindOf(d) === 'ESR').length,
+        mcr: deviceList.filter((d) => kindOf(d) === 'MCR').length,
+        cs: deviceList.filter((d) => kindOf(d) === 'CS').length,
+        esls: deviceList.filter((d) => kindOf(d) === 'ESLS').length,
+        unassigned_estops: unassigned.filter((d) => kindOf(d) === 'ESTOP').length,
+        unassigned: unassigned.length,
+        automatically_resolved: autoResolved.length,
+        engineer_assigned: engAssigned.length,
+        completion_pct: completionPct,
         unresolved_io: zones.filter((z) => (z.hard_missing || []).includes('SafetyDevices')).length,
       },
     };
+  }
+
+  function splitZoneMembers(z) {
+    const members = z.members || [];
+    z.eStops = members.filter((m) => classifyDevName(m) === 'ESTOP');
+    z.esrDevices = members.filter((m) => classifyDevName(m) === 'ESR');
+    z.mcrDevices = members.filter((m) => classifyDevName(m) === 'MCR');
+    z.csDevices = members.filter((m) => classifyDevName(m) === 'CS');
+    z.eslsDevices = members.filter((m) => classifyDevName(m) === 'ESLS');
+    return z;
   }
 
   function classifyDevName(name) {
@@ -323,10 +417,25 @@
         : (d?.name || d?.Desc || d?.Part || d?.tag || '');
       const nm = String(name || '').trim();
       if (!nm || seen.has(nm.toUpperCase())) return;
-      const kind = (typeof d === 'object' && d?.kind) || classifyDevName(nm);
+      const kind = (typeof d === 'object' && (d?.kind || d?.classification))
+        || classifyDevName(nm);
       if (!kind) return; // only Safety-looking names
       seen.add(nm.toUpperCase());
-      out.push({ name: nm, kind, origin: (d && d.origin) || 'AUTO_RUN_PROVEN' });
+      const row = {
+        name: nm,
+        kind,
+        origin: (d && typeof d === 'object' && d.origin) || 'AUTO_RUN_PROVEN',
+      };
+      if (d && typeof d === 'object') {
+        DEVICE_PROVENANCE_KEYS.forEach((k) => {
+          if (d[k] !== undefined && d[k] !== null && d[k] !== '') {
+            if (k === 'kind' || k === 'origin') return; // already set
+            row[k] = d[k];
+          }
+        });
+        if (d.classification && !row.classification) row.classification = d.classification;
+      }
+      out.push(row);
     });
     return out;
   }
@@ -461,6 +570,107 @@
     return `<span class="text-[9px] ${cls}">${label}</span>`;
   }
 
+  function statusChip(status, zoneRef) {
+    const st = String(status || '').toUpperCase();
+    if (st === 'ENGINEER_ASSIGNED' || st === 'AUTO_RESOLVED' || st === 'ASSIGNED') {
+      const z = zoneRef ? ` → ${escapeHtml(zoneRef)}` : '';
+      const label = st === 'ENGINEER_ASSIGNED' ? 'ENGINEER' : (st === 'AUTO_RESOLVED' ? 'AUTO' : 'ASSIGNED');
+      return `<span class="text-[8px] text-emerald-400/90">${label}${z}</span>`;
+    }
+    return '<span class="text-[8px] text-amber-300/90">UNASSIGNED</span>';
+  }
+
+  function renderInventory() {
+    const host = $('sb-inventory');
+    if (!host) return;
+    if (!state.model) {
+      host.innerHTML = '<div class="text-[10px] text-slate-600 p-2">No devices yet — Refresh discovery.</div>';
+      return;
+    }
+    const filt = String(state.inventoryFilter || state.filter || '').trim().toUpperCase();
+    const devices = state.model.devices || [];
+    const byKind = {};
+    KIND_ORDER.forEach((k) => { byKind[k] = []; });
+    devices.forEach((d) => {
+      if (!d || !d.name) return;
+      if (filt && !String(d.name).toUpperCase().includes(filt)
+        && !String(d.safetyZoneRef || '').toUpperCase().includes(filt)
+        && !String(d.kind || '').toUpperCase().includes(filt)) return;
+      const k = KIND_ORDER.includes(d.kind) ? d.kind : 'OTHER';
+      byKind[k].push(d);
+    });
+    const c = state.model.counts || {};
+    const left = (c.unassigned != null ? c.unassigned : (state.model.unassignedDevices || []).length);
+    let body = '';
+    KIND_ORDER.forEach((k) => {
+      const rows = byKind[k] || [];
+      if (!rows.length) return;
+      body += `<div class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mt-2 mb-0.5 first:mt-0">${KIND_LABEL[k] || k}</div>`;
+      body += rows.map((d) => `
+        <label class="flex items-center gap-1.5 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer" data-sb-inv-row="${escapeHtml(d.name)}">
+          <input type="checkbox" data-sb-inv="${escapeHtml(d.name)}" class="rounded border-slate-600">
+          <button type="button" data-sb-inv-pick="${escapeHtml(d.name)}" class="flex-1 text-left mono text-[11px] text-slate-300 hover:text-rose-200 truncate">${escapeHtml(d.name)}</button>
+          ${statusChip(d.status, d.safetyZoneRef)}
+        </label>`).join('');
+    });
+    host.innerHTML = `
+      <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+        <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Device inventory</span>
+        <span class="text-[9px] text-slate-600 mono">${devices.length} found · ${left} need engineer</span>
+        <input id="sb-inv-filter" type="search" placeholder="Filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-28" value="${escapeHtml(state.inventoryFilter || '')}">
+      </div>
+      <div class="space-y-0.5">${body || '<div class="text-slate-600 p-2 text-[10px]">No devices match</div>'}</div>
+      <div class="mt-2 flex gap-2">
+        <button type="button" id="sb-inv-assign" class="btn-ghost flex-1 text-[10px] py-1 rounded-lg border border-emerald-900/50 text-emerald-300" title="Assign checked devices to selected zone">Assign → zone</button>
+      </div>`;
+    $('sb-inv-filter')?.addEventListener('input', (ev) => {
+      state.inventoryFilter = ev.target.value || '';
+      state.filter = state.inventoryFilter;
+      renderInventory();
+      const z = selectedZone();
+      if (z) renderDeviceLists(z);
+    });
+    host.querySelectorAll('[data-sb-inv-pick]').forEach((btn) => {
+      btn.addEventListener('click', (ev) => {
+        ev.preventDefault();
+        const name = btn.getAttribute('data-sb-inv-pick') || '';
+        state.filter = name;
+        state.inventoryFilter = name;
+        host.querySelectorAll('[data-sb-inv]').forEach((cb) => {
+          if (cb.getAttribute('data-sb-inv') === name) cb.checked = true;
+        });
+        const z = selectedZone();
+        if (z) {
+          const filt = $('sb-device-filter');
+          if (filt) filt.value = name;
+          renderDeviceLists(z);
+        }
+        renderInventory();
+      });
+    });
+    $('sb-inv-assign')?.addEventListener('click', () => {
+      const z = selectedZone();
+      if (!z) {
+        status('Select a Safety Zone first');
+        return;
+      }
+      const names = [...host.querySelectorAll('[data-sb-inv]:checked')]
+        .map((el) => el.getAttribute('data-sb-inv'))
+        .filter(Boolean);
+      if (!names.length) {
+        status('Check inventory devices to assign');
+        return;
+      }
+      const live = (state.model.zones || []).find((x) => x.name === z.name);
+      if (!live) return;
+      mutateZone(live, (zz) => {
+        const set = new Set(zz.members || []);
+        names.forEach((n) => set.add(n));
+        zz.members = [...set];
+      });
+    });
+  }
+
   function renderZoneList() {
     const host = $('sb-zone-list');
     if (!host || !state.model) return;
@@ -524,6 +734,8 @@
         ${row('E-Stops', z.eStops.length ? escapeHtml(z.eStops.join(', ')) : 'none assigned', f['E-Stops'], z.membersOrigin)}
         ${row('ESR', z.esrDevices.length ? escapeHtml(z.esrDevices.join(', ')) : '—', f.ESR, z.membersOrigin)}
         ${row('MCR', z.mcrDevices.length ? escapeHtml(z.mcrDevices.join(', ')) : '—', f.MCR, z.membersOrigin)}
+        ${row('CS', (z.csDevices || []).length ? escapeHtml(z.csDevices.join(', ')) : '—', f.CS || 'N/A', z.membersOrigin)}
+        ${row('ESLS', (z.eslsDevices || []).length ? escapeHtml(z.eslsDevices.join(', ')) : '—', f.ESLS || 'N/A', z.membersOrigin)}
         ${row('Reset', escapeHtml(z.resetSource || '—'), f.Reset, z.resetOrigin)}
         ${row('Silence', escapeHtml(z.silenceSource || '—'), f.Silence, z.silenceOrigin)}
       </div>
@@ -571,11 +783,51 @@
     });
     $('sb-device-filter')?.addEventListener('input', (ev) => {
       state.filter = ev.target.value || '';
+      state.inventoryFilter = state.filter;
       renderDeviceLists(z);
+      renderInventory();
     });
     $('sb-add-selected')?.addEventListener('click', () => addSelectedDevices(z));
     $('sb-remove-selected')?.addEventListener('click', () => removeSelectedDevices(z));
     $('sb-accept-suggestions')?.addEventListener('click', () => acceptSuggestions(z));
+  }
+
+  function serializeDevice(d) {
+    if (!d || !d.name) return null;
+    const row = { name: d.name, kind: d.kind || classifyDevName(d.name) || 'OTHER' };
+    DEVICE_PROVENANCE_KEYS.forEach((k) => {
+      if (d[k] !== undefined && d[k] !== null && d[k] !== '') row[k] = d[k];
+    });
+    row.kind = d.kind || row.kind;
+    row.origin = d.origin || row.origin || 'AUTO_RUN_PROVEN';
+    if (d.safetyZoneRef) row.safetyZoneRef = d.safetyZoneRef;
+    if (d.status) row.status = d.status;
+    return row;
+  }
+
+  function groupedDeviceHtml(devices, { suggested, checkboxAttr }) {
+    const byKind = {};
+    KIND_ORDER.forEach((k) => { byKind[k] = []; });
+    (devices || []).forEach((d) => {
+      const k = KIND_ORDER.includes(d.kind) ? d.kind : 'OTHER';
+      byKind[k].push(d);
+    });
+    let html = '';
+    KIND_ORDER.forEach((k) => {
+      const rows = byKind[k] || [];
+      if (!rows.length) return;
+      html += `<div class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mt-1.5 mb-0.5">${KIND_LABEL[k] || k}</div>`;
+      html += rows.map((d) => {
+        const sug = suggested && suggested.has(String(d.name).toUpperCase());
+        const chip = statusChip(d.status, d.safetyZoneRef);
+        return `<label class="flex items-center gap-2 px-1.5 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer ${sug ? 'bg-sky-950/30' : ''}">
+          <input type="checkbox" ${checkboxAttr}="${escapeHtml(d.name)}" class="rounded border-slate-600">
+          <span class="${sug ? 'text-sky-300' : 'text-slate-300'}">${escapeHtml(d.name)}</span>
+          <span class="ml-auto flex items-center gap-1">${chip}${sug ? '<span class="text-[8px] text-sky-400">SUGGESTED</span>' : ''}</span>
+        </label>`;
+      }).join('');
+    });
+    return html;
   }
 
   function renderDeviceLists(z) {
@@ -586,36 +838,36 @@
     const filt = String(state.filter || '').trim().toUpperCase();
     const avail = (state.model.devices || [])
       .filter((d) => d && d.name && !assigned.has(String(d.name).toUpperCase()))
-      .filter((d) => !filt || String(d.name).toUpperCase().includes(filt));
+      .filter((d) => !filt || String(d.name).toUpperCase().includes(filt)
+        || String(d.kind || '').toUpperCase().includes(filt)
+        || String(d.safetyZoneRef || '').toUpperCase().includes(filt));
     const suggested = new Set((z.suggestions || []).map((s) => String(s.name).toUpperCase()));
-    availHost.innerHTML = avail.map((d) => {
-      const sug = suggested.has(String(d.name).toUpperCase());
-      return `<label class="flex items-center gap-2 px-1.5 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer ${sug ? 'bg-sky-950/30' : ''}">
-        <input type="checkbox" data-sb-avail="${escapeHtml(d.name)}" class="rounded border-slate-600">
-        <span class="${sug ? 'text-sky-300' : 'text-slate-300'}">${escapeHtml(d.name)}</span>
-        <span class="ml-auto text-[8px] text-slate-600">${escapeHtml(d.kind || '')}${sug ? ' · SUGGESTED' : ''}</span>
-      </label>`;
-    }).join('') || '<div class="text-slate-600 p-2">No available devices</div>';
+    availHost.innerHTML = groupedDeviceHtml(avail, { suggested, checkboxAttr: 'data-sb-avail' })
+      || '<div class="text-slate-600 p-2">No available devices</div>';
 
-    asgnHost.innerHTML = (z.members || []).map((m) => `
-      <label class="flex items-center gap-2 px-1.5 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer">
-        <input type="checkbox" data-sb-asgn="${escapeHtml(m)}" class="rounded border-slate-600">
-        <span class="text-fuchsia-200">${escapeHtml(m)}</span>
-      </label>
-    `).join('') || '<div class="text-slate-600 p-2">No devices assigned — zone cannot become READY</div>';
+    const asgnDevices = (z.members || []).map((m) => {
+      const found = (state.model.devices || []).find((d) => String(d.name).toUpperCase() === String(m).toUpperCase());
+      return found || {
+        name: m,
+        kind: classifyDevName(m) || 'OTHER',
+        status: 'ENGINEER_ASSIGNED',
+        safetyZoneRef: z.name,
+      };
+    });
+    asgnHost.innerHTML = groupedDeviceHtml(asgnDevices, { suggested: null, checkboxAttr: 'data-sb-asgn' })
+      || '<div class="text-slate-600 p-2">No devices assigned — zone cannot become READY</div>';
   }
 
   function mutateZone(z, mutator) {
     mutator(z);
     z.membersOrigin = 'ENGINEER_ASSIGNED';
     z.engineerEdited = true;
-    z.eStops = (z.members || []).filter((m) => !String(m).toUpperCase().includes('ESR') && !String(m).toUpperCase().includes('MCR'));
-    z.esrDevices = (z.members || []).filter((m) => String(m).toUpperCase().includes('ESR'));
-    z.mcrDevices = (z.members || []).filter((m) => String(m).toUpperCase().includes('MCR'));
+    splitZoneMembers(z);
     state.dirty = true;
     // Persist engineer draft FIRST so rebuild keeps membership
     persistLocalDraft();
     state.model = buildClientModel();
+    persistLocalDraft(); // refresh stamped safetyZoneRef/status on devices
     if (z.name) state.selectedZoneId = z.name;
     render();
     syncReadiness();
@@ -638,11 +890,15 @@
       engineerEdited: !!z.engineerEdited,
       status: z.status,
     }));
+    const devices = (state.model?.devices || []).map(serializeDevice).filter(Boolean);
     AS.safety_build = {
       version: 1,
       source: 'safety_build',
       zones,
-      devices: (state.model?.devices || []).map((d) => ({ name: d.name, kind: d.kind })),
+      devices,
+      unassignedDevices: state.model?.unassignedDevices || [],
+      inventory: state.model?.inventory || {},
+      counts: state.model?.counts || {},
       draft: true,
       dirty: state.dirty,
     };
@@ -710,11 +966,18 @@
     set('sb-count-ready', c.ready);
     set('sb-count-review', c.review_required);
     set('sb-count-estops', c.estops);
-    set('sb-count-unassigned', c.unassigned_estops);
+    const unassigned = c.unassigned != null ? c.unassigned : c.unassigned_estops;
+    set('sb-count-unassigned', unassigned);
+    set('sb-count-found', c.devices_found != null ? c.devices_found : c.devices);
+    set('sb-count-auto', c.automatically_resolved);
+    set('sb-count-eng', c.engineer_assigned);
+    const pct = c.completion_pct;
+    set('sb-count-completion', pct == null ? '—' : `${pct}%`);
   }
 
   function render() {
     renderCounts();
+    renderInventory();
     renderZoneList();
     renderZoneDetail();
     const applyBtn = $('sb-apply');
@@ -724,29 +987,44 @@
   }
 
   function syncReadiness() {
-    const AS = ensureAutogenState();
     if (typeof window.ensureAutogenReadiness !== 'function') return;
     const R = window.ensureAutogenReadiness();
     const c = state.model?.counts || {};
     const e = R.safety;
-    const detected = (c.zones || 0) > 0;
+    const unassignedNames = state.model?.unassignedDevices || [];
+    const unassignedN = c.unassigned != null ? c.unassigned : unassignedNames.length;
+    const reviewN = c.review_required || 0;
+    const detected = (c.zones || 0) > 0 || (c.devices_found || c.devices || 0) > 0;
     e.detected = detected;
     if (!detected) {
       e.status = 'NOT_DETECTED';
       e.detail = 'No Safety Zones';
       e.unresolved = 0;
-    } else if ((c.review_required || 0) > 0) {
+      e.diagnostics = [];
+    } else if (reviewN > 0 || unassignedN > 0) {
+      // Any unassigned devices OR review zones → never READY
       e.status = 'REVIEW_REQUIRED';
-      e.unresolved = c.review_required;
+      e.unresolved = reviewN + unassignedN;
       const gaps = (state.model.zones || [])
         .filter((z) => z.status !== 'READY')
         .map((z) => `${z.name}: missing ${(z.hard_missing || ['SafetyDevices']).join(',')}`);
-      e.detail = gaps.slice(0, 4).join(' | ') || 'Safety REVIEW REQUIRED';
+      const unNames = unassignedNames.slice(0, 6);
+      const devicesFound = c.devices_found || c.devices || 0;
+      const resolvedN = Math.max(0, devicesFound - unassignedN);
+      if (unassignedN > 0) {
+        gaps.unshift(
+          `Unassigned (${unassignedN}): ${unNames.join(', ')}${unassignedN > unNames.length ? '…' : ''}`,
+        );
+      }
+      e.detail = devicesFound
+        ? `${resolvedN} / ${devicesFound} devices resolved · Unassigned: ${unNames.join(', ') || unassignedN}${unassignedN > unNames.length ? ', …' : ''} · Open Safety Build`
+        : (gaps.slice(0, 4).join(' | ') || 'Safety REVIEW REQUIRED');
       e.diagnostics = gaps;
     } else {
       e.status = state.dirty ? 'CHANGED' : 'READY';
-      e.detail = `${c.ready} zone(s) READY · ${c.estops || 0} E-Stops`;
+      e.detail = `${c.ready} zone(s) READY · ${c.devices_found || c.devices || 0} device(s) · ${c.completion_pct ?? 100}%`;
       e.unresolved = 0;
+      e.diagnostics = [];
     }
     if (typeof window.refreshAutogenCompileHub === 'function') {
       try { window.refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
@@ -759,6 +1037,8 @@
   async function applySafety() {
     persistLocalDraft();
     const AS = ensureAutogenState();
+    // Rebuild so devices carry stamped safetyZoneRef/status before persist
+    state.model = buildClientModel();
     const payload = {
       version: 1,
       source: 'safety_build',
@@ -774,6 +1054,8 @@
         eStops: z.eStops || [],
         esrDevices: z.esrDevices || [],
         mcrDevices: z.mcrDevices || [],
+        csDevices: z.csDevices || [],
+        eslsDevices: z.eslsDevices || [],
         resetSource: z.resetSource || '',
         silenceSource: z.silenceSource || '',
         reset_source: z.resetSource || '',
@@ -783,7 +1065,15 @@
         status: z.status,
         fields: z.fields || {},
       })),
-      devices: (state.model?.devices || []).map((d) => ({ name: d.name, kind: d.kind })),
+      devices: (state.model?.devices || []).map(serializeDevice).filter(Boolean),
+      unassignedDevices: state.model?.unassignedDevices || [],
+      inventory: state.model?.inventory || {},
+      inventoryByKind: Object.fromEntries(
+        Object.entries(state.model?.inventory || {}).map(([k, rows]) => [
+          k,
+          (rows || []).map((r) => (typeof r === 'string' ? r : r.name)).filter(Boolean),
+        ]),
+      ),
       counts: state.model?.counts || {},
     };
     AS.safety_build = payload;
@@ -809,16 +1099,21 @@
     }
 
     state.dirty = false;
-    if (typeof window.setAutogenReadinessApplied === 'function') {
+    // Do NOT call setAutogenReadinessApplied — it forces READY even when review remains.
+    // Hub status comes from syncReadiness only.
+    if (typeof window.ensureAutogenReadiness === 'function') {
       try {
-        window.setAutogenReadinessApplied(
-          'safety',
-          `${payload.zones.filter((z) => z.status === 'READY').length} zone(s) READY`,
-        );
+        const e = window.ensureAutogenReadiness().safety;
+        e.appliedAt = new Date().toISOString();
+        e.dirty = false;
       } catch (_) { /* ignore */ }
     }
     syncReadiness();
-    status('Applied Safety → workbook (assignments preserved)');
+    const readyN = (payload.zones || []).filter((z) => z.status === 'READY').length;
+    const reviewLeft = (payload.counts?.review_required || 0) + (payload.unassignedDevices || []).length;
+    status(reviewLeft
+      ? `Applied Safety → workbook (${readyN} READY zone(s); review remains — does not block other PLC gen)`
+      : `Applied Safety → workbook (${readyN} zone(s) READY)`);
     render();
   }
 
@@ -853,10 +1148,20 @@
   window.safetyBuildClear = function safetyBuildClear() {
     try { localStorage.removeItem('siteforge.safetyBuild.v1'); } catch (_) { /* ignore */ }
     const AS = ensureAutogenState();
-    AS.safety_build = { version: 1, source: 'cleared', zones: [], devices: [] };
+    AS.safety_build = {
+      version: 1,
+      source: 'cleared',
+      zones: [],
+      devices: [],
+      unassignedDevices: [],
+      inventory: {},
+      counts: {},
+    };
     AS.safetyDevices = [];
     state.model = null;
     state.selectedZoneId = null;
+    state.filter = '';
+    state.inventoryFilter = '';
     state.dirty = false;
     try { render(); } catch (_) { /* ignore */ }
   };

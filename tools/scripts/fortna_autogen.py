@@ -4412,20 +4412,31 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             or (isinstance(_wb_sz, dict) and _wb_sz.get("omit_unresolved_safety"))
         )
         _ready_members = any(z.members for z in _sz_irs)
-        # Never silently skip ES. Two outcomes only: READY→emit, or REVIEW_REQUIRED
-        # with explicit field gaps. omit_unresolved_safety is an engineer-explicit
-        # commissioning choice and must still report the gaps loudly.
+        _incomplete = [z.name for z in _sz_irs if z.conveyors and not z.members]
+        _unassigned_devs = []
+        if isinstance(_wb_sz, dict):
+            _unassigned_devs = list(_wb_sz.get("unassignedDevices") or [])
+            if not _unassigned_devs:
+                _counts = _wb_sz.get("counts") or {}
+                if int(_counts.get("unassigned") or 0) > 0:
+                    _unassigned_devs = [
+                        d.get("name") if isinstance(d, dict) else str(d)
+                        for d in (_wb_sz.get("devices") or [])
+                        if isinstance(d, dict) and d.get("status") == "UNASSIGNED"
+                    ]
+        # Default path: PARTIAL EMIT ready zones. Full omit only when engineer
+        # sets omit_unresolved_safety AND no zone has members. Never upgrade
+        # REVIEW_REQUIRED → READY just because some zones emitted.
         if not _ready_members:
             es_emit_report = dict(es_emit_report or {})
             es_emit_report["emitted"] = False
+            es_emit_report["partial"] = False
             es_emit_report["omitted"] = bool(_omit_safety)
             es_emit_report["silent_omit_forbidden"] = True
+            es_emit_report["omitted_zones"] = _incomplete or [z.name for z in _sz_irs]
+            es_emit_report["emitted_zones"] = []
+            es_emit_report["review_required_devices"] = _unassigned_devs
             if _omit_safety:
-                omitted_names = [
-                    z.name for z in _sz_irs
-                    if z.conveyors and not z.members
-                ] or [z.name for z in _sz_irs]
-                es_emit_report["omitted_zones"] = omitted_names
                 es_emit_report["detail"] = (
                     "SAFETY REVIEW REQUIRED — Program ES omitted by engineer flag "
                     "omit_unresolved_safety. "
@@ -4439,6 +4450,21 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     "in Safety Build, then rebuild. "
                     + (es_emit_report.get("detail") or "")
                 )
+            _es_pack = None
+        elif _omit_safety and (es_emit_report or {}).get("status") == "REVIEW_REQUIRED" and _incomplete:
+            # Engineer chose full omit even though some zones have members
+            es_emit_report = dict(es_emit_report or {})
+            es_emit_report["emitted"] = False
+            es_emit_report["partial"] = False
+            es_emit_report["omitted"] = True
+            es_emit_report["omitted_zones"] = [z.name for z in _sz_irs]
+            es_emit_report["emitted_zones"] = []
+            es_emit_report["review_required_devices"] = _unassigned_devs
+            es_emit_report["detail"] = (
+                "SAFETY REVIEW REQUIRED — Program ES omitted by engineer flag "
+                "omit_unresolved_safety. "
+                + (es_emit_report.get("detail") or "")
+            )
             _es_pack = None
         elif _ready_members:
             _ensure_library_tag("NO_ESLS")
@@ -4461,8 +4487,18 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                     if _tb and _tb not in all_tags:
                         all_tags.append(_tb)
                 es_emit_report = dict(es_emit_report or {})
+                _emitted = list(_es_pack.get("emitted_zones") or [
+                    z.get("name") for z in (_es_pack.get("zones") or []) if z.get("name")
+                ])
+                _omitted = list(_es_pack.get("omitted_zones") or _incomplete)
+                _ready_status = es_emit_report.get("status")
+                _partial = bool(_omitted) or _ready_status == "REVIEW_REQUIRED"
                 es_emit_report["emitted"] = True
+                es_emit_report["partial"] = _partial
                 es_emit_report["omitted"] = False
+                es_emit_report["emitted_zones"] = _emitted
+                es_emit_report["omitted_zones"] = _omitted
+                es_emit_report["review_required_devices"] = _unassigned_devs
                 es_emit_report["zones"] = _es_pack.get("zones") or []
                 es_emit_report["aois"] = ["ES_SIL1_Cat1", "ES_PI20"]
                 es_emit_report["routines"] = [
@@ -4478,8 +4514,24 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         if z.get("name")
                     ],
                 ]
-                if es_emit_report.get("status") == "NOT_DETECTED":
+                # Only READY when readiness says READY — never upgrade partial
+                if _ready_status == "READY" and not _partial:
                     es_emit_report["status"] = "READY"
+                elif _ready_status == "NOT_DETECTED" and _emitted and not _omitted:
+                    es_emit_report["status"] = "READY"
+                else:
+                    es_emit_report["status"] = "REVIEW_REQUIRED"
+                    omit_txt = ", ".join(_omitted) if _omitted else "none"
+                    un_txt = (
+                        f"; unassigned devices remain ({', '.join(_unassigned_devs[:8])}"
+                        f"{'…' if len(_unassigned_devs) > 8 else ''})"
+                        if _unassigned_devs else
+                        ("; unassigned devices remain" if _partial else "")
+                    )
+                    es_emit_report["detail"] = (
+                        f"SAFETY REVIEW REQUIRED — emitted {len(_emitted)} ready zone(s); "
+                        f"omitted incomplete: {omit_txt}{un_txt}"
+                    )
     except Exception as _es_err:
         es_emit_report = {"status": "ERROR", "detail": str(_es_err), "unresolved": 1}
 
@@ -6992,6 +7044,33 @@ def _sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
+def _safety_review_items(es: dict | None) -> dict | None:
+    """Surface SAFETY REVIEW REQUIRED clearly on build_manifest."""
+    es = es or {}
+    status = str(es.get("status") or "").upper()
+    if not (es.get("omitted") or es.get("partial") or status == "REVIEW_REQUIRED"):
+        return None
+    omitted_zones = list(es.get("omitted_zones") or [])
+    return {
+        "omitted": (
+            ["Safety / ES"]
+            if es.get("omitted")
+            else [f"Safety zone:{z}" for z in omitted_zones]
+        ),
+        "emitted_zones": list(es.get("emitted_zones") or []),
+        "omitted_zones": omitted_zones,
+        "partial": bool(es.get("partial")),
+        "review_required_devices": list(es.get("review_required_devices") or []),
+        "detail": es.get("detail") or "SAFETY REVIEW REQUIRED",
+        "complete": False,
+        "note": (
+            "SAFETY REVIEW REQUIRED — Program ES omitted; controller not complete"
+            if es.get("omitted")
+            else "SAFETY REVIEW REQUIRED — partial ES emit for ready zones; unassigned/incomplete remain"
+        ),
+    }
+
+
 def _write_build_manifest(
     *,
     path: Path,
@@ -7729,17 +7808,7 @@ def generate(
                 "conveyor_count": report.get("conveyor_count"),
                 "program_count": report.get("program_count"),
                 "es_program": report.get("es_program"),
-                "review_items": (
-                    {
-                        "omitted": ["Safety / ES"],
-                        "detail": (report.get("es_program") or {}).get("detail"),
-                        "omitted_zones": (report.get("es_program") or {}).get("omitted_zones") or [],
-                        "complete": False,
-                        "note": "Commissioning review build — Safety REVIEW REQUIRED; controller not complete",
-                    }
-                    if (report.get("es_program") or {}).get("omitted")
-                    else None
-                ),
+                "review_items": _safety_review_items(report.get("es_program") or {}),
             },
         )
         # Per-build manifest beside the dated filename as well

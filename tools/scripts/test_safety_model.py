@@ -27,6 +27,7 @@ class TestSafetyModel(unittest.TestCase):
         self.assertEqual(_classify_device("2ES"), "ESTOP")
         self.assertEqual(_classify_device("CP2_ESR1"), "ESR")
         self.assertEqual(_classify_device("2ESR1_AUX"), "ESR")
+        self.assertEqual(_classify_device("CP2_MCR1"), "MCR")
         self.assertEqual(_classify_device("T_2MCR1"), "MCR")
         self.assertEqual(_classify_device("2MCR1"), "MCR")
         self.assertEqual(_classify_device("CP2_CS"), "CS")
@@ -65,6 +66,103 @@ class TestSafetyModel(unittest.TestCase):
         self.assertEqual(z["status"], "REVIEW_REQUIRED")
         self.assertIn("SafetyDevices", z.get("hard_missing") or [])
 
+    def test_unassigned_device_keeps_safety_zone_ref_null(self) -> None:
+        if not (RUN / "FORTNA").is_dir():
+            self.skipTest("PLC2 RUN peek missing")
+        model = build_safety_model(
+            run_dir=RUN,
+            machine="ORNCCP2",
+            transport_zones=[
+                {
+                    "name": "test1_ESZone1",
+                    "area": "test1",
+                    "conveyors": ["P404", "P406"],
+                    "members": [],
+                }
+            ],
+            areas=["test1"],
+            engineer_safety_build={},
+        )
+        self.assertGreater(len(model["devices"]), 0)
+        unassigned = [
+            d for d in model["devices"] if d.get("status") == "UNASSIGNED"
+        ]
+        self.assertGreater(len(unassigned), 0)
+        for d in unassigned:
+            self.assertIsNone(d.get("safetyZoneRef"))
+            self.assertEqual(d.get("status"), "UNASSIGNED")
+            self.assertIn("originalName", d)
+            self.assertIn("classification", d)
+            self.assertIn("confidence", d)
+            self.assertIn("source", d)
+        self.assertEqual(
+            len(model["unassignedDevices"]),
+            model["counts"]["unassigned"],
+        )
+
+    def test_completion_metrics_present(self) -> None:
+        if not (RUN / "FORTNA").is_dir():
+            self.skipTest("PLC2 RUN peek missing")
+        model = build_safety_model(
+            run_dir=RUN,
+            machine="ORNCCP2",
+            transport_zones=[
+                {
+                    "name": "test1_ESZone1",
+                    "area": "test1",
+                    "conveyors": ["P404", "P406"],
+                    "members": ["ES400", "ES406"],
+                }
+            ],
+            areas=["test1"],
+            engineer_safety_build={
+                "zones": [
+                    {
+                        "name": "test1_ESZone1",
+                        "area": "test1",
+                        "conveyors": ["P404", "P406"],
+                        "members": ["ES400", "ES406"],
+                        "engineerEdited": True,
+                    }
+                ]
+            },
+        )
+        c = model["counts"]
+        for key in (
+            "estops",
+            "esr",
+            "mcr",
+            "cs",
+            "esls",
+            "other_safety",
+            "devices_found",
+            "automatically_resolved",
+            "engineer_assigned",
+            "unassigned",
+            "completion_pct",
+            "zones_ready",
+            "zones_review",
+        ):
+            self.assertIn(key, c, msg=f"missing counts.{key}")
+        self.assertEqual(c["devices_found"], len(model["devices"]))
+        self.assertEqual(
+            c["completion_pct"],
+            round(
+                100
+                * (c["automatically_resolved"] + c["engineer_assigned"])
+                / max(1, c["devices_found"])
+            ),
+        )
+        self.assertIn("inventoryByKind", model)
+        for kind in ("ESTOP", "ESR", "MCR", "CS", "ESLS", "OTHER"):
+            self.assertIn(kind, model["inventoryByKind"])
+        payload = safety_build_workbook_payload(model)
+        self.assertTrue(payload["devices"])
+        self.assertIn("safetyZoneRef", payload["devices"][0])
+        self.assertIn("status", payload["devices"][0])
+        self.assertIn("unassignedDevices", payload)
+        self.assertIn("inventoryByKind", payload)
+
     def test_engineer_members_become_ready(self) -> None:
         if not (RUN / "FORTNA").is_dir():
             self.skipTest("PLC2 RUN peek missing")
@@ -96,6 +194,10 @@ class TestSafetyModel(unittest.TestCase):
         self.assertEqual(set(z["members"]), {"ES400", "ES406"})
         self.assertEqual(z["membersOrigin"], ORIGIN_ENGINEER)
         self.assertEqual(z["status"], "READY")
+        for name in ("ES400", "ES406"):
+            d = next(x for x in model["devices"] if x["name"] == name)
+            self.assertEqual(d["safetyZoneRef"], "test1_ESZone1")
+            self.assertEqual(d["status"], "ENGINEER_ASSIGNED")
         payload = safety_build_workbook_payload(model)
         self.assertEqual(payload["zones"][0]["members"], ["ES400", "ES406"])
 

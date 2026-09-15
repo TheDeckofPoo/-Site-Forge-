@@ -1656,7 +1656,7 @@
     });
 
     // Schematic belt bodies live in #tb-schematic (not .tb-node) — restore right-click Area workflow
-    // Hit target is intentionally much wider than the visible belt stroke.
+    // Hit target is wider than the visible belt; pick uses closest centerline when overlaps.
     const canvas = $('tb-canvas');
     canvas?.addEventListener('contextmenu', (ev) => {
       if (A().tb.connectMode) return;
@@ -1664,7 +1664,11 @@
       if (!hit) return;
       ev.preventDefault();
       ev.stopPropagation();
-      const id = hit.getAttribute('data-id');
+      const area = A().activeArea?.() || null;
+      const picked = typeof A().pickSchematicNodeAt === 'function'
+        ? A().pickSchematicNodeAt(ev.clientX, ev.clientY, area)
+        : null;
+      const id = picked?.id || hit.getAttribute('data-id');
       if (!id) return;
       ensureCtxSelection(id);
       showCtxMenu(ev.clientX, ev.clientY, id);

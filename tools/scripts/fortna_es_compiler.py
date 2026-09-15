@@ -22,7 +22,8 @@ from typing import Any, Callable
 
 
 ES_PI20_CAPACITY = 20
-NO_ESNULL = "NO_ESNull"
+# PLC4/PLC5 cookie-cutter pad tag (gold structural template uses NO_ESLS).
+NO_ESNULL = "NO_ESLS"
 
 
 @dataclass
@@ -207,10 +208,11 @@ def build_safety_zone_irs(
 def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True) -> dict[str, Any]:
     """Field-by-field READY / UNRESOLVED gate — never a vague 'members unresolved'.
 
-    Only two normal outcomes when Safety is detected:
-      READY            → emit complete Program ES
-      REVIEW_REQUIRED  → tell engineer exactly which fields are missing
+    Outcomes when Safety is detected:
+      READY            → ALL expected zones (conveyors and/or devices) are READY; emit complete Program ES
+      REVIEW_REQUIRED  → some/all expected zones incomplete; READY zones remain partially emitable
     Silent omit is forbidden unless the engineer sets omit_unresolved_safety.
+    Partial emit is allowed: READY zones are emitable while incomplete zones stay omitted.
     """
     if not zones:
         return {
@@ -218,6 +220,8 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
             "detail": "No Safety Zones from Transportation or proven RUN membership",
             "unresolved": 0,
             "zones": [],
+            "ready_zones": [],
+            "review_zones": [],
         }
     issues: list[str] = []
     zone_diag: list[dict[str, Any]] = []
@@ -274,20 +278,45 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
         zone_diag.append(zd)
     if not library_has_aois:
         issues.append("ES_SIL1_Cat1 / ES_PI20 AOIs missing from library")
-    ready_zones = [z for z in zones if z.members and z.area and (z.reset_source or "").strip() and (z.silence_source or "").strip()]
-    blocked = any(zd.get("zone_status") == "UNRESOLVED" for zd in zone_diag) or not library_has_aois
-    if ready_zones and not blocked and not issues:
+
+    # Expected = zones with conveyors and/or device membership expectations
+    expected = [
+        zd for zd in zone_diag
+        if (zd.get("conveyors") or zd.get("members"))
+    ]
+    ready_zone_names = [
+        str(zd.get("name") or "")
+        for zd in expected
+        if zd.get("zone_status") == "READY" and zd.get("name")
+    ]
+    review_zone_names = [
+        str(zd.get("name") or "")
+        for zd in expected
+        if zd.get("zone_status") != "READY" and zd.get("name")
+    ]
+    # Also include non-expected unresolved zones that raised hard gaps (area-only stubs)
+    for zd in zone_diag:
+        n = str(zd.get("name") or "")
+        if n and zd.get("zone_status") != "READY" and n not in review_zone_names and zd.get("hard_missing"):
+            review_zone_names.append(n)
+
+    all_expected_ready = bool(expected) and not review_zone_names and library_has_aois
+    if all_expected_ready and not issues:
         return {
             "status": "READY",
             "detail": (
-                f"{len(ready_zones)} Safety Zone(s) · "
-                f"members={sum(len(z.members) for z in ready_zones)} · "
-                f"conveyors={sum(len(z.conveyors) for z in ready_zones)}"
+                f"{len(ready_zone_names)} Safety Zone(s) · "
+                f"members={sum(len(zd.get('members') or []) for zd in expected)} · "
+                f"conveyors={sum(len(zd.get('conveyors') or []) for zd in expected)}"
             ),
             "unresolved": 0,
             "zones": zone_diag,
+            "ready_zones": ready_zone_names,
+            "review_zones": [],
+            "partial_emit_allowed": True,
         }
-    if zones and issues:
+
+    if zones and (issues or review_zone_names or ready_zone_names):
         actionable = []
         for zd in zone_diag:
             if zd.get("zone_status") == "READY":
@@ -300,11 +329,22 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
                 f"Silence: {zd.get('silence_source') or 'UNRESOLVED'} | "
                 f"Missing: {zd.get('gap') or 'needs review'}"
             )
+        detail_parts = []
+        if ready_zone_names and review_zone_names:
+            detail_parts.append(
+                f"partial: {len(ready_zone_names)} READY / {len(review_zone_names)} REVIEW"
+            )
+        detail_parts.append(
+            " | ".join(actionable[:6]) if actionable else "; ".join(issues[:6])
+        )
         return {
             "status": "REVIEW_REQUIRED",
-            "detail": " | ".join(actionable[:6]) if actionable else "; ".join(issues[:6]),
-            "unresolved": len(issues),
+            "detail": " · ".join(p for p in detail_parts if p),
+            "unresolved": len(review_zone_names) or len(issues),
             "zones": zone_diag,
+            "ready_zones": ready_zone_names,
+            "review_zones": review_zone_names,
+            "partial_emit_allowed": bool(ready_zone_names),
             "silent_omit_forbidden": True,
         }
     return {
@@ -312,6 +352,8 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
         "detail": "No emitable Safety Zones",
         "unresolved": 0,
         "zones": zone_diag,
+        "ready_zones": [],
+        "review_zones": [],
     }
 
 
@@ -332,8 +374,13 @@ def emit_es_program(
     ensure_tag: Callable[[str], None] | None = None,
     add_tag_block: Callable[[str], None] | None = None,
 ) -> dict[str, Any] | None:
-    """Emit Program ES XML + required tags. Returns None if nothing to emit."""
+    """Emit Program ES XML + required tags. Returns None if nothing to emit.
+
+    Filters to zones with members (partial emit). Zones that have conveyors but
+    no members are listed in omitted_zones and are not emitted.
+    """
     ready = [z for z in zones if z.members and z.area and z.name]
+    omitted = [z for z in zones if z.conveyors and not z.members and z.name]
     if not ready:
         return None
 
@@ -436,6 +483,8 @@ def emit_es_program(
             }
             for z in ready
         ],
+        "emitted_zones": [z.name for z in ready],
+        "omitted_zones": [z.name for z in omitted],
         "es_sil1_count": sum(len(z.members) for z in ready),
         "es_pi20_count": sum(len(z.aggregator_groups) for z in ready),
     }

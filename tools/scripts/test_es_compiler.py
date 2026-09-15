@@ -131,7 +131,7 @@ class TestEsCompiler(unittest.TestCase):
             xml,
         )
         self.assertIn("ES_PI20(Shipping_ESZone1_ES_PI,Shipping_ESZone1,", xml)
-        self.assertIn("NO_ESNull", xml)
+        self.assertIn("NO_ESLS", xml)
         self.assertIn("XIC(Shipping_Area.Reset)OTE(Shipping_ESZone1.PI.Reset);", xml)
         self.assertIn("XIC(Shipping_ESZone1_ES_PI.O_Tripped)OTE(Shipping_ESZone1.PI.Tripped);", xml)
         print("  [PASS] Main_Routine JSRs + SIL1 + PI20 + mappings")

@@ -227,8 +227,11 @@
       pointer-events: none;
       transition: opacity 0.12s;
     }
-    .tb-node:hover .tb-port,
+    /* Schematic proxies: ports must not steal body/centerline selection unless
+       connect / show-ports / linking. Card & seg nodes keep hover ports. */
+    .tb-node:not(.tb-schematic-proxy):hover .tb-port,
     .tb-show-ports .tb-port,
+    .tb-connect-active .tb-node.tb-schematic-proxy .tb-port,
     .tb-port.linking {
       opacity: 1;
       pointer-events: auto;
@@ -438,7 +441,7 @@
     .tb-schematic-body.tb-display-context {
       stroke-opacity: 0.72; stroke-dasharray: 5 3;
     }
-    .tb-mate-mark { fill: #22c55e; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+    .tb-mate-mark { fill: #22c55e; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
     .tb-schematic-hit { fill: transparent; stroke: transparent; cursor: pointer; pointer-events: stroke; }
     .tb-schematic-body.tb-safety-zone-hl,
     .tb-schematic-hit.tb-safety-zone-hl {
@@ -1201,7 +1204,7 @@
             <div class="text-[10px] uppercase tracking-wider text-rose-400/90 font-semibold mb-1">Safety / ES</div>
             <div id="autogen-hub-safety" class="hub-status">NOT DETECTED</div>
             <div id="autogen-hub-safety-detail" class="text-[9px] text-slate-600 mt-1 leading-snug">Review in Safety Build</div>
-            <button type="button" class="tab-jump mt-2 text-[10px] text-rose-300 hover:underline" data-jump-tab="transport">Open Transport →</button>
+            <button type="button" class="tab-jump mt-2 text-[10px] text-rose-300 hover:underline" data-jump-tab="safety">Open Safety Build →</button>
           </div>
           <div class="hub-ready-card" data-ready-key="system" data-status="NOT_DETECTED">
             <div class="text-[10px] uppercase tracking-wider text-violet-400/90 font-semibold mb-1">System / Core</div>
@@ -1908,19 +1911,21 @@
     <!-- Sorter Build — design induct / tracking / diverts (compiled in PLC Autogen) -->
     <section id="tab-safety" class="h-full hidden p-5 gap-3 flex flex-col min-h-0 overflow-hidden">
       <details class="workflow-help shrink-0 px-4 py-3">
-        <summary class="text-sm font-semibold text-rose-400">How to build Safety — workflow</summary>
+        <summary class="text-sm font-semibold text-rose-400">How to build Safety — engineer completion</summary>
         <div class="workflow-chart mt-3">
           <div class="workflow-box"><strong>① Load RUN</strong><span>Auto-discover<br>E-Stops / devices</span></div>
           <span class="workflow-arrow">→</span>
           <div class="workflow-box"><strong>② Transport</strong><span>Areas + conveyors<br>seed Safety Zones</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box accent"><strong>③ Safety Build</strong><span>Review AUTO<br>assign unresolved</span></div>
+          <div class="workflow-box accent"><strong>③ Safety Build</strong><span>What found?<br>What zone? What's left?</span></div>
           <span class="workflow-arrow">→</span>
-          <div class="workflow-box violet"><strong>④ Apply → Autogen</strong><span>Program ES when<br>all zones READY</span></div>
+          <div class="workflow-box violet"><strong>④ Apply → Autogen</strong><span>Partial ES for READY<br>zones; finish blanks later</span></div>
         </div>
         <p class="text-[10px] text-slate-500 mt-2 leading-relaxed">
-          Site Forge auto-discovers proven Safety evidence. You only complete unresolved relationships.
-          Engineer assignments survive Apply, tab changes, and restart. Area ≠ Safety Zone.
+          Site Forge auto-discovers proven Safety evidence. You complete unresolved device → zone relationships.
+          Program ES when zones READY; <strong class="text-amber-300/90">REVIEW REQUIRED</strong> still allows partial PLC build.
+          READY zones get partial ES programs; engineer finishes blanks later.
+          Assignments survive Apply, tab changes, and restart. Area ≠ Safety Zone.
         </p>
       </details>
       <div class="flex items-center gap-2 flex-wrap shrink-0">
@@ -1936,15 +1941,22 @@
           </button>
         </div>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2 shrink-0 text-[10px] mono">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0 text-[10px] mono">
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Zones</span> <span id="sb-count-zones" class="text-rose-200 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Ready</span> <span id="sb-count-ready" class="text-emerald-400 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Review</span> <span id="sb-count-review" class="text-amber-300 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">E-Stops</span> <span id="sb-count-estops" class="text-slate-200 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Devices Found</span> <span id="sb-count-found" class="text-slate-200 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Auto Resolved</span> <span id="sb-count-auto" class="text-emerald-400/90 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Engineer Assigned</span> <span id="sb-count-eng" class="text-fuchsia-300 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Unassigned</span> <span id="sb-count-unassigned" class="text-amber-200 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5 col-span-2 sm:col-span-4"><span class="text-slate-500">Completion</span> <span id="sb-count-completion" class="text-rose-200 float-right">—</span></div>
       </div>
       <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden">
-        <div id="sb-zone-list" class="lg:col-span-4 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-2"></div>
+        <div class="lg:col-span-4 min-h-0 flex flex-col gap-3 overflow-hidden">
+          <div id="sb-inventory" class="shrink-0 max-h-[40%] overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-2"></div>
+          <div id="sb-zone-list" class="flex-1 min-h-0 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-2"></div>
+        </div>
         <div id="sb-zone-detail" class="lg:col-span-8 overflow-y-auto rounded-xl border border-slate-800 bg-[#0a1018] p-3"></div>
       </div>
     </section>

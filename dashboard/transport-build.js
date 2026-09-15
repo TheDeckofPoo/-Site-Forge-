@@ -2143,31 +2143,32 @@
   }
 
   /**
-   * DISPLAY-ONLY quarter-circle for proven CURVE / 90° conveyors when pathCanvas
-   * is missing or degenerate (line fallback looks like a straight diagonal).
+   * DISPLAY-ONLY quarter-circle for proven CURVE / 90° conveyors.
+   * Always builds center from chord midpoint ± perpendicular; radius = chord/√2.
+   * Uses existingArc.sweep_deg / node sweep for signed direction only — never
+   * reuses RUN arc center (that preserves tangent stubs as hooks).
    * Does not mutate topology / canonical sourceX/Y / pathCanvas on the node.
    */
-  function synthesizeCurveDisplayPath(n) {
+  function synthesizeCurveDisplayPath(n, opts) {
+    const loose = !!(opts && opts.loose);
     let entry = n?.entryCanvas ? { x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) } : null;
     let exit = n?.exitCanvas ? { x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) } : null;
+    // Loose fallback: derive anchors from pathCanvas endpoints when topology anchors missing
+    if ((!entry || !exit) && loose && Array.isArray(n?.pathCanvas) && n.pathCanvas.length) {
+      const mv = n.pathCanvas.find((c) => String(c.cmd || '').toLowerCase() === 'move');
+      const last = n.pathCanvas[n.pathCanvas.length - 1];
+      if (!entry && mv && mv.x != null) entry = { x: Number(mv.x), y: Number(mv.y) };
+      if (!exit && last && last.x != null) exit = { x: Number(last.x), y: Number(last.y) };
+    }
     if (!entry || !exit) return null;
     let dx = exit.x - entry.x;
     let dy = exit.y - entry.y;
     let chord = Math.hypot(dx, dy);
-    if (!(chord > 2)) return null;
+    if (!(chord > (loose ? 0.5 : 2))) return null;
 
-    const s = presentationScale();
-    const width = Number(n.width);
-    let rCl = 0;
     const existingArc = (n.pathCanvas || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
-    if (existingArc && Number(existingArc.radius) > 1) rCl = Number(existingArc.radius);
-    else if (n.insideRadius != null && Number.isFinite(Number(n.insideRadius))) {
-      rCl = (Number(n.insideRadius) + (Number.isFinite(width) && width > 0 ? width : 200) / 2) * s;
-    }
-    // 90° chord length = r√2 → r = chord/√2
-    if (!(rCl > 1) || Math.abs(rCl * Math.SQRT2 - chord) > chord * 0.55) {
-      rCl = chord / Math.SQRT2;
-    }
+    // Radius ALWAYS from chord: 90° → r = chord/√2
+    let rCl = chord / Math.SQRT2;
     // Inflate tiny site-scale chords so the DISPLAY quarter-turn is readable.
     // Canonical entryCanvas/exitCanvas (PE/wires) stay untouched — only this path.
     const minR = 28;
@@ -2181,7 +2182,7 @@
       dx = exit.x - entry.x;
       dy = exit.y - entry.y;
       chord = Math.hypot(dx, dy);
-      rCl = minR;
+      rCl = chord / Math.SQRT2;
     }
 
     let signedSweep = null;
@@ -2222,28 +2223,13 @@
     const c1 = { x: mx - hy, y: my + hx };
     const c2 = { x: mx + hy, y: my - hx };
     const crossOf = (c) => (entry.x - c.x) * (exit.y - c.y) - (entry.y - c.y) * (exit.x - c.x);
-    // SVG Y-down: sweep_flag 1 = CW screen = positive cross in screen coords
-    const wantCw = signedSweep < 0; // canvas samples: -90 → sweep_flag 0 (CCW screen)
     // Samples: sweep_deg -90 → flag 0; +90 → flag 1. flag 1 = CW in SVG Y-down.
     // signedSweep > 0 → flag 1 (CW); want positive cross for CW.
     const wantPositiveCross = signedSweep > 0;
-    let center = (crossOf(c1) > 0) === wantPositiveCross ? c1 : c2;
-    if (existingArc?.center && existingArc.center.x != null) {
-      const ec = {
-        x: Number(existingArc.center.x),
-        y: Number(existingArc.center.y),
-      };
-      const er = Math.hypot(entry.x - ec.x, entry.y - ec.y);
-      if (er > 1) {
-        center = ec;
-        rCl = er;
-      }
-    } else {
-      rCl = Math.hypot(entry.x - center.x, entry.y - center.y) || rCl;
-    }
+    const center = (crossOf(c1) > 0) === wantPositiveCross ? c1 : c2;
+    rCl = Math.hypot(entry.x - center.x, entry.y - center.y) || rCl;
 
     const sweep_flag = signedSweep > 0 ? 1 : 0;
-    void wantCw;
     return [
       { cmd: 'move', x: Number(entry.x), y: Number(entry.y) },
       {
@@ -2261,17 +2247,136 @@
 
   /** Resolve display path for a node — prefers valid pathCanvas arc; synthesizes curves. */
   function displayPathCanvasForNode(n) {
-    // Curves: always synthesize a readable belt-width 90° elbow from entry→exit.
-    // Tiny projected RUN arcs (r≈16) look like crescents; synthesis uses RUN sweep.
+    // Curves: always synthesize a clean move+arc 90° elbow from entry→exit.
+    // Never fall back to inflateCurvePathForDisplay — that preserves RUN tangent hooks.
     if (isCurveNode(n)) {
       const synth = synthesizeCurveDisplayPath(n);
       if (synth) return synth;
-      if (pathHasValidArc(n?.pathCanvas)) return inflateCurvePathForDisplay(n.pathCanvas, n);
+      const loose = synthesizeCurveDisplayPath(n, { loose: true });
+      if (loose) return loose;
+      return null;
     }
     if (pathHasValidArc(n?.pathCanvas)) {
       return inflateCurvePathForDisplay(n.pathCanvas, n);
     }
     return n?.pathCanvas || null;
+  }
+
+  /** Effective schematic pick stroke width (px). Visible belt stroke `sw` is unchanged. */
+  const SCHEMATIC_HIT_WIDTH = 46;
+
+  function distPointToSeg(px, py, x1, y1, x2, y2) {
+    const dx = x2 - x1;
+    const dy = y2 - y1;
+    const len2 = dx * dx + dy * dy;
+    if (!(len2 > 1e-9)) return Math.hypot(px - x1, py - y1);
+    let t = ((px - x1) * dx + (py - y1) * dy) / len2;
+    t = Math.max(0, Math.min(1, t));
+    return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+  }
+
+  /** Sample display path to a polyline (arcs ≈ 10 points). Applies presentation offsets. */
+  function sampleDisplayPathPoints(n, offsets) {
+    const off = (offsets && offsets[n.id]) || { dx: 0, dy: 0 };
+    const path = displayPathCanvasForNode(n);
+    const pts = [];
+    const push = (x, y) => {
+      pts.push({ x: Number(x) + (off.dx || 0), y: Number(y) + (off.dy || 0) });
+    };
+    if (path && path.length) {
+      let x0 = null;
+      let y0 = null;
+      path.forEach((cmd) => {
+        const c = String(cmd.cmd || '').toLowerCase();
+        if (c === 'move') {
+          push(cmd.x, cmd.y);
+          x0 = Number(cmd.x);
+          y0 = Number(cmd.y);
+        } else if (c === 'line') {
+          push(cmd.x, cmd.y);
+          x0 = Number(cmd.x);
+          y0 = Number(cmd.y);
+        } else if (c === 'arc') {
+          const x1 = Number(cmd.x);
+          const y1 = Number(cmd.y);
+          const cx = cmd.center && cmd.center.x != null ? Number(cmd.center.x) : null;
+          const cy = cmd.center && cmd.center.y != null ? Number(cmd.center.y) : null;
+          if (x0 != null && y0 != null && cx != null && cy != null) {
+            let a0 = Math.atan2(y0 - cy, x0 - cx);
+            let a1 = Math.atan2(y1 - cy, x1 - cx);
+            let delta = a1 - a0;
+            const sweepFlag = cmd.sweep_flag != null ? Number(cmd.sweep_flag) : 1;
+            // SVG Y-down: sweep_flag 1 = CW = positive atan2 delta
+            if (sweepFlag === 1) {
+              if (delta < 0) delta += 2 * Math.PI;
+            } else if (delta > 0) {
+              delta -= 2 * Math.PI;
+            }
+            const r = Math.hypot(x0 - cx, y0 - cy) || Math.max(1, Number(cmd.radius) || 1);
+            const samples = 10;
+            for (let i = 1; i <= samples; i++) {
+              const a = a0 + (delta * i) / samples;
+              push(cx + r * Math.cos(a), cy + r * Math.sin(a));
+            }
+          } else {
+            push(x1, y1);
+          }
+          x0 = x1;
+          y0 = y1;
+        }
+      });
+    }
+    if (pts.length < 2 && n.entryCanvas && n.exitCanvas) {
+      push(n.entryCanvas.x, n.entryCanvas.y);
+      push(n.exitCanvas.x, n.exitCanvas.y);
+    }
+    return pts;
+  }
+
+  /** Approximate distance from canvas point to node display centerline. */
+  function distanceToDisplayPath(pt, n, offsets) {
+    const pts = sampleDisplayPathPoints(n, offsets);
+    if (pts.length < 2) return Infinity;
+    let best = Infinity;
+    for (let i = 1; i < pts.length; i++) {
+      const d = distPointToSeg(pt.x, pt.y, pts[i - 1].x, pts[i - 1].y, pts[i].x, pts[i].y);
+      if (d < best) best = d;
+    }
+    return best;
+  }
+
+  function schematicLocalNodes(area) {
+    return (area?.nodes || []).filter((n) => {
+      if (!isSchematicNode(n)) return false;
+      if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') return true;
+      if (n.displayContext) return false;
+      if (n.plcOwned === false) return false;
+      if (n.scopeClass === 'OUT_OF_SCOPE' || n.scopeClass === 'UNRESOLVED') return false;
+      return true;
+    });
+  }
+
+  /**
+   * Closest-centerline schematic pick. Considers all local schematic nodes within
+   * SCHEMATIC_HIT_WIDTH/2 of the display path; tie-break by id.
+   */
+  function pickSchematicNodeAt(clientX, clientY, area) {
+    if (!area) return null;
+    const pt = canvasPointFromEvent({ clientX, clientY });
+    const nodes = schematicLocalNodes(area);
+    const offsets = tb._presentationOffsets || computePresentationOffsets(nodes, area);
+    const half = SCHEMATIC_HIT_WIDTH / 2;
+    let best = null;
+    let bestDist = Infinity;
+    nodes.forEach((n) => {
+      const d = distanceToDisplayPath(pt, n, offsets);
+      if (d > half) return;
+      if (d < bestDist || (d === bestDist && best && String(n.id) < String(best.id))) {
+        bestDist = d;
+        best = n;
+      }
+    });
+    return best;
   }
 
   function schematicStrokeWidth(n) {
@@ -2684,7 +2789,8 @@
         const b = applyPresOffset(n.exitCanvas, off);
         d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
       }
-      if (!d && n.arcSamplesCanvas?.length) {
+      // Curves: never paint RUN arcSamples (tangent hooks). Non-curves may use samples.
+      if (!d && !isCurveNode(n) && n.arcSamplesCanvas?.length) {
         d = n.arcSamplesCanvas.map((p, i) => {
           const q = applyPresOffset(p, off);
           return `${i ? 'L' : 'M'} ${q.x} ${q.y}`;
@@ -2714,9 +2820,8 @@
       const tip = cp ? `${tag} · ${cp}` : tag;
       // CURVE + straight share belt-width stroke (elbow replaces body; not a thin crescent)
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
-      // Wide invisible hit stroke — visual belt stays `sw`; click/right-click uses a fat target
-      // so you do not have to aim between the green ENTRY / red EXIT dots.
-      const hitSw = Math.max(sw * 5, 72);
+      // Invisible hit stroke — visual belt stays `sw`; pick uses SCHEMATIC_HIT_WIDTH (~46).
+      const hitSw = SCHEMATIC_HIT_WIDTH;
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${hitSw}" />`;
       // Canvas labels: P-tag only by default. Area/ES stay in the inspector — never
       // paint missing-config words or zone names across the drawing. Small warn dot if needed.
@@ -2814,12 +2919,16 @@
       html += `<text class="tb-mate-mark" x="${mx}" y="${my}" title="EXIT ▶◀ ENTRY">▶◀</text>`;
     });
     svg.innerHTML = html;
-    const bindSchematicPick = (el) => {
+    // Hit paths keep pointer-events for the generous stroke region; selection uses
+    // closest-centerline geometry so overlapping belts pick the nearer path.
+    svg.querySelectorAll('.tb-schematic-hit, .tb-schematic-body').forEach((el) => {
       el.style.pointerEvents = 'stroke';
-      el.addEventListener('mousedown', (ev) => {
-        const id = el.getAttribute('data-id');
-        const n = (area.nodes || []).find((x) => x.id === id);
-        if (!n) return;
+    });
+    const onSchematicPointer = (ev) => {
+      if (ev.type === 'mousedown' && ev.button === 1) return;
+      const n = pickSchematicNodeAt(ev.clientX, ev.clientY, area);
+      if (!n) return;
+      if (ev.type === 'mousedown') {
         ev.preventDefault();
         ev.stopPropagation();
         if (tb.connectMode && isConv(n.kind)) {
@@ -2829,22 +2938,14 @@
         selectNode(n.id);
         const pt = canvasPointFromEvent(ev);
         tb.moving = { id: n.id, ox: pt.x - n.x, oy: pt.y - n.y };
-      });
-      // Right-click: select node; pass2 canvas listener opens Area context menu
-      el.addEventListener('contextmenu', (ev) => {
-        const id = el.getAttribute('data-id');
-        const n = (area.nodes || []).find((x) => x.id === id);
-        if (!n) return;
+      } else if (ev.type === 'contextmenu') {
         selectNode(n.id);
         // Do not stopPropagation — pass2 handles showCtxMenu on .tb-schematic-hit/body
-      });
+      }
     };
-    svg.querySelectorAll('.tb-schematic-hit').forEach(bindSchematicPick);
-    // Also allow picking the visible body if the hit path misses
-    svg.querySelectorAll('.tb-schematic-body').forEach((el) => {
-      el.style.pointerEvents = 'stroke';
-      bindSchematicPick(el);
-    });
+    // Property assignment avoids stacking listeners across redraws
+    svg.onmousedown = onSchematicPointer;
+    svg.oncontextmenu = onSchematicPointer;
   }
 
   /** Screen flow angle (deg). RUN Y is flipped to canvas → negate sourceAngle (matches layout SVG). */
@@ -5481,6 +5582,9 @@
     placeSchematicLabels,
     drawSchematic,
     schematicPathD,
+    pickSchematicNodeAt,
+    distanceToDisplayPath,
+    SCHEMATIC_HIT_WIDTH,
     buildCanonicalApplyGraph,
     applyMergesToAutogenUi,
     canonicalTransportHash,

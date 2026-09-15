@@ -152,6 +152,8 @@ function safetyEvidence() {
   const wb = autogenState.workbook || {};
   const build = wb.safety_build || autogenState.safety_build || {};
   const zones = Array.isArray(build.zones) ? build.zones : [];
+  const counts = build.counts || {};
+  const devices = Array.isArray(build.devices) ? build.devices : [];
   // Safety Build (canonical) + Transportation seeds
   const withConveyors = zones.filter((z) => z && (
     (z.conveyors || z.conveyorRefs || []).length || (z.members || []).length
@@ -161,6 +163,15 @@ function safetyEvidence() {
   const readyN = zones.filter((z) => String(z.status || '').toUpperCase() === 'READY').length;
   const reviewN = zones.filter((z) => String(z.status || '').toUpperCase() === 'REVIEW_REQUIRED'
     || (!(z.members || []).length && (z.conveyors || z.conveyorRefs || []).length)).length;
+  const unassignedList = Array.isArray(build.unassignedDevices)
+    ? build.unassignedDevices.map((d) => (typeof d === 'string' ? d : (d?.name || ''))).filter(Boolean)
+    : devices
+      .filter((d) => d && String(d.status || '').toUpperCase() === 'UNASSIGNED')
+      .map((d) => d.name)
+      .filter(Boolean);
+  const unassignedN = Number(counts.unassigned ?? unassignedList.length) || unassignedList.length;
+  const devicesFound = Number(counts.devices_found ?? counts.devices ?? devices.length) || devices.length;
+  const resolvedN = Math.max(0, devicesFound - unassignedN);
   const diagZones = (last && Array.isArray(last.zones) && last.zones.length)
     ? last.zones
     : withConveyors.map((z) => ({
@@ -178,12 +189,17 @@ function safetyEvidence() {
   return {
     detected: withConveyors.length > 0
       || withMembers.length > 0
+      || devicesFound > 0
       || (last && last.status && last.status !== 'NOT_DETECTED'),
     zones: withConveyors.length || last?.zones?.length || 0,
     members: withMembers.reduce((n, z) => n + ((z.members || []).length), 0),
     conveyors: withConveyors.reduce((n, z) => n + ((z.conveyors || z.conveyorRefs || []).length), 0),
     ready: readyN,
     reviewRequired: reviewN,
+    unassigned: unassignedN,
+    unassignedDevices: unassignedList,
+    devicesFound,
+    resolvedDevices: resolvedN,
     last,
     diagnostics,
     diagZones,
@@ -430,12 +446,21 @@ function computeCompileHubReadiness() {
     nowDetail.system = e;
   }
 
-  // Safety / ES Program — only blocks when detected/configured but incomplete
+  // Safety / ES Program — REVIEW REQUIRED ≠ FATAL; partial ES emit for ready zones.
+  // Never mark READY when last emit was REVIEW_REQUIRED, unassigned devices remain,
+  // or any expected zone is still REVIEW.
   {
     const ev = safetyEvidence();
     const e = R.safety;
     const last = ev.last;
     const diagText = (ev.diagnostics || []).slice(0, 3).join(' | ');
+    const unNames = (ev.unassignedDevices || []).slice(0, 6);
+    const unSuffix = unNames.length
+      ? ` · Unassigned: ${unNames.join(', ')}${(ev.unassignedDevices || []).length > 6 ? ', …' : ''}`
+      : (ev.unassigned > 0 ? ` · Unassigned: ${ev.unassigned}` : '');
+    const reviewDetail = (ev.devicesFound > 0)
+      ? `${ev.resolvedDevices} / ${ev.devicesFound} devices resolved${unSuffix} · Open Safety Build`
+      : (diagText || last?.detail || `${ev.zones} zone(s) need valid Area + members before ES emit`);
     if (last?.status === 'ERROR') {
       e.status = 'ERROR';
       e.unresolved = last.unresolved || 1;
@@ -446,17 +471,24 @@ function computeCompileHubReadiness() {
       e.unresolved = 0;
       e.detail = 'No Safety Zone membership (proven or engineer-assigned)';
       e.diagnostics = [];
-    } else if (last?.status === 'READY' || (ev.zones > 0 && ev.members > 0 && e.appliedAt && !e.dirty)) {
+    } else if (
+      last?.status === 'REVIEW_REQUIRED'
+      || (ev.unassigned > 0)
+      || (ev.reviewRequired > 0)
+      || (last?.partial && last?.status !== 'READY')
+    ) {
+      e.status = 'REVIEW_REQUIRED';
+      e.unresolved = last?.unresolved || ev.unassigned || ev.reviewRequired || 1;
+      e.detail = reviewDetail;
+      e.diagnostics = ev.diagnostics || [];
+    } else if (last?.status === 'READY' || (ev.zones > 0 && ev.members > 0 && ev.unassigned === 0 && ev.reviewRequired === 0 && e.appliedAt && !e.dirty)) {
       e.status = 'READY';
       e.detail = last?.detail || `${ev.zones} zone(s) · ${ev.members} member(s)`;
       e.diagnostics = ev.diagnostics || [];
     } else {
       e.status = 'REVIEW_REQUIRED';
       e.unresolved = last?.unresolved || Math.max(1, ev.zones - (ev.members > 0 ? 0 : 0) || 1);
-      // Actionable: zone / area / conveyors / members / gap — not just a count
-      e.detail = diagText
-        || last?.detail
-        || `${ev.zones} zone(s) need valid Area + members before ES emit`;
+      e.detail = reviewDetail;
       e.diagnostics = ev.diagnostics || [];
     }
     nowDetail.safety = e;
@@ -470,8 +502,14 @@ function setReadinessApplied(key, detail = '') {
   const e = R[key] || (R[key] = emptyReadinessEntry());
   e.appliedAt = new Date().toISOString();
   e.dirty = false;
-  e.status = 'READY';
   if (detail) e.detail = detail;
+  // Safety: do not blindly force READY — recompute from safetyEvidence / sync
+  // (unassigned devices or REVIEW zones must keep REVIEW_REQUIRED).
+  if (key === 'safety') {
+    try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
+    return e;
+  }
+  e.status = 'READY';
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   return e;
 }
@@ -708,9 +746,10 @@ function refreshAutogenPackEvidence() {
  * Build PLC preflight — block Export when a detected subsystem is not READY.
  * Returns { ok, blockers, softSafetyReview }.
  *
- * Safety REVIEW_REQUIRED (unresolved members) is a soft review item — engineer
- * may explicitly choose commissioning "BUILD WITHOUT UNRESOLVED SAFETY".
- * Safety ERROR remains a hard blocker. Normal complete build still requires READY.
+ * REVIEW REQUIRED ≠ FATAL for Safety: soft review informs and allows partial ES
+ * emit for ready zones. Soft Safety REVIEW does NOT hard-block PLC build and
+ * does NOT require confirm-to-omit entire Program ES.
+ * Safety ERROR remains a hard blocker.
  */
 function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
   const map = computeCompileHubReadiness();
@@ -739,7 +778,7 @@ function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
     },
     {
       key: 'safety',
-      tab: 'transport',
+      tab: 'safety',
       label: 'Safety / ES',
       required: safetyEvidence().detected,
     },
@@ -748,20 +787,7 @@ function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
     if (!n.required) return;
     const e = map[n.key] || emptyReadinessEntry();
     if (e.status === 'READY') return;
-    // Soft path: Safety REVIEW_REQUIRED can be omitted with explicit engineer confirm
-    if (
-      n.key === 'safety'
-      && e.status === 'REVIEW_REQUIRED'
-      && allowOmitUnresolvedSafety
-    ) {
-      softSafetyReview.push({
-        key: n.key,
-        tab: n.tab,
-        message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
-        diagnostics: e.diagnostics || safetyEvidence().diagnostics || [],
-      });
-      return;
-    }
+    // Soft: Safety REVIEW_REQUIRED informs only — ok stays true (partial ES emit)
     if (n.key === 'safety' && e.status === 'REVIEW_REQUIRED') {
       softSafetyReview.push({
         key: n.key,
@@ -769,28 +795,21 @@ function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
         message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
         diagnostics: e.diagnostics || safetyEvidence().diagnostics || [],
       });
-      // Still a blocker for COMPLETE build until engineer opts into review build
-      blockers.push({
-        key: n.key,
-        tab: n.tab,
-        message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
-        soft: true,
-      });
       return;
     }
+    // Safety ERROR (and every other non-READY) remains a hard blocker
     blockers.push({
       key: n.key,
       tab: n.tab,
       message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
     });
   });
+  void allowOmitUnresolvedSafety; // retained for callers; default path is partial emit
   return {
     ok: blockers.length === 0,
     blockers,
     softSafetyReview,
-    onlySoftSafety: blockers.length > 0
-      && blockers.every((b) => b.key === 'safety' && b.soft)
-      && blockers.length === softSafetyReview.length,
+    onlySoftSafety: blockers.length === 0 && softSafetyReview.length > 0,
   };
 }
 
@@ -7073,64 +7092,37 @@ async function runAutogenGenerate(mode) {
     }
   }
 
-  // Preflight: detected subsystems must be READY before Export L5X.
-  // Safety REVIEW_REQUIRED may be explicitly omitted for commissioning builds only.
+  // Preflight: hard blockers stop Export. Soft Safety REVIEW does NOT.
+  // REVIEW REQUIRED ≠ FATAL — continue with partial Safety generation for ready zones.
+  // Do NOT default omitUnresolvedSafety (that omits entire Program ES).
   autogenState.omitUnresolvedSafety = false;
   if (mode === 'run') {
     try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
     let pre = autogenBuildPreflight();
     if (!pre.ok) {
-      const hard = (pre.blockers || []).filter((b) => !b.soft);
-      if (hard.length) {
-        setAutogenStatus('Blocked — readiness', 'error');
-        autogenLog('Export blocked — Compile hub readiness incomplete:', 'err');
-        hard.forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
-        const first = hard[0] || pre.blockers[0];
-        if (first?.tab) {
-          try { activateTab(first.tab); } catch (_) { /* ignore */ }
-        }
-        return;
+      setAutogenStatus('Blocked — readiness', 'error');
+      autogenLog('Export blocked — Compile hub readiness incomplete:', 'err');
+      (pre.blockers || []).forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
+      const first = pre.blockers[0];
+      if (first?.tab) {
+        try { activateTab(first.tab); } catch (_) { /* ignore */ }
       }
-      // Only soft Safety REVIEW_REQUIRED — offer commissioning review build
-      if (pre.onlySoftSafety || (pre.softSafetyReview || []).length) {
-        const diag = (pre.softSafetyReview[0]?.diagnostics || safetyEvidence().diagnostics || [])
-          .slice(0, 4)
-          .join('\n\n');
-        const msg = [
-          'COMPLETE BUILD blocked — Safety / ES is DETECTED — REVIEW REQUIRED.',
-          '',
-          diag || pre.softSafetyReview[0]?.message || 'Unresolved Safety Zone members.',
-          '',
-          'Choose BUILD WITHOUT UNRESOLVED SAFETY for a commissioning/review L5X?',
-          '',
-          '• Program ES will be OMITTED',
-          '• Safety stays REVIEW REQUIRED (not marked READY)',
-          '• Resulting controller is NOT complete / commissioning-ready',
-          '',
-          'OK = BUILD WITHOUT UNRESOLVED SAFETY',
-          'Cancel = keep blocked (resolve Safety members for complete build)',
-        ].join('\n');
-        const ok = confirm(msg);
-        if (!ok) {
-          setAutogenStatus('Blocked — Safety REVIEW REQUIRED', 'error');
-          autogenLog('Export blocked — Safety REVIEW REQUIRED (complete build needs members):', 'err');
-          (pre.softSafetyReview || []).forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
-          (safetyEvidence().diagnostics || []).forEach((d) => {
-            String(d).split('\n').forEach((line) => autogenLog(`    ${line}`, 'warn'));
-          });
-          try { activateTab('transport'); } catch (_) { /* ignore */ }
-          return;
-        }
-        autogenState.omitUnresolvedSafety = true;
-        autogenLog('COMMISSIONING REVIEW BUILD — engineer chose BUILD WITHOUT UNRESOLVED SAFETY', 'warn');
-        (safetyEvidence().diagnostics || []).forEach((d) => {
-          String(d).split('\n').forEach((line) => autogenLog(`  ${line}`, 'warn'));
-        });
-      } else {
-        setAutogenStatus('Blocked — readiness', 'error');
-        autogenLog('Export blocked — Compile hub readiness incomplete:', 'err');
-        pre.blockers.forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
-        return;
+      return;
+    }
+    // Soft Safety REVIEW only — proceed; partial ES emit for ready zones
+    if ((pre.softSafetyReview || []).length) {
+      autogenLog('SAFETY REVIEW REQUIRED — continuing with partial Safety generation', 'warn');
+      (pre.softSafetyReview || []).forEach((b) => autogenLog(`  • ${b.message}`, 'warn'));
+      const ev = safetyEvidence();
+      (ev.diagnostics || []).forEach((d) => {
+        String(d).split('\n').forEach((line) => autogenLog(`    ${line}`, 'warn'));
+      });
+      const un = ev.unassignedDevices || [];
+      if (un.length) {
+        autogenLog(
+          `Unassigned Safety devices (${un.length}): ${un.slice(0, 12).join(', ')}${un.length > 12 ? ', …' : ''}`,
+          'warn',
+        );
       }
     }
   }
@@ -7357,20 +7349,48 @@ async function runAutogenGenerate(mode) {
       const st = String(rep.es_program.status || '').toUpperCase();
       const e = ensureAutogenReadiness().safety;
       const omitted = !!(rep.es_program.omitted || autogenState.omitUnresolvedSafety);
+      const partial = !!(rep.es_program.partial || (rep.es_program.emitted && st === 'REVIEW_REQUIRED'));
+      const emittedZones = rep.es_program.emitted_zones || [];
+      const omittedZones = rep.es_program.omitted_zones || [];
+      const reviewDevs = rep.es_program.review_required_devices
+        || safetyEvidence().unassignedDevices
+        || [];
       if (omitted) {
-        // Commissioning review build — keep REVIEW REQUIRED; never claim READY
+        // Explicit full omit — keep REVIEW REQUIRED; never claim READY
         e.status = 'REVIEW_REQUIRED';
         e.detail = rep.es_program.detail
           || 'Safety omitted from this build — REVIEW REQUIRED';
         e.unresolved = rep.es_program.unresolved || 1;
         e.diagnostics = formatSafetyZoneDiagnostics(rep.es_program.zones || safetyEvidence().diagZones || []);
         autogenLog('BUILD GENERATED WITH REVIEW ITEMS', 'warn');
+        autogenLog('SAFETY REVIEW REQUIRED — Program ES omitted', 'warn');
         autogenLog(
-          `Omitted: Safety / ES — ${(rep.es_program.omitted_zones || []).join(', ') || 'unresolved members'}`,
+          `Omitted: Safety / ES — ${omittedZones.join(', ') || 'unresolved members'}`,
           'warn',
         );
         autogenLog('Controller is NOT complete / commissioning-ready until Safety is READY.', 'warn');
-      } else if (st === 'READY' || rep.es_program.emitted) {
+      } else if (partial || st === 'REVIEW_REQUIRED') {
+        e.status = 'REVIEW_REQUIRED';
+        e.detail = rep.es_program.detail || 'SAFETY REVIEW REQUIRED — partial ES emit';
+        e.unresolved = rep.es_program.unresolved || reviewDevs.length || omittedZones.length || 1;
+        e.diagnostics = formatSafetyZoneDiagnostics(rep.es_program.zones || safetyEvidence().diagZones || []);
+        autogenLog('SAFETY REVIEW REQUIRED — partial Safety generation', 'warn');
+        if (rep.es_program.emitted) {
+          autogenLog(
+            `Emitted Program ES zones (${emittedZones.length}): ${emittedZones.join(', ') || '(ready members)'}`,
+            'warn',
+          );
+        }
+        if (omittedZones.length) {
+          autogenLog(`Omitted incomplete zones: ${omittedZones.join(', ')}`, 'warn');
+        }
+        if (reviewDevs.length) {
+          autogenLog(
+            `Unassigned devices remain: ${reviewDevs.slice(0, 12).join(', ')}${reviewDevs.length > 12 ? ', …' : ''}`,
+            'warn',
+          );
+        }
+      } else if (st === 'READY' && rep.es_program.emitted) {
         Object.assign(e, emptyReadinessEntry('READY'));
         e.detail = rep.es_program.detail || 'ES program emitted';
         e.appliedAt = new Date().toISOString();
@@ -7388,14 +7408,22 @@ async function runAutogenGenerate(mode) {
       e.detail = 'Safety omitted from commissioning review build';
       e.diagnostics = safetyEvidence().diagnostics || [];
       autogenLog('BUILD GENERATED WITH REVIEW ITEMS', 'warn');
-      autogenLog('Omitted: Safety / ES — unresolved members', 'warn');
+      autogenLog('SAFETY REVIEW REQUIRED — Program ES omitted', 'warn');
     } catch (_) { /* ignore */ }
   }
+  const esReview = !!(
+    autogenState.omitUnresolvedSafety
+    || (rep.es_program && (
+      String(rep.es_program.status || '').toUpperCase() === 'REVIEW_REQUIRED'
+      || rep.es_program.partial
+      || rep.es_program.omitted
+    ))
+  );
   setAutogenStatus(
     r.recovered
       ? 'Complete (recovered)'
-      : (autogenState.omitUnresolvedSafety ? 'Complete · REVIEW ITEMS' : 'Complete'),
-    autogenState.omitUnresolvedSafety ? 'warn' : 'ready',
+      : (esReview ? 'Complete · SAFETY REVIEW REQUIRED' : 'Complete'),
+    esReview ? 'warn' : 'ready',
   );
   try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   try { refreshAutogenBuildTracker(); } catch (_) { /* ignore */ }

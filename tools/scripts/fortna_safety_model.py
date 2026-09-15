@@ -89,6 +89,64 @@ def _digits(token: str) -> set[str]:
     return set(re.findall(r"\d{2,4}", token or ""))
 
 
+def _provenance_from_evidence(
+    evidence: list[dict[str, Any]],
+    *,
+    engineer_name: str = "",
+    physical_address: str = "",
+) -> dict[str, str]:
+    """Derive source / sourceTable / confidence from first evidence entry."""
+    first = (evidence[0] if evidence else {}) or {}
+    kind = str(first.get("kind") or "")
+    table = str(first.get("table") or first.get("file") or "")
+    if kind == "hardware_io_engineer_name" or engineer_name:
+        return {
+            "source": "HARDWARE_IO",
+            "sourceTable": table or "hardware_io",
+            "confidence": "PROVEN",
+        }
+    if kind == "conveyor_asc_safety_name" or table:
+        prov = str(first.get("provenance") or "RUN_EXPLICIT").upper()
+        return {
+            "source": "RUN",
+            "sourceTable": table or "Conveyor.asc",
+            "confidence": "SUGGESTED" if "SUGGEST" in prov else "PROVEN",
+        }
+    if kind:
+        return {
+            "source": kind if kind.isupper() else "RUN",
+            "sourceTable": table,
+            "confidence": "PROVEN",
+        }
+    if physical_address:
+        return {"source": "HARDWARE_IO", "sourceTable": "hardware_io", "confidence": "PROVEN"}
+    return {"source": "RUN", "sourceTable": "", "confidence": "UNRESOLVED"}
+
+
+def _physical_endpoint_summary(
+    *,
+    physical_io_ref: dict[str, Any] | None,
+    physical_address: str = "",
+    io_word: str = "",
+    io_bit: str = "",
+) -> str:
+    if physical_address:
+        return str(physical_address)
+    if physical_io_ref:
+        w = str(physical_io_ref.get("io_word") or "")
+        b = str(physical_io_ref.get("io_bit") or "")
+        if w and b:
+            return f"{w}.{b}"
+        if w or b:
+            return w or b
+        addr = physical_io_ref.get("physical_address") or physical_io_ref.get("address")
+        if addr:
+            return str(addr)
+    if io_word and io_bit:
+        return f"{io_word}.{io_bit}"
+    return io_word or io_bit or ""
+
+
 def _add_device(
     out: list[dict[str, Any]],
     seen: set[str],
@@ -99,6 +157,8 @@ def _add_device(
     io_bit: str = "",
     reset_station: str = "",
     normalized: str = "",
+    engineer_name: str = "",
+    physical_address: str = "",
 ) -> None:
     name = str(name or "").strip()
     if not name or name.upper() in {"N/A", "INVALID", "NONE"}:
@@ -110,6 +170,14 @@ def _add_device(
     if key in seen:
         return
     seen.add(key)
+    phys_ref = {"io_word": io_word, "io_bit": io_bit} if (io_word or io_bit) else None
+    if physical_address:
+        phys_ref = {**(phys_ref or {}), "physical_address": physical_address}
+    prov = _provenance_from_evidence(
+        evidence,
+        engineer_name=engineer_name,
+        physical_address=physical_address,
+    )
     out.append(
         {
             "id": name,
@@ -121,9 +189,22 @@ def _add_device(
             "reset_station": reset_station or "",
             "origin": ORIGIN_AUTO,
             "evidence": evidence,
-            "physicalIoRef": {"io_word": io_word, "io_bit": io_bit}
-            if (io_word or io_bit)
-            else None,
+            "physicalIoRef": phys_ref,
+            # Blank-preserving fields — stamped after zone membership merge
+            "safetyZoneRef": None,
+            "status": "UNASSIGNED",
+            "source": prov["source"],
+            "sourceTable": prov["sourceTable"],
+            "originalName": name,
+            "engineerName": engineer_name or "",
+            "physicalEndpoint": _physical_endpoint_summary(
+                physical_io_ref=phys_ref,
+                physical_address=physical_address,
+                io_word=io_word,
+                io_bit=io_bit,
+            ),
+            "classification": kind,
+            "confidence": prov["confidence"],
         }
     )
 
@@ -214,6 +295,8 @@ def discover_safety_devices(run_dir: Path | str, machine: str) -> list[dict[str,
                         "engineer_name": ename,
                     }
                 ],
+                engineer_name=ename,
+                physical_address=str(_addr),
             )
     except Exception:
         pass
@@ -448,8 +531,67 @@ def build_safety_model(
             z["status"] = "REVIEW_REQUIRED"
         z["unresolved"] = list(z.get("hard_missing") or [])
 
-    assigned = {str(m).upper() for z in zones_out for m in (z.get("members") or [])}
+    # Stamp each device with zone membership / assignment status.
+    # Never delete unassigned devices — blanks stay visible for engineer review.
+    assignment: dict[str, tuple[str, str]] = {}
+    for z in zones_out:
+        origin = str(z.get("membersOrigin") or "")
+        for m in z.get("members") or []:
+            key = str(m).upper()
+            if key and key not in assignment:
+                assignment[key] = (str(z.get("name") or ""), origin)
+    for d in devices:
+        key = str(d.get("name") or "").upper()
+        if key in assignment:
+            zone_name, origin = assignment[key]
+            d["safetyZoneRef"] = zone_name or None
+            if origin == ORIGIN_ENGINEER:
+                d["status"] = "ENGINEER_ASSIGNED"
+            else:
+                d["status"] = "AUTO_RESOLVED"
+        else:
+            d["safetyZoneRef"] = None
+            d["status"] = "UNASSIGNED"
+        # Ensure blank-preserving fields survive older device dicts
+        d.setdefault("originalName", d.get("name") or "")
+        d.setdefault("engineerName", d.get("engineerName") or "")
+        d.setdefault("classification", d.get("kind") or "")
+        d.setdefault("confidence", d.get("confidence") or "UNRESOLVED")
+        d.setdefault("source", d.get("source") or "RUN")
+        d.setdefault("sourceTable", d.get("sourceTable") or "")
+        d.setdefault(
+            "physicalEndpoint",
+            _physical_endpoint_summary(
+                physical_io_ref=d.get("physicalIoRef"),
+                io_word=str(d.get("io_word") or ""),
+                io_bit=str(d.get("io_bit") or ""),
+            ),
+        )
+
+    assigned = set(assignment.keys())
     unassigned = [d for d in devices if d["name"].upper() not in assigned]
+    auto_n = sum(1 for d in devices if d.get("status") == "AUTO_RESOLVED")
+    eng_n = sum(1 for d in devices if d.get("status") == "ENGINEER_ASSIGNED")
+    un_n = sum(1 for d in devices if d.get("status") == "UNASSIGNED")
+    devices_found = len(devices)
+    zones_ready = sum(1 for z in zones_out if z.get("status") == "READY")
+    zones_review = sum(1 for z in zones_out if z.get("status") == "REVIEW_REQUIRED")
+
+    def _names_of(kind: str) -> list[str]:
+        return [d["name"] for d in devices if d.get("kind") == kind]
+
+    inventory_by_kind = {
+        "ESTOP": _names_of("ESTOP"),
+        "ESR": _names_of("ESR"),
+        "MCR": _names_of("MCR"),
+        "CS": _names_of("CS"),
+        "ESLS": _names_of("ESLS"),
+        "OTHER": [
+            d["name"]
+            for d in devices
+            if d.get("kind") not in {"ESTOP", "ESR", "MCR", "CS", "ESLS"}
+        ],
+    }
 
     model = {
         "kind": "SafetyModel",
@@ -459,16 +601,29 @@ def build_safety_model(
         "devices": devices,
         "zones": zones_out,
         "unassignedDevices": [d["name"] for d in unassigned],
+        "inventoryByKind": inventory_by_kind,
         "counts": {
             "zones": len(zones_out),
-            "ready": sum(1 for z in zones_out if z.get("status") == "READY"),
-            "review_required": sum(
-                1 for z in zones_out if z.get("status") == "REVIEW_REQUIRED"
-            ),
-            "devices": len(devices),
-            "estops": sum(1 for d in devices if d.get("kind") == "ESTOP"),
+            "ready": zones_ready,
+            "review_required": zones_review,
+            "zones_ready": zones_ready,
+            "zones_review": zones_review,
+            "devices": devices_found,
+            "devices_found": devices_found,
+            "estops": len(inventory_by_kind["ESTOP"]),
+            "esr": len(inventory_by_kind["ESR"]),
+            "mcr": len(inventory_by_kind["MCR"]),
+            "cs": len(inventory_by_kind["CS"]),
+            "esls": len(inventory_by_kind["ESLS"]),
+            "other_safety": len(inventory_by_kind["OTHER"]),
+            "automatically_resolved": auto_n,
+            "engineer_assigned": eng_n,
+            "unassigned": un_n,
             "unassigned_estops": sum(
                 1 for d in unassigned if d.get("kind") == "ESTOP"
+            ),
+            "completion_pct": round(
+                100 * (auto_n + eng_n) / max(1, devices_found)
             ),
             "unresolved_io": sum(
                 1
@@ -484,6 +639,7 @@ def build_safety_model(
             "engineer_overrides_survive_rediscovery": True,
             "no_silent_es_omit": True,
             "suggestions_are_not_auto_assign": True,
+            "partial_es_emit_allowed": True,
         },
     }
     return model
@@ -517,15 +673,20 @@ def safety_build_workbook_payload(model: dict[str, Any]) -> dict[str, Any]:
                 "engineerEdited": bool(z.get("engineerEdited")),
             }
         )
+    # Preserve full device records (zone ref / status / evidence / provenance)
+    devices_out = []
+    for d in model.get("devices") or []:
+        if not isinstance(d, dict):
+            continue
+        devices_out.append(dict(d))
     return {
         "version": 1,
         "source": "safety_build",
         "appliedAt": _ts(),
         "zones": zones,
-        "devices": [
-            {"name": d.get("name"), "kind": d.get("kind")}
-            for d in (model.get("devices") or [])
-        ],
+        "devices": devices_out,
+        "unassignedDevices": list(model.get("unassignedDevices") or []),
+        "inventoryByKind": dict(model.get("inventoryByKind") or {}),
         "counts": model.get("counts") or {},
         "readiness": model.get("readiness") or {},
     }
