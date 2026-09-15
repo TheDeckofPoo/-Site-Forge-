@@ -6,7 +6,9 @@ Program ES
   Safe_Logic:   ES_SIL1_Cat1 per member
   Safe_PI:      ES_PI20 aggregator group(s) + Reset/Silence/Tripped maps
 
-Membership must be proven RUN evidence or engineer assignment — never Area-name inference alone.
+Conveyor→SafetyZone comes from Transportation (engineer-authoritative).
+Safety-device membership must be proven RUN evidence or explicit engineer
+members — never inferred from similar names / Area alone.
 """
 from __future__ import annotations
 
@@ -16,7 +18,7 @@ from typing import Any, Callable
 
 
 ES_PI20_CAPACITY = 20
-NO_ESLS = "NO_ESLS"
+NO_ESNULL = "NO_ESNull"
 
 
 @dataclass
@@ -30,9 +32,11 @@ class SafetyZoneIR:
     name: str
     area: str
     members: list[str] = field(default_factory=list)
+    conveyors: list[str] = field(default_factory=list)
     reset_source: str = ""
     silence_source: str = ""
     aggregator_groups: list[AggregatorGroup] = field(default_factory=list)
+    device_membership_status: str = "UNRESOLVED"  # RESOLVED | UNRESOLVED | NONE
 
     def ensure_aggregators(self) -> None:
         if self.aggregator_groups:
@@ -63,6 +67,8 @@ def _looks_like_safety_device(name: str) -> bool:
         or re.match(r"^ES\d+", n)
         or re.match(r"^T_\d*ES\d", n)
         or n.startswith("ESR")
+        or re.search(r"(^|_)ESR\d*", n)
+        or re.search(r"(^|_)MCR\d*", n)
         or re.search(r"MCR\d*", n)
     )
 
@@ -75,37 +81,54 @@ def build_safety_zone_irs(
     engineer_zones: list[dict[str, Any]] | None = None,
     default_area: str = "",
 ) -> list[SafetyZoneIR]:
-    """Build SafetyZone IR from engineer assignment and/or proven estop membership.
+    """Build SafetyZone IR from Transportation engineer assignment + proven estop.
 
-    engineer_zones entries: {name, area, members: [dev,...]}
+    engineer_zones (from Transport Apply safetyBuild):
+      {name, area, conveyors: [P###,...], members: [dev,...]}
     """
     zones: list[SafetyZoneIR] = []
     seen: set[str] = set()
+    em = estop_model or {}
+    proven_by_zone: dict[str, list[str]] = {}
+    for z in em.get("zones") or []:
+        name = _safe(z.get("name") or "")
+        conf = str(z.get("membership_confidence") or "").upper()
+        mem = list(z.get("membership") or [])
+        if name and conf in {"CONFIRMED", "HIGH", "HIGH_CONFIDENCE"} and mem:
+            proven_by_zone[name.upper()] = [_safe(m) for m in mem if _safe(m)]
 
-    # 1) Engineer-authoritative zones (Transport / workbook / UI)
     for z in engineer_zones or []:
         name = _safe(z.get("name") or z.get("safetyZone") or "")
         if not name or name in seen:
             continue
-        area = _safe(z.get("area") or default_area or (areas or [""])[0] or "Main_Area")
+        area = _safe(z.get("area") or default_area or "")
+        conveyors = [str(c).strip() for c in (z.get("conveyors") or []) if str(c).strip()]
         members = [
             _safe(m) if isinstance(m, str) else _safe((m or {}).get("name") or "")
             for m in (z.get("members") or [])
         ]
         members = [m for m in members if m and _looks_like_safety_device(m)]
+        # Only fill from proven estop when zone NAMES match — no guessing
+        if not members and name.upper() in proven_by_zone:
+            members = list(proven_by_zone[name.upper()])
+        status = "RESOLVED" if members else ("UNRESOLVED" if conveyors else "NONE")
+        if not area and (areas or []):
+            area = _safe(areas[0])
+        if not area:
+            area = "Main_Area"
         ir = SafetyZoneIR(
             name=name,
             area=area,
             members=members,
+            conveyors=conveyors,
             reset_source=f"{area}.Reset",
             silence_source=f"{area}.Silence",
+            device_membership_status=status,
         )
         ir.ensure_aggregators()
         zones.append(ir)
         seen.add(name)
 
-    # 2) Proven estop model zones with CONFIRMED/HIGH membership
-    em = estop_model or {}
     for z in em.get("zones") or []:
         name = _safe(z.get("name") or "")
         if not name or name in seen:
@@ -120,14 +143,15 @@ def build_safety_zone_irs(
             name=name,
             area=area,
             members=members,
+            conveyors=[],
             reset_source=f"{area}.Reset",
             silence_source=f"{area}.Silence",
+            device_membership_status="RESOLVED",
         )
         ir.ensure_aggregators()
         zones.append(ir)
         seen.add(name)
 
-    # Do NOT invent zones from Area names alone.
     return zones
 
 
@@ -135,38 +159,71 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
     if not zones:
         return {
             "status": "NOT_DETECTED",
-            "detail": "No Safety Zones with proven/engineer membership",
+            "detail": "No Safety Zones from Transportation or proven RUN membership",
             "unresolved": 0,
+            "zones": [],
         }
     issues: list[str] = []
+    zone_diag: list[dict[str, Any]] = []
     for z in zones:
+        zd: dict[str, Any] = {
+            "name": z.name,
+            "area": z.area,
+            "conveyors": list(z.conveyors),
+            "conveyor_membership": "RESOLVED" if z.conveyors else "NONE",
+            "safety_device_membership": z.device_membership_status,
+            "members": list(z.members),
+        }
         if not z.area:
             issues.append(f"{z.name}: missing Area")
-        if not z.name:
-            issues.append("(unnamed zone)")
-        if not z.members:
-            issues.append(f"{z.name}: empty member list")
-        if not z.aggregator_groups:
-            issues.append(f"{z.name}: no aggregator groups")
+            zd["gap"] = "missing Area"
+        elif z.conveyors and not z.members:
+            issues.append(
+                f"{z.name}: conveyor membership RESOLVED ({len(z.conveyors)}) but "
+                "safety-device membership UNRESOLVED — no proven E-stop/ESR/MCR "
+                "links in RUN for this zone"
+            )
+            zd["gap"] = "safety-device membership UNRESOLVED"
+        elif not z.members:
+            issues.append(f"{z.name}: no safety-device members")
+            zd["gap"] = "no members"
+        zone_diag.append(zd)
     if not library_has_aois:
         issues.append("ES_SIL1_Cat1 / ES_PI20 AOIs missing from library")
-    if issues:
+    ready_zones = [z for z in zones if z.members and z.area]
+    blocked = any(z.conveyors and not z.members for z in zones) or any(
+        "AOIs missing" in i or "missing Area" in i for i in issues
+    )
+    if ready_zones and not blocked and not issues:
         return {
-            "status": "REVIEW_REQUIRED" if any("empty" in i or "missing Area" in i for i in issues) else "ERROR",
-            "detail": "; ".join(issues[:8]),
+            "status": "READY",
+            "detail": (
+                f"{len(ready_zones)} Safety Zone(s) · "
+                f"members={sum(len(z.members) for z in ready_zones)} · "
+                f"conveyors={sum(len(z.conveyors) for z in ready_zones)}"
+            ),
+            "unresolved": 0,
+            "zones": zone_diag,
+        }
+    if zones and issues:
+        return {
+            "status": "REVIEW_REQUIRED",
+            "detail": "; ".join(issues[:6]),
             "unresolved": len(issues),
+            "zones": zone_diag,
         }
     return {
-        "status": "READY",
-        "detail": f"{len(zones)} Safety Zone(s) · members={sum(len(z.members) for z in zones)}",
+        "status": "NOT_DETECTED",
+        "detail": "No emitable Safety Zones",
         "unresolved": 0,
+        "zones": zone_diag,
     }
 
 
 def _pad_es_slots(members: list[str], n: int = ES_PI20_CAPACITY) -> list[str]:
     out = [m for m in members if m][:n]
     while len(out) < n:
-        out.append(NO_ESLS)
+        out.append(NO_ESNULL)
     return out
 
 
@@ -186,7 +243,7 @@ def emit_es_program(
         return None
 
     if ensure_tag:
-        ensure_tag(NO_ESLS)
+        ensure_tag(NO_ESNULL)
 
     tag_blocks: list[str] = []
 
@@ -195,7 +252,6 @@ def emit_es_program(
         if not block:
             return
         cloned = block
-        # Longer keys first
         repls = [(lib_name, new_name), *extra_repl]
         for old, new in sorted(repls, key=lambda x: -len(x[0])):
             cloned = cloned.replace(old, new)
@@ -208,21 +264,17 @@ def emit_es_program(
 
     for z in ready:
         z.ensure_aggregators()
-        # Zone UDT + Area (Area may already exist)
         _clone("Main_Area_Safe", z.name, ("Main_Area", z.area))
         for g in z.aggregator_groups:
             _clone("Main_Area_Safe_ES_PI", g.tag, ("Main_Area_Safe", z.name), ("Main_Area", z.area))
         for dev in z.members:
-            # Device ES_UDT + SIL1 AOI instance
             _clone("NO_ES", dev)
             aoi = f"{dev}_AOI"
-            # Prefer ES1000_AOI template if present
             src_aoi = "ES1000_AOI"
             if not extract_tag_block(library_text, src_aoi):
                 src_aoi = "ES3000_AOI"
             _clone(src_aoi, aoi)
 
-        # Safe_Logic
         logic_rungs: list[str] = [
             _rung_xml(0, "NOP();", f"{z.name} Safe_Logic — ES_SIL1_Cat1 per member"),
         ]
@@ -236,18 +288,15 @@ def emit_es_program(
             )
         zone_routines.append(routine(f"{z.name}_Safe_Logic", logic_rungs))
 
-        # Safe_PI
         pi_rungs: list[str] = [
             _rung_xml(0, "NOP();", f"{z.name} Safe_PI — ES_PI20 aggregator(s)"),
         ]
         for g in z.aggregator_groups:
             slots = _pad_es_slots(g.members)
-            # Library / gold order often Input20..Input1; pass members then pad
             args = ",".join([g.tag, z.name, *slots])
             pi_rungs.append(
                 _rung_xml(0, f"ES_PI20({args});", f"aggregator {g.tag} ({len(g.members)} members)")
             )
-        # Standard zone mappings (first aggregator is primary PI feedback)
         primary = z.aggregator_groups[0].tag if z.aggregator_groups else f"{z.name}_ES_PI"
         pi_rungs.extend(
             [
@@ -287,8 +336,11 @@ def emit_es_program(
                 "name": z.name,
                 "area": z.area,
                 "members": z.members,
+                "conveyors": z.conveyors,
                 "aggregators": [g.tag for g in z.aggregator_groups],
             }
             for z in ready
         ],
+        "es_sil1_count": sum(len(z.members) for z in ready),
+        "es_pi20_count": sum(len(z.aggregator_groups) for z in ready),
     }

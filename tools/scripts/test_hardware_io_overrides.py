@@ -91,6 +91,8 @@ class TestHardwareIoOverrides(unittest.TestCase):
                     "rio_name": "CP2RIO0",
                     "modules": [
                         {
+                            "direction": "O",
+                            "data_index": 6,
                             "channels": [
                                 {
                                     "physical_address": "CP2RIO0:O.Data[6].6",
@@ -117,6 +119,55 @@ class TestHardwareIoOverrides(unittest.TestCase):
         self.assertEqual(ch["effectiveName"], "Fan_Starter")
         self.assertTrue(ch["generate"])
         print("  [PASS] model merge keeps RUN source + engineer effective")
+
+    def test_spare_engineer_name_survives_rebuild(self) -> None:
+        """SPARE bit with no RUN channel must keep engineerName after model apply."""
+        model = {
+            "ok": True,
+            "adapters": [
+                {
+                    "rio_name": "CP2RIO0",
+                    "modules": [
+                        {
+                            "direction": "I",
+                            "data_index": 7,
+                            "is_adapter_card": False,
+                            "channels": [],  # spare — no RUN points
+                        }
+                    ],
+                }
+            ],
+        }
+        ov = empty_overrides()
+        upsert_channel_override(
+            ov,
+            physical_address="CP2RIO0:I.Data[7].15",
+            source_name="",
+            engineer_name="TEST_INPUT",
+            generate=True,
+        )
+        apply_overrides_to_hardware_model(model, ov)
+        chs = model["adapters"][0]["modules"][0]["channels"]
+        self.assertTrue(chs, "expected synthesized spare channel")
+        ch = next(c for c in chs if c["physical_address"] == "CP2RIO0:I.Data[7].15")
+        self.assertEqual(ch["engineerName"], "TEST_INPUT")
+        self.assertEqual(ch["effectiveName"], "TEST_INPUT")
+        # Re-apply as if refreshHardwareIo rebuilt the model
+        model2 = {
+            "ok": True,
+            "adapters": [
+                {
+                    "rio_name": "CP2RIO0",
+                    "modules": [
+                        {"direction": "I", "data_index": 7, "is_adapter_card": False, "channels": []}
+                    ],
+                }
+            ],
+        }
+        apply_overrides_to_hardware_model(model2, ov)
+        ch2 = model2["adapters"][0]["modules"][0]["channels"][0]
+        self.assertEqual(ch2["effectiveName"], "TEST_INPUT")
+        print("  [PASS] spare engineer name survives model rebuild")
 
 
 def main() -> int:

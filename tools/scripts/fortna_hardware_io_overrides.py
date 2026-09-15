@@ -146,43 +146,151 @@ def upsert_channel_override(
     return cur
 
 
+def _parse_channel_addr(addr: str) -> tuple[str, str, int, int] | None:
+    m = re.match(
+        r"^([A-Za-z0-9_]+):(I|O)\.Data\[(\d+)\]\.(\d+)$",
+        str(addr or "").strip(),
+        re.I,
+    )
+    if not m:
+        return None
+    return m.group(1), m.group(2).upper(), int(m.group(3)), int(m.group(4))
+
+
+def _apply_one_channel(ch: dict[str, Any], o: dict[str, Any]) -> None:
+    """Stamp engineer override fields onto one channel dict (in place)."""
+    le = ch.get("logical_endpoint") or {}
+    src = ""
+    if isinstance(le, dict):
+        src = str(le.get("name") or "").strip()
+        if le.get("engineer_override") and le.get("source_name"):
+            src = str(le.get("source_name") or "").strip() or src
+    source_name = str(o.get("sourceName") or ch.get("sourceName") or src or "").strip()
+    engineer_name = str(o.get("engineerName") or "").strip() or None
+    generate = True if o.get("generate") is None else bool(o.get("generate"))
+    # Also honor in-memory engineerName already on channel when override empty
+    if not engineer_name:
+        existing = str(ch.get("engineerName") or "").strip()
+        if existing:
+            engineer_name = existing
+    eff = effective_name(source_name, engineer_name)
+    ch["sourceName"] = source_name
+    ch["engineerName"] = engineer_name
+    ch["effectiveName"] = eff or None
+    ch["generate"] = generate
+    ch["muted"] = not generate
+    if engineer_name:
+        ch["logical_endpoint"] = {
+            **(le if isinstance(le, dict) else {}),
+            "name": engineer_name,
+            "source_name": source_name or None,
+            "engineer_override": True,
+        }
+    elif le and isinstance(le, dict):
+        ch["logical_endpoint"] = le
+
+
 def apply_overrides_to_hardware_model(
     model: dict[str, Any],
     overrides: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Mutate HardwareIOModel channels with engineer override fields (in place)."""
+    """Mutate HardwareIOModel channels with engineer override fields (in place).
+
+    Also synthesizes channel stubs for SPARE bits the engineer named/muted so
+    overrides survive model rebuild / refresh (not only in-session patch).
+    """
     ov = overrides if overrides is not None else load_overrides()
     channels_ov = ov.get("channels") or {}
+
+    # Index existing channels by physical_address
+    by_addr: dict[str, dict[str, Any]] = {}
     for ad in model.get("adapters") or []:
         for mod in ad.get("modules") or []:
             for ch in mod.get("channels") or []:
                 addr = (ch.get("physical_address") or "").strip()
-                if not addr:
+                if addr:
+                    by_addr[addr] = ch
+
+    # Apply to existing channels
+    for addr, o in channels_ov.items():
+        ch = by_addr.get(addr)
+        if ch is not None:
+            _apply_one_channel(ch, o if isinstance(o, dict) else {})
+
+    # Synthesize missing SPARE channels that have engineer overrides
+    for addr, o in channels_ov.items():
+        if addr in by_addr:
+            continue
+        if not isinstance(o, dict):
+            continue
+        eng = str(o.get("engineerName") or "").strip()
+        gen = True if o.get("generate") is None else bool(o.get("generate"))
+        # Only materialize when engineer named it or explicitly muted
+        if not eng and gen:
+            continue
+        parsed = _parse_channel_addr(addr)
+        if not parsed:
+            continue
+        rio, direction, data_index, bit = parsed
+        target_mod = None
+        target_ad = None
+        for ad in model.get("adapters") or []:
+            if (ad.get("rio_name") or "").strip() != rio:
+                continue
+            for mod in ad.get("modules") or []:
+                if mod.get("is_adapter_card"):
                     continue
-                src = ""
-                le = ch.get("logical_endpoint") or {}
-                if isinstance(le, dict):
-                    src = str(le.get("name") or "").strip()
-                o = channels_ov.get(addr) or {}
-                source_name = str(o.get("sourceName") or src or "").strip()
-                engineer_name = str(o.get("engineerName") or "").strip() or None
-                generate = True if o.get("generate") is None else bool(o.get("generate"))
-                eff = effective_name(source_name, engineer_name)
-                ch["sourceName"] = source_name
-                ch["engineerName"] = engineer_name
-                ch["effectiveName"] = eff or None
-                ch["generate"] = generate
-                ch["muted"] = not generate
-                # Keep logical_endpoint for RUN evidence; expose effective for UI
-                if engineer_name:
-                    ch["logical_endpoint"] = {
-                        **(le if isinstance(le, dict) else {}),
-                        "name": engineer_name,
-                        "source_name": source_name or None,
-                        "engineer_override": True,
-                    }
-                elif le and isinstance(le, dict):
-                    ch["logical_endpoint"] = le
+                mod_dir = (mod.get("direction") or "").strip().upper()
+                try:
+                    di = int(mod.get("data_index")) if mod.get("data_index") is not None else None
+                except (TypeError, ValueError):
+                    di = None
+                if mod_dir == direction and di == data_index:
+                    target_mod = mod
+                    target_ad = ad
+                    break
+            if target_mod:
+                break
+        if not target_mod:
+            continue
+        stub = {
+            "fortna_word": None,
+            "fortna_bit": bit,
+            "word_bit_key": None,
+            "physical_address": addr,
+            "direction": direction,
+            "logical_endpoint": None,
+            "engineer_synthesized": True,
+        }
+        _apply_one_channel(stub, o)
+        target_mod.setdefault("channels", []).append(stub)
+        # Keep channels sorted by bit
+        try:
+            target_mod["channels"].sort(key=lambda c: int(c.get("fortna_bit") or 0))
+        except Exception:
+            pass
+        by_addr[addr] = stub
+
+    # Stamp fields on all channels even without override (defaults)
+    for ad in model.get("adapters") or []:
+        for mod in ad.get("modules") or []:
+            for ch in mod.get("channels") or []:
+                addr = (ch.get("physical_address") or "").strip()
+                if addr and addr in channels_ov:
+                    continue  # already applied
+                if "generate" not in ch:
+                    ch["generate"] = True
+                    ch["muted"] = False
+                if "sourceName" not in ch:
+                    le = ch.get("logical_endpoint") or {}
+                    ch["sourceName"] = (
+                        str(le.get("name") or "").strip() if isinstance(le, dict) else ""
+                    )
+                if "engineerName" not in ch:
+                    ch["engineerName"] = None
+                if "effectiveName" not in ch:
+                    ch["effectiveName"] = ch.get("sourceName") or None
+
     model["overrides"] = {
         "path": str(DEFAULT_OVERRIDES_PATH),
         "count": len(channels_ov),

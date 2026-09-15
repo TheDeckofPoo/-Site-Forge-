@@ -1,0 +1,108 @@
+{
+  "generated_at": "2026-09-15T00:18:04.215555+00:00",
+  "discovery_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\plc2-merge-discovery\\blind_report.json",
+  "discovery_counts": {
+    "candidate": 0,
+    "proven": 4,
+    "unresolved": 0,
+    "total": 4,
+    "topology_indegree_eq_2": 2,
+    "mergeboss_2to1": 4
+  },
+  "workbook_path": "C:\\dev\\worktree\\FortnaPlus\\workspace\\autogen_workbook.json",
+  "workbook_merges_2to1_count": 0,
+  "l5x_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORNCCP2_2026_09_14_1948.L5X",
+  "l5x_merge_2to1_call_sites": 1,
+  "l5x_calls": [
+    {
+      "merge_tag": "P406_Merge",
+      "name": "P406",
+      "lane_a": "P404",
+      "lane_b": "P138",
+      "discharge": "P406"
+    }
+  ],
+  "pipeline_notes": [
+    "transport_graph.analyze: topology merges require asMerge|mergeConfirmed AND >=2 inbound wires",
+    "transport_graph.analyze: conv_merge palette nodes always count; non-merge nodes need the flag",
+    "transport_graph.to_autogen_merges_2to1: emits all lane counts; lanes>2 kept as config-only",
+    "transport_graph.apply: transport_build_graph merges dropped when discharge not in graph tag_area",
+    "fortna_autogen emit: only merges_2to1 from workbook; lanes>2 skipped (codegen TBD)",
+    "fortna_autogen emit: merge must resolve a name (name|merge|discharge) and area match (or blank area)",
+    "discovery is frozen evidence only \u2014 not auto-seeded into workbook/Apply"
+  ],
+  "rows": [
+    {
+      "id": "MERGE_406_3-1",
+      "classification": "PROVEN",
+      "type": "Merge_2to1",
+      "main": "P404",
+      "induct": "P138",
+      "sections": "P404/P138/\u2014",
+      "downstream": "P406",
+      "area": "",
+      "evidence": "22 facts: mergeboss, mergeinputs_presense, mergeinputs_releaseio, mergeinputs_timer, mergeinputs_lane_name, mtrchain_merge_ssv",
+      "in_workbook": false,
+      "in_l5x": true,
+      "omit_reason": "",
+      "workbook_name": "",
+      "l5x_tag": "P406_Merge",
+      "bossNumber": "406",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "MERGE_316_SPUR",
+      "classification": "PROVEN",
+      "type": "Merge_2to1",
+      "main": "P136_P1",
+      "induct": "P312",
+      "sections": "P136_P1/P312/P316",
+      "downstream": "P136_P2",
+      "area": "",
+      "evidence": "23 facts: mergeboss, mergeinputs_presense, mergeinputs_releaseio, mergeinputs_timer, mergeinputs_lane_name, mtrchain_merge_ssv",
+      "in_workbook": false,
+      "in_l5x": false,
+      "omit_reason": "not_in_workbook (merges_2to1 empty \u2014 discovery not auto-applied; transport_graph only emits asMerge|mergeConfirmed with >=2 inbound wires)",
+      "workbook_name": "",
+      "l5x_tag": "",
+      "bossNumber": "316",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "MERGE_400_2-1",
+      "classification": "PROVEN",
+      "type": "Merge_2to1",
+      "main": "P242",
+      "induct": "P150_P2",
+      "sections": "P242/P150_P2/\u2014",
+      "downstream": "P400",
+      "area": "",
+      "evidence": "23 facts: mergeboss, mergeinputs_presense, mergeinputs_releaseio, mergeinputs_timer, mergeinputs_lane_name, mtrchain_merge_ssv",
+      "in_workbook": false,
+      "in_l5x": false,
+      "omit_reason": "not_in_workbook (merges_2to1 empty \u2014 discovery not auto-applied; transport_graph only emits asMerge|mergeConfirmed with >=2 inbound wires)",
+      "workbook_name": "",
+      "l5x_tag": "",
+      "bossNumber": "400",
+      "confidence": "HIGH"
+    },
+    {
+      "id": "MERGE_324_SPUR",
+      "classification": "PROVEN",
+      "type": "Merge_2to1",
+      "main": "P150_P1",
+      "induct": "P320",
+      "sections": "P150_P1/P320/P324",
+      "downstream": "P150_P2",
+      "area": "",
+      "evidence": "23 facts: mergeboss, mergeinputs_presense, mergeinputs_releaseio, mergeinputs_timer, mergeinputs_lane_name, mtrchain_merge_ssv",
+      "in_workbook": false,
+      "in_l5x": false,
+      "omit_reason": "not_in_workbook (merges_2to1 empty \u2014 discovery not auto-applied; transport_graph only emits asMerge|mergeConfirmed with >=2 inbound wires)",
+      "workbook_name": "",
+      "l5x_tag": "",
+      "bossNumber": "324",
+      "confidence": "HIGH"
+    }
+  ]
+}

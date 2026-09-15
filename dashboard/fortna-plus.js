@@ -107,12 +107,17 @@ function safetyEvidence() {
   const wb = autogenState.workbook || {};
   const build = wb.safety_build || autogenState.safety_build || {};
   const zones = Array.isArray(build.zones) ? build.zones : [];
+  // Transportation engineer Safety Zone assignments count as detected
+  const withConveyors = zones.filter((z) => z && ((z.conveyors || []).length || (z.members || []).length));
   const withMembers = zones.filter((z) => z && (z.members || []).length);
   const last = autogenState.lastEsReport || null;
   return {
-    detected: withMembers.length > 0 || (last && last.status && last.status !== 'NOT_DETECTED'),
-    zones: withMembers.length || (last?.zones?.length || 0),
+    detected: withConveyors.length > 0
+      || withMembers.length > 0
+      || (last && last.status && last.status !== 'NOT_DETECTED'),
+    zones: withConveyors.length || last?.zones?.length || 0,
     members: withMembers.reduce((n, z) => n + ((z.members || []).length), 0),
+    conveyors: withConveyors.reduce((n, z) => n + ((z.conveyors || []).length), 0),
     last,
   };
 }
@@ -4137,57 +4142,95 @@ function renderHardwareModuleDetail() {
       });
     });
     table.querySelectorAll('.hw-ch-name-input').forEach((inp) => {
-      const commit = async () => {
+      // Prevent Enter→blur double-commit from wiping the engineer name on re-render
+      let committing = false;
+      let skipBlur = false;
+      let lastCommitted = null;
+      const commit = async (reason) => {
         const addr = inp.getAttribute('data-hw-name');
-        if (!addr) return;
+        if (!addr || committing) return;
         const raw = String(inp.value || '').trim();
-        // Find source name from current model
+        // Skip no-op re-commit after Enter already saved the same value
+        if (lastCommitted !== null && lastCommitted === raw && reason === 'blur') return;
+        committing = true;
         let sourceName = '';
         let chHit = null;
-        for (const a of model.adapters || []) {
+        for (const a of (ioState.hardwareIo?.adapters || model.adapters || [])) {
           for (const m of a.modules || []) {
             const c = (m.channels || []).find((x) => x.physical_address === addr);
             if (c) { chHit = c; break; }
           }
           if (chHit) break;
         }
-        sourceName = chHit?.sourceName || chHit?.logical_endpoint?.source_name
-          || (!chHit?.engineerName ? (chHit?.logical_endpoint?.name || '') : '') || '';
-        const res = await saveHwChannelOverride({
-          address: addr,
-          name: raw,
-          sourceName,
-        });
-        if (!res?.success) {
-          inp.classList.add('hw-ch-name-invalid');
-          return;
-        }
-        inp.classList.remove('hw-ch-name-invalid');
-        patchHwChannelInModel(addr, {
-          engineerName: raw || null,
-          sourceName,
-          effectiveName: raw || sourceName || null,
-        });
-        // Ensure spare channels exist after first name
-        if (!chHit && raw) {
-          patchHwChannelInModel(addr, {
-            engineerName: raw,
-            sourceName: '',
-            effectiveName: raw,
-            generate: true,
+        // Prefer preserved RUN source — never treat current engineer name as source
+        sourceName = String(
+          chHit?.sourceName
+          || chHit?.logical_endpoint?.source_name
+          || (!chHit?.engineerName && !chHit?.logical_endpoint?.engineer_override
+            ? (chHit?.logical_endpoint?.name || '')
+            : '')
+          || ''
+        ).trim();
+        try {
+          const res = await saveHwChannelOverride({
+            address: addr,
+            name: raw,
+            sourceName,
           });
+          if (!res?.success) {
+            inp.classList.add('hw-ch-name-invalid');
+            committing = false;
+            return;
+          }
+          inp.classList.remove('hw-ch-name-invalid');
+          // Patch model FIRST so re-render reads engineerName, not SPARE
+          patchHwChannelInModel(addr, {
+            engineerName: raw || null,
+            sourceName,
+            effectiveName: raw || sourceName || null,
+            generate: chHit?.generate !== false,
+          });
+          if (!chHit) {
+            // Force stub creation for SPARE bit
+            patchHwChannelInModel(addr, {
+              engineerName: raw || null,
+              sourceName: sourceName || '',
+              effectiveName: raw || sourceName || null,
+              generate: true,
+            });
+          }
+          lastCommitted = raw;
+          // Keep displayed value immediately (before re-render)
+          inp.value = raw;
+          // Re-render from patched model (engineerName authoritative)
+          skipBlur = true;
+          renderHardwareModuleDetail();
+          log(`Hardware I/O name → ${addr} = ${raw || '(cleared to RUN/SPARE)'} (${reason})`, 'ok');
+        } finally {
+          committing = false;
         }
-        renderHardwareModuleDetail();
-        log(`Hardware I/O name → ${addr} = ${raw || '(cleared to RUN/SPARE)'}`, 'ok');
       };
       inp.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter') { ev.preventDefault(); commit(); }
+        if (ev.key === 'Enter') {
+          ev.preventDefault();
+          ev.stopPropagation();
+          skipBlur = true;
+          commit('enter');
+          try { inp.blur(); } catch (_) { /* ignore */ }
+        }
         if (ev.key === 'Escape') {
           ev.preventDefault();
+          skipBlur = true;
           renderHardwareModuleDetail();
         }
       });
-      inp.addEventListener('blur', () => { commit(); });
+      inp.addEventListener('blur', () => {
+        if (skipBlur) {
+          skipBlur = false;
+          return;
+        }
+        commit('blur');
+      });
     });
     table.querySelectorAll('.hw-ch-gen-input').forEach((cb) => {
       cb.addEventListener('change', async () => {

@@ -42,7 +42,7 @@ def extract_tag_block(library_text: str, tag_name: str) -> str | None:
         "Main_Area_Safe": '<Tag Name="Main_Area_Safe" TagType="Base" DataType="ES_Zone_UDT" />',
         "Main_Area_Safe_ES_PI": '<Tag Name="Main_Area_Safe_ES_PI" TagType="Base" DataType="ES_PI20" />',
         "NO_ES": '<Tag Name="NO_ES" TagType="Base" DataType="ES_UDT" />',
-        "NO_ESLS": '<Tag Name="NO_ESLS" TagType="Base" DataType="ES_UDT" />',
+        "NO_ESNull": '<Tag Name="NO_ESNull" TagType="Base" DataType="ES_UDT" />',
         "ES1000_AOI": '<Tag Name="ES1000_AOI" TagType="Base" DataType="ES_SIL1_Cat1" />',
     }
     return stubs.get(tag_name)
@@ -59,11 +59,38 @@ class TestEsCompiler(unittest.TestCase):
         self.assertEqual(zones, [])
         print("  [PASS] does not invent zones from Area names alone")
 
+    def test_transport_zone_without_devices_is_review_required(self) -> None:
+        eng = [
+            {
+                "name": "test1",
+                "area": "ORNCCP2_Area",
+                "conveyors": ["P1006", "P1007"],
+                "members": [],
+            }
+        ]
+        irs = build_safety_zone_irs(engineer_zones=eng, default_area="ORNCCP2_Area")
+        self.assertEqual(len(irs), 1)
+        self.assertEqual(irs[0].conveyors, ["P1006", "P1007"])
+        self.assertEqual(irs[0].device_membership_status, "UNRESOLVED")
+        ready = safety_readiness(irs, library_has_aois=True)
+        self.assertEqual(ready["status"], "REVIEW_REQUIRED")
+        self.assertIn("UNRESOLVED", ready["detail"])
+        pack = emit_es_program(
+            irs,
+            _rung_xml=_rung_xml,
+            routine=routine,
+            extract_tag_block=extract_tag_block,
+            library_text="",
+        )
+        self.assertIsNone(pack)
+        print("  [PASS] Transport zone with conveyors but no devices → REVIEW REQUIRED, no silent ES omit")
+
     def test_emit_main_jsr_and_sil1(self) -> None:
         eng = [
             {
                 "name": "Shipping_ESZone1",
                 "area": "Shipping_Area",
+                "conveyors": ["P100", "P102"],
                 "members": ["CP2_MCR1", "CP2_ESR1", "ES201", "ES202", "ES203"],
             }
         ]
@@ -88,7 +115,7 @@ class TestEsCompiler(unittest.TestCase):
             xml,
         )
         self.assertIn("ES_PI20(Shipping_ESZone1_ES_PI,Shipping_ESZone1,", xml)
-        self.assertIn("NO_ESLS", xml)
+        self.assertIn("NO_ESNull", xml)
         self.assertIn("XIC(Shipping_Area.Reset)OTE(Shipping_ESZone1.PI.Reset);", xml)
         self.assertIn("XIC(Shipping_ESZone1_ES_PI.O_Tripped)OTE(Shipping_ESZone1.PI.Tripped);", xml)
         print("  [PASS] Main_Routine JSRs + SIL1 + PI20 + mappings")

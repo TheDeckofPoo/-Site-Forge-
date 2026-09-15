@@ -1117,6 +1117,28 @@
     status('Reset View · 100% (presentation only)');
   }
 
+  /** Zoom +/- around viewport center (presentation only — no model mutation). */
+  function zoomByFactor(factor) {
+    const canvas = $('tb-canvas');
+    if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
+    const lim = viewportZoomLimits();
+    const before = Math.max(lim.min, Number(tb.view.zoom) || 1);
+    const next = Math.max(lim.min, Math.min(lim.max, before * (Number(factor) || 1)));
+    if (Math.abs(next - before) < 0.001) return;
+    const cx = canvas ? canvas.scrollLeft + canvas.clientWidth / 2 : 0;
+    const cy = canvas ? canvas.scrollTop + canvas.clientHeight / 2 : 0;
+    const wx = cx / before;
+    const wy = cy / before;
+    tb.view.zoom = next;
+    applyViewportZoom();
+    if (canvas) {
+      canvas.scrollLeft = wx * next - canvas.clientWidth / 2;
+      canvas.scrollTop = wy * next - canvas.clientHeight / 2;
+    }
+    render();
+    status(`Zoom ${Math.round(next * 100)}% (presentation only)`);
+  }
+
   function renderTopologyTable() {
     const body = $('tb-topo-body');
     if (!body) return;
@@ -2763,25 +2785,28 @@
     return outlierInfo;
   }
 
-  /** Fit currently displayed / filtered equipment (main cluster by default). */
+  /** Fit currently displayed equipment — center complete topology with padding. */
   function fitVisible() {
-    const area = activeArea();
-    const nodes = area?.nodes || [];
-    const info = fitViewToNodes(nodes, {
+    // Prefer ALL areas so Fit View shows the complete controller layout
+    const nodes = [];
+    (tb.areas || []).forEach((a) => (a.nodes || []).forEach((n) => nodes.push(n)));
+    const useNodes = nodes.length ? nodes : (activeArea()?.nodes || []);
+    const info = fitViewToNodes(useNodes, {
       mode: 'visible',
-      paddingFrac: 0.08,
-      minZoom: tb.physicalLayout ? 0.05 : 0.55,
+      paddingFrac: 0.1,
+      minZoom: tb.physicalLayout ? 0.05 : 0.35,
       maxZoom: 2.4,
       // Physical layouts already have real XY — do not drop "outlier" chains.
       excludeOutliers: !tb.physicalLayout,
     });
+    const area = activeArea();
     drawSchematic(area);
     drawWires();
     const nOut = info?.outliers?.length || 0;
     status(
       nOut
-        ? `Fit Visible · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · ${nOut} OUTLIER EQUIPMENT (not moved — use Fit All)`
-        : `Fit Visible · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`
+        ? `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · centered · ${nOut} OUTLIER (use Fit All)`
+        : `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · topology centered`
     );
     return info;
   }
@@ -4015,6 +4040,34 @@
         toPort: w.toPort || 'in',
       })),
     }));
+    // Engineer Transportation Safety Zone assignments are authoritative.
+    // Build SafetyZone IR: zone → area + conveyors[] (device membership resolved later from RUN).
+    const zoneMap = new Map(); // name → { name, area, conveyors: [] }
+    (areas || []).forEach((area) => {
+      const aname = area.name || '';
+      (area.nodes || []).forEach((n) => {
+        if (!isConv(n.kind)) return;
+        const tag = String(n.conveyorTag || '').trim();
+        const zname = String(n.safetyZone || '').trim();
+        if (!zname || !tag) return;
+        if (!zoneMap.has(zname)) {
+          zoneMap.set(zname, { name: zname, area: aname, conveyors: [], members: [] });
+        }
+        const z = zoneMap.get(zname);
+        if (!z.area && aname) z.area = aname;
+        if (!z.conveyors.includes(tag)) z.conveyors.push(tag);
+      });
+    });
+    // Also include named zones with no conveyors yet (engineer-created)
+    (tb.safetyZones || []).forEach((z) => {
+      const nm = String(z.name || '').trim();
+      if (!nm) return;
+      if (!zoneMap.has(nm)) {
+        zoneMap.set(nm, { name: nm, area: '', conveyors: [], members: [] });
+      }
+    });
+    const safetyBuildZones = [...zoneMap.values()];
+
     return {
       version: 1,
       exportedAt: new Date().toISOString(),
@@ -4023,7 +4076,15 @@
       safetyZones: (tb.safetyZones || []).map((z) => ({
         id: z.id,
         name: z.name || '',
-      })),
+      })).concat(
+        safetyBuildZones
+          .filter((z) => !(tb.safetyZones || []).some((t) => t.name === z.name))
+          .map((z) => ({ id: z.name, name: z.name }))
+      ),
+      safetyBuild: {
+        zones: safetyBuildZones,
+        source: 'transport_engineer',
+      },
       activeAreaId: tb.activeAreaId,
     };
   }
@@ -4927,6 +4988,7 @@
     seedSafetyZonesFromNodes,
     refreshSafetyZoneSelect,
     resetView100,
+    zoomByFactor,
     STORE_KEY,
     isPhysicalSeg,
     isSchematicNode,

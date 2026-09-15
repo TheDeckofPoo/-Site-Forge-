@@ -2033,6 +2033,18 @@
     };
     $('tb-zoom-100')?.addEventListener('click', reset100);
     $('tb-zoom-reset')?.addEventListener('click', reset100);
+    $('tb-zoom-in')?.addEventListener('click', () => {
+      try {
+        if (typeof A().zoomByFactor === 'function') A().zoomByFactor(1.15);
+        else A().status('Zoom + unavailable');
+      } catch (err) { A().status(`Zoom +: ${err?.message || err}`); }
+    });
+    $('tb-zoom-out')?.addEventListener('click', () => {
+      try {
+        if (typeof A().zoomByFactor === 'function') A().zoomByFactor(1 / 1.15);
+        else A().status('Zoom − unavailable');
+      } catch (err) { A().status(`Zoom −: ${err?.message || err}`); }
+    });
     $('tb-advanced-debug')?.addEventListener('change', (ev) => {
       const { tb, render, status } = A();
       tb.viewMode = ev.target.checked ? 'geom-debug' : 'schematic';

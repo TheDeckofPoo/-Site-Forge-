@@ -51,6 +51,85 @@ def _port_sort_key(port: str) -> int:
     return int(m.group(1)) if m else 0
 
 
+def _seed_proven_blind_merges(wb: dict, tag_area: dict[str, str] | None = None) -> list[str]:
+    """Upsert frozen blind-discovery PROVEN merges into workbook.merges_2to1.
+
+    Reads exports/plc2-merge-discovery/blind_report.json when present.
+    Does not retune discovery — only bridges PROVEN evidence into compiler input
+    when Transport canvas has not yet confirmed asMerge topology.
+    """
+    root = Path(__file__).resolve().parents[2]
+    report = root / "exports" / "plc2-merge-discovery" / "blind_report.json"
+    if not report.is_file():
+        return []
+    try:
+        data = json.loads(report.read_text(encoding="utf-8"))
+    except Exception:
+        return []
+    existing = list(wb.get("merges_2to1") or [])
+    by_key: dict[str, dict] = {}
+    for m in existing:
+        key = str(m.get("discharge") or m.get("name") or "").strip().upper()
+        if key:
+            by_key[key] = m
+    seeded: list[str] = []
+    tag_area = tag_area or {}
+    for m in data.get("merges") or []:
+        # Frozen report may omit per-row classification when counts.proven covers all
+        cls = str(m.get("classification") or "PROVEN").upper()
+        if cls and cls not in ("PROVEN",):
+            continue
+        discharge = str(m.get("downstream") or m.get("discharge") or "").strip()
+        main = str(m.get("mainLane") or "").strip()
+        induct = str(m.get("inductLane") or "").strip()
+        if not discharge or not main or not induct:
+            continue
+        key = discharge.upper()
+        area = (
+            tag_area.get(discharge.upper())
+            or tag_area.get(main.upper())
+            or str(m.get("area") or "").strip()
+            or ""
+        )
+        pes = m.get("PEs") or {}
+        row = {
+            "name": discharge,
+            "area": area,
+            "lanes": int(m.get("numInputs") or 2),
+            "lane_a": main,
+            "lane_b": induct,
+            "lane_c": str(m.get("mergeSection3") or "").strip(),
+            "discharge": discharge,
+            "pe_a": str(pes.get("main") or "").strip(),
+            "pe_b": str(pes.get("induct") or "").strip(),
+            "pe_c": "",
+            "jam_pe": str(pes.get("jam") or "").strip(),
+            "allow_undefined_pe": False,
+            "hold_mode": "runhold",
+            "source": "blind_merge_discovery_proven",
+            "discovery_name": str(m.get("name") or ""),
+            "suggested_aoi": "Merge_2to1",
+            "mergeSection1": str(m.get("mergeSection1") or main),
+            "mergeSection2": str(m.get("mergeSection2") or induct),
+            "mergeSection3": str(m.get("mergeSection3") or "") or None,
+        }
+        if key not in by_key:
+            by_key[key] = row
+            seeded.append(discharge)
+        else:
+            # Fill empty fields on existing row from discovery — do not wipe engineer edits
+            cur = by_key[key]
+            for k, v in row.items():
+                if k in ("source", "discovery_name"):
+                    continue
+                if v and not cur.get(k):
+                    cur[k] = v
+            if cur.get("source") != "transport_build_graph":
+                cur["source"] = cur.get("source") or "blind_merge_discovery_proven"
+    wb["merges_2to1"] = list(by_key.values())
+    return seeded
+
+
 def to_autogen_merges_2to1(result: dict) -> list[dict]:
     """Map graph merges → fortna_autogen merges_2to1 workbook rows (PLC2 shape).
 
@@ -564,6 +643,16 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         final_merges.append(m)
     wb["merges_2to1"] = final_merges
 
+    # Seed FROZEN blind PLC2 discovery PROVEN merges into workbook when canvas
+    # topology did not yet promote them (asMerge/mergeConfirmed missing).
+    # Does NOT retune discovery — only copies frozen PROVEN rows into compiler input.
+    try:
+        seeded = _seed_proven_blind_merges(wb, tag_area)
+        if seeded:
+            final_merges = list(wb.get("merges_2to1") or [])
+    except Exception:
+        seeded = []
+
     # Prefer graph area names first (what the engineer just defined), then leftovers
     graph_area_names = []
     seen_ga: set[str] = set()
@@ -670,6 +759,24 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         opts["areas"] = area_opts
         wb["options"] = opts
 
+    # Engineer Transportation Safety Zone assignments → workbook.safety_build
+    # (authoritative; Safety compiler consumes this — do not require re-entry elsewhere)
+    sb = graph.get("safetyBuild") or graph.get("safety_build")
+    if isinstance(sb, dict) and isinstance(sb.get("zones"), list):
+        wb["safety_build"] = {
+            "source": sb.get("source") or "transport_engineer",
+            "zones": list(sb.get("zones") or []),
+        }
+        # Also ensure zone names appear in options.safety_zones
+        opts = wb.get("options") if isinstance(wb.get("options"), dict) else {}
+        sz_opts = list(opts.get("safety_zones") or [])
+        for z in wb["safety_build"]["zones"]:
+            nm = str((z or {}).get("name") or "").strip()
+            if nm and nm not in sz_opts:
+                sz_opts.append(nm)
+        opts["safety_zones"] = sz_opts
+        wb["options"] = opts
+
     area_names = [a.get("name") for a in (wb.get("areas") or []) if a.get("name")]
     return {
         "ok": True,
@@ -684,14 +791,21 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
         "merges_applied": applied_merges,
         "merges_removed": merges_removed,
         "merges_total": len(wb["merges_2to1"]),
+        "merges_seeded_from_discovery": list(seeded) if isinstance(seeded, list) else [],
         "unbound_nodes": unbound,
         "duplicate_tag_warnings": dupe_warnings,
+        "safety_zones_applied": [
+            str(z.get("name") or "")
+            for z in ((wb.get("safety_build") or {}).get("zones") or [])
+            if z.get("name")
+        ],
         "summary": (
             f"{len(graph_area_names)} Transport area(s) → "
             f"{len(updated_tags)} conveyor update(s), "
             f"{len(created_tags)} new row(s), "
             f"{len(removed_tags)} removed, "
             f"{len(applied_merges)} merge(s)"
+            + (f", {len(seeded)} discovery-seeded" if seeded else "")
         ),
         "note": (
             "Simple transport uses Fast/Slow by main_area (no merge required). "
