@@ -83,6 +83,37 @@ def test_no_finished_plc_in_source() -> None:
                                 _fail(f"forbidden operational reference: {needle} :: {line.strip()}")
 
 
+def test_release_io_mtrchain_three_level() -> None:
+    """LANE2_P312 ReleaseIO M314 → phys P314 → Next P316 CURVE (not collapsed to P312)."""
+    if not (RUN / "FORTNA").is_dir():
+        _fail(f"PLC2 RUN not found at {RUN}")
+    report = discover_plc2_merges(RUN, MACHINE)
+    by_name = {m.get("name"): m for m in (report.get("merges") or [])}
+
+    m316 = by_name.get("MERGE_316_SPUR")
+    assert m316, "MERGE_316_SPUR missing"
+    assert m316.get("sourceClassification") == "SPUR"
+    assert m316.get("inductLane") == "P312"
+    assert m316.get("inductPhysicalRelease") == "P314"
+    assert m316.get("inductNext") == "P316"
+    assert m316.get("mergeSection3") == "P316"
+    # Must NOT collapse logical/physical/next
+    assert m316.get("inductLane") != m316.get("inductPhysicalRelease")
+    assert m316.get("inductPhysicalRelease") != m316.get("inductNext")
+
+    m324 = by_name.get("MERGE_324_SPUR")
+    assert m324, "MERGE_324_SPUR missing"
+    assert m324.get("sourceClassification") == "SPUR"
+    assert m324.get("inductLane") == "P320"
+    assert m324.get("inductPhysicalRelease") == "P322"
+    assert m324.get("inductNext") == "P324"
+
+    m400 = by_name.get("MERGE_400_2-1")
+    assert m400 and m400.get("sourceClassification") == "2-1"
+    m406 = by_name.get("MERGE_406_3-1")
+    assert m406 and m406.get("sourceClassification") == "3-1"
+
+
 def test_discovery_invariants() -> None:
     if not (RUN / "project.cfg").is_file() and not (RUN / "FORTNA").is_dir():
         _fail(f"PLC2 RUN not found at {RUN} — extract inbox tar to workspace/_plc2_run_peek first")

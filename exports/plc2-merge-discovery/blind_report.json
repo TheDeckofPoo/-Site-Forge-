@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-09-15T04:58:58.263755+00:00",
+  "generated_at": "2026-09-15T06:05:50.785113+00:00",
   "machine": "ORNCCP2",
   "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\_plc2_run_peek\\RUN",
   "source_of_truth": "RUN tables only \u2014 MergeBoss/MergeInputs/MergeRoute/Mtrchain/Jamcheck/Fulljam/Fullline/Conveyor; finished PLC L5X not read",
@@ -98,8 +98,12 @@
       "type": "Merge_2to1",
       "name": "MERGE_406_3-1",
       "bossNumber": "406",
+      "sourceClassification": "3-1",
       "mainLane": "P404",
       "inductLane": "P138",
+      "mainPhysicalRelease": "P404",
+      "inductPhysicalRelease": "P138",
+      "inductNext": null,
       "mergeSection1": "P404",
       "mergeSection2": "P138",
       "mergeSection3": null,
@@ -116,17 +120,33 @@
         {
           "input_name": "LANE1_P404",
           "index": 0,
+          "logical_lane": "P404",
           "section": "P404",
           "presense": "PE404_P",
+          "presence": "PE404_P",
           "release_io": "M404",
+          "physical_release_conveyor": "P404",
+          "physical_release_type": "BELT",
+          "next_conveyor": null,
+          "next_conveyor_type": null,
+          "timer": "tmM406",
+          "latch_aux": "M406_AUX",
           "merge_route": "LANE1_P404"
         },
         {
           "input_name": "LANE2_P138",
           "index": 1,
+          "logical_lane": "P138",
           "section": "P138",
           "presense": "PE138_P",
+          "presence": "PE138_P",
           "release_io": "M138",
+          "physical_release_conveyor": "P138",
+          "physical_release_type": "BELT",
+          "next_conveyor": null,
+          "next_conveyor_type": null,
+          "timer": "tmM406",
+          "latch_aux": "M406_AUX",
           "merge_route": "LANE2_P138"
         }
       ],
@@ -146,7 +166,8 @@
           "num_inputs": 2,
           "owner": "ORNCCP2",
           "operable_input": "M406_AUX",
-          "valid": "Y"
+          "valid": "Y",
+          "source_classification": "3-1"
         },
         {
           "kind": "mergeinputs_presense",
@@ -205,6 +226,18 @@
           "table": "MergeRoute.asc",
           "name": "LANE1_P404",
           "merge_inputs": "LANE1_P404"
+        },
+        {
+          "kind": "release_io_mtrchain",
+          "table": "Mtrchain.asc",
+          "release_io": "M404",
+          "motor_chained1": "P404",
+          "motor_chained2": "SSVEZPE402_P",
+          "physical_release_conveyor": "P404",
+          "next_conveyor": null,
+          "timer": "tmM406",
+          "latch_aux": "M406_AUX",
+          "rule": "ReleaseIO \u2192 Mtrchain.Motor_Name \u2192 Motor_Chained1=physical conveyor; Motor_Chained2=Next when P-tag"
         },
         {
           "kind": "mergeinputs_presense",
@@ -266,12 +299,29 @@
           "merge_inputs": "LANE2_P138"
         },
         {
+          "kind": "release_io_mtrchain",
+          "table": "Mtrchain.asc",
+          "release_io": "M138",
+          "motor_chained1": "P138",
+          "motor_chained2": "SSVEZPE136_P2",
+          "physical_release_conveyor": "P138",
+          "next_conveyor": null,
+          "timer": "tmM406",
+          "latch_aux": "M406_AUX",
+          "rule": "ReleaseIO \u2192 Mtrchain.Motor_Name \u2192 Motor_Chained1=physical conveyor; Motor_Chained2=Next when P-tag"
+        },
+        {
           "kind": "lane_role_assignment",
-          "rule": "MergeInputs Index ascending: 0\u2192mainLane, 1\u2192inductLane",
+          "rule": "MergeInputs Index ascending: 0\u2192mainLane(logical), 1\u2192inductLane(logical)",
           "main_input": "LANE1_P404",
           "induct_input": "LANE2_P138",
           "mainLane": "P404",
-          "inductLane": "P138"
+          "inductLane": "P138",
+          "main_physical_release": "P404",
+          "induct_physical_release": "P138",
+          "main_next": null,
+          "induct_next": null,
+          "note": "logical_lane / physical_release_conveyor / next_conveyor are distinct \u2014 do not collapse"
         },
         {
           "kind": "mtrchain_latch_discharge",
@@ -325,6 +375,13 @@
         }
       ],
       "unresolved": [],
+      "resolvedFields": [
+        "mainLane",
+        "inductLane",
+        "mainPhysicalRelease",
+        "inductPhysicalRelease",
+        "downstream"
+      ],
       "confidence": "HIGH",
       "classification": "PROVEN"
     },
@@ -332,8 +389,12 @@
       "type": "Merge_2to1",
       "name": "MERGE_316_SPUR",
       "bossNumber": "316",
+      "sourceClassification": "SPUR",
       "mainLane": "P136_P1",
       "inductLane": "P312",
+      "mainPhysicalRelease": "P136_P1",
+      "inductPhysicalRelease": "P314",
+      "inductNext": "P316",
       "mergeSection1": "P136_P1",
       "mergeSection2": "P312",
       "mergeSection3": "P316",
@@ -350,17 +411,33 @@
         {
           "input_name": "LANE1_P136",
           "index": 0,
+          "logical_lane": "P136_P1",
           "section": "P136_P1",
           "presense": "EZPE136_P1",
+          "presence": "EZPE136_P1",
           "release_io": "SSVEZPE136_P1",
+          "physical_release_conveyor": "P136_P1",
+          "physical_release_type": null,
+          "next_conveyor": null,
+          "next_conveyor_type": null,
+          "timer": null,
+          "latch_aux": null,
           "merge_route": "LANE1_P136"
         },
         {
           "input_name": "LANE2_P312",
           "index": 1,
+          "logical_lane": "P312",
           "section": "P312",
           "presense": "PE314_P",
+          "presence": "PE314_P",
           "release_io": "M314",
+          "physical_release_conveyor": "P314",
+          "physical_release_type": "BELT",
+          "next_conveyor": "P316",
+          "next_conveyor_type": "CURVE",
+          "timer": "tmLATCH_MERGE_316_A",
+          "latch_aux": "LATCH_MERGE_316",
           "merge_route": ""
         }
       ],
@@ -373,7 +450,8 @@
           "num_inputs": 2,
           "owner": "ORNCCP2",
           "operable_input": "ENABLE_MERGEBOSS_316",
-          "valid": "Y"
+          "valid": "Y",
+          "source_classification": "SPUR"
         },
         {
           "kind": "mergeinputs_presense",
@@ -440,6 +518,13 @@
           "merge_inputs": "LANE1_P136"
         },
         {
+          "kind": "release_io_ssv_or_pe",
+          "table": "MergeInputs.asc",
+          "release_io": "SSVEZPE136_P1",
+          "section_from_name": "P136_P1",
+          "note": "ReleaseIO is SSV/PE \u2014 no Mtrchain Motor_Chained1/Next path"
+        },
+        {
           "kind": "mergeinputs_presense",
           "table": "MergeInputs.asc",
           "lane": "LANE2_P312",
@@ -496,12 +581,29 @@
           ]
         },
         {
+          "kind": "release_io_mtrchain",
+          "table": "Mtrchain.asc",
+          "release_io": "M314",
+          "motor_chained1": "P314",
+          "motor_chained2": "P316",
+          "physical_release_conveyor": "P314",
+          "next_conveyor": "P316",
+          "timer": "tmLATCH_MERGE_316_A",
+          "latch_aux": "LATCH_MERGE_316",
+          "rule": "ReleaseIO \u2192 Mtrchain.Motor_Name \u2192 Motor_Chained1=physical conveyor; Motor_Chained2=Next when P-tag"
+        },
+        {
           "kind": "lane_role_assignment",
-          "rule": "MergeInputs Index ascending: 0\u2192mainLane, 1\u2192inductLane",
+          "rule": "MergeInputs Index ascending: 0\u2192mainLane(logical), 1\u2192inductLane(logical)",
           "main_input": "LANE1_P136",
           "induct_input": "LANE2_P312",
           "mainLane": "P136_P1",
-          "inductLane": "P312"
+          "inductLane": "P312",
+          "main_physical_release": "P136_P1",
+          "induct_physical_release": "P314",
+          "main_next": null,
+          "induct_next": "P316",
+          "note": "logical_lane / physical_release_conveyor / next_conveyor are distinct \u2014 do not collapse"
         },
         {
           "kind": "jamcheck_conveyor",
@@ -542,6 +644,14 @@
           ]
         },
         {
+          "kind": "merge_curve_from_induct_next",
+          "table": "Mtrchain.asc",
+          "induct_release_io": "M314",
+          "physical_release": "P314",
+          "next_curve": "P316",
+          "next_type": "CURVE"
+        },
+        {
           "kind": "jam_zone_label",
           "zone": "MERGE 316",
           "note": "Zone label is not plant Area; Area remains engineer-configured"
@@ -566,6 +676,15 @@
         }
       ],
       "unresolved": [],
+      "resolvedFields": [
+        "mainLane",
+        "inductLane",
+        "mainPhysicalRelease",
+        "inductPhysicalRelease",
+        "inductNext",
+        "mergeSection3",
+        "downstream"
+      ],
       "confidence": "HIGH",
       "classification": "PROVEN"
     },
@@ -573,8 +692,12 @@
       "type": "Merge_2to1",
       "name": "MERGE_400_2-1",
       "bossNumber": "400",
+      "sourceClassification": "2-1",
       "mainLane": "P242",
       "inductLane": "P150_P2",
+      "mainPhysicalRelease": "P242",
+      "inductPhysicalRelease": "P150_P2",
+      "inductNext": null,
       "mergeSection1": "P242",
       "mergeSection2": "P150_P2",
       "mergeSection3": null,
@@ -591,17 +714,33 @@
         {
           "input_name": "LANE1_P242",
           "index": 0,
+          "logical_lane": "P242",
           "section": "P242",
           "presense": "EZPE242_P",
+          "presence": "EZPE242_P",
           "release_io": "SSVEZPE242_P",
+          "physical_release_conveyor": "P242",
+          "physical_release_type": "ZEROPRESSURE",
+          "next_conveyor": null,
+          "next_conveyor_type": null,
+          "timer": null,
+          "latch_aux": null,
           "merge_route": "LANE1_P242"
         },
         {
           "input_name": "LANE2_P150_2-1",
           "index": 1,
+          "logical_lane": "P150_P2",
           "section": "P150_P2",
           "presense": "EZPE150_P2",
+          "presence": "EZPE150_P2",
           "release_io": "SSVEZPE150_P2",
+          "physical_release_conveyor": "P150_P2",
+          "physical_release_type": null,
+          "next_conveyor": null,
+          "next_conveyor_type": null,
+          "timer": null,
+          "latch_aux": null,
           "merge_route": ""
         }
       ],
@@ -621,7 +760,8 @@
           "num_inputs": 2,
           "owner": "ORNCCP2",
           "operable_input": "M400_AUX",
-          "valid": "Y"
+          "valid": "Y",
+          "source_classification": "2-1"
         },
         {
           "kind": "mergeinputs_presense",
@@ -686,6 +826,13 @@
           "merge_inputs": "LANE1_P242"
         },
         {
+          "kind": "release_io_ssv_or_pe",
+          "table": "MergeInputs.asc",
+          "release_io": "SSVEZPE242_P",
+          "section_from_name": "P242",
+          "note": "ReleaseIO is SSV/PE \u2014 no Mtrchain Motor_Chained1/Next path"
+        },
+        {
           "kind": "mergeinputs_presense",
           "table": "MergeInputs.asc",
           "lane": "LANE2_P150_2-1",
@@ -742,12 +889,24 @@
           ]
         },
         {
+          "kind": "release_io_ssv_or_pe",
+          "table": "MergeInputs.asc",
+          "release_io": "SSVEZPE150_P2",
+          "section_from_name": "P150_P2",
+          "note": "ReleaseIO is SSV/PE \u2014 no Mtrchain Motor_Chained1/Next path"
+        },
+        {
           "kind": "lane_role_assignment",
-          "rule": "MergeInputs Index ascending: 0\u2192mainLane, 1\u2192inductLane",
+          "rule": "MergeInputs Index ascending: 0\u2192mainLane(logical), 1\u2192inductLane(logical)",
           "main_input": "LANE1_P242",
           "induct_input": "LANE2_P150_2-1",
           "mainLane": "P242",
-          "inductLane": "P150_P2"
+          "inductLane": "P150_P2",
+          "main_physical_release": "P242",
+          "induct_physical_release": "P150_P2",
+          "main_next": null,
+          "induct_next": null,
+          "note": "logical_lane / physical_release_conveyor / next_conveyor are distinct \u2014 do not collapse"
         },
         {
           "kind": "mtrchain_latch_discharge",
@@ -813,6 +972,13 @@
         }
       ],
       "unresolved": [],
+      "resolvedFields": [
+        "mainLane",
+        "inductLane",
+        "mainPhysicalRelease",
+        "inductPhysicalRelease",
+        "downstream"
+      ],
       "confidence": "HIGH",
       "classification": "PROVEN"
     },
@@ -820,8 +986,12 @@
       "type": "Merge_2to1",
       "name": "MERGE_324_SPUR",
       "bossNumber": "324",
+      "sourceClassification": "SPUR",
       "mainLane": "P150_P1",
       "inductLane": "P320",
+      "mainPhysicalRelease": "P150_P1",
+      "inductPhysicalRelease": "P322",
+      "inductNext": "P324",
       "mergeSection1": "P150_P1",
       "mergeSection2": "P320",
       "mergeSection3": "P324",
@@ -838,17 +1008,33 @@
         {
           "input_name": "LANE1_P150_SPUR",
           "index": 0,
+          "logical_lane": "P150_P1",
           "section": "P150_P1",
           "presense": "EZPE150_P1",
+          "presence": "EZPE150_P1",
           "release_io": "SSVEZPE150_P1",
+          "physical_release_conveyor": "P150_P1",
+          "physical_release_type": null,
+          "next_conveyor": null,
+          "next_conveyor_type": null,
+          "timer": null,
+          "latch_aux": null,
           "merge_route": "LANE1_P150_SPUR"
         },
         {
           "input_name": "LANE2_P320",
           "index": 1,
+          "logical_lane": "P320",
           "section": "P320",
           "presense": "PE322_P",
+          "presence": "PE322_P",
           "release_io": "M322",
+          "physical_release_conveyor": "P322",
+          "physical_release_type": "STRAIGHT",
+          "next_conveyor": "P324",
+          "next_conveyor_type": "CURVE",
+          "timer": "tmLATCH_MERGE_324_A",
+          "latch_aux": "LATCH_MERGE_324",
           "merge_route": ""
         }
       ],
@@ -861,7 +1047,8 @@
           "num_inputs": 2,
           "owner": "ORNCCP2",
           "operable_input": "ENABLE_MERGEBOSS_324",
-          "valid": "Y"
+          "valid": "Y",
+          "source_classification": "SPUR"
         },
         {
           "kind": "mergeinputs_presense",
@@ -928,6 +1115,13 @@
           "merge_inputs": "LANE1_P150_SPUR"
         },
         {
+          "kind": "release_io_ssv_or_pe",
+          "table": "MergeInputs.asc",
+          "release_io": "SSVEZPE150_P1",
+          "section_from_name": "P150_P1",
+          "note": "ReleaseIO is SSV/PE \u2014 no Mtrchain Motor_Chained1/Next path"
+        },
+        {
           "kind": "mergeinputs_presense",
           "table": "MergeInputs.asc",
           "lane": "LANE2_P320",
@@ -984,12 +1178,29 @@
           ]
         },
         {
+          "kind": "release_io_mtrchain",
+          "table": "Mtrchain.asc",
+          "release_io": "M322",
+          "motor_chained1": "P322",
+          "motor_chained2": "P324",
+          "physical_release_conveyor": "P322",
+          "next_conveyor": "P324",
+          "timer": "tmLATCH_MERGE_324_A",
+          "latch_aux": "LATCH_MERGE_324",
+          "rule": "ReleaseIO \u2192 Mtrchain.Motor_Name \u2192 Motor_Chained1=physical conveyor; Motor_Chained2=Next when P-tag"
+        },
+        {
           "kind": "lane_role_assignment",
-          "rule": "MergeInputs Index ascending: 0\u2192mainLane, 1\u2192inductLane",
+          "rule": "MergeInputs Index ascending: 0\u2192mainLane(logical), 1\u2192inductLane(logical)",
           "main_input": "LANE1_P150_SPUR",
           "induct_input": "LANE2_P320",
           "mainLane": "P150_P1",
-          "inductLane": "P320"
+          "inductLane": "P320",
+          "main_physical_release": "P150_P1",
+          "induct_physical_release": "P322",
+          "main_next": null,
+          "induct_next": "P324",
+          "note": "logical_lane / physical_release_conveyor / next_conveyor are distinct \u2014 do not collapse"
         },
         {
           "kind": "jamcheck_conveyor",
@@ -1030,6 +1241,14 @@
           ]
         },
         {
+          "kind": "merge_curve_from_induct_next",
+          "table": "Mtrchain.asc",
+          "induct_release_io": "M322",
+          "physical_release": "P322",
+          "next_curve": "P324",
+          "next_type": "CURVE"
+        },
+        {
           "kind": "jam_zone_label",
           "zone": "MERGE 324",
           "note": "Zone label is not plant Area; Area remains engineer-configured"
@@ -1054,6 +1273,15 @@
         }
       ],
       "unresolved": [],
+      "resolvedFields": [
+        "mainLane",
+        "inductLane",
+        "mainPhysicalRelease",
+        "inductPhysicalRelease",
+        "inductNext",
+        "mergeSection3",
+        "downstream"
+      ],
       "confidence": "HIGH",
       "classification": "PROVEN"
     }

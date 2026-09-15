@@ -7,69 +7,41 @@
   "identity_ok": true,
   "equation": "TOTAL = CONNECTED + EXTERNAL REFERENCE + MERGE-RESOLVED + UNRESOLVED",
   "equation_ok": true,
-  "equation_note": "After proven-merge wire overlay, P316/P324 move into CONNECTED (wired via PROVEN_MERGE). merge_resolved bucket is 0 because those tags are no longer topology-unresolved; they remain classified as PROVEN MERGE CONNECTION in island_classifications.",
+  "equation_note": "After ReleaseIO→Mtrchain three-level overlay, spur curves P316/P324 are CONNECTED via physical_release_to_next (P314→P316, P322→P324) plus merge_curve_to_discharge.",
   "external_tags": ["P226"],
   "merge_resolved_tags": [],
   "unresolved_tags": ["P1014", "P130", "P132", "P134", "P145", "P146", "P148", "P238"],
-  "proven_merge_wires": [
-    {"from": "P136", "to": "P136A", "merge": "MERGE_316_SPUR"},
-    {"from": "P312", "to": "P136A", "merge": "MERGE_316_SPUR"},
-    {"from": "P316", "to": "P136A", "merge": "MERGE_316_SPUR"},
-    {"from": "P242", "to": "P400", "merge": "MERGE_400_2-1"},
-    {"from": "P150A", "to": "P400", "merge": "MERGE_400_2-1"},
-    {"from": "P150", "to": "P150A", "merge": "MERGE_324_SPUR"},
-    {"from": "P320", "to": "P150A", "merge": "MERGE_324_SPUR"},
-    {"from": "P324", "to": "P150A", "merge": "MERGE_324_SPUR"}
-  ],
-  "three_island_focus": {
-    "identities": ["P316", "P324", "P238"],
-    "why": {
-      "P316": {
-        "tag": "P316",
-        "classification": "PROVEN MERGE CONNECTION",
-        "Conveyor.asc": "CURVE local section; no geometric HIGH_CONFIDENCE mate",
-        "Mtrchain": "MERGE_316_SPUR boss sections include P136/P136_P1/P312/P314/P316",
-        "MergeBoss": "MERGE_316_SPUR Valid=Y",
-        "MergeInputs": "LANE1_P136 / LANE2_P312",
-        "upstream_downstream": "semantic wire P316 -> P136A (logical P136_P2) via PROVEN_MERGE",
-        "final": "PROVEN MERGE CONNECTION — was a visualization island until proven-merge overlay"
-      },
-      "P324": {
-        "tag": "P324",
-        "classification": "PROVEN MERGE CONNECTION",
-        "Conveyor.asc": "CURVE local section; no geometric HIGH_CONFIDENCE mate",
-        "Mtrchain": "MERGE_324_SPUR boss sections",
-        "MergeBoss": "MERGE_324_SPUR Valid=Y",
-        "MergeInputs": "LANE1_P150 / LANE2_P320",
-        "upstream_downstream": "semantic wire P324 -> P150A (logical P150_P2) via PROVEN_MERGE",
-        "final": "PROVEN MERGE CONNECTION — was a visualization island until proven-merge overlay"
-      },
-      "P238": {
-        "tag": "P238",
-        "classification": "UNRESOLVED",
-        "Conveyor.asc": "CURVE local",
-        "Mtrchain": "no proven merge boss membership for P238",
-        "MergeBoss": "none",
-        "MergeInputs": "none",
-        "upstream_downstream": "only AMBIGUOUS geometric inbound from P236 (dist~589)",
-        "external_controller": "LOCAL (not EXTERNAL_REFERENCE)",
-        "final": "UNRESOLVED — do not invent a wire"
-      }
+  "before_after_three_islands": {
+    "before": {
+      "P316": "visualization island (UNRESOLVED topology — no wire)",
+      "P324": "visualization island (UNRESOLVED topology — no wire)",
+      "P238": "UNRESOLVED (ambiguous inbound only)"
+    },
+    "after": {
+      "P316": "CONNECTED — PROVEN MERGE (ReleaseIO M314 → phys P314 → Next P316 CURVE → P136A)",
+      "P324": "CONNECTED — PROVEN MERGE (ReleaseIO M322 → phys P322 → Next P324 CURVE → P150A)",
+      "P238": "UNRESOLVED — unchanged (no MergeBoss/Mtrchain proof)"
+    }
+  },
+  "proven_merge_semantics": {
+    "MERGE_316_SPUR": {
+      "sourceClassification": "SPUR",
+      "logical_induct": "P312",
+      "physical_release": "P314",
+      "next_curve": "P316",
+      "evidence": "MergeInputs.ReleaseIO=M314 → Mtrchain.Motor_Chained1=P314, Motor_Chained2=P316"
+    },
+    "MERGE_324_SPUR": {
+      "sourceClassification": "SPUR",
+      "logical_induct": "P320",
+      "physical_release": "P322",
+      "next_curve": "P324",
+      "evidence": "MergeInputs.ReleaseIO=M322 → Mtrchain.Motor_Chained1=P322, Motor_Chained2=P324"
     }
   },
   "P226": {
     "tag": "P226",
-    "type": "CURVE",
-    "scope": "EXTERNAL_REFERENCE",
-    "ext": true,
-    "ds": "",
-    "amb": [
-      {
-        "from": "P222",
-        "distance": 512.998,
-        "classification": "AMBIGUOUS"
-      }
-    ],
-    "classification": "PROVEN EXTERNAL REFERENCE"
+    "classification": "PROVEN EXTERNAL REFERENCE",
+    "type": "CURVE"
   }
 }

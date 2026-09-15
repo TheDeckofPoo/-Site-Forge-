@@ -84,15 +84,21 @@ def build_safety_zone_irs(
     estop_model: dict[str, Any] | None = None,
     engineer_zones: list[dict[str, Any]] | None = None,
     default_area: str = "",
+    area_conveyors: dict[str, list[str]] | None = None,
 ) -> list[SafetyZoneIR]:
     """Build SafetyZone IR from Transportation engineer assignment + proven estop.
 
     engineer_zones (from Transport Apply safetyBuild):
       {name, area, conveyors: [P###,...], members: [dev,...]}
+
+    area_conveyors: optional Area → [P-tag,…] from Autogen conveyors so a named
+    Safety Zone stub can show conveyor membership READY while devices remain
+    UNRESOLVED (never invents E-stop membership).
     """
     zones: list[SafetyZoneIR] = []
     seen: set[str] = set()
     em = estop_model or {}
+    area_conveyors = {str(k): list(v or []) for k, v in (area_conveyors or {}).items()}
     proven_by_zone: dict[str, list[str]] = {}
     for z in em.get("zones") or []:
         name = _safe(z.get("name") or "")
@@ -129,6 +135,11 @@ def build_safety_zone_irs(
             silence_source=f"{area}.Silence",
             device_membership_status=status,
         )
+        # Fill conveyors from Area map when engineer zone omitted them
+        if not ir.conveyors and ir.area and ir.area in area_conveyors:
+            ir.conveyors = list(area_conveyors[ir.area])
+            if not ir.members:
+                ir.device_membership_status = "UNRESOLVED"
         ir.ensure_aggregators()
         zones.append(ir)
         seen.add(name)
@@ -147,10 +158,44 @@ def build_safety_zone_irs(
             name=name,
             area=area,
             members=members,
-            conveyors=[],
+            conveyors=list(area_conveyors.get(area) or []),
             reset_source=f"{area}.Reset",
             silence_source=f"{area}.Silence",
             device_membership_status="RESOLVED",
+        )
+        ir.ensure_aggregators()
+        zones.append(ir)
+        seen.add(name)
+
+    # Named Safety Zones from workbook (Area ≠ Safety Zone). Create REVIEW stubs
+    # so Program ES omission is never silent when an Area/zone is known.
+    for raw in safety_zones or []:
+        name = _safe(raw)
+        if not name or name in seen:
+            continue
+        # Heuristic link: Test1_ESZone1 → area test1 / Test1; never invents devices
+        area = ""
+        for a in areas or []:
+            au = _safe(a).upper()
+            nu = name.upper()
+            if au and (nu.startswith(au) or au in nu):
+                area = _safe(a)
+                break
+        if not area:
+            area = _safe(default_area or (areas or ["Main_Area"])[0] if (areas or []) else "Main_Area")
+        convs = list(area_conveyors.get(area) or [])
+        # Also try Area without _Area suffix
+        if not convs and area.endswith("_Area"):
+            convs = list(area_conveyors.get(area[: -len("_Area")]) or [])
+        members = list(proven_by_zone.get(name.upper()) or [])
+        ir = SafetyZoneIR(
+            name=name,
+            area=area,
+            members=members,
+            conveyors=convs,
+            reset_source=f"{area}.Reset",
+            silence_source=f"{area}.Silence",
+            device_membership_status="RESOLVED" if members else ("UNRESOLVED" if convs else "NONE"),
         )
         ir.ensure_aggregators()
         zones.append(ir)
@@ -160,6 +205,13 @@ def build_safety_zone_irs(
 
 
 def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True) -> dict[str, Any]:
+    """Field-by-field READY / UNRESOLVED gate — never a vague 'members unresolved'.
+
+    Only two normal outcomes when Safety is detected:
+      READY            → emit complete Program ES
+      REVIEW_REQUIRED  → tell engineer exactly which fields are missing
+    Silent omit is forbidden unless the engineer sets omit_unresolved_safety.
+    """
     if not zones:
         return {
             "status": "NOT_DETECTED",
@@ -170,34 +222,60 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
     issues: list[str] = []
     zone_diag: list[dict[str, Any]] = []
     for z in zones:
+        members = list(z.members or [])
+        estops = [m for m in members if re.match(r"(?i)^(T_)?\d*ES\d", m) and "ESR" not in m.upper()]
+        esrs = [m for m in members if "ESR" in m.upper()]
+        mcrs = [m for m in members if "MCR" in m.upper()]
+        reset_src = (z.reset_source or "").strip()
+        silence_src = (z.silence_source or "").strip()
+        fields = {
+            "Area": "READY" if z.area else "UNRESOLVED",
+            "Conveyors": "READY" if z.conveyors else "NONE",
+            "E-Stops": "READY" if estops else ("UNRESOLVED" if z.conveyors else "NONE"),
+            "ESR": "READY" if esrs else ("UNRESOLVED" if z.conveyors else "NONE"),
+            "MCR": "READY" if mcrs else ("UNRESOLVED" if z.conveyors else "NONE"),
+            "SafetyDevices": "READY" if members else ("UNRESOLVED" if z.conveyors else "NONE"),
+            "Reset": "READY" if reset_src else "UNRESOLVED",
+            "Silence": "READY" if silence_src else "UNRESOLVED",
+            "AOI_ES_SIL1_Cat1": "READY" if library_has_aois else "UNRESOLVED",
+            "AOI_ES_PI20": "READY" if library_has_aois else "UNRESOLVED",
+        }
+        missing = [k for k, v in fields.items() if v == "UNRESOLVED"]
+        # Soft: ESR/MCR may be absent on small zones — only require SafetyDevices + Area + Reset/Silence + AOIs
+        hard_missing = [
+            k for k in missing
+            if k in {"Area", "SafetyDevices", "Reset", "Silence", "AOI_ES_SIL1_Cat1", "AOI_ES_PI20"}
+        ]
         zd: dict[str, Any] = {
             "name": z.name,
             "area": z.area,
             "conveyors": list(z.conveyors),
-            "conveyor_membership": "RESOLVED" if z.conveyors else "NONE",
-            "safety_device_membership": z.device_membership_status,
-            "members": list(z.members),
+            "conveyor_membership": fields["Conveyors"],
+            "safety_device_membership": fields["SafetyDevices"],
+            "members": members,
+            "estops": estops,
+            "esrs": esrs,
+            "mcrs": mcrs,
+            "reset_source": reset_src or None,
+            "silence_source": silence_src or None,
+            "fields": fields,
+            "missing": missing,
+            "hard_missing": hard_missing,
+            "zone_status": "READY" if not hard_missing and z.area and members else "UNRESOLVED",
         }
-        if not z.area:
-            issues.append(f"{z.name}: missing Area")
-            zd["gap"] = "missing Area"
-        elif z.conveyors and not z.members:
+        if hard_missing:
+            gap = ", ".join(hard_missing)
             issues.append(
-                f"{z.name}: conveyor membership RESOLVED ({len(z.conveyors)}) but "
-                "safety-device membership UNRESOLVED — no proven E-stop/ESR/MCR "
-                "links in RUN for this zone"
+                f"{z.name}: SAFETY REVIEW REQUIRED — missing {gap} "
+                f"(Area={z.area or '—'}; Conveyors={len(z.conveyors)}; "
+                f"E-Stops={estops or '—'}; Reset={reset_src or '—'}; Silence={silence_src or '—'})"
             )
-            zd["gap"] = "safety-device membership UNRESOLVED"
-        elif not z.members:
-            issues.append(f"{z.name}: no safety-device members")
-            zd["gap"] = "no members"
+            zd["gap"] = gap
         zone_diag.append(zd)
     if not library_has_aois:
         issues.append("ES_SIL1_Cat1 / ES_PI20 AOIs missing from library")
-    ready_zones = [z for z in zones if z.members and z.area]
-    blocked = any(z.conveyors and not z.members for z in zones) or any(
-        "AOIs missing" in i or "missing Area" in i for i in issues
-    )
+    ready_zones = [z for z in zones if z.members and z.area and (z.reset_source or "").strip() and (z.silence_source or "").strip()]
+    blocked = any(zd.get("zone_status") == "UNRESOLVED" for zd in zone_diag) or not library_has_aois
     if ready_zones and not blocked and not issues:
         return {
             "status": "READY",
@@ -210,23 +288,24 @@ def safety_readiness(zones: list[SafetyZoneIR], *, library_has_aois: bool = True
             "zones": zone_diag,
         }
     if zones and issues:
-        # Prefer actionable per-zone lines for UI / activity log
         actionable = []
         for zd in zone_diag:
-            if zd.get("safety_device_membership") == "RESOLVED" and zd.get("area"):
+            if zd.get("zone_status") == "READY":
                 continue
-            gap = zd.get("gap") or "needs review"
             actionable.append(
                 f"Safety Zone: {zd.get('name') or '—'} | Area: {zd.get('area') or '—'} | "
                 f"Conveyors: {len(zd.get('conveyors') or [])} | "
-                f"Safety members: {zd.get('safety_device_membership') or 'UNRESOLVED'} | "
-                f"Missing: {gap}"
+                f"E-Stops: {', '.join(zd.get('estops') or []) or 'UNRESOLVED'} | "
+                f"Reset: {zd.get('reset_source') or 'UNRESOLVED'} | "
+                f"Silence: {zd.get('silence_source') or 'UNRESOLVED'} | "
+                f"Missing: {zd.get('gap') or 'needs review'}"
             )
         return {
             "status": "REVIEW_REQUIRED",
-            "detail": " | ".join(actionable[:4]) if actionable else "; ".join(issues[:6]),
+            "detail": " | ".join(actionable[:6]) if actionable else "; ".join(issues[:6]),
             "unresolved": len(issues),
             "zones": zone_diag,
+            "silent_omit_forbidden": True,
         }
     return {
         "status": "NOT_DETECTED",

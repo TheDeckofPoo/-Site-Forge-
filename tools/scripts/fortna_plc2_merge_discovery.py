@@ -157,6 +157,166 @@ def _boss_number(boss_name: str) -> str | None:
     return m.group(1) if m else None
 
 
+def classify_merge_source(boss_name: str) -> str:
+    """Classify MergeBoss by RUN name tokens only — no invented semantics.
+
+    Returns one of: SPUR | 2-1 | 3-1 | UNKNOWN
+    """
+    n = (_clean(boss_name) or "").upper()
+    if not n:
+        return "UNKNOWN"
+    if "SPUR" in n:
+        return "SPUR"
+    if re.search(r"3\s*[-_/]?\s*1", n) or "3-1" in n or "3_1" in n:
+        return "3-1"
+    if re.search(r"2\s*[-_/]?\s*1", n) or "2-1" in n or "2_1" in n:
+        return "2-1"
+    return "UNKNOWN"
+
+
+def _index_mtrchain_by_motor(fortna: Path, machine: str) -> dict[str, dict[str, str]]:
+    """Motor_Name → Mtrchain row (first hit). Shared across MergeInput ReleaseIO lookups."""
+    out: dict[str, dict[str, str]] = {}
+    for ent in _load_table(fortna, "Mtrchain", machine):
+        row = _row_dict(ent)
+        motor = _clean(row.get("Motor_Name")).upper()
+        if motor and motor not in out:
+            out[motor] = row
+    return out
+
+
+def _index_conveyor_types(fortna: Path, machine: str) -> dict[str, str]:
+    """IO_Name → Type from Conveyor.asc (machine-merged)."""
+    out: dict[str, str] = {}
+    for ent in _load_table(fortna, "Conveyor", machine):
+        row = _row_dict(ent)
+        name = _clean(row.get("IO_Name")).upper()
+        typ = _clean(row.get("Type")).upper()
+        if name and typ:
+            out[name] = typ
+    return out
+
+
+def _resolve_release_io_mtrchain(
+    release_io: str,
+    *,
+    mtr_by_motor: dict[str, dict[str, str]],
+    conveyor_types: dict[str, str],
+) -> dict[str, Any]:
+    """ReleaseIO → Mtrchain → physical conveyor + Next.
+
+    Fortna relationship (do NOT collapse):
+      ReleaseIO (e.g. M314)
+        → Motor_Chained1 = physical release conveyor (P314)
+        → Motor_Chained2 = Next (P316 when a P-tag)
+        → Timer / Aux (latch)
+    """
+    release = _clean(release_io).upper()
+    result: dict[str, Any] = {
+        "release_io": release or None,
+        "physical_release_conveyor": None,
+        "next_conveyor": None,
+        "next_conveyor_type": None,
+        "physical_release_type": None,
+        "timer": None,
+        "latch_aux": None,
+        "mtrchain_row_found": False,
+        "evidence": [],
+        "unresolved": [],
+    }
+    if not release:
+        result["unresolved"].append("release_io:missing")
+        return result
+
+    # SSV / PE release (e.g. SSVEZPE136_P1) — not a motor chain release
+    if release.startswith("SSV") or "PE" in release and not re.match(r"^M\d+", release):
+        pe_sec = _section_from_pe_or_ssv(release)
+        result["evidence"].append(
+            {
+                "kind": "release_io_ssv_or_pe",
+                "table": "MergeInputs.asc",
+                "release_io": release,
+                "section_from_name": pe_sec.upper() if pe_sec else None,
+                "note": "ReleaseIO is SSV/PE — no Mtrchain Motor_Chained1/Next path",
+            }
+        )
+        if pe_sec:
+            result["physical_release_conveyor"] = pe_sec.upper()
+            result["physical_release_type"] = conveyor_types.get(pe_sec.upper())
+        else:
+            result["unresolved"].append(f"release_io:{release}:ssv_unresolved")
+        return result
+
+    row = mtr_by_motor.get(release)
+    if not row:
+        # Try motor→section then M{n} from section
+        sec = _motor_to_section(release)
+        if sec:
+            row = mtr_by_motor.get(f"M{sec[1:]}") or mtr_by_motor.get(release)
+        if not row:
+            result["unresolved"].append(f"release_io:{release}:mtrchain_missing")
+            result["evidence"].append(
+                {
+                    "kind": "release_io_mtrchain_miss",
+                    "table": "Mtrchain.asc",
+                    "release_io": release,
+                }
+            )
+            return result
+
+    result["mtrchain_row_found"] = True
+    chained1 = _clean(row.get("Motor_Chained1")).upper()
+    chained2 = _clean(row.get("Motor_Chained2")).upper()
+    timer = _clean(row.get("Timer_Name"))
+    aux = _clean(row.get("Motor_Aux"))
+    result["timer"] = timer or None
+    result["latch_aux"] = aux or None
+
+    # Motor_Chained1 is the physical conveyor under this motor
+    phys = None
+    if chained1 and re.match(r"^P\d{2,4}(?:_P\d+)?$", chained1, re.I):
+        phys = chained1
+    elif chained1:
+        pe = _section_from_pe_or_ssv(chained1)
+        if pe:
+            phys = pe.upper()
+    if not phys:
+        # Fallback: motor name M314 → P314
+        phys = (_motor_to_section(release) or "").upper() or None
+
+    nxt = None
+    if chained2 and re.match(r"^P\d{2,4}(?:_P\d+)?$", chained2, re.I):
+        nxt = chained2
+
+    result["physical_release_conveyor"] = phys
+    result["next_conveyor"] = nxt
+    if phys:
+        result["physical_release_type"] = conveyor_types.get(phys)
+    if nxt:
+        result["next_conveyor_type"] = conveyor_types.get(nxt)
+
+    result["evidence"].append(
+        {
+            "kind": "release_io_mtrchain",
+            "table": "Mtrchain.asc",
+            "release_io": release,
+            "motor_chained1": chained1 or None,
+            "motor_chained2": chained2 or None,
+            "physical_release_conveyor": phys,
+            "next_conveyor": nxt,
+            "timer": timer or None,
+            "latch_aux": aux or None,
+            "rule": (
+                "ReleaseIO → Mtrchain.Motor_Name → Motor_Chained1=physical conveyor; "
+                "Motor_Chained2=Next when P-tag"
+            ),
+        }
+    )
+    if not phys:
+        result["unresolved"].append(f"release_io:{release}:physical_conveyor_unresolved")
+    return result
+
+
 def _load_table(fortna: Path, stem: str, machine: str) -> list[dict[str, Any]]:
     merged = merge_table_rows(fortna, f"{stem}.asc", machine)
     return list(merged.get("rows") or [])
@@ -710,6 +870,8 @@ def discover_plc2_merges(
     boss_entries = _load_table(fortna, "MergeBoss", machine)
     input_entries = _load_table(fortna, "MergeInputs", machine)
     route_entries = _load_table(fortna, "MergeRoute", machine)
+    mtr_by_motor = _index_mtrchain_by_motor(fortna, machine)
+    conveyor_types = _index_conveyor_types(fortna, machine)
 
     inputs_by_boss: dict[str, list[dict[str, str]]] = defaultdict(list)
     for ent in input_entries:
@@ -746,8 +908,9 @@ def discover_plc2_merges(
             num_inputs = int(float(_clean(row.get("NumInputs") or "0") or "0"))
         except ValueError:
             num_inputs = 0
-        if num_inputs != 2:
-            # Only 2:1 in this pass; record skip reason in evidence bag later if needed
+        source_class = classify_merge_source(boss_name)
+        # Enumerate every Valid MergeBoss — do not drop 3-input bosses silently.
+        if num_inputs < 2:
             continue
 
         seen_bosses.add(boss_name)
@@ -773,15 +936,17 @@ def discover_plc2_merges(
                 "owner": owner or machine,
                 "operable_input": _clean(row.get("OperableInput")),
                 "valid": _clean(row.get("Valid")),
+                "source_classification": source_class,
             }
         ]
         unresolved: list[str] = []
 
-        if len(lanes_raw) != 2:
-            unresolved.append(f"expected_2_mergeinputs_got_{len(lanes_raw)}")
+        if len(lanes_raw) < 2:
+            unresolved.append(f"expected_ge2_mergeinputs_got_{len(lanes_raw)}")
 
         resolved_lanes: list[dict[str, Any]] = []
         for lane_row in lanes_raw:
+            # Legacy vote still used as logical-lane corroboration for _P1/_P2 mains
             sec, lane_ev, lane_un = _resolve_lane_section(
                 lane_row,
                 known_sections=known_ids,
@@ -789,7 +954,9 @@ def discover_plc2_merges(
                 boss_name=boss_name,
             )
             evidence.extend(lane_ev)
-            unresolved.extend(lane_un)
+            # Do not treat single-source as fatal when Mtrchain ReleaseIO resolves
+            soft_un = [u for u in lane_un if "single_source_only" not in u]
+            unresolved.extend(soft_un)
             idx = _clean(lane_row.get("Index"))
             try:
                 idx_n = int(float(idx)) if idx else 0
@@ -805,29 +972,64 @@ def discover_plc2_merges(
                         "merge_inputs": _clean(routes_by_name[route_name].get("MergeInputs")),
                     }
                 )
+            input_name = _active_name(lane_row, "Name")
+            logical = (_p_token(input_name) or "").upper() or None
+            presence = _clean(lane_row.get("Presense") or lane_row.get("Presence"))
+            release_io = _clean(lane_row.get("ReleaseIO"))
+            rel = _resolve_release_io_mtrchain(
+                release_io,
+                mtr_by_motor=mtr_by_motor,
+                conveyor_types=conveyor_types,
+            )
+            evidence.extend(rel.get("evidence") or [])
+            unresolved.extend(rel.get("unresolved") or [])
+
+            # Three-level model: logical lane ≠ physical release ≠ next/curve
+            # Prefer lane-name token as logical; keep vote section for main _P1/_P2.
+            if sec and _SECTION_SUFFIX_RE.match(sec):
+                logical_out = sec
+            else:
+                logical_out = logical or sec
+
             resolved_lanes.append(
                 {
-                    "input_name": _active_name(lane_row, "Name"),
+                    "input_name": input_name,
                     "index": idx_n,
-                    "section": sec,
-                    "presense": _clean(lane_row.get("Presense") or lane_row.get("Presence")),
-                    "release_io": _clean(lane_row.get("ReleaseIO")),
+                    "logical_lane": logical_out,
+                    "section": logical_out,  # backward-compat alias = logical
+                    "presense": presence,
+                    "presence": presence,
+                    "release_io": release_io or None,
+                    "physical_release_conveyor": rel.get("physical_release_conveyor"),
+                    "physical_release_type": rel.get("physical_release_type"),
+                    "next_conveyor": rel.get("next_conveyor"),
+                    "next_conveyor_type": rel.get("next_conveyor_type"),
+                    "timer": rel.get("timer"),
+                    "latch_aux": rel.get("latch_aux"),
                     "merge_route": route_name,
                 }
             )
 
-        main_lane = resolved_lanes[0]["section"] if resolved_lanes else None
-        induct_lane = resolved_lanes[1]["section"] if len(resolved_lanes) > 1 else None
+        main_lane = resolved_lanes[0]["logical_lane"] if resolved_lanes else None
+        induct_lane = resolved_lanes[1]["logical_lane"] if len(resolved_lanes) > 1 else None
         # Role labels from Index / LANE naming (RUN-explicit)
         if len(resolved_lanes) >= 2:
             evidence.append(
                 {
                     "kind": "lane_role_assignment",
-                    "rule": "MergeInputs Index ascending: 0→mainLane, 1→inductLane",
+                    "rule": "MergeInputs Index ascending: 0→mainLane(logical), 1→inductLane(logical)",
                     "main_input": resolved_lanes[0]["input_name"],
                     "induct_input": resolved_lanes[1]["input_name"],
                     "mainLane": main_lane,
                     "inductLane": induct_lane,
+                    "main_physical_release": resolved_lanes[0].get("physical_release_conveyor"),
+                    "induct_physical_release": resolved_lanes[1].get("physical_release_conveyor"),
+                    "main_next": resolved_lanes[0].get("next_conveyor"),
+                    "induct_next": resolved_lanes[1].get("next_conveyor"),
+                    "note": (
+                        "logical_lane / physical_release_conveyor / next_conveyor "
+                        "are distinct — do not collapse"
+                    ),
                 }
             )
 
@@ -872,7 +1074,29 @@ def discover_plc2_merges(
         merge_section1 = main_lane
         merge_section2 = induct_lane
         merge_section3 = None
-        if jam_conv and jam_conv not in {main_lane, induct_lane, downstream}:
+        # Spur/body curve: prefer induct lane's Mtrchain Next when it is a CURVE
+        induct_next = (
+            resolved_lanes[1].get("next_conveyor") if len(resolved_lanes) > 1 else None
+        )
+        induct_phys = (
+            resolved_lanes[1].get("physical_release_conveyor")
+            if len(resolved_lanes) > 1
+            else None
+        )
+        main_phys = resolved_lanes[0].get("physical_release_conveyor") if resolved_lanes else None
+        if induct_next and induct_next not in {main_lane, induct_lane, downstream}:
+            merge_section3 = induct_next
+            evidence.append(
+                {
+                    "kind": "merge_curve_from_induct_next",
+                    "table": "Mtrchain.asc",
+                    "induct_release_io": resolved_lanes[1].get("release_io") if len(resolved_lanes) > 1 else None,
+                    "physical_release": induct_phys,
+                    "next_curve": induct_next,
+                    "next_type": resolved_lanes[1].get("next_conveyor_type") if len(resolved_lanes) > 1 else None,
+                }
+            )
+        elif jam_conv and jam_conv not in {main_lane, induct_lane, downstream}:
             merge_section3 = jam_conv
         elif boss_num and f"P{boss_num}" in known_ids:
             body = f"P{boss_num}"
@@ -896,8 +1120,13 @@ def discover_plc2_merges(
                 }
             )
 
-        # Confidence / classification
+        # Confidence / classification (PROVEN/CANDIDATE/UNRESOLVED)
+        # Source type (SPUR/2-1/3-1) is separate — never collapse into Merge_2to1-only.
         lane_ok = bool(main_lane and induct_lane and main_lane != induct_lane)
+        mtr_ok = any(
+            (ln.get("physical_release_conveyor") or ln.get("mtrchain_row_found"))
+            for ln in resolved_lanes
+        ) or any(e.get("kind") == "release_io_mtrchain" for e in evidence)
         evidence_kinds = {e.get("kind") for e in evidence if e.get("kind")}
         cross_table = len(
             {
@@ -911,23 +1140,22 @@ def discover_plc2_merges(
                     "mergeinputs_timer",
                     "mtrchain_merge_ssv",
                     "mtrchain_latch_discharge",
+                    "release_io_mtrchain",
                     "jamcheck_conveyor",
                     "topology_convergence",
                     "spur_downstream_p2",
                     "mergeroute",
+                    "merge_curve_from_induct_next",
                 }
             }
         )
-        lane_sources_ok = not any(
-            u.endswith("single_source_only") or "ambiguous_sections" in u for u in unresolved
-        )
+        lane_sources_ok = not any("ambiguous_sections" in u for u in unresolved)
         critical_unresolved = [
             u
             for u in unresolved
-            if u.startswith("expected_2")
+            if u.startswith("expected_")
             or "ambiguous_sections" in u
-            or u.startswith("lane:")
-            and "no_section" in u
+            or (u.startswith("lane:") and "no_section" in u)
         ]
 
         if (
@@ -935,16 +1163,19 @@ def discover_plc2_merges(
             and lane_sources_ok
             and not critical_unresolved
             and cross_table >= 3
-            and downstream
+            and (downstream or (source_class == "SPUR" and merge_section3))
         ):
             classification = CLASS_PROVEN
             confidence = "HIGH"
+            if not downstream and source_class == "SPUR" and merge_section3:
+                # Spur proven on ReleaseIO→Next curve even when main _P2 discharge soft
+                unresolved = [u for u in unresolved if not u.startswith("downstream:")]
         elif lane_ok and cross_table >= 2 and not critical_unresolved:
             classification = CLASS_CANDIDATE
             confidence = "MEDIUM"
             if not downstream:
                 unresolved.append("downstream:missing_for_proven")
-        elif num_inputs == 2 and boss_name:
+        elif num_inputs >= 2 and boss_name:
             classification = CLASS_CANDIDATE if lane_ok else CLASS_UNRESOLVED
             confidence = "LOW"
         else:
@@ -970,13 +1201,24 @@ def discover_plc2_merges(
                     }
                 )
 
+        # AOI type hint — SPUR/3-1 are NOT blindly identical to Merge_2to1 behavior
+        aoi_hint = "Merge_2to1"
+        if source_class == "SPUR":
+            aoi_hint = "Merge_2to1"  # structural AOI may still be 2:1; semantics differ
+        elif source_class == "3-1":
+            aoi_hint = "Merge_2to1"  # NumInputs may still be 2 in this RUN; keep explicit
+
         merges.append(
             {
-                "type": "Merge_2to1",
+                "type": aoi_hint,
                 "name": boss_name,
                 "bossNumber": boss_num,
+                "sourceClassification": source_class,
                 "mainLane": main_lane,
                 "inductLane": induct_lane,
+                "mainPhysicalRelease": main_phys,
+                "inductPhysicalRelease": induct_phys,
+                "inductNext": induct_next,
                 "mergeSection1": merge_section1,
                 "mergeSection2": merge_section2,
                 "mergeSection3": merge_section3,
@@ -989,6 +1231,19 @@ def discover_plc2_merges(
                 "topology": topo_hit,
                 "evidence": evidence,
                 "unresolved": sorted(set(unresolved)),
+                "resolvedFields": [
+                    k
+                    for k, v in {
+                        "mainLane": main_lane,
+                        "inductLane": induct_lane,
+                        "mainPhysicalRelease": main_phys,
+                        "inductPhysicalRelease": induct_phys,
+                        "inductNext": induct_next,
+                        "mergeSection3": merge_section3,
+                        "downstream": downstream,
+                    }.items()
+                    if v
+                ],
                 "confidence": confidence,
                 "classification": classification,
             }
@@ -1125,8 +1380,12 @@ def render_markdown(report: dict[str, Any]) -> str:
         lines.append(f"### `{m.get('name')}` — **{m.get('classification')}** ({m.get('confidence')})")
         lines.append("")
         lines.append(f"- type: `{m.get('type')}`")
-        lines.append(f"- mainLane: `{m.get('mainLane')}`")
-        lines.append(f"- inductLane: `{m.get('inductLane')}`")
+        lines.append(f"- sourceClassification: `{m.get('sourceClassification')}`")
+        lines.append(f"- mainLane (logical): `{m.get('mainLane')}`")
+        lines.append(f"- inductLane (logical): `{m.get('inductLane')}`")
+        lines.append(f"- mainPhysicalRelease: `{m.get('mainPhysicalRelease')}`")
+        lines.append(f"- inductPhysicalRelease: `{m.get('inductPhysicalRelease')}`")
+        lines.append(f"- inductNext: `{m.get('inductNext')}`")
         lines.append(f"- mergeSection1/2/3: `{m.get('mergeSection1')}` / `{m.get('mergeSection2')}` / `{m.get('mergeSection3')}`")
         lines.append(f"- downstream: `{m.get('downstream')}`")
         pes = m.get("PEs") or {}
@@ -1134,6 +1393,14 @@ def render_markdown(report: dict[str, Any]) -> str:
             f"- PEs: main=`{pes.get('main')}` induct=`{pes.get('induct')}` jam=`{pes.get('jam')}`"
         )
         lines.append(f"- area: `{m.get('area')}` zone=`{m.get('jamZone')}`")
+        for ln in m.get("lanes") or []:
+            lines.append(
+                f"- lane[{ln.get('index')}] `{ln.get('input_name')}`: "
+                f"logical=`{ln.get('logical_lane')}` presence=`{ln.get('presence') or ln.get('presense')}` "
+                f"ReleaseIO=`{ln.get('release_io')}` phys=`{ln.get('physical_release_conveyor')}` "
+                f"Next=`{ln.get('next_conveyor')}` ({ln.get('next_conveyor_type') or '—'}) "
+                f"timer=`{ln.get('timer')}` latch=`{ln.get('latch_aux')}`"
+            )
         un = m.get("unresolved") or []
         if un:
             lines.append(f"- unresolved: {', '.join(un)}")

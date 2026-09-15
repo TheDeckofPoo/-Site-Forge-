@@ -2071,13 +2071,53 @@
     const arc = pathCanvas.find((c) => String(c.cmd || '').toLowerCase() === 'arc');
     if (!arc) return false;
     const r = Number(arc.radius);
-    // Site-scale projection can shrink a 266" radius curve to ~3–16 px — too small
-    // to read as a quarter-turn next to long belts. Treat tiny arcs as degenerate
-    // so synthesizeCurveDisplayPath rebuilds a readable display quarter-turn.
-    if (!(r > 18)) return false;
     const sweep = Math.abs(Number(arc.sweep_deg));
+    // Tiny site-scale radii are OK when RUN sweep is present — inflate for display
+    // instead of re-synthesizing (re-synthesis was flipping orientation).
+    if (Number.isFinite(sweep) && sweep >= 25 && r > 2) return true;
+    if (!(r > 18)) return false;
     if (Number.isFinite(sweep) && sweep > 0 && sweep < 25) return false;
     return true;
+  }
+
+  /** Inflate a RUN-derived arc radius for readability without changing sweep direction. */
+  function inflateCurvePathForDisplay(pathCanvas, n) {
+    if (!pathCanvas || !pathCanvas.length) return pathCanvas;
+    const arcIdx = pathCanvas.findIndex((c) => String(c.cmd || '').toLowerCase() === 'arc');
+    if (arcIdx < 0) return pathCanvas;
+    const arc = pathCanvas[arcIdx];
+    const r = Number(arc.radius);
+    const minR = 28;
+    if (!(r > 0) || r >= minR) return pathCanvas;
+    const grow = minR / r;
+    const move = pathCanvas.find((c) => String(c.cmd || '').toLowerCase() === 'move');
+    const cx = arc.center && arc.center.x != null ? Number(arc.center.x) : null;
+    const cy = arc.center && arc.center.y != null ? Number(arc.center.y) : null;
+    const out = pathCanvas.map((c) => ({ ...c }));
+    const a = out[arcIdx];
+    a.radius = minR;
+    // Scale endpoints/center about chord midpoint so sweep_flag is unchanged
+    const x0 = move ? Number(move.x) : Number(a.x);
+    const y0 = move ? Number(move.y) : Number(a.y);
+    const x1 = Number(a.x);
+    const y1 = Number(a.y);
+    const mx = (x0 + x1) / 2;
+    const my = (y0 + y1) / 2;
+    if (move) {
+      const m = out.find((c) => String(c.cmd || '').toLowerCase() === 'move');
+      if (m) {
+        m.x = mx + (x0 - mx) * grow;
+        m.y = my + (y0 - my) * grow;
+      }
+    }
+    a.x = mx + (x1 - mx) * grow;
+    a.y = my + (y1 - my) * grow;
+    if (cx != null && cy != null) {
+      a.center = { x: mx + (cx - mx) * grow, y: my + (cy - my) * grow };
+    }
+    // Preserve RUN sweep_deg / sweep_flag exactly — orientation comes from RUN b/Angle
+    void n;
+    return out;
   }
 
   /**
@@ -2123,15 +2163,19 @@
     }
 
     let signedSweep = null;
-    if (n.sweepDeg != null || n.sweep_deg != null) {
-      signedSweep = Number(n.sweepDeg ?? n.sweep_deg);
-    } else if (existingArc && existingArc.sweep_deg != null) {
+    // Prefer RUN-derived signed sweep already projected into pathCanvas (Y-flip applied).
+    if (existingArc && existingArc.sweep_deg != null && Number.isFinite(Number(existingArc.sweep_deg))) {
       signedSweep = Number(existingArc.sweep_deg);
-    } else if (n.sourceAngle != null && n.angleOut != null && n.angleOut !== '') {
-      let d = Number(n.angleOut) - Number(n.sourceAngle);
+    } else if (n.sweepDeg != null || n.sweep_deg != null) {
+      signedSweep = Number(n.sweepDeg ?? n.sweep_deg);
+    } else if (n.sourceAngle != null && (n.angleOut != null && n.angleOut !== '' || n.runB != null || n.b != null)) {
+      const exitBearing = n.angleOut != null && n.angleOut !== ''
+        ? Number(n.angleOut)
+        : Number(n.runB ?? n.b);
+      let d = exitBearing - Number(n.sourceAngle);
       while (d > 180) d -= 360;
       while (d < -180) d += 360;
-      // Canvas Y-flip reverses sweep relative to RUN
+      // Canvas Y-flip reverses sweep relative to RUN world
       signedSweep = -d;
     } else if (n.kind === 'conv_left') {
       signedSweep = 90;
@@ -2195,7 +2239,9 @@
 
   /** Resolve display path for a node — prefers valid pathCanvas arc; synthesizes curves. */
   function displayPathCanvasForNode(n) {
-    if (pathHasValidArc(n?.pathCanvas)) return n.pathCanvas;
+    if (pathHasValidArc(n?.pathCanvas)) {
+      return inflateCurvePathForDisplay(n.pathCanvas, n);
+    }
     if (isCurveNode(n)) {
       const synth = synthesizeCurveDisplayPath(n);
       if (synth) return synth;
@@ -2645,7 +2691,9 @@
       const tip = cp ? `${tag} · ${cp}` : tag;
       // CURVE + straight share .tb-schematic-body stroke language (belt-width elbow, not crescent fill)
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
-      html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
+      // Generous invisible hit stroke — entire belt body is easy to select/right-click
+      const hitSw = Math.max(sw * 3.5, sw + 28, 36);
+      html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${hitSw}" />`;
       // Canvas labels: P-tag only by default. Area/ES stay in the inspector — never
       // paint missing-config words or zone names across the drawing. Small warn dot if needed.
       const needsCfg = !!(n.areaRequired || n.esZoneRequired);

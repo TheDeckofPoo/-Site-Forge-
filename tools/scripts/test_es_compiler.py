@@ -49,15 +49,22 @@ def extract_tag_block(library_text: str, tag_name: str) -> str | None:
 
 
 class TestEsCompiler(unittest.TestCase):
-    def test_no_area_name_inference(self) -> None:
+    def test_named_zone_stub_without_inventing_devices(self) -> None:
+        """Named Safety Zone stubs are OK for readiness reporting — devices stay empty."""
         zones = build_safety_zone_irs(
             safety_zones=["Shipping_Area_ESZone1"],
             areas=["Shipping_Area"],
             engineer_zones=[],
             estop_model={"zones": []},
+            area_conveyors={"Shipping_Area": ["P100", "P101"]},
         )
-        self.assertEqual(zones, [])
-        print("  [PASS] does not invent zones from Area names alone")
+        self.assertEqual(len(zones), 1)
+        self.assertEqual(zones[0].name, "Shipping_Area_ESZone1")
+        self.assertEqual(zones[0].area, "Shipping_Area")
+        self.assertEqual(zones[0].conveyors, ["P100", "P101"])
+        self.assertEqual(zones[0].members, [])  # never invent devices
+        self.assertEqual(zones[0].device_membership_status, "UNRESOLVED")
+        print("  [PASS] named zone stub reports conveyors; does not invent devices")
 
     def test_transport_zone_without_devices_is_review_required(self) -> None:
         eng = [
@@ -77,7 +84,13 @@ class TestEsCompiler(unittest.TestCase):
         self.assertIn("UNRESOLVED", ready["detail"])
         self.assertIn("Safety Zone:", ready["detail"])
         self.assertTrue(ready.get("zones"))
-        self.assertEqual(ready["zones"][0].get("gap"), "safety-device membership UNRESOLVED")
+        gap = str(ready["zones"][0].get("gap") or "")
+        self.assertTrue(
+            "SafetyDevices" in gap or "safety-device" in gap.lower() or "UNRESOLVED" in gap,
+            gap,
+        )
+        fields = ready["zones"][0].get("fields") or {}
+        self.assertEqual(fields.get("SafetyDevices"), "UNRESOLVED")
         pack = emit_es_program(
             irs,
             _rung_xml=_rung_xml,

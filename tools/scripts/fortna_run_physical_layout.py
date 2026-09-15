@@ -239,6 +239,9 @@ def build_transport_graph(
             "infeedTangent": e.get("infeed_tangent"),
             "dischargeTangent": e.get("discharge_tangent"),
             "insideRadius": e.get("inside_radius"),
+            "runB": e.get("b") if e.get("b") is not None else (geom or {}).get("b"),
+            "b": e.get("b") if e.get("b") is not None else (geom or {}).get("b"),
+            "sweepDeg": (geom or {}).get("sweep_deg") or (geom or {}).get("b_signed_sweep"),
             "entryAnchor": e.get("entry_anchor"),
             "exitAnchor": e.get("exit_anchor"),
             "entryCanvas": _proj_pt(e.get("entry_anchor")),
@@ -454,72 +457,117 @@ def build_transport_graph(
                 )
                 for w in wires
             }
+            def _add_proven_wire(frm_tag: str, to_tag: str, *, merge_name: str, role: str) -> None:
+                nonlocal auto_connected
+                frm = _resolve_graph_tag(frm_tag)
+                to = _resolve_graph_tag(to_tag)
+                if not frm or not to or frm == to:
+                    return
+                pair = (frm, to)
+                if pair in existing_pairs:
+                    return
+                src = next(n for n in nodes if n["id"] == id_by_tag[frm])
+                dst = next(n for n in nodes if n["id"] == id_by_tag[to])
+                if not (src.get("downstream") or "").strip():
+                    src["downstream"] = dst["conveyorTag"]
+                    src["terminal"] = False
+                src.setdefault(
+                    "topologyProvenance",
+                    {
+                        "rule": "blind_merge_proven",
+                        "confidence": "PROVEN_MERGE",
+                        "source_table": "MergeBoss/MergeInputs/Mtrchain",
+                        "merge": merge_name,
+                        "role": role,
+                        "logical_from": frm_tag,
+                        "logical_to": to_tag,
+                    },
+                )
+                port_i = inbound_count.get(to, 0)
+                wires.append(
+                    {
+                        "id": _uid("wire"),
+                        "from": id_by_tag[frm],
+                        "to": id_by_tag[to],
+                        "toPort": f"in{port_i}",
+                        "physical": False,
+                        "fromAnchor": "exit",
+                        "toAnchor": "entry",
+                        "confidence": "PROVEN_MERGE",
+                        "provenance": "blind_merge_discovery",
+                        "mergeName": merge_name,
+                        "mergeRole": role,
+                    }
+                )
+                existing_pairs.add(pair)
+                auto_connected += 1
+                inbound_count[to] = inbound_count.get(to, 0) + 1
+
             for m in report.get("merges") or []:
                 cls = str(m.get("classification") or "PROVEN").upper()
                 if cls and cls not in ("PROVEN",):
                     continue
+                merge_name = str(m.get("name") or "")
+                source_class = str(m.get("sourceClassification") or "")
                 discharge_raw = str(m.get("downstream") or m.get("discharge") or "").strip().upper()
                 discharge = _resolve_graph_tag(discharge_raw)
-                if not discharge:
-                    continue
-                lanes: list[str] = []
-                for key in ("mainLane", "inductLane", "mergeSection3"):
-                    tag = _resolve_graph_tag(str(m.get(key) or ""))
-                    if tag and tag != discharge and tag not in lanes:
-                        lanes.append(tag)
-                for key in ("mergeSection1", "mergeSection2"):
-                    tag = _resolve_graph_tag(str(m.get(key) or ""))
-                    if tag and tag != discharge and tag not in lanes and len(lanes) < 3:
-                        lanes.append(tag)
-                for i, frm in enumerate(lanes):
-                    pair = (frm, discharge)
-                    if pair in existing_pairs:
-                        continue
-                    src = next(n for n in nodes if n["id"] == id_by_tag[frm])
+
+                # Canonical three-level edges from each MergeInput lane:
+                #   logical → physical_release (when distinct)
+                #   physical_release → next (when Next is a P-tag / curve)
+                for ln in m.get("lanes") or []:
+                    logical = str(ln.get("logical_lane") or ln.get("section") or "").strip().upper()
+                    phys = str(ln.get("physical_release_conveyor") or "").strip().upper()
+                    nxt = str(ln.get("next_conveyor") or "").strip().upper()
+                    if logical and phys and logical != phys:
+                        _add_proven_wire(logical, phys, merge_name=merge_name, role="logical_to_physical_release")
+                    if phys and nxt and phys != nxt:
+                        _add_proven_wire(phys, nxt, merge_name=merge_name, role="physical_release_to_next")
+                    elif logical and nxt and logical != nxt and not phys:
+                        _add_proven_wire(logical, nxt, merge_name=merge_name, role="logical_to_next")
+
+                # Main/induct → discharge when discharge is proven (2-1 / 3-1)
+                if discharge:
+                    for key, role in (
+                        ("mainLane", "main_to_discharge"),
+                        ("inductLane", "induct_to_discharge"),
+                        ("mainPhysicalRelease", "main_phys_to_discharge"),
+                        ("inductPhysicalRelease", "induct_phys_to_discharge"),
+                        ("inductNext", "merge_curve_to_discharge"),
+                        ("mergeSection3", "merge_body_to_discharge"),
+                    ):
+                        tag = str(m.get(key) or "").strip().upper()
+                        if tag and tag != discharge_raw:
+                            _add_proven_wire(tag, discharge_raw, merge_name=merge_name, role=role)
                     dst = next(n for n in nodes if n["id"] == id_by_tag[discharge])
-                    if not (src.get("downstream") or "").strip():
-                        src["downstream"] = dst["conveyorTag"]
-                        src["terminal"] = False
-                    src.setdefault(
-                        "topologyProvenance",
+                    dst["asMerge"] = True
+                    dst["mergeDetected"] = True
+                    dst["inPorts"] = max(2, int(m.get("numInputs") or 2))
+                    dst["mergeGenSupported"] = dst["inPorts"] == 2
+                    dst["mergeProvenance"] = {
+                        "source": "blind_merge_discovery",
+                        "name": merge_name,
+                        "sourceClassification": source_class,
+                        "main": str(m.get("mainLane") or ""),
+                        "induct": str(m.get("inductLane") or ""),
+                        "inductPhysicalRelease": str(m.get("inductPhysicalRelease") or ""),
+                        "inductNext": str(m.get("inductNext") or ""),
+                        "graph_discharge": discharge,
+                    }
+                # Spur curve body is also a merge participant even without discharge wire
+                curve = _resolve_graph_tag(str(m.get("inductNext") or m.get("mergeSection3") or ""))
+                if curve and curve in id_by_tag:
+                    cn = next(n for n in nodes if n["id"] == id_by_tag[curve])
+                    cn["mergeDetected"] = True
+                    cn.setdefault(
+                        "mergeProvenance",
                         {
-                            "rule": "blind_merge_proven",
-                            "confidence": "PROVEN_MERGE",
-                            "source_table": "MergeBoss/MergeInputs",
-                            "merge": str(m.get("name") or ""),
-                            "logical_from": str(m.get("mainLane") or m.get("inductLane") or ""),
-                            "logical_to": discharge_raw,
+                            "source": "blind_merge_discovery",
+                            "name": merge_name,
+                            "sourceClassification": source_class,
+                            "role": "merge_curve_next",
                         },
                     )
-                    wires.append(
-                        {
-                            "id": _uid("wire"),
-                            "from": id_by_tag[frm],
-                            "to": id_by_tag[discharge],
-                            "toPort": f"in{i}",
-                            "physical": False,
-                            "fromAnchor": "exit",
-                            "toAnchor": "entry",
-                            "confidence": "PROVEN_MERGE",
-                            "provenance": "blind_merge_discovery",
-                            "mergeName": str(m.get("name") or ""),
-                        }
-                    )
-                    existing_pairs.add(pair)
-                    auto_connected += 1
-                    inbound_count[discharge] = inbound_count.get(discharge, 0) + 1
-                dst = next(n for n in nodes if n["id"] == id_by_tag[discharge])
-                dst["asMerge"] = True
-                dst["mergeDetected"] = True
-                dst["inPorts"] = max(2, int(m.get("numInputs") or len(lanes) or 2))
-                dst["mergeGenSupported"] = dst["inPorts"] == 2
-                dst["mergeProvenance"] = {
-                    "source": "blind_merge_discovery",
-                    "name": str(m.get("name") or ""),
-                    "main": str(m.get("mainLane") or ""),
-                    "induct": str(m.get("inductLane") or ""),
-                    "graph_discharge": discharge,
-                }
     except Exception:
         pass
 

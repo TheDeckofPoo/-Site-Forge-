@@ -389,6 +389,7 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
         in_tan = _f(r.get("Infeed_Tangent"))
         out_tan = _f(r.get("Discharge_Tangent"))
         inside_r = _f(r.get("Inside_Radius"))
+        b_exit = _f(r.get("b"))
         conf = []
         if x is None or y is None:
             conf.append("missing_xy")
@@ -472,6 +473,7 @@ def investigate(run_dir: Path, machine: str, out_dir: Path) -> dict:
                 "infeed_tangent": in_tan,
                 "discharge_tangent": out_tan,
                 "inside_radius": inside_r,
+                "b": b_exit,
                 "motors": motors if not is_display_ctx else [],
                 "drives": drive_types if not is_display_ctx else [],
                 "drive_type": (

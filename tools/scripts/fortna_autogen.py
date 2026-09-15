@@ -4379,12 +4379,25 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         except Exception:
             _estop = None
         _default_area = (inp.areas or ["Main_Area"])[0] if (inp.areas or []) else "Main_Area"
+        _area_convs: dict[str, list[str]] = {}
+        for _c in getattr(inp, "conveyors", None) or []:
+            _an = ""
+            _cn = ""
+            if isinstance(_c, dict):
+                _an = str(_c.get("main_area") or _c.get("area") or "").strip()
+                _cn = str(_c.get("clean_name") or _c.get("name") or _c.get("conveyor") or "").strip()
+            else:
+                _an = str(getattr(_c, "main_area", "") or getattr(_c, "area", "") or "").strip()
+                _cn = str(getattr(_c, "clean_name", "") or getattr(_c, "name", "") or "").strip()
+            if _an and _cn:
+                _area_convs.setdefault(_an, []).append(_cn)
         _sz_irs = build_safety_zone_irs(
             safety_zones=list(inp.safety_zones or []),
             areas=list(inp.areas or []),
             estop_model=_estop,
             engineer_zones=_eng_zones,
             default_area=_default_area,
+            area_conveyors=_area_convs,
         )
         _lib_ok = bool(
             re.search(r'\bName="ES_SIL1_Cat1"', library_text)
@@ -4399,24 +4412,33 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             or (isinstance(_wb_sz, dict) and _wb_sz.get("omit_unresolved_safety"))
         )
         _ready_members = any(z.members for z in _sz_irs)
-        if _omit_safety and not _ready_members:
-            # Omit Program ES — keep REVIEW REQUIRED; never claim READY / never invent members
-            omitted_names = [
-                z.name for z in _sz_irs
-                if z.conveyors and not z.members
-            ] or [z.name for z in _sz_irs]
+        # Never silently skip ES. Two outcomes only: READY→emit, or REVIEW_REQUIRED
+        # with explicit field gaps. omit_unresolved_safety is an engineer-explicit
+        # commissioning choice and must still report the gaps loudly.
+        if not _ready_members:
             es_emit_report = dict(es_emit_report or {})
-            es_emit_report["status"] = "REVIEW_REQUIRED"
             es_emit_report["emitted"] = False
-            es_emit_report["omitted"] = True
-            es_emit_report["omitted_zones"] = omitted_names
-            es_emit_report["detail"] = (
-                "Safety omitted from commissioning review build — "
-                + "; ".join(
-                    f"{z.name}: {(z.device_membership_status or 'UNRESOLVED')}"
-                    for z in _sz_irs
+            es_emit_report["omitted"] = bool(_omit_safety)
+            es_emit_report["silent_omit_forbidden"] = True
+            if _omit_safety:
+                omitted_names = [
+                    z.name for z in _sz_irs
+                    if z.conveyors and not z.members
+                ] or [z.name for z in _sz_irs]
+                es_emit_report["omitted_zones"] = omitted_names
+                es_emit_report["detail"] = (
+                    "SAFETY REVIEW REQUIRED — Program ES omitted by engineer flag "
+                    "omit_unresolved_safety. "
+                    + (es_emit_report.get("detail") or "")
                 )
-            )
+            else:
+                es_emit_report["status"] = "REVIEW_REQUIRED"
+                es_emit_report["detail"] = (
+                    "SAFETY REVIEW REQUIRED — Program ES NOT emitted. "
+                    "Assign E-Stop/ESR/MCR members (and confirm Reset/Silence) "
+                    "in Safety Build, then rebuild. "
+                    + (es_emit_report.get("detail") or "")
+                )
             _es_pack = None
         elif _ready_members:
             _ensure_library_tag("NO_ESLS")

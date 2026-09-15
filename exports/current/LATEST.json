@@ -1,14 +1,11 @@
 {
   "ok": true,
   "controller_name": "ORNCCP2",
-  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORNCCP2_2026_09_15_0109.L5X",
-  "l5x_filename": "ORNCCP2_2026_09_15_0109.L5X",
-  "generated_at": "2026-09-15 01:09:00",
-  "git_commit": "pending_commit",
-  "studio_tag_fix": {
-    "merge_time": 8,
-    "comm_udt": 38,
-    "root_cause_fixed": "extra L5K wrap [[[...]]] + empty string [0,''] / quoted CDATA"
-  },
-  "note": "Studio blockers fixed: Merge_Time/Comm_UDT L5K extra wrap + empty-string padding. READY FOR CURTIS STUDIO TEST."
+  "l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORNCCP2_2026_09_15_0209.L5X",
+  "l5x_filename": "ORNCCP2_2026_09_15_0209.L5X",
+  "generated_at": "2026-09-15 02:09:00",
+  "git_commit": "pending",
+  "note": "PLC2 semantic closure: ReleaseIO\u2192Mtrchain three-level merges, ES readiness gate, curve orientation, full-body hit. READY FOR CURTIS STUDIO TEST.",
+  "es_program": "REVIEW_REQUIRED \u2014 SafetyDevices UNRESOLVED (test1_ESZone1 conveyors READY; assign E-Stops in Safety Build)",
+  "merge_semantics": "MERGE_316_SPUR: P312 logical / P314 phys / P316 Next CURVE"
 }
