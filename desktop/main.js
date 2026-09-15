@@ -677,6 +677,8 @@ function createWindow() {
       if (!addr) return { success: false, message: 'physical address required' };
       const args = [HARDWARE_IO_SCRIPT, '--save-override', '--address', addr];
       if (data && Object.prototype.hasOwnProperty.call(data, 'name')) {
+        // Always pass --name (including empty) so clear/revert reaches Python.
+        // Empty / SPARE / restore-source is handled as clear_engineer server-side.
         args.push('--name', String(data.name ?? ''));
       }
       if (data?.sourceName) args.push('--source-name', String(data.sourceName));

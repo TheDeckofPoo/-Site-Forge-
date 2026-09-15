@@ -4747,18 +4747,41 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     io_map_muted = 0
 
     def _member_from_override(eng_name: str, fallback_member: str, direction: str) -> str:
-        """Engineer name is authoritative. Full member paths used as-is."""
+        """Map engineer LOGICAL name → IO_MAP operand.
+
+        Architecture (physical ≠ engineer name):
+          Physical OTE/XIC target is ALWAYS rio:I|O.Data[s].b (immutable).
+          Engineer name is the LOGICAL controller-side operand:
+            - dotted path (P402_Conv.O.Run) → used as-is (UDT member)
+            - bare Tag → BOOL controller tag (created below); NOT a module base
+
+        Never treat an arbitrary engineer string as a RIO/module base.
+        """
         n = (eng_name or "").strip()
         if not n:
             return fallback_member
         if "." in n:
-            return n  # e.g. P402_Conv.O.Run
-        # Bare tag — map through device-member rules when possible
-        return _device_member("io", _safe(n) or n, direction) or n
+            return n  # e.g. P402_Conv.O.Run — proven Fortna UDT member path
+        # Bare tag = BOOL logical identity (Fan_Starter). Do NOT invent .O.Run
+        # on an unknown UDT — that creates invalid member paths.
+        return _safe(n) or n
+
+    def _ensure_engineer_logical_tag(member: str) -> None:
+        """Ensure bare engineer BOOL tags exist so unknown-base preflight passes."""
+        base = (member or "").split(".", 1)[0].strip()
+        if not base:
+            return
+        # Module-style operands (CPxRIOn) are not tags to create
+        if re.match(r"^CP\d+RIO\d+$", base, re.I):
+            return
+        if ":" in base:
+            return
+        _ensure_library_tag(base, fallback_bool=True)
 
     # Resolve first, then emit in numerical adapter/slot order (AENTR3…AENTR14)
     resolved_rows: list[dict] = []
     muted_channels: set[str] = set()
+    engineer_logical_tags: set[str] = set()
     for p in map_points:
         tname = _safe(p.device_name)
         if not tname:
@@ -4808,6 +4831,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if mod_dir not in ("I", "O"):
             io_map_skipped_dir += 1
             continue
+        # Physical address is immutable — never derive from engineer Name
         channel = f"{rio}:{mod_dir}.Data[{slot}].{data_bit}"
         ov = _hw_ov.get(channel) or {}
         if ov.get("generate") is False:
@@ -4815,10 +4839,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             io_map_muted += 1
             # Keep evidence; do not emit logical mapping (and block placeholder fill)
             continue
-        if ov.get("engineerName"):
-            member = _member_from_override(ov["engineerName"], member, mod_dir)
-            comment = f"{ov['engineerName']} (eng) · was {tname} · Bank{word}.{fbit}"
-            tname = _safe(ov["engineerName"].split(".")[0]) or tname
+        eng = str(ov.get("engineerName") or "").strip()
+        if eng:
+            member = _member_from_override(eng, member, mod_dir)
+            comment = f"{eng} (eng logical) · was {tname} · {channel} · Bank{word}.{fbit}"
+            # Sort/owner key stays RUN device when possible; logical base tracked separately
+            eng_base = _safe(eng.split(".")[0]) or eng
+            engineer_logical_tags.add(eng_base)
+            # Do NOT replace rio/module identity with eng_base — only logical member changes
         resolved_rows.append({
             "rio": rio,
             "slot": slot,
@@ -4828,17 +4856,18 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             "channel": channel,
             "comment": comment,
             "tname": tname,
+            "engineer_logical": eng or None,
         })
         io_map_mapped += 1
 
     # Engineer-named SPARE channels: inject when override names a physical bit
-    # that had no RUN io_point mapping.
+    # that had no RUN io_point mapping. Physical address stays the override key.
     _resolved_chs = {r["channel"] for r in resolved_rows} | muted_channels
     for addr, ov in (_hw_ov or {}).items():
         if not ov.get("generate", True):
             muted_channels.add(addr)
             continue
-        eng = (ov.get("engineerName") or ov.get("effectiveName") or "").strip()
+        eng = str(ov.get("engineerName") or "").strip()
         if not eng or addr in _resolved_chs:
             continue
         m = re.match(
@@ -4850,18 +4879,25 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             continue
         rio, mod_dir, slot_s, bit_s = m.group(1), m.group(2).upper(), m.group(3), m.group(4)
         member = _member_from_override(eng, eng, mod_dir)
+        eng_base = _safe(eng.split(".")[0]) or eng
+        engineer_logical_tags.add(eng_base)
         resolved_rows.append({
             "rio": rio,
             "slot": int(slot_s),
             "data_bit": int(bit_s),
             "mod_dir": mod_dir,
             "member": member,
-            "channel": addr,
-            "comment": f"{eng} · engineer spare → {addr}",
-            "tname": _safe(eng.split(".")[0]) or eng,
+            "channel": addr,  # physical immutable
+            "comment": f"{eng} (eng logical) · spare → {addr}",
+            "tname": eng_base,
+            "engineer_logical": eng,
         })
         io_map_mapped += 1
         _resolved_chs.add(addr)
+
+    # Create BOOL controller tags for bare engineer logical names BEFORE emit/preflight
+    for tag in sorted(engineer_logical_tags):
+        _ensure_engineer_logical_tag(tag)
 
     resolved_rows.sort(
         key=lambda r: (

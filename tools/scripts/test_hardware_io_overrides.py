@@ -76,11 +76,13 @@ class TestHardwareIoOverrides(unittest.TestCase):
             ov,
             physical_address="CP2RIO0:O.Data[6].7",
             source_name="M404",
+            engineer_name="Fan_Starter",
             generate=True,
         )
         m = overrides_for_iomap(ov)
         self.assertFalse(m["CP2RIO0:O.Data[6].6"]["generate"])
         self.assertTrue(m["CP2RIO0:O.Data[6].7"]["generate"])
+        self.assertEqual(m["CP2RIO0:O.Data[6].7"]["engineerName"], "Fan_Starter")
         print("  [PASS] mute → generate=False in iomap map")
 
     def test_apply_to_model(self) -> None:
@@ -168,6 +170,70 @@ class TestHardwareIoOverrides(unittest.TestCase):
         ch2 = model2["adapters"][0]["modules"][0]["channels"][0]
         self.assertEqual(ch2["effectiveName"], "TEST_INPUT")
         print("  [PASS] spare engineer name survives model rebuild")
+
+    def test_rename_then_revert_purges_stale_name(self) -> None:
+        """SPARE → TEST_OUTPUT → SPARE must leave ZERO active TEST_OUTPUT mapping."""
+        from fortna_hardware_io_overrides import (
+            is_clear_sentinel,
+            prune_inactive_overrides,
+            should_clear_engineer,
+        )
+
+        self.assertTrue(should_clear_engineer("SPARE", ""))
+        self.assertTrue(should_clear_engineer("M402", "M402"))
+        self.assertTrue(is_clear_sentinel(""))
+
+        ov = empty_overrides()
+        addr = "CP2RIO0:O.Data[6].6"
+        upsert_channel_override(
+            ov,
+            physical_address=addr,
+            source_name="",
+            engineer_name="TEST_OUTPUT",
+            generate=True,
+        )
+        self.assertEqual(
+            (ov["channels"][addr].get("engineerName")),
+            "TEST_OUTPUT",
+        )
+        # Revert to SPARE
+        upsert_channel_override(
+            ov,
+            physical_address=addr,
+            source_name="",
+            engineer_name="SPARE",
+            clear_engineer=False,  # should auto-clear via sentinel
+        )
+        prune_inactive_overrides(ov)
+        self.assertNotIn(addr, ov.get("channels") or {})
+        iomap = overrides_for_iomap(ov)
+        self.assertNotIn(addr, iomap)
+        blob = json.dumps(ov) + json.dumps(iomap)
+        self.assertNotIn("TEST_OUTPUT", blob)
+        print("  [PASS] rename→revert purges TEST_OUTPUT from overrides/iomap")
+
+    def test_restore_source_name_clears_override(self) -> None:
+        from fortna_hardware_io_overrides import prune_inactive_overrides
+
+        ov = empty_overrides()
+        addr = "CP2RIO0:O.Data[6].6"
+        upsert_channel_override(
+            ov,
+            physical_address=addr,
+            source_name="M402",
+            engineer_name="Me_Likey_Butts",
+            generate=True,
+        )
+        upsert_channel_override(
+            ov,
+            physical_address=addr,
+            source_name="M402",
+            engineer_name="M402",  # restore original
+        )
+        prune_inactive_overrides(ov)
+        self.assertNotIn(addr, ov.get("channels") or {})
+        self.assertNotIn("Me_Likey_Butts", json.dumps(overrides_for_iomap(ov)))
+        print("  [PASS] restore source name clears Me_Likey_Butts")
 
 
 def main() -> int:

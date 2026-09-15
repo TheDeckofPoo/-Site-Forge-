@@ -407,6 +407,16 @@
     .tb-schematic-body.tb-rk-unknown { stroke: #64748b; stroke-dasharray: 3 3; }
     .tb-schematic-body.selected { stroke: #e879f9; filter: drop-shadow(0 0 3px rgba(232,121,249,0.7)); }
     .tb-schematic-body.tb-ambiguous { stroke: #f59e0b; }
+    /* True 90° curve belt — filled annulus (not round-cap stroke pill) */
+    .tb-schematic-curve-body {
+      fill: #7c6bb8; stroke: #c4b5fd; stroke-width: 1.25; stroke-linejoin: round;
+      opacity: 0.92; pointer-events: none;
+    }
+    .tb-schematic-curve-body.selected { fill: #a78bfa; stroke: #e879f9; filter: drop-shadow(0 0 3px rgba(232,121,249,0.7)); }
+    .tb-schematic-curve-body.tb-ambiguous { fill: #b45309; stroke: #f59e0b; }
+    .tb-schematic-curve-body.tb-cp-dim { opacity: 0.25; }
+    .tb-schematic-curve-cl { fill: none; stroke: #ddd6fe; stroke-width: 1.5; stroke-linecap: round; opacity: 0.85; pointer-events: none; }
+    .tb-schematic-curve-cl.selected { stroke: #f5d0fe; }
     .tb-schematic-label {
       fill: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 11px; font-weight: 700; text-anchor: middle; dominant-baseline: middle;
@@ -682,9 +692,10 @@
         <div class="text-[10px] text-slate-500 mono">docs · recipes · RUN · PLC export</div>
       </div>
     </div>
-    <div class="flex items-center gap-2">
-      <span id="index-status" class="status-pill status-idle">0 docs indexed</span>
-      <span id="workspace-status" class="status-pill status-idle">No RUN loaded</span>
+    <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
+      <div id="project-health-strip" class="hidden sm:flex items-center gap-1.5 mr-2 text-[10px] mono text-slate-400 overflow-x-auto max-w-[52vw]" title="Project Health — mirrors Compile Hub readiness (click to jump)"></div>
+      <span id="index-status" class="status-pill status-idle shrink-0">0 docs indexed</span>
+      <span id="workspace-status" class="status-pill status-idle shrink-0">No RUN loaded</span>
       <button onclick="fortnaAPI.minimize()" class="w-8 h-8 rounded hover:bg-slate-800 text-slate-400" title="Minimize"><i class="fa-solid fa-minus text-xs"></i></button>
       <button onclick="fortnaAPI.maximize()" class="w-8 h-8 rounded hover:bg-slate-800 text-slate-400" title="Maximize"><i class="fa-regular fa-square text-xs"></i></button>
       <button onclick="fortnaAPI.close()" class="w-8 h-8 rounded hover:bg-red-900/50 text-slate-400 hover:text-red-300" title="Close"><i class="fa-solid fa-xmark text-xs"></i></button>
@@ -2330,7 +2341,7 @@
         <span class="text-[10px] uppercase tracking-widest text-slate-500 font-semibold mr-1">Workflow</span>
         <span class="tb-wf-step" data-wf="import">1 · Import RUN</span>
         <span class="text-slate-700">→</span>
-        <span class="tb-wf-step" data-wf="autobuild">2 · Auto Build</span>
+        <span class="tb-wf-step" data-wf="autobuild">2 · Layout</span>
         <span class="text-slate-700">→</span>
         <span class="tb-wf-step tb-wf-active" data-wf="review">3 · Review / Correct</span>
         <span class="text-slate-700">→</span>
@@ -2347,8 +2358,8 @@
           <div class="rounded-lg border border-fuchsia-900/40 bg-[#0c1219] p-3 space-y-1.5">
             <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/90 font-semibold">A · Create a new Area from conveyors</div>
             <ol class="list-decimal list-inside space-y-1 text-slate-300">
-              <li>Click <strong class="text-emerald-300">Auto Build</strong> (loads RUN conveyors onto the canvas).</li>
-              <li>Optional: use <strong class="text-violet-300">Control Panel</strong> checkboxes (built from RUN after Auto Build — e.g. CP4 on PLC4).</li>
+              <li>Load a RUN — Transportation layout builds automatically (Top-Centered).</li>
+              <li>Optional: use <strong class="text-violet-300">Control Panel</strong> checkboxes (from RUN layout — e.g. CP4 on PLC4).</li>
               <li>Drag on empty canvas to <strong class="text-sky-300">box-select</strong> conveyors (purple dashed rectangle). Ctrl/Meta = add · Alt = subtract.</li>
               <li>When the blue bar shows <span class="mono text-sky-300">Selected: N conveyors</span>, click
                 <strong class="text-fuchsia-200">Create Area from Selection</strong> and name it (e.g. <span class="mono">ModuleB_Area</span>).</li>
@@ -2386,13 +2397,13 @@
             <i class="fa-solid fa-trash mr-1"></i>Delete
           </button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>
-          <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-emerald-600/70 text-emerald-200 font-semibold" title="Auto Build from imported RUN">
-            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i>Auto Build
+          <button type="button" id="tb-auto-build-run" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400" title="Recovery: rebuild visual layout from RUN (does not invent Areas/Safety). Normal path auto-builds on RUN load.">
+            <i class="fa-solid fa-rotate mr-1"></i>Rebuild Layout
           </button>
           <button type="button" id="tb-connect-mode" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-rose-900/50 text-rose-300" title="Connect EXIT → ENTRY">
             <i class="fa-solid fa-link mr-1"></i>Connect
           </button>
-          <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit View — center all visible conveyors and zoom to fit with padding. Presentation only.">
+          <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit View — fit width, X-centered, top-biased (TOP-CENTER). Presentation only.">
             <i class="fa-solid fa-expand mr-1"></i>Fit View
           </button>
           <button type="button" id="tb-zoom-out" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Zoom out (viewport center)">−</button>
@@ -2594,7 +2605,7 @@
           <div id="tb-canvas-empty" class="absolute left-0 right-0 top-0 z-10 flex items-center justify-center pointer-events-none" style="height:75vh">
             <div class="text-center text-slate-600 max-w-sm px-6">
               <i class="fa-solid fa-vector-square text-3xl mb-3 text-slate-700"></i>
-              <div class="text-sm text-slate-500 mb-1">Auto Build from RUN, or add conveyors in the Topology table</div>
+              <div class="text-sm text-slate-500 mb-1">Load a RUN (layout builds automatically), Rebuild Layout, or add conveyors in the Topology table</div>
               <div class="text-[11px] text-slate-600">Scroll down for topology · Ctrl+wheel zoom · drag to pan</div>
             </div>
           </div>

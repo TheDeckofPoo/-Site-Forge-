@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """Engineer overrides for Hardware/I/O channels.
 
-Preserves RUN-discovered source names. Engineer name becomes authoritative
-for IO_MAP generation when set. generate=False mutes the channel from IO_MAP
-without deleting evidence.
+Preserves RUN-discovered source names. Engineer name is a LOGICAL identity only.
+
+Physical address / module (e.g. CP2RIO0:O.Data[6].6 / CP2RIO0) is IMMUTABLE
+from Name edits. generate=False mutes the channel from IO_MAP without deleting
+evidence.
+
+Cleared / SPARE / restore-to-source MUST remove engineerName from persistence
+so stale logical names cannot re-enter Autogen / IO_MAP / preflight.
 """
 from __future__ import annotations
 
@@ -19,6 +24,11 @@ DEFAULT_OVERRIDES_PATH = REPO_ROOT / "workspace" / "hardware_io_overrides.json"
 # Rockwell tag / member path: Tag or Tag.Member.SubMember (no spaces, leading digit ok for UDT members)
 _LOGICAL_NAME_RE = re.compile(
     r"^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*$"
+)
+
+# Names that mean "no engineer override" — never persist as active logical identity
+_CLEAR_SENTINELS = frozenset(
+    {"", "SPARE", "—", "-", "N/A", "NONE", "NULL", "(CLEARED)", "(SPARE)"}
 )
 
 
@@ -73,12 +83,26 @@ def clear_overrides(path: Path | str | None = None) -> None:
         pass
 
 
+def is_clear_sentinel(name: str | None) -> bool:
+    """True when the Name field means 'no engineer override'."""
+    return str(name or "").strip().upper() in _CLEAR_SENTINELS
+
+
+def should_clear_engineer(engineer_name: str | None, source_name: str = "") -> bool:
+    """Clear when empty/SPARE/sentinel OR when engineer restored the RUN source name."""
+    eng = str(engineer_name or "").strip()
+    if is_clear_sentinel(eng):
+        return True
+    src = str(source_name or "").strip()
+    if src and eng.lower() == src.lower():
+        return True
+    return False
+
+
 def validate_logical_name(name: str) -> tuple[bool, str]:
-    """Validate Rockwell-style identifier or member path. Empty = clear override."""
+    """Validate Rockwell-style identifier or member path. Empty/SPARE = clear override."""
     s = (name or "").strip()
-    if not s:
-        return True, ""
-    if s.upper() in ("SPARE", "—", "-", "N/A", "NONE"):
+    if not s or is_clear_sentinel(s):
         return True, ""
     if not _LOGICAL_NAME_RE.match(s):
         return (
@@ -93,20 +117,50 @@ def validate_logical_name(name: str) -> tuple[bool, str]:
 
 def effective_name(source_name: str, engineer_name: str | None) -> str:
     eng = (engineer_name or "").strip()
-    if eng:
+    if eng and not is_clear_sentinel(eng):
         return eng
     return (source_name or "").strip()
 
 
 def channel_override(overrides: dict[str, Any], physical_address: str) -> dict[str, Any]:
     ch = (overrides.get("channels") or {}).get(physical_address) or {}
+    eng = str(ch.get("engineerName") or "").strip() or None
+    if eng and is_clear_sentinel(eng):
+        eng = None
     return {
         "sourceName": str(ch.get("sourceName") or "").strip(),
-        "engineerName": str(ch.get("engineerName") or "").strip() or None,
+        "engineerName": eng,
         "generate": True if ch.get("generate") is None else bool(ch.get("generate")),
         "muted": False if ch.get("generate") is None else (not bool(ch.get("generate"))),
         "updatedAt": ch.get("updatedAt"),
     }
+
+
+def _channel_entry_is_default(cur: dict[str, Any]) -> bool:
+    """True when entry has no active engineer name and Generate is default ON."""
+    eng = str(cur.get("engineerName") or "").strip()
+    if eng and not is_clear_sentinel(eng):
+        return False
+    gen = cur.get("generate")
+    if gen is False:
+        return False  # explicit mute — keep evidence
+    return True
+
+
+def prune_inactive_overrides(overrides: dict[str, Any]) -> int:
+    """Remove channel entries that no longer carry engineer name or mute.
+
+    Prevents stale logical names from surviving a revert into Autogen.
+    Returns number of pruned addresses.
+    """
+    channels = overrides.get("channels") or {}
+    drop: list[str] = []
+    for addr, cur in list(channels.items()):
+        if not isinstance(cur, dict) or _channel_entry_is_default(cur):
+            drop.append(addr)
+    for addr in drop:
+        channels.pop(addr, None)
+    return len(drop)
 
 
 def upsert_channel_override(
@@ -128,13 +182,24 @@ def upsert_channel_override(
     elif source_name:
         # Keep original RUN discovery; only set if empty
         cur.setdefault("sourceName", source_name)
-    if clear_engineer:
-        cur["engineerName"] = ""
+
+    src_for_clear = str(cur.get("sourceName") or source_name or "").strip()
+    if clear_engineer or (
+        engineer_name is not None and should_clear_engineer(engineer_name, src_for_clear)
+    ):
+        cur.pop("engineerName", None)
+        clear_engineer = True
     elif engineer_name is not None:
         ok, err = validate_logical_name(engineer_name)
         if not ok:
             raise ValueError(err)
-        cur["engineerName"] = (engineer_name or "").strip()
+        cleaned = (engineer_name or "").strip()
+        if cleaned:
+            cur["engineerName"] = cleaned
+        else:
+            cur.pop("engineerName", None)
+            clear_engineer = True
+
     if generate is not None:
         cur["generate"] = bool(generate)
     elif "generate" not in cur:
@@ -142,6 +207,19 @@ def upsert_channel_override(
     from datetime import datetime, timezone
 
     cur["updatedAt"] = datetime.now(timezone.utc).isoformat()
+
+    # Drop entirely when no engineer identity and Generate left at default
+    if _channel_entry_is_default(cur):
+        channels.pop(addr, None)
+        return {
+            "sourceName": src_for_clear,
+            "engineerName": None,
+            "generate": True,
+            "muted": False,
+            "cleared": True,
+            "updatedAt": cur.get("updatedAt"),
+        }
+
     channels[addr] = cur
     return cur
 
@@ -158,21 +236,28 @@ def _parse_channel_addr(addr: str) -> tuple[str, str, int, int] | None:
 
 
 def _apply_one_channel(ch: dict[str, Any], o: dict[str, Any]) -> None:
-    """Stamp engineer override fields onto one channel dict (in place)."""
+    """Stamp engineer override fields onto one channel dict (in place).
+
+    Override file is authoritative for engineerName. Do NOT resurrect a stale
+    in-memory engineerName when the persisted override was cleared.
+    """
     le = ch.get("logical_endpoint") or {}
     src = ""
     if isinstance(le, dict):
-        src = str(le.get("name") or "").strip()
         if le.get("engineer_override") and le.get("source_name"):
-            src = str(le.get("source_name") or "").strip() or src
+            src = str(le.get("source_name") or "").strip()
+        else:
+            src = str(le.get("name") or "").strip()
     source_name = str(o.get("sourceName") or ch.get("sourceName") or src or "").strip()
-    engineer_name = str(o.get("engineerName") or "").strip() or None
+    raw_eng = str(o.get("engineerName") or "").strip() or None
+    if raw_eng and is_clear_sentinel(raw_eng):
+        raw_eng = None
+    if raw_eng and should_clear_engineer(raw_eng, source_name):
+        raw_eng = None
+    engineer_name = raw_eng
     generate = True if o.get("generate") is None else bool(o.get("generate"))
-    # Also honor in-memory engineerName already on channel when override empty
-    if not engineer_name:
-        existing = str(ch.get("engineerName") or "").strip()
-        if existing:
-            engineer_name = existing
+    # NOTE: do not fall back to ch['engineerName'] — that reintroduces stale names
+    # after a clear/revert when the override dict no longer lists the address.
     eff = effective_name(source_name, engineer_name)
     ch["sourceName"] = source_name
     ch["engineerName"] = engineer_name
@@ -186,8 +271,18 @@ def _apply_one_channel(ch: dict[str, Any], o: dict[str, Any]) -> None:
             "source_name": source_name or None,
             "engineer_override": True,
         }
-    elif le and isinstance(le, dict):
-        ch["logical_endpoint"] = le
+    elif isinstance(le, dict):
+        # Restore RUN source as logical endpoint display; drop override flag
+        restored = {
+            **le,
+            "name": source_name or le.get("source_name") or le.get("name") or "",
+            "engineer_override": False,
+        }
+        if source_name:
+            restored["source_name"] = source_name
+        ch["logical_endpoint"] = restored if restored.get("name") else None
+    else:
+        ch["logical_endpoint"] = {"name": source_name} if source_name else None
 
 
 def apply_overrides_to_hardware_model(
@@ -271,25 +366,38 @@ def apply_overrides_to_hardware_model(
             pass
         by_addr[addr] = stub
 
-    # Stamp fields on all channels even without override (defaults)
+    # Stamp fields on all channels even without override (defaults).
+    # Channels NOT in the override file must have engineerName cleared — otherwise
+    # a prior in-memory patch / stale session value survives into Autogen.
     for ad in model.get("adapters") or []:
         for mod in ad.get("modules") or []:
             for ch in mod.get("channels") or []:
                 addr = (ch.get("physical_address") or "").strip()
                 if addr and addr in channels_ov:
-                    continue  # already applied
+                    continue  # already applied from file
+                le = ch.get("logical_endpoint") or {}
+                if "sourceName" not in ch or not ch.get("sourceName"):
+                    if isinstance(le, dict):
+                        src = str(
+                            le.get("source_name")
+                            or ("" if le.get("engineer_override") else le.get("name"))
+                            or ""
+                        ).strip()
+                    else:
+                        src = ""
+                    ch["sourceName"] = src
+                # Force-clear stale engineer override when not in persistence
+                ch["engineerName"] = None
+                ch["effectiveName"] = ch.get("sourceName") or None
                 if "generate" not in ch:
                     ch["generate"] = True
                     ch["muted"] = False
-                if "sourceName" not in ch:
-                    le = ch.get("logical_endpoint") or {}
-                    ch["sourceName"] = (
-                        str(le.get("name") or "").strip() if isinstance(le, dict) else ""
-                    )
-                if "engineerName" not in ch:
-                    ch["engineerName"] = None
-                if "effectiveName" not in ch:
-                    ch["effectiveName"] = ch.get("sourceName") or None
+                if isinstance(le, dict) and le.get("engineer_override"):
+                    ch["logical_endpoint"] = {
+                        **le,
+                        "name": ch.get("sourceName") or le.get("source_name") or "",
+                        "engineer_override": False,
+                    }
 
     model["overrides"] = {
         "path": str(DEFAULT_OVERRIDES_PATH),
@@ -300,13 +408,27 @@ def apply_overrides_to_hardware_model(
 
 
 def overrides_for_iomap(overrides: dict[str, Any] | None = None) -> dict[str, dict[str, Any]]:
-    """Map physical_address → {effectiveName, generate, sourceName, engineerName}."""
+    """Map physical_address → {effectiveName, generate, sourceName, engineerName}.
+
+    Cleared / sentinel engineer names are omitted (engineerName=None) so Autogen
+    cannot emit stale logical bases.
+    """
     ov = overrides if overrides is not None else load_overrides()
+    # Opportunistically prune defaults so disk stays clean after reverts
+    try:
+        prune_inactive_overrides(ov)
+    except Exception:
+        pass
     out: dict[str, dict[str, Any]] = {}
     for addr, ch in (ov.get("channels") or {}).items():
         src = str(ch.get("sourceName") or "").strip()
         eng = str(ch.get("engineerName") or "").strip() or None
+        if eng and (is_clear_sentinel(eng) or should_clear_engineer(eng, src)):
+            eng = None
         gen = True if ch.get("generate") is None else bool(ch.get("generate"))
+        # Skip fully-default entries (no eng name, generate on)
+        if eng is None and gen:
+            continue
         out[str(addr)] = {
             "sourceName": src,
             "engineerName": eng,

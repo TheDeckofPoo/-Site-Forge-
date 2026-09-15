@@ -306,7 +306,9 @@ def main(argv: list[str] | None = None) -> int:
     if args.save_override:
         from fortna_hardware_io_overrides import (
             load_overrides,
+            prune_inactive_overrides,
             save_overrides,
+            should_clear_engineer,
             upsert_channel_override,
             validate_logical_name,
         )
@@ -327,7 +329,8 @@ def main(argv: list[str] | None = None) -> int:
             if not ok:
                 print(json.dumps({"ok": False, "error": err}))
                 return 1
-            if not str(name).strip():
+            # Empty / SPARE / restore-to-source → purge engineer override (no stale names)
+            if should_clear_engineer(name, args.source_name or ""):
                 clear_eng = True
                 name = ""
         try:
@@ -339,8 +342,18 @@ def main(argv: list[str] | None = None) -> int:
                 generate=gen,
                 clear_engineer=clear_eng,
             )
+            prune_inactive_overrides(ov)
             save_overrides(ov)
-            print(json.dumps({"ok": True, "override": cur, "address": args.address}))
+            print(
+                json.dumps(
+                    {
+                        "ok": True,
+                        "override": cur,
+                        "address": args.address,
+                        "cleared": bool(cur.get("cleared") or clear_eng),
+                    }
+                )
+            )
             return 0
         except Exception as e:
             print(json.dumps({"ok": False, "error": str(e)}))

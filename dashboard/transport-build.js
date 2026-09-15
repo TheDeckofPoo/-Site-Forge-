@@ -2124,16 +2124,81 @@
       ? isCurveNode(n)
       : String(n.renderKind || n.equipmentType || '').toLowerCase().includes('curve');
     if (isCurve) {
-      // Keep curve stroke ≤ ~0.55× centerline radius so the arc shape stays readable
-      // (site-scale canvas often yields radius of only a few px).
+      // Prefer DISPLAY path radius (may be synthesized) so stroke matches visible arc
       let rPx = 0;
-      const arc = (n.pathCanvas || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
+      const disp = typeof displayPathCanvasForNode === 'function' ? displayPathCanvasForNode(n) : n.pathCanvas;
+      const arc = (disp || []).find((c) => String(c.cmd || '').toLowerCase() === 'arc');
       if (arc && arc.radius != null) rPx = Number(arc.radius) || 0;
       else if (n.insideRadius != null) rPx = Number(n.insideRadius) * s + px / 2;
+      // Filled belt body uses annular path — stroke is thin edge only
+      if (rPx > 4) return Math.max(1.5, Math.min(4, px * 0.15));
       const maxCurve = rPx > 0 ? Math.max(2.5, rPx * 0.55) : 8;
       return Math.max(2.5, Math.min(maxCurve, px > 0 ? px : 4));
     }
     return Math.max(4, Math.min(16, px > 0 ? Math.max(px, 4) : 8));
+  }
+
+  /**
+   * Filled quarter-turn conveyor BODY (annulus) from display centerline arc.
+   * Outer arc + reverse inner arc — visibly enters on one axis and exits ~90°.
+   * Presentation only — does not mutate topology.
+   */
+  function curveBeltBodyPath(displayPath, halfWidth, off) {
+    if (!displayPath || !displayPath.length || !(halfWidth > 0.5)) return null;
+    const move = displayPath.find((c) => String(c.cmd || '').toLowerCase() === 'move');
+    const arc = displayPath.find((c) => String(c.cmd || '').toLowerCase() === 'arc');
+    if (!move || !arc) return null;
+    const dx = (off && off.dx) || 0;
+    const dy = (off && off.dy) || 0;
+    const x0 = Number(move.x) + dx;
+    const y0 = Number(move.y) + dy;
+    const x1 = Number(arc.x) + dx;
+    const y1 = Number(arc.y) + dy;
+    let r = Number(arc.radius) || 0;
+    let cx;
+    let cy;
+    if (arc.center && arc.center.x != null) {
+      cx = Number(arc.center.x) + dx;
+      cy = Number(arc.center.y) + dy;
+      r = Math.hypot(x0 - cx, y0 - cy) || r;
+    } else {
+      // Reconstruct center from chord + sweep (same as synthesize)
+      const mx = (x0 + x1) / 2;
+      const my = (y0 + y1) / 2;
+      const hx = (x1 - x0) / 2;
+      const hy = (y1 - y0) / 2;
+      const wantPos = Number(arc.sweep_flag) === 1;
+      const c1 = { x: mx - hy, y: my + hx };
+      const c2 = { x: mx + hy, y: my - hx };
+      const cross = (c) => (x0 - c.x) * (y1 - c.y) - (y0 - c.y) * (x1 - c.x);
+      const center = (cross(c1) > 0) === wantPos ? c1 : c2;
+      cx = center.x;
+      cy = center.y;
+      r = Math.hypot(x0 - cx, y0 - cy) || r;
+    }
+    if (!(r > 2)) return null;
+    const rOut = r + halfWidth;
+    const rIn = Math.max(1, r - halfWidth);
+    const sweep = Number(arc.sweep_flag) != null ? Number(arc.sweep_flag) : 1;
+    const rev = sweep ? 0 : 1;
+    // Unit vectors entry/exit from center
+    const a0 = Math.atan2(y0 - cy, x0 - cx);
+    const a1 = Math.atan2(y1 - cy, x1 - cx);
+    const ox0 = cx + rOut * Math.cos(a0);
+    const oy0 = cy + rOut * Math.sin(a0);
+    const ox1 = cx + rOut * Math.cos(a1);
+    const oy1 = cy + rOut * Math.sin(a1);
+    const ix1 = cx + rIn * Math.cos(a1);
+    const iy1 = cy + rIn * Math.sin(a1);
+    const ix0 = cx + rIn * Math.cos(a0);
+    const iy0 = cy + rIn * Math.sin(a0);
+    return [
+      `M ${ox0} ${oy0}`,
+      `A ${rOut} ${rOut} 0 0 ${sweep} ${ox1} ${oy1}`,
+      `L ${ix1} ${iy1}`,
+      `A ${rIn} ${rIn} 0 0 ${rev} ${ix0} ${iy0}`,
+      'Z',
+    ].join(' ');
   }
 
   /**
@@ -2568,8 +2633,29 @@
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
       const mid = applyPresOffset(mid0, off);
       const tip = cp ? `${tag} · ${cp}` : tag;
-      html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
-      html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
+      // CURVE: filled quarter-turn belt body (not a fat round-cap stroke pill)
+      if (isCurveNode(n)) {
+        const s = presentationScale();
+        const wWorld = Number(n.width);
+        const half = Math.max(3, ((Number.isFinite(wWorld) && wWorld > 0 ? wWorld : 200) * s) / 2);
+        const belt = curveBeltBodyPath(displayPath, half, off);
+        if (belt) {
+          let fillCls = `tb-schematic-curve-body tb-rk-${rk}`;
+          if (sel) fillCls += ' selected';
+          if (amb) fillCls += ' tb-ambiguous';
+          if (cpFilterActive()) fillCls += cpMatch ? ' tb-cp-match' : ' tb-cp-dim';
+          html += `<path class="${fillCls}" data-id="${escapeHtml(n.id)}" d="${belt}"><title>${escapeHtml(tip)}</title></path>`;
+          html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${belt}" />`;
+          // Thin centerline for flow readability
+          html += `<path class="tb-schematic-curve-cl ${sel ? 'selected' : ''}" data-id="${escapeHtml(n.id)}" d="${d}" />`;
+        } else {
+          html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
+          html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
+        }
+      } else {
+        html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
+        html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw + 10}" />`;
+      }
       // Canvas labels: P-tag only by default. Area/ES stay in the inspector — never
       // paint missing-config words or zone names across the drawing. Small warn dot if needed.
       const needsCfg = !!(n.areaRequired || n.esZoneRequired);
@@ -2938,10 +3024,13 @@
     tb.view.zoom = zoom;
     tb.view.mode = mode || tb.view.mode || 'visible';
     applyViewportZoom();
-    const midX = ((bb.minX + bb.maxX) / 2) * zoom;
-    const midY = ((bb.minY + bb.maxY) / 2) * zoom;
-    canvas.scrollLeft = Math.max(0, midX - canvas.clientWidth / 2);
-    canvas.scrollTop = Math.max(0, midY - canvas.clientHeight / 2);
+    // TOP-CENTER (not center-center):
+    //   boundsCenterX → viewportCenterX  (balanced left/right padding)
+    //   minY → viewportTop + topPadding  (system near top; unused space below)
+    const boundsCenterX = ((bb.minX + bb.maxX) / 2) * zoom;
+    const topPadPx = Math.max(28, (pf != null ? pf : 0.08) * Math.max(160, canvas.clientHeight));
+    canvas.scrollLeft = Math.max(0, boundsCenterX - canvas.clientWidth / 2);
+    canvas.scrollTop = Math.max(0, bb.minY * zoom - topPadPx);
     return outlierInfo;
   }
 
@@ -2971,8 +3060,8 @@
     const nOut = info?.outliers?.length || 0;
     status(
       nOut
-        ? `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · centered · ${nOut} OUTLIER (use Fit All)`
-        : `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · Area centered X/Y`
+        ? `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · Top-Centered · ${nOut} OUTLIER (use Fit All)`
+        : `Fit View · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}% · Top-Centered (X center, Y top)`
     );
     return info;
   }
@@ -3898,7 +3987,7 @@
       requestAnimationFrame(() => {
         try {
           fitArea();
-          status(`Area centered · ${(activeArea()?.name || '').trim() || '—'}`);
+          status(`Area Top-Centered · ${(activeArea()?.name || '').trim() || '—'}`);
         } catch (_) { /* ignore */ }
       });
     });
@@ -5101,7 +5190,7 @@
     $('tb-inspector-empty')?.classList.remove('hidden');
     $('tb-inspector')?.classList.add('hidden');
     status(leaveEmpty
-      ? 'Transport canvas empty — Auto Build to refill'
+      ? 'Transport canvas empty — load RUN (auto layout) or Rebuild Layout'
       : 'All transport areas cleared — PE roles reset');
     return true;
   };

@@ -1787,28 +1787,43 @@
     }
   }
 
-  async function autoBuildFromRun() {
+  /**
+   * Build Transport canvas from imported RUN physical layout.
+   * opts.silent — skip confirm/dialogs (used on RUN load auto-build).
+   * opts.rebuild — engineer recovery "Rebuild Layout" (warns about visual replace).
+   */
+  async function autoBuildFromRun(opts) {
+    opts = opts || {};
+    const silent = !!opts.silent;
+    const rebuild = !!opts.rebuild;
     const { tb, save, render, status, askYesNo, showInfo, migrateGraphTopology } = A();
     const api = window.fortnaAPI || window.api;
     if (!api?.transportAutoBuildFromRun) {
-      await showInfo(
-        'Auto Build From RUN',
-        'Needs the desktop Site Forge app (Electron IPC).\nImport a RUN, then try again.'
-      );
-      return;
+      if (!silent) {
+        await showInfo(
+          'Rebuild Layout',
+          'Needs the desktop Site Forge app (Electron IPC).\nImport a RUN, then try again.'
+        );
+      }
+      return { ok: false, error: 'IPC missing' };
     }
-    const ok = await askYesNo(
-      'Auto Build From RUN',
-      'Replace the current Transport canvas with a first-pass physical layout from the imported RUN?\n\n'
-        + '• Places conveyors from RUN X/Y/Angle/Length\n'
-        + '• Auto-connects only high-confidence OUT→IN mates\n'
-        + '• Ambiguous mates are flagged for review\n'
-        + '• Does not invent Area/ES Zone names\n\n'
-        + 'Existing canvas content will be replaced (undo available).'
-    );
-    if (!ok) return;
-    pushHistory('Auto Build From RUN');
-    status('Auto Build From RUN…');
+    if (!silent) {
+      const title = rebuild ? 'Rebuild Layout' : 'Rebuild Layout from RUN';
+      const ok = await askYesNo(
+        title,
+        'Rebuild visual conveyor layout from the imported RUN?\n\n'
+          + '• Places conveyors from RUN X/Y/Angle/Length\n'
+          + '• Auto-connects only high-confidence OUT→IN mates\n'
+          + '• Ambiguous mates are flagged for review\n'
+          + '• Does not invent Area/ES Zone names\n\n'
+          + 'WARNING: Canvas node positions/wires are replaced from RUN.\n'
+          + 'Prefer this only for recovery. Normal commissioning auto-builds on RUN load.\n'
+          + 'Undo is available after rebuild.'
+      );
+      if (!ok) return { ok: false, cancelled: true };
+    }
+    pushHistory(silent ? 'Auto Build From RUN (load)' : 'Rebuild Layout From RUN');
+    status(silent ? 'Building Transportation from RUN…' : 'Rebuild Layout From RUN…');
     let res;
     try {
       // Pass active machine so Auto Build uses ControllerScope, not plant-wide Conveyor.asc
@@ -1823,14 +1838,14 @@
       } catch (_) { /* ignore */ }
       res = await api.transportAutoBuildFromRun(machine ? { machine } : {});
     } catch (err) {
-      await showInfo('Auto Build failed', String(err?.message || err));
-      status(`Auto Build error: ${err?.message || err}`);
-      return;
+      if (!silent) await showInfo('Rebuild Layout failed', String(err?.message || err));
+      status(`Rebuild Layout error: ${err?.message || err}`);
+      return { ok: false, error: String(err?.message || err) };
     }
     if (!res?.ok || !res.graph) {
-      await showInfo('Auto Build failed', res?.error || 'No graph returned');
-      status(`Auto Build failed: ${res?.error || 'unknown'}`);
-      return;
+      if (!silent) await showInfo('Rebuild Layout failed', res?.error || 'No graph returned');
+      status(`Rebuild Layout failed: ${res?.error || 'unknown'}`);
+      return { ok: false, error: res?.error || 'No graph returned' };
     }
     const g = res.graph;
     // ONE transport equipment source: ControllerScope LOCAL + EXTERNAL_REFERENCE only.
@@ -1983,9 +1998,19 @@
       'Next: Review / Correct → Apply to Autogen → Build PLC',
       'Clean schematic is the normal view. Geometry debug is under Advanced.',
     ].join('\n');
-    await showInfo('Auto Build complete', res.summary || 'Layout imported — review & correct.', detail);
-    status(res.summary || 'Auto Build complete — Review / Correct, then Apply to Autogen');
+    if (!silent) {
+      await showInfo('Rebuild Layout complete', res.summary || 'Layout imported — review & correct.', detail);
+    }
+    status(
+      silent
+        ? (res.summary || 'Transportation built from RUN · Top-Centered')
+        : (res.summary || 'Rebuild Layout complete — Review / Correct, then Apply to Autogen')
+    );
+    return { ok: true, summary: res.summary || '', metrics: m };
   }
+
+  // Expose for RUN-load auto-build (silent) and recovery Rebuild Layout
+  window.transportAutoBuildFromRun = autoBuildFromRun;
 
   function mSafe(obj) {
     return obj && typeof obj === 'object' ? obj : {};
@@ -1993,7 +2018,7 @@
 
   function bindUi() {
     $('tb-auto-build-run')?.addEventListener('click', () => {
-      autoBuildFromRun().catch((err) => A().status(`Auto Build error: ${err?.message || err}`));
+      autoBuildFromRun({ rebuild: true }).catch((err) => A().status(`Rebuild Layout error: ${err?.message || err}`));
     });
     $('tb-fit')?.addEventListener('click', () => {
       try { A().fitVisible?.(); } catch (err) { A().status(`Fit: ${err?.message || err}`); }

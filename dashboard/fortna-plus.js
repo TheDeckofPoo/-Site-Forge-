@@ -106,26 +106,39 @@ function ensureAutogenReadiness() {
 function formatSafetyZoneDiagnostics(zones) {
   /** Actionable per-zone REVIEW lines for Compile hub / activity log. */
   const list = Array.isArray(zones) ? zones : [];
+  const classify = (m) => {
+    const u = String(m || '').toUpperCase();
+    if (/ESR/.test(u)) return 'ESR';
+    if (/MCR/.test(u)) return 'MCR';
+    if (/(^|_)ES\d|ESTOP|E_STOP|E-STOP/.test(u)) return 'ESTOP';
+    return 'OTHER';
+  };
   return list.map((z) => {
     if (!z) return '';
     const name = z.name || z.safetyZone || '—';
     const area = z.area || '—';
     const convs = Array.isArray(z.conveyors) ? z.conveyors.length : Number(z.conveyor_count || 0);
     const mems = Array.isArray(z.members) ? z.members : [];
+    const buckets = { ESTOP: [], ESR: [], MCR: [], OTHER: [] };
+    mems.forEach((m) => { buckets[classify(m)].push(m); });
     const memStatus = z.safety_device_membership
       || z.device_membership_status
       || (mems.length ? 'RESOLVED' : 'UNRESOLVED');
     const gap = z.gap
       || (memStatus === 'UNRESOLVED'
-        ? 'No proven E-stop/ESR/MCR membership found.'
+        ? 'No proven RUN relationship currently maps safety devices into this zone.'
         : (z.missing || ''));
+    const areaReady = area && area !== '—' ? 'READY' : 'REVIEW';
+    const convReady = convs > 0 ? 'READY' : 'REVIEW';
     const lines = [
       `Safety Zone: ${name}`,
-      `Area: ${area}`,
-      `Conveyors: ${convs}`,
-      `Safety members: ${memStatus}${mems.length ? ` (${mems.length})` : ''}`,
+      `Area: ${area} · ${areaReady}`,
+      `Conveyors: ${convs} · ${convReady}`,
+      `E-Stops: ${buckets.ESTOP.length ? `${buckets.ESTOP.length} RESOLVED` : 'UNRESOLVED · REVIEW'}`,
+      `ESR: ${buckets.ESR.length ? `${buckets.ESR.length} RESOLVED` : 'UNRESOLVED · REVIEW'}`,
+      `MCR: ${buckets.MCR.length ? `${buckets.MCR.length} RESOLVED` : 'UNRESOLVED · REVIEW'}`,
     ];
-    if (gap && memStatus !== 'RESOLVED') lines.push(`Missing: ${gap}`);
+    if (gap && memStatus !== 'RESOLVED') lines.push(`Reason: ${gap}`);
     return lines.join('\n');
   }).filter(Boolean);
 }
@@ -500,6 +513,57 @@ function paintHubReadinessCards(map, targets, { buildFacing = false } = {}) {
   });
 }
 
+/**
+ * Compact Project Health strip — VIEW of the same Compile Hub readiness map.
+ * Does NOT create a second readiness engine.
+ */
+function paintProjectHealthStrip(map) {
+  const el = $('project-health-strip');
+  if (!el) return;
+  const chips = [
+    { key: 'run', label: 'RUN', tab: 'io', get: () => (runIsLoaded() ? { status: 'READY', detail: 'loaded' } : { status: 'NOT_DETECTED', detail: 'none' }) },
+    { key: 'hardware', label: 'HW', tab: 'io' },
+    { key: 'transport', label: 'TRANSPORT', tab: 'transport' },
+    { key: 'safety', label: 'SAFETY', tab: 'transport' },
+    { key: 'sawtooth', label: 'SAW', tab: 'sawtooth' },
+    { key: 'system', label: 'CORE', tab: 'autogen' },
+  ];
+  // Optional merge count from real workbook data only
+  const merges = (autogenState.merges_2to1 || []).filter((m) => m && (m.name || m.lane_a));
+  const icon = (st) => {
+    if (st === 'READY') return '✓';
+    if (st === 'ERROR') return '✕';
+    if (st === 'NOT_DETECTED') return '—';
+    return '⚠'; // REVIEW / CHANGED / other
+  };
+  const tone = (st) => {
+    if (st === 'READY') return 'text-emerald-400 border-emerald-800/50';
+    if (st === 'ERROR') return 'text-red-400 border-red-900/50';
+    if (st === 'NOT_DETECTED') return 'text-slate-600 border-slate-800';
+    return 'text-amber-300 border-amber-800/40';
+  };
+  const parts = chips.map((c) => {
+    const e = c.get ? c.get() : (map[c.key] || emptyReadinessEntry());
+    const st = e.status || 'NOT_DETECTED';
+    let extra = '';
+    if (c.key === 'hardware' && e.unresolved > 0) extra = String(e.unresolved);
+    if (c.key === 'safety' && e.unresolved > 0) extra = String(e.unresolved);
+    if (c.key === 'transport') {
+      const ev = transportEvidence();
+      if (ev.convN) extra = String(ev.convN);
+    }
+    const title = `${c.label}: ${readinessDisplayLabel(st)}${e.detail ? ` — ${e.detail}` : ''}`;
+    return `<button type="button" data-jump-tab="${c.tab}" class="px-1.5 py-0.5 rounded border ${tone(st)} hover:bg-slate-800/60 whitespace-nowrap" title="${escapeHtml(title)}">${icon(st)} ${c.label}${extra ? ` ${extra}` : ''}</button>`;
+  });
+  if (merges.length) {
+    parts.push(
+      `<span class="px-1.5 py-0.5 rounded border border-slate-700 text-cyan-300/90 whitespace-nowrap" title="Workbook merges (proven/configured)">MERGES ${merges.length}</span>`
+    );
+  }
+  el.innerHTML = parts.join('');
+  el.classList.toggle('hidden', !runIsLoaded() && !(map.transport?.status && map.transport.status !== 'NOT_DETECTED'));
+}
+
 /** PLC Autogen compile hub — explicit readiness cards (+ I/O Ready For Build mirror) */
 function refreshAutogenCompileHub() {
   const map = computeCompileHubReadiness();
@@ -511,6 +575,7 @@ function refreshAutogenCompileHub() {
     ['safety', 'autogen-hub-safety', 'autogen-hub-safety-detail'],
     ['system', 'autogen-hub-system', 'autogen-hub-system-detail'],
   ], { buildFacing: false });
+  try { paintProjectHealthStrip(map); } catch (_) { /* ignore */ }
   // Ready For Build strip removed from I/O & Prints — Compile hub on Autogen only.
 
   const evT = transportEvidence();
@@ -1445,10 +1510,28 @@ async function importRunPackage(path, name) {
     if (typeof window.transportBuildRefresh === 'function') {
       window.transportBuildRefresh();
     }
-    log('Transport canvas cleared for new RUN — use Auto Build for controller-scoped layout', 'ok');
+    log('Transport canvas cleared for new RUN', 'ok');
   } catch (e) {
     log(`Transport clear on import: ${e?.message || e}`, 'warn');
   }
+  // Normal commissioning path: RUN load → parse → auto Transport layout (Top-Centered).
+  // Engineer does not need to click Rebuild Layout.
+  try {
+    if (typeof window.transportAutoBuildFromRun === 'function') {
+      log('Building Transportation from RUN…', 'info');
+      const tbRes = await window.transportAutoBuildFromRun({ silent: true });
+      if (tbRes?.ok) {
+        log(tbRes.summary || 'Transportation built automatically from RUN · Top-Centered', 'ok');
+      } else if (tbRes && !tbRes.cancelled) {
+        log(`Transportation auto-build: ${tbRes.error || 'incomplete'} — use Rebuild Layout if needed`, 'warn');
+      }
+    } else {
+      log('Transportation auto-build unavailable — use Rebuild Layout on Transport tab', 'warn');
+    }
+  } catch (e) {
+    log(`Transportation auto-build: ${e?.message || e}`, 'warn');
+  }
+  try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
   return true;
 }
 
@@ -4282,9 +4365,14 @@ function renderHardwareModuleDetail() {
           || ''
         ).trim();
         try {
+          // Empty / SPARE / restore-to-source → CLEAR engineer override (purge stale names)
+          const clearSentinel = !raw
+            || /^(SPARE|N\/A|NONE|—|-)$/i.test(raw)
+            || (sourceName && raw.toLowerCase() === sourceName.toLowerCase());
+          const nameToSave = clearSentinel ? '' : raw;
           const res = await saveHwChannelOverride({
             address: addr,
-            name: raw,
+            name: nameToSave,
             sourceName,
           });
           if (!res?.success) {
@@ -4293,29 +4381,35 @@ function renderHardwareModuleDetail() {
             return;
           }
           inp.classList.remove('hw-ch-name-invalid');
-          // Patch model FIRST so re-render reads engineerName, not SPARE
+          const engOut = clearSentinel ? null : raw;
+          const effOut = engOut || sourceName || null;
+          // Patch model FIRST so re-render reads cleared/engineer state correctly
           patchHwChannelInModel(addr, {
-            engineerName: raw || null,
+            engineerName: engOut,
             sourceName,
-            effectiveName: raw || sourceName || null,
+            effectiveName: effOut,
             generate: chHit?.generate !== false,
           });
-          if (!chHit) {
-            // Force stub creation for SPARE bit
+          if (!chHit && engOut) {
+            // Force stub creation for SPARE bit that was named
             patchHwChannelInModel(addr, {
-              engineerName: raw || null,
+              engineerName: engOut,
               sourceName: sourceName || '',
-              effectiveName: raw || sourceName || null,
+              effectiveName: engOut,
               generate: true,
             });
           }
-          lastCommitted = raw;
-          // Keep displayed value immediately (before re-render)
-          inp.value = raw;
-          // Re-render from patched model (engineerName authoritative)
+          lastCommitted = nameToSave;
+          // Display: cleared → SPARE/source; else engineer name
+          inp.value = engOut || sourceName || 'SPARE';
           skipBlur = true;
           renderHardwareModuleDetail();
-          log(`Hardware I/O name → ${addr} = ${raw || '(cleared to RUN/SPARE)'} (${reason})`, 'ok');
+          log(
+            clearSentinel
+              ? `Hardware I/O name cleared → ${addr} (RUN/SPARE; override purged) (${reason})`
+              : `Hardware I/O name → ${addr} = ${raw} (logical only; physical ${addr}) (${reason})`,
+            'ok',
+          );
         } finally {
           committing = false;
         }
