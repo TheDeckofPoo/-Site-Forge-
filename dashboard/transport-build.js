@@ -1996,13 +1996,16 @@
     return false;
   }
 
-  /** True when pathCanvas has a usable SVG arc (not a near-straight chord). */
+  /** True when pathCanvas has a usable SVG arc (not a near-straight / unreadable chord). */
   function pathHasValidArc(pathCanvas) {
     if (!pathCanvas || !pathCanvas.length) return false;
     const arc = pathCanvas.find((c) => String(c.cmd || '').toLowerCase() === 'arc');
     if (!arc) return false;
     const r = Number(arc.radius);
-    if (!(r > 1)) return false;
+    // Site-scale projection can shrink a 266" radius curve to ~3–16 px — too small
+    // to read as a quarter-turn next to long belts. Treat tiny arcs as degenerate
+    // so synthesizeCurveDisplayPath rebuilds a readable display quarter-turn.
+    if (!(r > 18)) return false;
     const sweep = Math.abs(Number(arc.sweep_deg));
     if (Number.isFinite(sweep) && sweep > 0 && sweep < 25) return false;
     return true;
@@ -2014,12 +2017,12 @@
    * Does not mutate topology / canonical sourceX/Y / pathCanvas on the node.
    */
   function synthesizeCurveDisplayPath(n) {
-    const entry = n?.entryCanvas;
-    const exit = n?.exitCanvas;
+    let entry = n?.entryCanvas ? { x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) } : null;
+    let exit = n?.exitCanvas ? { x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) } : null;
     if (!entry || !exit) return null;
-    const dx = Number(exit.x) - Number(entry.x);
-    const dy = Number(exit.y) - Number(entry.y);
-    const chord = Math.hypot(dx, dy);
+    let dx = exit.x - entry.x;
+    let dy = exit.y - entry.y;
+    let chord = Math.hypot(dx, dy);
     if (!(chord > 2)) return null;
 
     const s = presentationScale();
@@ -2033,6 +2036,21 @@
     // 90° chord length = r√2 → r = chord/√2
     if (!(rCl > 1) || Math.abs(rCl * Math.SQRT2 - chord) > chord * 0.55) {
       rCl = chord / Math.SQRT2;
+    }
+    // Inflate tiny site-scale chords so the DISPLAY quarter-turn is readable.
+    // Canonical entryCanvas/exitCanvas (PE/wires) stay untouched — only this path.
+    const minR = 28;
+    if (rCl < minR) {
+      const needChord = minR * Math.SQRT2;
+      const grow = needChord / chord;
+      const mx0 = (entry.x + exit.x) / 2;
+      const my0 = (entry.y + exit.y) / 2;
+      entry = { x: mx0 + (entry.x - mx0) * grow, y: my0 + (entry.y - my0) * grow };
+      exit = { x: mx0 + (exit.x - mx0) * grow, y: my0 + (exit.y - my0) * grow };
+      dx = exit.x - entry.x;
+      dy = exit.y - entry.y;
+      chord = Math.hypot(dx, dy);
+      rCl = minR;
     }
 
     let signedSweep = null;
@@ -2992,11 +3010,119 @@
     return tb.spatialOutliers;
   }
 
-  function fitViewToNodes(nodes, { mode, paddingFrac, minZoom, maxZoom, excludeOutliers } = {}) {
+  /**
+   * Connected components from wires + downstream tags (engineering topology).
+   * Does not invent edges — only proven wires / downstream relationships.
+   */
+  function computeConnectedComponents(nodes, wires) {
+    const list = (nodes || []).filter((n) => isConv(n.kind));
+    const byId = new Map(list.map((n) => [n.id, n]));
+    const byTag = new Map();
+    list.forEach((n) => {
+      const t = String(n.conveyorTag || '').trim().toUpperCase();
+      if (t) byTag.set(t, n);
+    });
+    const adj = new Map(list.map((n) => [n.id, new Set()]));
+    const link = (a, b) => {
+      if (!a || !b || a === b || !adj.has(a) || !adj.has(b)) return;
+      adj.get(a).add(b);
+      adj.get(b).add(a);
+    };
+    (wires || []).forEach((w) => link(w.from, w.to));
+    list.forEach((n) => {
+      const ds = String(n.downstream || '').trim().toUpperCase();
+      if (!ds) return;
+      const dst = byTag.get(ds);
+      if (dst) link(n.id, dst.id);
+    });
+    const seen = new Set();
+    const components = [];
+    list.forEach((n) => {
+      if (seen.has(n.id)) return;
+      const stack = [n.id];
+      const members = [];
+      seen.add(n.id);
+      while (stack.length) {
+        const id = stack.pop();
+        members.push(byId.get(id));
+        (adj.get(id) || []).forEach((nb) => {
+          if (!seen.has(nb)) {
+            seen.add(nb);
+            stack.push(nb);
+          }
+        });
+      }
+      const tags = members.map((m) => m.conveyorTag || m.id).filter(Boolean);
+      components.push({
+        size: members.length,
+        nodes: members,
+        tags,
+        isIsland: members.length <= 2,
+      });
+    });
+    components.sort((a, b) => b.size - a.size);
+    const primary = components[0] || null;
+    const islandCount = components.filter((c) => c !== primary).length;
+    tb.topologyComponents = {
+      count: components.length,
+      primarySize: primary ? primary.size : 0,
+      islandCount,
+      components: components.map((c, i) => ({
+        id: i + 1,
+        size: c.size,
+        tags: c.tags.slice(0, 40),
+        isPrimary: i === 0,
+        isIsland: i > 0,
+      })),
+    };
+    return tb.topologyComponents;
+  }
+
+  function fitViewToNodes(nodes, { mode, paddingFrac, minZoom, maxZoom, excludeOutliers, primaryComponentOnly } = {}) {
     const canvas = $('tb-canvas');
     if (!canvas) return null;
     let useNodes = nodes || [];
     let outlierInfo = null;
+    // Prefer PRIMARY connected component for centering so islands don't shove
+    // the main system off to one side (still accessible via Fit All / pan).
+    const preferPrimary = primaryComponentOnly !== false;
+    if (preferPrimary && useNodes.length >= 3) {
+      const area = activeArea();
+      const topo = computeConnectedComponents(useNodes, area?.wires || []);
+      // Map tag → component size
+      const tagSize = new Map();
+      (topo.components || []).forEach((c) => {
+        (c.tags || []).forEach((t) => tagSize.set(String(t).toUpperCase(), c.size));
+      });
+      // Fit bbox: LOCAL engineering topology — exclude EXTERNAL_REFERENCE display
+      // context and singleton islands so they cannot shove the main system aside.
+      // Islands remain on the canvas (Fit All / pan). No invented edges.
+      const fitCandidates = useNodes.filter((n) => {
+        if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE' || n.displayContext) {
+          return false;
+        }
+        const t = String(n.conveyorTag || '').trim().toUpperCase();
+        const sz = tagSize.get(t) || tagSize.get(String(n.id).toUpperCase()) || 1;
+        return sz >= 3; // keep chains of 3+; drop true singletons/pairs from fit frame
+      });
+      if (fitCandidates.length >= 4) {
+        useNodes = fitCandidates;
+      } else if ((topo.components || [])[0]?.size >= 2) {
+        const pTags = new Set(((topo.components || [])[0].tags || []).map((t) => String(t).toUpperCase()));
+        const primaryNodes = useNodes.filter((n) => {
+          const t = String(n.conveyorTag || '').trim().toUpperCase();
+          return (t && pTags.has(t)) || pTags.has(String(n.id).toUpperCase());
+        });
+        if (primaryNodes.length >= 2) useNodes = primaryNodes;
+      }
+      try {
+        if (typeof status === 'function') {
+          status(
+            `CONNECTED COMPONENTS: ${topo.count} · PRIMARY: ${topo.primarySize} · ISLANDS: ${topo.islandCount}`
+          );
+        }
+      } catch (_) { /* ignore */ }
+    }
     if (excludeOutliers) {
       outlierInfo = classifySpatialOutliers(useNodes);
       if ((outlierInfo.mainCluster || []).length >= 2) {
@@ -3175,7 +3301,12 @@
       const meta = KIND_META[n.kind] || { icon: 'fa-cube', color: 'text-slate-300', title: n.kind };
       const el = document.createElement('div');
       el.dataset.id = n.id;
-      const useSchematic = isSchematicNode(n) && (tb.layers?.physical !== false);
+      // Clean schematic is NORMAL: draw pathCanvas/curve bodies in #tb-schematic.
+      // Physical-debug layer (tb.layers.physical === true) may still use segment cards
+      // for non-schematic nodes. Never require physical=true to show curves — that
+      // inverted gate made CURVE nodes render as horizontal .tb-seg.tb-curve pills
+      // (P226 acceptance failure).
+      const useSchematic = isSchematicNode(n);
       const useSeg = !useSchematic && isPhysicalSeg(n);
       const rot = Number(n.rotation || 0) % 360;
       const sides = portSides(useSeg ? 0 : rot); // segment ports sit on length ends

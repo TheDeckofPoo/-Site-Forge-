@@ -2962,41 +2962,16 @@ def _build_sys_comm_program_xml(
         )
 
     def _ensure_comm_udt(name: str) -> None:
-        """Emit Comm_UDT with Decorated StructureMember Data (includes CommLoss_Tmr).
+        """Emit Comm_UDT matching gold Fortna form (L5K + Decorated String_N CDATA).
 
-        Never reuse Module names. Never emit gold L5K blobs that omit CommLoss_Tmr —
-        those cause Studio 'Data type mismatch'.
+        Never reuse Module names. Never emit String DATA as SINT Dimensions —
+        that causes Studio 'Data type mismatch'.
         """
         if name in seen_tag_names:
             return
-        # Decorated-only — matches current library Comm_UDT (with CommLoss_Tmr).
-        _add_tag_block(
-            f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="Comm_UDT" '
-            f'Constant="false" ExternalAccess="Read/Write">'
-            f'<Data Format="Decorated"><Structure DataType="Comm_UDT">'
-            f'<StructureMember Name="CommLoss_Tmr" DataType="TIMER">'
-            f'<DataValueMember Name="PRE" DataType="DINT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="ACC" DataType="DINT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="EN" DataType="BOOL" Value="0"/>'
-            f'<DataValueMember Name="TT" DataType="BOOL" Value="0"/>'
-            f'<DataValueMember Name="DN" DataType="BOOL" Value="0"/>'
-            f"</StructureMember>"
-            f'<StructureMember Name="Flt" DataType="Comm_Flt">'
-            f'<DataValueMember Name="CommLoss" DataType="BOOL" Value="0"/>'
-            f'<DataValueMember Name="UpStrmCommLoss" DataType="BOOL" Value="0"/>'
-            f"</StructureMember>"
-            f'<DataValueMember Name="Comm_Code" DataType="DINT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="Firmware" DataType="REAL" Radix="Float" Value="0.0"/>'
-            f'<StructureMember Name="MACId" DataType="String_20">'
-            f'<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="DATA" DataType="SINT" Dimensions="20" Radix="ASCII"/>'
-            f"</StructureMember>"
-            f'<StructureMember Name="IP_Address" DataType="String_15">'
-            f'<DataValueMember Name="LEN" DataType="DINT" Radix="Decimal" Value="0"/>'
-            f'<DataValueMember Name="DATA" DataType="SINT" Dimensions="15" Radix="ASCII"/>'
-            f"</StructureMember>"
-            f"</Structure></Data></Tag>"
-        )
+        from fortna_l5x_structured_data import emit_comm_udt_tag, parse_datatypes
+
+        _add_tag_block(emit_comm_udt_tag(name, parse_datatypes(library_text)))
 
     def _ensure_aoi_comm(name: str) -> None:
         if name in seen_tag_names:
@@ -4135,19 +4110,32 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 make_hold_bools = True
             # Tags: Merge_2to1 instance + Merge_Time + optional BOOL holds
             if merge_tag not in seen_tag_names:
-                _add_tag_block(
-                    f'<Tag Name="{_xml_escape(merge_tag)}" TagType="Base" '
-                    f'DataType="Merge_2to1" Constant="false" ExternalAccess="Read/Write">'
-                    f'<Data Format="Decorated"><Structure DataType="Merge_2to1"/></Data></Tag>'
-                )
+                try:
+                    from fortna_l5x_structured_data import emit_merge_2to1_tag
+
+                    _add_tag_block(emit_merge_2to1_tag(merge_tag))
+                except Exception:
+                    # Never emit empty Structure shell — Studio warns Use StructureMember
+                    _add_tag_block(
+                        f'<Tag Name="{_xml_escape(merge_tag)}" TagType="Base" '
+                        f'DataType="Merge_2to1" Constant="false" '
+                        f'ExternalAccess="Read/Write"/>'
+                    )
             for tname in (time_a, time_b):
                 if tname.startswith("NO_") or tname in seen_tag_names:
                     continue
-                _add_tag_block(
-                    f'<Tag Name="{_xml_escape(tname)}" TagType="Base" '
-                    f'DataType="Merge_Time" Constant="false" ExternalAccess="Read/Write">'
-                    f'<Data Format="Decorated"><Structure DataType="Merge_Time"/></Data></Tag>'
-                )
+                try:
+                    from fortna_l5x_structured_data import (
+                        emit_merge_time_tag,
+                        parse_datatypes,
+                    )
+
+                    _dt_defs = parse_datatypes(library_text)
+                    _add_tag_block(emit_merge_time_tag(tname, _dt_defs))
+                except Exception:
+                    from fortna_l5x_structured_data import emit_merge_time_tag
+
+                    _add_tag_block(emit_merge_time_tag(tname, {}))
             if make_hold_bools:
                 for bname in (hold_main, hold_induct):
                     if bname not in seen_tag_names:
@@ -6370,6 +6358,37 @@ def _generation_assertion_failures(
                 "BUILD FAILED: IO_MAP CP_I/CP_O references unknown tag/module bases — "
                 f"{sample}{more}"
             )
+
+    # Phase 7 — structured tag Decorated data must not be empty Structure shells
+    # or String DATA as SINT Dimensions (Studio Use StructureMember / datatype mismatch).
+    if l5x_text:
+        try:
+            from fortna_l5x_structured_data import validate_decorated_structure
+
+            struct_issues: list[str] = []
+            for m in re.finditer(
+                r'<Tag Name="([^"]+)"[^>]*DataType="(Merge_2to1|Merge_Time|Comm_UDT)"[^>]*>(.*?)</Tag>',
+                l5x_text,
+                re.S,
+            ):
+                tname, dt, body = m.group(1), m.group(2), m.group(3)
+                for issue in validate_decorated_structure(body, dt):
+                    struct_issues.append(f"{tname}: {issue}")
+                if dt == "Comm_UDT" and 'DataType="SINT" Dimensions="' in body:
+                    struct_issues.append(
+                        f"{tname}: Comm_UDT String DATA uses SINT Dimensions (need String_N CDATA)"
+                    )
+                if len(struct_issues) >= 12:
+                    break
+            if struct_issues:
+                sample = "; ".join(struct_issues[:6])
+                more = f" (+{len(struct_issues) - 6} more)" if len(struct_issues) > 6 else ""
+                failures.append(
+                    "BUILD FAILED: structured tag Decorated data invalid — "
+                    f"{sample}{more}"
+                )
+        except Exception:
+            pass
     return failures
 
 

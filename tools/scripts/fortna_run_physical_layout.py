@@ -410,12 +410,54 @@ def build_transport_graph(
                 w["toPort"] = f"in{idx}"
                 idx += 1
 
-    # Disconnected = no inbound and no outbound wire
+    # Disconnected = no inbound and no outbound wire (legacy metric)
     connected_ids = set()
     for w in wires:
         connected_ids.add(w["from"])
         connected_ids.add(w["to"])
     disconnected = sum(1 for n in nodes if n["id"] not in connected_ids)
+
+    # True connected components from wires + downstream tags (no invented edges)
+    by_tag = {
+        str(n.get("conveyorTag") or "").strip().upper(): n["id"]
+        for n in nodes
+        if str(n.get("conveyorTag") or "").strip()
+    }
+    adj: dict[str, set[str]] = {n["id"]: set() for n in nodes}
+
+    def _link(a: str, b: str) -> None:
+        if a and b and a != b and a in adj and b in adj:
+            adj[a].add(b)
+            adj[b].add(a)
+
+    for w in wires:
+        _link(w.get("from") or "", w.get("to") or "")
+    for n in nodes:
+        ds = str(n.get("downstream") or "").strip().upper()
+        if ds and ds in by_tag:
+            _link(n["id"], by_tag[ds])
+    seen_cc: set[str] = set()
+    components: list[dict] = []
+    node_by_id = {n["id"]: n for n in nodes}
+    for n in nodes:
+        nid = n["id"]
+        if nid in seen_cc:
+            continue
+        stack = [nid]
+        seen_cc.add(nid)
+        member_ids: list[str] = []
+        while stack:
+            cur = stack.pop()
+            member_ids.append(cur)
+            for nb in adj.get(cur) or []:
+                if nb not in seen_cc:
+                    seen_cc.add(nb)
+                    stack.append(nb)
+        tags = [str(node_by_id[i].get("conveyorTag") or i) for i in member_ids]
+        components.append({"size": len(member_ids), "tags": tags, "ids": member_ids})
+    components.sort(key=lambda c: -c["size"])
+    primary_size = components[0]["size"] if components else 0
+    island_count = max(0, len(components) - 1) if components else 0
 
     graph = {
         "version": 2,
@@ -444,6 +486,18 @@ def build_transport_graph(
             "conveyors_with_usable_xy": summary.get("usable_xy", placed),
             "conveyors_with_usable_angle": summary.get("usable_angle", 0),
             "conveyors_with_usable_length": summary.get("usable_length_width", 0),
+            "connected_components": len(components),
+            "primary_component_size": primary_size,
+            "island_components": island_count,
+            "component_summary": [
+                {
+                    "id": i + 1,
+                    "size": c["size"],
+                    "tags": c["tags"][:24],
+                    "is_primary": i == 0,
+                }
+                for i, c in enumerate(components[:12])
+            ],
             "motors_discovered": motors_total,
             "vfd_motors": motors_vfd,
             "contactor_motors": motors_contactor,

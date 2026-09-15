@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """Reusable ES / Safety Program emitter (PLC4/PLC5 structural pattern).
 
+Structural reference (do not copy site membership):
+  docs/es-reference/ES_Program_PLC5_structural.L5X
+
 Program ES
   Main_Routine: JSR(<Zone>_Safe_Logic) + JSR(<Zone>_Safe_PI) per Safety Zone
   Safe_Logic:   ES_SIL1_Cat1 per member
@@ -8,7 +11,8 @@ Program ES
 
 Conveyor→SafetyZone comes from Transportation (engineer-authoritative).
 Safety-device membership must be proven RUN evidence or explicit engineer
-members — never inferred from similar names / Area alone.
+members on safety_build.zones[].members — never inferred from similar names
+or copied from PLC4/PLC5 site lists.
 """
 from __future__ import annotations
 
