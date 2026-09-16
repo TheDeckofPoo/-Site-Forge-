@@ -1,6 +1,10 @@
 # FortnaPlus `.mnu` Relationships (Site Forge interest)
 Explicit cross-table name tokens from `DLIST` in the analyzed `fortna.mnu` + `project.mnu`. Similar equipment names are **not** evidence.
 
+**Upgrade:** runtime-proven STATIC/DYNAMIC selection resolution is documented in
+`docs/FORTNAPLUS_MNU_RUNTIME.md` and emitted by `tools/scripts/fortna_mnu_runtime.py`.
+This file remains the earlier DLIST inventory snapshot.
+
 Total DLIST name tokens: **2386** · resolved: **2342** · unresolved: **44**
 
 ## Site Forge-relevant definitions

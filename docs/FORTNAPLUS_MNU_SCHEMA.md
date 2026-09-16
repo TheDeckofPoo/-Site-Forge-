@@ -1,5 +1,8 @@
 # FortnaPlus `.mnu` Schema (Proven Grammar)
 Archaeology checkpoint. This document records only what the supplied `fortna.mnu` / `project.mnu` files prove. Unknown column semantics remain unknown.
+
+See also **`docs/FORTNAPLUS_MNU_RUNTIME.md`** for SOURCE_PROVEN FortnaPlus runtime
+semantics (`find_data_source`, datatype constants, ASC selection resolution).
 ## Files analyzed
 - `workspace\_plc2_run_peek\RUN\FORTNA\fortna.mnu` · origin=FORTNA · definitions=493 · fields=8827 · lines=9814 · bytes=1191828
 - `workspace\_reno_peek\20260813-1132-MSCRENO-MSCRENOPACK-RUN\RUN\FORTNA\fortna.mnu` · origin=FORTNA · definitions=495 · fields=8837 · lines=9828 · bytes=1193377
@@ -48,7 +51,13 @@ For readability the decoder exposes these header names as convenience fields wit
 When `DLIST` is a non-blank quoted string, the decoder records `listReference = <unquoted DLIST>`.
 If that string equals an `MNUNAME` present in the loaded schema(s), `resolved=true`.
 
-**Not asserted:** that `DLIST` is a foreign key, that `DSRC` selects a join key, or that any numeric code maps to a PLC type.
+**SOURCE_PROVEN (runtime upgrade):** FortnaPlus loads `DLIST` into a temporary select
+string and, for selection datatypes, resolves it with `menu_info()` into
+`dataselect[menu][column]` (a menu index). `DSRC` is the `datasource[][]` column
+index used by `find_data_source()`. See `docs/FORTNAPLUS_MNU_RUNTIME.md`.
+
+**Still not asserted:** that every selection is physical equipment connectivity or
+PLC tag ownership.
 
 ## FORTNA vs PROJECT combination
 Combined unique definition names: **687**.
