@@ -1,0 +1,149 @@
+{
+  "findings": [
+    {
+      "classification": "GENERIC_BEHAVIOR_CONFIRMED",
+      "detail": "All sites loaded tables/records via same CP2 path",
+      "id": "loader_completeness",
+      "tablesLoaded": {
+        "plc2": 617,
+        "plc4": 617,
+        "plc5": 617
+      }
+    },
+    {
+      "classification": "GENERIC_BEHAVIOR_CONFIRMED",
+      "detail": {
+        "plc2": 303,
+        "plc4": 354,
+        "plc5": 360
+      },
+      "id": "dynamic_resolution_present"
+    },
+    {
+      "classification": "GENERIC_BEHAVIOR_CONFIRMED",
+      "detail": {
+        "plc2": 687,
+        "plc4": 687,
+        "plc5": 687
+      },
+      "id": "schema_menu_count_same"
+    },
+    {
+      "classification": "SITE_DATA_DIFFERENCE",
+      "detail": {
+        "plc2": 87,
+        "plc4": 87,
+        "plc5": 87
+      },
+      "id": "machine_specific_selection"
+    },
+    {
+      "classification": "SITE_DATA_DIFFERENCE",
+      "detail": {
+        "plc2": 315281,
+        "plc4": 305853,
+        "plc5": 299037
+      },
+      "id": "taxonomy_EMPTY_SOURCE_VALUE"
+    },
+    {
+      "classification": "SITE_DATA_DIFFERENCE",
+      "detail": {
+        "plc2": 718,
+        "plc4": 702,
+        "plc5": 702
+      },
+      "id": "taxonomy_TARGET_COLUMN_MISSING"
+    }
+  ],
+  "gatePassBySite": {
+    "plc2": true,
+    "plc4": true,
+    "plc5": true
+  },
+  "kind": "FortnaDecoderCrossSiteReport",
+  "metrics": {
+    "dynamic": {
+      "plc2": 303,
+      "plc4": 354,
+      "plc5": 360
+    },
+    "edgesRecord": {
+      "plc2": 359969,
+      "plc4": 359969,
+      "plc5": 359969
+    },
+    "fallbackStatic": {
+      "plc2": 2457,
+      "plc4": 2406,
+      "plc5": 2400
+    },
+    "genericAsc": {
+      "plc2": 530,
+      "plc4": 530,
+      "plc5": 530
+    },
+    "machineSpecific": {
+      "plc2": 87,
+      "plc4": 87,
+      "plc5": 87
+    },
+    "missingTables": {
+      "plc2": 70,
+      "plc4": 70,
+      "plc5": 70
+    },
+    "recordsLoaded": {
+      "plc2": 143847,
+      "plc4": 143847,
+      "plc5": 143947
+    },
+    "resolved": {
+      "plc2": 43970,
+      "plc4": 53414,
+      "plc5": 60230
+    },
+    "schemaMenus": {
+      "plc2": 687,
+      "plc4": 687,
+      "plc5": 687
+    },
+    "static": {
+      "plc2": 357209,
+      "plc4": 357209,
+      "plc5": 357209
+    },
+    "tablesLoaded": {
+      "plc2": 617,
+      "plc4": 617,
+      "plc5": 617
+    }
+  },
+  "sites": [
+    "plc2",
+    "plc4",
+    "plc5"
+  ],
+  "unitTests": {
+    "detail": "skipped",
+    "pass": true
+  },
+  "unresolvedTaxonomyBySite": {
+    "plc2": {
+      "DYNAMIC_CAPABLE_SCHEMA": 21,
+      "EMPTY_SOURCE_VALUE": 315281,
+      "TARGET_COLUMN_MISSING": 718
+    },
+    "plc4": {
+      "DYNAMIC_CAPABLE_SCHEMA": 21,
+      "EMPTY_SOURCE_VALUE": 305853,
+      "TARGET_COLUMN_MISSING": 702
+    },
+    "plc5": {
+      "DYNAMIC_CAPABLE_SCHEMA": 21,
+      "EMPTY_SOURCE_VALUE": 299037,
+      "TARGET_COLUMN_MISSING": 702
+    }
+  },
+  "version": 1
+}

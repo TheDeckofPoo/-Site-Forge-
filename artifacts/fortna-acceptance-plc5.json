@@ -1,0 +1,1966 @@
+{
+  "acName": "ORNCCP5",
+  "gates": {
+    "CP1": {
+      "definitions": 493,
+      "fields": 8827,
+      "lines": 9814,
+      "pass": true,
+      "projectDefinitions": 194,
+      "projectFields": 2868
+    },
+    "CP2": {
+      "pass": true,
+      "summary": {
+        "conversionFailures": 0,
+        "genericFallbacks": 530,
+        "machineSpecificSelections": 87,
+        "malformedLongRecords": 0,
+        "malformedShortRecords": 0,
+        "missingTables": 70,
+        "schemaMenus": 687,
+        "schemaNoPhysicalTableDiagnostics": 70,
+        "tablesAttempted": 687,
+        "tablesLoaded": 617,
+        "totalRecords": 143947,
+        "totalValues": 1851198,
+        "unsupportedDatatypeConversions": 0,
+        "unsupportedRom": 0
+      }
+    },
+    "CP3": {
+      "graphOut": "artifacts\\fortna-reference-graph-plc5.json",
+      "graphSha256": "89bb18eb11a2877c032737e2b431cdb65988228fa88069e0bc127bd0af9be741",
+      "pass": true,
+      "proofs": {
+        "dynamicSamples": [
+          {
+            "dataselect": "DataSets",
+            "datasource": 22,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_Str",
+            "sourceColumnIndex": 6,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "FPLiteOReilly",
+            "sourceRecord": 4,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "FPLiteOReilly",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": 664,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": null,
+            "datasource": 22,
+            "datatypeName": "MENU_COLUMN_ROW",
+            "datatypeRaw": 25,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "MENU_COLUMN_ROW_name_match",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_StrCol",
+            "sourceColumnIndex": 7,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "Menu_Name",
+            "sourceRecord": 4,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "Menu_Name",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": null,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "DataSets",
+            "datasource": 22,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_StrRec",
+            "sourceColumnIndex": 8,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "FPLiteOReilly",
+            "sourceRecord": 4,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "FPLiteOReilly",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": 664,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "DataSets",
+            "datasource": 22,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_Str",
+            "sourceColumnIndex": 6,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "Conveyor",
+            "sourceRecord": 5,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "Conveyor",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": 46,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": null,
+            "datasource": 22,
+            "datatypeName": "MENU_COLUMN_ROW",
+            "datatypeRaw": 25,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "MENU_COLUMN_ROW_name_match",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_StrCol",
+            "sourceColumnIndex": 7,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "Menu_Name",
+            "sourceRecord": 5,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "Menu_Name",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": null,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "DataSets",
+            "datasource": 22,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_StrRec",
+            "sourceColumnIndex": 8,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "Conveyor",
+            "sourceRecord": 5,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "Conveyor",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": 46,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "DataSets",
+            "datasource": 22,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_Str",
+            "sourceColumnIndex": 6,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "ProcType",
+            "sourceRecord": 6,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ProcType",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": 15,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": null,
+            "datasource": 22,
+            "datatypeName": "MENU_COLUMN_ROW",
+            "datatypeRaw": 25,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "MENU_COLUMN_ROW_name_match",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_StrCol",
+            "sourceColumnIndex": 7,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "Menu_Name",
+            "sourceRecord": 6,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "Menu_Name",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": null,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "DataSets",
+            "datasource": 22,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_StrRec",
+            "sourceColumnIndex": 8,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "ProcType",
+            "sourceRecord": 6,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ProcType",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": 15,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "DataSets",
+            "datasource": 22,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "DYNAMIC",
+            "scope": "RECORD",
+            "sourceColumn": "Select_Str",
+            "sourceColumnIndex": 6,
+            "sourceMenu": "MenuColumn",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\MenuColumn.asc",
+            "sourceRawValue": "PrintApplyLine",
+            "sourceRecord": 15,
+            "status": "RESOLVED",
+            "targetColumn": "Menu_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "PrintApplyLine",
+            "targetMenu": "MenuMenu",
+            "targetMenuIndex": 132,
+            "targetRecord": 508,
+            "unresolvedReason": null
+          }
+        ],
+        "estopSamples": [
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "1ES",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "1ES",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 232,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "1ES",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "1ES",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 3,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "4ES",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "4ES",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 242,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "4ES",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "4ES",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 6,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "5ES",
+            "sourceRecord": 3,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "5ES",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 252,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "5ES",
+            "sourceRecord": 3,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "5ES",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 9,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "6ES",
+            "sourceRecord": 4,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "6ES",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 262,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "6ES",
+            "sourceRecord": 4,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "6ES",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 12,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES422",
+            "sourceRecord": 5,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES422",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 277,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES422",
+            "sourceRecord": 5,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES422",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 14,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES500",
+            "sourceRecord": 6,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES500",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 278,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES500",
+            "sourceRecord": 6,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES500",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 15,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES610F",
+            "sourceRecord": 7,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES610F",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 279,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES610F",
+            "sourceRecord": 7,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES610F",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 16,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES610G",
+            "sourceRecord": 8,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES610G",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 280,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES610G",
+            "sourceRecord": 8,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES610G",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 17,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES610H",
+            "sourceRecord": 9,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES610H",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 281,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES610H",
+            "sourceRecord": 9,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES610H",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 18,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Part",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES610I",
+            "sourceRecord": 10,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES610I",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 282,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "EStop",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\EStop.asc",
+            "sourceRawValue": "ES610I",
+            "sourceRecord": 10,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ES610I",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 19,
+            "unresolvedReason": null
+          }
+        ],
+        "jamcheckSamples": [
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Sensor_Name",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "PE308_J",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "PE308_J",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 553,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "timemenu",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Timer_Name",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "tmPE308_J",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "Timer_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "tmPE308_J",
+            "targetMenu": "timemenu",
+            "targetMenuIndex": 271,
+            "targetRecord": 66,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error_Name",
+            "sourceColumnIndex": 5,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "PE308_J",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "PE308_J",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 78,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Conveyor_Name",
+            "sourceColumnIndex": 6,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "P308",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "P308",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 63,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Jamzones",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Zone",
+            "sourceColumnIndex": 7,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "BIN MERGE",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "Zone Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "BIN MERGE",
+            "targetMenu": "Jamzones",
+            "targetMenuIndex": 103,
+            "targetRecord": 7,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Machine",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Jam_Owner",
+            "sourceColumnIndex": 8,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "ORNCCP4",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "Machine_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ORNCCP4",
+            "targetMenu": "Machine",
+            "targetMenuIndex": 18,
+            "targetRecord": 3,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Motor Under Jam Eye",
+            "sourceColumnIndex": 10,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "M306_AUX",
+            "sourceRecord": 1,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "M306_AUX",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 436,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Sensor_Name",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "PE414_J",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "PE414_J",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 555,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "timemenu",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Timer_Name",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "tmPE414_J",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "Timer_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "tmPE414_J",
+            "targetMenu": "timemenu",
+            "targetMenuIndex": 271,
+            "targetRecord": 67,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error_Name",
+            "sourceColumnIndex": 5,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "PE414_J",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "PE414_J",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 79,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Conveyor_Name",
+            "sourceColumnIndex": 6,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "P416",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "P416",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 86,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Jamzones",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Zone",
+            "sourceColumnIndex": 7,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "SAWTOOTH MERGE",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "Zone Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "SAWTOOTH MERGE",
+            "targetMenu": "Jamzones",
+            "targetMenuIndex": 103,
+            "targetRecord": 5,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Machine",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Jam_Owner",
+            "sourceColumnIndex": 8,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "ORNCCP4",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "Machine_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ORNCCP4",
+            "targetMenu": "Machine",
+            "targetMenuIndex": 18,
+            "targetRecord": 3,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Motor Under Jam Eye",
+            "sourceColumnIndex": 10,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "VFD414_AUX",
+            "sourceRecord": 2,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "VFD414_AUX",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 650,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Sensor_Name",
+            "sourceColumnIndex": 2,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "PE414A_J",
+            "sourceRecord": 3,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "PE414A_J",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 556,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "timemenu",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Timer_Name",
+            "sourceColumnIndex": 3,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "tmPE414A_J",
+            "sourceRecord": 3,
+            "status": "RESOLVED",
+            "targetColumn": "Timer_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "tmPE414A_J",
+            "targetMenu": "timemenu",
+            "targetMenuIndex": 271,
+            "targetRecord": 68,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Errors",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Error_Name",
+            "sourceColumnIndex": 5,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "PE414A_J",
+            "sourceRecord": 3,
+            "status": "RESOLVED",
+            "targetColumn": "ErrorName",
+            "targetColumnIndex": 1,
+            "targetIdentity": "PE414A_J",
+            "targetMenu": "Errors",
+            "targetMenuIndex": 65,
+            "targetRecord": 80,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Conveyor",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Conveyor_Name",
+            "sourceColumnIndex": 6,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "P412",
+            "sourceRecord": 3,
+            "status": "RESOLVED",
+            "targetColumn": "IO_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "P412",
+            "targetMenu": "Conveyor",
+            "targetMenuIndex": 45,
+            "targetRecord": 85,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Jamzones",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Zone",
+            "sourceColumnIndex": 7,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "SAWTOOTH MERGE",
+            "sourceRecord": 3,
+            "status": "RESOLVED",
+            "targetColumn": "Zone Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "SAWTOOTH MERGE",
+            "targetMenu": "Jamzones",
+            "targetMenuIndex": 103,
+            "targetRecord": 5,
+            "unresolvedReason": null
+          },
+          {
+            "dataselect": "Machine",
+            "datasource": 0,
+            "datatypeName": "SELECTION_UNIQUE",
+            "datatypeRaw": 21,
+            "evidence": [
+              {
+                "evidence": "fmenu.c::find_data_source",
+                "rule": "find_data_source",
+                "status": "SOURCE_PROVEN"
+              },
+              {
+                "rule": "selection_identity_lookup",
+                "status": "SOURCE_PROVEN"
+              }
+            ],
+            "provenance": "SOURCE_PROVEN",
+            "resolutionMode": "STATIC",
+            "scope": "RECORD",
+            "sourceColumn": "Jam_Owner",
+            "sourceColumnIndex": 8,
+            "sourceMenu": "Jamcheck",
+            "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Jamcheck.asc",
+            "sourceRawValue": "ORNCCP4",
+            "sourceRecord": 3,
+            "status": "RESOLVED",
+            "targetColumn": "Machine_Name",
+            "targetColumnIndex": 1,
+            "targetIdentity": "ORNCCP4",
+            "targetMenu": "Machine",
+            "targetMenuIndex": 18,
+            "targetRecord": 3,
+            "unresolvedReason": null
+          }
+        ],
+        "merge316": [],
+        "merge324": [],
+        "mtrchainM314": {
+          "columns": {
+            "Enabled": {
+              "dataselect": "Conveyor",
+              "datasource": 0,
+              "datatypeName": "SELECTION_UNIQUE",
+              "datatypeRaw": 21,
+              "evidence": [
+                {
+                  "evidence": "fmenu.c::find_data_source",
+                  "rule": "find_data_source",
+                  "status": "SOURCE_PROVEN"
+                },
+                {
+                  "rule": "selection_identity_lookup",
+                  "status": "SOURCE_PROVEN"
+                }
+              ],
+              "provenance": "SOURCE_PROVEN",
+              "resolutionMode": "STATIC",
+              "scope": "RECORD",
+              "sourceColumn": "Enabled",
+              "sourceColumnIndex": 18,
+              "sourceMenu": "Mtrchain",
+              "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Mtrchain.asc",
+              "sourceRawValue": "M136_AUX",
+              "sourceRecord": 55,
+              "status": "RESOLVED",
+              "targetColumn": "IO_Name",
+              "targetColumnIndex": 1,
+              "targetIdentity": "M136_AUX",
+              "targetMenu": "Conveyor",
+              "targetMenuIndex": 45,
+              "targetRecord": 729,
+              "unresolvedReason": null
+            },
+            "Motor_Aux": {
+              "dataselect": "Conveyor",
+              "datasource": 0,
+              "datatypeName": "SELECTION_UNIQUE",
+              "datatypeRaw": 21,
+              "evidence": [
+                {
+                  "evidence": "fmenu.c::find_data_source",
+                  "rule": "find_data_source",
+                  "status": "SOURCE_PROVEN"
+                },
+                {
+                  "rule": "selection_identity_lookup",
+                  "status": "SOURCE_PROVEN"
+                }
+              ],
+              "provenance": "SOURCE_PROVEN",
+              "resolutionMode": "STATIC",
+              "scope": "RECORD",
+              "sourceColumn": "Motor_Aux",
+              "sourceColumnIndex": 15,
+              "sourceMenu": "Mtrchain",
+              "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Mtrchain.asc",
+              "sourceRawValue": "LATCH_MERGE_316",
+              "sourceRecord": 55,
+              "status": "RESOLVED",
+              "targetColumn": "IO_Name",
+              "targetColumnIndex": 1,
+              "targetIdentity": "LATCH_MERGE_316",
+              "targetMenu": "Conveyor",
+              "targetMenuIndex": 45,
+              "targetRecord": 930,
+              "unresolvedReason": null
+            },
+            "Motor_Chained1": {
+              "dataselect": "Conveyor",
+              "datasource": 0,
+              "datatypeName": "SELECTION_UNIQUE",
+              "datatypeRaw": 21,
+              "evidence": [
+                {
+                  "evidence": "fmenu.c::find_data_source",
+                  "rule": "find_data_source",
+                  "status": "SOURCE_PROVEN"
+                },
+                {
+                  "rule": "selection_identity_lookup",
+                  "status": "SOURCE_PROVEN"
+                }
+              ],
+              "provenance": "SOURCE_PROVEN",
+              "resolutionMode": "STATIC",
+              "scope": "RECORD",
+              "sourceColumn": "Motor_Chained1",
+              "sourceColumnIndex": 5,
+              "sourceMenu": "Mtrchain",
+              "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Mtrchain.asc",
+              "sourceRawValue": "P314",
+              "sourceRecord": 55,
+              "status": "RESOLVED",
+              "targetColumn": "IO_Name",
+              "targetColumnIndex": 1,
+              "targetIdentity": "P314",
+              "targetMenu": "Conveyor",
+              "targetMenuIndex": 45,
+              "targetRecord": 69,
+              "unresolvedReason": null
+            },
+            "Motor_Name": null,
+            "Motor_Ndx": {
+              "dataselect": "Conveyor",
+              "datasource": 0,
+              "datatypeName": "SELECTION_UNIQUE",
+              "datatypeRaw": 21,
+              "evidence": [
+                {
+                  "evidence": "fmenu.c::find_data_source",
+                  "rule": "find_data_source",
+                  "status": "SOURCE_PROVEN"
+                },
+                {
+                  "rule": "selection_identity_lookup",
+                  "status": "SOURCE_PROVEN"
+                }
+              ],
+              "provenance": "SOURCE_PROVEN",
+              "resolutionMode": "STATIC",
+              "scope": "RECORD",
+              "sourceColumn": "Motor_Ndx",
+              "sourceColumnIndex": 2,
+              "sourceMenu": "Mtrchain",
+              "sourcePhysicalFile": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN\\FORTNA\\Mtrchain.asc",
+              "sourceRawValue": "M314",
+              "sourceRecord": 55,
+              "status": "RESOLVED",
+              "targetColumn": "IO_Name",
+              "targetColumnIndex": 1,
+              "targetIdentity": "M314",
+              "targetMenu": "Conveyor",
+              "targetMenuIndex": 45,
+              "targetRecord": 758,
+              "unresolvedReason": null
+            }
+          },
+          "recordIndex": 55
+        },
+        "reverseM314": {
+          "identity": "M314",
+          "inbound": [
+            {
+              "resolutionMode": "STATIC",
+              "sourceColumn": "Motor_Ndx",
+              "sourceMenu": "Mtrchain",
+              "sourceRawValue": "M314",
+              "sourceRecord": 55,
+              "status": "RESOLVED",
+              "targetIdentity": "M314",
+              "unresolvedReason": null
+            }
+          ],
+          "inboundCount": 1,
+          "reverseKey": "Conveyor#758",
+          "targetRecord": 758
+        },
+        "reverseMerge316": {
+          "identity": "MERGE_316_SPUR",
+          "inbound": [],
+          "inboundCount": 0,
+          "reverseKey": null,
+          "targetRecord": null
+        },
+        "site": "plc5"
+      },
+      "reverseIntegrityMissing": 0,
+      "statistics": {
+        "cp2Summary": {
+          "conversionFailures": 0,
+          "genericFallbacks": 530,
+          "machineSpecificSelections": 87,
+          "malformedLongRecords": 0,
+          "malformedShortRecords": 0,
+          "missingTables": 70,
+          "schemaMenus": 687,
+          "schemaNoPhysicalTableDiagnostics": 70,
+          "tablesAttempted": 687,
+          "tablesLoaded": 617,
+          "totalRecords": 143947,
+          "totalValues": 1851198,
+          "unsupportedDatatypeConversions": 0,
+          "unsupportedRom": 0
+        },
+        "dynamic": 360,
+        "edgesRecord": 359969,
+        "edgesSchemaCapability": 21,
+        "edgesTotal": 359990,
+        "emptySourceEdgesOmittedFromBody": 299037,
+        "fallbackStatic": 2400,
+        "genericAsc": 530,
+        "machineSpecific": 87,
+        "missingTables": 70,
+        "recordsLoaded": 143947,
+        "relationshipsInArtifactBody": 60953,
+        "resolved": 60230,
+        "reverseKeys": 2629,
+        "schemaMenus": 687,
+        "static": 357209,
+        "tablesLoaded": 617,
+        "unresolvedRecord": 299739,
+        "unresolvedTaxonomy": {
+          "DYNAMIC_CAPABLE_SCHEMA": 21,
+          "EMPTY_SOURCE_VALUE": 299037,
+          "TARGET_COLUMN_MISSING": 702
+        },
+        "unsupportedRom": 0,
+        "valuesLoaded": 1851198
+      }
+    },
+    "INVARIANTS": {
+      "applied": false,
+      "checks": [],
+      "pass": true
+    }
+  },
+  "pass": true,
+  "runDir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\cp5-run\\RUN",
+  "site": "plc5"
+}
