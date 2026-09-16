@@ -1,0 +1,947 @@
+{
+  "adapter": "Merge",
+  "counts": {
+    "byClass": {
+      "2-1": 2,
+      "3-1": 0,
+      "SPUR": 1,
+      "UNKNOWN": 0
+    },
+    "lanes": 6,
+    "mergeBossObjects": 3
+  },
+  "diagnostics": [],
+  "facts": [
+    {
+      "cp3EdgeKey": "MergeInputs#2.MergeBoss->MergeBoss#2:MERGE_812_2-1",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_812_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeBoss",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "MERGE_812_2-1",
+      "sourceRecord": 2,
+      "status": "PROVEN",
+      "targetIdentity": "MERGE_812_2-1",
+      "targetMenu": "MergeBoss",
+      "targetRecord": 2,
+      "value": "MERGE_812_2-1"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#2.Presense->Conveyor#372:EZPE810_P",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_812_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "Presense",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "EZPE810_P",
+      "sourceRecord": 2,
+      "status": "PROVEN",
+      "targetIdentity": "EZPE810_P",
+      "targetMenu": "Conveyor",
+      "targetRecord": 372,
+      "value": "EZPE810_P"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#2.ReleaseIO->Conveyor#373:SSVEZPE810_P",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_812_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "ReleaseIO",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "SSVEZPE810_P",
+      "sourceRecord": 2,
+      "status": "PROVEN",
+      "targetIdentity": "SSVEZPE810_P",
+      "targetMenu": "Conveyor",
+      "targetRecord": 373,
+      "value": "SSVEZPE810_P"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#3.MergeBoss->MergeBoss#2:MERGE_812_2-1",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_812_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeBoss",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "MERGE_812_2-1",
+      "sourceRecord": 3,
+      "status": "PROVEN",
+      "targetIdentity": "MERGE_812_2-1",
+      "targetMenu": "MergeBoss",
+      "targetRecord": 2,
+      "value": "MERGE_812_2-1"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#3.Presense->Conveyor#592:PE802_P",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_812_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "Presense",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "PE802_P",
+      "sourceRecord": 3,
+      "status": "PROVEN",
+      "targetIdentity": "PE802_P",
+      "targetMenu": "Conveyor",
+      "targetRecord": 592,
+      "value": "PE802_P"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#3.ReleaseIO->Conveyor#515:M802",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_812_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "ReleaseIO",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "M802",
+      "sourceRecord": 3,
+      "status": "PROVEN",
+      "targetIdentity": "M802",
+      "targetMenu": "Conveyor",
+      "targetRecord": 515,
+      "value": "M802"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#3.MergeRoute->MergeRoute#3:LANE2_P810",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_812_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeRoute",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "LANE2_P810",
+      "sourceRecord": 3,
+      "status": "PROVEN",
+      "targetIdentity": "LANE2_P810",
+      "targetMenu": "MergeRoute",
+      "targetRecord": 3,
+      "value": "LANE2_P810"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#4.MergeBoss->MergeBoss#3:MERGE_500_2-1",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_500_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeBoss",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "MERGE_500_2-1",
+      "sourceRecord": 4,
+      "status": "PROVEN",
+      "targetIdentity": "MERGE_500_2-1",
+      "targetMenu": "MergeBoss",
+      "targetRecord": 3,
+      "value": "MERGE_500_2-1"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#4.Presense->Conveyor#564:PE444_P",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_500_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "Presense",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "PE444_P",
+      "sourceRecord": 4,
+      "status": "PROVEN",
+      "targetIdentity": "PE444_P",
+      "targetMenu": "Conveyor",
+      "targetRecord": 564,
+      "value": "PE444_P"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#4.ReleaseIO->Conveyor#658:VFD444_EN",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_500_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "ReleaseIO",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "VFD444_EN",
+      "sourceRecord": 4,
+      "status": "PROVEN",
+      "targetIdentity": "VFD444_EN",
+      "targetMenu": "Conveyor",
+      "targetRecord": 658,
+      "value": "VFD444_EN"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#4.MergeRoute->MergeRoute#4:LANE1_P444",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_500_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeRoute",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "LANE1_P444",
+      "sourceRecord": 4,
+      "status": "PROVEN",
+      "targetIdentity": "LANE1_P444",
+      "targetMenu": "MergeRoute",
+      "targetRecord": 4,
+      "value": "LANE1_P444"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#5.MergeBoss->MergeBoss#3:MERGE_500_2-1",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_500_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeBoss",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "MERGE_500_2-1",
+      "sourceRecord": 5,
+      "status": "PROVEN",
+      "targetIdentity": "MERGE_500_2-1",
+      "targetMenu": "MergeBoss",
+      "targetRecord": 3,
+      "value": "MERGE_500_2-1"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#5.Presense->Conveyor#572:PE544_P",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_500_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "Presense",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "PE544_P",
+      "sourceRecord": 5,
+      "status": "PROVEN",
+      "targetIdentity": "PE544_P",
+      "targetMenu": "Conveyor",
+      "targetRecord": 572,
+      "value": "PE544_P"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#5.ReleaseIO->Conveyor#673:VFD544_EN",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_500_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "ReleaseIO",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "VFD544_EN",
+      "sourceRecord": 5,
+      "status": "PROVEN",
+      "targetIdentity": "VFD544_EN",
+      "targetMenu": "Conveyor",
+      "targetRecord": 673,
+      "value": "VFD544_EN"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#5.MergeRoute->MergeRoute#5:LANE2_P544",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_500_2-1",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeRoute",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "LANE2_P544",
+      "sourceRecord": 5,
+      "status": "PROVEN",
+      "targetIdentity": "LANE2_P544",
+      "targetMenu": "MergeRoute",
+      "targetRecord": 5,
+      "value": "LANE2_P544"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#6.MergeBoss->MergeBoss#4:MERGE_720_SPUR",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_720_SPUR",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeBoss",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "MERGE_720_SPUR",
+      "sourceRecord": 6,
+      "status": "PROVEN",
+      "targetIdentity": "MERGE_720_SPUR",
+      "targetMenu": "MergeBoss",
+      "targetRecord": 4,
+      "value": "MERGE_720_SPUR"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#6.Presense->Conveyor#341:EZPE530_P1",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_720_SPUR",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "Presense",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "EZPE530_P1",
+      "sourceRecord": 6,
+      "status": "PROVEN",
+      "targetIdentity": "EZPE530_P1",
+      "targetMenu": "Conveyor",
+      "targetRecord": 341,
+      "value": "EZPE530_P1"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#6.ReleaseIO->Conveyor#340:SSVEZPE530_P1",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_720_SPUR",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "ReleaseIO",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "SSVEZPE530_P1",
+      "sourceRecord": 6,
+      "status": "PROVEN",
+      "targetIdentity": "SSVEZPE530_P1",
+      "targetMenu": "Conveyor",
+      "targetRecord": 340,
+      "value": "SSVEZPE530_P1"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#6.MergeRoute->MergeRoute#6:LANE1_P530",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_720_SPUR",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeRoute",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "LANE1_P530",
+      "sourceRecord": 6,
+      "status": "PROVEN",
+      "targetIdentity": "LANE1_P530",
+      "targetMenu": "MergeRoute",
+      "targetRecord": 6,
+      "value": "LANE1_P530"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#7.MergeBoss->MergeBoss#4:MERGE_720_SPUR",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_720_SPUR",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "MergeBoss",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "MERGE_720_SPUR",
+      "sourceRecord": 7,
+      "status": "PROVEN",
+      "targetIdentity": "MERGE_720_SPUR",
+      "targetMenu": "MergeBoss",
+      "targetRecord": 4,
+      "value": "MERGE_720_SPUR"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#7.Presense->Conveyor#370:EZPE718_P",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_720_SPUR",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "Presense",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "EZPE718_P",
+      "sourceRecord": 7,
+      "status": "PROVEN",
+      "targetIdentity": "EZPE718_P",
+      "targetMenu": "Conveyor",
+      "targetRecord": 370,
+      "value": "EZPE718_P"
+    },
+    {
+      "cp3EdgeKey": "MergeInputs#7.ReleaseIO->Conveyor#369:SSVEZPE718_P",
+      "diagnostics": [],
+      "evidence": [
+        {
+          "evidence": "fmenu.c::find_data_source",
+          "rule": "find_data_source",
+          "status": "SOURCE_PROVEN"
+        },
+        {
+          "rule": "selection_identity_lookup",
+          "status": "SOURCE_PROVEN"
+        }
+      ],
+      "identity": "MERGE_720_SPUR",
+      "interpretationRule": "mergeinputs_selection_is_fortna_merge_ref",
+      "provenance": "RUN_PROVEN",
+      "semanticType": "merge.lane_field",
+      "sourceColumn": "ReleaseIO",
+      "sourceMenu": "MergeInputs",
+      "sourceRawValue": "SSVEZPE718_P",
+      "sourceRecord": 7,
+      "status": "PROVEN",
+      "targetIdentity": "SSVEZPE718_P",
+      "targetMenu": "Conveyor",
+      "targetRecord": 369,
+      "value": "SSVEZPE718_P"
+    }
+  ],
+  "notes": [
+    "logical lane identity != physical release conveyor",
+    "Mtrchain chain on ReleaseIO is DERIVED evidence only when provided"
+  ],
+  "objects": [
+    {
+      "evidence": [],
+      "identity": "MERGE_500_2-1",
+      "lanes": [
+        {
+          "criticalDistinction": "logical_lane_identity_ne_physical_release_conveyor",
+          "derivedReleaseChain": {
+            "meaning": "Fortna Mtrchain startup/display relationship — NOT automatically physical conveyor topology",
+            "motorChained1": "P444",
+            "mtrchainIdentity": "VFD444_EN",
+            "provenance": "DETERMINISTIC_DERIVATION",
+            "releaseIO": "VFD444_EN",
+            "rule": "MergeInputs.ReleaseIO -> motor identity -> Mtrchain.Motor_Chained1",
+            "status": "DERIVED"
+          },
+          "laneLabel": "LANE1_P444",
+          "logicalIdentity": "P444",
+          "logicalIdentityStatus": "DERIVED",
+          "mergeBoss": {
+            "cp3": {
+              "sourceColumn": "MergeBoss",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 4
+            },
+            "raw": "MERGE_500_2-1",
+            "status": "PROVEN",
+            "targetIdentity": "MERGE_500_2-1",
+            "targetRecord": 3
+          },
+          "presence": {
+            "cp3": {
+              "sourceColumn": "Presense",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 4
+            },
+            "raw": "PE444_P",
+            "status": "PROVEN",
+            "targetIdentity": "PE444_P",
+            "targetRecord": 564
+          },
+          "releaseIO": {
+            "cp3": {
+              "sourceColumn": "ReleaseIO",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 4
+            },
+            "raw": "VFD444_EN",
+            "status": "PROVEN",
+            "targetIdentity": "VFD444_EN",
+            "targetRecord": 658
+          },
+          "sourceRecord": 4
+        },
+        {
+          "criticalDistinction": "logical_lane_identity_ne_physical_release_conveyor",
+          "derivedReleaseChain": {
+            "meaning": "Fortna Mtrchain startup/display relationship — NOT automatically physical conveyor topology",
+            "motorChained1": "P544",
+            "mtrchainIdentity": "VFD544_EN",
+            "provenance": "DETERMINISTIC_DERIVATION",
+            "releaseIO": "VFD544_EN",
+            "rule": "MergeInputs.ReleaseIO -> motor identity -> Mtrchain.Motor_Chained1",
+            "status": "DERIVED"
+          },
+          "laneLabel": "LANE2_P544",
+          "logicalIdentity": "P544",
+          "logicalIdentityStatus": "DERIVED",
+          "mergeBoss": {
+            "cp3": {
+              "sourceColumn": "MergeBoss",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 5
+            },
+            "raw": "MERGE_500_2-1",
+            "status": "PROVEN",
+            "targetIdentity": "MERGE_500_2-1",
+            "targetRecord": 3
+          },
+          "presence": {
+            "cp3": {
+              "sourceColumn": "Presense",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 5
+            },
+            "raw": "PE544_P",
+            "status": "PROVEN",
+            "targetIdentity": "PE544_P",
+            "targetRecord": 572
+          },
+          "releaseIO": {
+            "cp3": {
+              "sourceColumn": "ReleaseIO",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 5
+            },
+            "raw": "VFD544_EN",
+            "status": "PROVEN",
+            "targetIdentity": "VFD544_EN",
+            "targetRecord": 673
+          },
+          "sourceRecord": 5
+        }
+      ],
+      "mergeClass": "2-1"
+    },
+    {
+      "evidence": [],
+      "identity": "MERGE_720_SPUR",
+      "lanes": [
+        {
+          "criticalDistinction": "logical_lane_identity_ne_physical_release_conveyor",
+          "laneLabel": "LANE1_P530",
+          "logicalIdentity": "P530",
+          "logicalIdentityStatus": "DERIVED",
+          "mergeBoss": {
+            "cp3": {
+              "sourceColumn": "MergeBoss",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 6
+            },
+            "raw": "MERGE_720_SPUR",
+            "status": "PROVEN",
+            "targetIdentity": "MERGE_720_SPUR",
+            "targetRecord": 4
+          },
+          "presence": {
+            "cp3": {
+              "sourceColumn": "Presense",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 6
+            },
+            "raw": "EZPE530_P1",
+            "status": "PROVEN",
+            "targetIdentity": "EZPE530_P1",
+            "targetRecord": 341
+          },
+          "releaseIO": {
+            "cp3": {
+              "sourceColumn": "ReleaseIO",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 6
+            },
+            "raw": "SSVEZPE530_P1",
+            "status": "PROVEN",
+            "targetIdentity": "SSVEZPE530_P1",
+            "targetRecord": 340
+          },
+          "sourceRecord": 6
+        },
+        {
+          "criticalDistinction": "logical_lane_identity_ne_physical_release_conveyor",
+          "laneLabel": null,
+          "logicalIdentity": null,
+          "logicalIdentityStatus": "UNKNOWN",
+          "mergeBoss": {
+            "cp3": {
+              "sourceColumn": "MergeBoss",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 7
+            },
+            "raw": "MERGE_720_SPUR",
+            "status": "PROVEN",
+            "targetIdentity": "MERGE_720_SPUR",
+            "targetRecord": 4
+          },
+          "presence": {
+            "cp3": {
+              "sourceColumn": "Presense",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 7
+            },
+            "raw": "EZPE718_P",
+            "status": "PROVEN",
+            "targetIdentity": "EZPE718_P",
+            "targetRecord": 370
+          },
+          "releaseIO": {
+            "cp3": {
+              "sourceColumn": "ReleaseIO",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 7
+            },
+            "raw": "SSVEZPE718_P",
+            "status": "PROVEN",
+            "targetIdentity": "SSVEZPE718_P",
+            "targetRecord": 369
+          },
+          "sourceRecord": 7
+        }
+      ],
+      "mergeClass": "SPUR"
+    },
+    {
+      "evidence": [],
+      "identity": "MERGE_812_2-1",
+      "lanes": [
+        {
+          "criticalDistinction": "logical_lane_identity_ne_physical_release_conveyor",
+          "laneLabel": null,
+          "logicalIdentity": null,
+          "logicalIdentityStatus": "UNKNOWN",
+          "mergeBoss": {
+            "cp3": {
+              "sourceColumn": "MergeBoss",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 2
+            },
+            "raw": "MERGE_812_2-1",
+            "status": "PROVEN",
+            "targetIdentity": "MERGE_812_2-1",
+            "targetRecord": 2
+          },
+          "presence": {
+            "cp3": {
+              "sourceColumn": "Presense",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 2
+            },
+            "raw": "EZPE810_P",
+            "status": "PROVEN",
+            "targetIdentity": "EZPE810_P",
+            "targetRecord": 372
+          },
+          "releaseIO": {
+            "cp3": {
+              "sourceColumn": "ReleaseIO",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 2
+            },
+            "raw": "SSVEZPE810_P",
+            "status": "PROVEN",
+            "targetIdentity": "SSVEZPE810_P",
+            "targetRecord": 373
+          },
+          "sourceRecord": 2
+        },
+        {
+          "criticalDistinction": "logical_lane_identity_ne_physical_release_conveyor",
+          "derivedReleaseChain": {
+            "meaning": "Fortna Mtrchain startup/display relationship — NOT automatically physical conveyor topology",
+            "motorChained1": "P802",
+            "mtrchainIdentity": "M802",
+            "provenance": "DETERMINISTIC_DERIVATION",
+            "releaseIO": "M802",
+            "rule": "MergeInputs.ReleaseIO -> motor identity -> Mtrchain.Motor_Chained1",
+            "status": "DERIVED"
+          },
+          "laneLabel": "LANE2_P810",
+          "logicalIdentity": "P810",
+          "logicalIdentityStatus": "DERIVED",
+          "mergeBoss": {
+            "cp3": {
+              "sourceColumn": "MergeBoss",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 3
+            },
+            "raw": "MERGE_812_2-1",
+            "status": "PROVEN",
+            "targetIdentity": "MERGE_812_2-1",
+            "targetRecord": 2
+          },
+          "presence": {
+            "cp3": {
+              "sourceColumn": "Presense",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 3
+            },
+            "raw": "PE802_P",
+            "status": "PROVEN",
+            "targetIdentity": "PE802_P",
+            "targetRecord": 592
+          },
+          "releaseIO": {
+            "cp3": {
+              "sourceColumn": "ReleaseIO",
+              "sourceMenu": "MergeInputs",
+              "sourceRecord": 3
+            },
+            "raw": "M802",
+            "status": "PROVEN",
+            "targetIdentity": "M802",
+            "targetRecord": 515
+          },
+          "sourceRecord": 3
+        }
+      ],
+      "mergeClass": "2-1"
+    }
+  ],
+  "proofs": {
+    "MERGE_316_SPUR": {
+      "detail": "boss_not_present",
+      "status": "UNKNOWN"
+    },
+    "MERGE_324_SPUR": {
+      "detail": "boss_not_present",
+      "status": "UNKNOWN"
+    },
+    "MERGE_400_2-1": {
+      "laneCount": 0,
+      "mergeClass": null,
+      "present": false
+    },
+    "MERGE_406_3-1": {
+      "laneCount": 0,
+      "mergeClass": null,
+      "present": false
+    }
+  },
+  "status": "PASS"
+}

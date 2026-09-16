@@ -1,0 +1,224 @@
+{
+  "bundleStatuses": {
+    "plc2": "REVIEW",
+    "plc4": "REVIEW",
+    "plc5": "REVIEW"
+  },
+  "findings": [
+    {
+      "adapter": "Transportation",
+      "classification": "GENERIC_SEMANTIC_CONFIRMED",
+      "counts": {
+        "plc2": {
+          "conveyorFamilyObjects": 1012,
+          "factsEmitted": 1685,
+          "factsSerialized": 1685,
+          "proofTargetsFound": 7,
+          "proofTargetsUnknown": 0
+        },
+        "plc4": {
+          "conveyorFamilyObjects": 1028,
+          "factsEmitted": 1763,
+          "factsSerialized": 1763,
+          "proofTargetsFound": 6,
+          "proofTargetsUnknown": 1
+        },
+        "plc5": {
+          "conveyorFamilyObjects": 1069,
+          "factsEmitted": 1863,
+          "factsSerialized": 1863,
+          "proofTargetsFound": 6,
+          "proofTargetsUnknown": 1
+        }
+      },
+      "statuses": {
+        "plc2": "PASS",
+        "plc4": "PASS",
+        "plc5": "PASS"
+      }
+    },
+    {
+      "adapter": "Mtrchain",
+      "classification": "GENERIC_SEMANTIC_CONFIRMED",
+      "counts": {
+        "plc2": {
+          "chainedSlotsPopulated": 247,
+          "entries": 176,
+          "facts": 640
+        },
+        "plc4": {
+          "chainedSlotsPopulated": 247,
+          "entries": 176,
+          "facts": 640
+        },
+        "plc5": {
+          "chainedSlotsPopulated": 248,
+          "entries": 176,
+          "facts": 641
+        }
+      },
+      "statuses": {
+        "plc2": "PASS",
+        "plc4": "PASS",
+        "plc5": "PASS"
+      }
+    },
+    {
+      "adapter": "Merge",
+      "classification": "GENERIC_SEMANTIC_CONFIRMED",
+      "counts": {
+        "plc2": {
+          "byClass": {
+            "2-1": 1,
+            "3-1": 1,
+            "SPUR": 2,
+            "UNKNOWN": 0
+          },
+          "lanes": 8,
+          "mergeBossObjects": 4
+        },
+        "plc4": {
+          "byClass": {
+            "2-1": 0,
+            "3-1": 0,
+            "SPUR": 1,
+            "UNKNOWN": 1
+          },
+          "lanes": 4,
+          "mergeBossObjects": 2
+        },
+        "plc5": {
+          "byClass": {
+            "2-1": 2,
+            "3-1": 0,
+            "SPUR": 1,
+            "UNKNOWN": 0
+          },
+          "lanes": 6,
+          "mergeBossObjects": 3
+        }
+      },
+      "statuses": {
+        "plc2": "PASS",
+        "plc4": "PASS",
+        "plc5": "PASS"
+      }
+    },
+    {
+      "adapter": "Jam",
+      "classification": "GENERIC_SEMANTIC_CONFIRMED",
+      "counts": {
+        "plc2": {
+          "completeRecords": 54,
+          "facts": 378,
+          "jamcheckRecordsTouched": 54,
+          "jamzonesIdentities": 17
+        },
+        "plc4": {
+          "completeRecords": 54,
+          "facts": 378,
+          "jamcheckRecordsTouched": 54,
+          "jamzonesIdentities": 17
+        },
+        "plc5": {
+          "completeRecords": 54,
+          "facts": 378,
+          "jamcheckRecordsTouched": 54,
+          "jamzonesIdentities": 17
+        }
+      },
+      "statuses": {
+        "plc2": "PASS",
+        "plc4": "PASS",
+        "plc5": "PASS"
+      }
+    },
+    {
+      "adapter": "Safety",
+      "classification": "GENERIC_SEMANTIC_CONFIRMED",
+      "counts": {
+        "plc2": {
+          "estopDevices": 91,
+          "facts": 182,
+          "reviewItems": 91,
+          "validationTargetsFound": 3
+        },
+        "plc4": {
+          "estopDevices": 91,
+          "facts": 182,
+          "reviewItems": 91,
+          "validationTargetsFound": 2
+        },
+        "plc5": {
+          "estopDevices": 91,
+          "facts": 182,
+          "reviewItems": 91,
+          "validationTargetsFound": 2
+        }
+      },
+      "statuses": {
+        "plc2": "REVIEW",
+        "plc4": "REVIEW",
+        "plc5": "REVIEW"
+      }
+    },
+    {
+      "adapter": "IO",
+      "classification": "GENERIC_SEMANTIC_CONFIRMED",
+      "counts": {
+        "plc2": {
+          "conveyorAssociations": 0,
+          "facts": 1451,
+          "ioSourceMenusExercised": 2,
+          "menus": [
+            "Configio",
+            "EIPModules"
+          ],
+          "recordsTouched": 437
+        },
+        "plc4": {
+          "conveyorAssociations": 15,
+          "facts": 1501,
+          "ioSourceMenusExercised": 4,
+          "menus": [
+            "Configio",
+            "Inpoints",
+            "Outpoints",
+            "EIPModules"
+          ],
+          "recordsTouched": 449
+        },
+        "plc5": {
+          "conveyorAssociations": 77,
+          "facts": 1873,
+          "ioSourceMenusExercised": 4,
+          "menus": [
+            "Configio",
+            "Inpoints",
+            "Outpoints",
+            "EIPModules"
+          ],
+          "recordsTouched": 512
+        }
+      },
+      "statuses": {
+        "plc2": "REVIEW",
+        "plc4": "REVIEW",
+        "plc5": "REVIEW"
+      }
+    }
+  ],
+  "kind": "Cp4SemanticCrossSiteReport",
+  "sites": [
+    "plc2",
+    "plc4",
+    "plc5"
+  ],
+  "unitTests": {
+    "errors": 0,
+    "failures": 0,
+    "pass": true,
+    "testsRun": 54
+  },
+  "version": 1
+}
