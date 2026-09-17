@@ -634,54 +634,107 @@
       <div class="text-[9px] text-slate-600 mb-1 leading-snug">Full site ledger — shows assignment state. Not the same as Available (zone picker).</div>
       <div class="space-y-0.5">${body || '<div class="text-slate-600 p-2 text-[10px]">No devices match</div>'}</div>
       <div class="mt-2 flex gap-2">
-        <button type="button" id="sb-inv-assign" class="btn-ghost flex-1 text-[10px] py-1 rounded-lg border border-emerald-900/50 text-emerald-300" title="Assign checked devices to selected zone">Assign → zone</button>
+        <button type="button" id="sb-inv-assign" class="btn-ghost flex-1 text-[10px] py-1 rounded-lg border border-emerald-900/50 text-emerald-300" title="Verify & assign checked devices to a Safety Zone">
+          Assign Devices…
+        </button>
       </div>`;
+    const refreshAssignLabel = () => {
+      const n = host.querySelectorAll('[data-sb-inv]:checked').length;
+      const btn = $('sb-inv-assign');
+      if (btn) btn.textContent = n ? `Assign ${n} Devices…` : 'Assign Devices…';
+    };
+    host.querySelectorAll('[data-sb-inv]').forEach((cb) => {
+      cb.addEventListener('change', refreshAssignLabel);
+      cb.addEventListener('click', (ev) => ev.stopPropagation());
+    });
+    refreshAssignLabel();
     $('sb-inv-filter')?.addEventListener('input', (ev) => {
+      // Preserve checked names across filter re-render
+      const kept = [...host.querySelectorAll('[data-sb-inv]:checked')]
+        .map((el) => el.getAttribute('data-sb-inv'))
+        .filter(Boolean);
       state.inventoryFilter = ev.target.value || '';
       state.filter = state.inventoryFilter;
       renderInventory();
       const z = selectedZone();
       if (z) renderDeviceLists(z);
+      // restore checks that remain visible
+      kept.forEach((name) => {
+        host.querySelectorAll('[data-sb-inv]').forEach((cb) => {
+          if (cb.getAttribute('data-sb-inv') === name) cb.checked = true;
+        });
+      });
+      refreshAssignLabel();
     });
     host.querySelectorAll('[data-sb-inv-pick]').forEach((btn) => {
       btn.addEventListener('click', (ev) => {
         ev.preventDefault();
+        ev.stopPropagation();
         const name = btn.getAttribute('data-sb-inv-pick') || '';
-        state.filter = name;
-        state.inventoryFilter = name;
+        // Toggle check only — do NOT re-render (that wiped selections)
         host.querySelectorAll('[data-sb-inv]').forEach((cb) => {
-          if (cb.getAttribute('data-sb-inv') === name) cb.checked = true;
+          if (cb.getAttribute('data-sb-inv') === name) cb.checked = !cb.checked;
         });
-        const z = selectedZone();
-        if (z) {
-          const filt = $('sb-device-filter');
-          if (filt) filt.value = name;
-          renderDeviceLists(z);
-        }
-        renderInventory();
+        refreshAssignLabel();
       });
     });
     $('sb-inv-assign')?.addEventListener('click', () => {
-      const z = selectedZone();
-      if (!z) {
-        status('Select a Safety Zone first');
-        return;
-      }
-      const names = [...host.querySelectorAll('[data-sb-inv]:checked')]
-        .map((el) => el.getAttribute('data-sb-inv'))
-        .filter(Boolean);
-      if (!names.length) {
-        status('Check inventory devices to assign');
-        return;
-      }
-      const live = (state.model.zones || []).find((x) => x.name === z.name);
-      if (!live) return;
-      mutateZone(live, (zz) => {
-        const set = new Set(zz.members || []);
-        names.forEach((n) => set.add(n));
-        zz.members = [...set];
-      });
+      openAssignDevicesWizard();
     });
+  }
+
+  /** Gate E — guided bulk assign: select → choose zone → confirm list → Apply later */
+  function openAssignDevicesWizard() {
+    const host = $('sb-inventory');
+    const names = [...(host?.querySelectorAll('[data-sb-inv]:checked') || [])]
+      .map((el) => el.getAttribute('data-sb-inv'))
+      .filter(Boolean);
+    if (!names.length) {
+      status('Check inventory devices first, then Assign Devices…');
+      return;
+    }
+    const zones = (state.model?.zones || []).map((z) => z.name).filter(Boolean);
+    if (!zones.length) {
+      status('Create a Safety Zone on Transportation / Safety Build first');
+      return;
+    }
+    const selected = selectedZone();
+    const defaultZone = selected?.name || zones[0];
+    const zonePick = prompt(
+      `Assign ${names.length} device(s) to which Safety Zone?\n\n`
+      + `Zones:\n${zones.map((z) => `  • ${z}`).join('\n')}\n\n`
+      + 'Type the destination zone name exactly:',
+      defaultZone,
+    );
+    if (zonePick == null) return;
+    const dest = String(zonePick || '').trim();
+    if (!zones.includes(dest)) {
+      status(`Unknown zone “${dest}” — cancelled`);
+      return;
+    }
+    const ok = confirm(
+      `Confirm assignment\n\n`
+      + `Destination: ${dest}\n`
+      + `Devices (${names.length}):\n`
+      + names.map((n) => `  • ${n}`).join('\n')
+      + `\n\nNothing is persisted until you click Apply Safety.`,
+    );
+    if (!ok) {
+      status('Assignment cancelled');
+      return;
+    }
+    const live = (state.model.zones || []).find((x) => x.name === dest);
+    if (!live) {
+      status(`Zone ${dest} not in model`);
+      return;
+    }
+    state.selectedZoneId = dest;
+    mutateZone(live, (zz) => {
+      const set = new Set(zz.members || []);
+      names.forEach((n) => set.add(n));
+      zz.members = [...set];
+    });
+    status(`Assigned ${names.length} device(s) → ${dest} (Apply Safety to persist)`);
   }
 
   function renderZoneList() {
@@ -1190,12 +1243,34 @@
     AS.safety_build = payload;
     if (AS.workbook) AS.workbook.safety_build = payload;
 
-    // Persist via workbook save IPC (does NOT rediscover / wipe)
+    // Persist via workbook save IPC — MERGE into disk workbook so Transport
+    // conveyors/areas are never hollowed out by a Safety-only write.
     const A = api();
     try {
       if (typeof A.autogenWorkbookSave === 'function') {
-        const wb = { ...(AS.workbook || {}), safety_build: payload };
+        let disk = {};
+        try {
+          if (typeof A.autogenWorkbookLoad === 'function') {
+            const full = await A.autogenWorkbookLoad();
+            if (full?.success && full.workbook) disk = full.workbook;
+          }
+        } catch (_) { /* ignore */ }
+        const mem = AS.workbook || {};
+        const wb = {
+          ...disk,
+          ...mem,
+          // Prefer non-empty transport rows from either side
+          conveyors: (Array.isArray(mem.conveyors) && mem.conveyors.length)
+            ? mem.conveyors
+            : (disk.conveyors || mem.conveyors || []),
+          areas: (Array.isArray(mem.areas) && mem.areas.length)
+            ? mem.areas
+            : (disk.areas || mem.areas || []),
+          merges_2to1: mem.merges_2to1 || disk.merges_2to1,
+          safety_build: payload,
+        };
         AS.workbook = wb;
+        AS.safety_build = payload;
         const res = await A.autogenWorkbookSave({ workbook: wb });
         if (res && res.success === false) {
           status(`Apply failed: ${res.message || res.error || 'unknown'}`);

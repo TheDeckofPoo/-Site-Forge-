@@ -2385,9 +2385,9 @@
    * It MUST NOT be written into model provenance as physical orientation.
    */
   const CURVE_SYMBOL = Object.freeze({
-    // Match normal conveyor visual weight (oblong body, not a thin stroke)
-    MIN_LENGTH_PX: 160,
-    LENGTH_STROKE_MULT: 9,
+    // Oblong body ≈ normal conveyor weight; length ~50% of prior symbolic glyph
+    MIN_LENGTH_PX: 80,
+    LENGTH_STROKE_MULT: 4.5,
     BODY_WIDTH_MIN: 18,
     BODY_WIDTH_MAX: 28,
     STROKE_MIN: 18,
@@ -2396,6 +2396,20 @@
     SYMBOL_ANGLE_DEG: -35,
     BADGE: 'CURVE',
     TOOLTIP_SUFFIX: 'CURVE — orientation UNKNOWN (symbolic diagonal; not physical turn)',
+    // Gate F — RUN geometry evidence classification (display only; not PLC semantics)
+    EVIDENCE: Object.freeze({
+      entryCanvas: 'PROVEN',
+      exitCanvas: 'PROVEN',
+      pathCanvas: 'PROVEN',
+      sourceAngle: 'PROVEN',
+      b: 'PROVEN',
+      runB: 'PROVEN',
+      sweepDeg: 'PROVEN',
+      insideRadius: 'PROVEN',
+      displayOrientation: 'UNKNOWN',
+      physicalTurnLeftRight: 'UNKNOWN',
+      presentation_offsets: 'DERIVED',
+    }),
   });
 
   function curveSymbolStrokeWidth(n) {

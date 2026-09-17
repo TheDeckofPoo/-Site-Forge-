@@ -393,7 +393,8 @@ def build_workbook_from_run(
             ],
         },
     }
-    # Preserve Transport Build / Merge panel + sorter/sawtooth config across RUN rebuilds
+    # Preserve Transport Build / Merge panel + sorter/sawtooth/Safety across RUN rebuilds.
+    # LIVE HANDOFF: never drop engineer safety_build when rediscovering from RUN.
     if existing:
         if isinstance(existing.get("merges_2to1"), list):
             wb["merges_2to1"] = existing["merges_2to1"]
@@ -405,17 +406,28 @@ def build_workbook_from_run(
             wb["sawtooth_build"] = existing["sawtooth_build"]
         elif isinstance(existing.get("sawtooth"), dict):
             wb["sawtooth_build"] = existing["sawtooth"]
+        if isinstance(existing.get("safety_build"), dict) and (
+            (existing.get("safety_build") or {}).get("zones")
+            or (existing.get("safety_build") or {}).get("devices")
+        ):
+            wb["safety_build"] = existing["safety_build"]
     return wb
 
 
 def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
-    """Overlay human workbook edits onto AutogenInput before L5X generate."""
+    """Overlay human workbook edits onto AutogenInput before L5X generate.
+
+    LIVE HANDOFF CONTRACT:
+      Engineer Transport Apply (conveyors/areas) and Safety Apply (safety_build)
+      are authoritative. An empty conveyors list must NOT skip safety_build —
+      that caused field builds where testt111_ESZone1 existed on disk but the
+      compiler fell back to ORNCCP2_Area + ES shell only.
+    """
     if not workbook or not isinstance(workbook, dict):
         return inp
 
     rows = workbook.get("conveyors") or []
-    if not rows:
-        return inp
+    # NOTE: do not return early — safety_build / project metadata still apply
 
     by_name = {
         (r.get("conveyor") or "").strip().upper(): r
@@ -423,122 +435,117 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
         if (r.get("conveyor") or "").strip()
     }
 
-    new_convs: list[ConveyorRow] = []
-    areas: list[str] = []
-    seen_names: set[str] = set()
-    for c in inp.conveyors or []:
-        key = (c.conveyor or "").strip().upper()
-        w = by_name.get(key)
-        if w is not None and w.get("include") in (False, 0, "0", "false", "False"):
-            continue  # excluded by engineer
-        if w:
-            c.main_area = (w.get("main_area") or c.main_area or "").strip()
-            c.safety_zone = (w.get("safety_zone") or c.safety_zone or "").strip()
-            c.type = (w.get("type") or c.type or "").strip()
-            # Exit / Add PE chosen from dropdown or Transport Build roles
-            if "exit_pe_tag" in w:
-                c.exit_pe_tag = (w.get("exit_pe_tag") or "").strip()
-            if "add_pe_tag" in w:
-                c.add_pe_tag = (w.get("add_pe_tag") or "").strip()
-            if "exit_pe_opt" in w and w.get("exit_pe_opt") is not None:
-                c.exit_pe = (w.get("exit_pe_opt") or "").strip()
-            if "downstream" in w and w.get("downstream") is not None:
-                c.downstream = (w.get("downstream") or "").strip()
-            for k in ("jam_pe_tags", "full_pe_tags", "product_pe_tags", "all_pe_tags"):
-                if k in w and w.get(k) is not None:
-                    setattr(
-                        c,
-                        k,
-                        [str(x).strip() for x in (w.get(k) or []) if str(x).strip()],
-                    )
-            if "vfd" in (c.type or "").lower():
-                c.motor_starter = ""
-            elif not c.motor_starter:
-                c.motor_starter = "Yes"
-        if c.main_area and c.main_area not in areas:
-            areas.append(c.main_area)
-        if key:
+    if rows:
+        new_convs: list[ConveyorRow] = []
+        areas: list[str] = []
+        seen_names: set[str] = set()
+        for c in inp.conveyors or []:
+            key = (c.conveyor or "").strip().upper()
+            w = by_name.get(key)
+            if w is not None and w.get("include") in (False, 0, "0", "false", "False"):
+                continue  # excluded by engineer
+            if w:
+                c.main_area = (w.get("main_area") or c.main_area or "").strip()
+                c.safety_zone = (w.get("safety_zone") or c.safety_zone or "").strip()
+                c.type = (w.get("type") or c.type or "").strip()
+                if "exit_pe_tag" in w:
+                    c.exit_pe_tag = (w.get("exit_pe_tag") or "").strip()
+                if "add_pe_tag" in w:
+                    c.add_pe_tag = (w.get("add_pe_tag") or "").strip()
+                if "exit_pe_opt" in w and w.get("exit_pe_opt") is not None:
+                    c.exit_pe = (w.get("exit_pe_opt") or "").strip()
+                if "downstream" in w and w.get("downstream") is not None:
+                    c.downstream = (w.get("downstream") or "").strip()
+                for k in ("jam_pe_tags", "full_pe_tags", "product_pe_tags", "all_pe_tags"):
+                    if k in w and w.get(k) is not None:
+                        setattr(
+                            c,
+                            k,
+                            [str(x).strip() for x in (w.get(k) or []) if str(x).strip()],
+                        )
+                if "vfd" in (c.type or "").lower():
+                    c.motor_starter = ""
+                elif not c.motor_starter:
+                    c.motor_starter = "Yes"
+            if c.main_area and c.main_area not in areas:
+                areas.append(c.main_area)
+            if key:
+                seen_names.add(key)
+            new_convs.append(c)
+
+        # Transport Build may create stub conveyors not yet in this RUN
+        for w in rows:
+            name = (w.get("conveyor") or "").strip()
+            key = name.upper()
+            if not key or key in seen_names:
+                continue
+            if w.get("include") in (False, 0, "0", "false", "False"):
+                continue
+            main_area = (w.get("main_area") or "").strip() or "Transport"
+            jam = [str(x).strip() for x in (w.get("jam_pe_tags") or []) if str(x).strip()]
+            full = [str(x).strip() for x in (w.get("full_pe_tags") or []) if str(x).strip()]
+            product = [str(x).strip() for x in (w.get("product_pe_tags") or []) if str(x).strip()]
+            all_pe = [str(x).strip() for x in (w.get("all_pe_tags") or []) if str(x).strip()]
+            exit_pe_tag = (w.get("exit_pe_tag") or "").strip()
+            add_pe_tag = (w.get("add_pe_tag") or "").strip()
+            c = ConveyorRow(
+                number=len(new_convs) + 1,
+                conveyor=name,
+                main_area=main_area,
+                safety_zone=(w.get("safety_zone") or f"{main_area.replace('_Area', '')}_ESZone1"),
+                type=(w.get("type") or "Transport with MS"),
+                downstream=(w.get("downstream") or "").strip(),
+                motor_starter="Yes" if "vfd" not in str(w.get("type") or "").lower() else "",
+                exit_pe_tag=exit_pe_tag,
+                add_pe_tag=add_pe_tag,
+                jam_pe_tags=jam,
+                full_pe_tags=full,
+                product_pe_tags=product,
+                all_pe_tags=all_pe or ([exit_pe_tag] if exit_pe_tag else []),
+            )
+            if main_area not in areas:
+                areas.append(main_area)
             seen_names.add(key)
-        new_convs.append(c)
+            new_convs.append(c)
 
-    # Transport Build may create stub conveyors not yet in this RUN — still emit area programs
-    for w in rows:
-        name = (w.get("conveyor") or "").strip()
-        key = name.upper()
-        if not key or key in seen_names:
-            continue
-        if w.get("include") in (False, 0, "0", "false", "False"):
-            continue
-        main_area = (w.get("main_area") or "").strip() or "Transport"
-        # Wire PE placeholders from workbook when present
-        jam = [str(x).strip() for x in (w.get("jam_pe_tags") or []) if str(x).strip()]
-        full = [str(x).strip() for x in (w.get("full_pe_tags") or []) if str(x).strip()]
-        product = [str(x).strip() for x in (w.get("product_pe_tags") or []) if str(x).strip()]
-        all_pe = [str(x).strip() for x in (w.get("all_pe_tags") or []) if str(x).strip()]
-        exit_pe_tag = (w.get("exit_pe_tag") or "").strip()
-        add_pe_tag = (w.get("add_pe_tag") or "").strip()
-        c = ConveyorRow(
-            number=len(new_convs) + 1,
-            conveyor=name,
-            main_area=main_area,
-            safety_zone=(w.get("safety_zone") or f"{main_area.replace('_Area', '')}_ESZone1"),
-            type=(w.get("type") or "Transport with MS"),
-            downstream=(w.get("downstream") or "").strip(),
-            motor_starter="Yes" if "vfd" not in str(w.get("type") or "").lower() else "",
-            exit_pe_tag=exit_pe_tag,
-            add_pe_tag=add_pe_tag,
-            jam_pe_tags=jam,
-            full_pe_tags=full,
-            product_pe_tags=product,
-            all_pe_tags=all_pe or ([exit_pe_tag] if exit_pe_tag else []),
-        )
-        if main_area not in areas:
-            areas.append(main_area)
-        seen_names.add(key)
-        new_convs.append(c)
+        for i, c in enumerate(new_convs, start=1):
+            c.number = i
 
-    # Renumber
-    for i, c in enumerate(new_convs, start=1):
-        c.number = i
+        inp.conveyors = new_convs
+        if areas:
+            inp.areas = areas
+            zones: list[str] = []
+            seen_z: set[str] = set()
 
-    inp.conveyors = new_convs
-    if areas:
-        inp.areas = areas
-        # Preserve engineer-configured safety zones from conveyor rows.
-        # Do NOT collapse every area to "{AreaBase}_ESZone1" — that silently
-        # drops ModuleB_ESZone2 (etc.) when the workbook carries explicit zones.
-        zones: list[str] = []
-        seen_z: set[str] = set()
+            def _add_zone(z: str) -> None:
+                zz = (z or "").strip()
+                if not zz:
+                    return
+                key = zz.upper()
+                if key in seen_z:
+                    return
+                seen_z.add(key)
+                zones.append(zz)
 
-        def _add_zone(z: str) -> None:
-            zz = (z or "").strip()
-            if not zz:
-                return
-            key = zz.upper()
-            if key in seen_z:
-                return
-            seen_z.add(key)
-            zones.append(zz)
+            for c in new_convs:
+                _add_zone(getattr(c, "safety_zone", "") or "")
+            opts = workbook.get("options") if isinstance(workbook.get("options"), dict) else {}
+            for z in opts.get("safety_zones") or []:
+                _add_zone(str(z))
+            for a in workbook.get("areas") or []:
+                if isinstance(a, dict):
+                    _add_zone(str(a.get("safety_zone") or ""))
+            for a in areas:
+                base = (a or "").replace("_Area", "").strip() or (a or "Transport")
+                if not any(
+                    (z.upper().startswith(base.upper()) or base.upper() in z.upper())
+                    for z in zones
+                ):
+                    _add_zone(f"{base}_ESZone1")
+            inp.safety_zones = zones
 
-        for c in new_convs:
-            _add_zone(getattr(c, "safety_zone", "") or "")
-        # Workbook options / area rows may list additional zones
-        opts = workbook.get("options") if isinstance(workbook.get("options"), dict) else {}
-        for z in opts.get("safety_zones") or []:
-            _add_zone(str(z))
-        for a in workbook.get("areas") or []:
-            if isinstance(a, dict):
-                _add_zone(str(a.get("safety_zone") or ""))
-        # Fallback only when an area has no zone represented yet
-        for a in areas:
-            base = (a or "").replace("_Area", "").strip() or (a or "Transport")
-            if not any(
-                (z.upper().startswith(base.upper()) or base.upper() in z.upper())
-                for z in zones
-            ):
-                _add_zone(f"{base}_ESZone1")
-        inp.safety_zones = zones
-    # Engineer Safety Zone membership IR for ES program emit
+    # Always apply engineer Safety membership — even when conveyors[] is empty
+    # (Safety Apply must not be skipped just because Transport rows are absent).
     if workbook.get("omit_unresolved_safety") or (
         isinstance(workbook.get("options"), dict)
         and (workbook.get("options") or {}).get("omit_unresolved_safety")
@@ -557,6 +564,35 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
         inp.safety_build = sb
         if isinstance(sb.get("zones"), list):
             inp.safety_zone_members = list(sb.get("zones") or [])
+            # Stamp Area/SafetyZone onto conveyors from Safety Build conveyorRefs
+            # when Transport Apply rows are missing — engineer Safety state is
+            # authoritative for those assignments.
+            by_conv = {
+                (getattr(c, "conveyor", "") or "").strip().upper(): c
+                for c in (inp.conveyors or [])
+            }
+            areas_now = list(inp.areas or [])
+            zones_now = list(inp.safety_zones or [])
+            for z in sb.get("zones") or []:
+                aname = str(z.get("area") or z.get("areaRef") or "").strip()
+                zname = str(z.get("name") or "").strip()
+                if zname and zname not in zones_now:
+                    zones_now.append(zname)
+                for tag in (z.get("conveyors") or z.get("conveyorRefs") or []):
+                    key = str(tag or "").strip().upper()
+                    c = by_conv.get(key)
+                    if not c:
+                        continue
+                    if aname:
+                        c.main_area = aname
+                        if aname not in areas_now:
+                            areas_now.append(aname)
+                    if zname:
+                        c.safety_zone = zname
+            if areas_now:
+                inp.areas = areas_now
+            if zones_now:
+                inp.safety_zones = zones_now
     if workbook.get("project_name"):
         inp.project_name = str(workbook["project_name"])
     if workbook.get("processor"):

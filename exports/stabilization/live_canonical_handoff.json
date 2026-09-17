@@ -1,0 +1,87 @@
+{
+  "pass": true,
+  "run_a": {
+    "area": "ZZ_ACCEPT_89011335",
+    "zone": "ZZ_ACCEPT_89011335_ESZone1",
+    "trace": {
+      "SafetyUI": {
+        "zone": "ZZ_ACCEPT_89011335_ESZone1",
+        "members": 6,
+        "area": "ZZ_ACCEPT_89011335"
+      },
+      "SavedCanonical": {
+        "zone": "ZZ_ACCEPT_89011335_ESZone1",
+        "members": 6,
+        "conveyors": 6
+      },
+      "EffectiveModel": {
+        "areas": [
+          "ZZ_ACCEPT_89011335",
+          "ORNCCP2_Area"
+        ],
+        "zone_members": 6,
+        "area_convs": 4
+      },
+      "PLCCompiler": {
+        "zone": "ZZ_ACCEPT_89011335_ESZone1",
+        "members": 6
+      },
+      "L5X": {
+        "area_programs": [
+          "ZZ_ACCEPT_89011335_Area_Slow",
+          "ZZ_ACCEPT_89011335_Area_Fast",
+          "ZZ_ACCEPT_89011335_Area_L1",
+          "ZZ_ACCEPT_89011335_Area_L2"
+        ],
+        "safe_logic": true,
+        "safe_pi": true,
+        "es_emitted": [
+          "ZZ_ACCEPT_89011335_ESZone1"
+        ]
+      }
+    },
+    "members": 6
+  },
+  "run_b": {
+    "area": "QQ_PROBE_89011707",
+    "zone": "QQ_PROBE_89011707_ESZone1",
+    "trace": {
+      "SafetyUI": {
+        "zone": "QQ_PROBE_89011707_ESZone1",
+        "members": 6,
+        "area": "QQ_PROBE_89011707"
+      },
+      "SavedCanonical": {
+        "zone": "QQ_PROBE_89011707_ESZone1",
+        "members": 6,
+        "conveyors": 6
+      },
+      "EffectiveModel": {
+        "areas": [
+          "QQ_PROBE_89011707",
+          "ORNCCP2_Area"
+        ],
+        "zone_members": 6,
+        "area_convs": 4
+      },
+      "PLCCompiler": {
+        "zone": "QQ_PROBE_89011707_ESZone1",
+        "members": 6
+      },
+      "L5X": {
+        "area_programs": [
+          "QQ_PROBE_89011707_Area_Slow",
+          "QQ_PROBE_89011707_Area_Fast",
+          "QQ_PROBE_89011707_Area_L1",
+          "QQ_PROBE_89011707_Area_L2"
+        ],
+        "safe_logic": true,
+        "safe_pi": true,
+        "es_emitted": [
+          "QQ_PROBE_89011707_ESZone1"
+        ]
+      }
+    },
+    "members": 6
+  }
+}

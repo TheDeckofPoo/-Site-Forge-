@@ -1375,7 +1375,7 @@
     </section>
 
     <!-- I/O banks + drive params + electrical prints (primary tab) -->
-    <section id="tab-io" class="h-full p-3 gap-2 flex flex-col bg-[#05090D]">
+    <section id="tab-io" class="hw-io-page p-3 gap-3 flex flex-col bg-[#05090D] overflow-y-auto">
       <details class="workflow-help shrink-0 px-3 py-2">
         <summary class="text-sm font-semibold text-cyan-400">How to use I/O &amp; Prints — workflow</summary>
         <div class="workflow-chart mt-3">
@@ -1418,46 +1418,46 @@
         </div>
       </div>
 
-      <!-- MAIN CAD: tree 18% | rack 57% | terminals 25% -->
-      <div class="flex-1 min-h-0 flex gap-2">
-        <!-- LEFT: Hardware tree -->
-        <div class="w-[18%] min-w-[10rem] flex flex-col min-h-0 shrink-0 rounded-xl border border-slate-800/80 bg-[#0a1018] overflow-hidden">
-          <div class="text-[10px] uppercase tracking-wider text-slate-500 px-2.5 py-1.5 border-b border-slate-800 shrink-0">
+      <!-- MAIN CAD: page-scroll workspace — tree | rack (~2 modules) | compact inspector -->
+      <div class="hw-io-main grid gap-2 items-start" style="grid-template-columns: minmax(10rem,16%) minmax(0,1fr) minmax(11rem,18%);">
+        <!-- LEFT: Hardware tree (compact nav; page scroll primary) -->
+        <div class="hw-io-tree-pane rounded-xl border border-slate-800/80 bg-[#0a1018] overflow-hidden sticky top-0 self-start max-h-[70vh]">
+          <div class="text-[10px] uppercase tracking-wider text-slate-500 px-2.5 py-1.5 border-b border-slate-800">
             Hardware tree
           </div>
-          <div id="hw-io-tree" class="flex-1 overflow-y-auto min-h-0 p-1">
+          <div id="hw-io-tree" class="p-1 max-h-[66vh] overflow-y-auto">
             <div class="text-sm text-slate-500 py-6 text-center px-2">Load a RUN to show the resolver tree.</div>
           </div>
         </div>
 
-        <!-- CENTER: PHYSICAL FLEX I/O RACK + channel table -->
-        <div class="w-[57%] flex-1 min-w-0 flex flex-col gap-2 min-h-0">
-          <div class="flex-1 min-h-0 overflow-hidden rounded-xl border border-cyan-900/40 bg-[#05090D] flex flex-col">
-            <div class="flex items-center gap-2 px-3 py-1.5 border-b border-slate-800/80 shrink-0">
+        <!-- CENTER: PHYSICAL FLEX I/O RACK (~2 modules visible) + channel table -->
+        <div class="hw-io-center min-w-0 flex flex-col gap-2">
+          <div class="rounded-xl border border-cyan-900/40 bg-[#05090D] flex flex-col">
+            <div class="flex items-center gap-2 px-3 py-1.5 border-b border-slate-800/80">
               <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Physical FLEX I/O Rack</span>
-              <span class="text-[9px] text-slate-600">full assembly · click a module</span>
+              <span class="text-[9px] text-slate-600">~2 modules visible · scroll rack horizontally · click to select</span>
             </div>
-            <div id="hw-io-racks" class="flex-1 overflow-auto min-h-0 p-2">
+            <div id="hw-io-racks" class="hw-io-rack-viewport p-2 overflow-x-auto overflow-y-hidden">
               <div class="text-sm text-slate-500 py-10 text-center">Load a RUN to show the FLEX / POINT I/O assembly from HardwareIOModel.</div>
             </div>
           </div>
-          <div class="shrink-0 max-h-[40%] min-h-[8rem] overflow-hidden rounded-xl border border-cyan-900/30 bg-[#070b10] flex flex-col">
-            <div class="text-[10px] uppercase tracking-wider text-cyan-400/80 font-semibold px-3 py-1.5 border-b border-slate-800 shrink-0">
+          <div class="hw-io-channel-pane rounded-xl border border-cyan-900/30 bg-[#070b10] flex flex-col">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-400/80 font-semibold px-3 py-1.5 border-b border-slate-800 sticky top-0 bg-[#070b10] z-[1]">
               Selected module · channel table
             </div>
-            <div id="hw-io-channel-table" class="flex-1 overflow-auto min-h-0 p-0 text-[11px] text-slate-400">
+            <div id="hw-io-channel-table" class="p-0 text-[11px] text-slate-400">
               Select a module on the rack to list channels.
             </div>
           </div>
         </div>
 
-        <!-- RIGHT: Vertical module terminals + channel detail -->
-        <div class="w-[25%] min-w-[14rem] flex flex-col min-h-0 shrink-0 rounded-xl border border-slate-800/80 bg-[#070b10] overflow-hidden">
-          <div id="hw-io-term-title" class="text-[10px] uppercase tracking-wider text-slate-500 px-3 py-1.5 border-b border-slate-800 shrink-0">
-            Module terminals
+        <!-- RIGHT: Compact Selected Module Inspector -->
+        <div class="hw-io-inspector rounded-xl border border-slate-800/80 bg-[#070b10] overflow-hidden sticky top-0 self-start">
+          <div id="hw-io-term-title" class="text-[10px] uppercase tracking-wider text-slate-500 px-2.5 py-1.5 border-b border-slate-800">
+            Selected module
           </div>
-          <div id="hw-io-module-detail" class="flex-1 overflow-auto min-h-0 p-2 text-[11px] text-slate-400">
-            Select a module for the vertical terminal face.
+          <div id="hw-io-module-detail" class="p-2 text-[11px] text-slate-400 max-h-[70vh] overflow-y-auto">
+            Select a module for the inspector.
           </div>
         </div>
       </div>
@@ -1729,11 +1729,15 @@
         .hw-ch-gen-label { display: inline-flex; align-items: center; gap: 4px; color: #9ebbc9; font-size: 10px; cursor: pointer; }
         .hw-ch-gen-input { accent-color: #34d399; }
 
-        /* Vertical terminal face — reference Image #2 */
-        .hw-term-panel { display: flex; flex-direction: column; gap: 10px; min-height: 100%; }
-        .hw-term-body { display: grid; grid-template-columns: 132px 1fr; gap: 10px; align-items: start; }
+        /* Gate J — page-level Hardware/I/O scroll */
+        .hw-io-page { height: auto !important; max-height: none; }
+        .hw-io-rack-viewport { min-height: 300px; }
+        .hw-io-inspector .hw-term-panel { gap: 6px; }
+        /* Compact Selected Module Inspector */
+        .hw-term-panel { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
+        .hw-term-body { display: grid; grid-template-columns: 100px 1fr; gap: 6px; align-items: start; }
         .hw-vert-mod {
-          width: 132px; min-height: 360px; margin: 0 auto;
+          width: 100px; min-height: 240px; margin: 0 auto;
           background: linear-gradient(145deg, #edf0f1, #bdc3c6);
           border: 1px solid #899196; border-radius: 8px; color: #111;
           position: relative; box-shadow: 0 3px 10px #0009;

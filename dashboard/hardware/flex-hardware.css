@@ -171,9 +171,12 @@
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
-  overflow: auto;
-  min-height: 280px;
+  justify-content: flex-start;
+  overflow-x: auto;
+  overflow-y: hidden;
+  /* Gate J: ≈2 full modules visible; horizontal rack navigation */
+  min-height: 320px;
+  max-width: 100%;
   padding: 8px;
   background:
     radial-gradient(circle at center, #0a1720 0, #061018 60%, #040a0f 100%);
@@ -200,7 +203,7 @@
 }
 
 .flex-slot-label {
-  width: 96px;
+  width: 168px;
   border: 1px solid #735a24;
   border-radius: 5px;
   background: #07121a;
@@ -213,7 +216,7 @@
 }
 
 .flex-slot-label.adapter-slot {
-  width: 142px;
+  width: 200px;
 }
 
 .flex-slot-label.selected {
@@ -260,14 +263,15 @@
 }
 
 .flex-adapter {
-  width: 142px;
-  height: 207px;
+  width: 200px;
+  height: 280px;
   border-radius: 7px 7px 4px 4px;
 }
 
 .flex-io {
-  width: 96px;
-  height: 188px;
+  /* ≈2 modules visible in center rack viewport at normal desktop width */
+  width: 168px;
+  height: 260px;
   border-radius: 5px;
 }
 
@@ -278,8 +282,10 @@
 
 .flex-adapter.selected,
 .flex-io.selected {
-  outline: 2px solid #10c5ff;
-  box-shadow: 0 0 10px #0bb8ff99, 0 4px 10px #0009;
+  outline: 3px solid #10c5ff;
+  outline-offset: 2px;
+  box-shadow: 0 0 14px #0bb8ffaa, 0 4px 10px #0009;
+  z-index: 5;
 }
 
 .flex-module-top {
@@ -461,7 +467,7 @@
 .flex-mod { display: none !important; }
 
 @media (max-width: 1300px) {
-  .flex-io { width: 84px; }
+  .flex-io { width: 140px; height: 220px; }
   .flex-slot-label { width: 84px; }
   .flex-slot-label.adapter-slot { width: 142px; }
 }

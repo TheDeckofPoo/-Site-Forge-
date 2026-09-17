@@ -7448,19 +7448,36 @@ async function runAutogenGenerate(mode) {
         const full = await fortnaAPI.autogenWorkbookLoad();
         if (full?.success && full.workbook) {
           const disk = full.workbook;
-          // Preserve transport rows/merges from disk; keep SiteModel editor overlays from memory.
+          const mem = autogenState.workbook || {};
+          // ONE canonical workbook: never drop Transport conveyors OR Safety Apply.
           const merged = {
             ...disk,
-            sawtooth_build: (autogenState.workbook && autogenState.workbook.sawtooth_build)
-              || disk.sawtooth_build
-              || null,
-            sorter_build: (autogenState.workbook && autogenState.workbook.sorter_build)
-              || disk.sorter_build
-              || null,
+            ...mem,
+            conveyors: (Array.isArray(disk.conveyors) && disk.conveyors.length)
+              ? disk.conveyors
+              : (mem.conveyors || []),
+            areas: (Array.isArray(disk.areas) && disk.areas.length)
+              ? disk.areas
+              : (mem.areas || disk.areas || mem.areas),
+            merges_2to1: disk.merges_2to1 || mem.merges_2to1,
+            safety_build: (mem.safety_build && (mem.safety_build.zones || []).length)
+              ? mem.safety_build
+              : (disk.safety_build || mem.safety_build || null),
+            sawtooth_build: mem.sawtooth_build || disk.sawtooth_build || null,
+            sorter_build: mem.sorter_build || disk.sorter_build || null,
           };
           if (sawConfigured) merged.sawtooth_build = { ...autogenState.sawtooth };
           if (sorterConfigured) merged.sorter_build = { ...autogenState.sorter };
+          // Prefer Applied (non-draft) safety_build from either side
+          const diskSb = disk.safety_build;
+          const memSb = mem.safety_build || autogenState.safety_build;
+          if (diskSb?.appliedAt && !(memSb?.appliedAt) && (diskSb.zones || []).length) {
+            merged.safety_build = diskSb;
+          } else if (memSb && (memSb.zones || []).length) {
+            merged.safety_build = memSb;
+          }
           autogenState.workbook = merged;
+          if (merged.safety_build) autogenState.safety_build = merged.safety_build;
           if (Array.isArray(disk.merges_2to1)) autogenState.merges_2to1 = disk.merges_2to1;
           const stubNames = (disk.conveyors || [])
             .filter((r) => r && (r.transport_build || r.source === 'transport_build_graph'))
