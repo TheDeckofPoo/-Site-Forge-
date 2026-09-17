@@ -4363,6 +4363,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     # --- Program ES (PLC4/PLC5 structural pattern) — only with proven/engineer membership ---
     es_emit_report: dict | None = None
     _es_pack = None
+    _es_force_aois: set[str] = set()  # force-keep through AOI prune when ES rungs call them
     try:
         from fortna_es_compiler import build_safety_zone_irs, emit_es_program, safety_readiness
         from fortna_estop_model import build_estop_model
@@ -4427,30 +4428,64 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         # Default path: PARTIAL EMIT ready zones. Full omit only when engineer
         # sets omit_unresolved_safety AND no zone has members. Never upgrade
         # REVIEW_REQUIRED → READY just because some zones emitted.
-        if not _ready_members:
+        if not _ready_members and _omit_safety:
             es_emit_report = dict(es_emit_report or {})
             es_emit_report["emitted"] = False
             es_emit_report["partial"] = False
-            es_emit_report["omitted"] = bool(_omit_safety)
+            es_emit_report["omitted"] = True
             es_emit_report["silent_omit_forbidden"] = True
             es_emit_report["omitted_zones"] = _incomplete or [z.name for z in _sz_irs]
             es_emit_report["emitted_zones"] = []
             es_emit_report["review_required_devices"] = _unassigned_devs
-            if _omit_safety:
+            es_emit_report["status"] = "REVIEW_REQUIRED"
+            es_emit_report["detail"] = (
+                "SAFETY REVIEW REQUIRED — Program ES omitted by engineer flag "
+                "omit_unresolved_safety. "
+                + (es_emit_report.get("detail") or "")
+            )
+            _es_pack = None
+        elif not _ready_members:
+            # Emit cookie-cutter ES shell (Main_Routine) — no fabricated membership.
+            _ensure_library_tag("NO_ESLS")
+            _es_pack = emit_es_program(
+                _sz_irs,
+                _rung_xml=_rung_xml,
+                routine=routine,
+                extract_tag_block=extract_tag_block,
+                library_text=library_text,
+                ensure_tag=_ensure_library_tag,
+                add_tag_block=_add_tag_block,
+            )
+            if _es_pack and _es_pack.get("program_xml"):
+                programs_xml.append(_es_pack["program_xml"])
+                # Shell has NOP only — do not force-keep sealed ES AOIs (unused sealed
+                # defs can trip Studio Invalid signature). AOIs join when members emit.
+                es_emit_report = dict(es_emit_report or {})
+                es_emit_report["emitted"] = True
+                es_emit_report["partial"] = True
+                es_emit_report["shell"] = True
+                es_emit_report["omitted"] = False
+                es_emit_report["status"] = "REVIEW_REQUIRED"
+                es_emit_report["emitted_zones"] = []
+                es_emit_report["omitted_zones"] = list(_es_pack.get("omitted_zones") or _incomplete)
+                es_emit_report["review_required_devices"] = _unassigned_devs
+                es_emit_report["aois"] = []
+                es_emit_report["routines"] = ["Main_Routine"]
                 es_emit_report["detail"] = (
-                    "SAFETY REVIEW REQUIRED — Program ES omitted by engineer flag "
-                    "omit_unresolved_safety. "
+                    "SAFETY REVIEW REQUIRED — Program ES shell emitted (Main_Routine only). "
+                    "Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. "
+                    "Unresolved membership is never permissive. "
                     + (es_emit_report.get("detail") or "")
                 )
             else:
+                es_emit_report = dict(es_emit_report or {})
+                es_emit_report["emitted"] = False
                 es_emit_report["status"] = "REVIEW_REQUIRED"
                 es_emit_report["detail"] = (
-                    "SAFETY REVIEW REQUIRED — Program ES NOT emitted. "
-                    "Assign E-Stop/ESR/MCR members (and confirm Reset/Silence) "
-                    "in Safety Build, then rebuild. "
+                    "SAFETY REVIEW REQUIRED — could not emit Program ES shell. "
                     + (es_emit_report.get("detail") or "")
                 )
-            _es_pack = None
+                _es_pack = None
         elif _omit_safety and (es_emit_report or {}).get("status") == "REVIEW_REQUIRED" and _incomplete:
             # Engineer chose full omit even though some zones have members
             es_emit_report = dict(es_emit_report or {})
@@ -4481,8 +4516,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 programs_xml.append(_es_pack["program_xml"])
                 # Force-keep ES AOIs through prune (rung calls ES_SIL1_Cat1 / ES_PI20)
                 for _es_aoi in ("ES_SIL1_Cat1", "ES_PI20", "ES_PI10"):
-                    if _es_aoi not in (getattr(inp, "include_programs", None) or []):
-                        pass  # AOI prune uses rung call names — ensure tags mention them
+                    _es_force_aois.add(_es_aoi)
                 for _tb in (_es_pack.get("tag_blocks") or []):
                     if _tb and _tb not in all_tags:
                         all_tags.append(_tb)
@@ -5833,6 +5867,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     for _core in ("Fast_Conv", "Slow_Flt", "Slow_Jam", "PE_Logic", "Full_PE", "Merge_2to1"):
         if _core in _aoi_lib_names:
             _keep.add(_core)
+    # ES pack AOIs when Program ES emitted with member Safe_Logic/Safe_PI rungs
+    for _es_aoi in _es_force_aois:
+        if _es_aoi in _aoi_lib_names:
+            _keep.add(_es_aoi)
     # NTP pack — only keep AOI_SNTP_QUERY when its LocalTag deps exist (AOI_TIME_ADD).
     # Otherwise Studio fails: Missing dependency of AOI_SNTP_QUERY / SNTP_AOI_TAG.
     _sntp_deps_ok = "AOI_TIME_ADD" in _aoi_lib_names and "AOI_TIME_DIFFERENCE" in _aoi_lib_names
@@ -7051,6 +7089,18 @@ def _safety_review_items(es: dict | None) -> dict | None:
     if not (es.get("omitted") or es.get("partial") or status == "REVIEW_REQUIRED"):
         return None
     omitted_zones = list(es.get("omitted_zones") or [])
+    if es.get("omitted"):
+        note = "SAFETY REVIEW REQUIRED — Program ES omitted; controller not complete"
+    elif es.get("shell"):
+        note = (
+            "SAFETY REVIEW REQUIRED — Program ES shell emitted (Main_Routine); "
+            "zone Safe_Logic/Safe_PI deferred until membership assigned"
+        )
+    else:
+        note = (
+            "SAFETY REVIEW REQUIRED — partial ES emit for ready zones; "
+            "unassigned/incomplete remain"
+        )
     return {
         "omitted": (
             ["Safety / ES"]
@@ -7060,14 +7110,11 @@ def _safety_review_items(es: dict | None) -> dict | None:
         "emitted_zones": list(es.get("emitted_zones") or []),
         "omitted_zones": omitted_zones,
         "partial": bool(es.get("partial")),
+        "shell": bool(es.get("shell")),
         "review_required_devices": list(es.get("review_required_devices") or []),
         "detail": es.get("detail") or "SAFETY REVIEW REQUIRED",
         "complete": False,
-        "note": (
-            "SAFETY REVIEW REQUIRED — Program ES omitted; controller not complete"
-            if es.get("omitted")
-            else "SAFETY REVIEW REQUIRED — partial ES emit for ready zones; unassigned/incomplete remain"
-        ),
+        "note": note,
     }
 
 

@@ -4503,12 +4503,18 @@ function renderHardwareModuleDetail() {
         }
       };
       inp.addEventListener('keydown', (ev) => {
-        if (ev.key === 'Enter') {
-          ev.preventDefault();
-          ev.stopPropagation();
+        if (ev.key === 'Enter' || ev.key === 'Tab') {
+          // Tab: commit before focus moves so blur does not race a second commit
+          // against a re-rendered input (intermittent alias/spare reset).
+          if (ev.key === 'Enter') {
+            ev.preventDefault();
+            ev.stopPropagation();
+          }
           skipBlur = true;
-          commit('enter');
-          try { inp.blur(); } catch (_) { /* ignore */ }
+          commit(ev.key === 'Enter' ? 'enter' : 'tab');
+          if (ev.key === 'Enter') {
+            try { inp.blur(); } catch (_) { /* ignore */ }
+          }
         }
         if (ev.key === 'Escape') {
           ev.preventDefault();
@@ -4548,6 +4554,17 @@ async function refreshHardwareIo() {
     renderHardwareIo({ success: false, message: 'No RUN loaded' });
     return;
   }
+  // Do not clobber an in-progress channel rename / spare assignment.
+  // PHYSICAL endpoint identity is immutable; engineer alias edits must persist
+  // across Enter/Tab/blur — a mid-edit model replace is a known reset race.
+  const activeName = document.activeElement;
+  if (
+    activeName
+    && activeName.classList
+    && activeName.classList.contains('hw-ch-name-input')
+  ) {
+    return;
+  }
   if ($('hw-io-status')) {
     $('hw-io-status').textContent = 'Loading…';
     $('hw-io-status').className = 'status-pill status-busy';
@@ -4558,6 +4575,9 @@ async function refreshHardwareIo() {
   }
   try {
     const res = await fortnaAPI.getHardwareIo();
+    // Re-check: focus may have moved into an input while the fetch was in flight
+    const stillEditing = document.activeElement?.classList?.contains?.('hw-ch-name-input');
+    if (stillEditing) return;
     renderHardwareIo(res);
   } catch (e) {
     renderHardwareIo({ success: false, message: e?.message || String(e) });

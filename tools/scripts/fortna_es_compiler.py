@@ -381,8 +381,44 @@ def emit_es_program(
     """
     ready = [z for z in zones if z.members and z.area and z.name]
     omitted = [z for z in zones if z.conveyors and not z.members and z.name]
+    # Cookie-cutter shell when zones/devices exist but membership is unresolved.
+    # Fail-safe: Main_Routine documents REVIEW; no fabricated zone membership.
     if not ready:
-        return None
+        if ensure_tag:
+            ensure_tag(NO_ESNULL)
+        shell_rungs = [
+            _rung_xml(
+                0,
+                "NOP();",
+                "SAFETY REVIEW REQUIRED — Program ES shell. "
+                "Assign E-Stop/ESR/MCR membership in Safety Build before zone Safe_Logic/Safe_PI emit. "
+                "UNKNOWN membership is never treated as permissive.",
+            ),
+        ]
+        if omitted:
+            shell_rungs.append(
+                _rung_xml(
+                    0,
+                    "NOP();",
+                    "Unresolved zones (no members): " + ", ".join(z.name for z in omitted[:12]),
+                )
+            )
+        program_xml = (
+            '<Program Name="ES" TestEdits="false" MainRoutineName="Main_Routine" '
+            'Disabled="false" UseAsFolder="false">'
+            "<Tags/><Routines>"
+            f'{routine("Main_Routine", shell_rungs)}'
+            "</Routines></Program>"
+        )
+        return {
+            "program_xml": program_xml,
+            "tag_blocks": [],
+            "zones": [],
+            "emitted_zones": [],
+            "omitted_zones": [z.name for z in omitted],
+            "shell": True,
+            "status": "REVIEW_REQUIRED",
+        }
 
     if ensure_tag:
         ensure_tag(NO_ESNULL)

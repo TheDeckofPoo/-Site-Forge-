@@ -840,8 +840,14 @@
     tb.activeAreaId = keepView;
     tb.selectedIds = ids.filter((id) => (dest.nodes || []).some((n) => n.id === id));
     tb.selectedId = tb.selectedIds[0] || null;
+    try { A().invalidateSchematicHitGeometry?.(); } catch (_) { /* ignore */ }
     save();
     render();
+    try {
+      A().drawSchematic?.(A().activeArea?.());
+      A().drawWires?.();
+      A().applyViewportZoom?.();
+    } catch (_) { /* ignore */ }
     status(
       `${label || 'Moved'} ${tb.selectedIds.length} conveyor(s) → area “${dest.name}” (view unchanged · topology preserved)`
     );

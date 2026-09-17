@@ -1593,8 +1593,15 @@
     if (Array.isArray(tb.selectedIds)) {
       tb.selectedIds = tb.selectedIds.includes(node.id) ? tb.selectedIds : [node.id];
     }
+    invalidateSchematicHitGeometry();
     save();
     render();
+    // Re-draw schematic with fresh offsets so hit == visible after lane re-separation
+    try {
+      drawSchematic(activeArea());
+      drawWires();
+      applyViewportZoom();
+    } catch (_) { /* ignore */ }
     status(
       `Moved ${nodeLabel(node)} → area ${dest.name} (view unchanged · topology preserved` +
         (keptDownstream ? `; downstream ${keptDownstream}` : '') +
@@ -1921,6 +1928,22 @@
    * layer that receives the same scale(z) transform as the conveyors.
    */
   function canvasPointFromEvent(ev) {
+    // AUTHORITATIVE: convert client → schematic SVG user space via live CTM.
+    // This stays in sync with CSS scale(zoom), scroll, and current SVG size after
+    // Area moves / re-layout — never use a stale manual transform cache.
+    const schematic = $('tb-schematic');
+    if (schematic && typeof schematic.createSVGPoint === 'function') {
+      try {
+        const pt = schematic.createSVGPoint();
+        pt.x = ev.clientX;
+        pt.y = ev.clientY;
+        const ctm = schematic.getScreenCTM();
+        if (ctm) {
+          const sp = pt.matrixTransform(ctm.inverse());
+          return { x: sp.x, y: sp.y };
+        }
+      } catch (_) { /* fall through */ }
+    }
     const canvas = $('tb-canvas');
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
@@ -1929,6 +1952,12 @@
       x: (ev.clientX - rect.left + canvas.scrollLeft) / z,
       y: (ev.clientY - rect.top + canvas.scrollTop) / z,
     };
+  }
+
+  /** Invalidate presentation/hit caches so next pick/draw recomputes from live nodes. */
+  function invalidateSchematicHitGeometry() {
+    tb._presentationOffsets = null;
+    tb._schematicLabelPos = null;
   }
 
   /** World → scroll-content CSS pixels (inverse of canvasPointFromEvent zoom step). */
@@ -2303,8 +2332,17 @@
 
   /** Resolve display path for a node — prefers valid pathCanvas arc; synthesizes curves. */
   /**
+   * Gate B — RUN geometry evidence classification (initial placement):
+   *   entryCanvas / exitCanvas / pathCanvas / sourceAngle / b / runB /
+   *   sweepDeg / insideRadius → PROVEN (decoder fields exist and are used for
+   *   initial X/Y placement when present).
+   *   presentation_offsets (display_dx/dy) → DERIVED (Site Forge layout only).
+   *   curve_display_orientation (elbow paint L/R) → UNKNOWN — do not synthesize.
+   *   topology from equipment numbering → UNKNOWN — never guess.
+   * Engineer edits remain authoritative over any RUN-derived placement.
+   *
    * Curve orientation for DISPLAY.
-   * RUN carries Angle/B/sweep/entry/exit (DERIVABLE_FROM_PROVEN_GEOMETRY in layout),
+   * RUN carries Angle/B/sweep/entry/exit (PROVEN as raw fields),
    * but synthesized elbows have failed visual acceptance (wrong way / stringy arcs).
    * Until orientation is contractually validated for elbow paint, status = UNKNOWN.
    */
@@ -2314,12 +2352,31 @@
     return 'UNKNOWN';
   }
 
-  /** Straight CURVE placeholder — type proven, turn direction not painted. */
+  /**
+   * Straight CURVE placeholder — type proven, turn direction not painted.
+   * Must have approximately the SAME visual weight as a normal conveyor section
+   * (not a tiny annotation glyph).
+   */
   function curveStraightPlaceholderPath(n) {
+    const sw = schematicStrokeWidth(n);
+    const minLen = Math.max(100, sw * 7); // conveyor-section visual weight
     if (n?.entryCanvas && n?.exitCanvas) {
-      const a = { x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) };
-      const b = { x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) };
-      if (Math.hypot(b.x - a.x, b.y - a.y) > 0.5) {
+      let a = { x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) };
+      let b = { x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) };
+      let dx = b.x - a.x;
+      let dy = b.y - a.y;
+      let len = Math.hypot(dx, dy);
+      if (len > 0.5) {
+        if (len < minLen) {
+          // Grow about midpoint so short RUN chords still read as equipment
+          const mx = (a.x + b.x) / 2;
+          const my = (a.y + b.y) / 2;
+          const ux = dx / len;
+          const uy = dy / len;
+          const half = minLen / 2;
+          a = { x: mx - ux * half, y: my - uy * half };
+          b = { x: mx + ux * half, y: my + uy * half };
+        }
         return [
           { cmd: 'move', x: a.x, y: a.y },
           { cmd: 'line', x: b.x, y: b.y },
@@ -2329,8 +2386,9 @@
     const x = Number(n.x) || 0;
     const y = Number(n.y) || 0;
     const ang = ((Number(n.sourceAngle != null ? n.sourceAngle : n.rotation) || 0) * Math.PI) / 180;
-    const dx = Math.cos(-ang) * 36;
-    const dy = Math.sin(-ang) * 36;
+    const half = minLen / 2;
+    const dx = Math.cos(-ang) * half;
+    const dy = Math.sin(-ang) * half;
     return [
       { cmd: 'move', x: x - dx, y: y - dy },
       { cmd: 'line', x: x + dx, y: y + dy },
@@ -2449,9 +2507,13 @@
     if (!area) return null;
     const pt = canvasPointFromEvent({ clientX, clientY });
     const nodes = schematicLocalNodes(area);
-    const offsets = tb._presentationOffsets || computePresentationOffsets(nodes, area);
+    // ALWAYS recompute offsets from CURRENT area nodes — never trust a cache that
+    // may predate Area reassignment / lane re-separation (stale hitbox bug).
+    // Store as the single authoritative presentation geometry for draw + hit.
+    const offsets = computePresentationOffsets(nodes, area);
+    tb._presentationOffsets = offsets;
     const half = SCHEMATIC_HIT_WIDTH / 2;
-    const labelHitR = 22; // guaranteed click target around P-tag / identity
+    const labelHitR = 24; // guaranteed click target around P-tag / identity
     let best = null;
     let bestDist = Infinity;
     nodes.forEach((n) => {
@@ -2464,7 +2526,7 @@
       const mid = applyPresOffset(mid0, off);
       const dMid = Math.hypot(pt.x - mid.x, pt.y - mid.y);
       if (dMid <= labelHitR) d = Math.min(d, dMid);
-      // Also honor explicit label positions from last draw (if any)
+      // Label positions from the same offsets (recompute, don't require prior draw)
       const lab = (tb._schematicLabelPos && tb._schematicLabelPos[n.id]) || null;
       if (lab) {
         const dLab = Math.hypot(pt.x - lab.x, pt.y - lab.y);
@@ -3839,14 +3901,28 @@
     if (!host) return;
     let maxX = 1600;
     let maxY = 1000;
+    // Include presentation offsets so lane-separated bodies stay inside SVG extents
+    const offsets = tb._presentationOffsets || {};
     (area?.nodes || []).forEach((n) => {
+      const odx = Number(offsets[n.id]?.dx) || Number(n.display_dx) || 0;
+      const ody = Number(offsets[n.id]?.dy) || Number(n.display_dy) || 0;
       if (isSchematicNode(n) && n.entryCanvas && n.exitCanvas) {
-        const pad = 40;
-        maxX = Math.max(maxX, n.entryCanvas.x + pad, n.exitCanvas.x + pad, (Number(n.x) || 0) + pad);
-        maxY = Math.max(maxY, n.entryCanvas.y + pad, n.exitCanvas.y + pad, (Number(n.y) || 0) + pad);
+        const pad = 80;
+        maxX = Math.max(
+          maxX,
+          n.entryCanvas.x + odx + pad,
+          n.exitCanvas.x + odx + pad,
+          (Number(n.x) || 0) + odx + pad,
+        );
+        maxY = Math.max(
+          maxY,
+          n.entryCanvas.y + ody + pad,
+          n.exitCanvas.y + ody + pad,
+          (Number(n.y) || 0) + ody + pad,
+        );
         (n.pathCanvas || []).forEach((p) => {
-          if (p.x != null) maxX = Math.max(maxX, p.x + pad);
-          if (p.y != null) maxY = Math.max(maxY, p.y + pad);
+          if (p.x != null) maxX = Math.max(maxX, p.x + odx + pad);
+          if (p.y != null) maxY = Math.max(maxY, p.y + ody + pad);
         });
       } else if (isPhysicalSeg(n)) {
         const a = physicalAnchors(n);
@@ -5748,6 +5824,7 @@
     highlightSafetyZone,
     placeSchematicLabels,
     drawSchematic,
+    invalidateSchematicHitGeometry,
     schematicPathD,
     pickSchematicNodeAt,
     distanceToDisplayPath,

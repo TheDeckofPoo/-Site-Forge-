@@ -98,8 +98,19 @@ class TestEsCompiler(unittest.TestCase):
             extract_tag_block=extract_tag_block,
             library_text="",
         )
-        self.assertIsNone(pack)
-        print("  [PASS] Transport zone with conveyors but no devices → REVIEW REQUIRED, no silent ES omit")
+        # Fail-safe shell: Program ES + Main_Routine NOP — no fabricated membership
+        self.assertIsNotNone(pack)
+        self.assertTrue(pack.get("shell"))
+        self.assertEqual(pack.get("status"), "REVIEW_REQUIRED")
+        self.assertEqual(pack.get("emitted_zones"), [])
+        self.assertIn("test1", pack.get("omitted_zones") or [])
+        xml = pack.get("program_xml") or ""
+        self.assertIn('Name="ES"', xml)
+        self.assertIn("Main_Routine", xml)
+        self.assertNotIn('Routine Name="test1_Safe_Logic"', xml)
+        self.assertNotIn("ES_SIL1_Cat1(", xml)
+        self.assertNotIn("JSR(", xml)
+        print("  [PASS] Transport zone with conveyors but no devices → ES shell REVIEW REQUIRED")
 
     def test_emit_main_jsr_and_sil1(self) -> None:
         eng = [
