@@ -3,8 +3,8 @@
 **Purpose:** Preserve everything needed to resume Site Forge work **without chat history**.
 
 **Branch:** `feature/plc2-transport-fidelity`  
-**Handoff HEAD:** `8231b5a741d8ed0b7658068710c0fdecc55ed3c2`  
-**Parent:** `8d46fd2` (punch-list) → `58fb309` (stabilization) → `61c7949`
+**Handoff HEAD:** `9866dfdeb32f174de7a0fd557f3ac5f5c700ad32`  
+**Lineage:** `9866dfd` (docs) → `8231b5a` (partial-build) → `8d46fd2` (punch-list) → `58fb309` (stabilization) → `61c7949`
 
 ---
 

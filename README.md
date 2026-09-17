@@ -13,8 +13,8 @@ It does **not** launch Studio 5000.
 | Item | Value |
 |------|--------|
 | **Branch** | `feature/plc2-transport-fidelity` |
-| **HEAD (as of this handoff)** | `8231b5a741d8ed0b7658068710c0fdecc55ed3c2` |
-| **Parent** | `8d46fd279975b07b7e80bc602f38ea9f882524c2` |
+| **HEAD (as of this handoff)** | `9866dfdeb32f174de7a0fd557f3ac5f5c700ad32` |
+| **Parent (partial-build)** | `8231b5a741d8ed0b7658068710c0fdecc55ed3c2` |
 | **Remote** | `origin/feature/plc2-transport-fidelity` (also mirrored at TheDeckofPoo/-Site-Forge-) |
 | **Worktree** | `C:\Dev\worktree\FortnaPlus` |
 
@@ -22,6 +22,7 @@ It does **not** launch Studio 5000.
 
 | SHA | Summary |
 |-----|---------|
+| `9866dfd` | **Offline README handoff** — continuity pack + updated READMEs |
 | `8231b5a` | **Partial build contract** — FOUND≠INCLUDED≠GENERATED; REVIEW does not block Export |
 | `8d46fd2` | Punch-list: layout freeze, CURVE symbol, M220 identity, Safety preflight |
 | `58fb309` | Transport hit geometry + Safety ES shell + curve weight |
