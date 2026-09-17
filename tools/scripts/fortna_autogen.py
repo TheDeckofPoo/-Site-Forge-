@@ -4820,16 +4820,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 return f"CP{m.group(1)}_ES.I.ES_OK"
             return f"{raw}.I.ES_OK"
 
-        # Beacon / horn / light — bare BOOL (or .O.Horn when already a UDT name)
+        # Beacon / horn / light — Site Forge emits these as BOOL tags today.
+        # Do NOT write WH310.O.Horn unless the tag DataType is a UDT with .O.Horn
+        # (finished PLC pattern). Invalid member specifier: BOOL has no .O.
         if dt in ("beacon", "horn", "light", "stacklight") or re.match(
             r"^(?:WH|WB)\d", core, re.I
         ):
-            if (direction or "").upper() in ("O", "OUT", "OUTPUT") and re.match(
-                r"^WH\d", core, re.I
-            ):
-                # finished often uses WH310.O.Horn for named WH tags
-                return f"{core}.O.Horn" if not core.upper().startswith("T_") else raw
-            return raw
+            return raw if raw else core
 
         # SSV / solenoid hold → Conv.O.Release (BEFORE bare BOOL). Configio physical resolver untouched.
         if (

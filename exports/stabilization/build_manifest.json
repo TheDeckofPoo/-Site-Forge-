@@ -1,0 +1,106 @@
+{
+  "controller": "ORNCCP2",
+  "source_run_filename": "Autogen_Project",
+  "source_run_hash": "",
+  "generation_timestamp": "2026-09-17 15:58:20",
+  "git_commit": "a7efa67",
+  "generator_version": "siteforge-autogen",
+  "output_filename": "ORNCCP2.L5X",
+  "output_path": "C:\\dev\\worktree\\FortnaPlus\\exports\\stabilization\\ORNCCP2.L5X",
+  "output_hash": "22804b3193b933d62701dda9ca76af13f50da907ec9d42fd44968ebcfe3509a7",
+  "output_sha256": "22804b3193b933d62701dda9ca76af13f50da907ec9d42fd44968ebcfe3509a7",
+  "build_id": "20260917-155820",
+  "diagnostics_dir": "exports\\stabilization",
+  "source_label": "Autogen_Project",
+  "l5x_bytes": 2353282,
+  "conveyor_count": 77,
+  "program_count": 12,
+  "es_program": {
+    "status": "REVIEW_REQUIRED",
+    "detail": "SAFETY REVIEW REQUIRED \u2014 emitted 1 ready zone(s); omitted incomplete: ORNCCP2_ESZone1; unassigned devices remain (CP3_ESR5, CP3_MCR1)",
+    "unresolved": 1,
+    "zones": [
+      {
+        "name": "HAHAHA_ESZone1",
+        "area": "HAHAHA",
+        "members": [
+          "CP4_ES",
+          "CP5_ES",
+          "CP6_ES",
+          "ES422",
+          "CP2_ES",
+          "CP2_ESR1",
+          "CP2_ESR2",
+          "CP2_ESR3",
+          "CP2_MCR1",
+          "CP3_ES",
+          "CP3_ESR1",
+          "T_2MCR1",
+          "ESLS125"
+        ],
+        "conveyors": [
+          "P138",
+          "P222",
+          "P400",
+          "P402",
+          "P404",
+          "P406",
+          "P408"
+        ],
+        "aggregators": [
+          "HAHAHA_ESZone1_ES_PI"
+        ]
+      }
+    ],
+    "ready_zones": [
+      "HAHAHA_ESZone1"
+    ],
+    "review_zones": [
+      "ORNCCP2_ESZone1"
+    ],
+    "partial_emit_allowed": true,
+    "silent_omit_forbidden": true,
+    "emitted": true,
+    "partial": true,
+    "omitted": false,
+    "emitted_zones": [
+      "HAHAHA_ESZone1"
+    ],
+    "omitted_zones": [
+      "ORNCCP2_ESZone1"
+    ],
+    "review_required_devices": [
+      "CP3_ESR5",
+      "CP3_MCR1"
+    ],
+    "aois": [
+      "ES_SIL1_Cat1",
+      "ES_PI20"
+    ],
+    "routines": [
+      "Main_Routine",
+      "HAHAHA_ESZone1_Safe_Logic",
+      "HAHAHA_ESZone1_Safe_PI"
+    ]
+  },
+  "review_items": {
+    "omitted": [
+      "Safety zone:ORNCCP2_ESZone1"
+    ],
+    "emitted_zones": [
+      "HAHAHA_ESZone1"
+    ],
+    "omitted_zones": [
+      "ORNCCP2_ESZone1"
+    ],
+    "partial": true,
+    "shell": false,
+    "review_required_devices": [
+      "CP3_ESR5",
+      "CP3_MCR1"
+    ],
+    "detail": "SAFETY REVIEW REQUIRED \u2014 emitted 1 ready zone(s); omitted incomplete: ORNCCP2_ESZone1; unassigned devices remain (CP3_ESR5, CP3_MCR1)",
+    "complete": false,
+    "note": "SAFETY REVIEW REQUIRED \u2014 partial ES emit for ready zones; unassigned/incomplete remain"
+  }
+}

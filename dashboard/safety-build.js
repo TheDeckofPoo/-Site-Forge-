@@ -274,8 +274,15 @@
       if (fields.Reset === 'UNRESOLVED') hard.push('Reset');
       if (fields.Silence === 'UNRESOLVED') hard.push('Silence');
       z.hard_missing = hard;
+      // READY only when members are persisted on the zone model (not empty DOM).
+      // Global hub still REVIEW if other devices remain unassigned / draft dirty.
       z.status = hard.length || !(z.members || []).length ? 'REVIEW_REQUIRED' : 'READY';
       if (!(z.conveyorRefs || []).length && !(z.members || []).length) z.status = 'REVIEW_REQUIRED';
+      // Draft edits not yet Applied → conspicuous REVIEW on the zone chip
+      if (z.status === 'READY' && state.dirty) {
+        z.status = 'REVIEW_REQUIRED';
+        z._draftReady = true; // members present but Apply Safety required
+      }
       // Digit-match suggestions
       const digs = new Set();
       (z.conveyorRefs || []).forEach((c) => (String(c).match(/\d{2,4}/g) || []).forEach((d) => digs.add(d)));
@@ -620,10 +627,11 @@
     });
     host.innerHTML = `
       <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-        <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Device inventory</span>
-        <span class="text-[9px] text-slate-600 mono">${devices.length} found · ${left} need engineer</span>
+        <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" title="Complete discovered Safety-device ledger (assigned + unassigned)">Device Inventory</span>
+        <span class="text-[9px] text-slate-600 mono">${devices.length} found · ${left} unassigned</span>
         <input id="sb-inv-filter" type="search" placeholder="Filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-28" value="${escapeHtml(state.inventoryFilter || '')}">
       </div>
+      <div class="text-[9px] text-slate-600 mb-1 leading-snug">Full site ledger — shows assignment state. Not the same as Available (zone picker).</div>
       <div class="space-y-0.5">${body || '<div class="text-slate-600 p-2 text-[10px]">No devices match</div>'}</div>
       <div class="mt-2 flex gap-2">
         <button type="button" id="sb-inv-assign" class="btn-ghost flex-1 text-[10px] py-1 rounded-lg border border-emerald-900/50 text-emerald-300" title="Assign checked devices to selected zone">Assign → zone</button>
@@ -741,7 +749,10 @@
     host.innerHTML = `
       <div class="flex items-center gap-2 mb-3 flex-wrap">
         <h3 class="text-base font-semibold text-rose-200 mono">${escapeHtml(z.name)}</h3>
-        <span class="text-[11px]">${z.status === 'READY' ? badge('READY') : badge('REVIEW')}</span>
+        <span class="text-[11px]">${
+          z.status === 'READY' ? badge('READY')
+            : (z._draftReady ? badge('APPLY TO PERSIST') : badge('REVIEW'))
+        }</span>
         <button type="button" id="sb-show-on-transport" class="ml-auto btn-ghost text-[10px] px-2 py-1 rounded-lg border border-slate-700">
           <i class="fa-solid fa-route mr-1"></i>Show on Transportation
         </button>
@@ -764,9 +775,10 @@
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
         <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 flex flex-col min-h-[18rem]">
           <div class="flex items-center gap-2 mb-2">
-            <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Available Safety Devices</span>
+            <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" title="Unassigned devices eligible for this zone">Available Devices</span>
             <input id="sb-device-filter" type="search" placeholder="Filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-36" value="${escapeHtml(state.filter)}">
           </div>
+          <div class="text-[9px] text-slate-600 mb-1">Unassigned devices eligible for the selected zone (not the full inventory).</div>
           <div id="sb-available" class="flex-1 overflow-y-auto space-y-0.5 text-[11px] mono"></div>
           <div class="mt-2 flex gap-2">
             <button type="button" id="sb-add-selected" class="btn-ghost flex-1 text-[10px] py-1.5 rounded-lg border border-emerald-900/50 text-emerald-300">Add →</button>
@@ -858,8 +870,16 @@
     if (!availHost || !asgnHost || !state.model) return;
     const assigned = new Set((z.members || []).map((m) => String(m).toUpperCase()));
     const filt = String(state.filter || '').trim().toUpperCase();
+    // AVAILABLE = unassigned (or not on another zone) eligible for THIS zone.
+    // DEVICE INVENTORY (left rail) remains the full ledger including assigned.
     const avail = (state.model.devices || [])
       .filter((d) => d && d.name && !assigned.has(String(d.name).toUpperCase()))
+      .filter((d) => {
+        const st = String(d.status || '').toUpperCase();
+        const ref = String(d.safetyZoneRef || '').trim();
+        if (ref && ref.toUpperCase() !== String(z.name || '').toUpperCase()) return false;
+        return !ref || st === 'UNASSIGNED' || st === '';
+      })
       .filter((d) => !filt || String(d.name).toUpperCase().includes(filt)
         || String(d.kind || '').toUpperCase().includes(filt)
         || String(d.safetyZoneRef || '').toUpperCase().includes(filt));

@@ -1,0 +1,31 @@
+{
+  "l5x": "exports\\stabilization\\ORNCCP2.L5X",
+  "preflight_ok": true,
+  "operand_validation": {
+    "checked": 818,
+    "invalid": 0
+  },
+  "safety": {
+    "es": true,
+    "p01": true,
+    "safe_logic": 1,
+    "safe_pi": 1,
+    "hahaha_emitted": true,
+    "members_studio": [
+      "CP4_ES",
+      "CP5_ES",
+      "CP6_ES",
+      "ES422",
+      "CP2_ES",
+      "CP2_ESR1",
+      "CP2_ESR2",
+      "CP2_ESR3",
+      "CP2_MCR1",
+      "CP3_ES",
+      "CP3_ESR1",
+      "T_2MCR1",
+      "ESLS125"
+    ]
+  },
+  "p220a_aux_ote": 1
+}

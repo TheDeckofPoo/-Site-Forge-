@@ -65,16 +65,71 @@ def _safe(name: str) -> str:
     return s
 
 
+def studio_safety_tag(name: str) -> str:
+    """Map Fortna / engineer Safety identity → Rockwell-legal controller tag.
+
+    Studio rejects tags that start with a digit (e.g. Fortna ``4ES``).
+    Accepted mappings (deterministic, no guessing of zone membership):
+      4ES / 4ES1     → CP4_ES / CP4_ES1
+      2MCR1          → CP2_MCR1
+      2ESR1          → CP2_ESR1
+      CP2_ES         → CP2_ES (unchanged)
+      ES422 / ESLS*  → unchanged when already legal
+      T_2MCR1        → unchanged
+    """
+    raw = str(name or "").strip()
+    n = _safe(raw)
+    if not n:
+        return ""
+    u = n.upper()
+    # Already Rockwell-legal and known forms
+    if re.match(r"^[A-Za-z_]", n) and not re.match(r"^\d", n):
+        return n
+    # Fortna panel E-Stop: 2ES, 4ES, 4ES1
+    m = re.match(r"^(\d+)ES(\d*)$", u)
+    if m:
+        return f"CP{m.group(1)}_ES{m.group(2)}"
+    # Fortna panel MCR/ESR: 2MCR1, 3ESR2
+    m = re.match(r"^(\d+)(MCR|ESR)(\d*)$", u)
+    if m:
+        return f"CP{m.group(1)}_{m.group(2)}{m.group(3) or '1'}"
+    # Fallback: prefix underscore so Studio accepts digit-leading leftovers
+    if re.match(r"^\d", n):
+        return f"_{n}"
+    return n
+
+
 def _looks_like_safety_device(name: str) -> bool:
-    n = (name or "").upper()
+    """Heuristic for RUN-proven / auto-discovered Safety device tags.
+
+    Must accept Fortna panel forms Curtis assigns in Safety Build:
+      2ES / 4ES / 5ES / 6ES
+      CP2_ES / CP3_ES
+      CP2_ESR1 / CP2_MCR1 / T_2MCR1 / ES422 / ESLS*
+    """
+    n = (name or "").upper().strip()
+    if not n:
+        return False
     return bool(
-        re.match(r"^\d*ES\d", n)
+        # Panel E-Stop: 2ES, 4ES, 4ES1, 12ES2
+        re.match(r"^\d+ES\d*$", n)
+        # Bare / numbered ES: ES422, ES1002
         or re.match(r"^ES\d+", n)
-        or re.match(r"^T_\d*ES\d", n)
+        or re.match(r"^ESLS", n)
+        # Controller-prefixed: CP2_ES, CP3_ES, CP2_ESR1, CP2_MCR1
+        or re.match(r"^CP\d+_ES\d*$", n)
+        or re.match(r"^CP\d+_ESR\d*", n)
+        or re.match(r"^CP\d+_MCR\d*", n)
+        # Terminal / remote: T_2MCR1, T_3ES1
+        or re.match(r"^T_\d*ES\d*", n)
+        or re.match(r"^T_\d*MCR\d*", n)
+        or re.match(r"^T_\d*ESR\d*", n)
         or n.startswith("ESR")
         or re.search(r"(^|_)ESR\d*", n)
         or re.search(r"(^|_)MCR\d*", n)
         or re.search(r"MCR\d*", n)
+        # Legacy pattern kept for older tags like 2ES1 (digit after ES required)
+        or re.match(r"^\d*ES\d", n)
     )
 
 
@@ -114,14 +169,36 @@ def build_safety_zone_irs(
             continue
         area = _safe(z.get("area") or default_area or "")
         conveyors = [str(c).strip() for c in (z.get("conveyors") or []) if str(c).strip()]
-        members = [
-            _safe(m) if isinstance(m, str) else _safe((m or {}).get("name") or "")
-            for m in (z.get("members") or [])
-        ]
-        members = [m for m in members if m and _looks_like_safety_device(m)]
+        raw_members = []
+        for m in (z.get("members") or []):
+            src = m if isinstance(m, str) else ((m or {}).get("name") or "")
+            # Keep Fortna identity for membership proof; map to Studio tag for emit
+            tag = studio_safety_tag(src)
+            if tag:
+                raw_members.append(tag)
+        # de-dupe preserving order
+        seen_m: set[str] = set()
+        raw_members = [m for m in raw_members if not (m in seen_m or seen_m.add(m))]
+        # ENGINEER ASSIGNMENTS ARE AUTHORITATIVE (Gate C).
+        # Do not drop explicit Safety Build members via heuristic filter —
+        # that caused HAHAHA_ESZone1 (4ES/5ES/CP2_ES…) to arrive as members=[]
+        # and emit a false NOP shell while the UI showed READY.
+        eng_origin = str(
+            z.get("membersOrigin") or z.get("members_origin") or ""
+        ).upper()
+        engineer_authored = bool(z.get("engineerEdited")) or eng_origin in {
+            "ENGINEER_ASSIGNED",
+            "ENGINEER",
+            "ASSIGNED",
+        } or bool(raw_members)
+        if engineer_authored and raw_members:
+            members = list(raw_members)
+        else:
+            members = [m for m in raw_members if _looks_like_safety_device(m)]
         # Only fill from proven estop when zone NAMES match — no guessing
         if not members and name.upper() in proven_by_zone:
-            members = list(proven_by_zone[name.upper()])
+            members = [studio_safety_tag(m) for m in proven_by_zone[name.upper()]]
+            members = [m for m in members if m]
         status = "RESOLVED" if members else ("UNRESOLVED" if conveyors else "NONE")
         if not area and (areas or []):
             area = _safe(areas[0])

@@ -129,6 +129,37 @@ def preflight_l5x(path: Path) -> dict[str, Any]:
     # Duplicate OTE targets inside IO_MAP routines cause overlapping coils
     _check_iomap_duplicate_otes(text, add)
 
+    # Gate I — full operand member-path validation (Invalid member specifier)
+    operand_report: dict[str, Any] = {}
+    try:
+        from fortna_operand_validator import validate_l5x_operands
+
+        operand_report = validate_l5x_operands(text)
+        for inv in operand_report.get("invalid") or []:
+            extra = {
+                k: inv.get(k)
+                for k in (
+                    "program", "routine", "rung", "instruction", "operand",
+                    "base_tag", "datatype", "failed_segment", "failed_member_segment",
+                )
+                if inv.get(k) is not None
+            }
+            extra["operand_kind"] = inv.get("kind")
+            add(
+                "ERROR",
+                "invalid_member_specifier",
+                (
+                    f"PLC OPERAND ERROR Program:{inv.get('program')} "
+                    f"Routine:{inv.get('routine')} Rung:{inv.get('rung')} "
+                    f"{inv.get('instruction')} Operand:{inv.get('operand')} "
+                    f"DataType:{inv.get('datatype') or '—'} "
+                    f"Invalid segment:{inv.get('failed_member_segment') or inv.get('failed_segment') or '—'}"
+                ),
+                **extra,
+            )
+    except Exception as exc:
+        add("WARNING", "operand_validator_error", f"Operand validator failed: {exc}")
+
     # PL-8 — structural subsystem preflight (does not block on Safety REVIEW)
     structural = _structural_subsystem_report(text, root)
     if structural.get("safety", {}).get("status") == "REVIEW_REQUIRED":
@@ -165,6 +196,7 @@ def preflight_l5x(path: Path) -> dict[str, Any]:
         },
         "programs_with_main": programs_with_main,
         "structural": structural,
+        "operand_validation": operand_report,
         "issues": issues,
     }
 

@@ -410,14 +410,19 @@
     .tb-schematic-body.tb-rk-zeropressure { stroke: #a5b4fc; }
     .tb-schematic-body.tb-rk-belt { stroke: #67e8f9; stroke-dasharray: 10 4; }
     /* CURVE type with UNKNOWN orientation: straight placeholder, distinct accent */
-    /* PL-2: UNKNOWN-orientation CURVE symbol — conveyor weight, distinct violet */
+    /* Gate B: UNKNOWN-orientation CURVE oblong — conveyor weight, distinct violet fill */
     .tb-schematic-body.tb-rk-curve {
-      stroke: #c4b5fd;
-      stroke-linecap: butt;
-      stroke-linejoin: miter;
-      filter: drop-shadow(0 0 3px rgba(167, 139, 250, 0.55));
-      stroke-dasharray: 8 4;
-      stroke-width: inherit;
+      stroke: #a78bfa;
+      fill: rgba(139, 92, 246, 0.55);
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      filter: drop-shadow(0 0 4px rgba(167, 139, 250, 0.65));
+      stroke-dasharray: none;
+      stroke-width: 2.5 !important;
+    }
+    .tb-schematic-body.tb-rk-curve.selected {
+      fill: rgba(232, 121, 249, 0.55) !important;
+      stroke: #e879f9 !important;
     }
     .tb-curve-badge {
       fill: #c4b5fd !important;

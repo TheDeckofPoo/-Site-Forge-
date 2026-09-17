@@ -2385,30 +2385,37 @@
    * It MUST NOT be written into model provenance as physical orientation.
    */
   const CURVE_SYMBOL = Object.freeze({
-    // Match normal conveyor visual weight
-    MIN_LENGTH_PX: 140,
-    LENGTH_STROKE_MULT: 8,
-    STROKE_MIN: 14,
-    STROKE_MAX: 22,
+    // Match normal conveyor visual weight (oblong body, not a thin stroke)
+    MIN_LENGTH_PX: 160,
+    LENGTH_STROKE_MULT: 9,
+    BODY_WIDTH_MIN: 18,
+    BODY_WIDTH_MAX: 28,
+    STROKE_MIN: 18,
+    STROKE_MAX: 28,
     // Standardized diagonal for the unknown-orientation glyph (UI-only degrees)
     SYMBOL_ANGLE_DEG: -35,
     BADGE: 'CURVE',
-    TOOLTIP_SUFFIX: 'CURVE — orientation UNKNOWN (symbol; not physical turn)',
+    TOOLTIP_SUFFIX: 'CURVE — orientation UNKNOWN (symbolic diagonal; not physical turn)',
   });
 
   function curveSymbolStrokeWidth(n) {
     const { W } = segSize(n);
-    return Math.max(CURVE_SYMBOL.STROKE_MIN, Math.min(CURVE_SYMBOL.STROKE_MAX, W || 16));
+    return Math.max(CURVE_SYMBOL.STROKE_MIN, Math.min(CURVE_SYMBOL.STROKE_MAX, W || 20));
+  }
+
+  function curveSymbolBodyWidth(n) {
+    const sw = curveSymbolStrokeWidth(n);
+    return Math.max(CURVE_SYMBOL.BODY_WIDTH_MIN, Math.min(CURVE_SYMBOL.BODY_WIDTH_MAX, sw));
   }
 
   /**
-   * Standardized UNKNOWN-orientation CURVE symbol path (diagonal bar).
-   * Anchored at RUN entry/exit midpoint when available; angle is UI-only.
-   * curveType remains PROVEN; physicalTurnOrientation remains UNKNOWN.
+   * Standardized UNKNOWN-orientation CURVE symbol — oblong/rounded conveyor-like
+   * body on a diagonal. UI-ONLY symbol; does NOT set engineering orientation.
+   * curveType remains PROVEN; physicalTurnOrientation / displayOrientation = UNKNOWN.
    */
   function curveUnknownOrientationSymbolPath(n) {
-    const sw = curveSymbolStrokeWidth(n);
-    const minLen = Math.max(CURVE_SYMBOL.MIN_LENGTH_PX, sw * CURVE_SYMBOL.LENGTH_STROKE_MULT);
+    const bodyW = curveSymbolBodyWidth(n);
+    const minLen = Math.max(CURVE_SYMBOL.MIN_LENGTH_PX, bodyW * CURVE_SYMBOL.LENGTH_STROKE_MULT);
     let mx;
     let my;
     if (n?.entryCanvas && n?.exitCanvas) {
@@ -2418,14 +2425,25 @@
       mx = Number(n.x) || 0;
       my = Number(n.y) || 0;
     }
-    // UI-only symbol angle — never treat as physicalTurnOrientation
+    // UI-only symbol angle — never treat as physicalTurnOrientation / LEFT / RIGHT
     const ang = (CURVE_SYMBOL.SYMBOL_ANGLE_DEG * Math.PI) / 180;
-    const half = minLen / 2;
-    const dx = Math.cos(ang) * half;
-    const dy = Math.sin(ang) * half;
+    const halfL = minLen / 2;
+    const halfW = bodyW / 2;
+    const ux = Math.cos(ang);
+    const uy = Math.sin(ang);
+    const nx = -uy;
+    const ny = ux;
+    // Closed oblong (parallelogram) — same visual weight as a straight section
+    const p1 = { x: mx - ux * halfL + nx * halfW, y: my - uy * halfL + ny * halfW };
+    const p2 = { x: mx + ux * halfL + nx * halfW, y: my + uy * halfL + ny * halfW };
+    const p3 = { x: mx + ux * halfL - nx * halfW, y: my + uy * halfL - ny * halfW };
+    const p4 = { x: mx - ux * halfL - nx * halfW, y: my - uy * halfL - ny * halfW };
     return [
-      { cmd: 'move', x: mx - dx, y: my - dy },
-      { cmd: 'line', x: mx + dx, y: my + dy },
+      { cmd: 'move', x: p1.x, y: p1.y },
+      { cmd: 'line', x: p2.x, y: p2.y },
+      { cmd: 'line', x: p3.x, y: p3.y },
+      { cmd: 'line', x: p4.x, y: p4.y },
+      { cmd: 'line', x: p1.x, y: p1.y },
     ];
   }
 
