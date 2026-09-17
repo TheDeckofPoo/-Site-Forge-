@@ -2302,18 +2302,46 @@
   }
 
   /** Resolve display path for a node — prefers valid pathCanvas arc; synthesizes curves. */
-  function displayPathCanvasForNode(n) {
-    // Curves: always synthesize a clean move+arc 90° elbow from entry→exit.
-    // Never fall back to inflateCurvePathForDisplay — that preserves RUN tangent hooks.
-    if (isCurveNode(n)) {
-      const synth = synthesizeCurveDisplayPath(n);
-      if (synth) return synth;
-      const loose = synthesizeCurveDisplayPath(n, { loose: true });
-      if (loose) return loose;
-      return null;
+  /**
+   * Curve orientation for DISPLAY.
+   * RUN carries Angle/B/sweep/entry/exit (DERIVABLE_FROM_PROVEN_GEOMETRY in layout),
+   * but synthesized elbows have failed visual acceptance (wrong way / stringy arcs).
+   * Until orientation is contractually validated for elbow paint, status = UNKNOWN.
+   */
+  function curveOrientationStatus(n) {
+    if (!isCurveNode(n)) return 'N/A';
+    void n;
+    return 'UNKNOWN';
+  }
+
+  /** Straight CURVE placeholder — type proven, turn direction not painted. */
+  function curveStraightPlaceholderPath(n) {
+    if (n?.entryCanvas && n?.exitCanvas) {
+      const a = { x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) };
+      const b = { x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) };
+      if (Math.hypot(b.x - a.x, b.y - a.y) > 0.5) {
+        return [
+          { cmd: 'move', x: a.x, y: a.y },
+          { cmd: 'line', x: b.x, y: b.y },
+        ];
+      }
     }
-    if (pathHasValidArc(n?.pathCanvas)) {
-      return inflateCurvePathForDisplay(n.pathCanvas, n);
+    const x = Number(n.x) || 0;
+    const y = Number(n.y) || 0;
+    const ang = ((Number(n.sourceAngle != null ? n.sourceAngle : n.rotation) || 0) * Math.PI) / 180;
+    const dx = Math.cos(-ang) * 36;
+    const dy = Math.sin(-ang) * 36;
+    return [
+      { cmd: 'move', x: x - dx, y: y - dy },
+      { cmd: 'line', x: x + dx, y: y + dy },
+    ];
+  }
+
+  function displayPathCanvasForNode(n) {
+    // Curves: UNKNOWN display orientation → straight CURVE placeholder (never guessed elbow).
+    // synthesizeCurveDisplayPath retained for future PROVEN-orientation elbow paint.
+    if (isCurveNode(n)) {
+      return curveStraightPlaceholderPath(n);
     }
     return n?.pathCanvas || null;
   }
@@ -2423,11 +2451,26 @@
     const nodes = schematicLocalNodes(area);
     const offsets = tb._presentationOffsets || computePresentationOffsets(nodes, area);
     const half = SCHEMATIC_HIT_WIDTH / 2;
+    const labelHitR = 22; // guaranteed click target around P-tag / identity
     let best = null;
     let bestDist = Infinity;
     nodes.forEach((n) => {
-      const d = distanceToDisplayPath(pt, n, offsets);
-      if (d > half) return;
+      const off = offsets[n.id] || { dx: 0, dy: 0 };
+      let d = distanceToDisplayPath(pt, n, offsets);
+      // Universal contract: identity label / body midpoint is always a hit target
+      const mid0 = n.entryCanvas && n.exitCanvas
+        ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
+        : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
+      const mid = applyPresOffset(mid0, off);
+      const dMid = Math.hypot(pt.x - mid.x, pt.y - mid.y);
+      if (dMid <= labelHitR) d = Math.min(d, dMid);
+      // Also honor explicit label positions from last draw (if any)
+      const lab = (tb._schematicLabelPos && tb._schematicLabelPos[n.id]) || null;
+      if (lab) {
+        const dLab = Math.hypot(pt.x - lab.x, pt.y - lab.y);
+        if (dLab <= labelHitR) d = Math.min(d, dLab);
+      }
+      if (d > half && d > labelHitR) return;
       if (d < bestDist || (d === bestDist && best && String(n.id) < String(best.id))) {
         bestDist = d;
         best = n;
@@ -2867,6 +2910,7 @@
       const cp = normalizeControlPanel(n.controlPanel);
       const cpMatch = nodeMatchesCpFilter(n);
       let cls = `tb-schematic-body tb-rk-${rk}`;
+      if (isCurveNode(n)) cls += ' tb-rk-curve';
       if (sel) cls += ' selected';
       if (amb) cls += ' tb-ambiguous';
       if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') cls += ' tb-display-context tb-external-ref';
@@ -2880,17 +2924,17 @@
         ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
       const mid = applyPresOffset(mid0, off);
-      const tip = cp ? `${tag} · ${cp}` : tag;
-      // CURVE + straight share belt-width stroke (elbow replaces body; not a thin crescent)
+      const tip = isCurveNode(n)
+        ? `${tag} · CURVE (orientation UNKNOWN — straight placeholder)`
+        : (cp ? `${tag} · ${cp}` : tag);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
-      // Invisible hit stroke — visual belt stays `sw`; pick uses SCHEMATIC_HIT_WIDTH (~46).
+      // Invisible hit stroke — visual belt stays `sw`; pick uses SCHEMATIC_HIT_WIDTH (~50).
       const hitSw = SCHEMATIC_HIT_WIDTH;
       html += `<path class="tb-schematic-hit" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${hitSw}" />`;
-      // Canvas labels: P-tag only by default. Area/ES stay in the inspector — never
-      // paint missing-config words or zone names across the drawing. Small warn dot if needed.
+      // Orange warn dot: missing Area/ES (informational only; not a selection handle)
       const needsCfg = !!(n.areaRequired || n.esZoneRequired);
-      if (needsCfg) {
-        html += `<circle class="tb-schematic-warn" data-id="${escapeHtml(n.id)}" cx="${mid.x}" cy="${mid.y - sw / 2 - 4}" r="2.5"><title>Missing Area/ES — edit in inspector</title></circle>`;
+      if (needsCfg && (sel || tb.viewMode === 'geom-debug')) {
+        html += `<circle class="tb-schematic-warn" data-id="${escapeHtml(n.id)}" cx="${mid.x}" cy="${mid.y - sw / 2 - 4}" r="2.5"><title>Missing Area/ES — edit in inspector (not a click handle)</title></circle>`;
       }
       // Small CP badge (does not alter connectivity geometry)
       if (cp && (sel || cpFilterActive() || lod === 'close' || lod === 'mid')) {
@@ -2911,13 +2955,16 @@
         html += `<path class="tb-schematic-flow" data-id="${escapeHtml(n.id)}" d="M ${ax} ${ay} L ${fx} ${fy} L ${bx} ${by}" />`;
       }
       // Conveyor-first: P-tag only unless Motors/PE/Device Labels layers are on.
+      // CURVE type with UNKNOWN orientation always shows a CURVE secondary badge.
       const showConvTags = tb.layers?.conveyorTags !== false;
-      if (showConvTags && (lod === 'overview' || lod === 'mid' || lod === 'close' || sel)) {
+      if (showConvTags && (lod === 'overview' || lod === 'mid' || lod === 'close' || sel || isCurveNode(n))) {
         const len = Number(n.length) || (n.entryCanvas && n.exitCanvas
           ? Math.hypot(n.exitCanvas.x - n.entryCanvas.x, n.exitCanvas.y - n.entryCanvas.y)
           : 0);
         let secondary = '';
-        if (tb.layers?.motors || tb.layers?.deviceLabels) {
+        if (isCurveNode(n) && curveOrientationStatus(n) === 'UNKNOWN') {
+          secondary = 'CURVE';
+        } else if (tb.layers?.motors || tb.layers?.deviceLabels) {
           if (Array.isArray(n.motorsMeta) && n.motorsMeta[0]) {
             const m = n.motorsMeta[0].motor || n.motorsMeta[0].tag;
             if (m) secondary = String(m);
@@ -2951,8 +2998,10 @@
         });
       }
     });
+    tb._schematicLabelPos = {};
     placeSchematicLabels(labelCandidates).forEach((lab) => {
       if (lab.hidden) return;
+      tb._schematicLabelPos[lab.id] = { x: lab.x, y: lab.y };
       // Leader line only when label was moved off the body midpoint.
       if (lab.offsetIndex > 0 || lab.forced) {
         const ax = lab.anchorX != null ? lab.anchorX : lab.x;
@@ -2960,34 +3009,43 @@
         html += `<line class="tb-schematic-leader" data-id="${escapeHtml(lab.id)}" x1="${ax}" y1="${ay}" x2="${lab.x}" y2="${lab.y}" />`;
       }
       const tipAttr = lab.tip ? `<title>${escapeHtml(lab.tip)}</title>` : '';
-      html += `<text class="tb-schematic-label" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${tipAttr}${escapeHtml(lab.tag)}</text>`;
-      if (lab.secondary && (tb.layers?.motors || tb.layers?.deviceLabels)) {
-        html += `<text class="tb-schematic-label-sec" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y + 11}">${escapeHtml(lab.secondary)}</text>`;
+      // Identity label is a FIRST-CLASS selection target (universal contract)
+      html += `<text class="tb-schematic-label tb-schematic-label-hit" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${tipAttr}${escapeHtml(lab.tag)}</text>`;
+      // Invisible hit disc behind the number so short tags remain easy to click
+      html += `<circle class="tb-schematic-label-disc" data-id="${escapeHtml(lab.id)}" cx="${lab.x}" cy="${lab.y}" r="16" />`;
+      if (lab.secondary) {
+        const secCls = lab.secondary === 'CURVE'
+          ? 'tb-schematic-label-sec tb-curve-badge'
+          : 'tb-schematic-label-sec';
+        html += `<text class="${secCls}" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y + 12}">${escapeHtml(lab.secondary)}</text>`;
       }
     });
-    // Confirmed physical mates: endpoints share location — show ▶◀ joint, not Bezier
-    (area?.wires || []).forEach((w) => {
-      if (!w.physical) return;
-      const conf = String(w.confidence || '').toUpperCase();
-      if (!(conf === 'CONFIRMED' || conf.includes('HIGH'))) return;
-      const a = (area.nodes || []).find((n) => n.id === w.from);
-      const b = (area.nodes || []).find((n) => n.id === w.to);
-      if (!a?.exitCanvas || !b?.entryCanvas) return;
-      const oa = offsets[a.id] || { dx: 0, dy: 0 };
-      const ob = offsets[b.id] || { dx: 0, dy: 0 };
-      const ax = applyPresOffset(a.exitCanvas, oa);
-      const bx = applyPresOffset(b.entryCanvas, ob);
-      const mx = (ax.x + bx.x) / 2;
-      const my = (ax.y + bx.y) / 2;
-      html += `<text class="tb-mate-mark" x="${mx}" y="${my}" title="EXIT ▶◀ ENTRY">▶◀</text>`;
-    });
+    // Mate marks (EXIT▶◀ENTRY): informational only; hide when relationships layer off
+    if (tb.layers?.relationships) {
+      (area?.wires || []).forEach((w) => {
+        if (!w.physical) return;
+        const conf = String(w.confidence || '').toUpperCase();
+        if (!(conf === 'CONFIRMED' || conf.includes('HIGH'))) return;
+        const a = (area.nodes || []).find((n) => n.id === w.from);
+        const b = (area.nodes || []).find((n) => n.id === w.to);
+        if (!a?.exitCanvas || !b?.entryCanvas) return;
+        const oa = offsets[a.id] || { dx: 0, dy: 0 };
+        const ob = offsets[b.id] || { dx: 0, dy: 0 };
+        const ax = applyPresOffset(a.exitCanvas, oa);
+        const bx = applyPresOffset(b.entryCanvas, ob);
+        const mx = (ax.x + bx.x) / 2;
+        const my = (ax.y + bx.y) / 2;
+        html += `<text class="tb-mate-mark" x="${mx}" y="${my}"><title>Physical mate EXIT ▶◀ ENTRY (not a click handle)</title>▶◀</text>`;
+      });
+    }
     svg.innerHTML = html;
-    // Hit paths keep pointer-events for the generous stroke region; selection uses
-    // closest-centerline geometry so overlapping belts pick the nearer path.
+    // Hit paths + identity discs are the interactive targets; body stroke is visual only.
     svg.querySelectorAll('.tb-schematic-hit').forEach((el) => {
       el.style.pointerEvents = 'stroke';
     });
-    // Visible body never steals hits — hit path is the only interactive stroke
+    svg.querySelectorAll('.tb-schematic-label-disc, .tb-schematic-label-hit').forEach((el) => {
+      el.style.pointerEvents = 'all';
+    });
     svg.querySelectorAll('.tb-schematic-body').forEach((el) => {
       el.style.pointerEvents = 'none';
     });
@@ -3001,7 +3059,12 @@
         ? CSS.escape(id)
         : String(id).replace(/"/g, '\\"');
       svg.querySelectorAll(`[data-id="${esc}"]`).forEach((el) => {
-        if (el.classList.contains('tb-schematic-body') || el.classList.contains('tb-schematic-hit')) {
+        if (
+          el.classList.contains('tb-schematic-body')
+          || el.classList.contains('tb-schematic-hit')
+          || el.classList.contains('tb-schematic-label-hit')
+          || el.classList.contains('tb-schematic-label-disc')
+        ) {
           el.classList.add('tb-hover');
         }
       });

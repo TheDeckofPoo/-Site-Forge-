@@ -409,13 +409,19 @@
     .tb-schematic-body.tb-rk-straight { stroke: #cbd5e1; }
     .tb-schematic-body.tb-rk-zeropressure { stroke: #a5b4fc; }
     .tb-schematic-body.tb-rk-belt { stroke: #67e8f9; stroke-dasharray: 10 4; }
-    /* Curve elbow: same belt color/width language as straight; butt caps (not round pill) */
+    /* CURVE type with UNKNOWN orientation: straight placeholder, distinct accent */
     .tb-schematic-body.tb-rk-curve {
-      stroke: #cbd5e1;
-      stroke-linecap: butt;
+      stroke: #a78bfa;
+      stroke-linecap: round;
       stroke-linejoin: round;
-      /* Match straight belt weight — avoid hairline crescents */
+      stroke-dasharray: 8 4;
       stroke-width: inherit;
+    }
+    .tb-curve-badge {
+      fill: #c4b5fd !important;
+      font-size: 9px !important;
+      font-weight: 800 !important;
+      letter-spacing: 0.04em;
     }
     .tb-schematic-body.tb-rk-unknown { stroke: #64748b; stroke-dasharray: 3 3; }
     .tb-schematic-body.selected {
@@ -431,8 +437,14 @@
     .tb-schematic-label {
       fill: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 11px; font-weight: 700; text-anchor: middle; dominant-baseline: middle;
-      paint-order: stroke; stroke: #0a0f14; stroke-width: 3px; pointer-events: none;
+      paint-order: stroke; stroke: #0a0f14; stroke-width: 3px;
+      cursor: pointer; pointer-events: auto;
     }
+    .tb-schematic-label.tb-hover, .tb-schematic-label-hit.tb-hover { fill: #f5d0fe; }
+    .tb-schematic-label-disc {
+      fill: transparent; stroke: transparent; cursor: pointer; pointer-events: all;
+    }
+    .tb-schematic-label-disc.tb-hover { fill: rgba(232,121,249,0.12); stroke: rgba(232,121,249,0.35); stroke-width: 1; }
     .tb-schematic-label-sec {
       fill: #94a3b8; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 8px; font-weight: 600; text-anchor: middle; dominant-baseline: middle;
@@ -452,7 +464,13 @@
     .tb-schematic-body.tb-display-context {
       stroke-opacity: 0.72; stroke-dasharray: 5 3;
     }
-    .tb-mate-mark { fill: #22c55e; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
+    /* Green ▶◀ = confirmed physical EXIT/ENTRY mate (informational; not a click handle) */
+    .tb-mate-mark {
+      fill: #22c55e; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: middle;
+      pointer-events: none; opacity: 0.75;
+    }
+    /* Orange dot = missing Area/ES config warn (informational; not a click handle) */
+    .tb-schematic-warn { pointer-events: none !important; }
     /* Generous invisible hit stroke — selection/hover target, not visual belt */
     .tb-schematic-hit {
       fill: transparent; stroke: rgba(232,121,249,0.001); cursor: pointer; pointer-events: stroke;
