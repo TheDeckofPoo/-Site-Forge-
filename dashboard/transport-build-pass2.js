@@ -1655,21 +1655,20 @@
       showCtxMenu(ev.clientX, ev.clientY, id);
     });
 
-    // Schematic belt bodies live in #tb-schematic (not .tb-node) — restore right-click Area workflow
-    // Hit target is wider than the visible belt; pick uses closest centerline when overlaps.
+    // Schematic belt bodies live in #tb-schematic (not .tb-node) — restore right-click Area workflow.
+    // Always resolve via closest-centerline pick (same as left-click); do not require DOM hit first.
     const canvas = $('tb-canvas');
     canvas?.addEventListener('contextmenu', (ev) => {
       if (A().tb.connectMode) return;
-      const hit = ev.target.closest?.('.tb-schematic-hit, .tb-schematic-body');
-      if (!hit) return;
-      ev.preventDefault();
-      ev.stopPropagation();
       const area = A().activeArea?.() || null;
       const picked = typeof A().pickSchematicNodeAt === 'function'
         ? A().pickSchematicNodeAt(ev.clientX, ev.clientY, area)
         : null;
-      const id = picked?.id || hit.getAttribute('data-id');
+      const hit = ev.target.closest?.('.tb-schematic-hit, .tb-schematic-body');
+      const id = picked?.id || hit?.getAttribute?.('data-id');
       if (!id) return;
+      ev.preventDefault();
+      ev.stopPropagation();
       ensureCtxSelection(id);
       showCtxMenu(ev.clientX, ev.clientY, id);
     });
@@ -2157,6 +2156,25 @@
     bindLayer('tb-layer-other', 'otherDevices');
     bindLayer('tb-layer-device-labels', 'deviceLabels');
     bindLayer('tb-layer-external', 'externalRefs');
+    // Relationships default OFF — visualization only (does not delete wire data)
+    {
+      const el = $('tb-show-relationships');
+      if (el) {
+        const { tb } = A();
+        if (!tb.layers) tb.layers = {};
+        if (typeof tb.layers.relationships !== 'boolean') tb.layers.relationships = false;
+        el.checked = !!tb.layers.relationships;
+        el.addEventListener('change', () => {
+          const { tb: t, render, save, status, drawWires } = A();
+          if (!t.layers) t.layers = {};
+          t.layers.relationships = !!el.checked;
+          try { save(); } catch (_) { /* ignore */ }
+          try { drawWires?.(); } catch (_) { /* ignore */ }
+          try { render(); } catch (_) { /* ignore */ }
+          status(`Relationships: ${t.layers.relationships ? 'ON (dimmed)' : 'OFF (clean layout)'}`);
+        });
+      }
+    }
     $('tb-goto-build-plc')?.addEventListener('click', () => {
       try {
         if (typeof window.activateTab === 'function') window.activateTab('autogen');

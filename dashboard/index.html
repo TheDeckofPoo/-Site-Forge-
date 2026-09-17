@@ -304,14 +304,17 @@
       letter-spacing: 0.03em; padding: 1px 5px; border-radius: 3px;
       color: #fecaca; background: #450a0a; border: 1px solid #991b1b;
     }
-    #tb-wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-    .tb-wire { fill: none; stroke: #64748b; stroke-width: 2.5; }
-    .tb-wire.active { stroke: #e879f9; }
-    .tb-wire-temp { stroke: #f472b6; stroke-dasharray: 6 4; }
-    .tb-wire.tb-physical { stroke: #38bdf8; stroke-width: 3; }
-    .tb-wire.tb-conf-confirmed { stroke: #22c55e; }
-    .tb-wire.tb-conf-high { stroke: #38bdf8; }
-    .tb-wire.tb-conf-ambiguous { stroke: #f59e0b; stroke-dasharray: 5 4; }
+    /* Relationship wires ALWAYS behind conveyor bodies; never steal pointer events. */
+    #tb-wires { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+    .tb-wire { fill: none; stroke: #475569; stroke-width: 1.25; stroke-dasharray: 5 5; opacity: 0.28; pointer-events: none; }
+    .tb-wire.active { stroke: #e879f9; opacity: 0.55; stroke-dasharray: none; }
+    .tb-wire-temp { stroke: #f472b6; stroke-dasharray: 6 4; opacity: 0.85; stroke-width: 2; }
+    .tb-wire.tb-physical { stroke: #64748b; stroke-width: 1.15; opacity: 0.22; stroke-dasharray: 4 6; }
+    .tb-wire.tb-conf-confirmed { stroke: #22c55e; opacity: 0.35; stroke-dasharray: 3 5; }
+    .tb-wire.tb-conf-high { stroke: #38bdf8; opacity: 0.28; stroke-dasharray: 4 6; }
+    .tb-wire.tb-conf-ambiguous { stroke: #f59e0b; opacity: 0.22; stroke-dasharray: 3 5; }
+    /* Clean engineering layout: hide relationship wires unless toggled on */
+    #tb-canvas.tb-hide-relationships .tb-wire:not(.tb-wire-temp) { display: none; }
     .tb-node.tb-physical { min-width: 100px; }
     .tb-node.tb-curve { border-color: #818cf8; }
     .tb-node.tb-ambiguous { box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.45); }
@@ -400,8 +403,8 @@
     .tb-node.tb-seg:not(:hover):not(.selected) .tb-port {
       opacity: 0.55;
     }
-    /* Physical schematic layer — continuous conveyor bodies */
-    #tb-schematic { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; overflow: visible; }
+    /* Physical schematic layer — continuous conveyor bodies (above relationship wires) */
+    #tb-schematic { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; overflow: visible; }
     .tb-schematic-body { fill: none; stroke: #94a3b8; stroke-linecap: round; stroke-linejoin: round; }
     .tb-schematic-body.tb-rk-straight { stroke: #cbd5e1; }
     .tb-schematic-body.tb-rk-zeropressure { stroke: #a5b4fc; }
@@ -415,7 +418,15 @@
       stroke-width: inherit;
     }
     .tb-schematic-body.tb-rk-unknown { stroke: #64748b; stroke-dasharray: 3 3; }
-    .tb-schematic-body.selected { stroke: #e879f9; filter: drop-shadow(0 0 3px rgba(232,121,249,0.7)); }
+    .tb-schematic-body.selected {
+      stroke: #e879f9 !important;
+      stroke-width: inherit;
+      filter: drop-shadow(0 0 5px rgba(232,121,249,0.9)) drop-shadow(0 0 1px #e879f9);
+    }
+    .tb-schematic-body.tb-hover {
+      stroke: #f0abfc !important;
+      filter: drop-shadow(0 0 4px rgba(240,171,252,0.75));
+    }
     .tb-schematic-body.tb-ambiguous { stroke: #f59e0b; }
     .tb-schematic-label {
       fill: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
@@ -442,7 +453,11 @@
       stroke-opacity: 0.72; stroke-dasharray: 5 3;
     }
     .tb-mate-mark { fill: #22c55e; font-size: 10px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; pointer-events: none; }
-    .tb-schematic-hit { fill: transparent; stroke: transparent; cursor: pointer; pointer-events: stroke; }
+    /* Generous invisible hit stroke — selection/hover target, not visual belt */
+    .tb-schematic-hit {
+      fill: transparent; stroke: rgba(232,121,249,0.001); cursor: pointer; pointer-events: stroke;
+    }
+    .tb-schematic-hit.tb-hover { stroke: rgba(240,171,252,0.12); }
     .tb-schematic-body.tb-safety-zone-hl,
     .tb-schematic-hit.tb-safety-zone-hl {
       stroke: #fb7185 !important;
@@ -509,7 +524,7 @@
     .tb-es-required { color: #fcd34d; background: #451a03; border: 1px solid #b45309; }
     /* Clean schematic default — debug strokes only when Advanced geometry debug on */
     #tb-canvas.tb-clean-schematic .tb-schematic-body { stroke: #94a3b8; }
-    #tb-canvas.tb-clean-schematic .tb-wire.tb-physical { stroke-width: 1.5; opacity: 0.35; }
+    #tb-canvas.tb-clean-schematic .tb-wire.tb-physical { stroke-width: 1.1; opacity: 0.2; }
     #tb-canvas:not(.tb-geom-debug) .tb-mate-mark { font-size: 9px; opacity: 0.85; }
     .tb-drive-badge {
       font-size: 8px; font-weight: 700; letter-spacing: 0.02em;
@@ -2507,6 +2522,10 @@
                 <input type="checkbox" id="tb-lane-separate" class="rounded border-slate-600 bg-slate-900" checked>
                 Separate stacked labels/bodies
               </label>
+              <label class="flex items-center gap-2 text-[11px] text-slate-300 px-1 py-1" title="Visualization only — does not delete relationship data">
+                <input type="checkbox" id="tb-show-relationships" class="rounded border-slate-600 bg-slate-900">
+                Show Relationships
+              </label>
               <div class="border-t border-slate-800 my-1"></div>
               <button type="button" id="tb-build-chain" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Build Chain…</button>
               <button type="button" id="tb-continue-run" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Continue Run</button>
@@ -2683,9 +2702,10 @@
           <!-- Large visualization viewport (~75vh). Internal overflow = 2D pan only (not page scroll). -->
           <div id="tb-canvas" class="tb-grid relative overflow-auto border-b border-slate-800" style="height:75vh; min-height:520px; flex:none;">
             <div id="tb-canvas-bg" aria-hidden="true"></div>
-            <svg id="tb-schematic" xmlns="http://www.w3.org/2000/svg" class="tb-schematic-layer"></svg>
+            <!-- Wires first (behind); schematic bodies above for readability + hit testing -->
             <svg id="tb-wires" xmlns="http://www.w3.org/2000/svg"></svg>
-            <div id="tb-nodes" class="absolute inset-0" style="min-width:1600px;min-height:1000px;z-index:2;"></div>
+            <svg id="tb-schematic" xmlns="http://www.w3.org/2000/svg" class="tb-schematic-layer"></svg>
+            <div id="tb-nodes" class="absolute inset-0" style="min-width:1600px;min-height:1000px;z-index:3;"></div>
             <div id="tb-marquee"></div>
           </div>
           <!-- Topology sits BELOW the canvas in normal document flow (horizontal scroll OK). -->

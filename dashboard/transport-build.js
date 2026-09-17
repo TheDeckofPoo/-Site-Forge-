@@ -209,6 +209,8 @@
     // Presentation layers — conveyor tags on by default; device text off.
     layers: {
       physical: false,
+      // Default OFF — clean engineering layout; toggle is visualization-only
+      relationships: false,
       conveyorTags: true,
       motors: false,
       photoeyes: false,
@@ -2317,7 +2319,8 @@
   }
 
   /** Effective schematic pick stroke width (px). Visible belt stroke `sw` is unchanged. */
-  const SCHEMATIC_HIT_WIDTH = 46;
+  /** Invisible selection target around belt centerline (~40–50px effective). */
+  const SCHEMATIC_HIT_WIDTH = 50;
 
   function distPointToSeg(px, py, x1, y1, x2, y2) {
     const dx = x2 - x1;
@@ -2607,12 +2610,12 @@
       const midDist = Math.hypot(ma.x - mb.x, ma.y - mb.y);
       const layerA = String(a.layer || '');
       const layerB = String(b.layer || '');
-      if (layerA && layerB && layerA !== layerB && midDist < 56) return 'DIFFERENT_LAYER';
+      if (layerA && layerB && layerA !== layerB && midDist < 72) return 'DIFFERENT_LAYER';
       // Plenty of canvas room — treat near midpoints as stacks even when angles differ
       // (curve elbows often differ ~90° but still paint on top of each other).
-      if (da < 22 && midDist < 56) return 'PARALLEL_CONVEYOR';
-      if (midDist < 40) return 'OVERLAPPING_BODY';
-      if (da > 50 && midDist < 56) return 'VALID_PHYSICAL_OVERLAP';
+      if (da < 25 && midDist < 72) return 'PARALLEL_CONVEYOR';
+      if (midDist < 52) return 'OVERLAPPING_BODY';
+      if (da > 50 && midDist < 72) return 'VALID_PHYSICAL_OVERLAP';
       return 'UNKNOWN';
     };
     const groups = [];
@@ -2626,7 +2629,7 @@
       sorted.forEach((o) => {
         if (used.has(o.id)) return;
         const mo = midOf(o);
-        if (Math.hypot(mn.x - mo.x, mn.y - mo.y) >= 56) return;
+        if (Math.hypot(mn.x - mo.x, mn.y - mo.y) >= 72) return;
         const cls = classifyPair(n, o);
         // Separate parallel stacks AND near-coincident overlapping bodies (incl. curves).
         if (
@@ -2649,8 +2652,8 @@
       });
       if (group.length > 1) groups.push(group);
     });
-    // Generous gap — canvas has room; stacked belts must not hide each other.
-    const laneGap = 64;
+    // Wider gap — reduce body/label collisions without inventing topology.
+    const laneGap = 88;
     groups.forEach((group) => {
       group.sort((a, b) => String(a.conveyorTag || '').localeCompare(String(b.conveyorTag || '')));
       // Re-check: if any pair in the group is actually serial-connected, skip separation.
@@ -2689,7 +2692,7 @@
     // Canvas has room — prefer readable spacing over exact RUN midpoint coincidence.
     {
       const locals = list.filter((n) => !n.externalReference && n.plcOwned !== false);
-      const minSep = 40;
+      const minSep = 56;
       for (let iter = 0; iter < 2; iter++) {
         for (let i = 0; i < locals.length; i++) {
           for (let j = i + 1; j < locals.length; j++) {
@@ -2743,7 +2746,7 @@
       const dang = (angOf(dst) * Math.PI) / 180;
       const nx = -Math.sin(dang);
       const ny = Math.cos(dang);
-      const gap = Math.max(14, Math.min(28, (Number(dst.width) || 200) * 0.04));
+      const gap = Math.max(28, Math.min(48, (Number(dst.width) || 200) * 0.07));
       inbound.forEach((up, i) => {
         // Do not overwrite a larger stack separation already applied to the upstream.
         const prev = offsets[up.id];
@@ -2981,12 +2984,35 @@
     svg.innerHTML = html;
     // Hit paths keep pointer-events for the generous stroke region; selection uses
     // closest-centerline geometry so overlapping belts pick the nearer path.
-    svg.querySelectorAll('.tb-schematic-hit, .tb-schematic-body').forEach((el) => {
+    svg.querySelectorAll('.tb-schematic-hit').forEach((el) => {
       el.style.pointerEvents = 'stroke';
     });
+    // Visible body never steals hits — hit path is the only interactive stroke
+    svg.querySelectorAll('.tb-schematic-body').forEach((el) => {
+      el.style.pointerEvents = 'none';
+    });
+    const clearHover = () => {
+      svg.querySelectorAll('.tb-hover').forEach((el) => el.classList.remove('tb-hover'));
+    };
+    const setHover = (id) => {
+      clearHover();
+      if (!id) return;
+      const esc = (typeof CSS !== 'undefined' && CSS.escape)
+        ? CSS.escape(id)
+        : String(id).replace(/"/g, '\\"');
+      svg.querySelectorAll(`[data-id="${esc}"]`).forEach((el) => {
+        if (el.classList.contains('tb-schematic-body') || el.classList.contains('tb-schematic-hit')) {
+          el.classList.add('tb-hover');
+        }
+      });
+    };
     const onSchematicPointer = (ev) => {
       if (ev.type === 'mousedown' && ev.button === 1) return;
       const n = pickSchematicNodeAt(ev.clientX, ev.clientY, area);
+      if (ev.type === 'mousemove') {
+        setHover(n?.id || null);
+        return;
+      }
       if (!n) return;
       if (ev.type === 'mousedown') {
         ev.preventDefault();
@@ -3000,12 +3026,14 @@
         tb.moving = { id: n.id, ox: pt.x - n.x, oy: pt.y - n.y };
       } else if (ev.type === 'contextmenu') {
         selectNode(n.id);
-        // Do not stopPropagation — pass2 handles showCtxMenu on .tb-schematic-hit/body
+        // Do not stopPropagation — pass2 handles showCtxMenu
       }
     };
     // Property assignment avoids stacking listeners across redraws
     svg.onmousedown = onSchematicPointer;
     svg.oncontextmenu = onSchematicPointer;
+    svg.onmousemove = onSchematicPointer;
+    svg.onmouseleave = () => clearHover();
   }
 
   /** Screen flow angle (deg). RUN Y is flipped to canvas → negate sourceAngle (matches layout SVG). */
@@ -3788,17 +3816,28 @@
   function drawWires(temp) {
     const svg = $('tb-wires');
     const host = $('tb-nodes');
+    const canvas = $('tb-canvas');
     if (!svg || !host) return;
     const area = activeArea();
     ensureCanvasExtents(area);
+    const showRel = !!tb.layers?.relationships;
+    canvas?.classList.toggle('tb-hide-relationships', !showRel);
     const w = Math.max(host.scrollWidth || 0, host.offsetWidth || 0, parseInt(host.style.minWidth || '0', 10) || 0);
     const h = Math.max(host.scrollHeight || 0, host.offsetHeight || 0, parseInt(host.style.minHeight || '0', 10) || 0);
     svg.setAttribute('width', String(w));
     svg.setAttribute('height', String(h));
     svg.style.width = `${w}px`;
     svg.style.height = `${h}px`;
+    svg.style.pointerEvents = 'none';
     let html = '';
+    // Visualization-only: when relationships are hidden, skip all wires except temp connect rubber-band.
+    // Wire data on the model is never deleted.
+    if (!showRel && !(temp && temp.from && temp.to)) {
+      svg.innerHTML = '';
+      return;
+    }
     (area?.wires || []).forEach((wire) => {
+      if (!showRel) return;
       const a = portCenter(wire.from, 'out');
       const b = portCenter(wire.to, wire.toPort || 'in');
       if (!a || !b) return;
