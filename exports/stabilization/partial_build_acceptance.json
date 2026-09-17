@@ -1,0 +1,55 @@
+{
+  "ok": true,
+  "included_conveyors": [
+    "P400",
+    "P402",
+    "P404",
+    "P406"
+  ],
+  "found_not_included_sample": [
+    "P1000",
+    "P1001",
+    "P220",
+    "P220A",
+    "P130",
+    "P136",
+    "P145",
+    "P150"
+  ],
+  "es_status": "REVIEW_REQUIRED",
+  "es_shell": true,
+  "lifecycle": {
+    "found": 4,
+    "configured": 0,
+    "included": 0,
+    "unassigned": 4,
+    "generated": 0,
+    "commissioning_ready": false
+  },
+  "preflight_ok": true,
+  "safety_structural": {
+    "es_program": true,
+    "p01_safety_20ms": true,
+    "main_routine": true,
+    "safe_logic_count": 0,
+    "safe_pi_count": 0,
+    "unresolved_membership_count": 1,
+    "shell": true,
+    "status": "REVIEW_REQUIRED",
+    "structure": "READY",
+    "membership": "REVIEW_REQUIRED",
+    "commissioning_ready": false,
+    "detail": "SAFETY STRUCTURE READY \u00b7 MEMBERSHIP REVIEW REQUIRED \u00b7 PROGRAM GENERATED \u00b7 COMMISSIONING READY = NO"
+  },
+  "programs": [
+    "ModuleA_Area_Slow",
+    "ModuleA_Area_Fast",
+    "ModuleA_Area_L1",
+    "ModuleA_Area_L2",
+    "ES",
+    "Sys",
+    "IO_MAP"
+  ],
+  "conveyor_count": 4,
+  "contract": "FOUND\u2260INCLUDED\u2260GENERATED; UNASSIGNED\u2260SAFE; REVIEW does not block partial Build"
+}

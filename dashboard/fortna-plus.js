@@ -220,6 +220,15 @@ function safetyEvidence() {
     shellOnly,
     safeLogicCount: safeLogicN,
     safePiCount: safePiN,
+    // Lifecycle vocabulary (PARTIAL BUILD CONTRACT):
+    // FOUND = discovered in RUN; CONFIGURED/INCLUDED = zone members assigned;
+    // GENERATED = Safe_Logic members actually emitted; UNASSIGNED ≠ SAFE.
+    foundDevices: devicesFound,
+    configuredDevices: resolvedN,
+    includedDevices: resolvedN,
+    generatedDevices: safeLogicN > 0
+      ? withMembers.reduce((n, z) => n + ((z.members || []).length), 0)
+      : 0,
     commissioningReady: !!(last && last.status === 'READY' && !last.shell && unassignedN === 0),
     last,
     diagnostics,
@@ -480,7 +489,11 @@ function computeCompileHubReadiness() {
       ? ` · Unassigned: ${unNames.join(', ')}${(ev.unassignedDevices || []).length > 6 ? ', …' : ''}`
       : (ev.unassigned > 0 ? ` · Unassigned: ${ev.unassigned}` : '');
     const structBits = [
-      ev.devicesFound ? `Devices ${ev.devicesFound}` : null,
+      `Found ${ev.foundDevices || ev.devicesFound || 0}`,
+      `Configured ${ev.configuredDevices || ev.resolvedDevices || 0}`,
+      `Included ${ev.includedDevices != null ? ev.includedDevices : (ev.resolvedDevices || 0)}`,
+      `Unassigned ${ev.unassigned || 0}`,
+      `Generated ${ev.generatedDevices || 0}`,
       ev.mcr != null ? `MCR ${ev.mcr}` : null,
       (ev.estops || ev.esr) ? `E-Stop/ESR ${(ev.estops || 0) + (ev.esr || 0)}` : null,
       ev.zones ? `Zones ${ev.zones}` : null,
@@ -490,8 +503,8 @@ function computeCompileHubReadiness() {
       ev.commissioningReady ? 'COMMISSIONING READY' : 'COMMISSIONING READY = NO',
     ].filter(Boolean).join(' · ');
     const reviewDetail = (ev.devicesFound > 0)
-      ? `${ev.resolvedDevices} / ${ev.devicesFound} devices resolved${unSuffix} · ${structBits} · Open Safety Build`
-      : (diagText || last?.detail || `${ev.zones} zone(s) need valid Area + members before ES emit · ${structBits}`);
+      ? `${structBits}${unSuffix} · Open Safety Build`
+      : (diagText || last?.detail || `${ev.zones} zone(s) need membership · ${structBits}`);
     if (last?.status === 'ERROR') {
       e.status = 'ERROR';
       e.unresolved = last.unresolved || 1;
@@ -774,73 +787,135 @@ function refreshAutogenPackEvidence() {
 }
 
 /**
- * Build PLC preflight — block Export when a detected subsystem is not READY.
- * Returns { ok, blockers, softSafetyReview }.
+ * PARTIAL BUILD CONTRACT (product requirement):
  *
- * REVIEW REQUIRED ≠ FATAL for Safety: soft review informs and allows partial ES
- * emit for ready zones. Soft Safety REVIEW does NOT hard-block PLC build and
- * does NOT require confirm-to-omit entire Program ES.
- * Safety ERROR remains a hard blocker.
+ *   FOUND ≠ CONFIGURED ≠ INCLUDED ≠ GENERATED
+ *   UNASSIGNED ≠ ERROR ≠ ACTIVE ≠ INCLUDED ≠ GENERATED ≠ SAFE
+ *
+ * Build PLC is ALLOWED when all INCLUDED/generated content is structurally valid.
+ * REVIEW REQUIRED (unassigned discovered equipment, incomplete Safety membership,
+ * detected-but-not-Applied Saw/Sorter) does NOT hard-block Export.
+ *
+ * Hard-block ERROR only when:
+ *   - a mandatory pack (System/Hardware with RUN loaded) is ERROR
+ *   - an INCLUDED (Applied) subsystem is ERROR
+ *   - Safety emit itself returned ERROR
+ *
+ * Returns { ok, blockers, softReviews, softSafetyReview, partialBuildAllowed }.
  */
 function autogenBuildPreflight({ allowOmitUnresolvedSafety = false } = {}) {
   const map = computeCompileHubReadiness();
   const blockers = [];
-  const softSafetyReview = [];
-  const need = [
-    { key: 'system', tab: 'autogen', label: 'System / Core', required: true },
-    { key: 'hardware', tab: 'io', label: 'Hardware / IO', required: true },
-    {
-      key: 'transport',
-      tab: 'transport',
-      label: 'Transportation',
-      required: transportEvidence().detected,
-    },
+  const softReviews = [];
+  const runLoaded = runIsLoaded();
+
+  const pushSoft = (key, tab, label, e, extra) => {
+    softReviews.push({
+      key,
+      tab,
+      message: `${label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
+      ...(extra || {}),
+    });
+  };
+  const pushHard = (key, tab, label, e) => {
+    blockers.push({
+      key,
+      tab,
+      message: `${label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
+    });
+  };
+
+  // Mandatory core when RUN is loaded — ERROR only hard-blocks
+  [
+    { key: 'system', tab: 'autogen', label: 'System / Core' },
+    { key: 'hardware', tab: 'io', label: 'Hardware / IO' },
+  ].forEach((n) => {
+    if (!runLoaded) return;
+    const e = map[n.key] || emptyReadinessEntry();
+    if (e.status === 'ERROR') pushHard(n.key, n.tab, n.label, e);
+    else if (e.status === 'REVIEW_REQUIRED' || e.status === 'CHANGED') {
+      pushSoft(n.key, n.tab, n.label, e);
+    }
+  });
+
+  // Transportation — INCLUDED only after Apply. Unassigned RUN equipment is FOUND, not a blocker.
+  {
+    const e = map.transport || emptyReadinessEntry();
+    const included = !!e.appliedAt;
+    if (e.status === 'ERROR' && included) pushHard('transport', 'transport', 'Transportation', e);
+    else if (e.status === 'ERROR' && !included) pushSoft('transport', 'transport', 'Transportation', e);
+    else if (e.status === 'REVIEW_REQUIRED' || e.status === 'CHANGED') {
+      pushSoft('transport', 'transport', 'Transportation', e, {
+        note: 'FOUND/unassigned conveyors do not block partial Build',
+      });
+    }
+  }
+
+  // Optional packs — discovered ≠ included. Only Applied ERROR hard-blocks.
+  [
     {
       key: 'sawtooth',
       tab: 'sawtooth',
       label: 'Sawtooth',
-      required: sawtoothEvidence().detected,
+      detected: sawtoothEvidence().detected,
     },
     {
       key: 'sorter',
       tab: 'sorter',
       label: 'Sorter',
-      required: sorterEvidence().detected && !sorterEvidence().notSupported,
+      detected: sorterEvidence().detected && !sorterEvidence().notSupported,
     },
-    {
-      key: 'safety',
-      tab: 'safety',
-      label: 'Safety / ES',
-      required: safetyEvidence().detected,
-    },
-  ];
-  need.forEach((n) => {
-    if (!n.required) return;
+  ].forEach((n) => {
     const e = map[n.key] || emptyReadinessEntry();
-    if (e.status === 'READY') return;
-    // Soft: Safety REVIEW_REQUIRED informs only — ok stays true (partial ES emit)
-    if (n.key === 'safety' && e.status === 'REVIEW_REQUIRED') {
-      softSafetyReview.push({
-        key: n.key,
-        tab: n.tab,
-        message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
-        diagnostics: e.diagnostics || safetyEvidence().diagnostics || [],
+    const included = !!e.appliedAt;
+    if (!n.detected && e.status === 'NOT_DETECTED') return;
+    if (e.status === 'ERROR' && included) pushHard(n.key, n.tab, n.label, e);
+    else if (e.status === 'ERROR') pushSoft(n.key, n.tab, n.label, e);
+    else if (e.status === 'REVIEW_REQUIRED' || e.status === 'CHANGED') {
+      pushSoft(n.key, n.tab, n.label, e, {
+        note: included
+          ? 'INCLUDED pack needs review'
+          : 'FOUND but not INCLUDED — does not block partial Build',
       });
-      return;
     }
-    // Safety ERROR (and every other non-READY) remains a hard blocker
-    blockers.push({
-      key: n.key,
-      tab: n.tab,
-      message: `${n.label}: ${readinessDisplayLabel(e.status)}${e.detail ? ` — ${e.detail}` : ''}`,
-    });
   });
+
+  // Safety — unassigned devices are REVIEW, never SAFE, never hard-block unless ERROR
+  {
+    const e = map.safety || emptyReadinessEntry();
+    const ev = safetyEvidence();
+    if (e.status === 'ERROR') {
+      pushHard('safety', 'safety', 'Safety / ES', e);
+    } else if (
+      e.status === 'REVIEW_REQUIRED'
+      || e.status === 'CHANGED'
+      || (ev.detected && e.status !== 'READY' && e.status !== 'NOT_DETECTED')
+    ) {
+      pushSoft('safety', 'safety', 'Safety / ES', e, {
+        diagnostics: e.diagnostics || ev.diagnostics || [],
+        lifecycle: {
+          found: ev.devicesFound || 0,
+          configured: ev.resolvedDevices || 0,
+          included: ev.includedDevices != null ? ev.includedDevices : (ev.resolvedDevices || 0),
+          unassigned: ev.unassigned || 0,
+          generated: ev.generatedDevices != null ? ev.generatedDevices : (ev.safeLogicCount > 0 ? ev.resolvedDevices : 0),
+          commissioningReady: !!ev.commissioningReady,
+        },
+        note: 'UNASSIGNED Safety ≠ ERROR; partial Build allowed with fail-safe ES shell',
+      });
+    }
+  }
+
   void allowOmitUnresolvedSafety; // retained for callers; default path is partial emit
+  const softSafetyReview = softReviews.filter((r) => r.key === 'safety');
   return {
     ok: blockers.length === 0,
     blockers,
+    softReviews,
     softSafetyReview,
     onlySoftSafety: blockers.length === 0 && softSafetyReview.length > 0,
+    partialBuildAllowed: blockers.length === 0,
+    contract: 'FOUND≠INCLUDED≠GENERATED; REVIEW does not block; ERROR on INCLUDED blocks',
   };
 }
 
@@ -7213,16 +7288,16 @@ async function runAutogenGenerate(mode) {
     }
   }
 
-  // Preflight: hard blockers stop Export. Soft Safety REVIEW does NOT.
-  // REVIEW REQUIRED ≠ FATAL — continue with partial Safety generation for ready zones.
-  // Do NOT default omitUnresolvedSafety (that omits entire Program ES).
+  // Preflight: ERROR on INCLUDED/mandatory packs stops Export.
+  // REVIEW REQUIRED (unassigned FOUND equipment / incomplete Safety) does NOT.
+  // PARTIAL BUILD: FOUND≠INCLUDED≠GENERATED — proceed with effective included model.
   autogenState.omitUnresolvedSafety = false;
   if (mode === 'run') {
     try { refreshAutogenCompileHub(); } catch (_) { /* ignore */ }
     let pre = autogenBuildPreflight();
     if (!pre.ok) {
-      setAutogenStatus('Blocked — readiness', 'error');
-      autogenLog('Export blocked — Compile hub readiness incomplete:', 'err');
+      setAutogenStatus('Blocked — readiness ERROR', 'error');
+      autogenLog('Export blocked — fatal ERROR on included/mandatory content:', 'err');
       (pre.blockers || []).forEach((b) => autogenLog(`  • ${b.message}`, 'err'));
       const first = pre.blockers[0];
       if (first?.tab) {
@@ -7230,11 +7305,24 @@ async function runAutogenGenerate(mode) {
       }
       return;
     }
-    // Soft Safety REVIEW only — proceed; partial ES emit for ready zones
+    // Soft reviews — Build ALLOWED; commissioning incomplete items stay conspicuous
+    const softs = pre.softReviews || pre.softSafetyReview || [];
+    if (softs.length) {
+      autogenLog(
+        'PARTIAL BUILD ALLOWED — REVIEW REQUIRED items do not block Export',
+        'warn',
+      );
+      softs.forEach((b) => autogenLog(`  • ${b.message}`, 'warn'));
+    }
     if ((pre.softSafetyReview || []).length) {
-      autogenLog('SAFETY REVIEW REQUIRED — continuing with partial Safety generation', 'warn');
-      (pre.softSafetyReview || []).forEach((b) => autogenLog(`  • ${b.message}`, 'warn'));
+      autogenLog('SAFETY REVIEW REQUIRED — fail-safe shell / partial zones; UNASSIGNED ≠ SAFE', 'warn');
       const ev = safetyEvidence();
+      autogenLog(
+        `Safety lifecycle — Found ${ev.foundDevices || 0} · Configured ${ev.configuredDevices || 0}`
+        + ` · Included ${ev.includedDevices || 0} · Unassigned ${ev.unassigned || 0}`
+        + ` · Generated ${ev.generatedDevices || 0} · COMMISSIONING READY = ${ev.commissioningReady ? 'YES' : 'NO'}`,
+        'warn',
+      );
       (ev.diagnostics || []).forEach((d) => {
         String(d).split('\n').forEach((line) => autogenLog(`    ${line}`, 'warn'));
       });

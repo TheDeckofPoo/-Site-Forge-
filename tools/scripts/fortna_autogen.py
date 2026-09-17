@@ -4471,10 +4471,28 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 es_emit_report["review_required_devices"] = _unassigned_devs
                 es_emit_report["aois"] = []
                 es_emit_report["routines"] = ["Main_Routine"]
+                # PARTIAL BUILD lifecycle — UNASSIGNED ≠ SAFE / ≠ GENERATED
+                _found_n = len(_unassigned_devs) + sum(len(z.members) for z in _sz_irs)
+                if isinstance(_wb_sz, dict):
+                    _found_n = max(
+                        _found_n,
+                        int((_wb_sz.get("counts") or {}).get("devices_found") or 0),
+                        int((_wb_sz.get("counts") or {}).get("devices") or 0),
+                        len(_wb_sz.get("devices") or []),
+                    )
+                es_emit_report["lifecycle"] = {
+                    "found": _found_n,
+                    "configured": sum(len(z.members) for z in _sz_irs),
+                    "included": sum(len(z.members) for z in _sz_irs),
+                    "unassigned": len(_unassigned_devs) or max(0, _found_n - sum(len(z.members) for z in _sz_irs)),
+                    "generated": 0,
+                    "commissioning_ready": False,
+                }
                 es_emit_report["detail"] = (
                     "SAFETY REVIEW REQUIRED — Program ES shell emitted (Main_Routine only). "
                     "Zone Safe_Logic/Safe_PI deferred until E-Stop/ESR/MCR membership assigned. "
                     "Unresolved membership is never permissive. "
+                    "PARTIAL BUILD: UNASSIGNED Safety devices remain FOUND/REVIEW — not SAFE. "
                     + (es_emit_report.get("detail") or "")
                 )
             else:

@@ -40,8 +40,15 @@ python tools/scripts/test_iomap_duplicate_output_ownership.py
 python tools/scripts/test_hardware_io_overrides.py
 python tools/scripts/test_es_compiler.py
 python tools/scripts/test_safety_model.py
+python tools/scripts/test_partial_build_acceptance.py
 python tools/scripts/fortna_studio_preflight.py exports/current/ORNCCP2.L5X
 ```
+
+## Partial build contract
+
+See `exports/stabilization/partial_build_contract.md`.
+
+Incremental commissioning is first-class: FOUND≠INCLUDED≠GENERATED; REVIEW does not block Build PLC; ERROR on INCLUDED content does.
 
 ## Critical fixtures
 
