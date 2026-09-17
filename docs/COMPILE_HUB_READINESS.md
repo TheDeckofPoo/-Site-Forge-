@@ -77,19 +77,50 @@ Edits after Apply set `dirty` → **CHANGED SINCE LAST APPLY**.
 
 ---
 
-## Build PLC preflight
+## Build PLC preflight (PARTIAL BUILD CONTRACT)
 
-On **Export L5X Package** (`runAutogenGenerate` run mode):
+On **Export L5X Package** (`runAutogenGenerate` / `autogenBuildPreflight`):
 
-1. Recompute readiness.
-2. If any **required** detected subsystem is not **READY**, **block** Export.
-3. Required: System + Hardware always; Transport if conveyors/graph; Sawtooth if detected; Sorter if detected **and** not `NOT_SUPPORTED`.
-4. Activates the first blocking tab and logs a clear message.
+```
+FOUND ≠ CONFIGURED ≠ INCLUDED ≠ GENERATED
+UNASSIGNED ≠ ERROR ≠ INCLUDED ≠ GENERATED ≠ SAFE
+```
+
+| Hub status | Blocks Export? |
+|------------|----------------|
+| READY | No |
+| REVIEW REQUIRED | **No** (soft review — Build ALLOWED) |
+| NOT DETECTED | No |
+| CHANGED SINCE LAST APPLY | Soft review (warn; does not hard-block like ERROR) |
+| ERROR on mandatory (System/Hardware) or **INCLUDED** (Applied) pack | **Yes** |
+| Safety ERROR (emit exception) | **Yes** |
+| Safety REVIEW (unassigned devices / shell) | **No** |
+
+### Incremental commissioning example
+
+```
+Transportation     READY              (small Area Applied)
+Safety             REVIEW REQUIRED    (many devices unassigned)
+Saw/Merge          NOT DETECTED/REVIEW (found, not Applied)
+Sorter             NOT DETECTED
+Hardware/I/O       READY
+System             READY
+
+BUILD PLC: ALLOWED
+```
+
+Report must still state Safety commissioning is incomplete (`COMMISSIONING READY = NO`).
+
+Full contract: `exports/stabilization/partial_build_contract.md`  
+Fixture: `tools/scripts/test_partial_build_acceptance.py`  
+Offline index: `exports/stabilization/README.md`
 
 ---
 
 ## Related
 
+- `exports/stabilization/partial_build_contract.md` — product law  
+- `docs/REGRESSION_MANIFEST.md` — permanent tests  
 - `docs/UX_PRINCIPLES.md` — Simple by default / Advanced when needed  
 - `docs/UI_SUBSYSTEM_STATUS.md` — Legacy export status vocabulary  
 - `docs/TRANSPORT_AUTOGEN_FROZEN.md` — Transport compiler freeze (UI Apply only here)

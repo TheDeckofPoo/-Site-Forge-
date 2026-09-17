@@ -1,6 +1,8 @@
 # Facility drawings (Ignition + print parse)
 
-Drop all site drawings here so FortnaPlus can build **2D Ignition layouts** and improve OCR.
+Drop all site drawings here so Site Forge can build **2D Ignition layouts** and improve OCR.
+
+**Offline handoff:** repo root `README.md` and `exports/stabilization/README.md`.
 
 ## Where to put files
 
@@ -35,3 +37,8 @@ workspace/drawings/inbox/facility-drawings.zip
 ```
 
 Then tell the app/agent to import it (or unpack into `mechanical/` + `electrical/` + `overlay/`).
+
+## Related
+
+- OCR / VFD parse: `tools/scripts/fortna_io_banks.py` (see `tools/scripts/README_PARSERS.md`)
+- Active RUN extract: `workspace/active/RUN` (re-import tar.gz if missing offline)

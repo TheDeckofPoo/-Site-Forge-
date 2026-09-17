@@ -3,8 +3,8 @@
 `ES_Program_PLC5_structural.L5X` is a PLC5 **exported Program ES** used as a
 **structural pattern** for Site Forge generation.
 
-Also see: `workspace/reference/es/README.md` (same contract) and
-`exports/stabilization/partial_build_contract.md` (incremental Safety).
+Canonical copy of this README also lives at `docs/es-reference/README.md`.
+Offline Safety contract: `exports/stabilization/partial_build_contract.md`.
 
 ## Use as pattern — not as site data
 
@@ -22,29 +22,12 @@ Do **not** copy PLC5 site-specific zone names or device membership
 
 ## Membership (PARTIAL BUILD)
 
-Membership for each project comes from:
-
 1. RUN / physical I/O evidence (FOUND)
 2. Engineer Safety Zone assignments (`safety_build.zones[].members`) — INCLUDED
 
-**Do not guess** membership from `CP2` / `CP3` / `T_2` / `T_3` name tokens.
+**Never invent membership.** Unassigned devices → `REVIEW REQUIRED`, not SAFE.
 
-### When membership is unresolved
+Unresolved membership → fail-safe ES shell (NOP Main_Routine), `COMMISSIONING READY = NO`.
+Project build of unrelated packs may continue.
 
-Site Forge may still emit a **fail-safe ES shell**:
-
-- Program `ES` + `Main_Routine` with **NOP** only
-- Status: `REVIEW_REQUIRED`
-- `Safe_Logic` / `Safe_PI` count = 0
-- `COMMISSIONING READY = NO`
-- Unassigned devices stay visible in Safety Build
-
-UNKNOWN / unassigned must **never** become permissive (`ES_OK = TRUE`).
-
-Unrelated subsystems (Transport, IO_MAP, Sys) may still generate.
-
-See:
-
-- `tools/scripts/fortna_es_compiler.py`
-- `tools/scripts/test_es_compiler.py`
-- `tools/scripts/test_partial_build_acceptance.py`
+See `tools/scripts/fortna_es_compiler.py` and `exports/stabilization/README.md`.
