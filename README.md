@@ -13,8 +13,9 @@ It does **not** launch Studio 5000.
 | Item | Value |
 |------|--------|
 | **Branch** | `feature/plc2-transport-fidelity` |
-| **HEAD (as of this handoff)** | `9866dfdeb32f174de7a0fd557f3ac5f5c700ad32` |
-| **Parent (partial-build)** | `8231b5a741d8ed0b7658068710c0fdecc55ed3c2` |
+| **HEAD (as of this handoff)** | `928e77db97ea377d4e0e44e8330d338ef6bab7f1` |
+| **Docs pack commit** | `9866dfdeb32f174de7a0fd557f3ac5f5c700ad32` |
+| **Partial-build commit** | `8231b5a741d8ed0b7658068710c0fdecc55ed3c2` |
 | **Remote** | `origin/feature/plc2-transport-fidelity` (also mirrored at TheDeckofPoo/-Site-Forge-) |
 | **Worktree** | `C:\Dev\worktree\FortnaPlus` |
 
