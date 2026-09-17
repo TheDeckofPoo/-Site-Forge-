@@ -70,7 +70,11 @@ def preflight_l5x(path: Path) -> dict[str, Any]:
         for r in routines:
             routine_names.add(r or "")
             routine_names.add(f"{pname}.{r}")
-        if any((r or "").upper() == "MAIN" for r in routines):
+        main_attr = (prog.attrib.get("MainRoutineName") or "").strip()
+        has_main = any((r or "").upper() in ("MAIN", "MAIN_ROUTINE") for r in routines)
+        if main_attr and main_attr in (routines or []):
+            has_main = True
+        if has_main:
             programs_with_main.append(pname)
         elif pname:
             programs_missing_main.append(pname)
@@ -125,6 +129,16 @@ def preflight_l5x(path: Path) -> dict[str, Any]:
     # Duplicate OTE targets inside IO_MAP routines cause overlapping coils
     _check_iomap_duplicate_otes(text, add)
 
+    # PL-8 — structural subsystem preflight (does not block on Safety REVIEW)
+    structural = _structural_subsystem_report(text, root)
+    if structural.get("safety", {}).get("status") == "REVIEW_REQUIRED":
+        add(
+            "INFO",
+            "safety_membership_review",
+            structural["safety"].get("detail")
+            or "SAFETY STRUCTURE READY · MEMBERSHIP REVIEW REQUIRED · COMMISSIONING READY = NO",
+        )
+
     errors = sum(1 for i in issues if i["severity"] == "ERROR")
     warnings = sum(1 for i in issues if i["severity"] == "WARNING")
     return {
@@ -144,8 +158,13 @@ def preflight_l5x(path: Path) -> dict[str, Any]:
             "tags": len(tag_names),
             "duplicate_tags": len(dups),
             "modules": len(modules),
+            "programs": len(list(root.iter("Program"))),
+            "tasks": len(list(root.iter("Task"))),
+            "datatypes": len(list(root.iter("DataType"))),
+            "controller_tags": len(tag_names),
         },
         "programs_with_main": programs_with_main,
+        "structural": structural,
         "issues": issues,
     }
 
@@ -231,6 +250,104 @@ def _check_sntp_connection_paths(text: str, module_names: set[str], add) -> None
                     tag=tname,
                     connection_path=path,
                 )
+
+
+def _structural_subsystem_report(text: str, root: ET.Element) -> dict[str, Any]:
+    """PL-8 structural counts + mandatory subsystem status (report only)."""
+    programs = [p.attrib.get("Name") or "" for p in root.iter("Program")]
+    tasks = [t.attrib.get("Name") or "" for t in root.iter("Task")]
+    ctrl = root.find(".//Controller")
+    controller_name = (ctrl.attrib.get("Name") if ctrl is not None else "") or ""
+
+    def _has_prog(name: str) -> bool:
+        return name in programs
+
+    area_fast = [n for n in programs if n.endswith("_Fast")]
+    area_slow = [n for n in programs if n.endswith("_Slow")]
+    area_l1 = [n for n in programs if n.endswith("_L1")]
+    area_l2 = [n for n in programs if n.endswith("_L2")]
+    areas = sorted(
+        {
+            n[: -len(suf)]
+            for n, suf in (
+                *((x, "_Fast") for x in area_fast),
+                *((x, "_Slow") for x in area_slow),
+                *((x, "_L1") for x in area_l1),
+                *((x, "_L2") for x in area_l2),
+            )
+        }
+    )
+
+    es_xml = ""
+    for prog in root.iter("Program"):
+        if (prog.attrib.get("Name") or "") == "ES":
+            es_xml = ET.tostring(prog, encoding="unicode")
+            break
+    safe_logic = len(re.findall(r'Routine Name="[^"]*_Safe_Logic"', es_xml))
+    safe_pi = len(re.findall(r'Routine Name="[^"]*_Safe_PI"', es_xml))
+    has_main = bool(re.search(r'Routine Name="Main_Routine"', es_xml)) or bool(
+        re.search(r'MainRoutineName="Main_Routine"', es_xml)
+    )
+    shell = bool(es_xml) and safe_logic == 0 and safe_pi == 0 and has_main
+    # Unresolved membership heuristic: shell present, or REVIEW comment in ES
+    unresolved = 0
+    if shell:
+        unresolved = len(re.findall(r"Unresolved zones", es_xml)) or 1
+    safety_status = (
+        "NOT_DETECTED"
+        if not es_xml
+        else ("REVIEW_REQUIRED" if shell or unresolved else "READY")
+    )
+    safety_detail = (
+        "SAFETY STRUCTURE READY · MEMBERSHIP REVIEW REQUIRED · PROGRAM GENERATED · "
+        "COMMISSIONING READY = NO"
+        if shell
+        else (
+            "SAFETY — READY"
+            if safety_status == "READY"
+            else "SAFETY — NOT DETECTED"
+        )
+    )
+
+    return {
+        "controller": controller_name,
+        "programs_count": len(programs),
+        "tasks_count": len(tasks),
+        "controller_tags_count": len(list(root.iter("Tag"))),
+        "datatypes_count": len(list(root.iter("DataType"))),
+        "modules_count": len(list(root.iter("Module"))),
+        "sys": {"present": _has_prog("Sys"), "status": "READY" if _has_prog("Sys") else "MISSING"},
+        "system": {
+            "present": _has_prog("System"),
+            "status": "READY" if _has_prog("System") else "MISSING",
+        },
+        "io_map": {
+            "present": _has_prog("IO_MAP"),
+            "status": "READY" if _has_prog("IO_MAP") else "MISSING",
+        },
+        "transportation": {
+            "areas_included": areas,
+            "fast": area_fast,
+            "slow": area_slow,
+            "l1": area_l1,
+            "l2": area_l2,
+            "status": "READY" if area_fast or area_slow else "NOT_DETECTED",
+        },
+        "safety": {
+            "es_program": bool(es_xml),
+            "p01_safety_20ms": "P01_Safety_20ms" in tasks,
+            "main_routine": has_main,
+            "safe_logic_count": safe_logic,
+            "safe_pi_count": safe_pi,
+            "unresolved_membership_count": unresolved,
+            "shell": shell,
+            "status": safety_status,
+            "structure": "READY" if es_xml else "MISSING",
+            "membership": "REVIEW_REQUIRED" if shell or unresolved else ("READY" if es_xml else "NOT_DETECTED"),
+            "commissioning_ready": False if shell or unresolved or not es_xml else True,
+            "detail": safety_detail,
+        },
+    }
 
 
 def _check_iomap_duplicate_otes(text: str, add) -> None:

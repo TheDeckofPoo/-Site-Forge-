@@ -4733,9 +4733,17 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         def _motor_to_p_base(mot_core: str) -> str:
             """Map motor → existing conveyor section only (never invent suppressed parents).
 
-            M130A → P130A when present.
+            EXACT PHYSICAL IDENTITY IS AUTHORITATIVE (PL-3):
+              M220_AUX != M220A_AUX — alphabetic suffix must NEVER be stripped
+              or fuzzy-matched to establish I/O ownership.
+
+            M130A → P130A when present (exact lettered match).
+            M220  → P220 when present (exact bare match).
             M136 / M150 (assembly parents suppressed) → P136_P1 / P150_P1 when those
             PE/SSV sections were promoted into known_convs.
+
+            NEVER fall through bare M{n} → lettered P{n}A (NAME_NORMALIZATION_COLLISION).
+            Incomplete/ambiguous ownership returns "" (caller emits REVIEW / distinct fallback).
             """
             mm = re.match(r"^M(\d{2,4})([A-Z]?)$", mot_core, re.I)
             if not mm:
@@ -4744,27 +4752,18 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             full = f"P{digits}{letters}"
             if full in known_convs:
                 return full
+            # Lettered motor (M220A): exact only — never strip to P220
+            if letters:
+                return ""
+            # Bare motor (M220): exact parent or proven assembly section only
             base = f"P{digits}"
             if base in known_convs:
                 return base
-            # Prefer PE/SSV induct section P{n}_P1, then any lettered P{n}A.. in known
             p1 = f"{base}_P1"
             if p1 in known_convs:
                 return p1
-            lettered = sorted(
-                c
-                for c in known_convs
-                if re.fullmatch(rf"P{re.escape(digits)}[A-Z]+", c)
-            )
-            if lettered:
-                return lettered[0]
-            sectioned = sorted(
-                c
-                for c in known_convs
-                if re.fullmatch(rf"P{re.escape(digits)}_P\d+", c)
-            )
-            if sectioned:
-                return sectioned[0]
+            # Do NOT map bare M{n} onto lettered P{n}A / P{n}B — that collapses
+            # distinct physical identities (M220_AUX vs M220A_AUX → same OTE).
             # Do not return a Conv base that was not generated (IO_MAP assert)
             return ""
 

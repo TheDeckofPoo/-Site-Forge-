@@ -1853,6 +1853,8 @@
     }
     pushHistory(silent ? 'Auto Build From RUN (load)' : 'Rebuild Layout From RUN');
     status(silent ? 'Building Transportation from RUN…' : 'Rebuild Layout From RUN…');
+    // PL-1: Rebuild Layout is the ONLY engineer permission to recompute presentation offsets
+    try { A().requestPresentationRelayout?.(); } catch (_) { /* ignore */ }
     let res;
     try {
       // Pass active machine so Auto Build uses ControllerScope, not plant-wide Conveyor.asc
@@ -2133,6 +2135,8 @@
     $('tb-lane-separate')?.addEventListener('change', (ev) => {
       const { tb, render, status } = A();
       tb.laneSeparate = !!ev.target.checked;
+      // PL-1: toggling lane separation is an explicit layout request
+      try { A().requestPresentationRelayout?.(); } catch (_) { /* ignore */ }
       render();
       status(`Lane separation ${tb.laneSeparate ? 'ON' : 'OFF'} (presentation only)`);
     });

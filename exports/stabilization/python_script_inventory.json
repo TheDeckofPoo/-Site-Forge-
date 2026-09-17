@@ -1,0 +1,3836 @@
+{
+  "generated_for": "FortnaPlus tools/scripts inventory (read-only)",
+  "root": "tools/scripts",
+  "total_files": 227,
+  "counts_by_classification": {
+    "TEST": 68,
+    "DIAGNOSTIC": 33,
+    "ARCHAEOLOGY": 30,
+    "DECODER_CORE": 29,
+    "SEMANTIC_CORE": 25,
+    "COMPILER": 15,
+    "PRODUCTION_RUNTIME": 13,
+    "ACCEPTANCE": 6,
+    "CP5_INTEGRATION": 5,
+    "LEGACY_CANDIDATE": 3
+  },
+  "production_subprocess_entrypoints": [
+    "tools/scripts/_deploy_designer_safe_ignition.py",
+    "tools/scripts/apply_recipe.py",
+    "tools/scripts/fix_ignition_project_attrs.py",
+    "tools/scripts/fortna_autogen.py",
+    "tools/scripts/fortna_cp5a_orchestrator.py",
+    "tools/scripts/fortna_cp5a_transport_mapper.py",
+    "tools/scripts/fortna_hardware_io_model.py",
+    "tools/scripts/fortna_ignition_build.py",
+    "tools/scripts/fortna_io_banks.py",
+    "tools/scripts/fortna_perspective_pack.py",
+    "tools/scripts/fortna_plc_export.py",
+    "tools/scripts/fortna_prism_ingest.py",
+    "tools/scripts/fortna_prism_twin.py",
+    "tools/scripts/fortna_run_physical_layout.py",
+    "tools/scripts/fortna_run_workspace_discover.py",
+    "tools/scripts/fortna_safety_model.py",
+    "tools/scripts/fortna_transport_graph.py",
+    "tools/scripts/fortna_workbook.py",
+    "tools/scripts/index_docs.py"
+  ],
+  "files": [
+    {
+      "path": "tools/scripts/_audit_hollow_l5x.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_audit_vfd_flt_semantics.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_deploy_designer_safe_ignition.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "desktop/main.js"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_deploy_smoke_view.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_aent_ports.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_aoi_main.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_audit_l5x.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_compare_fin.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_configtag_l5k.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_diff_l5x.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_dtype_diff.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_extract_st_types.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_fin_programs.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_find_st_types.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_header_dtypes.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_missing_tag_types.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_modules.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_nops_sntp.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_saw_dtypes.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_slot_config.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_st_members.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_studio_struct.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_tasks_mods.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_emergency_verify_1754.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_check_aoi.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_cp4.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_cp4b.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_cp4c.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_excel_io_pattern.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_fc.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_find_quoted_cdata.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_io_map_audit.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_io_map_audit2.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_l5x_mod_audit.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_opt.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_rewrite_studio_tags.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_studio_dtype_probe.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_studio_dtype_probe2.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_studio_dtype_probe3.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_update_topology_accounting.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_verify.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_verify_es_l5x.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/_tmp_verify_fresh_l5x.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/apply_recipe.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "tools/scripts/fortna_plc_export.py",
+        "desktop/main.js",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_plc_export.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/diagnose_plc2_merge_pipeline.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/diagnose_plc2_topology_merges.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fix_ignition_project_attrs.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "desktop/main.js"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_activity_classify.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_activity_classification_closure.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "test_dependency": "test_activity_classification_closure.py, test_fortnaplus_knowledge_layer.py, test_knowledge_driven_compiler.py, test_run_driven_workspace.py",
+      "test_files": [
+        "tools/scripts/test_activity_classification_closure.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_activity_closure.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_answer_sheet_compare.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5_gap_closure.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_area_discovery.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_integration_hardening.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_integration_hardening.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_area_ops.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [],
+      "all_importers": [
+        "tools/scripts/test_area_rename_l5x.py",
+        "tools/scripts/test_engineer_defaults.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_multi_area_e2e.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_area_rename_l5x.py, test_engineer_defaults.py, test_knowledge_driven_compiler.py, test_multi_area_e2e.py",
+      "test_files": [
+        "tools/scripts/test_area_rename_l5x.py",
+        "tools/scripts/test_engineer_defaults.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_multi_area_e2e.py"
+      ],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_asc.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/diagnose_plc2_topology_merges.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_build_table_knowledge.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp4_pass1_self_audit.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_equipment_plan.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_io_banks.py",
+        "tools/scripts/fortna_io_extract.py",
+        "tools/scripts/fortna_layout_overlap_research.py",
+        "tools/scripts/fortna_legacy_layout.py",
+        "tools/scripts/fortna_motor_logic.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_physical_runs.py",
+        "tools/scripts/fortna_physical_word_resolver.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sawtooth_merge_model.py",
+        "tools/scripts/fortna_site_model.py",
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/fortna_spiral_area_analysis.py",
+        "tools/scripts/fortna_unresolved_symbol_audit.py"
+      ],
+      "all_importers": [
+        "tools/scripts/_audit_hollow_l5x.py",
+        "tools/scripts/_audit_vfd_flt_semantics.py",
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/diagnose_plc2_topology_merges.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_build_table_knowledge.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp4_pass1_self_audit.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_equipment_plan.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_io_banks.py",
+        "tools/scripts/fortna_io_extract.py",
+        "tools/scripts/fortna_layout_overlap_research.py",
+        "tools/scripts/fortna_legacy_layout.py",
+        "tools/scripts/fortna_motor_logic.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_physical_runs.py",
+        "tools/scripts/fortna_physical_word_resolver.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sawtooth_merge_model.py",
+        "tools/scripts/fortna_site_model.py",
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/fortna_spiral_area_analysis.py",
+        "tools/scripts/fortna_unresolved_symbol_audit.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py",
+        "tools/scripts/test_plc2_configio_compiler.py",
+        "tools/scripts/test_vfd_flt_iomap_member.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "test_dependency": "test_cp3rio2_release_ssv.py, test_iomap_duplicate_output_ownership.py, test_plc2_configio_compiler.py, test_vfd_flt_iomap_member.py",
+      "test_files": [
+        "tools/scripts/test_cp3rio2_release_ssv.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py",
+        "tools/scripts/test_plc2_configio_compiler.py",
+        "tools/scripts/test_vfd_flt_iomap_member.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_autogen.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_area_ops.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_io_banks.py",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_sitemodel_to_autogen.py",
+        "tools/scripts/fortna_workbook.py",
+        "dashboard/fortna-plus.js",
+        "desktop/main.js",
+        "tools/scripts/diagnose_plc2_merge_pipeline.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/test_export_current_single_l5x.py",
+        "tools/scripts/test_io_regression_lock.py",
+        "tools/scripts/test_l5x_datatype_closure.py",
+        "tools/scripts/test_sawtooth_enable_tags.py",
+        "tools/scripts/test_transport_cross_area_move.py",
+        "tools/scripts/test_validation_firewall.py",
+        "tools/scripts/test_vfd_flt_iomap_member.py"
+      ],
+      "all_importers": [
+        "tools/scripts/_tmp_cp4b.py",
+        "tools/scripts/_tmp_verify.py",
+        "tools/scripts/fortna_area_ops.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_io_banks.py",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_sitemodel_to_autogen.py",
+        "tools/scripts/fortna_workbook.py",
+        "tools/scripts/test_area_rename_l5x.py",
+        "tools/scripts/test_autogen_area_safety_fidelity.py",
+        "tools/scripts/test_cp4_compiler_pass1.py",
+        "tools/scripts/test_cp4_sawtooth_fidelity.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py",
+        "tools/scripts/test_export_current_single_l5x.py",
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py",
+        "tools/scripts/test_plc2_configio_compiler.py",
+        "tools/scripts/test_sawtooth_enable_tags.py",
+        "tools/scripts/test_transport_ux_pass1.py",
+        "tools/scripts/test_transport_ux_pass2.py"
+      ],
+      "subprocess_callers": [
+        "dashboard/fortna-plus.js",
+        "desktop/main.js",
+        "tools/scripts/diagnose_plc2_merge_pipeline.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/test_export_current_single_l5x.py",
+        "tools/scripts/test_io_regression_lock.py",
+        "tools/scripts/test_l5x_datatype_closure.py",
+        "tools/scripts/test_sawtooth_enable_tags.py",
+        "tools/scripts/test_transport_cross_area_move.py",
+        "tools/scripts/test_validation_firewall.py",
+        "tools/scripts/test_vfd_flt_iomap_member.py"
+      ],
+      "test_dependency": "test_area_rename_l5x.py, test_autogen_area_safety_fidelity.py, test_cp4_compiler_pass1.py, test_cp4_sawtooth_fidelity.py, test_cp4_sawtooth_semantics.py, test_export_current_single_l5x.py, test_hardware_family_1734.py, test_iomap_duplicate_output_ownership.py\u2026",
+      "test_files": [
+        "tools/scripts/test_area_rename_l5x.py",
+        "tools/scripts/test_autogen_area_safety_fidelity.py",
+        "tools/scripts/test_cp4_compiler_pass1.py",
+        "tools/scripts/test_cp4_sawtooth_fidelity.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py",
+        "tools/scripts/test_export_current_single_l5x.py",
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py",
+        "tools/scripts/test_plc2_configio_compiler.py",
+        "tools/scripts/test_sawtooth_enable_tags.py",
+        "tools/scripts/test_transport_ux_pass1.py",
+        "tools/scripts/test_transport_ux_pass2.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_build_table_knowledge.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_connectivity_sorter_closure.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_connectivity_validate.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_controller_scope.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_controller_scope.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_controller_scope.py",
+      "test_files": [
+        "tools/scripts/test_controller_scope.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_conveyor_section_model.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_run_physical_layout.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp3rio2_release_ssv.py",
+      "test_files": [
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp2_completion_gate.py",
+      "classification": "ACCEPTANCE",
+      "known_callers_importers": [
+        "tools/scripts/test_cp2_completion_gate_artifacts.py"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "tools/scripts/test_cp2_completion_gate_artifacts.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp2_demo_closure.py",
+      "classification": "ACCEPTANCE",
+      "known_callers_importers": [
+        "tools/scripts/test_cp2_demo_closure_artifacts.py"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "tools/scripts/test_cp2_demo_closure_artifacts.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp2_ownership.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/test_cp2_ownership.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/test_cp2_ownership.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_cp2_ownership.py"
+      ],
+      "test_dependency": "test_cp2_ownership.py",
+      "test_files": [
+        "tools/scripts/test_cp2_ownership.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp4_discovery.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sawtooth_merge_model.py",
+        "tools/scripts/fortna_sawtooth_param.py",
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/test_cp4_discovery_no_leakage.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sawtooth_merge_model.py",
+        "tools/scripts/fortna_sawtooth_param.py",
+        "tools/scripts/test_cp4_discovery_no_leakage.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/test_cp4_discovery_no_leakage.py"
+      ],
+      "test_dependency": "test_cp4_discovery_no_leakage.py",
+      "test_files": [
+        "tools/scripts/test_cp4_discovery_no_leakage.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp4_pass1.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/test_cp4_compiler_pass1.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_compiler_pass1.py, test_cp4_sawtooth_semantics.py",
+      "test_files": [
+        "tools/scripts/test_cp4_compiler_pass1.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp4_pass1_self_audit.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp4_pass2.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/test_cp4_compiler_pass2.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp4_sawtooth.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_cp4_compiler_pass2.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp4_sawtooth.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/test_cp4_sawtooth_fidelity.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/test_cp4_sawtooth_fidelity.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_cp4_sawtooth_fidelity.py"
+      ],
+      "test_dependency": "test_cp4_sawtooth_fidelity.py, test_cp4_sawtooth_semantics.py",
+      "test_files": [
+        "tools/scripts/test_cp4_sawtooth_fidelity.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp4_semantics_compile.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [],
+      "all_importers": [
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_sawtooth_semantics.py",
+      "test_files": [
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp5_blind_build.py",
+      "classification": "CP5_INTEGRATION",
+      "known_callers_importers": [
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp5_gap_closure.py",
+      "classification": "CP5_INTEGRATION",
+      "known_callers_importers": [
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp5a_acceptance.py",
+      "classification": "CP5_INTEGRATION",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp5a_orchestrator.py",
+      "classification": "CP5_INTEGRATION",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "desktop/main.js"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/test_cp5a_integration.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "test_cp5a_integration.py",
+      "test_files": [
+        "tools/scripts/test_cp5a_integration.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_cp5a_transport_mapper.py",
+      "classification": "CP5_INTEGRATION",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "desktop/main.js"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/test_cp5a_integration.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "test_cp5a_integration.py",
+      "test_files": [
+        "tools/scripts/test_cp5a_integration.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_curve_validation.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_decoder_acceptance.py",
+      "classification": "ACCEPTANCE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_device_logic.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_mhs_sorter.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_build.py",
+        "tools/scripts/fortna_prism_seed.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_mhs_sorter.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_build.py",
+        "tools/scripts/fortna_prism_seed.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_equipment_plan.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_es_compiler.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_safety_model.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_safety_model.py",
+        "tools/scripts/test_es_compiler.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_es_compiler.py",
+      "test_files": [
+        "tools/scripts/test_es_compiler.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_estop_model.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/fortna_safety_model.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/fortna_safety_model.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_fpc_document_inventory.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [
+        "tools/scripts/fortna_knowledge.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_knowledge.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_hardware_family.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_physical_word_resolver.py",
+        "dashboard/hardware/hardware-family.js"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_physical_word_resolver.py",
+        "tools/scripts/test_hardware_family_1734.py"
+      ],
+      "subprocess_callers": [
+        "dashboard/hardware/hardware-family.js"
+      ],
+      "test_dependency": "test_hardware_family_1734.py",
+      "test_files": [
+        "tools/scripts/test_hardware_family_1734.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_hardware_io_model.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "desktop/main.js"
+      ],
+      "all_importers": [
+        "tools/scripts/_audit_hollow_l5x.py",
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_hardware_io_model.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "test_hardware_family_1734.py, test_hardware_io_model.py",
+      "test_files": [
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_hardware_io_model.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_hardware_io_overrides.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_safety_model.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_safety_model.py",
+        "tools/scripts/test_hardware_io_overrides.py",
+        "tools/scripts/test_iomap_engineer_logical_name.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_hardware_io_overrides.py, test_iomap_engineer_logical_name.py",
+      "test_files": [
+        "tools/scripts/test_hardware_io_overrides.py",
+        "tools/scripts/test_iomap_engineer_logical_name.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_identity.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp4_pass2.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/test_cp4_compiler_pass2.py",
+        "tools/scripts/test_display_layout_offsets.py",
+        "tools/scripts/test_fortna_identity_sections.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_compiler_pass2.py, test_display_layout_offsets.py, test_fortna_identity_sections.py",
+      "test_files": [
+        "tools/scripts/test_cp4_compiler_pass2.py",
+        "tools/scripts/test_display_layout_offsets.py",
+        "tools/scripts/test_fortna_identity_sections.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_ignition_build.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "desktop/main.js"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_ignition_extract.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "tools/scripts/fortna_plc_export.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_plc_export.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_integration_hardening.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_io_banks.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "desktop/main.js"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_io_extract.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_equipment_plan.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_io_banks.py",
+        "tools/scripts/fortna_motor_logic.py",
+        "tools/scripts/fortna_physical_word_resolver.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_ingest.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_run_site_model_discovery.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_equipment_plan.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_io_banks.py",
+        "tools/scripts/fortna_motor_logic.py",
+        "tools/scripts/fortna_physical_word_resolver.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_ingest.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_run_site_model_discovery.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_io_regression_baselines.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py",
+        "tools/scripts/test_io_regression_lock.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp3rio2_release_ssv.py, test_io_regression_lock.py",
+      "test_files": [
+        "tools/scripts/test_cp3rio2_release_ssv.py",
+        "tools/scripts/test_io_regression_lock.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_knowledge.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/test_fortna_knowledge.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/test_fortna_knowledge.py",
+        "tools/scripts/test_knowledge_driven_compiler.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_fortna_knowledge.py"
+      ],
+      "test_dependency": "test_fortna_knowledge.py, test_knowledge_driven_compiler.py",
+      "test_files": [
+        "tools/scripts/test_fortna_knowledge.py",
+        "tools/scripts/test_knowledge_driven_compiler.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_knowledge_enrich.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sitemodel_to_autogen.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sitemodel_to_autogen.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "test_dependency": "test_knowledge_driven_compiler.py, test_runtime_acceptance_recovery.py",
+      "test_files": [
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_knowledge_integration.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_l5x_compare.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/test_autogen_area_safety_fidelity.py",
+        "tools/scripts/test_fortna_l5x_compare.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_cp2_completion_gate.py"
+      ],
+      "test_dependency": "test_autogen_area_safety_fidelity.py, test_fortna_l5x_compare.py",
+      "test_files": [
+        "tools/scripts/test_autogen_area_safety_fidelity.py",
+        "tools/scripts/test_fortna_l5x_compare.py"
+      ],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_l5x_structured_data.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py"
+      ],
+      "all_importers": [
+        "tools/scripts/_tmp_rewrite_studio_tags.py",
+        "tools/scripts/_tmp_studio_dtype_probe2.py",
+        "tools/scripts/_tmp_verify_fresh_l5x.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/test_l5x_structured_data.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_l5x_structured_data.py",
+      "test_files": [
+        "tools/scripts/test_l5x_structured_data.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_layout_overlap_research.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [
+        "tools/scripts/test_display_layout_offsets.py"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "tools/scripts/test_display_layout_offsets.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_legacy_layout.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [
+        "tools/scripts/test_display_layout_offsets.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_display_layout_offsets.py",
+      "test_files": [
+        "tools/scripts/test_display_layout_offsets.py"
+      ],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_mhs_sorter.py",
+      "classification": "LEGACY_CANDIDATE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_prism_build.py",
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_prism_build.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_mnu_runtime.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_reference_resolver.py",
+        "tools/scripts/fortna_run_loader.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_reference_resolver.py",
+        "tools/scripts/fortna_run_loader.py",
+        "tools/scripts/test_fortna_mnu_runtime.py",
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_fortna_mnu_runtime.py, test_fortna_reference_resolver.py, test_fortna_run_loader.py",
+      "test_files": [
+        "tools/scripts/test_fortna_mnu_runtime.py",
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_mnu_schema.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_mnu_runtime.py",
+        "tools/scripts/fortna_reference_resolver.py",
+        "tools/scripts/fortna_run_loader.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_mnu_runtime.py",
+        "tools/scripts/fortna_reference_resolver.py",
+        "tools/scripts/fortna_run_loader.py",
+        "tools/scripts/test_fortna_mnu_runtime.py",
+        "tools/scripts/test_fortna_mnu_schema.py",
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_fortna_mnu_runtime.py, test_fortna_mnu_schema.py, test_fortna_reference_resolver.py, test_fortna_run_loader.py",
+      "test_files": [
+        "tools/scripts/test_fortna_mnu_runtime.py",
+        "tools/scripts/test_fortna_mnu_schema.py",
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_motor_logic.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_device_logic.py",
+        "tools/scripts/fortna_mhs_sorter.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_build.py",
+        "tools/scripts/fortna_prism_seed.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_device_logic.py",
+        "tools/scripts/fortna_mhs_sorter.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_build.py",
+        "tools/scripts/fortna_prism_seed.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_perspective_pack.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fix_ignition_project_attrs.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "desktop/main.js"
+      ],
+      "all_importers": [
+        "tools/scripts/_deploy_smoke_view.py",
+        "tools/scripts/fix_ignition_project_attrs.py",
+        "tools/scripts/fortna_ignition_build.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_physical_geometry.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_layout_overlap_research.py",
+        "tools/scripts/fortna_legacy_layout.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_physical_runs.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_spiral_area_analysis.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_layout_overlap_research.py",
+        "tools/scripts/fortna_legacy_layout.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_physical_runs.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_spiral_area_analysis.py",
+        "tools/scripts/test_fortna_physical_geometry.py",
+        "tools/scripts/test_transport_physical_drawing.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_curve_validation.py"
+      ],
+      "test_dependency": "test_fortna_physical_geometry.py, test_transport_physical_drawing.py",
+      "test_files": [
+        "tools/scripts/test_fortna_physical_geometry.py",
+        "tools/scripts/test_transport_physical_drawing.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_physical_overlap_audit.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp2_demo_closure.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp2_demo_closure.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_physical_runs.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_physical_word_resolver.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/test_plc2_configio_compiler.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py",
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_hardware_io_model.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py",
+        "tools/scripts/test_plc2_configio_compiler.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/test_plc2_configio_compiler.py"
+      ],
+      "test_dependency": "test_cp3rio2_release_ssv.py, test_hardware_family_1734.py, test_hardware_io_model.py, test_iomap_duplicate_output_ownership.py, test_plc2_configio_compiler.py",
+      "test_files": [
+        "tools/scripts/test_cp3rio2_release_ssv.py",
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_hardware_io_model.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py",
+        "tools/scripts/test_plc2_configio_compiler.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_plc2_configio_compiler.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_plc2_fidelity_audit.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_plc2_foundation_reset.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_plc2_io_channel_matrix.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [],
+      "all_importers": [
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp3rio2_release_ssv.py",
+      "test_files": [
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_plc2_io_truth.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp3rio2_release_ssv.py",
+      "test_files": [
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_plc2_merge_discovery.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/test_plc2_merge_discovery.py"
+      ],
+      "all_importers": [
+        "tools/scripts/test_plc2_merge_discovery.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_plc2_merge_discovery.py"
+      ],
+      "test_dependency": "test_plc2_merge_discovery.py",
+      "test_files": [
+        "tools/scripts/test_plc2_merge_discovery.py"
+      ],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_plc_export.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "desktop/main.js",
+        "tools/scripts/fortna_ignition_extract.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js",
+        "tools/scripts/fortna_ignition_extract.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_prism_build.py",
+      "classification": "LEGACY_CANDIDATE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_prism_ingest.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_twin.py",
+        "desktop/main.js"
+      ],
+      "all_importers": [
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_twin.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_prism_seed.py",
+      "classification": "LEGACY_CANDIDATE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_build.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_build.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_prism_twin.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "desktop/main.js"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "desktop/main.js"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_reference_resolver.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_semantics/evidence.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_semantics/evidence.py",
+        "tools/scripts/test_fortna_reference_resolver.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_fortna_reference_resolver.py",
+      "test_files": [
+        "tools/scripts/test_fortna_reference_resolver.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_run_autobuild_audit.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_run_geometry_investigate.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp4_pass1_self_audit.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_layout_overlap_research.py",
+        "tools/scripts/fortna_legacy_layout.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_physical_runs.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_spiral_area_analysis.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp4_pass1_self_audit.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_layout_overlap_research.py",
+        "tools/scripts/fortna_legacy_layout.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_physical_runs.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_spiral_area_analysis.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_run_physical_layout.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_run_loader.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_reference_resolver.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_fortna_reference_resolver.py, test_fortna_run_loader.py",
+      "test_files": [
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_run_physical_layout.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "tools/scripts/diagnose_plc2_topology_merges.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp5a_transport_mapper.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "desktop/main.js",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "all_importers": [
+        "tools/scripts/diagnose_plc2_topology_merges.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp5a_transport_mapper.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_auto_build_physical_layout.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "test_dependency": "test_auto_build_physical_layout.py, test_source_truth_no_leakage.py",
+      "test_files": [
+        "tools/scripts/test_auto_build_physical_layout.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_run_site_model_discovery.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp2_completion_gate.py"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "tools/scripts/fortna_cp2_completion_gate.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_run_workspace_discover.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_ui_workflow_smoke.py",
+        "desktop/main.js",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_run_driven_workspace.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_ui_workflow_smoke.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_project_workspace_isolation.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_run_driven_workspace.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "test_dependency": "test_fortnaplus_knowledge_layer.py, test_project_workspace_isolation.py, test_run_driven_workspace.py",
+      "test_files": [
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_project_workspace_isolation.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_runtime_acceptance_recovery.py",
+      "classification": "ACCEPTANCE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_io_regression_lock.py",
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_io_regression_lock.py, test_runtime_acceptance_recovery.py",
+      "test_files": [
+        "tools/scripts/test_io_regression_lock.py",
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_safety_model.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "dashboard/safety-build.js",
+        "desktop/main.js"
+      ],
+      "all_importers": [
+        "tools/scripts/test_safety_model.py"
+      ],
+      "subprocess_callers": [
+        "dashboard/safety-build.js",
+        "desktop/main.js"
+      ],
+      "test_dependency": "test_safety_model.py",
+      "test_files": [
+        "tools/scripts/test_safety_model.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sawtooth_library_audit.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sawtooth_merge_model.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_run_workspace_discover.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_sawtooth_merge_model_cp4.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_sawtooth_merge_model_cp4.py",
+      "test_files": [
+        "tools/scripts/test_sawtooth_merge_model_cp4.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sawtooth_param.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_sawtooth_semantics.py",
+        "tools/scripts/fortna_unresolved_symbol_audit.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_sawtooth_semantics.py",
+        "tools/scripts/fortna_unresolved_symbol_audit.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_sawtooth_semantics.py",
+      "test_files": [
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sawtooth_semantics.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_run_workspace_discover.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_sawtooth_semantics.py",
+      "test_files": [
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_schematic_svg_export.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantic_acceptance.py",
+      "classification": "ACCEPTANCE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/__init__.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/bundle.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_semantic_acceptance.py",
+        "tools/scripts/fortna_semantics/__init__.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_semantic_acceptance.py",
+        "tools/scripts/fortna_semantics/__init__.py",
+        "tools/scripts/test_cp4_bundle.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_bundle.py",
+      "test_files": [
+        "tools/scripts/test_cp4_bundle.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/common.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_semantics/evidence.py",
+        "tools/scripts/fortna_semantics/io.py",
+        "tools/scripts/fortna_semantics/jam.py",
+        "tools/scripts/fortna_semantics/merge.py",
+        "tools/scripts/fortna_semantics/mtrchain.py",
+        "tools/scripts/fortna_semantics/safety.py",
+        "tools/scripts/fortna_semantics/transportation.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_semantics/evidence.py",
+        "tools/scripts/fortna_semantics/io.py",
+        "tools/scripts/fortna_semantics/jam.py",
+        "tools/scripts/fortna_semantics/merge.py",
+        "tools/scripts/fortna_semantics/mtrchain.py",
+        "tools/scripts/fortna_semantics/safety.py",
+        "tools/scripts/fortna_semantics/transportation.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/evidence.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_semantic_acceptance.py",
+        "tools/scripts/fortna_semantics/bundle.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_semantic_acceptance.py",
+        "tools/scripts/fortna_semantics/bundle.py",
+        "tools/scripts/test_cp4_io.py",
+        "tools/scripts/test_cp4_jam.py",
+        "tools/scripts/test_cp4_merge.py",
+        "tools/scripts/test_cp4_mtrchain.py",
+        "tools/scripts/test_cp4_safety.py",
+        "tools/scripts/test_cp4_transportation.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_io.py, test_cp4_jam.py, test_cp4_merge.py, test_cp4_mtrchain.py, test_cp4_safety.py, test_cp4_transportation.py",
+      "test_files": [
+        "tools/scripts/test_cp4_io.py",
+        "tools/scripts/test_cp4_jam.py",
+        "tools/scripts/test_cp4_merge.py",
+        "tools/scripts/test_cp4_mtrchain.py",
+        "tools/scripts/test_cp4_safety.py",
+        "tools/scripts/test_cp4_transportation.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/io.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_semantics/bundle.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_semantics/bundle.py",
+        "tools/scripts/test_cp4_io.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_io.py",
+      "test_files": [
+        "tools/scripts/test_cp4_io.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/jam.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_semantics/bundle.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_semantics/bundle.py",
+        "tools/scripts/test_cp4_jam.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_jam.py",
+      "test_files": [
+        "tools/scripts/test_cp4_jam.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/merge.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_semantics/bundle.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_semantics/bundle.py",
+        "tools/scripts/test_cp4_merge.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_merge.py",
+      "test_files": [
+        "tools/scripts/test_cp4_merge.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/mtrchain.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_semantics/bundle.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_semantics/bundle.py",
+        "tools/scripts/test_cp4_merge.py",
+        "tools/scripts/test_cp4_mtrchain.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_merge.py, test_cp4_mtrchain.py",
+      "test_files": [
+        "tools/scripts/test_cp4_merge.py",
+        "tools/scripts/test_cp4_mtrchain.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/safety.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_semantics/bundle.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_semantics/bundle.py",
+        "tools/scripts/test_cp4_safety.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_safety.py",
+      "test_files": [
+        "tools/scripts/test_cp4_safety.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_semantics/transportation.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_semantics/bundle.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_semantics/bundle.py",
+        "tools/scripts/test_cp4_transportation.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_cp4_transportation.py",
+      "test_files": [
+        "tools/scripts/test_cp4_transportation.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_site_model.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_activity_classify.py",
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_area_discovery.py",
+        "tools/scripts/fortna_area_ops.py",
+        "tools/scripts/fortna_build_table_knowledge.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_connectivity_validate.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_estop_model.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/fortna_safety_model.py",
+        "tools/scripts/fortna_sitemodel_to_autogen.py",
+        "tools/scripts/fortna_sorter_divert_research.py",
+        "tools/scripts/fortna_sorter_leaves.py",
+        "tools/scripts/fortna_supersession.py",
+        "tools/scripts/fortna_ui_workflow_smoke.py",
+        "tools/scripts/fortna_validate_site_model.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_activity_classify.py",
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_area_discovery.py",
+        "tools/scripts/fortna_area_ops.py",
+        "tools/scripts/fortna_build_table_knowledge.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_connectivity_validate.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_estop_model.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/fortna_safety_model.py",
+        "tools/scripts/fortna_sitemodel_to_autogen.py",
+        "tools/scripts/fortna_sorter_divert_research.py",
+        "tools/scripts/fortna_sorter_leaves.py",
+        "tools/scripts/fortna_supersession.py",
+        "tools/scripts/fortna_ui_workflow_smoke.py",
+        "tools/scripts/fortna_validate_site_model.py",
+        "tools/scripts/test_activity_classification_closure.py",
+        "tools/scripts/test_area_rename_l5x.py",
+        "tools/scripts/test_blind_genericity_fixtures.py",
+        "tools/scripts/test_cp5_blind_identity.py",
+        "tools/scripts/test_engineer_defaults.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_multi_area_e2e.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "test_dependency": "test_activity_classification_closure.py, test_area_rename_l5x.py, test_blind_genericity_fixtures.py, test_cp5_blind_identity.py, test_engineer_defaults.py, test_fortnaplus_knowledge_layer.py, test_knowledge_driven_compiler.py, test_multi_area_e2e.py\u2026",
+      "test_files": [
+        "tools/scripts/test_activity_classification_closure.py",
+        "tools/scripts/test_area_rename_l5x.py",
+        "tools/scripts/test_blind_genericity_fixtures.py",
+        "tools/scripts/test_cp5_blind_identity.py",
+        "tools/scripts/test_engineer_defaults.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_multi_area_e2e.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sitemodel_to_autogen.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "test_dependency": "test_runtime_acceptance_recovery.py",
+      "test_files": [
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sorter_build.py",
+      "classification": "COMPILER",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sorter_discovery.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sorter_divert_research.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_sorter_leaves.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/test_sorter_leaves_blind.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_sorter_leaves_blind.py",
+      "test_files": [
+        "tools/scripts/test_sorter_leaves_blind.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_source_id.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_ingest.py",
+        "tools/scripts/fortna_prism_twin.py"
+      ],
+      "all_importers": [
+        "tools/scripts/_tmp_cp4b.py",
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_plc_export.py",
+        "tools/scripts/fortna_prism_ingest.py",
+        "tools/scripts/fortna_prism_twin.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_spiral_area_analysis.py",
+      "classification": "ARCHAEOLOGY",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_studio_preflight.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_iomap_duplicate_output_ownership.py",
+      "test_files": [
+        "tools/scripts/test_iomap_duplicate_output_ownership.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_supersession.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_run_workspace_discover.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_run_workspace_discover.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_transport_graph.py",
+      "classification": "SEMANTIC_CORE",
+      "known_callers_importers": [
+        "desktop/main.js",
+        "tools/scripts/diagnose_plc2_merge_pipeline.py"
+      ],
+      "all_importers": [
+        "tools/scripts/test_project_lifecycle_clear.py",
+        "tools/scripts/test_project_workspace_isolation.py",
+        "tools/scripts/test_transport_apply_persistence.py",
+        "tools/scripts/test_transport_cross_area_move.py",
+        "tools/scripts/test_transport_ux_pass1.py",
+        "tools/scripts/test_transport_ux_pass2.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js",
+        "tools/scripts/diagnose_plc2_merge_pipeline.py"
+      ],
+      "test_dependency": "test_project_lifecycle_clear.py, test_project_workspace_isolation.py, test_transport_apply_persistence.py, test_transport_cross_area_move.py, test_transport_ux_pass1.py, test_transport_ux_pass2.py",
+      "test_files": [
+        "tools/scripts/test_project_lifecycle_clear.py",
+        "tools/scripts/test_project_workspace_isolation.py",
+        "tools/scripts/test_transport_apply_persistence.py",
+        "tools/scripts/test_transport_cross_area_move.py",
+        "tools/scripts/test_transport_ux_pass1.py",
+        "tools/scripts/test_transport_ux_pass2.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_ui_workflow_smoke.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_unresolved_symbol_audit.py",
+      "classification": "DIAGNOSTIC",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_validate_site_model.py",
+      "classification": "DECODER_CORE",
+      "known_callers_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_knowledge_driven_compiler.py"
+      ],
+      "subprocess_callers": [
+        "tools/scripts/test_fortnaplus_knowledge_layer.py"
+      ],
+      "test_dependency": "test_fortnaplus_knowledge_layer.py, test_knowledge_driven_compiler.py",
+      "test_files": [
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_knowledge_driven_compiler.py"
+      ],
+      "production_dependency": "likely",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/fortna_workbook.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_prism_twin.py",
+        "desktop/main.js",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py"
+      ],
+      "all_importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_prism_twin.py",
+        "tools/scripts/test_autogen_area_safety_fidelity.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "subprocess_callers": [
+        "desktop/main.js",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py"
+      ],
+      "test_dependency": "test_autogen_area_safety_fidelity.py, test_source_truth_no_leakage.py",
+      "test_files": [
+        "tools/scripts/test_autogen_area_safety_fidelity.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/index_docs.py",
+      "classification": "PRODUCTION_RUNTIME",
+      "known_callers_importers": [
+        "desktop/Launch-Electron.ps1",
+        "desktop/main.js",
+        "tools/scripts/apply_recipe.py"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "desktop/Launch-Electron.ps1",
+        "desktop/main.js",
+        "tools/scripts/apply_recipe.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "yes",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_activity_classification_closure.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_area_rename_l5x.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_auto_build_physical_layout.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_autogen_area_safety_fidelity.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_blind_genericity_fixtures.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [
+        "tools/scripts/test_knowledge_driven_compiler.py"
+      ],
+      "subprocess_callers": [],
+      "test_dependency": "test_knowledge_driven_compiler.py",
+      "test_files": [
+        "tools/scripts/test_knowledge_driven_compiler.py"
+      ],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_controller_scope.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp2_completion_gate_artifacts.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp2_demo_closure_artifacts.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp2_ownership.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp3rio2_release_ssv.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_bundle.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_compiler_pass1.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_compiler_pass2.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_discovery_no_leakage.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_io.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_jam.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_merge.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_mtrchain.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_safety.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_sawtooth_fidelity.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_sawtooth_semantics.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp4_transportation.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp5_blind_identity.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_cp5a_integration.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_display_layout_offsets.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_engineer_defaults.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_es_compiler.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_export_current_single_l5x.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortna_identity_sections.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortna_knowledge.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortna_l5x_compare.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortna_mnu_runtime.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortna_mnu_schema.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortna_physical_geometry.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortna_reference_resolver.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortna_run_loader.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_fortnaplus_knowledge_layer.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_hardware_family_1734.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_hardware_io_model.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_hardware_io_overrides.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_io_regression_lock.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_iomap_duplicate_output_ownership.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_iomap_engineer_logical_name.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_knowledge_driven_compiler.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_l5x_datatype_closure.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_l5x_structured_data.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_mscreno_aug28_regression.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_multi_area_e2e.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_plc2_configio_compiler.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_plc2_merge_discovery.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_project_lifecycle_clear.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_project_workspace_isolation.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_run_driven_workspace.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_runtime_acceptance_recovery.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_safety_model.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_sawtooth_enable_tags.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_sawtooth_merge_model_cp4.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_sorter_leaves_blind.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_source_truth_no_leakage.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_transport_apply_persistence.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_transport_cross_area_move.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_transport_hit_geometry.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_transport_physical_drawing.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_transport_physical_presentation.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_transport_ux_pass1.py",
+      "classification": "TEST",
+      "known_callers_importers": [
+        "tools/scripts/test_transport_ux_pass2.py"
+      ],
+      "all_importers": [],
+      "subprocess_callers": [
+        "tools/scripts/test_transport_ux_pass2.py"
+      ],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_transport_ux_pass2.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_validation_firewall.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/test_vfd_flt_iomap_member.py",
+      "classification": "TEST",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    },
+    {
+      "path": "tools/scripts/validate_plc_export.py",
+      "classification": "ACCEPTANCE",
+      "known_callers_importers": [],
+      "all_importers": [],
+      "subprocess_callers": [],
+      "test_dependency": "no",
+      "test_files": [],
+      "production_dependency": "no",
+      "safe_to_remove": "DO NOT DECIDE YET"
+    }
+  ]
+}

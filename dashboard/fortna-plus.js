@@ -172,6 +172,20 @@ function safetyEvidence() {
   const unassignedN = Number(counts.unassigned ?? unassignedList.length) || unassignedList.length;
   const devicesFound = Number(counts.devices_found ?? counts.devices ?? devices.length) || devices.length;
   const resolvedN = Math.max(0, devicesFound - unassignedN);
+  // PL-5: engineer-facing inventory counts (exact identities preserved in unassignedList)
+  const mcrN = Number(counts.mcr ?? devices.filter((d) => String(d.kind || '').toUpperCase() === 'MCR').length) || 0;
+  const esrN = Number(counts.esr ?? devices.filter((d) => String(d.kind || '').toUpperCase() === 'ESR').length) || 0;
+  const estopN = Number(counts.estops ?? devices.filter((d) => {
+    const k = String(d.kind || '').toUpperCase();
+    return k === 'ESTOP' || k === 'ES' || k === 'E-STOP';
+  }).length) || 0;
+  const shellOnly = !!(last && last.shell);
+  const safeLogicN = Array.isArray(last?.routines)
+    ? last.routines.filter((r) => String(r).endsWith('_Safe_Logic')).length
+    : 0;
+  const safePiN = Array.isArray(last?.routines)
+    ? last.routines.filter((r) => String(r).endsWith('_Safe_PI')).length
+    : 0;
   const diagZones = (last && Array.isArray(last.zones) && last.zones.length)
     ? last.zones
     : withConveyors.map((z) => ({
@@ -200,6 +214,13 @@ function safetyEvidence() {
     unassignedDevices: unassignedList,
     devicesFound,
     resolvedDevices: resolvedN,
+    mcr: mcrN,
+    esr: esrN,
+    estops: estopN,
+    shellOnly,
+    safeLogicCount: safeLogicN,
+    safePiCount: safePiN,
+    commissioningReady: !!(last && last.status === 'READY' && !last.shell && unassignedN === 0),
     last,
     diagnostics,
     diagZones,
@@ -458,9 +479,19 @@ function computeCompileHubReadiness() {
     const unSuffix = unNames.length
       ? ` · Unassigned: ${unNames.join(', ')}${(ev.unassignedDevices || []).length > 6 ? ', …' : ''}`
       : (ev.unassigned > 0 ? ` · Unassigned: ${ev.unassigned}` : '');
+    const structBits = [
+      ev.devicesFound ? `Devices ${ev.devicesFound}` : null,
+      ev.mcr != null ? `MCR ${ev.mcr}` : null,
+      (ev.estops || ev.esr) ? `E-Stop/ESR ${(ev.estops || 0) + (ev.esr || 0)}` : null,
+      ev.zones ? `Zones ${ev.zones}` : null,
+      ev.shellOnly ? 'ES shell' : null,
+      `Safe_Logic ${ev.safeLogicCount || 0}`,
+      `Safe_PI ${ev.safePiCount || 0}`,
+      ev.commissioningReady ? 'COMMISSIONING READY' : 'COMMISSIONING READY = NO',
+    ].filter(Boolean).join(' · ');
     const reviewDetail = (ev.devicesFound > 0)
-      ? `${ev.resolvedDevices} / ${ev.devicesFound} devices resolved${unSuffix} · Open Safety Build`
-      : (diagText || last?.detail || `${ev.zones} zone(s) need valid Area + members before ES emit`);
+      ? `${ev.resolvedDevices} / ${ev.devicesFound} devices resolved${unSuffix} · ${structBits} · Open Safety Build`
+      : (diagText || last?.detail || `${ev.zones} zone(s) need valid Area + members before ES emit · ${structBits}`);
     if (last?.status === 'ERROR') {
       e.status = 'ERROR';
       e.unresolved = last.unresolved || 1;
@@ -4427,6 +4458,7 @@ function renderHardwareModuleDetail() {
       let committing = false;
       let skipBlur = false;
       let lastCommitted = null;
+      inp.addEventListener('input', () => { inp.dataset.hwDirty = '1'; });
       const commit = async (reason) => {
         const addr = inp.getAttribute('data-hw-name');
         if (!addr || committing) return;
@@ -4488,6 +4520,8 @@ function renderHardwareModuleDetail() {
             });
           }
           lastCommitted = nameToSave;
+          inp.dataset.hwDirty = '0';
+          if (ioState.pendingChannelEdits) delete ioState.pendingChannelEdits[addr];
           // Display: cleared → SPARE/source; else engineer name
           inp.value = engOut || sourceName || 'SPARE';
           skipBlur = true;
@@ -4549,6 +4583,34 @@ function renderHardwareModuleDetail() {
 }
 
 
+/** PL-4: in-flight engineer alias/spare edits — survive refresh races. */
+if (!ioState.pendingChannelEdits) ioState.pendingChannelEdits = {};
+
+function capturePendingHwChannelEdits() {
+  const pending = {};
+  document.querySelectorAll('.hw-ch-name-input').forEach((inp) => {
+    const addr = inp.getAttribute('data-hw-name');
+    if (!addr) return;
+    // Always snapshot focused or dirty inputs
+    if (document.activeElement === inp || inp.dataset.hwDirty === '1') {
+      pending[addr] = String(inp.value || '');
+    }
+  });
+  ioState.pendingChannelEdits = { ...(ioState.pendingChannelEdits || {}), ...pending };
+  return ioState.pendingChannelEdits;
+}
+
+function reapplyPendingHwChannelEdits() {
+  const pending = ioState.pendingChannelEdits || {};
+  Object.entries(pending).forEach(([addr, name]) => {
+    // PHYSICAL address immutable — only engineer alias metadata restored
+    patchHwChannelInModel(addr, {
+      engineerName: name && !/^(SPARE|N\/A|NONE|—|-)$/i.test(name) ? name : null,
+      effectiveName: name || null,
+    });
+  });
+}
+
 async function refreshHardwareIo() {
   if (!state.workspace) {
     renderHardwareIo({ success: false, message: 'No RUN loaded' });
@@ -4557,6 +4619,7 @@ async function refreshHardwareIo() {
   // Do not clobber an in-progress channel rename / spare assignment.
   // PHYSICAL endpoint identity is immutable; engineer alias edits must persist
   // across Enter/Tab/blur — a mid-edit model replace is a known reset race.
+  capturePendingHwChannelEdits();
   const activeName = document.activeElement;
   if (
     activeName
@@ -4577,8 +4640,16 @@ async function refreshHardwareIo() {
     const res = await fortnaAPI.getHardwareIo();
     // Re-check: focus may have moved into an input while the fetch was in flight
     const stillEditing = document.activeElement?.classList?.contains?.('hw-ch-name-input');
-    if (stillEditing) return;
+    if (stillEditing) {
+      capturePendingHwChannelEdits();
+      return;
+    }
     renderHardwareIo(res);
+    // Re-apply any captured engineer aliases after model replace (physical addr unchanged)
+    if (Object.keys(ioState.pendingChannelEdits || {}).length) {
+      reapplyPendingHwChannelEdits();
+      try { renderHardwareModuleDetail(); } catch (_) { /* ignore */ }
+    }
   } catch (e) {
     renderHardwareIo({ success: false, message: e?.message || String(e) });
   }

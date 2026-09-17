@@ -645,13 +645,21 @@ def discover_sections(
 
     for parent, kids in letter_children.items():
         if parent and parent in final_sections and kids:
+            # PL-3: when bare motor M{n} exists on this controller alongside M{n}A,
+            # parent P{n} is a DISTINCT conveyor identity — never assembly-only.
+            # (M220_AUX != M220A_AUX; suppressing P220 forced M220→P220A collision.)
+            parsed_parent = parse_p_tag(parent)
+            bare_motor = f"M{parsed_parent[0]}" if parsed_parent else ""
+            if bare_motor and bare_motor in motors_on_ctrl:
+                continue
             suppress_as_assembly_only[parent] = {
                 "reason": "letter_motor_sections_promoted",
                 "children": sorted(kids),
                 "confidence": PROVEN_CROSS_TABLE,
                 "rule": (
                     "When M{n}A.. letter motors promote P{n}A.. sections, mechanical "
-                    "P{n} is the assembly body — do not emit P{n}_Conv"
+                    "P{n} is the assembly body — do not emit P{n}_Conv "
+                    "(skipped when bare M{n} also exists on controller)"
                 ),
             }
             final_sections[parent]["assembly_only"] = True

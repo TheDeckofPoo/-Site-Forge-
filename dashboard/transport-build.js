@@ -206,6 +206,11 @@
     // Clean schematic is the normal view. Geometry debug is Advanced-only.
     viewMode: 'schematic', // schematic | geom-debug
     laneSeparate: true, // presentation-only offsets for stacked bodies
+    // PL-1: after initial layout, freeze presentation offsets so Area moves
+    // redraw without musical-chair re-layout of unrelated conveyors.
+    // Explicit Rebuild Layout / lane-separate toggle sets forcePresentationRelayout.
+    presentationLayoutFrozen: false,
+    forcePresentationRelayout: false,
     // Presentation layers — conveyor tags on by default; device text off.
     layers: {
       physical: false,
@@ -1954,10 +1959,32 @@
     };
   }
 
-  /** Invalidate presentation/hit caches so next pick/draw recomputes from live nodes. */
+  /**
+   * Invalidate HIT caches only (labels / ephemeral pick map).
+   * Does NOT unlock presentation layout — Area membership changes must redraw
+   * with frozen display_dx/dy so unrelated conveyors keep their editor positions.
+   */
   function invalidateSchematicHitGeometry() {
+    tb._schematicLabelPos = null;
+    // Keep tb._presentationOffsets when frozen; clear only if unlocked so next
+    // draw rebuilds from persistent per-node display_dx/dy.
+    if (!tb.presentationLayoutFrozen) {
+      tb._presentationOffsets = null;
+    }
+  }
+
+  /** Engineer-requested Auto Layout / Rebuild Layout — permission to recompute offsets. */
+  function requestPresentationRelayout() {
+    tb.forcePresentationRelayout = true;
+    tb.presentationLayoutFrozen = false;
     tb._presentationOffsets = null;
     tb._schematicLabelPos = null;
+    (tb.areas || []).forEach((a) => {
+      (a.nodes || []).forEach((n) => {
+        if (!n) return;
+        n._layoutInitialized = false;
+      });
+    });
   }
 
   /** World → scroll-content CSS pixels (inverse of canvasPointFromEvent zoom step). */
@@ -2353,53 +2380,59 @@
   }
 
   /**
-   * Straight CURVE placeholder — type proven, turn direction not painted.
-   * Must have approximately the SAME visual weight as a normal conveyor section
-   * (not a tiny annotation glyph).
+   * PL-2 — centralized UNKNOWN-orientation CURVE symbol constants (UI-only).
+   * Diagonal angle is a SYMBOL meaning "curve; physical turn unresolved".
+   * It MUST NOT be written into model provenance as physical orientation.
    */
-  function curveStraightPlaceholderPath(n) {
-    const sw = schematicStrokeWidth(n);
-    const minLen = Math.max(100, sw * 7); // conveyor-section visual weight
+  const CURVE_SYMBOL = Object.freeze({
+    // Match normal conveyor visual weight
+    MIN_LENGTH_PX: 140,
+    LENGTH_STROKE_MULT: 8,
+    STROKE_MIN: 14,
+    STROKE_MAX: 22,
+    // Standardized diagonal for the unknown-orientation glyph (UI-only degrees)
+    SYMBOL_ANGLE_DEG: -35,
+    BADGE: 'CURVE',
+    TOOLTIP_SUFFIX: 'CURVE — orientation UNKNOWN (symbol; not physical turn)',
+  });
+
+  function curveSymbolStrokeWidth(n) {
+    const { W } = segSize(n);
+    return Math.max(CURVE_SYMBOL.STROKE_MIN, Math.min(CURVE_SYMBOL.STROKE_MAX, W || 16));
+  }
+
+  /**
+   * Standardized UNKNOWN-orientation CURVE symbol path (diagonal bar).
+   * Anchored at RUN entry/exit midpoint when available; angle is UI-only.
+   * curveType remains PROVEN; physicalTurnOrientation remains UNKNOWN.
+   */
+  function curveUnknownOrientationSymbolPath(n) {
+    const sw = curveSymbolStrokeWidth(n);
+    const minLen = Math.max(CURVE_SYMBOL.MIN_LENGTH_PX, sw * CURVE_SYMBOL.LENGTH_STROKE_MULT);
+    let mx;
+    let my;
     if (n?.entryCanvas && n?.exitCanvas) {
-      let a = { x: Number(n.entryCanvas.x), y: Number(n.entryCanvas.y) };
-      let b = { x: Number(n.exitCanvas.x), y: Number(n.exitCanvas.y) };
-      let dx = b.x - a.x;
-      let dy = b.y - a.y;
-      let len = Math.hypot(dx, dy);
-      if (len > 0.5) {
-        if (len < minLen) {
-          // Grow about midpoint so short RUN chords still read as equipment
-          const mx = (a.x + b.x) / 2;
-          const my = (a.y + b.y) / 2;
-          const ux = dx / len;
-          const uy = dy / len;
-          const half = minLen / 2;
-          a = { x: mx - ux * half, y: my - uy * half };
-          b = { x: mx + ux * half, y: my + uy * half };
-        }
-        return [
-          { cmd: 'move', x: a.x, y: a.y },
-          { cmd: 'line', x: b.x, y: b.y },
-        ];
-      }
+      mx = (Number(n.entryCanvas.x) + Number(n.exitCanvas.x)) / 2;
+      my = (Number(n.entryCanvas.y) + Number(n.exitCanvas.y)) / 2;
+    } else {
+      mx = Number(n.x) || 0;
+      my = Number(n.y) || 0;
     }
-    const x = Number(n.x) || 0;
-    const y = Number(n.y) || 0;
-    const ang = ((Number(n.sourceAngle != null ? n.sourceAngle : n.rotation) || 0) * Math.PI) / 180;
+    // UI-only symbol angle — never treat as physicalTurnOrientation
+    const ang = (CURVE_SYMBOL.SYMBOL_ANGLE_DEG * Math.PI) / 180;
     const half = minLen / 2;
-    const dx = Math.cos(-ang) * half;
-    const dy = Math.sin(-ang) * half;
+    const dx = Math.cos(ang) * half;
+    const dy = Math.sin(ang) * half;
     return [
-      { cmd: 'move', x: x - dx, y: y - dy },
-      { cmd: 'line', x: x + dx, y: y + dy },
+      { cmd: 'move', x: mx - dx, y: my - dy },
+      { cmd: 'line', x: mx + dx, y: my + dy },
     ];
   }
 
   function displayPathCanvasForNode(n) {
-    // Curves: UNKNOWN display orientation → straight CURVE placeholder (never guessed elbow).
-    // synthesizeCurveDisplayPath retained for future PROVEN-orientation elbow paint.
+    // Curves: UNKNOWN physical turn → standardized diagonal CURVE symbol (never guessed elbow).
     if (isCurveNode(n)) {
-      return curveStraightPlaceholderPath(n);
+      return curveUnknownOrientationSymbolPath(n);
     }
     return n?.pathCanvas || null;
   }
@@ -2623,7 +2656,29 @@
    */
   function computePresentationOffsets(nodes, area) {
     const offsets = {};
-    (nodes || []).forEach((n) => {
+    const listIn = nodes || [];
+    // PL-1: MODEL/REDRAW must not musical-chair frozen editor positions.
+    // Reuse persistent display_dx/dy unless engineer requested Rebuild Layout.
+    const force = !!tb.forcePresentationRelayout;
+    const canReuseFrozen = tb.presentationLayoutFrozen && !force;
+    if (canReuseFrozen || (!force && listIn.every((n) => n && n._layoutInitialized))) {
+      listIn.forEach((n) => {
+        if (!n) return;
+        const dx = Number(n.display_dx) || 0;
+        const dy = Number(n.display_dy) || 0;
+        offsets[n.id] = {
+          dx,
+          dy,
+          lane: Number(n.display_lane) || 0,
+          reason: n.display_reason || 'FROZEN_EDITOR_POSITION',
+        };
+      });
+      tb._presentationOffsets = offsets;
+      tb.presentationLayoutFrozen = true;
+      tb.forcePresentationRelayout = false;
+      return offsets;
+    }
+    listIn.forEach((n) => {
       offsets[n.id] = { dx: 0, dy: 0, lane: 0, reason: '' };
       n.display_dx = 0;
       n.display_dy = 0;
@@ -2631,7 +2686,10 @@
       n.display_reason = '';
     });
     if (!tb.laneSeparate) {
+      listIn.forEach((n) => { if (n) n._layoutInitialized = true; });
       tb._presentationOffsets = offsets;
+      tb.presentationLayoutFrozen = true;
+      tb.forcePresentationRelayout = false;
       return offsets;
     }
     const list = (nodes || []).filter(isSchematicNode);
@@ -2901,7 +2959,14 @@
       });
     });
 
+    // Lock editor positions after this initial / requested layout pass.
+    list.forEach((n) => { if (n) n._layoutInitialized = true; });
+    (nodes || []).forEach((n) => {
+      if (n && offsets[n.id] && !n._layoutInitialized) n._layoutInitialized = true;
+    });
     tb._presentationOffsets = offsets;
+    tb.presentationLayoutFrozen = true;
+    tb.forcePresentationRelayout = false;
     return offsets;
   }
 
@@ -2966,7 +3031,7 @@
       }
       if (!d) return;
       const rk = String(n.renderKind || n.equipmentType || 'unknown').toLowerCase();
-      const sw = schematicStrokeWidth(n);
+      const sw = isCurveNode(n) ? curveSymbolStrokeWidth(n) : schematicStrokeWidth(n);
       const sel = n.id === tb.selectedId || (tb.selectedIds || []).includes(n.id);
       const amb = (n.ambiguousInbound || []).length > 0;
       const cp = normalizeControlPanel(n.controlPanel);
@@ -2987,7 +3052,7 @@
         : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
       const mid = applyPresOffset(mid0, off);
       const tip = isCurveNode(n)
-        ? `${tag} · CURVE (orientation UNKNOWN — straight placeholder)`
+        ? `${tag} · ${CURVE_SYMBOL.TOOLTIP_SUFFIX}`
         : (cp ? `${tag} · ${cp}` : tag);
       html += `<path class="${cls}" data-id="${escapeHtml(n.id)}" d="${d}" stroke-width="${sw}"><title>${escapeHtml(tip)}</title></path>`;
       // Invisible hit stroke — visual belt stays `sw`; pick uses SCHEMATIC_HIT_WIDTH (~50).
@@ -3025,7 +3090,7 @@
           : 0);
         let secondary = '';
         if (isCurveNode(n) && curveOrientationStatus(n) === 'UNKNOWN') {
-          secondary = 'CURVE';
+          secondary = CURVE_SYMBOL.BADGE;
         } else if (tb.layers?.motors || tb.layers?.deviceLabels) {
           if (Array.isArray(n.motorsMeta) && n.motorsMeta[0]) {
             const m = n.motorsMeta[0].motor || n.motorsMeta[0].tag;
@@ -5825,10 +5890,12 @@
     placeSchematicLabels,
     drawSchematic,
     invalidateSchematicHitGeometry,
+    requestPresentationRelayout,
     schematicPathD,
     pickSchematicNodeAt,
     distanceToDisplayPath,
     SCHEMATIC_HIT_WIDTH,
+    CURVE_SYMBOL,
     buildCanonicalApplyGraph,
     applyMergesToAutogenUi,
     canonicalTransportHash,

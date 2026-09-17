@@ -382,7 +382,12 @@ def emit_es_program(
     ready = [z for z in zones if z.members and z.area and z.name]
     omitted = [z for z in zones if z.conveyors and not z.members and z.name]
     # Cookie-cutter shell when zones/devices exist but membership is unresolved.
-    # Fail-safe: Main_Routine documents REVIEW; no fabricated zone membership.
+    # Fail-safe (PL-6):
+    #   - status is always REVIEW_REQUIRED (never READY merely because Program ES exists)
+    #   - Main_Routine is NOP only — does NOT OTE any .OK / permissive / reset path
+    #   - no Safe_Logic / Safe_PI / ES_SIL1_Cat1 / ES_PI20 calls → UNKNOWN ≠ TRUE
+    #   - NO_ESNULL kept available as the non-permissive pad identity
+    # Unrelated PLC subsystems may still generate; Safety commissioning remains blocked.
     if not ready:
         if ensure_tag:
             ensure_tag(NO_ESNULL)
@@ -390,9 +395,10 @@ def emit_es_program(
             _rung_xml(
                 0,
                 "NOP();",
-                "SAFETY REVIEW REQUIRED — Program ES shell. "
+                "SAFETY REVIEW REQUIRED — Program ES shell (FAIL-SAFE). "
                 "Assign E-Stop/ESR/MCR membership in Safety Build before zone Safe_Logic/Safe_PI emit. "
-                "UNKNOWN membership is never treated as permissive.",
+                "UNKNOWN membership is never treated as permissive. "
+                "COMMISSIONING READY = NO until membership resolved.",
             ),
         ]
         if omitted:
