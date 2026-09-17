@@ -50,6 +50,11 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
     ipcRenderer.on('autogen-progress', handler);
     return () => ipcRenderer.removeListener('autogen-progress', handler);
   },
+  onImportProgress: (cb) => {
+    const handler = (_e, data) => cb(data);
+    ipcRenderer.on('import-progress', handler);
+    return () => ipcRenderer.removeListener('import-progress', handler);
+  },
   getOcrProgress: () => ipcRenderer.invoke('get-ocr-progress'),
   getLastOcr: () => ipcRenderer.invoke('get-last-ocr'),
   clearLastOcr: () => ipcRenderer.invoke('clear-last-ocr'),

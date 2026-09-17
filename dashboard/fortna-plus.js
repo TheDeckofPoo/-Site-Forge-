@@ -1451,6 +1451,18 @@ async function importRunPackage(path, name) {
   setIoRunStatus(`Importing ${name || 'archive'}…`, 'busy');
   setStatus('workspace-status', 'Importing…', 'busy');
   log(`Importing ${name || path}…`, 'info');
+  // CP5A: stream decoder progress into status (coarse — no thousands of messages)
+  let unsubImportProgress = null;
+  try {
+    if (typeof fortnaAPI?.onImportProgress === 'function') {
+      unsubImportProgress = fortnaAPI.onImportProgress((p) => {
+        const phase = p?.phase || 'Decoder';
+        const detail = p?.detail ? ` — ${p.detail}` : '';
+        setIoRunStatus(`${phase}${detail}`, 'busy');
+        setStatus('workspace-status', phase, 'busy');
+      });
+    }
+  } catch (_) { /* ignore */ }
   let res;
   try {
     res = await fortnaAPI.importRun(path);
@@ -1463,6 +1475,7 @@ async function importRunPackage(path, name) {
     return false;
   }
   setBusy(false);
+  try { if (typeof unsubImportProgress === 'function') unsubImportProgress(); } catch (_) { /* ignore */ }
   if (!res || !res.success) {
     log(res?.message || 'Import failed', 'err');
     setStatus('workspace-status', 'Import failed', 'error');
@@ -1470,6 +1483,23 @@ async function importRunPackage(path, name) {
     return false;
   }
   state.workspace = res.meta;
+  // CP5A decoder result (isolated layer errors)
+  try {
+    const dec = res.decoder;
+    if (dec && dec.ok === false) {
+      const layer = dec.layer || 'CP5';
+      log(`${layer} DECODER ERROR: ${dec.error || 'unknown'}`, 'warn');
+    } else if (dec && dec.ok) {
+      const tr = dec.adapters?.Transportation?.status || dec.cp4Status || '';
+      const mt = dec.adapters?.Mtrchain?.status || '';
+      log(
+        `FortnaPlus decoder complete`
+        + (tr ? ` · Transportation ${tr}` : '')
+        + (mt ? ` · Mtrchain ${mt}` : ''),
+        'ok',
+      );
+    }
+  } catch (_) { /* ignore */ }
   // Stamp project identity so future restores can refuse cross-site contamination
   try {
     const identity = {

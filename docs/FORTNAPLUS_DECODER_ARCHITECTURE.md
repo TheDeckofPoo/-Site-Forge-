@@ -10,22 +10,45 @@ Repository source / docs / tests / artifacts are.
 | **CP1** | `bedcb7a` | `.mnu` schema/runtime decode (`find_data_source`, datatypes) |
 | **CP2** | `83dc7bb` | Generic typed RUN/ASC loader (`FortnaTable/Record/Value`) |
 | **CP3** | `d43abd6` | Generic reference resolver + complete reverse graph |
-| **CP4** | *(this commit)* | Modular engineering **semantic adapters** (not Site Model) |
-| **CP5** | — | Canonical Site Forge Site Model (**not started**) |
+| **CP4** | `e426152` | Modular engineering **semantic adapters** (not Site Model) |
+| **CP5A** | *(this commit)* | Production RUN import → decoder → Transportation mapper |
+| **CP5B+** | — | Safety / SawMerge / Sorter mappers (**not started**) |
 | **CP6** | — | PLC compiler (**not started**) |
 
 ## Pipeline
 
+### Brownfield (RUN)
+
 ```
-CP1 schema/runtime
+START SITE FORGE
       ↓
-CP2 typed records
+IMPORT RUN.tar.gz
       ↓
-CP3 relationship graph
+CP1 → CP2 → CP3 → CP4   (frozen decoder stack)
       ↓
-CP4 modular semantic adapters
+CP5A Transportation mapper  (this checkpoint)
       ↓
-(future) CP5 Site Model → CP6 PLC
+Site Forge Transportation canonical model
+      ↓
+ENGINEER REVIEW / OVERRIDE
+      ↓
+APPLY TO AUTOGEN → BUILD PLC
+```
+
+### Greenfield (manual)
+
+```
+Prints + Engineer edits
+      ↓
+Same Site Forge Transportation canonical model
+      ↓
+APPLY TO AUTOGEN → BUILD PLC
+```
+
+Decoder archaeology layers remain:
+
+```
+CP1 schema/runtime → CP2 typed records → CP3 graph → CP4 adapters
 ```
 
 ## CP4 adapter compartments
@@ -78,7 +101,19 @@ python tools/scripts/fortna_decoder_acceptance.py --out-dir artifacts
 
 # CP4
 python tools/scripts/fortna_semantic_acceptance.py --out-dir artifacts
+
+# CP5A production integration
+python tools/scripts/fortna_cp5a_acceptance.py
 ```
+
+## CP5A production hooks
+
+| Hook | Location |
+|------|----------|
+| Decoder on RUN import | `desktop/main.js` `import-run` → `fortna_cp5a_orchestrator.py` |
+| Transport graph | `transport-auto-build-from-run` → `fortna_cp5a_transport_mapper.py` |
+| Cache | `workspace/active/decoder/` |
+| UI | Existing Transportation tab + unplaced inventory (no Decoder tab) |
 
 ## Known UNKNOWN
 

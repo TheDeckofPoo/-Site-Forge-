@@ -426,7 +426,49 @@ function createWindow() {
       } catch (de) {
         discovery = { ok: false, error: de.message };
       }
-      return { success: true, meta, discovery };
+
+      // CP5A: run frozen FortnaPlus decoder stack (CP1→CP4) into workspace/active/decoder
+      let decoder = null;
+      try {
+        const runDir = meta.run_dir || path.join(ACTIVE_DIR, 'RUN');
+        let machine = '';
+        try {
+          const pn = String(meta.project_name || meta.machine || '');
+          const m = pn.match(/_([A-Z0-9]+)$/i);
+          if (m) machine = m[1].toUpperCase();
+        } catch (_) { /* ignore */ }
+        if (!machine && meta.controller) machine = String(meta.controller);
+        if (!machine && meta.machine) machine = String(meta.machine).toUpperCase();
+        const orch = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_cp5a_orchestrator.py');
+        const decoderOut = path.join(ACTIVE_DIR, 'decoder');
+        fs.mkdirSync(decoderOut, { recursive: true });
+        if (fs.existsSync(orch) && fs.existsSync(runDir)) {
+          const win = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
+          const dArgs = [orch, '--run-dir', runDir, '--out-dir', decoderOut];
+          if (machine) dArgs.push('--ac-name', machine);
+          const dr = await runPythonAsync(dArgs, REPO_ROOT, {
+            progressEvent: 'import-progress',
+            win,
+          });
+          if (dr.ok) {
+            try {
+              decoder = JSON.parse((dr.stdout || '').trim().split(/\r?\n/).filter(Boolean).pop() || '{}');
+            } catch (_) {
+              decoder = { ok: true, raw: (dr.stdout || '').slice(0, 400) };
+            }
+          } else {
+            decoder = {
+              ok: false,
+              layer: 'CP5',
+              error: dr.error || dr.stderr || 'decoder orchestration failed',
+            };
+          }
+        }
+      } catch (de) {
+        decoder = { ok: false, layer: 'CP5', error: de.message || String(de) };
+      }
+
+      return { success: true, meta, discovery, decoder };
     } catch (e) {
       return { success: false, message: e.message };
     }
@@ -1767,13 +1809,9 @@ function createWindow() {
     }
   });
 
-  /** Auto Build physical Transport layout from imported RUN geometry. */
+  /** Auto Build Transport layout: CP5A mapper (CP4 + physical geometry) when decoder cache exists. */
   ipcMain.handle('transport-auto-build-from-run', async (_event, data) => {
     try {
-      const script = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_run_physical_layout.py');
-      if (!fs.existsSync(script)) {
-        return { ok: false, success: false, error: `Missing ${script}` };
-      }
       const runDir = resolveActiveRunDir(data?.runDir || data?.run_dir || null);
       if (!runDir) {
         return {
@@ -1782,9 +1820,6 @@ function createWindow() {
           error: 'No imported RUN found — import a RUN .tar.gz first (Workspace / I/O & Prints).',
         };
       }
-      const outDir = path.join(REPO_ROOT, 'exports', 'run-geometry', 'auto-build');
-      fs.mkdirSync(outDir, { recursive: true });
-      const args = [script, '--run-dir', runDir, '--out', outDir, '--stdout-graph'];
       let machine = data?.machine ? String(data.machine) : '';
       if (!machine) {
         try {
@@ -1796,14 +1831,46 @@ function createWindow() {
           }
         } catch (_) { /* ignore */ }
       }
-      if (machine) args.push('--machine', machine);
-      if (data?.connectThreshold) args.push('--connect-threshold', String(data.connectThreshold));
-      const result = await runPythonAsync(args, REPO_ROOT);
+
+      const outDir = path.join(REPO_ROOT, 'exports', 'run-geometry', 'auto-build');
+      fs.mkdirSync(outDir, { recursive: true });
+      const decoderDir = path.join(ACTIVE_DIR, 'decoder');
+      const mapper = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_cp5a_transport_mapper.py');
+      const legacy = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_run_physical_layout.py');
+
+      let args;
+      let mode = 'legacy-physical';
+      if (fs.existsSync(mapper) && fs.existsSync(path.join(decoderDir, 'cp5a-decoder-summary.json'))) {
+        mode = 'cp5a-mapper';
+        args = [
+          mapper,
+          '--run-dir', runDir,
+          '--decoder-dir', decoderDir,
+          '--stdout-graph',
+        ];
+        if (machine) args.push('--machine', machine);
+      } else if (fs.existsSync(legacy)) {
+        args = [legacy, '--run-dir', runDir, '--out', outDir, '--stdout-graph'];
+        if (machine) args.push('--machine', machine);
+        if (data?.connectThreshold) args.push('--connect-threshold', String(data.connectThreshold));
+      } else {
+        return { ok: false, success: false, error: 'Missing transport mapper / physical layout script' };
+      }
+
+      const win = BrowserWindow.getFocusedWindow() || BrowserWindow.getAllWindows()[0];
+      const result = await runPythonAsync(args, REPO_ROOT, {
+        progressEvent: 'import-progress',
+        win,
+      });
       if (result.error && !result.stdout) {
-        return { ok: false, success: false, error: result.error || result.stderr || 'python failed' };
+        return {
+          ok: false,
+          success: false,
+          error: result.error || result.stderr || 'python failed',
+          layer: mode === 'cp5a-mapper' ? 'CP5' : 'LAYOUT',
+        };
       }
       const raw = (result.stdout || '').trim();
-      // Prefer full graph JSON line (stdout-graph prints the graph object)
       let graph = null;
       let metrics = null;
       const lines = raw.split(/\r?\n/).filter(Boolean);
@@ -1822,8 +1889,12 @@ function createWindow() {
           }
         } catch (_) { /* keep scanning */ }
       }
-      // Fallback: read written graph file
       const graphPath = path.join(outDir, 'transport_graph_from_run.json');
+      if (graph && mode === 'cp5a-mapper') {
+        try {
+          fs.writeFileSync(graphPath, JSON.stringify(graph, null, 2), 'utf8');
+        } catch (_) { /* ignore */ }
+      }
       if (!graph && fs.existsSync(graphPath)) {
         try {
           graph = JSON.parse(fs.readFileSync(graphPath, 'utf8'));
@@ -1836,8 +1907,10 @@ function createWindow() {
           success: false,
           error: result.stderr || raw.slice(-500) || 'Auto Build produced no graph',
           exports_dir: outDir,
+          layer: mode === 'cp5a-mapper' ? 'CP5' : 'LAYOUT',
         };
       }
+      const cp5 = (metrics && metrics.cp5a) || (graph.cp5a && graph.cp5a) || {};
       return {
         ok: true,
         success: true,
@@ -1845,13 +1918,17 @@ function createWindow() {
         metrics: metrics || graph.metrics || {},
         exports_dir: outDir,
         run_dir: runDir,
+        mode,
         summary:
-          `Auto Build: ${(metrics && metrics.conveyors_placed) || 0} placed, ` +
+          `Auto Build (${mode}): ${(metrics && metrics.conveyors_placed) || 0} placed, ` +
           `${(metrics && metrics.auto_connections) || 0} auto connections, ` +
-          `${(metrics && metrics.ambiguous_connections) || 0} ambiguous`,
+          `${(metrics && metrics.ambiguous_connections) || 0} ambiguous` +
+          (cp5.unplacedConveyorCandidates != null
+            ? `, ${cp5.unplacedConveyorCandidates} decoder unplaced candidates`
+            : ''),
       };
     } catch (e) {
-      return { ok: false, success: false, error: e.message || String(e) };
+      return { ok: false, success: false, error: e.message || String(e), layer: 'CP5' };
     }
   });
 

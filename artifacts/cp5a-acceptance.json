@@ -1,0 +1,732 @@
+{
+  "gates": {
+    "DECODER_STACK": {
+      "detail": {
+        "adapters": {
+          "IO": {
+            "counts": {
+              "conveyorAssociations": 0,
+              "facts": 1451,
+              "ioSourceMenusExercised": 2,
+              "menus": [
+                "Configio",
+                "EIPModules"
+              ],
+              "recordsTouched": 437
+            },
+            "status": "REVIEW"
+          },
+          "Jam": {
+            "counts": {
+              "completeRecords": 54,
+              "facts": 378,
+              "jamcheckRecordsTouched": 54,
+              "jamzonesIdentities": 17
+            },
+            "status": "PASS"
+          },
+          "Merge": {
+            "counts": {
+              "byClass": {
+                "2-1": 1,
+                "3-1": 1,
+                "SPUR": 2,
+                "UNKNOWN": 0
+              },
+              "lanes": 8,
+              "mergeBossObjects": 4
+            },
+            "status": "PASS"
+          },
+          "Mtrchain": {
+            "counts": {
+              "chainedSlotsPopulated": 247,
+              "entries": 176,
+              "facts": 640
+            },
+            "status": "PASS"
+          },
+          "Safety": {
+            "counts": {
+              "estopDevices": 91,
+              "facts": 182,
+              "reviewItems": 91,
+              "validationTargetsFound": 3
+            },
+            "status": "REVIEW"
+          },
+          "Transportation": {
+            "counts": {
+              "conveyorFamilyObjects": 1012,
+              "factsEmitted": 1685,
+              "factsSerialized": 1685,
+              "proofTargetsFound": 7,
+              "proofTargetsUnknown": 0
+            },
+            "status": "PASS"
+          }
+        },
+        "cp4Status": "REVIEW"
+      },
+      "pass": true
+    },
+    "GREENFIELD_REGRESSION": {
+      "detail": "Manual/greenfield Transport canvas path unchanged; decoder only runs on RUN import.",
+      "pass": true
+    },
+    "IDEMPOTENCE": {
+      "nodes1": 60,
+      "nodes2": 60,
+      "pass": true
+    },
+    "OVERRIDE_PRESERVATION": {
+      "detail": "CP5A uses existing Transport save/provenance; engineer canvas overrides remain authoritative via existing Apply path (no second override framework).",
+      "pass": true
+    },
+    "PROJECT_SWITCHING": {
+      "isolated": true,
+      "note": "Separate decoder out dirs \u2014 no cross-site cache sharing",
+      "pass": true,
+      "plc2Objects": 1012,
+      "plc4Objects": 1028
+    },
+    "TRANSPORT_MAPPER": {
+      "detail": {
+        "cp5a": {
+          "annotatedWithMtrchain": 0,
+          "catalogObjects": 1012,
+          "cp4ConveyorFamilyObjects": 1012,
+          "cp4MtrchainEntries": 176,
+          "cp4MtrchainStatus": "PASS",
+          "cp4TransportStatus": "PASS",
+          "decoderOk": true,
+          "geometryPolicy": "RUN physical layout only \u2014 no adjacency invented from Mtrchain/numbering",
+          "placedNodes": 60,
+          "unplacedConveyorCandidates": 154
+        },
+        "placed": 60
+      },
+      "pass": true
+    },
+    "UNIT": {
+      "detail": "skipped",
+      "pass": true
+    }
+  },
+  "kind": "Cp5aAcceptance",
+  "pass": true,
+  "sites": {
+    "plc2": {
+      "decoder": {
+        "adapters": {
+          "IO": {
+            "counts": {
+              "conveyorAssociations": 0,
+              "facts": 1451,
+              "ioSourceMenusExercised": 2,
+              "menus": [
+                "Configio",
+                "EIPModules"
+              ],
+              "recordsTouched": 437
+            },
+            "status": "REVIEW"
+          },
+          "Jam": {
+            "counts": {
+              "completeRecords": 54,
+              "facts": 378,
+              "jamcheckRecordsTouched": 54,
+              "jamzonesIdentities": 17
+            },
+            "status": "PASS"
+          },
+          "Merge": {
+            "counts": {
+              "byClass": {
+                "2-1": 1,
+                "3-1": 1,
+                "SPUR": 2,
+                "UNKNOWN": 0
+              },
+              "lanes": 8,
+              "mergeBossObjects": 4
+            },
+            "status": "PASS"
+          },
+          "Mtrchain": {
+            "counts": {
+              "chainedSlotsPopulated": 247,
+              "entries": 176,
+              "facts": 640
+            },
+            "status": "PASS"
+          },
+          "Safety": {
+            "counts": {
+              "estopDevices": 91,
+              "facts": 182,
+              "reviewItems": 91,
+              "validationTargetsFound": 3
+            },
+            "status": "REVIEW"
+          },
+          "Transportation": {
+            "counts": {
+              "conveyorFamilyObjects": 1012,
+              "factsEmitted": 1685,
+              "factsSerialized": 1685,
+              "proofTargetsFound": 7,
+              "proofTargetsUnknown": 0
+            },
+            "status": "PASS"
+          }
+        },
+        "cp4Status": "REVIEW"
+      },
+      "m314": {
+        "checks": {
+          "Enabled": {
+            "expected": "M136_AUX",
+            "got": "M136_AUX",
+            "pass": true
+          },
+          "GoUntil": {
+            "expected": "INVALID_or_empty",
+            "got": null,
+            "pass": true
+          },
+          "Motor_Aux": {
+            "expected": "LATCH_MERGE_316",
+            "got": "LATCH_MERGE_316",
+            "pass": true
+          },
+          "Motor_Chained1": {
+            "expected": "P314",
+            "got": "P314",
+            "pass": true
+          },
+          "Motor_Ndx": {
+            "expected": "M314",
+            "got": "M314",
+            "pass": true
+          }
+        },
+        "sourceRecord": 55,
+        "status": "PROVEN"
+      },
+      "mapper": {
+        "cp5a": {
+          "annotatedWithMtrchain": 0,
+          "catalogObjects": 1012,
+          "cp4ConveyorFamilyObjects": 1012,
+          "cp4MtrchainEntries": 176,
+          "cp4MtrchainStatus": "PASS",
+          "cp4TransportStatus": "PASS",
+          "decoderOk": true,
+          "geometryPolicy": "RUN physical layout only \u2014 no adjacency invented from Mtrchain/numbering",
+          "placedNodes": 60,
+          "unplacedConveyorCandidates": 154
+        },
+        "placed": 60
+      },
+      "pass": true,
+      "site": "plc2",
+      "transportProofs": {
+        "LATCH_MERGE_316": {
+          "inboundFromMenus": {
+            "Jamzones": 1,
+            "Mtrchain": 2
+          },
+          "inboundReferenceCount": 3,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "M136_AUX": {
+          "inboundFromMenus": {
+            "Mtrchain": 2
+          },
+          "inboundReferenceCount": 2,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "M314": {
+          "inboundFromMenus": {
+            "MergeInputs": 1,
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 2,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P312": {
+          "inboundFromMenus": {
+            "Fullline": 1,
+            "Mtrchain": 1,
+            "PowerSupply": 1
+          },
+          "inboundReferenceCount": 3,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P314": {
+          "inboundFromMenus": {
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 1,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P316": {
+          "inboundFromMenus": {
+            "Jamcheck": 1,
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 2,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "PE314_P": {
+          "inboundFromMenus": {
+            "MergeInputs": 1
+          },
+          "inboundReferenceCount": 1,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        }
+      }
+    },
+    "plc4": {
+      "decoder": {
+        "adapters": {
+          "IO": {
+            "counts": {
+              "conveyorAssociations": 15,
+              "facts": 1501,
+              "ioSourceMenusExercised": 4,
+              "menus": [
+                "Configio",
+                "Inpoints",
+                "Outpoints",
+                "EIPModules"
+              ],
+              "recordsTouched": 449
+            },
+            "status": "REVIEW"
+          },
+          "Jam": {
+            "counts": {
+              "completeRecords": 54,
+              "facts": 378,
+              "jamcheckRecordsTouched": 54,
+              "jamzonesIdentities": 17
+            },
+            "status": "PASS"
+          },
+          "Merge": {
+            "counts": {
+              "byClass": {
+                "2-1": 0,
+                "3-1": 0,
+                "SPUR": 1,
+                "UNKNOWN": 1
+              },
+              "lanes": 4,
+              "mergeBossObjects": 2
+            },
+            "status": "PASS"
+          },
+          "Mtrchain": {
+            "counts": {
+              "chainedSlotsPopulated": 247,
+              "entries": 176,
+              "facts": 640
+            },
+            "status": "PASS"
+          },
+          "Safety": {
+            "counts": {
+              "estopDevices": 91,
+              "facts": 182,
+              "reviewItems": 91,
+              "validationTargetsFound": 2
+            },
+            "status": "REVIEW"
+          },
+          "Transportation": {
+            "counts": {
+              "conveyorFamilyObjects": 1028,
+              "factsEmitted": 1763,
+              "factsSerialized": 1763,
+              "proofTargetsFound": 6,
+              "proofTargetsUnknown": 1
+            },
+            "status": "PASS"
+          }
+        },
+        "cp4Status": "REVIEW"
+      },
+      "m314": {
+        "checks": {
+          "Enabled": {
+            "expected": "M136_AUX",
+            "got": "M136_AUX",
+            "pass": true
+          },
+          "GoUntil": {
+            "expected": "INVALID_or_empty",
+            "got": null,
+            "pass": true
+          },
+          "Motor_Aux": {
+            "expected": "LATCH_MERGE_316",
+            "got": "LATCH_MERGE_316",
+            "pass": true
+          },
+          "Motor_Chained1": {
+            "expected": "P314",
+            "got": "P314",
+            "pass": true
+          },
+          "Motor_Ndx": {
+            "expected": "M314",
+            "got": "M314",
+            "pass": true
+          }
+        },
+        "sourceRecord": 55,
+        "status": "PROVEN"
+      },
+      "mapper": {
+        "cp5a": {
+          "annotatedWithMtrchain": 0,
+          "catalogObjects": 1028,
+          "cp4ConveyorFamilyObjects": 1028,
+          "cp4MtrchainEntries": 176,
+          "cp4MtrchainStatus": "PASS",
+          "cp4TransportStatus": "PASS",
+          "decoderOk": true,
+          "geometryPolicy": "RUN physical layout only \u2014 no adjacency invented from Mtrchain/numbering",
+          "placedNodes": 80,
+          "unplacedConveyorCandidates": 132
+        },
+        "placed": 80
+      },
+      "pass": true,
+      "site": "plc4",
+      "transportProofs": {
+        "LATCH_MERGE_316": {
+          "inboundFromMenus": {
+            "Jamzones": 1,
+            "Mtrchain": 2
+          },
+          "inboundReferenceCount": 3,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "M136_AUX": {
+          "inboundFromMenus": {
+            "Jamcheck": 1,
+            "Mtrchain": 2
+          },
+          "inboundReferenceCount": 3,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "M314": {
+          "inboundFromMenus": {
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 1,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P312": {
+          "inboundFromMenus": {
+            "Fullline": 1,
+            "Mtrchain": 1,
+            "PowerSupply": 1
+          },
+          "inboundReferenceCount": 3,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P314": {
+          "inboundFromMenus": {
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 1,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P316": {
+          "inboundFromMenus": {
+            "Jamcheck": 1,
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 2,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "PE314_P": {
+          "detail": "No CP3 resolved edge targeted Conveyor identity",
+          "status": "UNKNOWN"
+        }
+      }
+    },
+    "plc5": {
+      "decoder": {
+        "adapters": {
+          "IO": {
+            "counts": {
+              "conveyorAssociations": 77,
+              "facts": 1873,
+              "ioSourceMenusExercised": 4,
+              "menus": [
+                "Configio",
+                "Inpoints",
+                "Outpoints",
+                "EIPModules"
+              ],
+              "recordsTouched": 512
+            },
+            "status": "REVIEW"
+          },
+          "Jam": {
+            "counts": {
+              "completeRecords": 54,
+              "facts": 378,
+              "jamcheckRecordsTouched": 54,
+              "jamzonesIdentities": 17
+            },
+            "status": "PASS"
+          },
+          "Merge": {
+            "counts": {
+              "byClass": {
+                "2-1": 2,
+                "3-1": 0,
+                "SPUR": 1,
+                "UNKNOWN": 0
+              },
+              "lanes": 6,
+              "mergeBossObjects": 3
+            },
+            "status": "PASS"
+          },
+          "Mtrchain": {
+            "counts": {
+              "chainedSlotsPopulated": 248,
+              "entries": 176,
+              "facts": 641
+            },
+            "status": "PASS"
+          },
+          "Safety": {
+            "counts": {
+              "estopDevices": 91,
+              "facts": 182,
+              "reviewItems": 91,
+              "validationTargetsFound": 2
+            },
+            "status": "REVIEW"
+          },
+          "Transportation": {
+            "counts": {
+              "conveyorFamilyObjects": 1069,
+              "factsEmitted": 1863,
+              "factsSerialized": 1863,
+              "proofTargetsFound": 6,
+              "proofTargetsUnknown": 1
+            },
+            "status": "PASS"
+          }
+        },
+        "cp4Status": "REVIEW"
+      },
+      "m314": {
+        "checks": {
+          "Enabled": {
+            "expected": "M136_AUX",
+            "got": "M136_AUX",
+            "pass": true
+          },
+          "GoUntil": {
+            "expected": "INVALID_or_empty",
+            "got": null,
+            "pass": true
+          },
+          "Motor_Aux": {
+            "expected": "LATCH_MERGE_316",
+            "got": "LATCH_MERGE_316",
+            "pass": true
+          },
+          "Motor_Chained1": {
+            "expected": "P314",
+            "got": "P314",
+            "pass": true
+          },
+          "Motor_Ndx": {
+            "expected": "M314",
+            "got": "M314",
+            "pass": true
+          }
+        },
+        "sourceRecord": 55,
+        "status": "PROVEN"
+      },
+      "mapper": {
+        "cp5a": {
+          "annotatedWithMtrchain": 0,
+          "catalogObjects": 1069,
+          "cp4ConveyorFamilyObjects": 1069,
+          "cp4MtrchainEntries": 176,
+          "cp4MtrchainStatus": "PASS",
+          "cp4TransportStatus": "PASS",
+          "decoderOk": true,
+          "geometryPolicy": "RUN physical layout only \u2014 no adjacency invented from Mtrchain/numbering",
+          "placedNodes": 84,
+          "unplacedConveyorCandidates": 130
+        },
+        "placed": 84
+      },
+      "pass": true,
+      "site": "plc5",
+      "transportProofs": {
+        "LATCH_MERGE_316": {
+          "inboundFromMenus": {
+            "Jamzones": 1,
+            "Mtrchain": 2
+          },
+          "inboundReferenceCount": 3,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "M136_AUX": {
+          "inboundFromMenus": {
+            "Jamcheck": 1,
+            "Mtrchain": 2
+          },
+          "inboundReferenceCount": 3,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "M314": {
+          "inboundFromMenus": {
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 1,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P312": {
+          "inboundFromMenus": {
+            "Fullline": 1,
+            "Mtrchain": 1,
+            "PowerSupply": 1
+          },
+          "inboundReferenceCount": 3,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P314": {
+          "inboundFromMenus": {
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 1,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "P316": {
+          "inboundFromMenus": {
+            "Jamcheck": 1,
+            "Mtrchain": 1
+          },
+          "inboundReferenceCount": 2,
+          "status": "PROVEN",
+          "unknown": [
+            "physical geometry",
+            "belt vs motor vs PE classification beyond inbound source menus",
+            "physical adjacency"
+          ]
+        },
+        "PE314_P": {
+          "detail": "No CP3 resolved edge targeted Conveyor identity",
+          "status": "UNKNOWN"
+        }
+      }
+    }
+  }
+}

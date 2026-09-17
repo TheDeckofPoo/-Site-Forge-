@@ -439,6 +439,8 @@
           // Additive v2 fields — controlPanel lives on nodes; filters/layers are UI prefs
           cpFilters: tb.cpFilters || {},
           layers: tb.layers || null,
+          decoderInventoryTags: tb.decoderInventoryTags || null,
+          cp5a: tb.cp5a || null,
           // Identity guard — refuse restore into a different site/controller
           projectIdentity: currentProjectIdentity(),
         })
@@ -532,6 +534,12 @@
         Object.keys(data.cpFilters).forEach((k) => {
           if (k) tb.cpFilters[k] = !!data.cpFilters[k];
         });
+      }
+      if (data.decoderInventoryTags && typeof data.decoderInventoryTags === 'object') {
+        tb.decoderInventoryTags = data.decoderInventoryTags;
+      }
+      if (data.cp5a && typeof data.cp5a === 'object') {
+        tb.cp5a = data.cp5a;
       }
       if (data.layers && typeof data.layers === 'object') {
         tb.layers = { ...(tb.layers || {}), ...data.layers };
@@ -1643,6 +1651,13 @@
           if (c && isConveyorTag(c)) opts.add(String(c));
         });
       }
+    } catch (_) { /* ignore */ }
+    // CP5A: decoder-found conveyor candidates (geometry may be UNKNOWN / unplaced)
+    try {
+      const inv = tb.decoderInventoryTags || {};
+      (inv.conveyorCandidates || inv.unplacedConveyorCandidates || []).forEach((c) => {
+        if (c && isConveyorTag(c)) opts.add(String(c));
+      });
     } catch (_) { /* ignore */ }
     return [...opts].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
   }

@@ -1924,6 +1924,19 @@
     tb.selectedId = null;
     tb.selectedIds = [];
     tb.selectedDeviceId = null;
+    // CP5A: decoder catalog for unplaced inventory (no invented geometry)
+    try {
+      tb.decoderInventoryTags = g.decoderInventoryTags || null;
+      tb.cp5a = g.cp5a || null;
+      if (g.cp5a?.metrics || g.metrics?.cp5a) {
+        const c = g.metrics?.cp5a || {};
+        status(
+          `Decoder map: ${c.cp4ConveyorFamilyObjects ?? '—'} found · `
+          + `${c.placedNodes ?? '—'} placed · `
+          + `${c.unplacedConveyorCandidates ?? 0} unplaced candidates (geometry UNKNOWN)`
+        );
+      }
+    } catch (_) { /* ignore */ }
     if (tb.areas[0]) {
       tb.buildContext.areaId = tb.areas[0].id;
       tb.buildContext.areaName = tb.areas[0].name || '';
