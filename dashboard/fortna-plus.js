@@ -4308,6 +4308,17 @@ function hwChannelEndpointLabel(ch) {
       ownerState: spareState,
     };
   }
+  // Mapped unused terminal — not proven spare, not unresolved owner
+  if (ownerState === 'UNUSED_MAPPED' || ch.is_unused_mapped === true) {
+    return {
+      text: 'UNUSED',
+      kind: 'unused',
+      source: source || '',
+      engineer: engineer || '',
+      generate,
+      ownerState: 'UNUSED_MAPPED',
+    };
+  }
   // Occupied/claimed or unknown without spare proof → UNRESOLVED OWNER (never SPARE)
   return {
     text: 'UNRESOLVED OWNER',
@@ -4460,6 +4471,7 @@ function renderHardwareChannelTable(ad, mod) {
       : 'hw-ch-status-spare';
     const statusTxt = !ep.generate ? '○ Muted'
       : ep.kind === 'ok' ? (ep.overridden ? '● Engineer' : '● Active')
+      : ep.kind === 'unused' ? '○ UNUSED'
       : ep.kind === 'warn' ? '● UNRESOLVED OWNER'
       : '○ Spare';
     const nameVal = (ep.kind === 'spare' || ep.kind === 'warn') && !ep.engineer ? '' : ep.text;

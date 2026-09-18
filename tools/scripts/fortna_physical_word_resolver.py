@@ -8,6 +8,9 @@ Desc forms:
   PANEL-CATALOG-INDEX (PLC2): CP2-1794-IA16-3 → sequential / name match within panel.
   PANEL-NODE-slotHalf (PLC5): CP5-NODE53-1A → NODE→TargetIP adapter + EIPModules
     InputBank/OutputBank match → chassis Slot (never bank→slot arithmetic alone).
+  CATALOG-WORD-BANK (ORINDYAC6 / RTA): 1794-IA16-600-4 → catalog + Fortna word
+    corroboration + Configio.Bank ↔ EIPModules InputBank/OutputBank.
+  CATALOG-AENT-NODE-BANK: 1794-AENT-51-0 → head/topology only (skip bridged map).
 
 Data index scheme is FAMILY-AWARE (see fortna_hardware_family):
   1794 Flex: eipcfg bridged module at chassis slot S>0 → Logix Data[S-1]
@@ -43,6 +46,11 @@ _DESC_RE = re.compile(
 # PANEL-NODEnn-slotHalf — PLC5-style (CP5-NODE53-1A / CP5NODE52-7B)
 _NODE_DESC_RE = re.compile(
     r"^(?P<panel>CP\d+)\s*-?\s*NODE(?P<node>\d+)\s*-?\s*(?P<slot>\d+)(?P<half>[AB])\s*$",
+    re.I,
+)
+# CATALOG-WORD-BANK — RTA style (1794-IA16-600-4 / 1794-OA8I-613-26)
+_CATALOG_WORD_BANK_RE = re.compile(
+    r"^(?P<catalog>\d{4}-[A-Za-z0-9]+)-(?P<word>\d+)-(?P<bank>\d+)$",
     re.I,
 )
 _PANEL_RE = re.compile(r"^(CP\d+)", re.I)
@@ -124,9 +132,44 @@ def parse_configio_node_desc(desc: str) -> dict[str, Any] | None:
     }
 
 
+def parse_configio_catalog_word_bank(desc: str) -> dict[str, Any] | None:
+    """Parse RTA-style Desc like 1794-IA16-600-4 or 1794-AENT-51-0.
+
+    catalog-word-bank: Fortna Octal_Word often equals embedded word; Bank column
+    matches EIPModules InputBank/OutputBank. AENT rows are head topology only.
+    """
+    d = (desc or "").strip()
+    if not d:
+        return None
+    m = _CATALOG_WORD_BANK_RE.match(d)
+    if not m:
+        return None
+    catalog = m.group("catalog")
+    word = int(m.group("word"))
+    bank = int(m.group("bank"))
+    is_aent = "AENT" in catalog.upper()
+    return {
+        "panel": "",  # not encoded — bank match does not need panel
+        "catalog": catalog,
+        "type": catalog,
+        "index": str(bank),
+        "module_name": f"{catalog}-{bank}",
+        "direction": "" if is_aent else _module_direction(catalog),
+        "fortna_word": word,
+        "eip_bank": bank,
+        "is_aent_head": is_aent,
+        "raw": d,
+        "form": "catalog_aent_node_bank" if is_aent else "catalog_word_bank",
+    }
+
+
 def configio_desc_evidence(desc: str) -> dict[str, Any] | None:
-    """Return PANEL-CATALOG or PANEL-NODE parse (catalog form preferred)."""
-    return parse_configio_desc(desc) or parse_configio_node_desc(desc)
+    """Return best Configio Desc parse (panel forms preferred, then catalog-word-bank)."""
+    return (
+        parse_configio_desc(desc)
+        or parse_configio_node_desc(desc)
+        or parse_configio_catalog_word_bank(desc)
+    )
 
 
 def _find_eipcfg(run_dir: Path, machine: str) -> Path | None:
@@ -178,6 +221,11 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
         desc = (r.get("Desc") or "").strip()
         parsed = parse_configio_desc(desc)
         node_parsed = parse_configio_node_desc(desc)
+        catalog_bank = parse_configio_catalog_word_bank(desc)
+        # Prefer panel forms for sequential zip; keep catalog_word_bank as parsed
+        # when panel forms absent so bank-match assignment can run.
+        if not parsed and catalog_bank and not catalog_bank.get("is_aent_head"):
+            parsed = catalog_bank
         out.append(
             {
                 "row": i,
@@ -189,6 +237,7 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
                 "interface": iface or "RTA",
                 "parsed": parsed,
                 "node_parsed": node_parsed,
+                "catalog_bank_parsed": catalog_bank,
             }
         )
     return out
@@ -741,6 +790,84 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         assign_how = ""
         eip_bank_used = None
         node_used = None
+
+        # --- Profile: CONFIGIO_CATALOG_WORD_BANK (RTA / ORINDYAC6) ---
+        # Configio.Bank ↔ EIPModules InputBank/OutputBank; Octal_Word = Fortna word.
+        # Does not require panel prefix. AENT head Desc rows are skipped.
+        if not seq and not chosen:
+            bank_hit = None
+            bank_how = ""
+            for side, row in (("Low", low), ("High", high)):
+                if not row:
+                    continue
+                cbp = row.get("catalog_bank_parsed") or {}
+                if not cbp or cbp.get("is_aent_head"):
+                    continue
+                eip_bank = row.get("bank")
+                if eip_bank is None or int(eip_bank) < 0:
+                    eip_bank = cbp.get("eip_bank")
+                try:
+                    eip_bank_i = int(eip_bank)
+                except (TypeError, ValueError):
+                    continue
+                cat_u = str(cbp.get("catalog") or "").upper()
+                direction = cbp.get("direction") or _module_direction(cat_u)
+                for ad in adapters:
+                    for mod in ad.get("modules") or []:
+                        if (mod.get("connection") or "").upper() == "HEADNODE":
+                            continue
+                        if "AENT" in (mod.get("type") or "").upper():
+                            continue
+                        ib = mod.get("input_bank")
+                        ob = mod.get("output_bank")
+                        try:
+                            ib_i = int(ib) if ib is not None else None
+                        except (TypeError, ValueError):
+                            ib_i = None
+                        try:
+                            ob_i = int(ob) if ob is not None else None
+                        except (TypeError, ValueError):
+                            ob_i = None
+                        matched = False
+                        if direction == "I" and ib_i == eip_bank_i:
+                            matched = True
+                        elif direction == "O" and ob_i == eip_bank_i:
+                            matched = True
+                        elif direction == "" and (ib_i == eip_bank_i or ob_i == eip_bank_i):
+                            matched = True
+                            direction = "I" if ib_i == eip_bank_i else "O"
+                        if not matched:
+                            continue
+                        # Catalog family corroboration when present
+                        mt = (mod.get("type") or "").upper()
+                        if cat_u and cat_u not in mt and mt not in cat_u:
+                            # allow OA8 vs OA8I soft match
+                            if not (
+                                cat_u.replace("OA8I", "OA8") in mt.replace("OA8I", "OA8")
+                                or mt.replace("OA8I", "OA8") in cat_u.replace("OA8I", "OA8")
+                            ):
+                                continue
+                        bank_hit = {
+                            **mod,
+                            "adapter_name": ad.get("name"),
+                            "rio_name": ad.get("rio_name"),
+                            "panel": ad.get("panel") or "",
+                            "adapter_index": ad.get("adapter_index"),
+                            "direction": direction or mod.get("direction") or _module_direction(mt),
+                        }
+                        bank_how = "configio_bank_match"
+                        eip_bank_used = eip_bank_i
+                        break
+                    if bank_hit:
+                        break
+                if bank_hit:
+                    break
+            if bank_hit:
+                chosen = bank_hit
+                assign_how = bank_how
+                if not direction:
+                    direction = bank_hit.get("direction") or ""
+
         if seq:
             chosen = seq["module"]
             assign_how = seq["assign_how"]

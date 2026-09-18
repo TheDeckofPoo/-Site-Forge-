@@ -1,0 +1,4238 @@
+{
+  "machine": "ORINDYAC6",
+  "run_dir": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+  "finished_plc_inspected": false,
+  "gate1_tables": [
+    {
+      "file": "FORTNA/ABS_EIP_ADAPTERS.asc",
+      "rows": 128,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorOutput",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/AnalogOutputs.asc",
+      "rows": 6,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "PCIDeviceIndex",
+        "ErrorOutput",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "PCIDeviceIndex"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/AsciiMnu.asc",
+      "rows": 257,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Batches.asc",
+      "rows": 60,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Description",
+        "BatchOUTPUT",
+        "BatchBIT"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [
+        "BatchBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Batches.asc.ORINDYAC6",
+      "rows": 65,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Description",
+        "BatchOUTPUT",
+        "BatchBIT"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [
+        "BatchBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/BeaconInfo.asc",
+      "rows": 400,
+      "kind": "OTHER",
+      "io_cols": [
+        "BeaconOutput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/BeaconTrigger.asc",
+      "rows": 750,
+      "kind": "OTHER",
+      "io_cols": [
+        "TriggerInput",
+        "InvertInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/BuildCfg.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Name",
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/CapacityGapCtrl.asc",
+      "rows": 60,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "StopOUTPUT",
+        "StopBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "StopBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ChainStretch.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "MtrBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "MtrBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ChartMenu.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "Chart Conveyor Part",
+        "Chart Label Part"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/CombBoss.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "Operable_Input"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/CombinedEnableBits.asc",
+      "rows": 100,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "JamEnableBit",
+        "InvertJamBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "JamEnableBit",
+        "InvertJamBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/CombinedEnableBits.asc.ORINDYAC6",
+      "rows": 100,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "JamEnableBit",
+        "InvertJamBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "JamEnableBit",
+        "InvertJamBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/CombinedJamZones.asc",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "JamEnableBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "JamEnableBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/CombinedJamZones.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "JamEnableBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "JamEnableBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/CombLane.asc",
+      "rows": 25,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Other_Bit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "Other_Bit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Configio.asc",
+      "rows": 400,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "Bank",
+        "Octal_Word"
+      ],
+      "name_cols": [
+        "Desc"
+      ],
+      "addr_cols": [
+        "Bank",
+        "Octal_Word"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Configio.asc.ORINDYAC6",
+      "rows": 400,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "Bank",
+        "Octal_Word"
+      ],
+      "name_cols": [
+        "Desc"
+      ],
+      "addr_cols": [
+        "Bank",
+        "Octal_Word"
+      ],
+      "nonempty_names": 75
+    },
+    {
+      "file": "FORTNA/convdesc.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Description\""
+      ],
+      "name_cols": [
+        "\"Description\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Conveyor.asc",
+      "rows": 6000,
+      "kind": "ENGINEERING",
+      "io_cols": [
+        "IO_Name",
+        "General_Description",
+        "IO_Address_Word",
+        "IO_Address_Bit",
+        "Device_Description",
+        "Part_Number",
+        "IO_Module_Type",
+        "Bitstate",
+        "Was_Bitstate"
+      ],
+      "name_cols": [
+        "IO_Name",
+        "General_Description",
+        "Device_Description"
+      ],
+      "addr_cols": [
+        "IO_Address_Word",
+        "IO_Address_Bit",
+        "Bitstate",
+        "Was_Bitstate"
+      ],
+      "nonempty_names": 1568
+    },
+    {
+      "file": "FORTNA/Convpath.asc",
+      "rows": 1000,
+      "kind": "OTHER",
+      "io_cols": [
+        "Input",
+        "Output"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Counters.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "General_Description",
+        "Reset_Bit"
+      ],
+      "name_cols": [
+        "General_Description"
+      ],
+      "addr_cols": [
+        "Counter_Address",
+        "Reset_Bit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/CTRLDT.asc",
+      "rows": 3072,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Encoders.asc",
+      "rows": 25,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "DupToMemBit",
+        "EnableBit"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "DupToMemBit",
+        "EnableBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Encoders.asc.ORINDYAC6",
+      "rows": 25,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "DupToMemBit",
+        "EnableBit"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "DupToMemBit",
+        "EnableBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/EnergyTrigger.asc",
+      "rows": 100,
+      "kind": "OTHER",
+      "io_cols": [
+        "TriggerInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/EnergyZone.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "StopZoneOutput",
+        "StopBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "StopBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Errors.asc",
+      "rows": 1500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Description",
+        "LinkPart",
+        "WcsOutput",
+        "WcsBIT"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [
+        "WcsBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ErrorStatus.asc",
+      "rows": 2200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description",
+        "LinkPart"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/EStop.asc",
+      "rows": 250,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "Part"
+      ],
+      "name_cols": [
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 94
+    },
+    {
+      "file": "FORTNA/FAILSAFE.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "INPUT",
+        "OUTPUT",
+        "UPS_INPUT"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/FastIO.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "LowWord",
+        "HighWord"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "LowWord",
+        "HighWord"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/FORTNADT.asc",
+      "rows": 3072,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Bits_On_Off",
+        "HiBank",
+        "LoBank"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "Bits_On_Off",
+        "HiBank",
+        "LoBank"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/FPLite_DCM_Config.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "OutputFile"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Fulljam.asc",
+      "rows": 200,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "DisableBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "DisableBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Fullline.asc",
+      "rows": 300,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "FullClearOutput",
+        "FullClearBIT"
+      ],
+      "name_cols": [
+        "Desc"
+      ],
+      "addr_cols": [
+        "FullClearBIT"
+      ],
+      "nonempty_names": 71
+    },
+    {
+      "file": "FORTNA/GapCfg.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ProductINPUT",
+        "RunningINPUT",
+        "StopOUTPUT",
+        "StopBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "StopBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Groups.asc",
+      "rows": 21,
+      "kind": "OTHER",
+      "io_cols": [
+        "General_Description",
+        "Device_Description",
+        "Part_Number",
+        "I_O_Module_Type"
+      ],
+      "name_cols": [
+        "General_Description",
+        "Device_Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/GUIDT.asc",
+      "rows": 3072,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/HouseKeep.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/HSPusher.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "WatchOutput",
+        "PulseOutput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/HSSawLane.asc",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "SlowBit",
+        "FastBit",
+        "SlowOrFastBit",
+        "AccumBit",
+        "ErrMtrBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "SlowBit",
+        "FastBit",
+        "SlowOrFastBit",
+        "AccumBit",
+        "ErrMtrBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/HSSawParm.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "InputSignal"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/InchStore.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "SlowOutput",
+        "SlowBit",
+        "DumpOutput",
+        "DumpBit",
+        "FeedOutput",
+        "DumpInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "SlowBit",
+        "DumpBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/interfac.asc",
+      "rows": 23,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Description\""
+      ],
+      "name_cols": [
+        "\"Description\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/IOCard.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "InputMenu",
+        "OutputMenu",
+        "InputPtr",
+        "OutputPtr",
+        "MaxInput",
+        "MaxOutput",
+        "InputCnt",
+        "CardNode",
+        "PCIDeviceIndex",
+        "NodeIndex",
+        "SlotIndex",
+        "ErrorOutput",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc",
+        "PCIDeviceIndex"
+      ],
+      "addr_cols": [
+        "CardNode",
+        "NodeIndex",
+        "SlotIndex",
+        "ErrorBIT"
+      ],
+      "nonempty_names": 6
+    },
+    {
+      "file": "FORTNA/IOCard.asc.ORINDYAC6",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "InputMenu",
+        "OutputMenu",
+        "InputPtr",
+        "OutputPtr",
+        "MaxInput",
+        "MaxOutput",
+        "InputCnt",
+        "CardNode",
+        "PCIDeviceIndex",
+        "NodeIndex",
+        "SlotIndex",
+        "ErrorOutput",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc",
+        "PCIDeviceIndex"
+      ],
+      "addr_cols": [
+        "CardNode",
+        "NodeIndex",
+        "SlotIndex",
+        "ErrorBIT"
+      ],
+      "nonempty_names": 8
+    },
+    {
+      "file": "FORTNA/IOCardModConfig.asc",
+      "rows": 16,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "InputAddr",
+        "InputLen",
+        "InputBank",
+        "OutputAddr",
+        "OutputLen",
+        "OutputBank"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "InputBank",
+        "OutputBank"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/IOCardResp.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "TtlInputs"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/iomodule.asc",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Module\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/iopos.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Top_Word",
+        "Word",
+        "Bit"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "Top_Word",
+        "Word",
+        "Bit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/IOSearch.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "Partial_Match"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/iostatus.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Description\""
+      ],
+      "name_cols": [
+        "\"Description\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/iotype.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Description\""
+      ],
+      "name_cols": [
+        "\"Description\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Jamcheck.asc",
+      "rows": 600,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 59
+    },
+    {
+      "file": "FORTNA/Jamzones.asc",
+      "rows": 100,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Latch Bit",
+        "Jammed Bit",
+        "Enable Bit"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "Latch Bit",
+        "Jammed Bit",
+        "Enable Bit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/KeyDefine.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Key Description"
+      ],
+      "name_cols": [
+        "Key Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/KTX_RIO_ADAPTERS.asc",
+      "rows": 128,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorOutput",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/LogFiles.asc",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Machine.asc",
+      "rows": 60,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "NumCbItems",
+        "Password"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "NumCbItems",
+        "Password"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Machine.asc.ORINDYAC6",
+      "rows": 60,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "NumCbItems",
+        "Password"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "NumCbItems",
+        "Password"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MenuPad.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "Parts"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeBoss.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "CurrInput",
+        "NumInputs",
+        "OperableInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeBoss.asc.ORINDYAC6",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "CurrInput",
+        "NumInputs",
+        "OperableInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeInputs.asc",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "InputDisabled"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeInputs.asc.ORINDYAC6",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "LaneReadyInput1",
+        "LaneReadyInput2",
+        "InputDisabled"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeRoute.asc",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "MergeInputs",
+        "MergeOutputs"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeRoute.asc.ORINDYAC6",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "MergeInputs",
+        "MergeOutputs"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeRunOutputs.asc",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "Output"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeRunOutputs.asc.ORINDYAC6",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "Output"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Merges.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "Operable Input"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeStopOutputs.asc",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "Output"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MergeStopOutputs.asc.ORINDYAC6",
+      "rows": 15,
+      "kind": "OTHER",
+      "io_cols": [
+        "Output"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/MissingPin.asc",
+      "rows": 100,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "StopBIT",
+        "EnableBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "StopBIT",
+        "EnableBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Mtrchain.asc",
+      "rows": 400,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Heater Bit"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "Heater Bit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/NewGapper.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "StopOUTPUT",
+        "StopBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "StopBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Batches.asc.ORINDYAC6",
+      "rows": 40,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"File_Name\",\"Description\",\"CurrentNum\",\"HowOften\",\"Increment\",\"CurrentStat\",\"WasStat\",\"Type\",\"Process\",\"InternalProc\",\"InternalProcCtrl\",\"Machine\",\"All Machines\",\"DoFile\""
+      ],
+      "name_cols": [
+        "\"File_Name\",\"Description\",\"CurrentNum\",\"HowOften\",\"Increment\",\"CurrentStat\",\"WasStat\",\"Type\",\"Process\",\"InternalProc\",\"InternalProcCtrl\",\"Machine\",\"All Machines\",\"DoFile\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.BeaconInfo.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Name\",\"BeaconOutput\",\"DefaultPattern\",\"pCurPattern\",\"pCurPriority\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.BeaconTrigger.asc",
+      "rows": 100,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Name\",\"BeaconRecord\",\"Pattern\",\"Priority\",\"TriggerInput\",\"InvertInput\",\"TriggerTimer\",\"InvertTimer\",\"TriggerFlag\",\"InvertFlag\",\"pOnFlag\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Configio.asc",
+      "rows": 400,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "Bank",
+        "Octal_Word"
+      ],
+      "name_cols": [
+        "Desc"
+      ],
+      "addr_cols": [
+        "Bank",
+        "Octal_Word"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Configio.asc.ORINDYAC6",
+      "rows": 112,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Bank\",\"Octal_Word\",\"LoHi\",\"In_Out\",\"I_O_Type\",\"Interface\",\"Granularity\",\"Countdown\",\"Status\",\"Process\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Bank\",\"Octal_Word\",\"LoHi\",\"In_Out\",\"I_O_Type\",\"Interface\",\"Granularity\",\"Countdown\",\"Status\",\"Process\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Conveyor.asc",
+      "rows": 2200,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"IO_Name\",\"General_Description \",\"IO_Address_Word\",\"IO_Address_Bit \",\"Device_Description \",\"Part_Number \",\"IO_Module_Type\",\"Electrical Drawing Page No.\",\"Contact_Type\",\"Recomended_Spares\",\"Motor\",\"Belt_Info\",\"Layer\",\"X_cord\",\"Y_cord\",\"Width\",\"Length\",\"Angle\",\"Type\",\"c\",\"b\",\"Good_color\",\"Bad_color\",\"Font\",\"Underline\",\"Logic_Help_Num\",\"Gen_Flag\",\"Bitstate\",\"Was_Bitstate\",\"Drawstate\",\"Was_Drawstate\",\"Trigger1\",\"Trigger2\",\"Trigger3\",\"Trigger4\",\"ProcNum\",\"Speed\",\"Machine_Name\",\"TriggerLink_Name\",\"TriggerLink_NDX \",\"Disable I/O\",\"Overide I/O\",\"Drive\",\"NoseOver\",\"Infeed_Elevation\",\"Discharge_Elevation\",\"Belt_Width\",\"Infeed_Tangent\",\"Discharge_Tangent\",\"Roller_Centers\",\"Tapered_Rollers\",\"Supports\",\"Inside_Radius\",\"Price\",\"Default Colors\",\"In Motor Chain\",\"Important_IO\",\"ErrLink\",\"ErrTime\""
+      ],
+      "name_cols": [
+        "\"IO_Name\",\"General_Description \",\"IO_Address_Word\",\"IO_Address_Bit \",\"Device_Description \",\"Part_Number \",\"IO_Module_Type\",\"Electrical Drawing Page No.\",\"Contact_Type\",\"Recomended_Spares\",\"Motor\",\"Belt_Info\",\"Layer\",\"X_cord\",\"Y_cord\",\"Width\",\"Length\",\"Angle\",\"Type\",\"c\",\"b\",\"Good_color\",\"Bad_color\",\"Font\",\"Underline\",\"Logic_Help_Num\",\"Gen_Flag\",\"Bitstate\",\"Was_Bitstate\",\"Drawstate\",\"Was_Drawstate\",\"Trigger1\",\"Trigger2\",\"Trigger3\",\"Trigger4\",\"ProcNum\",\"Speed\",\"Machine_Name\",\"TriggerLink_Name\",\"TriggerLink_NDX \",\"Disable I/O\",\"Overide I/O\",\"Drive\",\"NoseOver\",\"Infeed_Elevation\",\"Discharge_Elevation\",\"Belt_Width\",\"Infeed_Tangent\",\"Discharge_Tangent\",\"Roller_Centers\",\"Tapered_Rollers\",\"Supports\",\"Inside_Radius\",\"Price\",\"Default Colors\",\"In Motor Chain\",\"Important_IO\",\"ErrLink\",\"ErrTime\""
+      ],
+      "addr_cols": [
+        "\"IO_Name\",\"General_Description \",\"IO_Address_Word\",\"IO_Address_Bit \",\"Device_Description \",\"Part_Number \",\"IO_Module_Type\",\"Electrical Drawing Page No.\",\"Contact_Type\",\"Recomended_Spares\",\"Motor\",\"Belt_Info\",\"Layer\",\"X_cord\",\"Y_cord\",\"Width\",\"Length\",\"Angle\",\"Type\",\"c\",\"b\",\"Good_color\",\"Bad_color\",\"Font\",\"Underline\",\"Logic_Help_Num\",\"Gen_Flag\",\"Bitstate\",\"Was_Bitstate\",\"Drawstate\",\"Was_Drawstate\",\"Trigger1\",\"Trigger2\",\"Trigger3\",\"Trigger4\",\"ProcNum\",\"Speed\",\"Machine_Name\",\"TriggerLink_Name\",\"TriggerLink_NDX \",\"Disable I/O\",\"Overide I/O\",\"Drive\",\"NoseOver\",\"Infeed_Elevation\",\"Discharge_Elevation\",\"Belt_Width\",\"Infeed_Tangent\",\"Discharge_Tangent\",\"Roller_Centers\",\"Tapered_Rollers\",\"Supports\",\"Inside_Radius\",\"Price\",\"Default Colors\",\"In Motor Chain\",\"Important_IO\",\"ErrLink\",\"ErrTime\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Encoders.asc.ORINDYAC6",
+      "rows": 25,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Encoder Name\",\"Encoder I/O\",\"Encoder Timer\",\"Ticks Per Foot\",\"Encoder Ticks\",\"Calculated FPM\",\"Target FPM\",\"DupToMemBit\",\"Tolerance_FPM\",\"Delay Timer\",\"Error\",\"StoponError\",\"EnableBit\",\"Jamzone\",\"NoSortonError\",\"Failed\",\"SampleSeconds\",\"SampleTicks\",\"Minimum_Calc_FPM\",\"Maximum_Calc_FPM\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Encoder Name\",\"Encoder I/O\",\"Encoder Timer\",\"Ticks Per Foot\",\"Encoder Ticks\",\"Calculated FPM\",\"Target FPM\",\"DupToMemBit\",\"Tolerance_FPM\",\"Delay Timer\",\"Error\",\"StoponError\",\"EnableBit\",\"Jamzone\",\"NoSortonError\",\"Failed\",\"SampleSeconds\",\"SampleTicks\",\"Minimum_Calc_FPM\",\"Maximum_Calc_FPM\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.EnergyTrigger.asc",
+      "rows": 100,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Name\",\"ZoneRecord\",\"TriggerInput\",\"InvertInput\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.EnergyZone.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Name\",\"pMessage\",\"GoTimer\",\"pGoFlag\",\"StopZoneOutput\",\"StopAction\",\"StopBit\",\"pStopFlag\",\"HornRecord\",\"pStatus\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Name\",\"pMessage\",\"GoTimer\",\"pGoFlag\",\"StopZoneOutput\",\"StopAction\",\"StopBit\",\"pStopFlag\",\"HornRecord\",\"pStatus\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Errors.asc",
+      "rows": 800,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"ErrorName\",\"Status\",\"Description\",\"Suggestion\",\"Severity\",\"Trigger\",\"SetStatus\",\"Changed\",\"Frequency\",\"Idle\",\"TurnedOnTime\",\"Owner\",\"TrigIO\",\"InvertIO\",\"ScrnIO\""
+      ],
+      "name_cols": [
+        "\"ErrorName\",\"Status\",\"Description\",\"Suggestion\",\"Severity\",\"Trigger\",\"SetStatus\",\"Changed\",\"Frequency\",\"Idle\",\"TurnedOnTime\",\"Owner\",\"TrigIO\",\"InvertIO\",\"ScrnIO\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.EStop.asc",
+      "rows": 150,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Part\",\"Error\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.FastIO.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "LowWord",
+        "HighWord"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "LowWord",
+        "HighWord"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Fulljam.asc",
+      "rows": 200,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Sensor_Name\",\"Enabled\",\"Timer_Name\",\"Timer_Preset\",\"Clr_Timer_Name\",\"Clr_Timer_Preset\",\"Error_Name\",\"Conveyor_Name\",\"Response IO\",\"DisableBit\",\"Invert\",\"ReSound Horn\",\"Status\",\"Owner\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Sensor_Name\",\"Enabled\",\"Timer_Name\",\"Timer_Preset\",\"Clr_Timer_Name\",\"Clr_Timer_Preset\",\"Error_Name\",\"Conveyor_Name\",\"Response IO\",\"DisableBit\",\"Invert\",\"ReSound Horn\",\"Status\",\"Owner\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.HouseKeep.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Description\",\"Table_Name\",\"HowOften\",\"Increment\",\"CurrentStat\",\"WasStat\",\"Process\",\"Machine\",\"Parm1\",\"Const1\",\"Parm2\",\"Const2\",\"Type\",\"LogFile\",\"MaxRecords\",\"UniqueColumn\",\"Status\",\"RecordsDeleted\""
+      ],
+      "name_cols": [
+        "\"Description\",\"Table_Name\",\"HowOften\",\"Increment\",\"CurrentStat\",\"WasStat\",\"Process\",\"Machine\",\"Parm1\",\"Const1\",\"Parm2\",\"Const2\",\"Type\",\"LogFile\",\"MaxRecords\",\"UniqueColumn\",\"Status\",\"RecordsDeleted\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.IOCard.asc.ORINDYAC6",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Name\",\"Desc\",\"Type\",\"BasePort\",\"ResetPort\",\"PCI\",\"InputMenu\",\"OutputMenu\",\"Status\",\"Process\",\"IntAddr\",\"Error\",\"InputPtr\",\"OutputPtr\",\"MaxInput\",\"MaxOutput\",\"CurrMsg\",\"IntrpPort\",\"CardState\",\"IntrrAddr\",\"ConfigMode\",\"TimeLastCmd\",\"SerialNumber\",\"NumMsgs\",\"LoopCnt\",\"InputCnt\",\"Machine\",\"BAUD\",\"ReqRacks\",\"CardNode\",\"TNS\",\"InitStatus\",\"LinkState\",\"StatusByte\",\"ErrorByte\",\"LEDStatus\",\"WDCnt\",\"BlockCnt\",\"ReturnState\",\"RtnStatus\",\"OmuxName\",\"OmuxPid\""
+      ],
+      "name_cols": [
+        "\"Name\",\"Desc\",\"Type\",\"BasePort\",\"ResetPort\",\"PCI\",\"InputMenu\",\"OutputMenu\",\"Status\",\"Process\",\"IntAddr\",\"Error\",\"InputPtr\",\"OutputPtr\",\"MaxInput\",\"MaxOutput\",\"CurrMsg\",\"IntrpPort\",\"CardState\",\"IntrrAddr\",\"ConfigMode\",\"TimeLastCmd\",\"SerialNumber\",\"NumMsgs\",\"LoopCnt\",\"InputCnt\",\"Machine\",\"BAUD\",\"ReqRacks\",\"CardNode\",\"TNS\",\"InitStatus\",\"LinkState\",\"StatusByte\",\"ErrorByte\",\"LEDStatus\",\"WDCnt\",\"BlockCnt\",\"ReturnState\",\"RtnStatus\",\"OmuxName\",\"OmuxPid\""
+      ],
+      "addr_cols": [
+        "\"Name\",\"Desc\",\"Type\",\"BasePort\",\"ResetPort\",\"PCI\",\"InputMenu\",\"OutputMenu\",\"Status\",\"Process\",\"IntAddr\",\"Error\",\"InputPtr\",\"OutputPtr\",\"MaxInput\",\"MaxOutput\",\"CurrMsg\",\"IntrpPort\",\"CardState\",\"IntrrAddr\",\"ConfigMode\",\"TimeLastCmd\",\"SerialNumber\",\"NumMsgs\",\"LoopCnt\",\"InputCnt\",\"Machine\",\"BAUD\",\"ReqRacks\",\"CardNode\",\"TNS\",\"InitStatus\",\"LinkState\",\"StatusByte\",\"ErrorByte\",\"LEDStatus\",\"WDCnt\",\"BlockCnt\",\"ReturnState\",\"RtnStatus\",\"OmuxName\",\"OmuxPid\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Jamzones.asc",
+      "rows": 100,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Zone Name\",\"Start Request Flag\",\"Stop Request Flag\",\"Latch Bit\",\"Jammed Bit\",\"Start Stop Timer\",\"Zone Owner \",\"Enable Bit\",\"Start Button\",\"Stop Button\",\"Reset Button\",\"StartStopZone\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Zone Name\",\"Start Request Flag\",\"Stop Request Flag\",\"Latch Bit\",\"Jammed Bit\",\"Start Stop Timer\",\"Zone Owner \",\"Enable Bit\",\"Start Button\",\"Stop Button\",\"Reset Button\",\"StartStopZone\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Machine.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Machine_Name\",\"Machine_Index\",\"Machine_Pid\",\"Connection_Type\",\"Communication_Protocol\",\"Machine_Port\",\"Transmit_Retry\",\"Offline\",\"Process\",\"UseDB\",\"IgnoreDupes\",\"NoCircbuff\",\"CircSize\",\"Trig_Size\",\"Trig_InterChar\",\"Trig_Timeout\",\"Log File\",\"Log Length\",\"TSN\",\"NumCbItems\",\"LastMsgAttempts\",\"MaxAttempts\",\"StripNulls\",\"TimerId\",\"RetryCount\",\"MaxRetries\",\"HoldProcess\",\"FortnaMachine\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Machine_Name\",\"Machine_Index\",\"Machine_Pid\",\"Connection_Type\",\"Communication_Protocol\",\"Machine_Port\",\"Transmit_Retry\",\"Offline\",\"Process\",\"UseDB\",\"IgnoreDupes\",\"NoCircbuff\",\"CircSize\",\"Trig_Size\",\"Trig_InterChar\",\"Trig_Timeout\",\"Log File\",\"Log Length\",\"TSN\",\"NumCbItems\",\"LastMsgAttempts\",\"MaxAttempts\",\"StripNulls\",\"TimerId\",\"RetryCount\",\"MaxRetries\",\"HoldProcess\",\"FortnaMachine\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.MergeBoss.asc.ORINDYAC6",
+      "rows": 30,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Name\",\"Process\",\"Owner\",\"CurrInput\",\"NumInputs\",\"OperableInput\",\"Valid\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.MergeInputs.asc.ORINDYAC6",
+      "rows": 30,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Name\",\"MergeBoss\",\"Valid\",\"MyTurn\",\"Index\",\"CalcPriority\",\"MergeRoute\",\"IsClear\",\"RanEnough\",\"Presense\",\"ReleaseIO\",\"Priority\",\"FullClearTimerName\",\"ClrTimerName\",\"ClrTimerPreset\",\"RunTimerName\",\"RunTimerPreset\",\"LnClrTimerName\",\"LnClrTimerPreset\",\"LaneLatch\",\"InputDisabled\",\"LnClear\",\"LatchOffTimer\",\"RunOffTimerFlag\",\"PitchTimerName\",\"PitchFlag\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.MergeRoute.asc.ORINDYAC6",
+      "rows": 30,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Name\",\"MergeInputs\",\"RouteBusy\",\"RouteRequested\",\"Priority\",\"OutDisabled\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Merges.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Merge Table Name\",\"Valid\",\"Number of Inducts\",\"Operable Input\",\"Procnum\",\"Presense_Eye1\",\"Release_IO1\",\"Myturn1\",\"Priority1\",\"Full_Timer_Name1\",\"Clr_Timer_Name1\",\"Crl_Timer_Preset1\",\"Run_Timer_Name1\",\"Run_Timer_Preset1\",\"Prs_Timer_Name1\",\"Prs_Timer_Preset1\",\"Presense_Eye2\",\"Release_IO2\",\"Myturn2\",\"Priority2\",\"Full_Timer_Name2\",\"Clr_Timer_Name2\",\"Crl_Timer_Preset2\",\"Run_Timer_Name2\",\"Run_Timer_Preset2\",\"Prs_Timer_Name2\",\"Prs_Timer_Preset2\",\"Presense_Eye3\",\"Release_IO3\",\"Myturn3\",\"Priority3\",\"Full_Timer_Name3\",\"Clr_Timer_Name3\",\"Crl_Timer_Preset3\",\"Run_Timer_Name3\",\"Run_Timer_Preset3\",\"Prs_Timer_Name3\",\"Prs_Timer_Preset3\",\"Presense_Eye4\",\"Release_IO4\",\"Myturn4\",\"Priority4\",\"Full_Timer_Name4\",\"Clr_Timer_Name4\",\"Crl_Timer_Preset4\",\"Run_Timer_Name4\",\"Run_Timer_Preset4\",\"Prs_Timer_Name4\",\"Prs_Timer_Preset4\",\"Presense_Eye5\",\"Release_IO5\",\"Myturn5\",\"Priority5\",\"Full_Timer_Name5\",\"Clr_Timer_Name5\",\"Crl_Timer_Preset5\",\"Run_Timer_Name5\",\"Run_Timer_Preset5\",\"Prs_Timer_Name5\",\"Prs_Timer_Preset5\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Mtrchain.asc",
+      "rows": 250,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Motor_Name\",\"Motor_Ndx\",\"Timer_Name\",\"Timer_Preset\",\"Motor_Chained1\",\"Motor_Chained2\",\"Motor_Chained3\",\"Motor_Chained4\",\"Motor_Chained5\",\"Motor_Chained6\",\"Motor_Chained7\",\"Motor_Chained8\",\"Motor_Chained9\",\"Motor_Chained10\",\"Motor_Aux\",\"RUN Timer_Name\",\"GoUntil\",\"Enabled\",\"Horn\",\"ResetHorn\",\"Heater Bit\",\"Heater Error\",\"Heater Debounce\",\"Debounce Value\",\"Stop Zone\",\"StopState\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Motor_Name\",\"Motor_Ndx\",\"Timer_Name\",\"Timer_Preset\",\"Motor_Chained1\",\"Motor_Chained2\",\"Motor_Chained3\",\"Motor_Chained4\",\"Motor_Chained5\",\"Motor_Chained6\",\"Motor_Chained7\",\"Motor_Chained8\",\"Motor_Chained9\",\"Motor_Chained10\",\"Motor_Aux\",\"RUN Timer_Name\",\"GoUntil\",\"Enabled\",\"Horn\",\"ResetHorn\",\"Heater Bit\",\"Heater Error\",\"Heater Debounce\",\"Debounce Value\",\"Stop Zone\",\"StopState\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.NewGapper.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Name\",\"ProductIO\",\"NextConvIO\",\"MinGapTM\",\"MinPitchTM\",\"StopOUTPUT\",\"StopACTION\",\"StopBIT\",\"StopFLAG\",\"pState\",\"Debug\",\"LogLevel\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Name\",\"ProductIO\",\"NextConvIO\",\"MinGapTM\",\"MinPitchTM\",\"StopOUTPUT\",\"StopACTION\",\"StopBIT\",\"StopFLAG\",\"pState\",\"Debug\",\"LogLevel\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.SawLane.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Name\",\"SawMerge\",\"ApproachUP\",\"CollisionUP\",\"LaneIN\",\"LaneNdx\",\"PhotoEyeIO\",\"DisableIO\",\"DisableBit\",\"pLastRunTime\",\"pState\",\"TimeSlice\",\"pSlicesRemaining\",\"AllowedToRun\",\"SliceSeconds\",\"ReserveWhen\",\"ReserveSeconds\",\"ReserveFLAG\",\"ReserveTM\",\"ReserveRATE\",\"MaxSlicesInTransit\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Name\",\"SawMerge\",\"ApproachUP\",\"CollisionUP\",\"LaneIN\",\"LaneNdx\",\"PhotoEyeIO\",\"DisableIO\",\"DisableBit\",\"pLastRunTime\",\"pState\",\"TimeSlice\",\"pSlicesRemaining\",\"AllowedToRun\",\"SliceSeconds\",\"ReserveWhen\",\"ReserveSeconds\",\"ReserveFLAG\",\"ReserveTM\",\"ReserveRATE\",\"MaxSlicesInTransit\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/old.Updates.asc.ORINDYAC6",
+      "rows": 60,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Update Name\",\"Sorter\",\"Update Number\",\"Location\",\"Name\",\"Window Size\",\"Description\""
+      ],
+      "name_cols": [
+        "\"Update Name\",\"Sorter\",\"Update Number\",\"Location\",\"Name\",\"Window Size\",\"Description\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ParseCfg.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Name",
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/partnum.asc",
+      "rows": 300,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Part_Number\""
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/PeDisplay.asc",
+      "rows": 100,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/PhSearch.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "Partial_Match"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/PowerSupply.asc",
+      "rows": 500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/PrintMenu.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "Device"
+      ],
+      "name_cols": [
+        "Name",
+        "Device"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/RateCount.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "RateHighOutput",
+        "RateHighBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "RateHighBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SawLane.asc",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "DisableBit",
+        "AllowedInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "DisableBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SawLane.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "DisableBit",
+        "AllowedInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "DisableBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ScnDeviceErrIO.asc",
+      "rows": 250,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ScanDevice",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "ScanDevice"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ScnDeviceErrIO.asc.ORINDYAC6",
+      "rows": 250,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ScanDevice",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "ScanDevice"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ScnScanZone.asc",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "DeviceTrkTable"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc",
+        "DeviceTrkTable"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ScnScanZone.asc.ORINDYAC6",
+      "rows": 20,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "DeviceTrkTable"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc",
+        "DeviceTrkTable"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 1
+    },
+    {
+      "file": "FORTNA/ScnZoneErrIO.asc",
+      "rows": 250,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ScnZoneErrIO.asc.ORINDYAC6",
+      "rows": 250,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SERVDT.asc",
+      "rows": 3072,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SortData.asc",
+      "rows": 6000,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SrtAppControl.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "MtrBIT",
+        "NotAvailBIT",
+        "ScanBIT",
+        "DataBIT",
+        "pErrDesc"
+      ],
+      "name_cols": [
+        "Name",
+        "pErrDesc"
+      ],
+      "addr_cols": [
+        "MtrBIT",
+        "NotAvailBIT",
+        "ScanBIT",
+        "DataBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SrtAppControl.asc.ORINDYAC6",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "MtrBIT",
+        "NotAvailBIT",
+        "ScanBIT",
+        "DataBIT",
+        "pErrDesc"
+      ],
+      "name_cols": [
+        "Name",
+        "pErrDesc"
+      ],
+      "addr_cols": [
+        "MtrBIT",
+        "NotAvailBIT",
+        "ScanBIT",
+        "DataBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SrtHrtBeat.asc",
+      "rows": 5,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "CommErrBIT",
+        "CommErrBit",
+        "HostErrBIT",
+        "HostErrBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "CommErrBIT",
+        "CommErrBit",
+        "HostErrBIT",
+        "HostErrBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SrtHrtBeat.asc.ORINDYAC6",
+      "rows": 5,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "CommErrBIT",
+        "CommErrBit",
+        "HostErrBIT",
+        "HostErrBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "CommErrBIT",
+        "CommErrBit",
+        "HostErrBIT",
+        "HostErrBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SrtSimConfig.asc",
+      "rows": 5,
+      "kind": "OTHER",
+      "io_cols": [
+        "ScanDevice",
+        "ScaleDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "ScanDevice",
+        "ScaleDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SrtSimConfig.asc.ORINDYAC6",
+      "rows": 5,
+      "kind": "OTHER",
+      "io_cols": [
+        "ScanDevice",
+        "ScaleDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "ScanDevice",
+        "ScaleDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SRV1DT.asc",
+      "rows": 3072,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/SRV2DT.asc",
+      "rows": 3072,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "\"Bits_On_Off\""
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/TimedIO.asc",
+      "rows": 100,
+      "kind": "OTHER",
+      "io_cols": [
+        "Input1",
+        "Input2",
+        "Input3",
+        "Output",
+        "OutputTimer"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/timemenu.asc",
+      "rows": 1500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "General_Description",
+        "Reset_Bit"
+      ],
+      "name_cols": [
+        "General_Description"
+      ],
+      "addr_cols": [
+        "Timer_Address",
+        "Reset_Bit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Updates.asc",
+      "rows": 60,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Name",
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Updates.asc.ORINDYAC6",
+      "rows": 60,
+      "kind": "OTHER",
+      "io_cols": [
+        "Description"
+      ],
+      "name_cols": [
+        "Name",
+        "Description"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/UPSMenu.asc",
+      "rows": 1,
+      "kind": "OTHER",
+      "io_cols": [
+        "Device",
+        "pFileDesc"
+      ],
+      "name_cols": [
+        "Name",
+        "Device",
+        "pFileDesc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/VoltRange.asc",
+      "rows": 8,
+      "kind": "OTHER",
+      "io_cols": [
+        "\"Desc\""
+      ],
+      "name_cols": [
+        "\"Desc\""
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/Watcher.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Watch NODE"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "Watch NODE"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XferBoss.asc",
+      "rows": 200,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "DestBits",
+        "ScanINPUT",
+        "ScanOUTPUT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "DestBits"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XferBoss.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "DestBits",
+        "ScanINPUT",
+        "ScanOUTPUT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "DestBits"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XferCfg.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "ProductINPUT",
+        "XferDownINPUT",
+        "XferClearINPUT",
+        "ReleaseOUTPUT",
+        "DirectionOUTPUT",
+        "TransferINPUT",
+        "TransferOUTPUT",
+        "DoneINPUT",
+        "DoneOUTPUT",
+        "PrepareOUTPUT",
+        "PreparedINPUT",
+        "EnabledINPUT",
+        "Flex1OUTPUT",
+        "Flex2OUTPUT",
+        "FinishINPUT",
+        "AtProductInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XferCfg.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "ProductINPUT",
+        "XferDownINPUT",
+        "XferClearINPUT",
+        "ReleaseOUTPUT",
+        "DirectionOUTPUT",
+        "TransferINPUT",
+        "TransferOUTPUT",
+        "DoneINPUT",
+        "DoneOUTPUT",
+        "PrepareOUTPUT",
+        "PreparedINPUT",
+        "EnabledINPUT",
+        "Flex1OUTPUT",
+        "Flex2OUTPUT",
+        "FinishINPUT",
+        "AtProductInput"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XferTree.asc",
+      "rows": 200,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "GoBits",
+        "NoGoBits"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "GoBits",
+        "NoGoBits"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XferTree.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "GoBits",
+        "NoGoBits"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "GoBits",
+        "NoGoBits"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XfRouteBoss.asc",
+      "rows": 25,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "MtrBIT",
+        "ScanErrBIT",
+        "DataBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [
+        "MtrBIT",
+        "ScanErrBIT",
+        "DataBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XfRouteBoss.asc.ORINDYAC6",
+      "rows": 25,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "MtrBIT",
+        "ScanErrBIT",
+        "DataBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [
+        "MtrBIT",
+        "ScanErrBIT",
+        "DataBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XfRouteTable.asc",
+      "rows": 25,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XfRouteTable.asc.ORINDYAC6",
+      "rows": 25,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/XfSimConfig.asc",
+      "rows": 5,
+      "kind": "OTHER",
+      "io_cols": [
+        "ScanDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "ScanDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ZipperLane.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "AccumBit",
+        "StuckBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "AccumBit",
+        "StuckBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ZipperLane.asc.ORINDYAC6",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "AccumBit",
+        "StuckBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "AccumBit",
+        "StuckBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ZipperMerge.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "MtrBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "MtrBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ZipperMerge.asc.ORINDYAC6",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "MtrBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "MtrBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ZprGapperZone.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ZoneBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ZoneBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "FORTNA/ZprGapperZone.asc.ORINDYAC6",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ZoneBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ZoneBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/AccumZone.asc",
+      "rows": 60,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ZoneRunBit",
+        "ErrorBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ZoneRunBit",
+        "ErrorBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/AccumZone.asc.ORINDYAC6",
+      "rows": 60,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ZoneRunBit",
+        "ErrorBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ZoneRunBit",
+        "ErrorBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/CartonCounter.asc",
+      "rows": 60,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ZoneRunBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ZoneRunBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/ConfigPromisScrn.asc",
+      "rows": 1,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "TempIOInputWord",
+        "TempIOOutputWord",
+        "UpdateIOWord",
+        "UpdateIOBit",
+        "UpdatePartNumber",
+        "UpdateGeneralDesc",
+        "OctalMode"
+      ],
+      "name_cols": [
+        "UpdateGeneralDesc"
+      ],
+      "addr_cols": [
+        "TempIOInputWord",
+        "TempIOOutputWord",
+        "UpdateIOWord",
+        "UpdateIOBit",
+        "OctalMode"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/ConfigXfgScrn.asc",
+      "rows": 1,
+      "kind": "OTHER",
+      "io_cols": [
+        "Inputs",
+        "AddInput",
+        "Outputs",
+        "AddOutput"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/CounterTrigger.asc",
+      "rows": 100,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "BIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "BIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/CounterTrigger.asc.ORINDYAC6",
+      "rows": 100,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "BIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "BIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPAdapters.asc",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "InputAddress",
+        "OutputAddress",
+        "NextAvailInpBank",
+        "NextAvailOutBank",
+        "TtlModules"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "InputAddress",
+        "OutputAddress",
+        "NextAvailInpBank",
+        "NextAvailOutBank"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPAdapters.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "InputAddress",
+        "OutputAddress",
+        "NextAvailInpBank",
+        "NextAvailOutBank",
+        "TtlModules"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "InputAddress",
+        "OutputAddress",
+        "NextAvailInpBank",
+        "NextAvailOutBank"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPCSV.asc",
+      "rows": 500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Word",
+        "Bit",
+        "Bank"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "Word",
+        "Bit",
+        "Bank"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPCSV.asc.ORINDYAC6",
+      "rows": 500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Word",
+        "Bit",
+        "Bank"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "Word",
+        "Bit",
+        "Bank"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPModules.asc",
+      "rows": 500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "InputBank",
+        "OutputBank",
+        "InputBit",
+        "OutputBit",
+        "Slot",
+        "InputSize",
+        "InputSizeCard",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutputSize",
+        "OutputSizeCard",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackInputSize",
+        "RackOutputSize",
+        "RackSlots",
+        "DirectInputSize",
+        "DirectOutputSize",
+        "NoInputBanks",
+        "NoOutputBanks"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "InputBank",
+        "OutputBank",
+        "InputBit",
+        "OutputBit",
+        "Slot",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackSlots",
+        "NoInputBanks",
+        "NoOutputBanks"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPModules.asc.ORINDYAC6",
+      "rows": 500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "InputBank",
+        "OutputBank",
+        "InputBit",
+        "OutputBit",
+        "Slot",
+        "InputSize",
+        "InputSizeCard",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutputSize",
+        "OutputSizeCard",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackInputSize",
+        "RackOutputSize",
+        "RackSlots",
+        "DirectInputSize",
+        "DirectOutputSize",
+        "NoInputBanks",
+        "NoOutputBanks"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "InputBank",
+        "OutputBank",
+        "InputBit",
+        "OutputBit",
+        "Slot",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackSlots",
+        "NoInputBanks",
+        "NoOutputBanks"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPModuleType.asc",
+      "rows": 110,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "PartNum",
+        "MinSlot",
+        "MaxSlot",
+        "InputSize",
+        "InputSizeCard",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutputSize",
+        "OutputSizeCard",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackInputSize",
+        "RackOutputSize",
+        "RackSlots",
+        "DirectInputSize",
+        "DirectOutputSize",
+        "NoInputBanks",
+        "NoOutputBanks"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "MinSlot",
+        "MaxSlot",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackSlots",
+        "NoInputBanks",
+        "NoOutputBanks"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPStatusScrn.asc",
+      "rows": 1,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Check Banks",
+        "Module List"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "Check Banks",
+        "Config Address"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/EIPStatusScrn.asc.ORINDYAC6",
+      "rows": 1,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Check Banks",
+        "Module List"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "Check Banks",
+        "Config Address"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/FindPartScrn.asc",
+      "rows": 1,
+      "kind": "OTHER",
+      "io_cols": [
+        "Search Part",
+        "Part"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/old.SpdControl.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "StartBit",
+        "StopBit",
+        "NetCTRLBit",
+        "NetREFBit",
+        "ResetBit",
+        "AuxBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "StartBit",
+        "StopBit",
+        "NetCTRLBit",
+        "NetREFBit",
+        "ResetBit",
+        "AuxBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/OpmAdapters.asc",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "InputAddress",
+        "OutputAddress",
+        "NextAvailInpBank",
+        "NextAvailOutBank",
+        "TtlModules",
+        "NodeId",
+        "InputSize",
+        "InpWordAlign",
+        "OutputSize",
+        "OutWordAlign"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "InputAddress",
+        "OutputAddress",
+        "NextAvailInpBank",
+        "NextAvailOutBank",
+        "NodeId",
+        "InpWordAlign",
+        "OutWordAlign"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/OpmCSV.asc",
+      "rows": 500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Word",
+        "Bit",
+        "Bank",
+        "Module"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "Word",
+        "Bit",
+        "Bank"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/OpmModules.asc",
+      "rows": 500,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "InputBank",
+        "OutputBank",
+        "InputBit",
+        "OutputBit",
+        "NodeId",
+        "Slot",
+        "InputSize",
+        "InputSizeCard",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutputSize",
+        "OutputSizeCard",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackSlots",
+        "NoInputBanks",
+        "NoOutputBanks",
+        "BankOffset"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "InputBank",
+        "OutputBank",
+        "InputBit",
+        "OutputBit",
+        "NodeId",
+        "Slot",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackSlots",
+        "NoInputBanks",
+        "NoOutputBanks",
+        "BankOffset"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/OpmModuleType.asc",
+      "rows": 100,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "PartNum",
+        "MinSlot",
+        "MaxSlot",
+        "InputSize",
+        "InputSizeCard",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutputSize",
+        "OutputSizeCard",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackSlots",
+        "NoInputBanks",
+        "NoOutputBanks",
+        "NodeId"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "MinSlot",
+        "MaxSlot",
+        "InpWordAlign",
+        "InputBitSize",
+        "OutWordAlign",
+        "OutputBitSize",
+        "RackSlots",
+        "NoInputBanks",
+        "NoOutputBanks",
+        "NodeId"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/OpmStatusScrn.asc",
+      "rows": 1,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Check Banks",
+        "Module List"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "Check Banks",
+        "Config Address"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PartPfgScrn.asc",
+      "rows": 1,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "IOInputWord",
+        "IOInputBit",
+        "IOInputBankLow",
+        "IOInputBankHigh",
+        "InputInterface",
+        "FindFirstUnusedInputBit",
+        "IOOutputWord",
+        "IOOutputBit",
+        "IOOutputBankLow",
+        "IOOutputBankHigh",
+        "OutputInterface",
+        "FindFirstUnusedOutputBit",
+        "IOMemoryWord",
+        "AddNewInputPart",
+        "Add16NewInputParts",
+        "AddNewOutputPart",
+        "Add16NewOutputParts",
+        "AddNewMemoryPart",
+        "Add16MemoryParts",
+        "AddInputBankLow",
+        "AddInputBankHigh",
+        "AddOutputBankLow",
+        "AddOutputBankHigh",
+        "AddMemoryIOWord",
+        "OctalMode",
+        "IOPartName",
+        "MemPartName",
+        "ConveyorPart"
+      ],
+      "name_cols": [],
+      "addr_cols": [
+        "IOInputWord",
+        "IOInputBit",
+        "IOInputBankLow",
+        "IOInputBankHigh",
+        "FindFirstUnusedInputBit",
+        "IOOutputWord",
+        "IOOutputBit",
+        "IOOutputBankLow",
+        "IOOutputBankHigh",
+        "FindFirstUnusedOutputBit",
+        "IOMemoryWord",
+        "AddInputBankLow",
+        "AddInputBankHigh",
+        "AddOutputBankLow",
+        "AddOutputBankHigh",
+        "AddMemoryIOWord",
+        "OctalMode"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PAScannerBoss.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "ScanDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "ScanDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PAScannerBoss.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "ScanDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "ScanDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PASimBoss.asc",
+      "rows": 25,
+      "kind": "OTHER",
+      "io_cols": [
+        "LPNScanDevice",
+        "VerifyScanDevice",
+        "ScaleScanDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "LPNScanDevice",
+        "VerifyScanDevice",
+        "ScaleScanDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PASimCartons.asc",
+      "rows": 25,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PASimLabels.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PASimScans.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "ScanDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc",
+        "ScanDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PASimTrkTable1.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "LPNScanDevice",
+        "VerifyScanDevice",
+        "ScaleScanDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "LPNScanDevice",
+        "VerifyScanDevice",
+        "ScaleScanDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PMIOTable.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "IOSignalBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "IOSignalBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PNASimScrn.asc",
+      "rows": 1,
+      "kind": "OTHER",
+      "io_cols": [
+        "Scan Device Sim"
+      ],
+      "name_cols": [
+        "Scan Device Sim"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PrintApplyLine.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "MtrBIT",
+        "SpeedBIT",
+        "ScanBIT",
+        "VerifyBIT",
+        "DataBIT",
+        "pErrDesc"
+      ],
+      "name_cols": [
+        "Name",
+        "pErrDesc"
+      ],
+      "addr_cols": [
+        "MtrBIT",
+        "SpeedBIT",
+        "ScanBIT",
+        "VerifyBIT",
+        "DataBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PrintApplyLine.asc.ORINDYAC6",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "MtrBIT",
+        "SpeedBIT",
+        "ScanBIT",
+        "VerifyBIT",
+        "DataBIT",
+        "pErrDesc"
+      ],
+      "name_cols": [
+        "Name",
+        "pErrDesc"
+      ],
+      "addr_cols": [
+        "MtrBIT",
+        "SpeedBIT",
+        "ScanBIT",
+        "VerifyBIT",
+        "DataBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PrinterBoss.asc",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "PrinterErrBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "PrinterErrBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PrinterBoss.asc.ORINDYAC6",
+      "rows": 10,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "PrinterErrBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "PrinterErrBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PrinterErrConfig.asc",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PrinterErrConfig.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PrinterUpdPnts.asc",
+      "rows": 26,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PrinterUpdPnts.asc.ORINDYAC6",
+      "rows": 26,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/PStConvertTable.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "ScanDevice"
+      ],
+      "name_cols": [
+        "Name",
+        "ScanDevice"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/ScanScScrn.asc",
+      "rows": 1,
+      "kind": "OTHER",
+      "io_cols": [
+        "DeviceTrk"
+      ],
+      "name_cols": [
+        "DeviceTrk"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/SorterSfgScrn.asc",
+      "rows": 1,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "AddUpdatePtDesc",
+        "StartWord"
+      ],
+      "name_cols": [
+        "AddUpdatePtDesc"
+      ],
+      "addr_cols": [
+        "StartWord"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/SpdControl.asc",
+      "rows": 20,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "StartBit",
+        "StopBit",
+        "NetCTRLBit",
+        "NetREFBit",
+        "ResetBit",
+        "AuxBit"
+      ],
+      "name_cols": [
+        "Name"
+      ],
+      "addr_cols": [
+        "StartBit",
+        "StopBit",
+        "NetCTRLBit",
+        "NetREFBit",
+        "ResetBit",
+        "AuxBit"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/SPStatusScrn.asc",
+      "rows": 1,
+      "kind": "OTHER",
+      "io_cols": [
+        "Send Mech Parts"
+      ],
+      "name_cols": [],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/SrtrWizardSteps.asc",
+      "rows": 700,
+      "kind": "OTHER",
+      "io_cols": [
+        "PartNameStr",
+        "PartName",
+        "DeviceChars"
+      ],
+      "name_cols": [
+        "DeviceChars"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrBoss.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "ProductINPUT",
+        "ReleaseOUTPUT",
+        "XfrResetINPUT",
+        "OverrideINPUT",
+        "pAtProdInput"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrBoss.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "ProductINPUT",
+        "ReleaseOUTPUT",
+        "XfrResetINPUT",
+        "OverrideINPUT",
+        "pAtProdInput"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgDelayTmr.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgDelayTmr.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgInput.asc",
+      "rows": 2500,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "RequiredInput",
+        "InputSense",
+        "pInputState"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgInput.asc.ORINDYAC6",
+      "rows": 2500,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "RequiredInput",
+        "InputSense",
+        "pInputState"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgInTimer.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgInTimer.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgOutput.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "Output",
+        "OutputAction"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgOutput.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "Output",
+        "OutputAction"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgPnAInput.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "pInputState"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCfgPnAOutput.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCheckSet.asc",
+      "rows": 2500,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrCheckSet.asc.ORINDYAC6",
+      "rows": 2500,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrConfig.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "EnabledINPUT",
+        "pFirstInputRec",
+        "pFirstOutputRec"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrConfig.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "EnabledINPUT",
+        "pFirstInputRec",
+        "pFirstOutputRec"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrErrConfig.asc",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrErrConfig.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrGoSet.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrGoSet.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrParamConfig.asc",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrParamConfig.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "TOPOLOGY",
+      "io_cols": [
+        "Desc",
+        "ErrorBIT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [
+        "ErrorBIT"
+      ],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrPNAMonitorConfig.asc",
+      "rows": 5,
+      "kind": "OTHER",
+      "io_cols": [
+        "Verify 1 Scan Device",
+        "Verify 2 Scan Device"
+      ],
+      "name_cols": [
+        "Name",
+        "Verify 1 Scan Device",
+        "Verify 2 Scan Device"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrPnAUpdates.asc",
+      "rows": 10,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrSndMsg.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrSndMsg.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrTree.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "AvailINPUT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrTree.asc.ORINDYAC6",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc",
+        "AvailINPUT"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrTrig.asc",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrTrig.asc.ORINDYAC6",
+      "rows": 50,
+      "kind": "OTHER",
+      "io_cols": [
+        "Desc"
+      ],
+      "name_cols": [
+        "Name",
+        "Desc"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    },
+    {
+      "file": "PROJECT/XfrWizardSteps.asc",
+      "rows": 200,
+      "kind": "OTHER",
+      "io_cols": [
+        "PartNameStr",
+        "PartName",
+        "DeviceChars"
+      ],
+      "name_cols": [
+        "DeviceChars"
+      ],
+      "addr_cols": [],
+      "nonempty_names": 0
+    }
+  ],
+  "gate2_five_devices": [
+    {
+      "class": "PE",
+      "engineering_object": "PE600_J",
+      "source_table": "FORTNA/Conveyor.asc",
+      "io_name": "PE600_J",
+      "type": "PHOTOCELL",
+      "description": "JAM EYE DETECTION PE600_J AT 2:1 MERGE P600",
+      "IO_Address_Word": "605",
+      "IO_Address_Bit": "0",
+      "machine": "ORINDYAC6",
+      "address_fields": [
+        "IO_Address_Word",
+        "IO_Address_Bit"
+      ],
+      "reference_path": "Conveyor.IO_Address_Word/Bit \u2192 Configio.Octal_Word \u2192 eipcfg module",
+      "confidence": "HIGH",
+      "evidence_class": "CONVEYOR_WORD_BIT"
+    },
+    {
+      "class": "VFD",
+      "engineering_object": "VFD600_AUX",
+      "source_table": "FORTNA/Conveyor.asc",
+      "io_name": "VFD600_AUX",
+      "type": "STRAIGHT",
+      "description": "VFD600 IS RUNNING",
+      "IO_Address_Word": "632",
+      "IO_Address_Bit": "0",
+      "machine": "ORINDYAC6",
+      "address_fields": [
+        "IO_Address_Word",
+        "IO_Address_Bit"
+      ],
+      "reference_path": "Conveyor.IO_Address_Word/Bit \u2192 Configio.Octal_Word \u2192 eipcfg module",
+      "confidence": "HIGH",
+      "evidence_class": "CONVEYOR_WORD_BIT"
+    },
+    {
+      "class": "solenoid/SSV",
+      "engineering_object": "SSVEZPE540_P",
+      "source_table": "FORTNA/Conveyor.asc",
+      "io_name": "SSVEZPE540_P",
+      "type": "TRIANG",
+      "description": "ENERGIZE TO HOLD PRODUCT AT DISCHARGE END OF P540",
+      "IO_Address_Word": "621",
+      "IO_Address_Bit": "0",
+      "machine": "ORINDYAC6",
+      "address_fields": [
+        "IO_Address_Word",
+        "IO_Address_Bit"
+      ],
+      "reference_path": "Conveyor.IO_Address_Word/Bit \u2192 Configio.Octal_Word \u2192 eipcfg module",
+      "confidence": "HIGH",
+      "evidence_class": "CONVEYOR_WORD_BIT"
+    },
+    {
+      "class": "pushbutton",
+      "engineering_object": "6PBSTART",
+      "source_table": "FORTNA/Conveyor.asc",
+      "io_name": "6PBSTART",
+      "type": "INVALID",
+      "description": "CP6 START PUSHBUTTON HAS BEEN PRESSED",
+      "IO_Address_Word": "600",
+      "IO_Address_Bit": "0",
+      "machine": "ORINDYAC6",
+      "address_fields": [
+        "IO_Address_Word",
+        "IO_Address_Bit"
+      ],
+      "reference_path": "Conveyor.IO_Address_Word/Bit \u2192 Configio.Octal_Word \u2192 eipcfg module",
+      "confidence": "HIGH",
+      "evidence_class": "CONVEYOR_WORD_BIT"
+    },
+    {
+      "class": "estop",
+      "engineering_object": "6MCR1AUX",
+      "source_table": "FORTNA/Conveyor.asc",
+      "io_name": "6MCR1AUX",
+      "type": "STRAIGHT",
+      "description": "MASTER CONTROL RELAY 6MCR1 IS ENERGIZED",
+      "IO_Address_Word": "600",
+      "IO_Address_Bit": "2",
+      "machine": "ORINDYAC6",
+      "address_fields": [
+        "IO_Address_Word",
+        "IO_Address_Bit"
+      ],
+      "reference_path": "Conveyor.IO_Address_Word/Bit \u2192 Configio.Octal_Word \u2192 eipcfg module",
+      "confidence": "HIGH",
+      "evidence_class": "CONVEYOR_WORD_BIT"
+    }
+  ],
+  "gate3_reverse_ia16": {
+    "adapter": "T_1794_AENT_1",
+    "ip": "192.168.1.51",
+    "module": "1794-IA16-2",
+    "type": "1794-IA16",
+    "slot": 1,
+    "channels_0_15": [],
+    "note": "Conveyor claims indexed by word:bit; Configio Desc form 1794-AENT-N-S not parsed by current resolver \u2192 word map empty \u2192 zero reverse joins via physical endpoint"
+  },
+  "word_space": {
+    "configio_desc_samples": [
+      "1794-AENT-51-0",
+      "1794-AENT-51-1",
+      "1794-AENT-51-2",
+      "1794-AENT-51-3",
+      "1794-IA16-600-4",
+      "1794-IA16-600-5",
+      "1794-IA16-601-6",
+      "1794-IA16-601-7",
+      "1794-IA16-602-8",
+      "1794-IA16-602-9",
+      "1794-IA16-603-10",
+      "1794-IA16-603-11"
+    ],
+    "configio_parse_ok": 0,
+    "configio_words": [
+      600,
+      601,
+      602,
+      603,
+      604,
+      605,
+      606,
+      607,
+      610,
+      611,
+      612,
+      613,
+      614,
+      615,
+      616,
+      617,
+      620,
+      621,
+      622,
+      630,
+      631,
+      632,
+      633,
+      634,
+      640,
+      641,
+      642,
+      643,
+      644,
+      645,
+      646,
+      647,
+      650,
+      651,
+      652,
+      653,
+      654,
+      655,
+      656,
+      657
+    ],
+    "conveyor_words": [
+      600,
+      601,
+      602,
+      603,
+      604,
+      605,
+      606,
+      607,
+      610,
+      611,
+      612,
+      613,
+      614,
+      615,
+      616,
+      617,
+      620,
+      621,
+      622,
+      630,
+      631,
+      632,
+      633,
+      634,
+      640,
+      641,
+      642,
+      643,
+      644,
+      645,
+      646,
+      647,
+      675,
+      676,
+      677
+    ],
+    "overlap": [
+      600,
+      601,
+      602,
+      603,
+      604,
+      605,
+      606,
+      607,
+      610,
+      611,
+      612,
+      613,
+      614,
+      615,
+      616,
+      617,
+      620,
+      621,
+      622,
+      630,
+      631,
+      632,
+      633,
+      634,
+      640,
+      641,
+      642,
+      643,
+      644,
+      645,
+      646,
+      647
+    ],
+    "conveyor_only_count": 3,
+    "configio_only_count": 8,
+    "configio_desc_form": "1794-AENT-{node}-{slotHalfIndex}"
+  },
+  "gate4_profiles": {
+    "PLC2": {
+      "machine": "ORNCCP2",
+      "configio_rows": 64,
+      "configio_desc_forms": {
+        "panel_catalog": 64
+      },
+      "conveyor_points": 243,
+      "resolve_ok": 242,
+      "owner_states": {
+        "ASSIGNED": 242,
+        "UNRESOLVED_OWNER": 0,
+        "ENGINEER_SPARE": 0,
+        "PROVEN_SPARE": 158,
+        "UNKNOWN": 0
+      },
+      "profiles": [
+        "CONVEYOR_WORD_BIT+CONFIGIO_TOPOLOGY"
+      ],
+      "adapters": [
+        "CP2RIO0",
+        "CP2RIO1",
+        "CP3RIO0",
+        "CP3RIO1",
+        "CP3RIO2"
+      ]
+    },
+    "PLC4": {
+      "machine": "ORNCCP4",
+      "configio_rows": 66,
+      "configio_desc_forms": {
+        "panel_catalog": 50,
+        "other_desc": 16
+      },
+      "conveyor_points": 263,
+      "resolve_ok": 205,
+      "owner_states": {
+        "ASSIGNED": 205,
+        "UNRESOLVED_OWNER": 0,
+        "ENGINEER_SPARE": 0,
+        "PROVEN_SPARE": 123,
+        "UNKNOWN": 0
+      },
+      "profiles": [
+        "CONVEYOR_WORD_BIT+CONFIGIO_TOPOLOGY"
+      ],
+      "adapters": [
+        "CP1RIO0",
+        "CP4RIO0",
+        "CP4RIO1",
+        "CP4RIO2",
+        "CP1RIO1"
+      ]
+    },
+    "PLC5": {
+      "machine": "ORNCCP5",
+      "configio_rows": 112,
+      "configio_desc_forms": {
+        "panel_node": 112
+      },
+      "conveyor_points": 406,
+      "resolve_ok": 406,
+      "owner_states": {
+        "ASSIGNED": 406,
+        "UNRESOLVED_OWNER": 0,
+        "ENGINEER_SPARE": 0,
+        "PROVEN_SPARE": 306,
+        "UNKNOWN": 0
+      },
+      "profiles": [
+        "CONVEYOR_WORD_BIT+CONFIGIO_TOPOLOGY"
+      ],
+      "adapters": [
+        "CP5RIO0",
+        "CP5RIO1",
+        "CP5RIO2",
+        "CP5RIO3",
+        "CP6RIO0",
+        "CP6RIO1",
+        "CP6RIO2",
+        "CP7RIO0"
+      ]
+    },
+    "VIRGIN": {
+      "machine": "ORINDYAC6",
+      "configio_rows": 72,
+      "configio_desc_forms": {
+        "aent_node_slot": 16,
+        "other_desc": 56
+      },
+      "conveyor_points": 358,
+      "resolve_ok": 0,
+      "owner_states": {
+        "ASSIGNED": 0,
+        "UNRESOLVED_OWNER": 0,
+        "ENGINEER_SPARE": 0,
+        "PROVEN_SPARE": 0,
+        "UNKNOWN": 0
+      },
+      "profiles": [
+        "CONVEYOR_WORD_BIT+CONFIGIO_AENT_NODE_SLOT",
+        "CONVEYOR_WORD_BIT_UNJOINED"
+      ],
+      "adapters": [
+        "T_1794_AENT_1",
+        "T_1794_AENT_2",
+        "T_1794_AENT_3",
+        "T_1794_AENT_4",
+        "PowerFlex70_5",
+        "PowerFlex70_6"
+      ]
+    }
+  },
+  "hardware_stats": {
+    "adapter_count": 6,
+    "word_count": 0,
+    "unresolved_count": 40,
+    "by_word_bit_count": 0,
+    "rio_names": [
+      "T_1794_AENT_1",
+      "T_1794_AENT_2",
+      "T_1794_AENT_3",
+      "T_1794_AENT_4",
+      "PowerFlex70_5",
+      "PowerFlex70_6"
+    ],
+    "owner_states": {
+      "ASSIGNED": 0,
+      "UNRESOLVED_OWNER": 0,
+      "ENGINEER_SPARE": 0,
+      "PROVEN_SPARE": 0,
+      "UNKNOWN": 0
+    },
+    "unresolved_owner_count": 0,
+    "assigned_owner_count": 0,
+    "proven_spare_count": 0
+  },
+  "acceptance": {
+    "physical_channels": 288,
+    "automatic_owners_resolved": 189,
+    "owners_by_profile": {
+      "CONVEYOR_WORD_BIT+CONFIGIO_CATALOG_WORD_BANK": 189
+    },
+    "unresolved": 28,
+    "unused_mapped": 71,
+    "proven_spare": 0,
+    "conflicts": 28,
+    "engineer_assigned": 0,
+    "owner_states": {
+      "ASSIGNED": 189,
+      "UNRESOLVED_OWNER": 28,
+      "ENGINEER_SPARE": 0,
+      "PROVEN_SPARE": 0,
+      "UNUSED_MAPPED": 71,
+      "UNKNOWN": 0
+    }
+  },
+  "generated_at": "2026-09-18T18:25:23.110613+00:00",
+  "five_complete_traces": [
+    {
+      "class": "PE",
+      "engineering_object": "PE600_J",
+      "source_table": "FORTNA/Conveyor.asc",
+      "IO_Address_Word": "605",
+      "IO_Address_Bit": "0",
+      "physical_endpoint": "T_1794_AENT_1:I.Data[5].0",
+      "owner_state": "ASSIGNED",
+      "engineering_owner": "PE600_J",
+      "owner_source": "RUN_CONVEYOR",
+      "profile": "CONVEYOR_WORD_BIT+CONFIGIO_CATALOG_WORD_BANK"
+    },
+    {
+      "class": "VFD",
+      "engineering_object": "VFD600_AUX",
+      "source_table": "FORTNA/Conveyor.asc",
+      "IO_Address_Word": "632",
+      "IO_Address_Bit": "0",
+      "physical_endpoint": "T_1794_AENT_4:I.Data[2].0",
+      "owner_state": "ASSIGNED",
+      "engineering_owner": "VFD600_AUX",
+      "owner_source": "RUN_CONVEYOR",
+      "profile": "CONVEYOR_WORD_BIT+CONFIGIO_CATALOG_WORD_BANK"
+    },
+    {
+      "class": "solenoid",
+      "engineering_object": "SSVEZPE540_P",
+      "source_table": "FORTNA/Conveyor.asc",
+      "IO_Address_Word": "621",
+      "IO_Address_Bit": "0",
+      "physical_endpoint": "T_1794_AENT_3:O.Data[1].0",
+      "owner_state": "ASSIGNED",
+      "engineering_owner": "SSVEZPE540_P",
+      "owner_source": "RUN_CONVEYOR",
+      "profile": "CONVEYOR_WORD_BIT+CONFIGIO_CATALOG_WORD_BANK"
+    },
+    {
+      "class": "pushbutton",
+      "engineering_object": "6PBSTART",
+      "source_table": "FORTNA/Conveyor.asc",
+      "IO_Address_Word": "600",
+      "IO_Address_Bit": "0",
+      "physical_endpoint": "T_1794_AENT_1:I.Data[2].0",
+      "owner_state": "ASSIGNED",
+      "engineering_owner": "6PBSTART",
+      "owner_source": "RUN_CONVEYOR",
+      "profile": "CONVEYOR_WORD_BIT+CONFIGIO_CATALOG_WORD_BANK"
+    },
+    {
+      "class": "estop_aux",
+      "engineering_object": "6MCR1AUX",
+      "source_table": "FORTNA/Conveyor.asc",
+      "IO_Address_Word": "600",
+      "IO_Address_Bit": "2",
+      "physical_endpoint": "T_1794_AENT_1:I.Data[2].2",
+      "owner_state": "ASSIGNED",
+      "engineering_owner": "6MCR1AUX",
+      "owner_source": "RUN_CONVEYOR",
+      "profile": "CONVEYOR_WORD_BIT+CONFIGIO_CATALOG_WORD_BANK"
+    }
+  ],
+  "root_cause": {
+    "before": "Configio Desc 1794-IA16-600-4 unparsed \u2192 empty word map \u2192 0 ASSIGNED",
+    "after": "catalog_word_bank parse + Configio.Bank\u2194EIPModules bank match \u2192 189 ASSIGNED",
+    "finished_plc": "NOT_INSPECTED"
+  }
+}

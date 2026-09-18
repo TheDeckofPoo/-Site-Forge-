@@ -22,6 +22,7 @@ from fortna_hardware_io_model import (  # noqa: E402
     OWNER_ASSIGNED,
     OWNER_ENGINEER_SPARE,
     OWNER_PROVEN_SPARE,
+    OWNER_UNUSED_MAPPED,
     OWNER_UNRESOLVED,
     REJECTION_OWNER_CONFLICT,
     enrich_channel_ownership,
@@ -173,7 +174,7 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         self.assertNotEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
 
     def test_topology_desc_alone_unused_bit_is_proven_spare(self) -> None:
-        """Topology Desc CP5-NODE51-1A alone ≠ occupied → unused bit PROVEN_SPARE."""
+        """Topology Desc CP5-NODE51-1A alone ≠ occupied → unused bit UNUSED_MAPPED."""
         ch = {
             "physical_address": "CP5RIO0:O.Data[0].0",
             "fortna_word": 500,
@@ -191,15 +192,16 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
             adapter={"rio_name": "CP5RIO0"},
             module={"slot": 1, "data_index": 0, "direction": "O", "type": "1794-OB16P"},
         )
-        self.assertEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
+        self.assertEqual(ch["owner_state"], OWNER_UNUSED_MAPPED)
         self.assertEqual(ch.get("owner_source"), "CONFIGIO_MAPPED_UNUSED_BIT")
-        self.assertTrue(ch.get("is_spare"))
+        self.assertTrue(ch.get("is_unused_mapped"))
+        self.assertFalse(ch.get("is_spare"))
         self.assertFalse(ch.get("unresolved"))
         self.assertFalse(ch.get("configio_occupied"))
         self.assertTrue(ch.get("configio_topology"))
 
     def test_panel_catalog_topology_desc_unused_bit_proven_spare(self) -> None:
-        """PANEL-CATALOG Desc CP2-1794-IA16-3 alone ≠ occupied → PROVEN_SPARE."""
+        """PANEL-CATALOG Desc CP2-1794-IA16-3 alone ≠ occupied → UNUSED_MAPPED."""
         ch = {
             "physical_address": "CP2RIO0:I.Data[1].7",
             "fortna_word": 201,
@@ -216,7 +218,7 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
             adapter={"rio_name": "CP2RIO0"},
             module={"slot": 2, "data_index": 1, "direction": "I", "type": "1794-IA16"},
         )
-        self.assertEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
+        self.assertEqual(ch["owner_state"], OWNER_UNUSED_MAPPED)
         self.assertEqual(ch.get("owner_source"), "CONFIGIO_MAPPED_UNUSED_BIT")
         self.assertFalse(ch.get("configio_occupied"))
 
@@ -340,7 +342,7 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         self.assertNotEqual(st, OWNER_PROVEN_SPARE)
 
     def test_mapped_endpoint_without_owner_is_proven_spare(self) -> None:
-        """Mapped physical endpoint + no owner + no signal claim → PROVEN_SPARE."""
+        """Mapped physical endpoint + no owner + no signal claim → UNUSED_MAPPED."""
         ep = make_physical_endpoint(
             rio_name="CP2RIO0",
             direction="I",
@@ -357,7 +359,7 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
             topology_known=True,
             configio_occupied=False,
         )
-        self.assertEqual(st, OWNER_PROVEN_SPARE)
+        self.assertEqual(st, OWNER_UNUSED_MAPPED)
 
 
 class TestPhysicalEndpointEqualityNotPrefix(unittest.TestCase):
@@ -600,6 +602,7 @@ class TestPlc5Plc2CollisionStillPass(unittest.TestCase):
                                 OWNER_ASSIGNED,
                                 OWNER_UNRESOLVED,
                                 OWNER_PROVEN_SPARE,
+                                OWNER_UNUSED_MAPPED,
                                 OWNER_ENGINEER_SPARE,
                                 "UNKNOWN",
                             },

@@ -40,6 +40,7 @@ OWNER_ASSIGNED = "ASSIGNED"
 OWNER_UNRESOLVED = "UNRESOLVED_OWNER"
 OWNER_ENGINEER_SPARE = "ENGINEER_SPARE"
 OWNER_PROVEN_SPARE = "PROVEN_SPARE"
+OWNER_UNUSED_MAPPED = "UNUSED_MAPPED"
 OWNER_UNKNOWN = "UNKNOWN"
 
 OWNER_STATES = (
@@ -47,6 +48,7 @@ OWNER_STATES = (
     OWNER_UNRESOLVED,
     OWNER_ENGINEER_SPARE,
     OWNER_PROVEN_SPARE,
+    OWNER_UNUSED_MAPPED,
     OWNER_UNKNOWN,
 )
 
@@ -255,7 +257,12 @@ def _configio_desc_claim(desc: str | None) -> str:
         from fortna_physical_word_resolver import configio_desc_evidence
 
         ev = configio_desc_evidence(d)
-        if ev and ev.get("form") in ("panel_node", "panel_catalog"):
+        if ev and ev.get("form") in (
+            "panel_node",
+            "panel_catalog",
+            "catalog_word_bank",
+            "catalog_aent_node_bank",
+        ):
             return "topology"
     except Exception:
         pass
@@ -317,13 +324,10 @@ def resolve_owner_state(
 ) -> str:
     """Classify engineering owner relative to a physical endpoint (Gate D).
 
-    PROVEN_SPARE when:
-      - positive spare token (Conveyor SPARE / Configio Desc spare), or
-      - mapped physical endpoint + no Conveyor owner + no non-topology Configio
-        signal claim (unused point on an installed module).
-
-    UNRESOLVED_OWNER only for conflict, failed named resolve, non-topology
-    Configio signal claim that could not bind, or explicit owner_resolution_failed.
+    PROVEN_SPARE requires positive spare evidence (Conveyor/Configio spare token).
+    UNUSED_MAPPED = physical endpoint mapped on an installed module with no
+    engineering owner and no positive spare proof — absence is NOT proven spare.
+    UNRESOLVED_OWNER for conflict / failed named resolve / non-topology claim.
     Topology-only Configio Desc is never occupancy.
     """
     ep = physical_endpoint if isinstance(physical_endpoint, dict) else None
@@ -335,17 +339,16 @@ def resolve_owner_state(
     if owner and not _is_spare_token(owner):
         return OWNER_ASSIGNED
     if owner_conflict or owner_resolution_failed:
-        # Topology known but owner could not be bound uniquely / at all
         return OWNER_UNRESOLVED if topo else OWNER_UNKNOWN
-    # Positive spare token evidence
+    # Positive spare token evidence only
     if spare_claim or (owner and _is_spare_token(owner)) or configio_spare:
         return OWNER_PROVEN_SPARE if topo else OWNER_UNKNOWN
     # Non-topology Configio signal/name claim + no resolvable owner → UNRESOLVED
     if topo and configio_occupied and not owner:
         return OWNER_UNRESOLVED
-    # Mapped endpoint + no owner + topology-only / empty Desc → unused module bit
+    # Mapped endpoint + no owner + no spare proof → unused (not proven spare)
     if topo and not owner:
-        return OWNER_PROVEN_SPARE
+        return OWNER_UNUSED_MAPPED
     if not topo and not owner:
         return OWNER_UNKNOWN
     return OWNER_UNKNOWN
@@ -487,29 +490,63 @@ def _index_conveyor_claims(resolver: PhysicalWordResolver) -> dict[str, Any]:
             if existing.get("name") and existing["name"] not in conflicts[ch]:
                 conflicts[ch].insert(0, existing["name"])
 
-    # Explicit SPARE / INVALID rows at word.bit (not returned by extract_io_points)
+    # Conveyor.asc second pass: include Type=INVALID named field devices
+    # (pushbuttons, MCR coils, etc.) that extract_io_points may filter, plus
+    # explicit SPARE identity rows. Scope to resolver.machine when set.
     try:
         from fortna_asc import read_asc
 
         conv = Path(resolver.run_dir) / "FORTNA" / "Conveyor.asc"
+        mach = str(getattr(resolver, "machine", "") or "").strip().upper()
         if conv.is_file():
             _, rows = read_asc(conv)
             for row in rows:
-                io_name = (row.get("IO_Name") or "").strip()
-                if not _is_spare_token(io_name) and (row.get("Type") or "").strip().upper() != "SPARE":
-                    # Only track explicit spare/invalid identity rows here
-                    if io_name.upper() not in {"SPARE", "INVALID", "N/A"}:
+                if mach:
+                    rm = str(row.get("Machine_Name") or "").strip().upper()
+                    if rm and rm != mach:
                         continue
+                io_name = (row.get("IO_Name") or "").strip()
+                if not io_name or io_name.upper() in {"INVALID", "N/A", "NONE"}:
+                    continue
                 word = (row.get("IO_Address_Word") or "").strip()
                 bit = (row.get("IO_Address_Bit") or "").strip()
                 if not word or not bit:
                     continue
                 hit = resolver.resolve(word, bit)
                 if not hit:
+                    if not _is_spare_token(io_name):
+                        unresolved_named.append(
+                            {
+                                "name": io_name,
+                                "fortna_word": word,
+                                "fortna_bit": bit,
+                                "reason": "physical_resolve_failed",
+                                "source": "conveyor_direct",
+                            }
+                        )
                     continue
                 ch = (hit.get("channel") or "").strip()
-                if ch:
+                if not ch:
+                    continue
+                if _is_spare_token(io_name) or (row.get("Type") or "").strip().upper() == "SPARE":
                     spare_channels.add(ch)
+                    continue
+                # Named engineering object (including Type=INVALID logical catalog)
+                if ch in owners:
+                    existing = owners[ch]
+                    if (existing.get("name") or "").strip() != io_name:
+                        conflicts.setdefault(ch, []).append(io_name)
+                        if existing.get("name") and existing["name"] not in conflicts[ch]:
+                            conflicts[ch].insert(0, existing["name"])
+                    continue
+                owners[ch] = {
+                    "name": io_name,
+                    "tag": None,
+                    "device_class": None,
+                    "equipment_kind": None,
+                    "fortna_address": f"Bank{word}.{bit}",
+                    "source_table": "FORTNA/Conveyor.asc",
+                }
     except Exception:
         pass
 
@@ -660,8 +697,9 @@ def enrich_channel_ownership(
         elif configio_spare:
             owner_source = "CONFIGIO_SPARE"
         else:
-            # Unused bit on installed / topology-mapped module
-            owner_source = "CONFIGIO_MAPPED_UNUSED_BIT"
+            owner_source = "RUN_SPARE"
+    elif state == OWNER_UNUSED_MAPPED and not engineering_owner:
+        owner_source = "CONFIGIO_MAPPED_UNUSED_BIT"
     elif state == OWNER_UNRESOLVED and not engineering_owner and owner_source == "NONE":
         owner_source = (
             "CONFIGIO_SIGNAL_UNBOUND" if configio_occupied else "OWNER_UNRESOLVED"
@@ -678,6 +716,7 @@ def enrich_channel_ownership(
     ch["unresolved"] = state == OWNER_UNRESOLVED
     ch["is_unresolved"] = state == OWNER_UNRESOLVED
     ch["is_spare"] = state in (OWNER_PROVEN_SPARE, OWNER_ENGINEER_SPARE)
+    ch["is_unused_mapped"] = state == OWNER_UNUSED_MAPPED
     if state == OWNER_UNRESOLVED:
         ch["rejection_reason"] = _rejection_reason_for_unresolved(
             owner_conflict=owner_conflict,

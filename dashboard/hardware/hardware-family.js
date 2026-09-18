@@ -109,6 +109,41 @@
    * Dispatch rack rendering by family. 1794 FLEX renderer stays frozen;
    * 1734 POINT uses PointRack when available.
    */
+  /** Generic industrial VFD / Ethernet drive card (not Flex AENT chrome). */
+  function renderEthernetDriveCard(ad) {
+    const esc = (s) => String(s ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+    const mods = ad?.modules || [];
+    const head = mods.find((m) => String(m.connection || '').toUpperCase() === 'HEADNODE') || mods[0] || {};
+    const catalog = String(head.type || head.catalog || ad?.catalog || 'PowerFlex').trim();
+    const brand = /powerflex|allen|ab\b/i.test(catalog) || /powerflex/i.test(String(ad?.name || ''))
+      ? 'Allen-Bradley'
+      : 'Ethernet Drive';
+    const product = /powerflex/i.test(catalog) ? 'PowerFlex' : (catalog.split('-')[0] || 'Drive');
+    const engName = String(ad?.rio_name || ad?.name || head.name || 'Drive').trim();
+    const ip = String(ad?.targetip || ad?.ip || '').trim();
+    const part = String(head.name || catalog || '').trim();
+    return `
+      <div class="hw-vfd-card rounded-xl border border-slate-700 bg-gradient-to-b from-[#121a24] to-[#0a1018] p-3 min-w-[11rem] max-w-[14rem] shadow-lg" data-rio="${esc(engName)}">
+        <div class="rounded-lg border border-slate-600 bg-[#0c1219] px-3 py-4 text-center space-y-1">
+          <div class="text-[10px] uppercase tracking-widest text-slate-500">${esc(brand)}</div>
+          <div class="text-base font-semibold text-slate-100">${esc(product)}</div>
+          <div class="text-[10px] mono text-sky-300/90 break-all">${esc(part)}</div>
+          <div class="flex justify-center gap-4 pt-2 text-[9px] text-slate-500">
+            <span><span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500/80 mr-1"></span>STS</span>
+            <span><span class="inline-block w-1.5 h-1.5 rounded-full bg-sky-500/80 mr-1"></span>NET</span>
+          </div>
+        </div>
+        <div class="mt-2 text-center space-y-0.5">
+          <div class="text-xs font-medium text-slate-200 mono">${esc(engName)}</div>
+          ${ip ? `<div class="text-[10px] mono text-slate-400">${esc(ip)}</div>` : ''}
+        </div>
+      </div>`;
+  }
+
   function renderRacks(adapters, opts) {
     opts = opts || {};
     const list = adapters || [];
@@ -120,8 +155,7 @@
     const cards = list.map((ad) => {
       const rid = rendererIdForAdapter(ad);
       if (rid === 'ethernet_drive') {
-        const name = String(ad?.name || ad?.rio_name || 'drive').trim();
-        return `<div class="text-sm text-slate-400 py-4 px-3 rounded border border-slate-800 bg-[#0a1018]">Ethernet drive (not Flex AENT): <span class="mono text-slate-300">${name}</span></div>`;
+        return renderEthernetDriveCard(ad);
       }
       if (rid === 'point' && global.PointRack && typeof global.PointRack.renderRacks === 'function') {
         return global.PointRack.renderRacks([ad], opts);
