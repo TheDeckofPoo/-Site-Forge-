@@ -109,6 +109,76 @@ if (-not (Test-ElectronBinary)) {
     Write-Host 'OK: Electron repaired.' -ForegroundColor Green
 }
 
+# Runtime provenance snapshot — deterministic even if git is unavailable later
+function Write-RuntimeBuildJson {
+    $outPath = Join-Path $desktopDir '.runtime_build.json'
+    $sha = $null
+    $short = $null
+    $branch = $null
+    $gitRoot = $null
+    try {
+        Push-Location $repoRoot
+        $sha = (git rev-parse HEAD 2>$null)
+        $short = (git rev-parse --short HEAD 2>$null)
+        $branch = (git rev-parse --abbrev-ref HEAD 2>$null)
+        $gitRoot = (git rev-parse --show-toplevel 2>$null)
+    } catch {
+        # keep nulls; merge with existing file below
+    } finally {
+        Pop-Location
+    }
+    $started = [DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ')
+    $existingSha = $null
+    $existingShort = $null
+    $existingBranch = $null
+    $existingRoot = $null
+    if (Test-Path $outPath) {
+        try {
+            $existing = Get-Content -Raw -Path $outPath | ConvertFrom-Json
+            $existingSha = $existing.gitSha
+            $existingShort = $existing.gitShaShort
+            $existingBranch = $existing.branch
+            $existingRoot = $existing.repoRoot
+        } catch {}
+    }
+    if (-not $sha) { $sha = $existingSha }
+    if (-not $short) { $short = $existingShort }
+    if (-not $branch) { $branch = $existingBranch }
+    if (-not $gitRoot) { $gitRoot = $existingRoot }
+    if (-not $short -and $sha -and $sha.Length -ge 7) { $short = $sha.Substring(0, 7) }
+    $payload = [ordered]@{
+        gitSha           = if ($sha) { "$sha".Trim() } else { 'unknown' }
+        gitShaShort      = if ($short) { "$short".Trim() } else { 'unknown' }
+        branch           = if ($branch) { "$branch".Trim() } else { 'unknown' }
+        repoRoot         = if ($gitRoot) { "$gitRoot".Trim() } else { $repoRoot }
+        sourceRoot       = $repoRoot
+        dashboardSource  = (Join-Path $repoRoot 'dashboard\index.html')
+        desktopDir       = $desktopDir
+        pythonSource     = if ($pythonExe) { $pythonExe } else { 'unavailable' }
+        compilerSource   = (Join-Path $repoRoot 'tools\scripts')
+        mode             = 'dev'
+        startedAt        = $started
+        provenanceSource = if ($sha) { 'git' } elseif ($existingSha) { 'runtime_build_json' } else { 'unavailable' }
+        worktree         = if ($gitRoot) { "$gitRoot".Trim() } else { $repoRoot }
+    }
+    ($payload | ConvertTo-Json -Depth 4) | Set-Content -Path $outPath -Encoding UTF8
+    Write-Host "PROVENANCE: $($payload.gitShaShort) @ $($payload.branch) → $outPath" -ForegroundColor DarkCyan
+}
+
+Write-RuntimeBuildJson
+
+# Prefer python collector when available (adds absolute paths + self-check capability)
+if ($pythonExe) {
+    $provScript = Join-Path $repoRoot 'tools\scripts\fortna_runtime_provenance.py'
+    if (Test-Path $provScript) {
+        try {
+            & $pythonExe $provScript --repo-root $repoRoot --mode dev --write (Join-Path $desktopDir '.runtime_build.json') 2>$null | Out-Null
+        } catch {
+            # snapshot from git above is enough
+        }
+    }
+}
+
 Write-Host ''
 Write-Host 'START: Site Forge...' -ForegroundColor Cyan
 Write-Host ''

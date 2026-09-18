@@ -48,6 +48,25 @@ BINDING_DISCRETE = "DISCRETE_MOTOR_STARTER"
 BINDING_ETHERNET = "ETHERNET_VFD_UDT"
 BINDING_UNKNOWN = "UNKNOWN"
 
+# Ethernet-only optional command suffixes (PowerFlex LogicCommand / VFDOut bits).
+# Known-site Conveyor rows never carry these — emit only when ETHERNET_VFD_UDT proven.
+# Do NOT fabricate BOOL tags for these roles on discrete Motor_Starter sites.
+ETHERNET_OPTIONAL_COMMAND_SUFFIXES = {
+    "JOG": ("JOG_CMD", "VFDOut.Jog"),
+    "CLR_FLT": ("CLEAR_FAULT_CMD", "VFDOut.ClearFaults"),
+    "CLEAR_FLT": ("CLEAR_FAULT_CMD", "VFDOut.ClearFaults"),
+    "CLEARFAULTS": ("CLEAR_FAULT_CMD", "VFDOut.ClearFaults"),
+    "DIR_BIT0": ("DIR_FORWARD_CMD", "VFDOut.Forward"),
+    "DIR_BIT1": ("DIR_REVERSE_CMD", "VFDOut.Reverse"),
+    "LOC_CTRL": ("LOCAL_KEYPAD_CMD", "VFDOut.ForceKeypadCtrl"),
+    "MOP_INC": ("MOP_INCREMENT_CMD", "VFDOut.MOPIncrement"),
+    "MOP_DEC": ("MOP_DECREMENT_CMD", "VFDOut.MOPDecrement"),
+    "ACC_BIT0": ("ACCEL_RATE1_CMD", "VFDOut.AccelRate1"),
+    "ACC_BIT1": ("ACCEL_RATE2_CMD", "VFDOut.AccelRate2"),
+    "DEC_BIT0": ("DECEL_RATE1_CMD", "VFDOut.DecelRate1"),
+    "DEC_BIT1": ("DECEL_RATE2_CMD", "VFDOut.DecelRate2"),
+}
+
 
 def _ts() -> str:
     return datetime.now(timezone.utc).isoformat()
@@ -71,9 +90,21 @@ def _vfd_base_and_suffix(io_name: str) -> tuple[str, str] | None:
     return base, suf
 
 
+def is_ethernet_optional_command_suffix(suffix: str) -> bool:
+    return (suffix or "").strip().upper() in ETHERNET_OPTIONAL_COMMAND_SUFFIXES
+
+
+def ethernet_optional_command_member(suffix: str) -> str | None:
+    """VFD_UDT member path fragment (VFDOut.*) for an optional ethernet command role."""
+    hit = ETHERNET_OPTIONAL_COMMAND_SUFFIXES.get((suffix or "").strip().upper())
+    return hit[1] if hit else None
+
+
 def _role_for_point(io_name: str, desc: str, suffix: str) -> str:
     if suffix in DISCRETE_ROLE_BY_SUFFIX:
         return DISCRETE_ROLE_BY_SUFFIX[suffix]
+    if suffix in ETHERNET_OPTIONAL_COMMAND_SUFFIXES:
+        return ETHERNET_OPTIONAL_COMMAND_SUFFIXES[suffix][0]
     d = (desc or "").upper()
     if "HAS FAULTED" in d or "FAULT" in d:
         return "FAULT_STATUS"
@@ -220,6 +251,15 @@ def build_vfd_device_model(
         member = DISCRETE_MS_MEMBER.get(role)
         if member:
             signal["canonical_member"] = f"{rec['plc_tag']}.{member}"
+        elif is_ethernet_optional_command_suffix(suffix):
+            # Capability only — do not bind on DISCRETE_MOTOR_STARTER devices.
+            eth_m = ethernet_optional_command_member(suffix)
+            signal["reference_class"] = "ETHERNET_OPTIONAL_COMMAND"
+            signal["activation"] = "REQUIRES_ETHERNET_VFD_UDT"
+            signal["canonical_member_ethernet"] = (
+                f"{rec['plc_tag']}.{eth_m}" if eth_m else None
+            )
+            signal["canonical_member"] = None
         rec["signals"].append(signal)
 
     spd = _load_spdcontrol_network_state(root)
@@ -267,7 +307,10 @@ def build_vfd_device_model(
             "Known PLC2/4/5 sites use DISCRETE_MOTOR_STARTER (P###_VFD Motor_Starter_UDT).",
             "SpdControl VFD_Net* / VFD_Reset / VFD_Aux INVALID ⇒ NOT_CONFIGURED ethernet path.",
             "Do not emit VFD_UDT instances without configured network evidence.",
+            "Optional JOG/CLR_FLT/DIR_BIT/LOC_CTRL/MOP_*/ACC_BIT roles are Ethernet "
+            "VFDOut capability — gate by binding, never fabricate BOOL.",
         ],
+        "ethernet_optional_command_suffixes": sorted(ETHERNET_OPTIONAL_COMMAND_SUFFIXES),
     }
 
 

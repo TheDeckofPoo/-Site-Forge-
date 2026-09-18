@@ -35,7 +35,7 @@
     "ASSIGNED": "Proven RUN or engineer logical owner",
     "UNRESOLVED_OWNER": "Topology known; owner failed or conflicted — UI must not show SPARE",
     "ENGINEER_SPARE": "Engineer explicitly spared",
-    "PROVEN_SPARE": "RUN spare or unused Configio capacity bit",
+    "PROVEN_SPARE": "Positive Fortna spare evidence only (Conveyor SPARE token or Configio Desc spare token) — never absence of owner join",
     "UNKNOWN": "Incomplete physical endpoint"
   },
   "symbol_classes": [

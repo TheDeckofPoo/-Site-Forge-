@@ -607,11 +607,18 @@ def _merge_engineer_zone(
             eng.get("silenceSource") or eng.get("silence_source") or ""
         ).strip()
         z["silenceOrigin"] = ORIGIN_ENGINEER
-    # Gate I — engineering_name editable; source_id immutable
-    src = str(eng.get("source_id") or eng.get("sourceId") or z.get("source_id") or z.get("name") or "").strip()
-    if src:
-        z["source_id"] = src
-        z["id"] = src
+    # Gate I / Gate 8 — engineering_name editable; RUN/auto source_id immutable.
+    # Engineer overlay must never replace an existing RUN-discovered source_id.
+    auto_src = str(
+        auto_zone.get("source_id") or auto_zone.get("sourceId") or auto_zone.get("name") or ""
+    ).strip()
+    eng_src = str(eng.get("source_id") or eng.get("sourceId") or "").strip()
+    if auto_src:
+        z["source_id"] = auto_src
+        z["id"] = auto_src
+    elif eng_src:
+        z["source_id"] = eng_src
+        z["id"] = eng_src
     eng_name = str(
         eng.get("engineering_name") or eng.get("engineeringName") or ""
     ).strip()
@@ -862,7 +869,9 @@ def build_safety_model(
                 and bool(ir.name)
             ),
         }
-        # Match engineer overlay by source_id first, then display name
+        # Match engineer overlay by source_id first. Display-name match only when
+        # engineer source_id is absent or identical — never let a different
+        # engineer zone overwrite a RUN source_id via engineering_name collision.
         eng_hit = eng_by_name.get(ir.name)
         if not eng_hit:
             for ez in eng_zones_list:
@@ -870,6 +879,8 @@ def build_safety_model(
                 if ez_sid and ez_sid == ir.name:
                     eng_hit = ez
                     break
+                if ez_sid and ez_sid != ir.name:
+                    continue
                 if str(ez.get("engineering_name") or ez.get("name") or "").strip() == ir.name:
                     eng_hit = ez
                     break
@@ -922,6 +933,30 @@ def build_safety_model(
         preserve_engineer=True,
     )
     zones_out = list(recon["zones"])
+    # Gate 8 — stamp canonical origin from provenance (RUN vs engineer coexistence)
+    for z in zones_out:
+        prov = str(z.get("provenance") or "").strip()
+        if prov in {PROVENANCE_RUN_DISCOVERED, PROVENANCE_ENGINEER_CREATED}:
+            z["origin"] = prov
+        elif z.get("runDiscovered") and not z.get("engineerEdited"):
+            z["origin"] = PROVENANCE_RUN_DISCOVERED
+            z["provenance"] = PROVENANCE_RUN_DISCOVERED
+        elif z.get("engineerEdited") or z.get("createdBy") == "engineer":
+            z["origin"] = PROVENANCE_ENGINEER_CREATED
+            z.setdefault("provenance", PROVENANCE_ENGINEER_CREATED)
+        else:
+            z.setdefault("origin", prov or PROVENANCE_UNKNOWN)
+        # Canonical identity fields always present
+        z["source_id"] = str(
+            z.get("source_id") or z.get("sourceId") or z.get("id") or z.get("name") or ""
+        ).strip()
+        z["engineering_name"] = str(
+            z.get("engineering_name")
+            or z.get("engineeringName")
+            or z.get("name")
+            or z.get("source_id")
+            or ""
+        ).strip()
 
     # Readiness via es_compiler field matrix (reuse)
     class _IR:

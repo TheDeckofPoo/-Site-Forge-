@@ -28,6 +28,7 @@ Desktop.ini
 npm-debug.log*
 .cache/
 dist/
+desktop/.runtime_build.json
 out/
 
 # --- Build outputs (regenerate from dashboard) ---

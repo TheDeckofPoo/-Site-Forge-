@@ -4667,20 +4667,70 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 return _from_word_map(neighbor)
         return None
 
-    def _vfd_ms_member(tname: str, direction: str) -> str | None:
-        """Map every VFD###_* point → P###_VFD Motor_Starter_UDT members.
-
-        Applies to ALL VFDs on the project (VFD118, VFD500, VFD816A, …), not one example.
-        Gold: AUX → .I.Auxiliary_Forward; EN out → .O.Run (no bare BOOL VFD tags).
-        """
+    def _vfd_parse(tname: str) -> tuple[str, str] | None:
         m = (
             re.match(r"^VFD(\d+[A-Z]?)(?:_(.+))?$", tname, re.I)
             or re.match(r"^T_VFD(\d+[A-Z]?)(?:_(.+))?$", tname, re.I)
         )
         if not m:
             return None
-        num = m.group(1)
-        suffix = (m.group(2) or "").upper()
+        return m.group(1), (m.group(2) or "").upper()
+
+    def _vfd_ethernet_optional_suffix(tname: str) -> str | None:
+        """Gate 6 — Ethernet-only VFD command roles (JOG/CLR_FLT/…).
+
+        Proven only when SpdControl/network binding activates ETHERNET_VFD_UDT.
+        Known discrete sites must not emit these as bare BOOL IO_MAP operands.
+        """
+        try:
+            from fortna_vfd_device_model import is_ethernet_optional_command_suffix
+        except Exception:
+            is_ethernet_optional_command_suffix = lambda _s: False  # noqa: E731
+        parsed = _vfd_parse(tname)
+        if not parsed:
+            return None
+        _num, suffix = parsed
+        if suffix and is_ethernet_optional_command_suffix(suffix):
+            return suffix
+        return None
+
+    def _ethernet_vfd_mode_active() -> bool:
+        """True only with proven SpdControl/network ethernet VFD capability.
+
+        Never keyed by site name. Discrete Motor_Starter path stays default.
+        """
+        # Explicit autogen input flag (engineer/capability proof) — default off.
+        if bool(getattr(inp, "ethernet_vfd_mode", False)):
+            return True
+        # Workbook / report capability stamp from VFDDeviceModel (not site whitelist).
+        cap = getattr(inp, "vfd_binding", None) or getattr(inp, "vfd_device_binding", None)
+        if str(cap or "").strip().upper() == "ETHERNET_VFD_UDT":
+            return True
+        return False
+
+    def _vfd_ms_member(tname: str, direction: str) -> str | None:
+        """Map every VFD###_* point → P###_VFD Motor_Starter_UDT members.
+
+        Applies to ALL VFDs on the project (VFD118, VFD500, VFD816A, …), not one example.
+        Gold: AUX → .I.Auxiliary_Forward; EN out → .O.Run (no bare BOOL VFD tags).
+        Ethernet optional command suffixes (JOG/CLR_FLT/…) are NOT discrete MS members.
+        """
+        parsed = _vfd_parse(tname)
+        if not parsed:
+            return None
+        num, suffix = parsed
+        # Gate 6 — never map ethernet-only command roles onto Motor_Starter_UDT
+        # or fall through to bare BOOL. Caller skips emit unless ethernet mode.
+        if _vfd_ethernet_optional_suffix(tname):
+            if _ethernet_vfd_mode_active():
+                try:
+                    from fortna_vfd_device_model import ethernet_optional_command_member
+                except Exception:
+                    return None
+                eth_m = ethernet_optional_command_member(suffix)
+                if eth_m:
+                    return f"P{num}_VFD.{eth_m}"
+            return None
         base = f"P{num}_VFD"
         d = (direction or "").upper()
         if suffix in ("AUX", "AUXILIARY", "AUX_FWD", "AF", "FB", "FEEDBACK"):
@@ -4872,6 +4922,7 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         _rung_xml(0, "NOP();", "CP_O — device tags → RUN/tar.gz outputs"),
     ]
     io_map_mapped = 0
+    io_map_skipped_optional_vfd = 0
     io_map_unmapped = 0
     io_map_skipped_spare = 0
     io_map_skipped_dir = 0
@@ -4948,6 +4999,11 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         tname = _safe(p.device_name)
         if not tname:
             continue
+        # Gate 6 — skip Ethernet-only VFD command roles unless capability proven.
+        # Do not fabricate BOOL; do not emit dangling VFD###_JOG bases.
+        if _vfd_ethernet_optional_suffix(tname) and not _ethernet_vfd_mode_active():
+            io_map_skipped_optional_vfd += 1
+            continue
         word = str(p.fortna_bank or "").strip()
         fbit = str(p.fortna_bit or "").strip()
         want = _io_point_want_dir(p.device_name or "", p.device_type or "", p.direction or "")
@@ -4979,6 +5035,12 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
             io_map_unmapped += 1
             continue
         member = _device_member(p.device_type or "", tname, p.direction or "")
+        # Belt-and-suspenders: never emit bare ethernet-optional VFD roots
+        if _vfd_ethernet_optional_suffix(tname) and (
+            not member or member == tname or member == _safe(p.device_name)
+        ):
+            io_map_skipped_optional_vfd += 1
+            continue
         how = info.get("resolve_how") or "map"
         comment = (
             f"{tname} · Bank{word}.{fbit}"
@@ -6330,8 +6392,10 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         "io_map_rungs": max(0, len(cp_i_rungs) + len(cp_o_rungs) - 2),
         "io_map_mapped": io_map_mapped,
         "io_map_unmapped": io_map_unmapped,
+        "io_map_skipped_optional_vfd": locals().get("io_map_skipped_optional_vfd", 0),
         "io_map_placeholders": io_map_placeholders,
         "io_map_muted": locals().get("io_map_muted", 0),
+        "ethernet_vfd_mode": bool(locals().get("_ethernet_vfd_mode_active", lambda: False)()),
         "es_program": es_emit_report,
         "io_map_fill_placeholders": fill_placeholders,
         "io_map_mappable": len(map_points),
@@ -7496,6 +7560,92 @@ def generate(
             "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
             "l5x_filename": l5x_basename,
             "error": str(integrity_failures[0]),
+            "report": report,
+        }
+
+    # Gate 7 — symbol closure before treating export as successful
+    try:
+        from fortna_symbol_closure import (
+            check_symbol_closure as _check_symbol_closure,
+            closure_failure_messages as _closure_failure_messages,
+        )
+
+        _closure_text = l5x_path.read_text(encoding="utf-8", errors="replace")
+        _ext_bind = set(report.get("known_modules") or []) | {
+            str(m.get("name") or "")
+            for m in (getattr(inp, "modules", None) or [])
+            if isinstance(m, dict) and m.get("name")
+        }
+        closure_report = _check_symbol_closure(
+            _closure_text,
+            external_bindings={x for x in _ext_bind if x},
+        )
+        report["symbol_closure"] = closure_report.to_dict()
+        if not closure_report.ok:
+            closure_msgs = _closure_failure_messages(closure_report)
+            err = closure_msgs[0] if closure_msgs else "BUILD FAILED: symbol closure"
+            report["ok"] = False
+            report["build_failed"] = True
+            report["error"] = err
+            assertion = dict(report.get("generation_assertions") or {})
+            assertion["ok"] = False
+            assertion["failures"] = list(assertion.get("failures") or []) + closure_msgs
+            report["generation_assertions"] = assertion
+            try:
+                (diag_dir / "autogen_report.json").write_text(
+                    json.dumps(report, indent=2), encoding="utf-8"
+                )
+                (diag_dir / "symbol_closure.json").write_text(
+                    json.dumps(closure_report.to_dict(), indent=2), encoding="utf-8"
+                )
+            except Exception:
+                pass
+            _emit_progress(str(err), 100)
+            return {
+                "ok": False,
+                "engine": "python",
+                "export_name": result_export_name,
+                "source_label": archive_stem,
+                "out_dir": str(engineer_export_dir),
+                "diagnostics_dir": str(diag_dir),
+                "build_id": build_id,
+                "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
+                "l5x_filename": l5x_basename,
+                "error": str(err),
+                "report": report,
+            }
+    except Exception as exc:
+        report["symbol_closure"] = {
+            "ok": False,
+            "error": f"symbol closure failed to run: {exc}",
+        }
+        # Fail closed — closure invariant must run
+        err = f"BUILD FAILED: symbol closure exception — {exc}"
+        report["ok"] = False
+        report["build_failed"] = True
+        report["error"] = err
+        assertion = dict(report.get("generation_assertions") or {})
+        assertion["ok"] = False
+        assertion["failures"] = list(assertion.get("failures") or []) + [err]
+        report["generation_assertions"] = assertion
+        try:
+            (diag_dir / "autogen_report.json").write_text(
+                json.dumps(report, indent=2), encoding="utf-8"
+            )
+        except Exception:
+            pass
+        _emit_progress(str(err), 100)
+        return {
+            "ok": False,
+            "engine": "python",
+            "export_name": result_export_name,
+            "source_label": archive_stem,
+            "out_dir": str(engineer_export_dir),
+            "diagnostics_dir": str(diag_dir),
+            "build_id": build_id,
+            "l5x": str(l5x_path.resolve()) if l5x_path.is_file() else "",
+            "l5x_filename": l5x_basename,
+            "error": str(err),
             "report": report,
         }
 

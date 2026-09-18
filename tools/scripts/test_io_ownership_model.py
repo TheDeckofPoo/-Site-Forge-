@@ -108,7 +108,61 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         self.assertFalse(ch.get("is_spare"))
         self.assertNotEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
 
-    def test_unused_configio_bit_is_proven_spare(self) -> None:
+    def test_configio_occupied_without_owner_is_unresolved_not_spare(self) -> None:
+        """Configio non-spare claim + owner cannot complete → UNRESOLVED_OWNER.
+
+        Absence of successful owner join must never become PROVEN_SPARE when
+        Configio indicates the channel is occupied/claimed.
+        """
+        ep = make_physical_endpoint(
+            machine="ORNCCP2",
+            rio_name="CP2RIO0",
+            direction="O",
+            data_index=0,
+            bit=0,
+            module_slot=1,
+            bank_word=200,
+            module_type="1794-OA8I",
+            channel="CP2RIO0:O.Data[0].0",
+        )
+        st = resolve_owner_state(
+            physical_endpoint=ep,
+            engineering_owner=None,
+            topology_known=True,
+            configio_occupied=True,
+            owner_resolution_failed=True,
+        )
+        self.assertEqual(st, OWNER_UNRESOLVED)
+        self.assertNotEqual(st, OWNER_PROVEN_SPARE)
+
+    def test_enrich_configio_occupied_unresolved_owner(self) -> None:
+        """Synthetic channel: valid rack/module/channel, Configio occupies, owner fails."""
+        ch = {
+            "physical_address": "CP2RIO0:O.Data[0].0",
+            "fortna_word": 200,
+            "fortna_bit": 0,
+            "direction": "O",
+            "type": "1794-OA8I",
+            "bit_half": "low",
+            "low_desc": "CP2-1794-OA8I-1",  # non-spare Configio Desc
+            "high_desc": "CP2-1794-OA8I-2",
+            "owner_resolution_failed": True,
+        }
+        enrich_channel_ownership(
+            ch,
+            machine="ORNCCP2",
+            claims={"owners": {}, "conflicts": {}, "spare_channels": set()},
+            adapter={"rio_name": "CP2RIO0"},
+            module={"slot": 1, "data_index": 0, "direction": "O", "type": "1794-OA8I"},
+        )
+        self.assertEqual(ch["owner_state"], OWNER_UNRESOLVED)
+        self.assertTrue(ch["unresolved"])
+        self.assertFalse(ch.get("is_spare"))
+        self.assertTrue(ch.get("configio_occupied"))
+        self.assertNotEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
+
+    def test_configio_spare_token_is_proven_spare(self) -> None:
+        """True spare: Configio Desc SPARE token → PROVEN_SPARE."""
         ep = make_physical_endpoint(
             rio_name="CP2RIO0",
             direction="I",
@@ -123,8 +177,76 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
             physical_endpoint=ep,
             engineering_owner=None,
             topology_known=True,
+            configio_spare=True,
         )
         self.assertEqual(st, OWNER_PROVEN_SPARE)
+
+    def test_conveyor_spare_token_is_proven_spare(self) -> None:
+        """True spare: Conveyor SPARE claim → PROVEN_SPARE."""
+        ep = make_physical_endpoint(
+            rio_name="CP2RIO0",
+            direction="O",
+            data_index=0,
+            bit=5,
+            module_slot=1,
+            bank_word=200,
+            module_type="1794-OA8I",
+            channel="CP2RIO0:O.Data[0].5",
+        )
+        st = resolve_owner_state(
+            physical_endpoint=ep,
+            engineering_owner="SPARE",
+            spare_claim=True,
+            topology_known=True,
+        )
+        self.assertEqual(st, OWNER_PROVEN_SPARE)
+
+    def test_enrich_conveyor_spare_channel_proven_spare(self) -> None:
+        ch = {
+            "physical_address": "CP2RIO0:O.Data[0].5",
+            "fortna_word": 200,
+            "fortna_bit": 5,
+            "direction": "O",
+            "type": "1794-OA8I",
+            "bit_half": "low",
+            "low_desc": "SPARE",
+            "configio_spare": True,
+        }
+        enrich_channel_ownership(
+            ch,
+            machine="ORNCCP2",
+            claims={
+                "owners": {},
+                "conflicts": {},
+                "spare_channels": {"CP2RIO0:O.Data[0].5"},
+            },
+            adapter={"rio_name": "CP2RIO0"},
+            module={"slot": 1, "data_index": 0, "direction": "O", "type": "1794-OA8I"},
+        )
+        self.assertEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
+        self.assertTrue(ch.get("is_spare"))
+        self.assertFalse(ch.get("unresolved"))
+
+    def test_topo_without_spare_evidence_not_proven_spare(self) -> None:
+        """Topology alone (no spare token) must not classify as PROVEN_SPARE."""
+        ep = make_physical_endpoint(
+            rio_name="CP2RIO0",
+            direction="I",
+            data_index=1,
+            bit=3,
+            module_slot=2,
+            bank_word=201,
+            module_type="1794-IA16",
+            channel="CP2RIO0:I.Data[1].3",
+        )
+        st = resolve_owner_state(
+            physical_endpoint=ep,
+            engineering_owner=None,
+            topology_known=True,
+            configio_occupied=True,
+        )
+        self.assertEqual(st, OWNER_UNRESOLVED)
+        self.assertNotEqual(st, OWNER_PROVEN_SPARE)
 
 
 class TestPhysicalEndpointEqualityNotPrefix(unittest.TestCase):

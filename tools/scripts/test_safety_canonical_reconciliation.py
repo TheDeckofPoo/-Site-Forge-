@@ -435,5 +435,91 @@ class TestClassifyProvenance(unittest.TestCase):
         )
 
 
+class TestGate8RunEngineerCoexistence(unittest.TestCase):
+    """Gate 8 — RUN zone + engineer zone both persist; source_id immutable."""
+
+    def test_run_and_engineer_zones_both_persist(self) -> None:
+        model = build_safety_model(
+            run_dir=None,
+            machine="ORNCCP5",
+            transport_zones=[
+                {
+                    "name": "ORNCCP5_ESZone1",
+                    "source_id": "ORNCCP5_ESZone1",
+                    "area": "ORNCCP5_Area",
+                    "conveyors": ["P440"],
+                    "members": [],
+                    "runDiscovered": True,
+                }
+            ],
+            areas=["ORNCCP5_Area"],
+            area_conveyors={"ORNCCP5_Area": ["P440"]},
+            engineer_safety_build={
+                "zones": [
+                    {
+                        "source_id": "Staging_ESZone1",
+                        "engineering_name": "Staging_ESZone1",
+                        "areaRef": "ORNCCP5_Area",
+                        "members": ["ES440"],
+                        "membersOrigin": ORIGIN_ENGINEER,
+                        "engineerEdited": True,
+                        "createdBy": "engineer",
+                    }
+                ]
+            },
+        )
+        by_sid = {z.get("source_id"): z for z in model["zones"]}
+        self.assertIn("ORNCCP5_ESZone1", by_sid)
+        self.assertIn("Staging_ESZone1", by_sid)
+        run_z = by_sid["ORNCCP5_ESZone1"]
+        eng_z = by_sid["Staging_ESZone1"]
+        self.assertEqual(run_z.get("origin") or run_z.get("provenance"), PROVENANCE_RUN_DISCOVERED)
+        self.assertEqual(
+            eng_z.get("origin") or eng_z.get("provenance"), PROVENANCE_ENGINEER_CREATED
+        )
+        # Do not invent membership on the RUN shell
+        self.assertEqual(list(run_z.get("members") or []), [])
+        self.assertEqual(list(eng_z.get("members") or []), ["ES440"])
+
+    def test_engineer_overlay_does_not_overwrite_run_source_id(self) -> None:
+        model = build_safety_model(
+            run_dir=None,
+            machine="ORNCCP5",
+            transport_zones=[
+                {
+                    "name": "ORNCCP5_ESZone1",
+                    "source_id": "ORNCCP5_ESZone1",
+                    "area": "ORNCCP5_Area",
+                    "conveyors": ["P440"],
+                    "members": [],
+                    "runDiscovered": True,
+                }
+            ],
+            areas=["ORNCCP5_Area"],
+            area_conveyors={"ORNCCP5_Area": ["P440"]},
+            engineer_safety_build={
+                "zones": [
+                    {
+                        # Divergent id + display name matching RUN shell — must not steal source_id
+                        "source_id": "EngineerAlt_ESZone1",
+                        "engineering_name": "ORNCCP5_ESZone1",
+                        "areaRef": "ORNCCP5_Area",
+                        "members": ["ES440"],
+                        "membersOrigin": ORIGIN_ENGINEER,
+                        "engineerEdited": True,
+                        "createdBy": "engineer",
+                    }
+                ]
+            },
+        )
+        sids = {z.get("source_id") for z in model["zones"]}
+        self.assertIn("ORNCCP5_ESZone1", sids)
+        # RUN identity preserved
+        run_z = next(z for z in model["zones"] if z.get("source_id") == "ORNCCP5_ESZone1")
+        self.assertEqual(run_z["source_id"], "ORNCCP5_ESZone1")
+        # Engineer zone also persists under its own source_id (no merge-by-display-name steal)
+        self.assertIn("EngineerAlt_ESZone1", sids)
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

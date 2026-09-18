@@ -476,9 +476,26 @@ Exposed on `window.fortnaAPI` (`desktop/preload.js`):
 |------------|----------|----------|
 | **?** Help button `#btn-sf-help` | Title bar | Opens `#sf-help-drawer` |
 | Help drawer | Right slide-over | Section list (this manual outline) + control lookup from `SITE_FORGE_HELP` keyed by control `id` |
-| Contextual | Optional “Inspect” toggle in drawer | Next click on a control with an `id` shows its purpose from the map (no giant modal) |
+| Contextual | Optional “Inspect” toggle in drawer (`#sf-help-inspect`) | Next click on a control with an `id` shows its purpose from the map (no giant modal) |
 
 Source of truth for copy: this manual + the JS map kept in sync for high-traffic controls.
+
+**Still present:** Help **?** (`#btn-sf-help`) and **Inspect next control click** (`#sf-help-inspect`) — unchanged handlers in `initSiteForgeHelp()`.
+
+---
+
+## Runtime provenance controls (handler-traced)
+
+| Affordance | Control id | Handler / IPC | Behavior |
+|------------|------------|---------------|----------|
+| Title-bar SHA chip | `#sf-runtime-sha` | click → `sfHelpSetOpen(true)` + `loadRuntimeProvenance()` + `runSiteForgeFeatureSelfCheck()` | Shows short Git SHA; opens Help → Runtime |
+| Help → Runtime panel | `#sf-help-runtime` | filled by `loadRuntimeProvenance()` → `fortnaAPI.getRuntimeProvenance` → IPC `get-runtime-provenance` | Git SHA, branch, startedAt, repo/source root, dashboard path, python/compiler, mode |
+| Copy Runtime Info | `#sf-help-copy-runtime` | `copyRuntimeInfo()` → `fortnaAPI.clipboardWriteText` | Copies provenance + diagnostics JSON |
+| Help → Diagnostics | `#sf-help-diagnostics` | `runSiteForgeFeatureSelfCheck()` (+ IPC `runtime-feature-self-check`) | Live checks: Help DOM, `hwChannelEndpointLabel(UNRESOLVED_OWNER)`, `classifyDevice` VFD rules, python `classify_cp_io_operand` |
+| Diagnostics Re-run | `#sf-help-run-selfcheck` | `runSiteForgeFeatureSelfCheck()` | Re-exercises the same live functions |
+
+Launch provenance write path: `desktop/Launch-Electron.ps1` → `desktop/.runtime_build.json`; collector `tools/scripts/fortna_runtime_provenance.py`.  
+Full launcher audit: `docs/SITE_FORGE_LAUNCH_RUNTIME_PROVENANCE.md`.
 
 ---
 
@@ -493,6 +510,8 @@ Source of truth for copy: this manual + the JS map kept in sync for high-traffic
 | Transportation-specific controls traced to real handlers | **Yes** — Connect, Fit System, zoom −/+, Home, 100%, Geometry mode, Undo, Redo, Apply Area/ES, Create/Add/Remove Area, Select Chain, Mark Terminal, right-click/context, Apply to Autogen, Build PLC |
 | Safety / Sorter / Hardware specifics | **Yes** — Assign Devices, Apply Safety, Safety rename, Sorter Accept/Edit/Commissioning, divert bulk, module/channel selection, Name, Generate, Spare/Status |
 | In-product help | **YES** — Help drawer + `SITE_FORGE_HELP` map |
+| Runtime provenance UI | **YES** — Help → Runtime + `#sf-runtime-sha` + Copy Runtime Info |
+| Feature self-check (31add80) | **YES** — Help → Diagnostics (live function exercise) |
 
 ---
 

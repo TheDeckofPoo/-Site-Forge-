@@ -16,6 +16,8 @@ const AUTOGEN_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_autogen.
 const WORKBOOK_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_workbook.py');
 const IGNITION_BUILD_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_ignition_build.py');
 const IGNITION_DEPLOY_SAFE = path.join(REPO_ROOT, 'tools', 'scripts', '_deploy_designer_safe_ignition.py');
+const RUNTIME_PROVENANCE_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_runtime_provenance.py');
+const RUNTIME_BUILD_JSON = path.join(__dirname, '.runtime_build.json');
 const DEFAULT_AUTOGEN_LIBRARY = path.join(REPO_ROOT, 'tools', 'libraries', 'OReilly_Library_v3.L5X');
 const ACTIVE_META = path.join(REPO_ROOT, 'workspace', 'active-meta.json');
 const ACTIVE_DIR = path.join(REPO_ROOT, 'workspace', 'active');
@@ -23,6 +25,109 @@ const PRINTS_DIR = path.join(REPO_ROOT, 'workspace', 'prints');
 // Stable path OUTSIDE workspace/active — active/ is wiped on every RUN import.
 const AUTOGEN_WORKBOOK_PATH = path.join(REPO_ROOT, 'workspace', 'autogen_workbook.json');
 const AUTOGEN_WORKBOOK_PATH_LEGACY = path.join(REPO_ROOT, 'workspace', 'active', 'autogen_workbook.json');
+
+const APP_STARTED_AT = new Date().toISOString();
+let cachedRuntimeProvenance = null;
+
+function gitCapture(args) {
+  try {
+    const r = spawnSync('git', args, {
+      cwd: REPO_ROOT,
+      encoding: 'utf-8',
+      windowsHide: true,
+      timeout: 8000,
+    });
+    if (r.status !== 0) return null;
+    return String(r.stdout || '').trim() || null;
+  } catch (_) {
+    return null;
+  }
+}
+
+function loadRuntimeBuildJson() {
+  try {
+    if (!fs.existsSync(RUNTIME_BUILD_JSON)) return null;
+    return JSON.parse(fs.readFileSync(RUNTIME_BUILD_JSON, 'utf-8'));
+  } catch (_) {
+    return null;
+  }
+}
+
+function computeRuntimeProvenance() {
+  const mode = app.isPackaged ? 'packaged' : 'dev';
+  const fb = loadRuntimeBuildJson() || {};
+  let sha = gitCapture(['rev-parse', 'HEAD']);
+  let short = gitCapture(['rev-parse', '--short', 'HEAD']);
+  let branch = gitCapture(['rev-parse', '--abbrev-ref', 'HEAD']);
+  let gitRoot = gitCapture(['rev-parse', '--show-toplevel']);
+  let provenanceSource = 'git';
+
+  if (!sha && fb.gitSha) {
+    sha = fb.gitSha;
+    short = fb.gitShaShort || (typeof sha === 'string' && sha.length >= 7 ? sha.slice(0, 7) : null);
+    branch = branch || fb.branch || null;
+    gitRoot = gitRoot || fb.repoRoot || null;
+    provenanceSource = 'runtime_build_json';
+  }
+
+  // Prefer python collector when available (also refreshes .runtime_build.json)
+  if (PYTHON && fs.existsSync(RUNTIME_PROVENANCE_SCRIPT)) {
+    const r = runPython([
+      RUNTIME_PROVENANCE_SCRIPT,
+      '--repo-root', REPO_ROOT,
+      '--mode', mode,
+      '--write', RUNTIME_BUILD_JSON,
+    ]);
+    if (r.ok) {
+      try {
+        const parsed = JSON.parse(r.stdout);
+        if (parsed && typeof parsed === 'object') {
+          cachedRuntimeProvenance = {
+            ...parsed,
+            startedAt: parsed.startedAt || APP_STARTED_AT,
+            mode: parsed.mode || mode,
+            executable: process.execPath,
+            cwd: process.cwd(),
+            electronVersion: process.versions.electron || null,
+            nodeVersion: process.versions.node || null,
+          };
+          return cachedRuntimeProvenance;
+        }
+      } catch (_) { /* fall through */ }
+    }
+  }
+
+  if (!short && sha && sha.length >= 7) short = sha.slice(0, 7);
+  cachedRuntimeProvenance = {
+    gitSha: sha || fb.gitSha || 'unknown',
+    gitShaShort: short || fb.gitShaShort || 'unknown',
+    branch: branch || fb.branch || 'unknown',
+    repoRoot: gitRoot || fb.repoRoot || REPO_ROOT,
+    sourceRoot: REPO_ROOT,
+    dashboardSource: path.join(REPO_ROOT, 'dashboard', 'index.html'),
+    desktopDir: __dirname,
+    pythonSource: PYTHON || fb.pythonSource || 'unavailable',
+    compilerSource: path.join(REPO_ROOT, 'tools', 'scripts'),
+    mode,
+    startedAt: APP_STARTED_AT,
+    provenanceSource: (sha || fb.gitSha) ? provenanceSource : 'unavailable',
+    worktree: gitRoot || fb.worktree || REPO_ROOT,
+    runtimeBuildPath: RUNTIME_BUILD_JSON,
+    executable: process.execPath,
+    cwd: process.cwd(),
+    electronVersion: process.versions.electron || null,
+    nodeVersion: process.versions.node || null,
+  };
+  try {
+    fs.writeFileSync(RUNTIME_BUILD_JSON, `${JSON.stringify(cachedRuntimeProvenance, null, 2)}\n`, 'utf-8');
+  } catch (_) { /* ignore */ }
+  return cachedRuntimeProvenance;
+}
+
+function getRuntimeProvenance() {
+  if (cachedRuntimeProvenance) return cachedRuntimeProvenance;
+  return computeRuntimeProvenance();
+}
 
 function configureElectronStorage() {
   // Keep Chromium caches off OneDrive / worktree — Local AppData only.
@@ -289,6 +394,8 @@ function createWindow() {
     autoHideMenuBar: true,
   });
 
+  try { computeRuntimeProvenance(); } catch (_) { /* ignore */ }
+
   win.loadFile(path.join(REPO_ROOT, 'dashboard', 'index.html'));
   Menu.setApplicationMenu(null);
 
@@ -300,6 +407,61 @@ function createWindow() {
     else win.maximize();
   });
   ipcMain.on('window-close', () => win.close());
+
+  ipcMain.handle('get-runtime-provenance', async () => {
+    try {
+      return { success: true, provenance: getRuntimeProvenance() };
+    } catch (e) {
+      return { success: false, message: e.message || String(e), provenance: getRuntimeProvenance() };
+    }
+  });
+
+  ipcMain.handle('runtime-feature-self-check', async () => {
+    try {
+      const checks = [];
+      if (PYTHON && fs.existsSync(RUNTIME_PROVENANCE_SCRIPT)) {
+        const r = runPython([
+          RUNTIME_PROVENANCE_SCRIPT,
+          '--repo-root', REPO_ROOT,
+          '--mode', app.isPackaged ? 'packaged' : 'dev',
+          '--self-check',
+        ]);
+        if (r.ok) {
+          try {
+            const parsed = JSON.parse(r.stdout);
+            const iomap = parsed?.selfCheck?.iomap;
+            if (iomap) checks.push(iomap);
+          } catch (e) {
+            checks.push({
+              id: 'vfd_iomap_symbol_classifier_py',
+              ok: false,
+              detail: `JSON parse failed: ${e.message || e}`,
+            });
+          }
+        } else {
+          checks.push({
+            id: 'vfd_iomap_symbol_classifier_py',
+            ok: false,
+            detail: r.error || 'python self-check failed',
+          });
+        }
+      } else {
+        checks.push({
+          id: 'vfd_iomap_symbol_classifier_py',
+          ok: false,
+          detail: 'Python or fortna_runtime_provenance.py unavailable',
+        });
+      }
+      return {
+        success: true,
+        ok: checks.every((c) => c.ok),
+        checks,
+        provenance: getRuntimeProvenance(),
+      };
+    } catch (e) {
+      return { success: false, ok: false, message: e.message || String(e), checks: [] };
+    }
+  });
 
   ipcMain.handle('search-docs', async (_event, query) => {
     try {

@@ -4215,13 +4215,14 @@ function renderHardwareRacks() {
  */
 function hwChannelEndpointLabel(ch) {
   if (!ch) {
+    // No model channel — not a proven spare (capacity hole / unmapped bit)
     return {
-      text: 'SPARE',
-      kind: 'spare',
+      text: 'UNRESOLVED OWNER',
+      kind: 'warn',
       source: '',
       engineer: '',
       generate: true,
-      ownerState: 'PROVEN_SPARE',
+      ownerState: 'UNRESOLVED_OWNER',
     };
   }
   const ownerState = String(ch.owner_state || ch.resolution_status || '').toUpperCase();
@@ -4290,14 +4291,31 @@ function hwChannelEndpointLabel(ch) {
       ownerState: 'UNRESOLVED_OWNER',
     };
   }
-  const spareState = ownerState === 'ENGINEER_SPARE' ? 'ENGINEER_SPARE' : 'PROVEN_SPARE';
+  // SPARE face only for explicit spare evidence — never default occupied/unknown → SPARE
+  if (
+    ownerState === 'PROVEN_SPARE'
+    || ownerState === 'ENGINEER_SPARE'
+    || ch.configio_spare === true
+    || ch.is_spare === true
+  ) {
+    const spareState = ownerState === 'ENGINEER_SPARE' ? 'ENGINEER_SPARE' : 'PROVEN_SPARE';
+    return {
+      text: 'SPARE',
+      kind: 'spare',
+      source: source || '',
+      engineer: '',
+      generate,
+      ownerState: spareState,
+    };
+  }
+  // Occupied/claimed or unknown without spare proof → UNRESOLVED OWNER (never SPARE)
   return {
-    text: 'SPARE',
-    kind: 'spare',
+    text: 'UNRESOLVED OWNER',
+    kind: 'warn',
     source: source || '',
-    engineer: '',
+    engineer: engineer || '',
     generate,
-    ownerState: spareState,
+    ownerState: ownerState || 'UNRESOLVED_OWNER',
   };
 }
 function hwChannelPhysicalAddress(ad, mod, bit, ch) {
@@ -10361,6 +10379,7 @@ const SITE_FORGE_HELP = Object.freeze({
     { id: 'sawtooth', title: 'Sawtooth Merge', blurb: 'Collector/lane merge from RUN SawLane. Apply sawtooth → Autogen.' },
     { id: 'autogen', title: 'PLC Autogen', blurb: 'Compile hub + Export L5X Package. Soft REVIEW does not hard-block; INCLUDED ERROR does.' },
     { id: 'tools', title: 'Docs / Workspace / Recipes', blurb: 'Secondary tools. Recipes mutate RUN tables; Workspace is alternate Import.' },
+    { id: 'runtime', title: 'Runtime / Diagnostics', blurb: 'Git SHA, branch, source roots, mode. Copy Runtime Info. Feature self-check for Help, I/O ownership, VFD/IO_MAP classifiers.' },
   ],
   workflow: [
     'RUN Import (.tar.gz)',
@@ -10373,6 +10392,10 @@ const SITE_FORGE_HELP = Object.freeze({
   ],
   controls: {
     'btn-sf-help': { tab: 'Global', purpose: 'Open this Help drawer (manual sections + control map).' },
+    'sf-runtime-sha': { tab: 'Global', purpose: 'Runtime provenance chip (short Git SHA). Opens Help → Runtime.' },
+    'sf-help-copy-runtime': { tab: 'Global', purpose: 'Copy Runtime Info — provenance JSON + last diagnostics to clipboard.' },
+    'sf-help-run-selfcheck': { tab: 'Global', purpose: 'Re-run feature self-check (Help drawer, I/O ownership renderer, VFD/IO_MAP classifiers).' },
+    'sf-help-inspect': { tab: 'Global', purpose: 'Inspect next control click — maps control id to SITE_FORGE_HELP purpose.' },
     'btn-io-browse-run': { tab: 'I/O', purpose: 'Load RUN .tar.gz — sets active workspace; triggers Transport Auto Build.' },
     'btn-io-clear-run': { tab: 'I/O', purpose: 'Clear loaded RUN presentation / related state.' },
     'hw-io-panel-select': { tab: 'I/O', purpose: 'Filter Hardware CAD by Control Panel (display).' },
@@ -10509,6 +10532,178 @@ function sfHelpRenderLists(filter) {
   }
 }
 
+/** Runtime provenance + Gate 2 feature self-check (exercise real functions). */
+let _sfRuntimeProvenance = null;
+let _sfFeatureSelfCheck = null;
+
+function formatRuntimeProvenanceLines(p) {
+  const rows = [
+    ['Git SHA', p?.gitSha || 'unknown'],
+    ['Branch', p?.branch || 'unknown'],
+    ['Started', p?.startedAt || 'unknown'],
+    ['Repo / source root', p?.sourceRoot || p?.repoRoot || 'unknown'],
+    ['Dashboard source', p?.dashboardSource || 'unknown'],
+    ['Python / compiler', `${p?.pythonSource || 'unavailable'} · ${p?.compilerSource || 'unknown'}`],
+    ['Mode', p?.mode || 'dev'],
+    ['Provenance source', p?.provenanceSource || 'unknown'],
+    ['Executable', p?.executable || ''],
+    ['CWD', p?.cwd || ''],
+  ];
+  return rows
+    .filter(([, v]) => v !== '')
+    .map(([k, v]) => `<div><span class="text-slate-600">${escapeHtml(k)}:</span> <span class="text-slate-300 break-all">${escapeHtml(String(v))}</span></div>`)
+    .join('');
+}
+
+function updateRuntimeShaChip(p) {
+  const chip = $('sf-runtime-sha');
+  if (!chip) return;
+  const short = p?.gitShaShort || (p?.gitSha && String(p.gitSha).slice(0, 7)) || 'sha?';
+  const branch = p?.branch || '?';
+  chip.textContent = short;
+  chip.title = `Runtime ${short} @ ${branch} — Help → Runtime`;
+}
+
+async function loadRuntimeProvenance(force) {
+  if (_sfRuntimeProvenance && !force) return _sfRuntimeProvenance;
+  const api = window.fortnaAPI;
+  if (api?.getRuntimeProvenance) {
+    try {
+      const res = await api.getRuntimeProvenance();
+      _sfRuntimeProvenance = res?.provenance || res || null;
+    } catch (e) {
+      _sfRuntimeProvenance = { gitSha: 'unavailable', branch: 'unavailable', error: String(e?.message || e) };
+    }
+  } else {
+    _sfRuntimeProvenance = {
+      gitSha: 'browser-only',
+      gitShaShort: 'n/a',
+      branch: 'n/a',
+      mode: 'browser',
+      startedAt: new Date().toISOString(),
+      provenanceSource: 'unavailable',
+      note: 'fortnaAPI.getRuntimeProvenance not available (non-Electron)',
+    };
+  }
+  updateRuntimeShaChip(_sfRuntimeProvenance);
+  const host = $('sf-help-runtime');
+  if (host) host.innerHTML = formatRuntimeProvenanceLines(_sfRuntimeProvenance);
+  return _sfRuntimeProvenance;
+}
+
+/**
+ * Gate 2 — exercise live functions (not source-string greps).
+ * - Help drawer DOM
+ * - hwChannelEndpointLabel(UNRESOLVED_OWNER) → "UNRESOLVED OWNER"
+ * - classifyDevice VFD/IO_MAP symbol rules
+ * - optional Python classify_cp_io_operand via IPC
+ */
+async function runSiteForgeFeatureSelfCheck() {
+  const checks = [];
+
+  const drawer = document.getElementById('sf-help-drawer');
+  const helpBtn = document.getElementById('btn-sf-help');
+  checks.push({
+    id: 'help_drawer',
+    ok: !!(drawer && helpBtn),
+    detail: drawer && helpBtn
+      ? '#sf-help-drawer + #btn-sf-help present'
+      : 'missing #sf-help-drawer and/or #btn-sf-help',
+  });
+
+  try {
+    const ep = hwChannelEndpointLabel({ owner_state: 'UNRESOLVED_OWNER' });
+    const ok = ep
+      && ep.text === 'UNRESOLVED OWNER'
+      && ep.ownerState === 'UNRESOLVED_OWNER'
+      && ep.kind === 'warn';
+    checks.push({
+      id: 'io_ownership_renderer',
+      ok: !!ok,
+      detail: `hwChannelEndpointLabel(UNRESOLVED_OWNER) → "${ep?.text}" (${ep?.ownerState}/${ep?.kind})`,
+    });
+  } catch (e) {
+    checks.push({
+      id: 'io_ownership_renderer',
+      ok: false,
+      detail: String(e?.message || e),
+    });
+  }
+
+  try {
+    const vfd = classifyDevice('VFD500A');
+    const conv = classifyDevice('P100');
+    const fltName = classifyDevice('VFD216_FLT');
+    const ok = vfd.key === 'vfd' && conv.key === 'conveyor' && vfd.key === 'vfd';
+    // VFD###_FLT still classifies as VFD family for device browser
+    const fltOk = fltName.key === 'vfd';
+    checks.push({
+      id: 'vfd_symbol_classifier',
+      ok: !!(ok && fltOk),
+      detail: `classifyDevice VFD500A→${vfd.key}; P100→${conv.key}; VFD216_FLT→${fltName.key}`,
+    });
+  } catch (e) {
+    checks.push({
+      id: 'vfd_symbol_classifier',
+      ok: false,
+      detail: String(e?.message || e),
+    });
+  }
+
+  const api = window.fortnaAPI;
+  if (api?.runtimeFeatureSelfCheck) {
+    try {
+      const py = await api.runtimeFeatureSelfCheck();
+      for (const c of py?.checks || []) checks.push(c);
+    } catch (e) {
+      checks.push({
+        id: 'vfd_iomap_symbol_classifier_py',
+        ok: false,
+        detail: String(e?.message || e),
+      });
+    }
+  } else {
+    checks.push({
+      id: 'vfd_iomap_symbol_classifier_py',
+      ok: false,
+      detail: 'IPC runtimeFeatureSelfCheck unavailable (non-Electron)',
+    });
+  }
+
+  _sfFeatureSelfCheck = {
+    ok: checks.every((c) => c.ok),
+    checks,
+    at: new Date().toISOString(),
+  };
+  const host = $('sf-help-diagnostics');
+  if (host) {
+    const badge = _sfFeatureSelfCheck.ok
+      ? '<span class="text-emerald-400">PASS</span>'
+      : '<span class="text-amber-400">FAIL</span>';
+    host.innerHTML = `<div class="mb-1">${badge} · ${escapeHtml(_sfFeatureSelfCheck.at)}</div>`
+      + checks.map((c) =>
+        `<div><span class="${c.ok ? 'text-emerald-400' : 'text-amber-400'}">${c.ok ? '✓' : '✗'}</span> `
+        + `<span class="text-slate-500">${escapeHtml(c.id)}:</span> `
+        + `<span class="text-slate-300">${escapeHtml(c.detail || '')}</span></div>`).join('');
+  }
+  return _sfFeatureSelfCheck;
+}
+
+async function copyRuntimeInfo() {
+  const p = await loadRuntimeProvenance();
+  const diag = _sfFeatureSelfCheck || await runSiteForgeFeatureSelfCheck();
+  const payload = JSON.stringify({ provenance: p, diagnostics: diag }, null, 2);
+  try {
+    if (window.fortnaAPI?.clipboardWriteText) {
+      await window.fortnaAPI.clipboardWriteText(payload);
+    } else if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(payload);
+    }
+  } catch (e) {
+    console.warn('Copy Runtime Info failed', e);
+  }
+}
+
 function initSiteForgeHelp() {
   const openBtn = $('btn-sf-help');
   if (!openBtn || openBtn.dataset.helpBound) return;
@@ -10516,6 +10711,15 @@ function initSiteForgeHelp() {
   openBtn.addEventListener('click', () => {
     sfHelpRenderLists($('sf-help-filter')?.value || '');
     sfHelpSetOpen(true);
+    loadRuntimeProvenance();
+    runSiteForgeFeatureSelfCheck();
+  });
+  $('sf-runtime-sha')?.addEventListener('click', () => {
+    sfHelpRenderLists($('sf-help-filter')?.value || '');
+    sfHelpSetOpen(true);
+    loadRuntimeProvenance();
+    runSiteForgeFeatureSelfCheck();
+    $('sf-help-runtime')?.scrollIntoView?.({ block: 'nearest' });
   });
   $('sf-help-close')?.addEventListener('click', () => sfHelpSetOpen(false));
   $('sf-help-backdrop')?.addEventListener('click', () => sfHelpSetOpen(false));
@@ -10523,6 +10727,8 @@ function initSiteForgeHelp() {
   $('sf-help-inspect')?.addEventListener('change', (ev) => {
     document.body.classList.toggle('sf-help-inspect', !!ev.target.checked);
   });
+  $('sf-help-copy-runtime')?.addEventListener('click', () => { copyRuntimeInfo(); });
+  $('sf-help-run-selfcheck')?.addEventListener('click', () => { runSiteForgeFeatureSelfCheck(); });
   document.addEventListener('click', (ev) => {
     if (!$('sf-help-inspect')?.checked) return;
     if (ev.target.closest?.('#sf-help-drawer') || ev.target.closest?.('#btn-sf-help')) return;
@@ -10541,6 +10747,15 @@ function initSiteForgeHelp() {
   document.addEventListener('keydown', (ev) => {
     if (ev.key === 'Escape' && $('sf-help-drawer')?.dataset.open === '1') sfHelpSetOpen(false);
   });
+  // Expose classifiers for diagnostics / window API self-check
+  window.SiteForgeDiagnostics = {
+    classifyDevice,
+    hwChannelEndpointLabel,
+    runFeatureSelfCheck: runSiteForgeFeatureSelfCheck,
+    getRuntimeProvenance: () => _sfRuntimeProvenance,
+    getLastSelfCheck: () => _sfFeatureSelfCheck,
+  };
+  loadRuntimeProvenance().catch(() => {});
 }
 
 try { initSiteForgeHelp(); } catch (e) { console.warn('Site Forge Help init failed', e); }

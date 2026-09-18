@@ -26,6 +26,8 @@
 |------|----------------|
 | `partial_build_contract.md` | Incremental commissioning rules; Compile Hub REVIEW ≠ block |
 | `partial_build_acceptance.json` | Evidence from `test_partial_build_acceptance.py` |
+| `vfd_symbol_closure_audit.json` | Gates 5–7: dangling `*_JOG`/`*_CLR_FLT`/… root cause + closure |
+| `vfd_device_contract.json` | VFDDeviceModel contract (discrete vs ethernet) |
 | `area_inclusion_report.md` | `ORNCCP2_Area` + engineer Area `test1` — do not delete by name |
 | `io_edit_persistence_checklist.md` | Hardware I/O alias Electron acceptance (REVIEW) |
 | `l5x_hygiene_notes.md` | Structural hygiene + lettered collision candidates |

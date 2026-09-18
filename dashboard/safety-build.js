@@ -397,8 +397,14 @@
         status: 'REVIEW_REQUIRED',
         fields: {},
       };
-      cur.source_id = sid;
-      cur.id = sid;
+      // Gate I / Gate 8 — engineering_name editable; existing RUN source_id immutable.
+      // When overlaying onto a RUN-discovered shell, keep that source_id even if the
+      // engineer payload carries a divergent id (match was by display name).
+      const priorSid = zoneSourceId(cur);
+      const keepRunSid = !!(cur.runDiscovered || cur.provenance === PROVENANCE.RUN_DISCOVERED)
+        && priorSid && priorSid !== sid;
+      cur.source_id = keepRunSid ? priorSid : sid;
+      cur.id = cur.source_id;
       // Gate I — engineering_name is editable; source_id stays immutable
       if (ez.engineering_name || ez.engineeringName) {
         cur.engineering_name = String(ez.engineering_name || ez.engineeringName).trim();
@@ -519,6 +525,16 @@
       z.engineering_name = zoneDisplayName(z) || z.source_id;
       z.name = z.engineering_name;
       z.id = z.source_id;
+      // Gate 8 — canonical origin alongside provenance
+      if (z.provenance === PROVENANCE.RUN_DISCOVERED || z.provenance === PROVENANCE.ENGINEER_CREATED) {
+        z.origin = z.provenance;
+      } else if (z.runDiscovered && !z.engineerEdited) {
+        z.origin = PROVENANCE.RUN_DISCOVERED;
+      } else if (z.engineerEdited || z.createdBy === 'engineer') {
+        z.origin = PROVENANCE.ENGINEER_CREATED;
+      } else {
+        z.origin = z.provenance || PROVENANCE.UNKNOWN;
+      }
       splitZoneMembers(z);
       const fields = {
         Area: z.areaRef ? 'READY' : 'UNRESOLVED',

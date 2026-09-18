@@ -90,6 +90,23 @@ Status-ish: Ready, Active, Faulted, AtReference, Accelerating/Decelerating, Actu
 
 **Do not invent** these as Conveyor BOOL tags on sites that only have AUX/EN/FLT.
 
+Flattened dangling role aliases that must **not** appear as undeclared IO_MAP bases on discrete sites:
+
+| Alias suffix | Library member | Gate |
+|--------------|----------------|------|
+| `*_JOG` | `VFDOut.Jog` | Ethernet mode only |
+| `*_CLR_FLT` | `VFDOut.ClearFaults` | Ethernet mode only |
+| `*_DIR_BIT0` / `*_DIR_BIT1` | `VFDOut.Forward` / `Reverse` | Ethernet mode only |
+| `*_LOC_CTRL` | `VFDOut.ForceKeypadCtrl` | Ethernet mode only |
+| `*_MOP_INC` / `*_MOP_DEC` | `VFDOut.MOPIncrement` / `MOPDecrement` | Ethernet mode only |
+| `*_ACC_BIT0` / `*_ACC_BIT1` | `VFDOut.AccelRate1` / `AccelRate2` | Ethernet mode only |
+
+**Producer:** `fortna_autogen` IO_MAP CP_I/CP_O (and library `VFD_Output` ST example).  
+**Consumer:** IO_MAP `CP_I`/`CP_O`.  
+**Owner when active:** controller `VFD_UDT` + MODULE_BOUND PowerFlex.  
+**Gate 6:** skip emit unless `ETHERNET_VFD_UDT` capability proven (SpdControl/network) — never site-name whitelist, never fabricate BOOL.  
+**Gate 7:** `fortna_symbol_closure` fails build on dangling roots. Audit: `exports/stabilization/vfd_symbol_closure_audit.json`.
+
 ---
 
 ## 4. Generation contract (Gate I) — known-site checks
@@ -120,6 +137,8 @@ Status-ish: Ready, Active, Faulted, AtReference, Accelerating/Decelerating, Actu
 - Missing required discrete member for a proven AUX/EN/FLT point → **FATAL** with provenance  
 - SpdControl / Gpx VFD fields INVALID → **OPTIONAL / NOT CONFIGURED**  
 - Ethernet `VFD_UDT` instance without network module + configured SpdControl → do not emit  
+- Optional JOG/CLR_FLT/DIR_BIT/LOC_CTRL/MOP/ACC command aliases → **skip IO_MAP** on discrete binding; symbol closure **FAIL** if emitted undeclared  
+- Gate optional VFD command logic by **device capability/model**, not site name 
 
 ---
 

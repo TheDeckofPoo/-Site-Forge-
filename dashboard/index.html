@@ -774,6 +774,7 @@
       <div id="project-health-strip" class="hidden sm:flex items-center gap-1.5 mr-2 text-[10px] mono text-slate-400 overflow-x-auto max-w-[52vw]" title="Project Health — mirrors Compile Hub readiness (click to jump)"></div>
       <span id="index-status" class="status-pill status-idle shrink-0">0 docs indexed</span>
       <span id="workspace-status" class="status-pill status-idle shrink-0">No RUN loaded</span>
+      <button type="button" id="sf-runtime-sha" class="status-pill status-idle shrink-0 mono text-[10px] text-cyan-400/80 border border-cyan-900/40 hover:border-cyan-700/60" title="Runtime provenance — open Help → Runtime">sha…</button>
       <button type="button" id="btn-sf-help" class="w-8 h-8 rounded hover:bg-slate-800 text-cyan-400/90 border border-cyan-900/40" title="Help — Site Forge engineering UI (manual)">
         <span class="text-sm font-bold" aria-hidden="true">?</span>
       </button>
@@ -3196,6 +3197,22 @@
       <div>
         <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Controls</div>
         <ul id="sf-help-controls" class="space-y-1"></ul>
+      </div>
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Runtime</div>
+          <button type="button" id="sf-help-copy-runtime" class="ml-auto btn-ghost text-[10px] px-2 py-0.5 rounded border border-slate-700 text-slate-300" title="Copy runtime provenance JSON">Copy Runtime Info</button>
+        </div>
+        <div id="sf-help-runtime" class="rounded-lg border border-slate-800 bg-[#0a1018] px-2 py-1.5 text-[10px] text-slate-400 mono space-y-0.5 leading-relaxed">
+          Loading provenance…
+        </div>
+        <div class="flex items-center gap-2 mt-2 mb-1">
+          <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Diagnostics</div>
+          <button type="button" id="sf-help-run-selfcheck" class="ml-auto btn-ghost text-[10px] px-2 py-0.5 rounded border border-slate-700 text-slate-300" title="Exercise Help / I/O ownership / VFD·IO_MAP classifiers">Re-run</button>
+        </div>
+        <div id="sf-help-diagnostics" class="rounded-lg border border-slate-800 bg-[#0a1018] px-2 py-1.5 text-[10px] text-slate-400 mono space-y-0.5 leading-relaxed">
+          Pending self-check…
+        </div>
       </div>
       <p class="text-[10px] text-slate-600 leading-relaxed pb-4">
         Full text: <span class="mono text-slate-500">docs/SITE_FORGE_ENGINEERING_UI_MANUAL.md</span>

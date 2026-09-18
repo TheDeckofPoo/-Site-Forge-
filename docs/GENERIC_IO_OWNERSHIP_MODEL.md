@@ -55,7 +55,7 @@ Canonical `physical_endpoint` dimensions (proven Fortna only):
 | `ASSIGNED` | Proven RUN or engineer logical owner | Active name |
 | `UNRESOLVED_OWNER` | Topology known; owner failed / conflicted | **UNRESOLVED OWNER** (amber) — not SPARE |
 | `ENGINEER_SPARE` | Engineer explicitly spared the bit | SPARE |
-| `PROVEN_SPARE` | RUN spare / unused Configio bit / capacity | `SPARE — click to name` |
+| `PROVEN_SPARE` | Positive Fortna spare evidence (Conveyor SPARE / Configio Desc spare token) | `SPARE — click to name` |
 | `UNKNOWN` | Incomplete physical endpoint | warn / review |
 
 `"SPARE — click to name"` is **only** for genuine spare (`PROVEN_SPARE` / `ENGINEER_SPARE`).  
@@ -106,7 +106,7 @@ Disposition (with WHY / provenance):
 | Configio Bank alone determines Logix slot | **REMOVED/FIXED** — EIPModules bank→slot; Desc slot corroboration; REVIEW on mismatch |
 | Name equality / prefix implies same owner (`P220`/`P220A`) | **REMOVED/FIXED** — exact identity only; lettered motors preserved |
 | All `CP_I`/`CP_O` operands are discrete physical | **REMOVED/FIXED** — class matrix; NETWORK_DEVICE_* / LOGICAL_SIGNAL need no endpoint |
-| Missing owner on known topology = SPARE | **REMOVED/FIXED** — `UNRESOLVED_OWNER` vs `PROVEN_SPARE` |
+| Missing owner on known topology = SPARE | **REMOVED/FIXED** — occupied Configio claim + unresolved owner → `UNRESOLVED_OWNER`; `PROVEN_SPARE` requires spare token evidence |
 | Unknown symbol → invent BOOL | **REMOVED/FIXED** — Gate H dispositions |
 | Configio Desc PANEL-CATALOG / PANEL-NODE forms | **JUSTIFIED** — proven Fortna Desc patterns |
 | Family-aware Data[] index (1794 vs 1734) | **JUSTIFIED** — hardware family module |

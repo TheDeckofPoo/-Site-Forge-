@@ -208,6 +208,49 @@ def _is_spare_token(name: str | None) -> bool:
     return str(name or "").strip().upper() in _SPARE_NAME_TOKENS
 
 
+def _configio_desc_claim(desc: str | None) -> str:
+    """Classify a Configio Desc as spare | occupied | none (Gate D)."""
+    d = str(desc or "").strip()
+    if not d:
+        return "none"
+    if _is_spare_token(d):
+        return "spare"
+    return "occupied"
+
+
+def _channel_configio_claim(ch: dict[str, Any] | None) -> tuple[bool, bool]:
+    """Return (configio_occupied, configio_spare) from channel Configio Desc evidence.
+
+    Prefer the bit_half-appropriate Desc (low_desc / high_desc); fall back to any
+    Desc stamped on the channel or its provenance.
+    """
+    if not isinstance(ch, dict):
+        return False, False
+    bit_half = str(ch.get("bit_half") or "").strip().lower()
+    prov = ch.get("provenance") if isinstance(ch.get("provenance"), dict) else {}
+    ordered: list[Any] = []
+    if bit_half == "high":
+        ordered.extend([ch.get("high_desc"), prov.get("high_desc"), ch.get("low_desc")])
+    else:
+        ordered.extend([ch.get("low_desc"), prov.get("low_desc"), ch.get("high_desc")])
+    ordered.extend(
+        [
+            ch.get("configio_desc"),
+            prov.get("configio_desc"),
+            prov.get("high_desc"),
+            ch.get("high_desc"),
+            ch.get("low_desc"),
+        ]
+    )
+    for raw in ordered:
+        claim = _configio_desc_claim(raw)
+        if claim == "spare":
+            return False, True
+        if claim == "occupied":
+            return True, False
+    return False, False
+
+
 def resolve_owner_state(
     *,
     physical_endpoint: dict[str, Any] | None,
@@ -218,11 +261,15 @@ def resolve_owner_state(
     owner_conflict: bool = False,
     topology_known: bool = False,
     owner_resolution_failed: bool = False,
+    configio_occupied: bool = False,
+    configio_spare: bool = False,
 ) -> str:
     """Classify engineering owner relative to a physical endpoint (Gate D).
 
-    UNRESOLVED_OWNER is reserved for failed/ambiguous owner resolution when
-    topology is known — never for ordinary unused capacity (that is PROVEN_SPARE).
+    PROVEN_SPARE requires positive Fortna spare evidence (Conveyor SPARE token,
+    Configio Desc spare token, or spare_claim). Absence of a successful owner
+    join is NOT spare proof when Configio indicates the endpoint is occupied
+    (non-spare Desc) — that is UNRESOLVED_OWNER.
     "SPARE — click to name" applies only to genuine spare states.
     """
     ep = physical_endpoint if isinstance(physical_endpoint, dict) else None
@@ -236,11 +283,17 @@ def resolve_owner_state(
     if owner_conflict or owner_resolution_failed:
         # Topology known but owner could not be bound uniquely / at all
         return OWNER_UNRESOLVED if topo else OWNER_UNKNOWN
-    if spare_claim or _is_spare_token(owner):
+    # Positive spare evidence only — never invent SPARE from missing/empty owner.
+    # Empty string is a spare *token* for name filters, but not spare *proof*.
+    if spare_claim or (owner and _is_spare_token(owner)) or configio_spare:
         return OWNER_PROVEN_SPARE if topo else OWNER_UNKNOWN
+    # Occupied/claimed physical endpoint + no resolvable owner → UNRESOLVED
+    if topo and configio_occupied and not owner:
+        return OWNER_UNRESOLVED
     if topo and not owner:
-        # Configio/eipcfg proves the bit exists; no Conveyor claim → genuine spare
-        return OWNER_PROVEN_SPARE
+        # Physical endpoint known without spare proof cannot be PROVEN_SPARE
+        # by absence of owner join alone.
+        return OWNER_UNRESOLVED
     if not topo and not owner:
         return OWNER_UNKNOWN
     return OWNER_UNKNOWN
@@ -419,6 +472,14 @@ def enrich_channel_ownership(
 
     owner_conflict = bool(addr and addr in conflicts and len(conflicts[addr]) > 1)
     spare_claim = bool(addr and addr in spare_channels)
+    configio_occupied, configio_spare = _channel_configio_claim(ch)
+    # Explicit caller overrides (synthetic / known-site tests)
+    if ch.get("configio_occupied") is True:
+        configio_occupied = True
+        configio_spare = False
+    if ch.get("configio_spare") is True or ch.get("configio_spare_claim") is True:
+        configio_spare = True
+        configio_occupied = False
 
     # Engineer explicit spare / clear
     engineer_spare = False
@@ -455,27 +516,40 @@ def enrich_channel_ownership(
         physical_endpoint=ep,
         engineering_owner=engineering_owner,
         owner_source=owner_source,
-        spare_claim=spare_claim and not engineering_owner,
+        spare_claim=(spare_claim or configio_spare) and not engineering_owner,
         engineer_spare=engineer_spare,
         owner_conflict=owner_conflict,
         owner_resolution_failed=owner_resolution_failed,
         topology_known=bool(ep.get("endpoint_id") or ep.get("channel")),
+        configio_occupied=configio_occupied and not configio_spare,
+        configio_spare=configio_spare,
     )
-    if spare_claim and state == OWNER_PROVEN_SPARE and not engineering_owner:
-        owner_source = "RUN_SPARE"
-    elif state == OWNER_PROVEN_SPARE and not engineering_owner and owner_source == "NONE":
-        owner_source = "CONFIGIO_UNUSED_BIT"
+    if state == OWNER_PROVEN_SPARE and not engineering_owner:
+        if spare_claim:
+            owner_source = "RUN_SPARE"
+        elif configio_spare:
+            owner_source = "CONFIGIO_SPARE"
+        else:
+            owner_source = "PROVEN_SPARE"
+    elif state == OWNER_UNRESOLVED and not engineering_owner and owner_source == "NONE":
+        owner_source = (
+            "CONFIGIO_OCCUPIED_UNRESOLVED" if configio_occupied else "OWNER_UNRESOLVED"
+        )
 
     ch["engineering_owner"] = engineering_owner
     ch["owner_source"] = owner_source
     ch["owner_state"] = state
     ch["resolution_status"] = state
+    ch["configio_occupied"] = bool(configio_occupied and not configio_spare)
+    ch["configio_spare"] = bool(configio_spare)
     # Flags consumed by Hardware UI / FlexRack
     ch["unresolved"] = state == OWNER_UNRESOLVED
     ch["is_unresolved"] = state == OWNER_UNRESOLVED
     ch["is_spare"] = state in (OWNER_PROVEN_SPARE, OWNER_ENGINEER_SPARE)
     if not ch.get("sourceName"):
-        ch["sourceName"] = run_owner or ("" if not spare_claim else "SPARE")
+        ch["sourceName"] = run_owner or (
+            "SPARE" if (spare_claim or configio_spare) else ""
+        )
     if ch.get("effectiveName") is None:
         ch["effectiveName"] = engineering_owner
     ch["run_source"] = "FORTNA/Conveyor.asc" if (run_owner or spare_claim) else (
@@ -530,6 +604,11 @@ def _channels_for_module(
         if physical_address:
             seen_addr.add(physical_address)
         logical = logical_by_ch.get(physical_address) if physical_address else None
+        prov = dict(hit.get("provenance") or {}) if isinstance(hit.get("provenance"), dict) else {}
+        if hit.get("low_desc") and "low_desc" not in prov:
+            prov["low_desc"] = hit.get("low_desc")
+        if hit.get("high_desc") and "high_desc" not in prov:
+            prov["high_desc"] = hit.get("high_desc")
         row = {
             "fortna_word": fortna_word,
             "fortna_bit": fortna_bit,
@@ -538,13 +617,23 @@ def _channels_for_module(
             "direction": hit.get("direction"),
             "bit_half": hit.get("bit_half"),
             "logical_endpoint": logical,
-            "provenance": hit.get("provenance"),
+            "provenance": prov or hit.get("provenance"),
             "assign_how": hit.get("assign_how"),
             "resolve_how": hit.get("resolve_how"),
             "panel": hit.get("panel"),
             "module_name": hit.get("module_name"),
             "type": hit.get("type"),
             "data_index": hit.get("data_index") if hit.get("data_index") is not None else flex,
+            # Configio Desc evidence for Gate D spare vs occupied
+            "low_desc": hit.get("low_desc"),
+            "high_desc": hit.get("high_desc"),
+            "configio_desc": (
+                hit.get("high_desc")
+                if str(hit.get("bit_half") or "").lower() == "high"
+                else hit.get("low_desc")
+            )
+            or hit.get("low_desc")
+            or hit.get("high_desc"),
         }
         enrich_channel_ownership(
             row,

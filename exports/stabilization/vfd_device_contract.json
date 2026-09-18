@@ -85,7 +85,12 @@
         "ForceKeypadCtrl", "MOPIncrement", "MOPDecrement", "AccelRate1", "AccelRate2",
         "DecelRate1", "DecelRate2"
       ],
-      "comm_fields": ["Sts_CommFlt", "IP_Address", "MACId", "Comm_Code"]
+      "flattened_alias_suffixes_ethernet_only": [
+        "JOG", "CLR_FLT", "DIR_BIT0", "DIR_BIT1", "LOC_CTRL",
+        "MOP_INC", "MOP_DEC", "ACC_BIT0", "ACC_BIT1"
+      ],
+      "comm_fields": ["Sts_CommFlt", "IP_Address", "MACId", "Comm_Code"],
+      "symbol_closure_audit": "exports/stabilization/vfd_symbol_closure_audit.json"
     }
   },
   "canonical_model": {

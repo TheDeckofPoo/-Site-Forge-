@@ -12,6 +12,8 @@ sys.path.insert(0, str(ROOT / "tools" / "scripts"))
 from fortna_vfd_device_model import (  # noqa: E402
     BINDING_DISCRETE,
     build_vfd_device_model,
+    ethernet_optional_command_member,
+    is_ethernet_optional_command_suffix,
 )
 
 
@@ -38,6 +40,19 @@ class TestVfdDeviceModel(unittest.TestCase):
             self.skipTest("PLC2 RUN peek missing")
         model = build_vfd_device_model(run, "ORNCCP2")
         self.assertEqual(model["device_count"], 0)
+
+    def test_ethernet_optional_suffixes_gated(self):
+        self.assertTrue(is_ethernet_optional_command_suffix("JOG"))
+        self.assertTrue(is_ethernet_optional_command_suffix("CLR_FLT"))
+        self.assertTrue(is_ethernet_optional_command_suffix("LOC_CTRL"))
+        self.assertTrue(is_ethernet_optional_command_suffix("MOP_INC"))
+        self.assertTrue(is_ethernet_optional_command_suffix("ACC_BIT0"))
+        self.assertFalse(is_ethernet_optional_command_suffix("EN"))
+        self.assertFalse(is_ethernet_optional_command_suffix("AUX"))
+        self.assertEqual(ethernet_optional_command_member("JOG"), "VFDOut.Jog")
+        self.assertEqual(
+            ethernet_optional_command_member("CLR_FLT"), "VFDOut.ClearFaults"
+        )
 
 
 if __name__ == "__main__":

@@ -1,0 +1,100 @@
+{
+  "version": 1,
+  "title": "VFD dangling command symbol closure audit (Gates 5–7)",
+  "generated_at": "2026-09-18",
+  "blind_test": {
+    "allowed_evidence": [
+      "workspace/cp5-run",
+      "workspace/cp4-run",
+      "workspace/_plc2_run_peek",
+      "tools/libraries",
+      "tools/scripts",
+      "docs/FORTNAPLUS_VFD_DEVICE_CONTRACT.md",
+      "exports/stabilization/vfd_device_contract.json",
+      "exports/stabilization/plc5_hotbuild_full/ORNCCP5.L5X"
+    ],
+    "held_back_site_inspected": false,
+    "no_blind_site_strings_in_artifacts": true
+  },
+  "roles_under_audit": [
+    "*_JOG",
+    "*_CLR_FLT",
+    "*_DIR_BIT0",
+    "*_DIR_BIT1",
+    "*_LOC_CTRL",
+    "*_MOP_INC",
+    "*_MOP_DEC",
+    "*_ACC_BIT0",
+    "*_ACC_BIT1"
+  ],
+  "root_cause": {
+    "summary": "Ethernet VFD_UDT command members (Jog/ClearFaults/ForceKeypadCtrl/MOP*/AccelRate*) are library capability. When flattened to Conveyor-style suffixes (JOG/CLR_FLT/DIR_BIT/LOC_CTRL/MOP_*/ACC_BIT) or left as bare IO_MAP operands, discrete-site generation can emit CP_I/CP_O references without a matching declaration because Motor_Starter_UDT only owns EN/AUX/FLT.",
+    "who_creates_the_reference": {
+      "primary_producer": "fortna_autogen IO_MAP CP_I/CP_O emit path (_device_member / _vfd_ms_member fallthrough)",
+      "template_leak_source": "tools/libraries/OReilly_Library_v3.L5X ASRS_InBound_Interface VFD_Input/VFD_Output ST maps P1000_VFD:O.Jog := P1000_VFD.VFDOut.Jog (and ClearFaults/Start/Stop) — Ethernet module binding example, not discrete feeder IO_MAP",
+      "vba_excel_path": "tools/libraries/vba_extract/RoutinesSupport.bas substitutes PConv_VFD from workbook column — Ethernet VFD_UDT slot; discrete path must keep NO_VFD"
+    },
+    "which_routine_consumes_it": {
+      "iomap": "Program IO_MAP routines CP_I / CP_O (XIC/OTE)",
+      "library_ethernet_example": "Program ASRS_InBound_Interface routines VFD_Input / VFD_Output (ST)"
+    },
+    "expected_datatype_scope_owner": {
+      "discrete_known_sites": {
+        "datatype": "Motor_Starter_UDT",
+        "tag_pattern": "P{num}_VFD",
+        "scope": "controller",
+        "roles": ["START_ENABLE_CMD=.O.Run", "RUNNING_FEEDBACK=.I.Auxiliary_Forward", "FAULT_STATUS=.Flt.PS_Flt"]
+      },
+      "ethernet_optional_commands": {
+        "datatype": "VFD_UDT",
+        "member_owner": "VFDOut.(Jog|ClearFaults|Forward|Reverse|ForceKeypadCtrl|MOPIncrement|MOPDecrement|AccelRate1|AccelRate2|…)",
+        "scope": "controller tag + MODULE_BOUND PowerFlex instance",
+        "activation": "ETHERNET_VFD_UDT binding only"
+      }
+    },
+    "classification": {
+      "network_vfd_command": true,
+      "aoi_member": "library AB_VFD* / VFD_UDT members — capability, not known-site population",
+      "template_placeholder": "PConv_VFD / P1000_VFD VFD_UDT examples in library; clone_template_for_conveyor correctly forces IO_VFD=NO_VFD for discrete"
+    },
+    "should_exist_only_when_ethernet_vfd_mode_active": true,
+    "why_emit_reference_without_declaration": [
+      "Unknown VFD###_<suffix> not in discrete MS map returned None from _vfd_ms_member",
+      "_device_member then fell through to bare Fortna IO_Name (e.g. VFD118_JOG)",
+      "IO_MAP emitted XIC/OTE on that bare root without ensuring a controller tag / VFD_UDT / module binding",
+      "Gate H forbids auto-BOOL fabrication — so the operand stayed dangling"
+    ]
+  },
+  "plc5_run_evidence": {
+    "spdcontrol": {
+      "path": "workspace/cp5-run/RUN/PROJECT/SpdControl.asc",
+      "VFD_NetCTRL": "INVALID",
+      "VFD_NetREF": "INVALID",
+      "VFD_Reset": "INVALID",
+      "VFD_Aux": "INVALID",
+      "verdict": "NOT_CONFIGURED_ethernet_path"
+    },
+    "gpxbelt": {
+      "path": "workspace/cp5-run/RUN/FORTNA/GpxBelt.asc",
+      "VFD_EN_S1_S2_S3": "INVALID",
+      "verdict": "NOT_CONFIGURED_graphics_bindings"
+    },
+    "conveyor_vfd_suffixes_observed": ["(bare)", "AUX", "EN", "FLT"],
+    "plc5_hotbuild_iomap_vfd_operands": [
+      "P###_VFD.I.Auxiliary_Forward",
+      "P###_VFD.O.Run",
+      "P###_VFD.Flt.PS_Flt"
+    ],
+    "plc5_hotbuild_dangling_command_roles": 0
+  },
+  "fix_approach": {
+    "gate_6_template_leak": "Skip IO_MAP emit for ethernet-optional VFD command suffixes unless ethernet_vfd_mode / vfd_binding=ETHERNET_VFD_UDT capability is proven (not site-name whitelist). Never fabricate BOOL.",
+    "gate_7_symbol_closure": "fortna_symbol_closure.check_symbol_closure hooked after L5X write in fortna_autogen.generate — IO_MAP unknowns and ethernet VFD command leaks FAIL with producer→operand→expected_owner→missing_evidence.",
+    "modules": [
+      "tools/scripts/fortna_vfd_device_model.py (ETHERNET_OPTIONAL_COMMAND_SUFFIXES)",
+      "tools/scripts/fortna_autogen.py (skip + capability gate)",
+      "tools/scripts/fortna_symbol_closure.py (new)"
+    ]
+  },
+  "verdict": "ROOT_CAUSE_CLOSED_FOR_DISCRETE_PATH — optional command roles gated; symbol closure enforced"
+}
