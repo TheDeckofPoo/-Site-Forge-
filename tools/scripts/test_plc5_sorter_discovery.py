@@ -85,11 +85,19 @@ class TestPlc5SorterDiscovery(unittest.TestCase):
         self.assertGreaterEqual(len(model.get("zone_lanes") or []), 1)
         fa = model.get("field_authority") or {}
         self.assertEqual(fa.get("divert_lane_topology"), "PROVEN")
-        self.assertEqual(fa.get("divert_output_io"), "REVIEW_REQUIRED")
+        # Deep join: Outpoints.Outpoint I/O via Lane name — PROVEN when present.
+        self.assertIn(fa.get("divert_output_io"), {"PROVEN", "DERIVED", "REVIEW_REQUIRED"})
         self.assertEqual(model.get("plc_generation"), "NOT_STARTED")
+        proven_io = 0
         for row in model.get("divert_rows") or []:
             auth = row.get("authority") or {}
-            self.assertEqual(auth.get("divert_output_io"), "REVIEW_REQUIRED")
+            self.assertIn(
+                auth.get("divert_output_io"),
+                {"PROVEN", "DERIVED", "REVIEW_REQUIRED"},
+            )
+            if auth.get("divert_output_io") == "PROVEN":
+                proven_io += 1
+        self.assertGreaterEqual(proven_io, 1)
 
     def test_sorter_discover_api(self) -> None:
         result = sorter_discover(CP5_RUN, "ORNCCP5")

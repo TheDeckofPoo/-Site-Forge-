@@ -89,6 +89,11 @@ TABLE_PATTERNS: list[tuple[str, str]] = [
     ("SortSimScans3.asc", "sorter_sim"),
     ("SortSimScans4.asc", "sorter_sim"),
     ("SortSimScans5.asc", "sorter_sim"),
+    ("Inpoints.asc", "sorter_induct"),
+    ("Outpoints.asc", "sorter_divert"),
+    ("ScnScanDevice.asc", "scanner"),
+    ("ScnScanZone.asc", "scanner"),
+    ("Mtrchain.asc", "motor_chain"),
     ("XfRouteBoss.asc", "xfr_route"),
     ("XfRouteTable.asc", "xfr_route"),
     ("XfrDevice.asc", "xfr_device"),
@@ -115,6 +120,11 @@ NAME_COLS_BY_TABLE: dict[str, tuple[str, ...]] = {
     "WCSEvents.asc": ("EventName",),
     "SortBuff.asc": ("Sorter",),
     "SortData.asc": ("Sorter",),
+    "Inpoints.asc": ("Inpoint Name", "Sorter"),
+    "Outpoints.asc": ("Outpoint Name", "Sorter"),
+    "ScnScanDevice.asc": ("Name",),
+    "ScnScanZone.asc": ("Name",),
+    "Mtrchain.asc": ("Motor_Name",),
     "MsgMap.asc": ("Message_Name",),
     "wcsAlarm.asc": ("Alarm_Category",),
     "wcsSeverity.asc": ("wcsSeverity",),
@@ -198,6 +208,14 @@ def _row_active(basename: str, row: dict[str, str], name_cols: list[str]) -> boo
         return dest.startswith("/") or _meaningful(dest)
     if basename == "SortBuff.asc":
         return _meaningful(row.get("Sorter")) and _clean(row.get("Index")) not in ("", "0")
+    if basename == "Inpoints.asc":
+        return _meaningful(row.get("Sorter")) and _meaningful(
+            row.get("Induct I/O Name") or row.get("Inpoint Name")
+        )
+    if basename == "Outpoints.asc":
+        return _meaningful(row.get("Sorter")) and _meaningful(row.get("Outpoint Name"))
+    if basename == "Mtrchain.asc":
+        return _meaningful(row.get("Motor_Name"))
     named = any(_meaningful(row.get(c)) for c in name_cols)
     if not named:
         return False
@@ -459,7 +477,7 @@ def site_forge_code_inventory() -> dict[str, Any]:
         "libraries": [
             {
                 "path": "tools/libraries/programs/Sorter_Track_Program.L5X",
-                "role": "Gold Sorter_Track program pack (Greensboro PLC5 pattern)",
+                "role": "Gold Sorter_Track program pack (site-fixed PLC5 pattern — not generic)",
                 "generic": False,
             },
             {
@@ -527,10 +545,160 @@ def iter_active_table_rows(
     return [r for r in rows if _row_active(basename, r, name_cols)]
 
 
-def build_divert_rows(zone_rows: list[dict[str, str]]) -> list[dict[str, Any]]:
-    """SrtZoneLane → divert topology rows; output IO stays REVIEW when INVALID."""
+def _conveyor_io_names(run_dir: Path, machine: str) -> set[str]:
+    """Active Conveyor.IO_Name set (for validating EXPLICIT refs)."""
+    fortna = Path(run_dir) / "FORTNA"
+    path, _ = resolve_asc(fortna, "Conveyor.asc", machine)
+    if path is None or not path.is_file() or path.stat().st_size <= 0:
+        return set()
+    _headers, rows = read_asc(path)
+    out: set[str] = set()
+    for r in rows:
+        name = _clean(r.get("IO_Name") or r.get("Name"))
+        if _meaningful(name):
+            out.add(name.upper())
+    return out
+
+
+def _mtrchain_index(
+    run_dir: Path, machine: str
+) -> dict[str, dict[str, str]]:
+    rows = iter_active_table_rows(run_dir, "Mtrchain.asc", machine)
+    return {
+        _clean(r.get("Motor_Name")).upper(): r
+        for r in rows
+        if _meaningful(r.get("Motor_Name"))
+    }
+
+
+def _motor_candidates_for_enable_bit(enable_bit: str) -> list[str]:
+    """Generic EnableBit → Motor_Name candidates (no numeric-suffix guessing).
+
+    Exact match first. If the bit ends with ``_AUX``, also try stem+``_EN`` and
+    bare stem — only usable when those names exist as Conveyor IO *and* Mtrchain
+    Motor_Name (caller enforces).
+    """
+    en = _clean(enable_bit)
+    if not en:
+        return []
+    cands = [en]
+    upper = en.upper()
+    if upper.endswith("_AUX") and len(en) > 4:
+        stem = en[:-4]
+        cands.extend([f"{stem}_EN", stem])
+    # de-dupe preserving order
+    seen: set[str] = set()
+    out: list[str] = []
+    for c in cands:
+        key = c.upper()
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(c)
+    return out
+
+
+def resolve_tracking_conveyor_for_encoder(
+    enable_bit: str,
+    *,
+    mtr_by_name: dict[str, dict[str, str]],
+    conveyor_io: set[str],
+) -> dict[str, Any]:
+    """Encoder.EnableBit → Mtrchain.Motor_Chained* conveyors.
+
+    PROVEN when EnableBit equals Motor_Name exactly.
+    DERIVED when ``*_AUX`` pairs to a verified ``*_EN``/stem Motor_Name that
+    exists in both Conveyor and Mtrchain (Fortna VFD aux/enable pairing).
+    Never ENC### → P### by digit match.
+    """
+    enable = _clean(enable_bit)
+    empty = {
+        "conveyors": [],
+        "motor_name": "",
+        "authority": AUTH_UNKNOWN,
+        "path": "",
+    }
+    if not _meaningful(enable):
+        return empty
+    candidates = _motor_candidates_for_enable_bit(enable)
+    for i, cand in enumerate(candidates):
+        key = cand.upper()
+        if key not in mtr_by_name:
+            continue
+        if key not in conveyor_io and i > 0:
+            # Derived candidates must be real Conveyor IO points.
+            continue
+        if i > 0 and enable.upper() not in conveyor_io:
+            # EnableBit itself should also resolve as Conveyor IO (schema EXPLICIT).
+            continue
+        row = mtr_by_name[key]
+        chained: list[str] = []
+        for col in (
+            "Motor_Chained1",
+            "Motor_Chained2",
+            "Motor_Chained3",
+            "Motor_Chained4",
+            "Motor_Chained5",
+        ):
+            v = _clean(row.get(col))
+            if _meaningful(v) and v.upper() != "INVALID" and v.upper() in conveyor_io:
+                chained.append(v)
+        if not chained:
+            continue
+        auth = AUTH_PROVEN if i == 0 else AUTH_DERIVED
+        path = (
+            f"Encoders.EnableBit={enable} → Mtrchain.Motor_Name={cand} → Motor_Chained*"
+            if i == 0
+            else (
+                f"Encoders.EnableBit={enable} → pair Motor_Name={cand} "
+                f"(Conveyor+Mtrchain) → Motor_Chained*"
+            )
+        )
+        return {
+            "conveyors": chained,
+            "motor_name": cand,
+            "authority": auth,
+            "path": path,
+        }
+    return empty
+
+
+def _index_outpoints_by_lane(
+    out_rows: list[dict[str, str]],
+) -> dict[str, dict[str, str]]:
+    """Lane/Outpoint Name → first Outpoints row (unique lane names expected)."""
+    by_lane: dict[str, dict[str, str]] = {}
+    for r in out_rows:
+        lane = _clean(r.get("Outpoint Name"))
+        if not _meaningful(lane):
+            continue
+        key = lane.upper()
+        if key not in by_lane:
+            by_lane[key] = r
+    return by_lane
+
+
+def _index_inpoints_by_sorter(
+    in_rows: list[dict[str, str]],
+) -> dict[str, list[dict[str, str]]]:
+    by: dict[str, list[dict[str, str]]] = {}
+    for r in in_rows:
+        sorter = _clean(r.get("Sorter"))
+        if not _meaningful(sorter):
+            continue
+        by.setdefault(sorter.upper(), []).append(r)
+    return by
+
+
+def build_divert_rows(
+    zone_rows: list[dict[str, str]],
+    *,
+    outpoints_by_lane: dict[str, dict[str, str]] | None = None,
+) -> list[dict[str, Any]]:
+    """SrtZoneLane topology + Outpoints.Outpoint I/O when lane join proves output."""
+    outpoints_by_lane = outpoints_by_lane or {}
     out: list[dict[str, Any]] = []
-    for z in zone_rows:
+    for idx, z in enumerate(zone_rows):
         name = _clean(z.get("Name"))
         lane = _clean(z.get("Lane"))
         if not _meaningful(name) and not _meaningful(lane):
@@ -540,14 +708,71 @@ def build_divert_rows(zone_rows: list[dict[str, str]]) -> list[dict[str, Any]]:
         app = _clean(z.get("AppSorter"))
         enabled = _clean(z.get("Enabled"))
         topology_ok = _meaningful(lane) or _meaningful(host)
-        divert_io_auth = _authority(enable_sig, blank_is=AUTH_REVIEW)
-        if divert_io_auth == AUTH_PROVEN and enable_sig.upper() == "INVALID":
-            divert_io_auth = AUTH_REVIEW
-        if not _meaningful(enable_sig) or enable_sig.upper() == "INVALID":
-            divert_io_auth = AUTH_REVIEW
-            divert_io_value = enable_sig or "INVALID"
-        else:
+        timer = _clean(z.get("FullClearTimer"))
+
+        divert_io_value = ""
+        divert_io_auth = AUTH_REVIEW
+        divert_io_source = "FORTNA/SrtZoneLane.asc LaneEnableSignal"
+        divert_io_prov = PROV_ENGINEER
+        section_sorter = ""
+        outpoint_number = ""
+        outpoint_location = ""
+        verify_io = ""
+        out_timer = ""
+
+        op = outpoints_by_lane.get(lane.upper()) if lane else None
+        if op:
+            section_sorter = _clean(op.get("Sorter"))
+            outpoint_number = _clean(op.get("Outpoint Number"))
+            outpoint_location = _clean(op.get("Outpoint Location"))
+            verify_io = _clean(op.get("Verify I/O Name"))
+            out_timer = _clean(op.get("Full_Clr_Timer_Name"))
+            op_io = _clean(op.get("Outpoint I/O Name"))
+            if _meaningful(op_io) and op_io.upper() != "INVALID":
+                divert_io_value = op_io
+                divert_io_auth = AUTH_PROVEN
+                divert_io_source = (
+                    "FORTNA/Outpoints.asc Outpoint I/O Name "
+                    "(join Outpoint Name == SrtZoneLane.Lane)"
+                )
+                divert_io_prov = PROV_RUN
+            elif _meaningful(enable_sig) and enable_sig.upper() != "INVALID":
+                divert_io_value = enable_sig
+                divert_io_auth = AUTH_PROVEN
+                divert_io_prov = PROV_RUN
+            else:
+                divert_io_value = op_io or enable_sig or "INVALID"
+                divert_io_auth = AUTH_REVIEW
+        elif _meaningful(enable_sig) and enable_sig.upper() != "INVALID":
             divert_io_value = enable_sig
+            divert_io_auth = AUTH_PROVEN
+            divert_io_prov = PROV_RUN
+        else:
+            divert_io_value = enable_sig or "INVALID"
+            divert_io_auth = AUTH_REVIEW
+
+        # Confirm / divert PE: Verify I/O only counts when distinct from divert output
+        # (sites often mirror solenoid names into Verify I/O — that is not a PE).
+        divert_pe = ""
+        divert_pe_auth = AUTH_UNKNOWN
+        divert_pe_source = "no distinct PE on SrtZoneLane/Outpoints"
+        divert_pe_prov = PROV_UNKNOWN
+        if (
+            _meaningful(verify_io)
+            and verify_io.upper() != "INVALID"
+            and verify_io.upper() != _clean(divert_io_value).upper()
+        ):
+            divert_pe = verify_io
+            divert_pe_auth = AUTH_PROVEN
+            divert_pe_source = "FORTNA/Outpoints.asc Verify I/O Name (≠ Outpoint I/O)"
+            divert_pe_prov = PROV_RUN
+        elif _meaningful(timer) or _meaningful(out_timer):
+            divert_pe_auth = AUTH_REVIEW
+            divert_pe_source = (
+                "FullClearTimer / Full_Clr_Timer_Name are timer names, not PE proof"
+            )
+            divert_pe_prov = PROV_ENGINEER
+
         out.append(
             {
                 "name": _field(name, "FORTNA/SrtZoneLane.asc"),
@@ -555,21 +780,38 @@ def build_divert_rows(zone_rows: list[dict[str, str]]) -> list[dict[str, Any]]:
                 "app_sorter": _field(app, "FORTNA/SrtZoneLane.asc"),
                 "lane": _field(lane, "FORTNA/SrtZoneLane.asc"),
                 "host_zone": _field(host, "FORTNA/SrtZoneLane.asc"),
-                "full_clear_timer": _field(
-                    _clean(z.get("FullClearTimer")), "FORTNA/SrtZoneLane.asc"
-                ),
+                "full_clear_timer": _field(timer, "FORTNA/SrtZoneLane.asc"),
                 "lane_enable_signal": _field(enable_sig, "FORTNA/SrtZoneLane.asc"),
                 "divert_output_io": _field(
-                    divert_io_value,
-                    "FORTNA/SrtZoneLane.asc LaneEnableSignal",
-                    PROV_ENGINEER if divert_io_auth == AUTH_REVIEW else PROV_RUN,
+                    divert_io_value, divert_io_source, divert_io_prov
                 ),
+                "divert_pe": _field(divert_pe, divert_pe_source, divert_pe_prov),
+                "sorter_section": _field(
+                    section_sorter,
+                    "FORTNA/Outpoints.asc Sorter" if section_sorter else "unjoined",
+                    PROV_RUN if section_sorter else PROV_UNKNOWN,
+                ),
+                "outpoint_number": _field(
+                    outpoint_number,
+                    "FORTNA/Outpoints.asc",
+                    PROV_RUN if outpoint_number else PROV_UNKNOWN,
+                ),
+                "outpoint_location": _field(
+                    outpoint_location,
+                    "FORTNA/Outpoints.asc Outpoint Location",
+                    PROV_RUN if outpoint_location else PROV_UNKNOWN,
+                ),
+                "sequence_index": _field(idx, "SrtZoneLane row order", PROV_DERIVED),
                 "authority": {
                     "topology": AUTH_PROVEN if topology_ok else AUTH_REVIEW,
                     "lane": _authority(lane),
                     "host_zone": _authority(host),
                     "app_sorter": _authority(app),
                     "divert_output_io": divert_io_auth,
+                    "divert_pe": divert_pe_auth,
+                    "sorter_section": (
+                        AUTH_PROVEN if section_sorter else AUTH_UNKNOWN
+                    ),
                 },
             }
         )
@@ -579,10 +821,17 @@ def build_divert_rows(zone_rows: list[dict[str, str]]) -> list[dict[str, Any]]:
 def build_tracking_path_rows(
     sorters: list[dict[str, Any]],
     encoders_by_name: dict[str, dict[str, Any]],
+    *,
+    mtr_by_name: dict[str, dict[str, str]] | None = None,
+    conveyor_io: set[str] | None = None,
+    inpoints_by_sorter: dict[str, list[dict[str, str]]] | None = None,
 ) -> list[dict[str, Any]]:
-    """One tracking stub per sorter when encoder link is PROVEN; conveyor stays UNKNOWN."""
+    """Per-sorter tracking section: encoder + optional Mtrchain conveyor + Inpoints PE."""
+    mtr_by_name = mtr_by_name or {}
+    conveyor_io = conveyor_io or set()
+    inpoints_by_sorter = inpoints_by_sorter or {}
     rows: list[dict[str, Any]] = []
-    for s in sorters:
+    for seq, s in enumerate(sorters):
         name = s["name"]["value"] if isinstance(s.get("name"), dict) else s.get("name")
         enc = (
             s["encoder_io"]["value"]
@@ -594,10 +843,72 @@ def build_tracking_path_rows(
         enc_auth = AUTH_PROVEN if enc and enc_doc else (
             AUTH_DERIVED if enc else AUTH_UNKNOWN
         )
+        enable = ""
+        if enc_doc:
+            eb = enc_doc.get("enable_bit")
+            enable = eb.get("value") if isinstance(eb, dict) else _clean(eb)
+
+        resolved = resolve_tracking_conveyor_for_encoder(
+            enable, mtr_by_name=mtr_by_name, conveyor_io=conveyor_io
+        )
+        convs = resolved.get("conveyors") or []
+        primary_conv = convs[0] if convs else ""
+        conv_auth = resolved.get("authority") or AUTH_UNKNOWN
+        conv_path = resolved.get("path") or "no EnableBit→Mtrchain path"
+
+        pe = ""
+        pe_auth = AUTH_UNKNOWN
+        pe_source = "no Inpoints row for sorter"
+        pe_prov = PROV_UNKNOWN
+        in_rows = inpoints_by_sorter.get(_clean(name).upper(), [])
+        if in_rows:
+            # Prefer induct number 0 / first active induct IO.
+            in_rows_sorted = sorted(
+                in_rows,
+                key=lambda r: int(_clean(r.get("Induct Number")) or "999999")
+                if str(_clean(r.get("Induct Number")) or "").isdigit()
+                else 999999,
+            )
+            pe = _clean(in_rows_sorted[0].get("Induct I/O Name"))
+            if _meaningful(pe) and pe.upper() != "INVALID":
+                pe_auth = AUTH_PROVEN
+                pe_source = "FORTNA/Inpoints.asc Induct I/O Name (Sorter join)"
+                pe_prov = PROV_RUN
+            else:
+                pe = ""
+                pe_auth = AUTH_REVIEW
+                pe_source = "Inpoints present but Induct I/O Name blank/INVALID"
+                pe_prov = PROV_ENGINEER
+
+        # Induct conveyor for this section = tracking belt when Mtrchain proves it.
+        induct_conv = primary_conv
+        induct_conv_auth = conv_auth if primary_conv else AUTH_UNKNOWN
+        induct_conv_source = (
+            conv_path + " (same section belt; Inpoints has no conveyor column)"
+            if primary_conv
+            else "Inpoints lacks conveyor; EnableBit→Mtrchain unresolved"
+        )
+
+        data_low = (
+            s.get("data_low_rec", {}).get("value")
+            if isinstance(s.get("data_low_rec"), dict)
+            else s.get("data_low_rec") or ""
+        )
+
         rows.append(
             {
                 "sorter": _field(name, "FORTNA/Sorters.asc"),
+                "sequence": _field(
+                    seq,
+                    "Sorters Data LowRec ascending"
+                    if data_low != ""
+                    else "Sorters active row order",
+                    PROV_DERIVED,
+                ),
                 "encoder_tag": _field(enc, "FORTNA/Sorters.asc Encoder ioName"),
+                "encoder_enable_bit": _field(
+                    enable, "FORTNA/Encoders.asc EnableBit", PROV_RUN if enable else PROV_UNKNOWN
+                ),
                 "encoder_ticks_per_foot": _field(
                     (enc_doc or {}).get("ticks_per_foot", {}).get("value")
                     if isinstance((enc_doc or {}).get("ticks_per_foot"), dict)
@@ -605,12 +916,41 @@ def build_tracking_path_rows(
                     "FORTNA/Encoders.asc",
                     PROV_RUN if enc_doc else PROV_UNKNOWN,
                 ),
-                "conveyor": _field("", "not in RUN sorter/encoder join", PROV_UNKNOWN),
-                "photoeye": _field("", "not in RUN sorter/encoder join", PROV_UNKNOWN),
+                "conveyor": _field(
+                    primary_conv,
+                    conv_path,
+                    PROV_RUN if conv_auth == AUTH_PROVEN else (
+                        PROV_DERIVED if conv_auth == AUTH_DERIVED else PROV_UNKNOWN
+                    ),
+                ),
+                "conveyor_chain": _field(
+                    convs,
+                    conv_path,
+                    PROV_RUN if conv_auth == AUTH_PROVEN else (
+                        PROV_DERIVED if conv_auth == AUTH_DERIVED else PROV_UNKNOWN
+                    ),
+                ),
+                "photoeye": _field(pe, pe_source, pe_prov),
+                "induct_conveyor": _field(
+                    induct_conv,
+                    induct_conv_source,
+                    PROV_RUN if induct_conv_auth == AUTH_PROVEN else (
+                        PROV_DERIVED if induct_conv_auth == AUTH_DERIVED else PROV_UNKNOWN
+                    ),
+                ),
+                "induct_pe": _field(pe, pe_source, pe_prov),
+                "mtrchain_motor": _field(
+                    resolved.get("motor_name") or "",
+                    "FORTNA/Mtrchain.asc",
+                    PROV_RUN if resolved.get("motor_name") else PROV_UNKNOWN,
+                ),
                 "authority": {
                     "encoder_tag": enc_auth,
-                    "conveyor": AUTH_UNKNOWN,
-                    "photoeye": AUTH_UNKNOWN,
+                    "conveyor": conv_auth,
+                    "photoeye": pe_auth,
+                    "induct_conveyor": induct_conv_auth,
+                    "induct_pe": pe_auth,
+                    "sequence": AUTH_DERIVED,
                 },
             }
         )
@@ -618,10 +958,7 @@ def build_tracking_path_rows(
 
 
 def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, Any]:
-    """Full SorterModel foundation from RUN (all active rows, field authority).
-
-    Does NOT emit PLC / L5X. Divert output IO is REVIEW_REQUIRED when INVALID.
-    """
+    """Full SorterModel from RUN with deep evidence joins (no L5X emit)."""
     run_dir = Path(run_dir)
     if (run_dir / "RUN").is_dir() and not (run_dir / "FORTNA").is_dir():
         run_dir = run_dir / "RUN"
@@ -632,23 +969,62 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
     zone_rows = iter_active_table_rows(run_dir, "SrtZoneLane.asc", machine)
     app_rows = iter_active_table_rows(run_dir, "SrtAppControl.asc", machine)
     boss_rows = iter_active_table_rows(run_dir, "SrtScanBoss.asc", machine)
+    inpoint_rows = iter_active_table_rows(run_dir, "Inpoints.asc", machine)
+    outpoint_rows = iter_active_table_rows(run_dir, "Outpoints.asc", machine)
+    scan_device_rows = iter_active_table_rows(run_dir, "ScnScanDevice.asc", machine)
+    scan_zone_rows = iter_active_table_rows(run_dir, "ScnScanZone.asc", machine)
+    sortbuff_rows = iter_active_table_rows(run_dir, "SortBuff.asc", machine)
+    sortdata_rows = iter_active_table_rows(run_dir, "SortData.asc", machine)
+
+    conveyor_io = _conveyor_io_names(run_dir, machine)
+    mtr_by_name = _mtrchain_index(run_dir, machine)
+    outpoints_by_lane = _index_outpoints_by_lane(outpoint_rows)
+    inpoints_by_sorter = _index_inpoints_by_sorter(inpoint_rows)
+
+    # Stable section order from Data LowRec when numeric (not name/suffix guess).
+    def _data_low_key(row: dict[str, str]) -> tuple[int, str]:
+        raw = _clean(row.get("Data LowRec"))
+        try:
+            return (int(raw), _clean(row.get("Sorter Name") or row.get("Name")))
+        except ValueError:
+            return (10**9, _clean(row.get("Sorter Name") or row.get("Name")))
+
+    sorter_rows_sorted = sorted(sorter_rows, key=_data_low_key)
 
     sorters: list[dict[str, Any]] = []
-    for s in sorter_rows:
+    for s in sorter_rows_sorted:
         name = _clean(s.get("Sorter Name") or s.get("Name"))
         if not _meaningful(name):
             continue
         enc = _clean(s.get("Encoder ioName") or s.get("Encoder Name"))
+        enc_tm = _clean(s.get("Encoder tmName"))
         mach = _clean(s.get("Machine") or machine)
+        max_cartons = _clean(s.get("Max Cartons"))
+        trig = _clean(s.get("TrigWndwTicks"))
+        data_low = _clean(s.get("Data LowRec"))
+        data_high = _clean(s.get("Data HighRec"))
+        buf_low = _clean(s.get("Buffer LowRec"))
+        buf_high = _clean(s.get("Buffer HighRec"))
+        divert_en = _clean(s.get("DivertEnableIO"))
         sorters.append(
             {
                 "name": _field(name, "FORTNA/Sorters.asc"),
                 "encoder_io": _field(enc, "FORTNA/Sorters.asc"),
+                "encoder_tm": _field(enc_tm, "FORTNA/Sorters.asc"),
                 "machine": _field(mach, "FORTNA/Sorters.asc"),
+                "max_cartons": _field(max_cartons, "FORTNA/Sorters.asc"),
+                "trig_window_ticks": _field(trig, "FORTNA/Sorters.asc"),
+                "data_low_rec": _field(data_low, "FORTNA/Sorters.asc"),
+                "data_high_rec": _field(data_high, "FORTNA/Sorters.asc"),
+                "buffer_low_rec": _field(buf_low, "FORTNA/Sorters.asc"),
+                "buffer_high_rec": _field(buf_high, "FORTNA/Sorters.asc"),
+                "divert_enable_io": _field(divert_en, "FORTNA/Sorters.asc"),
                 "authority": {
                     "name": AUTH_PROVEN,
                     "encoder_io": _authority(enc),
                     "machine": _authority(mach) if mach else AUTH_DERIVED,
+                    "max_cartons": _authority(max_cartons),
+                    "trig_window_ticks": _authority(trig),
                 },
             }
         )
@@ -678,8 +1054,14 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         encoders.append(doc)
         encoders_by_name[name.upper()] = doc
 
-    divert_rows = build_divert_rows(zone_rows)
-    tracking_path = build_tracking_path_rows(sorters, encoders_by_name)
+    divert_rows = build_divert_rows(zone_rows, outpoints_by_lane=outpoints_by_lane)
+    tracking_path = build_tracking_path_rows(
+        sorters,
+        encoders_by_name,
+        mtr_by_name=mtr_by_name,
+        conveyor_io=conveyor_io,
+        inpoints_by_sorter=inpoints_by_sorter,
+    )
 
     apps: list[dict[str, Any]] = []
     for a in app_rows:
@@ -700,6 +1082,9 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
                     _clean(a.get("DcmMsgTable")), "FORTNA/SrtAppControl.asc"
                 ),
                 "sorter_cnv_mtr": _field(mtr, "FORTNA/SrtAppControl.asc"),
+                "err_config": _field(
+                    _clean(a.get("ErrConfig")), "FORTNA/SrtAppControl.asc"
+                ),
                 "authority": {
                     "name": AUTH_PROVEN,
                     "sorter_cnv_mtr": _authority(mtr, blank_is=AUTH_REVIEW),
@@ -730,6 +1115,101 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
             }
         )
 
+    scanners: list[dict[str, Any]] = []
+    for d in scan_device_rows:
+        name = _clean(d.get("Name"))
+        if not _meaningful(name):
+            continue
+        scanners.append(
+            {
+                "name": _field(name, "FORTNA/ScnScanDevice.asc"),
+                "scan_zone": _field(
+                    _clean(d.get("ScanZone")), "FORTNA/ScnScanDevice.asc"
+                ),
+                "scan_type": _field(
+                    _clean(d.get("ScanType")), "FORTNA/ScnScanDevice.asc"
+                ),
+                "update_pt": _field(
+                    _clean(d.get("UpdatePt")), "FORTNA/ScnScanDevice.asc"
+                ),
+                "authority": {"name": AUTH_PROVEN},
+            }
+        )
+
+    scan_zones: list[dict[str, Any]] = []
+    for z in scan_zone_rows:
+        name = _clean(z.get("Name"))
+        if not _meaningful(name):
+            continue
+        scan_zones.append(
+            {
+                "name": _field(name, "FORTNA/ScnScanZone.asc"),
+                "scan_zone_id": _field(
+                    _clean(z.get("ScanZoneID")), "FORTNA/ScnScanZone.asc"
+                ),
+                "tracking_table": _field(
+                    _clean(z.get("TrackingTable")), "FORTNA/ScnScanZone.asc"
+                ),
+                "device_trk_table": _field(
+                    _clean(z.get("DeviceTrkTable")), "FORTNA/ScnScanZone.asc"
+                ),
+                "authority": {"name": AUTH_PROVEN},
+            }
+        )
+
+    # Sections under application: Outpoints.Sorter ∩ SrtZoneLane.Lane → AppSorter.
+    # Sorters rows without divert lanes remain tracking sections (Inpoints/Encoders).
+    sections_under_app: dict[str, list[str]] = {}
+    for d in divert_rows:
+        app = _clean(
+            d["app_sorter"]["value"]
+            if isinstance(d.get("app_sorter"), dict)
+            else d.get("app_sorter")
+        )
+        section = _clean(
+            d["sorter_section"]["value"]
+            if isinstance(d.get("sorter_section"), dict)
+            else d.get("sorter_section")
+        )
+        if _meaningful(app) and _meaningful(section):
+            bucket = sections_under_app.setdefault(app, [])
+            if section not in bucket:
+                bucket.append(section)
+    all_section_names = [
+        s["name"]["value"] if isinstance(s.get("name"), dict) else s.get("name")
+        for s in sorters
+    ]
+    unassigned_sections = [
+        n for n in all_section_names
+        if n and all(n not in secs for secs in sections_under_app.values())
+    ]
+
+    application_structure = {
+        "authority": AUTH_DERIVED if (sections_under_app or (apps and sorters)) else (
+            AUTH_PROVEN if apps and not sorters else AUTH_UNKNOWN
+        ),
+        "path": (
+            "SrtZoneLane.AppSorter + Outpoints.Sorter via Outpoint Name==Lane join; "
+            "Sorters rows are tracking sections"
+            if (sections_under_app or sorters)
+            else "insufficient zone/outpoint join"
+        ),
+        "apps": [
+            a["name"]["value"] if isinstance(a.get("name"), dict) else a.get("name")
+            for a in apps
+        ],
+        "sections_under_app": sections_under_app,
+        "tracking_sections": all_section_names,
+        "sections_without_divert_lanes": unassigned_sections,
+        "note": (
+            "Multiple Sorters rows are tracking sections. App ownership of divert "
+            "lanes is proven via SrtZoneLane.AppSorter; section ownership of those "
+            "lanes is proven via Outpoints.Sorter on the same lane name — not from "
+            "name tokens alone. Sections lacking Outpoints⋈ZoneLane joins stay "
+            "listed as tracking sections only."
+        ),
+    }
+
     zone_lanes = [
         {
             "name": d["name"],
@@ -738,17 +1218,93 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
             "lane": d["lane"],
             "host_zone": d["host_zone"],
             "full_clear_timer": d["full_clear_timer"],
+            "sorter_section": d.get("sorter_section"),
             "authority": d["authority"],
         }
         for d in divert_rows
     ]
+
+    # Coverage helpers
+    track_conv_resolved = sum(
+        1
+        for t in tracking_path
+        if _meaningful(
+            t["conveyor"]["value"] if isinstance(t.get("conveyor"), dict) else ""
+        )
+    )
+    track_pe_resolved = sum(
+        1
+        for t in tracking_path
+        if _meaningful(
+            t["photoeye"]["value"] if isinstance(t.get("photoeye"), dict) else ""
+        )
+    )
+    divert_io_resolved = sum(
+        1
+        for d in divert_rows
+        if (d.get("authority") or {}).get("divert_output_io") == AUTH_PROVEN
+    )
+    divert_pe_resolved = sum(
+        1
+        for d in divert_rows
+        if (d.get("authority") or {}).get("divert_pe") == AUTH_PROVEN
+    )
+
+    # Primary induct (UI single-row): first tracking section with proven/derived values
+    primary_induct_conv = ""
+    primary_induct_pe = ""
+    primary_induct_enc = ""
+    primary_induct_conv_auth = AUTH_UNKNOWN
+    primary_induct_pe_auth = AUTH_UNKNOWN
+    for t in tracking_path:
+        c = t["conveyor"]["value"] if isinstance(t.get("conveyor"), dict) else ""
+        p = t["photoeye"]["value"] if isinstance(t.get("photoeye"), dict) else ""
+        e = t["encoder_tag"]["value"] if isinstance(t.get("encoder_tag"), dict) else ""
+        if not primary_induct_enc and _meaningful(e):
+            primary_induct_enc = e
+        if not primary_induct_pe and _meaningful(p):
+            primary_induct_pe = p
+            primary_induct_pe_auth = (t.get("authority") or {}).get(
+                "induct_pe", AUTH_PROVEN
+            )
+        if not primary_induct_conv and _meaningful(c):
+            primary_induct_conv = c
+            primary_induct_conv_auth = (t.get("authority") or {}).get(
+                "induct_conveyor", AUTH_DERIVED
+            )
+        if primary_induct_conv and primary_induct_pe:
+            break
+
+    track_conv_auth = (
+        AUTH_DERIVED
+        if track_conv_resolved
+        and any(
+            (t.get("authority") or {}).get("conveyor") == AUTH_DERIVED
+            for t in tracking_path
+        )
+        else (
+            AUTH_PROVEN
+            if track_conv_resolved
+            and all(
+                (t.get("authority") or {}).get("conveyor") == AUTH_PROVEN
+                for t in tracking_path
+                if _meaningful(
+                    t["conveyor"]["value"]
+                    if isinstance(t.get("conveyor"), dict)
+                    else ""
+                )
+            )
+            else (AUTH_UNKNOWN if not track_conv_resolved else AUTH_DERIVED)
+        )
+    )
 
     field_authority = {
         "sorter_existence": AUTH_PROVEN if sorters else AUTH_UNKNOWN,
         "sorter_identity": AUTH_PROVEN if sorters else AUTH_UNKNOWN,
         "sorter_encoder_link": (
             AUTH_PROVEN
-            if sorters and all(
+            if sorters
+            and all(
                 (s.get("authority") or {}).get("encoder_io") == AUTH_PROVEN
                 for s in sorters
             )
@@ -757,12 +1313,74 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         "encoder_parameters": AUTH_PROVEN if encoders else AUTH_UNKNOWN,
         "app_control": AUTH_PROVEN if apps else AUTH_UNKNOWN,
         "scan_boss": AUTH_PROVEN if scan_bosses else AUTH_UNKNOWN,
+        "scan_zone": AUTH_PROVEN if (scan_zones or scan_bosses) else AUTH_UNKNOWN,
+        "scanner": AUTH_PROVEN if scanners else AUTH_UNKNOWN,
         "divert_lane_topology": AUTH_PROVEN if divert_rows else AUTH_UNKNOWN,
-        "divert_output_io": AUTH_REVIEW,
-        "tracking_conveyor_chain": AUTH_UNKNOWN,
+        "divert_output_io": (
+            AUTH_PROVEN
+            if divert_io_resolved == len(divert_rows) and divert_rows
+            else (
+                AUTH_DERIVED
+                if divert_io_resolved
+                else AUTH_REVIEW
+            )
+        ),
+        "divert_pe": (
+            AUTH_PROVEN
+            if divert_pe_resolved
+            else (AUTH_REVIEW if divert_rows else AUTH_UNKNOWN)
+        ),
+        "tracking_conveyor_chain": track_conv_auth,
+        "tracking_pe": (
+            AUTH_PROVEN if track_pe_resolved == len(tracking_path) and tracking_path
+            else (AUTH_PROVEN if track_pe_resolved else AUTH_UNKNOWN)
+        ),
+        "induct_conveyor": primary_induct_conv_auth,
+        "induct_pe": primary_induct_pe_auth,
+        "induct_encoder": AUTH_PROVEN if primary_induct_enc else AUTH_UNKNOWN,
         "sorter_type": AUTH_REVIEW,
+        "transport_area": AUTH_UNKNOWN,
+        "tracking_order": AUTH_DERIVED if tracking_path else AUTH_UNKNOWN,
+        "tracking_offset": AUTH_REVIEW,
+        "trig_window": (
+            AUTH_PROVEN
+            if any(
+                _meaningful(
+                    s.get("trig_window_ticks", {}).get("value")
+                    if isinstance(s.get("trig_window_ticks"), dict)
+                    else ""
+                )
+                for s in sorters
+            )
+            else AUTH_UNKNOWN
+        ),
+        "ppi_encoder_scaling": AUTH_PROVEN if encoders else AUTH_UNKNOWN,
+        "max_cartons_buffer": AUTH_PROVEN if sorters else AUTH_UNKNOWN,
+        "application_structure": application_structure["authority"],
+        "sortbuff_link": AUTH_PROVEN if sortbuff_rows else AUTH_UNKNOWN,
+        "sortdata_link": AUTH_PROVEN if sortdata_rows else AUTH_UNKNOWN,
         "plc_generation": "NOT_STARTED",
     }
+
+    gate_f = build_gate_f_field_authority(locals_bundle={
+        "sorters": sorters,
+        "encoders": encoders,
+        "apps": apps,
+        "scan_bosses": scan_bosses,
+        "scanners": scanners,
+        "scan_zones": scan_zones,
+        "divert_rows": divert_rows,
+        "tracking_path": tracking_path,
+        "field_authority": field_authority,
+        "primary_induct_conv": primary_induct_conv,
+        "primary_induct_pe": primary_induct_pe,
+        "primary_induct_enc": primary_induct_enc,
+        "track_conv_resolved": track_conv_resolved,
+        "track_pe_resolved": track_pe_resolved,
+        "divert_io_resolved": divert_io_resolved,
+        "divert_pe_resolved": divert_pe_resolved,
+        "application_structure": application_structure,
+    })
 
     return {
         "generated_at": _ts(),
@@ -777,17 +1395,392 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         "encoders": encoders,
         "app_controls": apps,
         "scan_bosses": scan_bosses,
+        "scanners": scanners,
+        "scan_zones": scan_zones,
         "zone_lanes": zone_lanes,
         "divert_rows": divert_rows,
         "tracking_path": tracking_path,
+        "inpoints": [
+            {
+                "name": _field(_clean(r.get("Inpoint Name")), "FORTNA/Inpoints.asc"),
+                "sorter": _field(_clean(r.get("Sorter")), "FORTNA/Inpoints.asc"),
+                "induct_io": _field(
+                    _clean(r.get("Induct I/O Name")), "FORTNA/Inpoints.asc"
+                ),
+                "induct_number": _field(
+                    _clean(r.get("Induct Number")), "FORTNA/Inpoints.asc"
+                ),
+                "authority": {"induct_io": AUTH_PROVEN},
+            }
+            for r in inpoint_rows
+        ],
+        "application_structure": application_structure,
+        "induct": {
+            "conveyor": _field(
+                primary_induct_conv,
+                "first tracking section EnableBit→Mtrchain",
+                PROV_DERIVED if primary_induct_conv else PROV_UNKNOWN,
+            ),
+            "photoeye": _field(
+                primary_induct_pe,
+                "FORTNA/Inpoints.asc",
+                PROV_RUN if primary_induct_pe else PROV_UNKNOWN,
+            ),
+            "encoder": _field(
+                primary_induct_enc,
+                "FORTNA/Sorters.asc Encoder ioName",
+                PROV_RUN if primary_induct_enc else PROV_UNKNOWN,
+            ),
+            "authority": {
+                "conveyor": primary_induct_conv_auth,
+                "photoeye": primary_induct_pe_auth,
+                "encoder": AUTH_PROVEN if primary_induct_enc else AUTH_UNKNOWN,
+            },
+        },
+        "coverage": {
+            "tracking_conveyors_resolved": track_conv_resolved,
+            "tracking_pes_resolved": track_pe_resolved,
+            "divert_outputs_resolved": divert_io_resolved,
+            "divert_pes_resolved": divert_pe_resolved,
+            "divert_topology_rows": len(divert_rows),
+            "inpoints_active": len(inpoint_rows),
+            "outpoints_active": len(outpoint_rows),
+            "sortbuff_active": len(sortbuff_rows),
+            "sortdata_active": len(sortdata_rows),
+        },
         "field_authority": field_authority,
+        "gate_f_fields": gate_f,
         "generation_state": "NOT_SUPPORTED",
         "plc_generation": "NOT_STARTED",
         "note": (
-            "Canonical model + UI populate only. Sorter_Track L5X generation "
-            "remains NOT_STARTED / REVIEW until a generic library path exists."
+            "Deep RUN evidence graph (Inpoints/Outpoints/Mtrchain/Scn*). "
+            "Sorter_Track L5X generation remains NOT_STARTED."
         ),
     }
+
+
+def build_gate_f_field_authority(locals_bundle: dict[str, Any]) -> list[dict[str, Any]]:
+    """Gate F: authority row for each PLC-generation-relevant sorter field."""
+    fa = locals_bundle.get("field_authority") or {}
+    tracking_path = locals_bundle.get("tracking_path") or []
+    divert_rows = locals_bundle.get("divert_rows") or []
+    sorters = locals_bundle.get("sorters") or []
+    encoders = locals_bundle.get("encoders") or []
+    apps = locals_bundle.get("apps") or []
+    scan_bosses = locals_bundle.get("scan_bosses") or []
+    scanners = locals_bundle.get("scanners") or []
+    scan_zones = locals_bundle.get("scan_zones") or []
+    app_struct = locals_bundle.get("application_structure") or {}
+
+    def row(
+        field: str,
+        primary: str,
+        supporting: str,
+        path: str,
+        authority: str,
+        autopopulate: bool,
+        engineer: str,
+        why: str,
+    ) -> dict[str, Any]:
+        return {
+            "field": field,
+            "primary_evidence": primary,
+            "supporting_evidence": supporting,
+            "relationship_path": path,
+            "authority": authority,
+            "autopopulate": bool(autopopulate),
+            "engineer_action": engineer,
+            "why": why,
+        }
+
+    track_ids = [
+        (
+            t["conveyor"]["value"]
+            if isinstance(t.get("conveyor"), dict)
+            else ""
+        )
+        for t in tracking_path
+    ]
+    track_pes = [
+        (
+            t["photoeye"]["value"]
+            if isinstance(t.get("photoeye"), dict)
+            else ""
+        )
+        for t in tracking_path
+    ]
+    enc_per = [
+        (
+            t["encoder_tag"]["value"]
+            if isinstance(t.get("encoder_tag"), dict)
+            else ""
+        )
+        for t in tracking_path
+    ]
+
+    return [
+        row(
+            "1. Sorter type",
+            "none (no explicit type column)",
+            "Sorters.Name tokens are not proof",
+            "—",
+            fa.get("sorter_type", AUTH_REVIEW),
+            False,
+            "Select shoe/popup/etc. in UI",
+            "RUN has no authoritative sorter equipment-type field",
+        ),
+        row(
+            "2. Sorter/application identity",
+            "Sorters.Sorter Name + SrtAppControl.Name",
+            "SrtZoneLane.AppSorter; Outpoints.Sorter",
+            "Sorters ‖ SrtAppControl; sections via Outpoints⋈SrtZoneLane",
+            fa.get("sorter_identity", AUTH_UNKNOWN),
+            True,
+            "None when present",
+            "Named active rows are PROVEN; multi-section-under-app is DERIVED via lane join",
+        ),
+        row(
+            "3. Transport Area association",
+            "none",
+            "Machine / jamzone strings are not Area membership",
+            "—",
+            fa.get("transport_area", AUTH_UNKNOWN),
+            False,
+            "Assign Transport area in UI",
+            "No schema edge from sorter tables to Transport Areas",
+        ),
+        row(
+            "4. Induct conveyor",
+            "Encoders.EnableBit → Mtrchain.Motor_Chained1",
+            "Inpoints proves PE only (no conveyor column)",
+            "Sorters.Encoder→Encoders.EnableBit→Mtrchain→Conveyor",
+            fa.get("induct_conveyor", AUTH_UNKNOWN),
+            bool(locals_bundle.get("primary_induct_conv")),
+            "Confirm if DERIVED; enter if UNKNOWN",
+            "Same-section belt from VFD enable/aux pairing when Conveyor+Mtrchain verify both names",
+        ),
+        row(
+            "5. Induct PE",
+            "Inpoints.Induct I/O Name",
+            "Inpoints.Sorter == Sorters.Sorter Name",
+            "Sorters → Inpoints",
+            fa.get("induct_pe", AUTH_UNKNOWN),
+            bool(locals_bundle.get("primary_induct_pe")),
+            "None when PROVEN",
+            "Explicit Induct I/O Name on Inpoints",
+        ),
+        row(
+            "6. Induct encoder",
+            "Sorters.Encoder ioName",
+            "Encoders row",
+            "Sorters → Encoders",
+            fa.get("induct_encoder", AUTH_UNKNOWN),
+            bool(locals_bundle.get("primary_induct_enc")),
+            "None when PROVEN",
+            "First/section encoder link is RUN-explicit",
+        ),
+        row(
+            "7. Tracking conveyor count",
+            "count(active Sorters)",
+            "tracking_path length",
+            "Sorters active rows",
+            AUTH_DERIVED if sorters else AUTH_UNKNOWN,
+            bool(sorters),
+            "Adjust only if engineer merges/splits sections",
+            "One tracking section stub per active Sorters row",
+        ),
+        row(
+            "8. Tracking conveyor identities",
+            "Mtrchain.Motor_Chained* via EnableBit",
+            "Conveyor.IO_Name existence check",
+            "Encoders.EnableBit → Mtrchain → Conveyor",
+            fa.get("tracking_conveyor_chain", AUTH_UNKNOWN),
+            bool(locals_bundle.get("track_conv_resolved")),
+            "Fill blanks; never trust ENC###≡P###",
+            f"resolved={locals_bundle.get('track_conv_resolved', 0)}/{len(tracking_path)} {track_ids}",
+        ),
+        row(
+            "9. Tracking conveyor ORDER",
+            "Sorters.Data LowRec ascending",
+            "Mtrchain Motor_Aux chain (supporting)",
+            "Sorters.Data LowRec",
+            fa.get("tracking_order", AUTH_UNKNOWN),
+            bool(tracking_path),
+            "Reorder only if buffer ranges are wrong for site intent",
+            "Order from record-range allocation, not name suffixes",
+        ),
+        row(
+            "10. Tracking PE count",
+            "count(Inpoints per Sorters)",
+            "tracking_path photoeye fills",
+            "Inpoints",
+            AUTH_DERIVED if locals_bundle.get("track_pe_resolved") else AUTH_UNKNOWN,
+            bool(locals_bundle.get("track_pe_resolved")),
+            "Add extra PEs if needed",
+            f"resolved={locals_bundle.get('track_pe_resolved', 0)}/{len(tracking_path)}",
+        ),
+        row(
+            "11. Tracking PE identities",
+            "Inpoints.Induct I/O Name",
+            "Conveyor Type=PHOTOCELL existence",
+            "Sorters → Inpoints",
+            fa.get("tracking_pe", AUTH_UNKNOWN),
+            bool(locals_bundle.get("track_pe_resolved")),
+            "None when PROVEN",
+            f"{track_pes}",
+        ),
+        row(
+            "12. Tracking PE ORDER",
+            "same as tracking section order",
+            "Inpoints.Induct Number",
+            "tracking_path sequence",
+            AUTH_DERIVED if tracking_path else AUTH_UNKNOWN,
+            bool(tracking_path),
+            "Review if multiple inducts per section",
+            "Follows section order from Data LowRec",
+        ),
+        row(
+            "13. Encoder per tracking section",
+            "Sorters.Encoder ioName",
+            "Encoders.Ticks Per Foot / EnableBit",
+            "Sorters → Encoders",
+            fa.get("sorter_encoder_link", AUTH_UNKNOWN),
+            bool(enc_per and all(enc_per)),
+            "None when PROVEN",
+            f"{enc_per}",
+        ),
+        row(
+            "14. Scan zone",
+            "SrtScanBoss.ScanZone / ScnScanZone.Name",
+            "ScnScanZone.TrackingTable",
+            "SrtScanBoss → ScnScanZone",
+            fa.get("scan_zone", AUTH_UNKNOWN),
+            bool(scan_zones or scan_bosses),
+            "None when PROVEN",
+            "Explicit scan zone names when tables populated",
+        ),
+        row(
+            "15. Scanner / scan boss",
+            "SrtScanBoss + ScnScanDevice",
+            "AppSorter / ScanZone joins",
+            "SrtAppControl ← SrtScanBoss → ScnScanDevice",
+            fa.get("scan_boss", AUTH_UNKNOWN),
+            bool(scan_bosses or scanners),
+            "None when PROVEN",
+            f"bosses={len(scan_bosses)} devices={len(scanners)}",
+        ),
+        row(
+            "16. Divert count",
+            "count(active SrtZoneLane)",
+            "Outpoints active rows",
+            "SrtZoneLane",
+            AUTH_PROVEN if divert_rows else AUTH_UNKNOWN,
+            bool(divert_rows),
+            "None for topology count",
+            f"count={len(divert_rows)}",
+        ),
+        row(
+            "17. Divert/lane identities",
+            "SrtZoneLane.Lane / Name",
+            "Outpoints.Outpoint Name",
+            "SrtZoneLane",
+            AUTH_PROVEN if divert_rows else AUTH_UNKNOWN,
+            bool(divert_rows),
+            "None",
+            "Topology PROVEN from SrtZoneLane",
+        ),
+        row(
+            "18. Host zones",
+            "SrtZoneLane.HostZone",
+            "—",
+            "SrtZoneLane",
+            AUTH_PROVEN if divert_rows else AUTH_UNKNOWN,
+            bool(divert_rows),
+            "None",
+            "HostZone column is RUN-explicit",
+        ),
+        row(
+            "19. Divert physical output",
+            "Outpoints.Outpoint I/O Name",
+            "SrtZoneLane.LaneEnableSignal (often INVALID)",
+            "SrtZoneLane.Lane == Outpoints.Outpoint Name",
+            fa.get("divert_output_io", AUTH_REVIEW),
+            bool(locals_bundle.get("divert_io_resolved")),
+            "Supply IO when Outpoints also INVALID",
+            f"resolved={locals_bundle.get('divert_io_resolved', 0)}/{len(divert_rows)} "
+            "(LaneEnableSignal alone is not sufficient when INVALID)",
+        ),
+        row(
+            "20. Divert PE if applicable",
+            "Outpoints.Verify I/O Name when valid",
+            "FullClearTimer name is hint only",
+            "Outpoints / SrtZoneLane timers",
+            fa.get("divert_pe", AUTH_UNKNOWN),
+            bool(locals_bundle.get("divert_pe_resolved")),
+            "Map confirm PE when Verify I/O INVALID",
+            "Timer-name PE parsing is not treated as proof",
+        ),
+        row(
+            "21. Tracking distance/offset",
+            "Outpoints.Outpoint Location (ticks) partial",
+            "no induct→divert offset field",
+            "Outpoints.Outpoint Location",
+            fa.get("tracking_offset", AUTH_REVIEW),
+            False,
+            "Enter track offsets / commissioning",
+            "Locations are per-outpoint; global induct→divert offset not in RUN",
+        ),
+        row(
+            "22. Trigger window",
+            "Sorters.TrigWndwTicks",
+            "—",
+            "Sorters",
+            fa.get("trig_window", AUTH_UNKNOWN),
+            fa.get("trig_window") == AUTH_PROVEN,
+            "None when PROVEN",
+            "Explicit TrigWndwTicks on Sorters",
+        ),
+        row(
+            "23. PPI / encoder scaling",
+            "Encoders.Ticks Per Foot",
+            "Target FPM",
+            "Encoders",
+            fa.get("ppi_encoder_scaling", AUTH_UNKNOWN),
+            bool(encoders),
+            "None when PROVEN",
+            "Ticks Per Foot is RUN-explicit scale",
+        ),
+        row(
+            "24. Maximum cartons/buffer values",
+            "Sorters.Max Cartons + Data/Buffer Low/HighRec",
+            "SortBuff/SortData row ranges",
+            "Sorters (+ SortBuff/SortData occupancy)",
+            fa.get("max_cartons_buffer", AUTH_UNKNOWN),
+            bool(sorters),
+            "None when PROVEN",
+            "Max Cartons and record ranges are explicit",
+        ),
+        row(
+            "25. Other Sorter_Track-critical params",
+            "partial (msg tables, ErrConfig, TrackingTable)",
+            "gold pack constants are NOT used",
+            "SrtAppControl / ScnScanZone",
+            AUTH_REVIEW,
+            False,
+            "Commissioning + library path still required before PLC emit",
+            "plc_generation stays NOT_STARTED; no hollow Sorter_Track",
+        ),
+        row(
+            "Application structure (sections vs apps)",
+            app_struct.get("path") or "—",
+            f"apps={app_struct.get('apps')}",
+            "SrtZoneLane⋈Outpoints",
+            app_struct.get("authority", AUTH_UNKNOWN),
+            bool(app_struct.get("sections_under_app")),
+            "Confirm multi-section application intent",
+            app_struct.get("note") or "",
+        ),
+    ]
 
 
 def build_subsystem_model(inventory: dict[str, Any], machine: str) -> dict[str, Any]:
@@ -952,7 +1945,7 @@ def build_subsystem_model(inventory: dict[str, Any], machine: str) -> dict[str, 
             "tracking_wcs_generation": "NOT_SUPPORTED",
             "note": (
                 "Subsystem skeleton is discovery-only. Gold Sorter_Track / WCS_Interface "
-                "packs exist but are Greensboro-fixed; no complete generic library path."
+                "packs exist but are site-fixed; no complete generic library path."
             ),
         },
         "characterization": {
@@ -1127,7 +2120,7 @@ def build_generation_support_matrix(model: dict[str, Any]) -> dict[str, Any]:
             "NOT_SUPPORTED",
             "tools/libraries/programs/Sorter_Track_Program.L5X + fortna_sorter_build.py",
             (
-                "Gold Greensboro pack with token-rename/divert-limit only — "
+                "Gold site-fixed pack with token-rename/divert-limit only — "
                 "not a complete generic library path"
             ),
         ),
@@ -1182,7 +2175,7 @@ def build_generation_support_matrix(model: dict[str, Any]) -> dict[str, Any]:
         else model.get("machine"),
         "policy": (
             "Tracking/WCS PLC generation is NOT_SUPPORTED unless a complete generic "
-            "library path already exists. Greensboro gold packs do not qualify."
+            "library path already exists. Site-fixed gold packs do not qualify."
         ),
         "status_legend": [
             "DISCOVERED",
@@ -1207,6 +2200,251 @@ def build_generation_support_matrix(model: dict[str, Any]) -> dict[str, Any]:
 def _write_json(path: Path, data: Any) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+
+def _fv(field: Any) -> Any:
+    if isinstance(field, dict) and "value" in field:
+        return field.get("value")
+    return field
+
+
+def summarize_autofill_coverage(model: dict[str, Any]) -> dict[str, Any]:
+    """Count Gate F fields by authority bucket (not a fake percentage)."""
+    rows = list(model.get("gate_f_fields") or [])
+    buckets = {
+        "PROVEN": [],
+        "DERIVED": [],
+        "ENGINEER_REQUIRED": [],
+        "UNKNOWN": [],
+        "OTHER": [],
+    }
+    for r in rows:
+        auth = str(r.get("authority") or AUTH_UNKNOWN).upper()
+        label = r.get("field") or ""
+        if auth == AUTH_PROVEN:
+            buckets["PROVEN"].append(label)
+        elif auth == AUTH_DERIVED:
+            buckets["DERIVED"].append(label)
+        elif auth in {AUTH_REVIEW, "ENGINEER_REQUIRED", "REVIEW"}:
+            buckets["ENGINEER_REQUIRED"].append(label)
+        elif auth == AUTH_UNKNOWN:
+            buckets["UNKNOWN"].append(label)
+        else:
+            buckets["OTHER"].append(label)
+    total = len(rows)
+    return {
+        "total_gate_f_fields": total,
+        "PROVEN": {"count": len(buckets["PROVEN"]), "fields": buckets["PROVEN"]},
+        "DERIVED": {"count": len(buckets["DERIVED"]), "fields": buckets["DERIVED"]},
+        "ENGINEER_REQUIRED": {
+            "count": len(buckets["ENGINEER_REQUIRED"]),
+            "fields": buckets["ENGINEER_REQUIRED"],
+        },
+        "UNKNOWN": {"count": len(buckets["UNKNOWN"]), "fields": buckets["UNKNOWN"]},
+        "OTHER": {"count": len(buckets["OTHER"]), "fields": buckets["OTHER"]},
+    }
+
+
+def write_plc5_sorter_deep_reports(
+    model: dict[str, Any],
+    out_dir: Path,
+) -> dict[str, str]:
+    """Write Gate F authority + deep autofill coverage artifacts."""
+    out_dir = Path(out_dir)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    coverage = summarize_autofill_coverage(model)
+    gate_rows = list(model.get("gate_f_fields") or [])
+    cov = model.get("coverage") or {}
+    induct = model.get("induct") or {}
+    app = model.get("application_structure") or {}
+
+    auth_json = {
+        "generated_at": _ts(),
+        "machine": model.get("machine"),
+        "source_of_truth": model.get("source_of_truth"),
+        "plc_generation": model.get("plc_generation") or "NOT_STARTED",
+        "fields": gate_rows,
+        "autofill_coverage": coverage,
+    }
+    auth_json_path = out_dir / "plc5_sorter_field_authority.json"
+    _write_json(auth_json_path, auth_json)
+
+    auth_md_lines = [
+        "# PLC5 Sorter Field Authority (Gate F)",
+        "",
+        f"**Generated:** `{auth_json['generated_at']}`  ",
+        f"**Machine (discovery outcome):** `{model.get('machine') or ''}`  ",
+        f"**PLC generation:** **{model.get('plc_generation') or 'NOT_STARTED'}**  ",
+        "",
+        "Authority classes: `PROVEN` / `DERIVED` / `REVIEW_REQUIRED` / `UNKNOWN`.",
+        "No finished-PLC L5X used as discovery input. No site-name production hardcodes.",
+        "",
+        "## Fields",
+        "",
+    ]
+    for r in gate_rows:
+        auth_md_lines.extend(
+            [
+                f"### {r.get('field')}",
+                "",
+                f"- **PRIMARY EVIDENCE:** {r.get('primary_evidence')}",
+                f"- **SUPPORTING EVIDENCE:** {r.get('supporting_evidence')}",
+                f"- **RELATIONSHIP PATH:** {r.get('relationship_path')}",
+                f"- **AUTHORITY:** `{r.get('authority')}`",
+                f"- **AUTOPOPULATE:** {'YES' if r.get('autopopulate') else 'NO'}",
+                f"- **ENGINEER ACTION:** {r.get('engineer_action')}",
+                f"- **WHY:** {r.get('why')}",
+                "",
+            ]
+        )
+    auth_md_lines.extend(
+        [
+            "## Autofill coverage (Gate F rows)",
+            "",
+            f"- PROVEN: **{coverage['PROVEN']['count']}** / {coverage['total_gate_f_fields']}",
+            f"- DERIVED: **{coverage['DERIVED']['count']}** / {coverage['total_gate_f_fields']}",
+            f"- ENGINEER_REQUIRED: **{coverage['ENGINEER_REQUIRED']['count']}** / {coverage['total_gate_f_fields']}",
+            f"- UNKNOWN: **{coverage['UNKNOWN']['count']}** / {coverage['total_gate_f_fields']}",
+            "",
+        ]
+    )
+    auth_md_path = out_dir / "plc5_sorter_field_authority.md"
+    auth_md_path.write_text("\n".join(auth_md_lines) + "\n", encoding="utf-8")
+
+    deep_json = {
+        "generated_at": _ts(),
+        "machine": model.get("machine"),
+        "sorters_discovered": model.get("sorter_count") or 0,
+        "sorter_names": [_fv(s.get("name")) for s in (model.get("sorters") or [])],
+        "applications": [_fv(a.get("name")) for a in (model.get("app_controls") or [])],
+        "application_structure": app,
+        "tracking_sections": len(model.get("tracking_path") or []),
+        "encoders": [_fv(e.get("name")) for e in (model.get("encoders") or [])],
+        "induct_conveyor": _fv(induct.get("conveyor")),
+        "induct_conveyor_authority": (induct.get("authority") or {}).get("conveyor"),
+        "induct_pe": _fv(induct.get("photoeye")),
+        "induct_pe_authority": (induct.get("authority") or {}).get("photoeye"),
+        "induct_encoder": _fv(induct.get("encoder")),
+        "tracking_conveyors_resolved": cov.get("tracking_conveyors_resolved"),
+        "tracking_pes_resolved": cov.get("tracking_pes_resolved"),
+        "tracking_order_resolved": (model.get("field_authority") or {}).get(
+            "tracking_order"
+        ),
+        "scan_bosses": [_fv(b.get("name")) for b in (model.get("scan_bosses") or [])],
+        "scan_zones": [_fv(z.get("name")) for z in (model.get("scan_zones") or [])],
+        "divert_topology_rows": cov.get("divert_topology_rows"),
+        "divert_outputs_resolved": cov.get("divert_outputs_resolved"),
+        "divert_pes_resolved": cov.get("divert_pes_resolved"),
+        "remaining_review": [
+            f.get("field")
+            for f in gate_rows
+            if str(f.get("authority")) in {AUTH_REVIEW, "REVIEW", "ENGINEER_REQUIRED"}
+        ],
+        "remaining_unknown": [
+            f.get("field")
+            for f in gate_rows
+            if str(f.get("authority")) == AUTH_UNKNOWN
+        ],
+        "autofill_coverage": coverage,
+        "field_authority": model.get("field_authority") or {},
+        "plc_generation": model.get("plc_generation") or "NOT_STARTED",
+        "apply_merge_note": (
+            "dashboard fortna-plus.js Apply Sorter merges workbook like Safety: "
+            "preserves conveyors/areas/safety_build/sawtooth_build; residual "
+            "duplication remains vs safety-build.js / transport Apply helpers "
+            "(documented for later centralization — Gate N)."
+        ),
+        "blocks_sorter_track_compiler": [
+            "sorter_type (REVIEW)",
+            "transport_area (UNKNOWN)",
+            "global induct→divert track offset (REVIEW)",
+            "commissioning / library path incomplete",
+            "plc_generation NOT_STARTED by policy",
+        ],
+    }
+    deep_json_path = out_dir / "plc5_sorter_deep_autofill.json"
+    _write_json(deep_json_path, deep_json)
+
+    deep_md = [
+        "# PLC5 Sorter Deep Autofill",
+        "",
+        f"**Generated:** `{deep_json['generated_at']}`  ",
+        f"**Machine (discovery outcome):** `{model.get('machine') or ''}`  ",
+        f"**PLC generation:** **{deep_json['plc_generation']}**  ",
+        "",
+        "## Counts",
+        "",
+        f"| Item | Value |",
+        f"|------|------:|",
+        f"| Sorters discovered | **{deep_json['sorters_discovered']}** |",
+        f"| Applications | {len(deep_json['applications'])} |",
+        f"| Tracking sections | {deep_json['tracking_sections']} |",
+        f"| Encoders | {len(deep_json['encoders'])} |",
+        f"| Induct conveyor | `{deep_json['induct_conveyor'] or '—'}` ({deep_json['induct_conveyor_authority']}) |",
+        f"| Induct PE | `{deep_json['induct_pe'] or '—'}` ({deep_json['induct_pe_authority']}) |",
+        f"| Tracking conveyors resolved | **{deep_json['tracking_conveyors_resolved']}** / {deep_json['tracking_sections']} |",
+        f"| Tracking PEs resolved | **{deep_json['tracking_pes_resolved']}** / {deep_json['tracking_sections']} |",
+        f"| Tracking order | `{deep_json['tracking_order_resolved']}` |",
+        f"| Scan bosses | {len(deep_json['scan_bosses'])} |",
+        f"| Scan zones | {len(deep_json['scan_zones'])} |",
+        f"| Divert topology rows | **{deep_json['divert_topology_rows']}** |",
+        f"| Divert outputs resolved | **{deep_json['divert_outputs_resolved']}** |",
+        f"| Divert PEs resolved (distinct Verify I/O) | **{deep_json['divert_pes_resolved']}** |",
+        "",
+        "## Autofill coverage (Gate F)",
+        "",
+        f"- **{coverage['PROVEN']['count']} / {coverage['total_gate_f_fields']} PROVEN**",
+        f"- **{coverage['DERIVED']['count']} / {coverage['total_gate_f_fields']} DERIVED**",
+        f"- **{coverage['ENGINEER_REQUIRED']['count']} / {coverage['total_gate_f_fields']} ENGINEER_REQUIRED**",
+        f"- **{coverage['UNKNOWN']['count']} / {coverage['total_gate_f_fields']} UNKNOWN**",
+        "",
+        "### PROVEN fields",
+        "",
+    ]
+    for f in coverage["PROVEN"]["fields"]:
+        deep_md.append(f"- {f}")
+    deep_md.extend(["", "### DERIVED fields", ""])
+    for f in coverage["DERIVED"]["fields"]:
+        deep_md.append(f"- {f}")
+    deep_md.extend(["", "### ENGINEER_REQUIRED fields", ""])
+    for f in coverage["ENGINEER_REQUIRED"]["fields"]:
+        deep_md.append(f"- {f}")
+    deep_md.extend(["", "### UNKNOWN fields", ""])
+    for f in coverage["UNKNOWN"]["fields"]:
+        deep_md.append(f"- {f}")
+    deep_md.extend(
+        [
+            "",
+            "## Still blank / why",
+            "",
+            "- **Sorter type:** no RUN type column — engineer selects pattern.",
+            "- **Transport Area:** no schema edge sorter→Areas.",
+            "- **Track offset (global):** Outpoint Location is per-lane ticks only.",
+            "- **Divert confirm PE:** FullClearTimer names are hints; Verify I/O often "
+            "mirrors divert solenoid (not counted as PE).",
+            "- **ENC→conveyor:** never by numeric suffix; only EnableBit→Mtrchain when "
+            "both motor names exist as Conveyor IO.",
+            "",
+            "## Apply merge (Gate N)",
+            "",
+            deep_json["apply_merge_note"],
+            "",
+            "## Blocks Sorter_Track compiler",
+            "",
+        ]
+    )
+    for b in deep_json["blocks_sorter_track_compiler"]:
+        deep_md.append(f"- {b}")
+    deep_md.append("")
+    deep_md_path = out_dir / "plc5_sorter_deep_autofill.md"
+    deep_md_path.write_text("\n".join(deep_md) + "\n", encoding="utf-8")
+
+    return {
+        "field_authority_md": str(auth_md_path),
+        "field_authority_json": str(auth_json_path),
+        "deep_autofill_md": str(deep_md_path),
+        "deep_autofill_json": str(deep_json_path),
+    }
 
 
 def discover(

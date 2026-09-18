@@ -1,0 +1,321 @@
+{
+  "generated_at": "2026-09-18T04:05:17.335803+00:00",
+  "machine": "ORNCCP5",
+  "source_of_truth": "RUN only \u2014 finished PLC L5X not read",
+  "plc_generation": "NOT_STARTED",
+  "fields": [
+    {
+      "field": "1. Sorter type",
+      "primary_evidence": "none (no explicit type column)",
+      "supporting_evidence": "Sorters.Name tokens are not proof",
+      "relationship_path": "\u2014",
+      "authority": "REVIEW_REQUIRED",
+      "autopopulate": false,
+      "engineer_action": "Select shoe/popup/etc. in UI",
+      "why": "RUN has no authoritative sorter equipment-type field"
+    },
+    {
+      "field": "2. Sorter/application identity",
+      "primary_evidence": "Sorters.Sorter Name + SrtAppControl.Name",
+      "supporting_evidence": "SrtZoneLane.AppSorter; Outpoints.Sorter",
+      "relationship_path": "Sorters \u2016 SrtAppControl; sections via Outpoints\u22c8SrtZoneLane",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when present",
+      "why": "Named active rows are PROVEN; multi-section-under-app is DERIVED via lane join"
+    },
+    {
+      "field": "3. Transport Area association",
+      "primary_evidence": "none",
+      "supporting_evidence": "Machine / jamzone strings are not Area membership",
+      "relationship_path": "\u2014",
+      "authority": "UNKNOWN",
+      "autopopulate": false,
+      "engineer_action": "Assign Transport area in UI",
+      "why": "No schema edge from sorter tables to Transport Areas"
+    },
+    {
+      "field": "4. Induct conveyor",
+      "primary_evidence": "Encoders.EnableBit \u2192 Mtrchain.Motor_Chained1",
+      "supporting_evidence": "Inpoints proves PE only (no conveyor column)",
+      "relationship_path": "Sorters.Encoder\u2192Encoders.EnableBit\u2192Mtrchain\u2192Conveyor",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Confirm if DERIVED; enter if UNKNOWN",
+      "why": "Same-section belt from VFD enable/aux pairing when Conveyor+Mtrchain verify both names"
+    },
+    {
+      "field": "5. Induct PE",
+      "primary_evidence": "Inpoints.Induct I/O Name",
+      "supporting_evidence": "Inpoints.Sorter == Sorters.Sorter Name",
+      "relationship_path": "Sorters \u2192 Inpoints",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Explicit Induct I/O Name on Inpoints"
+    },
+    {
+      "field": "6. Induct encoder",
+      "primary_evidence": "Sorters.Encoder ioName",
+      "supporting_evidence": "Encoders row",
+      "relationship_path": "Sorters \u2192 Encoders",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "First/section encoder link is RUN-explicit"
+    },
+    {
+      "field": "7. Tracking conveyor count",
+      "primary_evidence": "count(active Sorters)",
+      "supporting_evidence": "tracking_path length",
+      "relationship_path": "Sorters active rows",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Adjust only if engineer merges/splits sections",
+      "why": "One tracking section stub per active Sorters row"
+    },
+    {
+      "field": "8. Tracking conveyor identities",
+      "primary_evidence": "Mtrchain.Motor_Chained* via EnableBit",
+      "supporting_evidence": "Conveyor.IO_Name existence check",
+      "relationship_path": "Encoders.EnableBit \u2192 Mtrchain \u2192 Conveyor",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Fill blanks; never trust ENC###\u2261P###",
+      "why": "resolved=5/5 ['P504', 'P506', 'P508', 'P509', 'P510']"
+    },
+    {
+      "field": "9. Tracking conveyor ORDER",
+      "primary_evidence": "Sorters.Data LowRec ascending",
+      "supporting_evidence": "Mtrchain Motor_Aux chain (supporting)",
+      "relationship_path": "Sorters.Data LowRec",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Reorder only if buffer ranges are wrong for site intent",
+      "why": "Order from record-range allocation, not name suffixes"
+    },
+    {
+      "field": "10. Tracking PE count",
+      "primary_evidence": "count(Inpoints per Sorters)",
+      "supporting_evidence": "tracking_path photoeye fills",
+      "relationship_path": "Inpoints",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Add extra PEs if needed",
+      "why": "resolved=5/5"
+    },
+    {
+      "field": "11. Tracking PE identities",
+      "primary_evidence": "Inpoints.Induct I/O Name",
+      "supporting_evidence": "Conveyor Type=PHOTOCELL existence",
+      "relationship_path": "Sorters \u2192 Inpoints",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "['PE504_I', 'PE506_I', 'PE508_I', 'PE509_I', 'PE510_I']"
+    },
+    {
+      "field": "12. Tracking PE ORDER",
+      "primary_evidence": "same as tracking section order",
+      "supporting_evidence": "Inpoints.Induct Number",
+      "relationship_path": "tracking_path sequence",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Review if multiple inducts per section",
+      "why": "Follows section order from Data LowRec"
+    },
+    {
+      "field": "13. Encoder per tracking section",
+      "primary_evidence": "Sorters.Encoder ioName",
+      "supporting_evidence": "Encoders.Ticks Per Foot / EnableBit",
+      "relationship_path": "Sorters \u2192 Encoders",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "['ENC504', 'ENC506', 'ENC508', 'ENC509', 'ENC510']"
+    },
+    {
+      "field": "14. Scan zone",
+      "primary_evidence": "SrtScanBoss.ScanZone / ScnScanZone.Name",
+      "supporting_evidence": "ScnScanZone.TrackingTable",
+      "relationship_path": "SrtScanBoss \u2192 ScnScanZone",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Explicit scan zone names when tables populated"
+    },
+    {
+      "field": "15. Scanner / scan boss",
+      "primary_evidence": "SrtScanBoss + ScnScanDevice",
+      "supporting_evidence": "AppSorter / ScanZone joins",
+      "relationship_path": "SrtAppControl \u2190 SrtScanBoss \u2192 ScnScanDevice",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "bosses=1 devices=1"
+    },
+    {
+      "field": "16. Divert count",
+      "primary_evidence": "count(active SrtZoneLane)",
+      "supporting_evidence": "Outpoints active rows",
+      "relationship_path": "SrtZoneLane",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None for topology count",
+      "why": "count=32"
+    },
+    {
+      "field": "17. Divert/lane identities",
+      "primary_evidence": "SrtZoneLane.Lane / Name",
+      "supporting_evidence": "Outpoints.Outpoint Name",
+      "relationship_path": "SrtZoneLane",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None",
+      "why": "Topology PROVEN from SrtZoneLane"
+    },
+    {
+      "field": "18. Host zones",
+      "primary_evidence": "SrtZoneLane.HostZone",
+      "supporting_evidence": "\u2014",
+      "relationship_path": "SrtZoneLane",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None",
+      "why": "HostZone column is RUN-explicit"
+    },
+    {
+      "field": "19. Divert physical output",
+      "primary_evidence": "Outpoints.Outpoint I/O Name",
+      "supporting_evidence": "SrtZoneLane.LaneEnableSignal (often INVALID)",
+      "relationship_path": "SrtZoneLane.Lane == Outpoints.Outpoint Name",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "Supply IO when Outpoints also INVALID",
+      "why": "resolved=32/32 (LaneEnableSignal alone is not sufficient when INVALID)"
+    },
+    {
+      "field": "20. Divert PE if applicable",
+      "primary_evidence": "Outpoints.Verify I/O Name when valid",
+      "supporting_evidence": "FullClearTimer name is hint only",
+      "relationship_path": "Outpoints / SrtZoneLane timers",
+      "authority": "REVIEW_REQUIRED",
+      "autopopulate": false,
+      "engineer_action": "Map confirm PE when Verify I/O INVALID",
+      "why": "Timer-name PE parsing is not treated as proof"
+    },
+    {
+      "field": "21. Tracking distance/offset",
+      "primary_evidence": "Outpoints.Outpoint Location (ticks) partial",
+      "supporting_evidence": "no induct\u2192divert offset field",
+      "relationship_path": "Outpoints.Outpoint Location",
+      "authority": "REVIEW_REQUIRED",
+      "autopopulate": false,
+      "engineer_action": "Enter track offsets / commissioning",
+      "why": "Locations are per-outpoint; global induct\u2192divert offset not in RUN"
+    },
+    {
+      "field": "22. Trigger window",
+      "primary_evidence": "Sorters.TrigWndwTicks",
+      "supporting_evidence": "\u2014",
+      "relationship_path": "Sorters",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Explicit TrigWndwTicks on Sorters"
+    },
+    {
+      "field": "23. PPI / encoder scaling",
+      "primary_evidence": "Encoders.Ticks Per Foot",
+      "supporting_evidence": "Target FPM",
+      "relationship_path": "Encoders",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Ticks Per Foot is RUN-explicit scale"
+    },
+    {
+      "field": "24. Maximum cartons/buffer values",
+      "primary_evidence": "Sorters.Max Cartons + Data/Buffer Low/HighRec",
+      "supporting_evidence": "SortBuff/SortData row ranges",
+      "relationship_path": "Sorters (+ SortBuff/SortData occupancy)",
+      "authority": "PROVEN",
+      "autopopulate": true,
+      "engineer_action": "None when PROVEN",
+      "why": "Max Cartons and record ranges are explicit"
+    },
+    {
+      "field": "25. Other Sorter_Track-critical params",
+      "primary_evidence": "partial (msg tables, ErrConfig, TrackingTable)",
+      "supporting_evidence": "gold pack constants are NOT used",
+      "relationship_path": "SrtAppControl / ScnScanZone",
+      "authority": "REVIEW_REQUIRED",
+      "autopopulate": false,
+      "engineer_action": "Commissioning + library path still required before PLC emit",
+      "why": "plc_generation stays NOT_STARTED; no hollow Sorter_Track"
+    },
+    {
+      "field": "Application structure (sections vs apps)",
+      "primary_evidence": "SrtZoneLane.AppSorter + Outpoints.Sorter via Outpoint Name==Lane join; Sorters rows are tracking sections",
+      "supporting_evidence": "apps=['SHIP_SORTER']",
+      "relationship_path": "SrtZoneLane\u22c8Outpoints",
+      "authority": "DERIVED",
+      "autopopulate": true,
+      "engineer_action": "Confirm multi-section application intent",
+      "why": "Multiple Sorters rows are tracking sections. App ownership of divert lanes is proven via SrtZoneLane.AppSorter; section ownership of those lanes is proven via Outpoints.Sorter on the same lane name \u2014 not from name tokens alone. Sections lacking Outpoints\u22c8ZoneLane joins stay listed as tracking sections only."
+    }
+  ],
+  "autofill_coverage": {
+    "total_gate_f_fields": 26,
+    "PROVEN": {
+      "count": 14,
+      "fields": [
+        "2. Sorter/application identity",
+        "5. Induct PE",
+        "6. Induct encoder",
+        "11. Tracking PE identities",
+        "13. Encoder per tracking section",
+        "14. Scan zone",
+        "15. Scanner / scan boss",
+        "16. Divert count",
+        "17. Divert/lane identities",
+        "18. Host zones",
+        "19. Divert physical output",
+        "22. Trigger window",
+        "23. PPI / encoder scaling",
+        "24. Maximum cartons/buffer values"
+      ]
+    },
+    "DERIVED": {
+      "count": 7,
+      "fields": [
+        "4. Induct conveyor",
+        "7. Tracking conveyor count",
+        "8. Tracking conveyor identities",
+        "9. Tracking conveyor ORDER",
+        "10. Tracking PE count",
+        "12. Tracking PE ORDER",
+        "Application structure (sections vs apps)"
+      ]
+    },
+    "ENGINEER_REQUIRED": {
+      "count": 4,
+      "fields": [
+        "1. Sorter type",
+        "20. Divert PE if applicable",
+        "21. Tracking distance/offset",
+        "25. Other Sorter_Track-critical params"
+      ]
+    },
+    "UNKNOWN": {
+      "count": 1,
+      "fields": [
+        "3. Transport Area association"
+      ]
+    },
+    "OTHER": {
+      "count": 0,
+      "fields": []
+    }
+  }
+}

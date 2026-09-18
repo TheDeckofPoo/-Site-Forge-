@@ -1,0 +1,166 @@
+{
+  "generated_at": "2026-09-18T04:05:17.337630+00:00",
+  "machine": "ORNCCP5",
+  "sorters_discovered": 5,
+  "sorter_names": [
+    "504_BELT",
+    "506_SHIP_SORTER",
+    "508_SHIP_SORTER",
+    "509_SHIP_SORTER",
+    "510_SHIP_SORTER"
+  ],
+  "applications": [
+    "SHIP_SORTER"
+  ],
+  "application_structure": {
+    "authority": "DERIVED",
+    "path": "SrtZoneLane.AppSorter + Outpoints.Sorter via Outpoint Name==Lane join; Sorters rows are tracking sections",
+    "apps": [
+      "SHIP_SORTER"
+    ],
+    "sections_under_app": {
+      "SHIP_SORTER": [
+        "506_SHIP_SORTER",
+        "508_SHIP_SORTER",
+        "509_SHIP_SORTER",
+        "510_SHIP_SORTER"
+      ]
+    },
+    "tracking_sections": [
+      "504_BELT",
+      "506_SHIP_SORTER",
+      "508_SHIP_SORTER",
+      "509_SHIP_SORTER",
+      "510_SHIP_SORTER"
+    ],
+    "sections_without_divert_lanes": [
+      "504_BELT"
+    ],
+    "note": "Multiple Sorters rows are tracking sections. App ownership of divert lanes is proven via SrtZoneLane.AppSorter; section ownership of those lanes is proven via Outpoints.Sorter on the same lane name \u2014 not from name tokens alone. Sections lacking Outpoints\u22c8ZoneLane joins stay listed as tracking sections only."
+  },
+  "tracking_sections": 5,
+  "encoders": [
+    "ENC504",
+    "ENC506",
+    "ENC508",
+    "ENC509",
+    "ENC510"
+  ],
+  "induct_conveyor": "P504",
+  "induct_conveyor_authority": "DERIVED",
+  "induct_pe": "PE504_I",
+  "induct_pe_authority": "PROVEN",
+  "induct_encoder": "ENC504",
+  "tracking_conveyors_resolved": 5,
+  "tracking_pes_resolved": 5,
+  "tracking_order_resolved": "DERIVED",
+  "scan_bosses": [
+    "Ship Sorter"
+  ],
+  "scan_zones": [
+    "SHIP_SCAN_504"
+  ],
+  "divert_topology_rows": 32,
+  "divert_outputs_resolved": 32,
+  "divert_pes_resolved": 0,
+  "remaining_review": [
+    "1. Sorter type",
+    "20. Divert PE if applicable",
+    "21. Tracking distance/offset",
+    "25. Other Sorter_Track-critical params"
+  ],
+  "remaining_unknown": [
+    "3. Transport Area association"
+  ],
+  "autofill_coverage": {
+    "total_gate_f_fields": 26,
+    "PROVEN": {
+      "count": 14,
+      "fields": [
+        "2. Sorter/application identity",
+        "5. Induct PE",
+        "6. Induct encoder",
+        "11. Tracking PE identities",
+        "13. Encoder per tracking section",
+        "14. Scan zone",
+        "15. Scanner / scan boss",
+        "16. Divert count",
+        "17. Divert/lane identities",
+        "18. Host zones",
+        "19. Divert physical output",
+        "22. Trigger window",
+        "23. PPI / encoder scaling",
+        "24. Maximum cartons/buffer values"
+      ]
+    },
+    "DERIVED": {
+      "count": 7,
+      "fields": [
+        "4. Induct conveyor",
+        "7. Tracking conveyor count",
+        "8. Tracking conveyor identities",
+        "9. Tracking conveyor ORDER",
+        "10. Tracking PE count",
+        "12. Tracking PE ORDER",
+        "Application structure (sections vs apps)"
+      ]
+    },
+    "ENGINEER_REQUIRED": {
+      "count": 4,
+      "fields": [
+        "1. Sorter type",
+        "20. Divert PE if applicable",
+        "21. Tracking distance/offset",
+        "25. Other Sorter_Track-critical params"
+      ]
+    },
+    "UNKNOWN": {
+      "count": 1,
+      "fields": [
+        "3. Transport Area association"
+      ]
+    },
+    "OTHER": {
+      "count": 0,
+      "fields": []
+    }
+  },
+  "field_authority": {
+    "sorter_existence": "PROVEN",
+    "sorter_identity": "PROVEN",
+    "sorter_encoder_link": "PROVEN",
+    "encoder_parameters": "PROVEN",
+    "app_control": "PROVEN",
+    "scan_boss": "PROVEN",
+    "scan_zone": "PROVEN",
+    "scanner": "PROVEN",
+    "divert_lane_topology": "PROVEN",
+    "divert_output_io": "PROVEN",
+    "divert_pe": "REVIEW_REQUIRED",
+    "tracking_conveyor_chain": "DERIVED",
+    "tracking_pe": "PROVEN",
+    "induct_conveyor": "DERIVED",
+    "induct_pe": "PROVEN",
+    "induct_encoder": "PROVEN",
+    "sorter_type": "REVIEW_REQUIRED",
+    "transport_area": "UNKNOWN",
+    "tracking_order": "DERIVED",
+    "tracking_offset": "REVIEW_REQUIRED",
+    "trig_window": "PROVEN",
+    "ppi_encoder_scaling": "PROVEN",
+    "max_cartons_buffer": "PROVEN",
+    "application_structure": "DERIVED",
+    "sortbuff_link": "PROVEN",
+    "sortdata_link": "PROVEN",
+    "plc_generation": "NOT_STARTED"
+  },
+  "plc_generation": "NOT_STARTED",
+  "apply_merge_note": "dashboard fortna-plus.js Apply Sorter merges workbook like Safety: preserves conveyors/areas/safety_build/sawtooth_build; residual duplication remains vs safety-build.js / transport Apply helpers (documented for later centralization \u2014 Gate N).",
+  "blocks_sorter_track_compiler": [
+    "sorter_type (REVIEW)",
+    "transport_area (UNKNOWN)",
+    "global induct\u2192divert track offset (REVIEW)",
+    "commissioning / library path incomplete",
+    "plc_generation NOT_STARTED by policy"
+  ]
+}

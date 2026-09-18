@@ -65,14 +65,17 @@ Report: `exports/stabilization/plc5_sorter_autobuild_report.md`
 | Field | Primary | Fallback |
 |-------|---------|----------|
 | Sorter identity | Sorters.Name + Machine | UNKNOWN |
-| Type class (shoe/ship) | — (name DERIVED) | REVIEW_REQUIRED |
+| Type class (shoe/ship) | — (no type column) | REVIEW_REQUIRED |
 | Encoder | Sorters.Encoder ioName → Encoders | REVIEW |
 | Divert lane / HostZone | SrtZoneLane | REVIEW |
-| Divert **output IO** | — (often INVALID) | ENGINEER / REVIEW |
-| Induct conveyor chain | — | UNKNOWN |
+| Divert **output IO** | Outpoints.Outpoint I/O (Lane join) | LaneEnableSignal / REVIEW |
+| Induct PE | Inpoints.Induct I/O Name | REVIEW |
+| Induct / tracking conveyor | Encoders.EnableBit → Mtrchain.Motor_Chained* | UNKNOWN (never ENC###≡P###) |
 | Track offset / divert trigger | — | UNKNOWN / NOT_SUPPORTED |
 | Motor | SorterCnvMtr when valid | REVIEW |
 
+Deep Gate F table: `exports/stabilization/plc5_sorter_field_authority.md`  
+Deep autofill coverage: `exports/stabilization/plc5_sorter_deep_autofill.md`  
 Full archaeology: `exports/stabilization/sorter_evidence_inventory.md`  
 Canonical model: `exports/stabilization/sorter_canonical_model_report.md`
 

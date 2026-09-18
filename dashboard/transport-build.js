@@ -2467,24 +2467,37 @@
 
   /** Set CURVE presentation angle override. DISPLAY metadata only. */
   function setCurveDisplayAngle(nodeId, angleChoice) {
-    const area = activeArea();
-    if (!area) return;
-    const n = (area.nodes || []).find((x) => x.id === nodeId);
-    if (!n || !isCurveNode(n)) return;
+    let n = null;
+    let area = null;
+    for (const a of tb.areas || []) {
+      const hit = (a.nodes || []).find((x) => x.id === nodeId);
+      if (hit) {
+        n = hit;
+        area = a;
+        break;
+      }
+    }
+    if (!n || !isCurveNode(n)) return false;
     if (angleChoice == null || String(angleChoice).toUpperCase() === 'AUTO') {
       delete n.curveDisplayAngle;
       if (n.provenance) delete n.provenance.curveDisplayAngle;
     } else {
-      n.curveDisplayAngle = Number(angleChoice);
+      const deg = Number(angleChoice);
+      if (!Number.isFinite(deg)) return false;
+      n.curveDisplayAngle = deg;
       if (!n.provenance) n.provenance = {};
       n.provenance.curveDisplayAngle = 'ENGINEER_ASSIGNED';
     }
+    // Force redraw from mutated display angle — same geometry for body/label/hit
     invalidateSchematicHitGeometry();
+    tb._presentationOffsets = null;
     save();
     try {
-      drawSchematic(area);
+      if (area) drawSchematic(area);
+      else drawSchematic(activeArea());
       drawWires();
       applyViewportZoom();
+      render(); // refresh proxy/labels that share transform
     } catch (_) { /* ignore */ }
     status(
       `${nodeLabel(n)} CURVE display angle → ${
@@ -2493,6 +2506,12 @@
           : `${angleChoice}°`
       } (presentation only)`,
     );
+    return true;
+  }
+
+  /** Test helper: sample display path angle (deg) for regression. */
+  function curveRenderedDisplayAngleDeg(n) {
+    return (curveDisplayDirectionRad(n) * 180) / Math.PI;
   }
 
   function curveUnknownOrientationSymbolPath(n) {
@@ -6001,6 +6020,7 @@
     CURVE_DISPLAY_ANGLE_CHOICES,
     setCurveDisplayAngle,
     curveDisplayDirectionRad,
+    curveRenderedDisplayAngleDeg,
     buildCanonicalApplyGraph,
     applyMergesToAutogenUi,
     canonicalTransportHash,

@@ -1395,11 +1395,14 @@
   function showCtxMenu(x, y, nodeId) {
     const m = $('tb-ctx-menu');
     if (!m) return;
+    // ONE authoritative context menu — Area ops always; CURVE angles additive.
+    // Root cause of Area-menu regression: `tb` was const-scoped inside moveHost
+    // block, so CURVE section threw ReferenceError and aborted before menu show.
+    const { tb, escapeHtml } = A();
     m.dataset.nodeId = nodeId || '';
     // Populate quick-move choices from existing areas (exclude current home of node)
     const moveHost = $('tb-ctx-move-areas');
     if (moveHost) {
-      const { tb, escapeHtml } = A();
       let homeId = '';
       (tb.areas || []).forEach((a) => {
         if ((a.nodes || []).some((n) => n.id === nodeId)) homeId = a.id;
@@ -1423,7 +1426,7 @@
         });
       }
     }
-    // CURVE display-angle override (presentation only)
+    // CURVE display-angle override (presentation only) — does not replace Area ops
     const curveWrap = $('tb-ctx-curve-angle-wrap');
     const curveHost = $('tb-ctx-curve-angles');
     let curveNode = null;
@@ -1448,15 +1451,21 @@
           const label = c === 'Auto' ? 'Auto / RUN' : `${c}°`;
           const active = (c === 'Auto' && (cur == null || cur === ''))
             || (c !== 'Auto' && Number(cur) === Number(c));
-          return `<button type="button" data-tb-ctx-curve-ang="${c}" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 ${active ? 'text-violet-200 bg-violet-950/40' : 'text-violet-300/90'}">${label}</button>`;
+          return `<button type="button" data-tb-ctx-curve-ang="${escapeHtml(String(c))}" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 ${active ? 'text-violet-200 bg-violet-950/40' : 'text-violet-300/90'}">${label}</button>`;
         }).join('');
         curveHost.querySelectorAll('[data-tb-ctx-curve-ang]').forEach((btn) => {
-          btn.addEventListener('click', () => {
+          btn.addEventListener('click', (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
             const v = btn.getAttribute('data-tb-ctx-curve-ang');
             hideCtxMenu();
             try {
-              A().setCurveDisplayAngle?.(nodeId, v === 'Auto' ? 'Auto' : Number(v));
-            } catch (_) { /* ignore */ }
+              if (typeof A().setCurveDisplayAngle === 'function') {
+                A().setCurveDisplayAngle(nodeId, v === 'Auto' ? 'Auto' : Number(v));
+              }
+            } catch (err) {
+              try { A().status?.(`CURVE angle failed: ${err?.message || err}`); } catch (_) { /* ignore */ }
+            }
           });
         });
       }

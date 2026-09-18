@@ -2,7 +2,7 @@
 """Knowledge-driven enrichment of a SiteModel (PE roles, motor chains, zones, communications).
 
 Uses fortna_knowledge (KB JSON) + RUN facts already on the model.
-Does not read finished PLC. Does not invent Greensboro-specific logic.
+Does not read finished PLC. Does not invent site-specific sorter logic.
 """
 from __future__ import annotations
 
@@ -889,7 +889,13 @@ def build_sorter_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
         "zone_lanes": zone_lanes,
         "divert_rows": divert_rows,
         "tracking_path": tracking_path,
+        "induct": sm.get("induct") or {},
+        "scanners": sm.get("scanners") or [],
+        "scan_zones": sm.get("scan_zones") or [],
+        "application_structure": sm.get("application_structure") or {},
+        "coverage": sm.get("coverage") or {},
         "field_authority": field_authority,
+        "gate_f_fields": sm.get("gate_f_fields") or [],
         "layers": layers,
         "generation_leaves": generation_leaves,
         "plc_generation": sm.get("plc_generation") or "NOT_STARTED",

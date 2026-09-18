@@ -118,6 +118,66 @@ class TestPlc5IoEndpointCollision(unittest.TestCase):
             self.assertEqual(e.get("assign_how"), "configio_node_eipmodules_bank")
             self.assertIn("EIPModules", (e.get("provenance") or {}).get("source_tables") or [])
 
+    def test_bank512_stays_on_ia16_slot3(self) -> None:
+        a = resolve_word_bit(self.pm, 512, 0)
+        self.assertIsNotNone(a, "Bank512.0 unresolved")
+        assert a is not None
+        self.assertEqual(a.get("channel"), "CP5RIO1:I.Data[2].0")
+        self.assertEqual(a.get("direction"), "I")
+        self.assertEqual(a.get("type"), "1794-IA16")
+        self.assertEqual(int(a.get("eip_slot") or -1), 3)
+        print(f"  [PASS] 512→{a.get('channel')}")
+
+    def test_bank517_not_collapsed_onto_bank512(self) -> None:
+        """Residual: Configio 517 reuses bank 32 but Desc claims NODE52-8 (no card).
+
+        Must NOT share CP5RIO1:I.Data[2] with word 512. EIPModules has no distinct
+        endpoint for slot 8 / bank 32 conflict → REVIEW_REQUIRED unresolved.
+        Do not invent an endpoint or pick a winner.
+        """
+        b512 = resolve_word_bit(self.pm, 512, 0)
+        b517 = resolve_word_bit(self.pm, 517, 0)
+        self.assertIsNotNone(b512, "Bank512.0 must remain resolved")
+        self.assertIsNone(
+            b517,
+            "Bank517 must not resolve onto 512's channel when Desc slot mismatches",
+        )
+        words = self.pm.get("words") or {}
+        self.assertNotIn("517", words)
+        unresolved = {
+            int(u.get("octal_word") or -1): u for u in (self.pm.get("unresolved") or [])
+        }
+        self.assertIn(517, unresolved)
+        u517 = unresolved[517]
+        self.assertEqual(u517.get("classification"), "REVIEW_REQUIRED")
+        self.assertEqual(u517.get("reason"), "desc_slot_mismatch_eipmodules_bank")
+        self.assertEqual(int(u517.get("desc_slot") or -1), 8)
+        self.assertEqual(int(u517.get("eipmodules_slot") or -1), 3)
+        # No shared channel_base residual between 512 and any other word
+        base_512 = ((words.get("512") or {}).get("channel_base") or "")
+        self.assertEqual(base_512, "CP5RIO1:I.Data[2]")
+        for w, e in words.items():
+            if w == "512":
+                continue
+            self.assertNotEqual(
+                e.get("channel_base"),
+                base_512,
+                f"word {w} must not share 512 channel_base after residual fix",
+            )
+        print("  [PASS] 517 REVIEW_REQUIRED unresolved; 512 keeps Data[2]")
+
+    def test_words_526_527_remain_review_unresolved(self) -> None:
+        """NODE53-7/8 Configio banks 52/66 have no EIPModules card on AENT-3."""
+        unresolved = {
+            int(u.get("octal_word") or -1): u for u in (self.pm.get("unresolved") or [])
+        }
+        for w in (526, 527):
+            self.assertIsNone(resolve_word_bit(self.pm, w, 0))
+            self.assertNotIn(str(w), self.pm.get("words") or {})
+            self.assertIn(w, unresolved)
+            self.assertEqual(unresolved[w].get("classification"), "REVIEW_REQUIRED")
+        print("  [PASS] 526/527 remain REVIEW_REQUIRED unresolved")
+
 
 class TestPlc2P220DuplicateProtectionStillWorks(unittest.TestCase):
     """Do not weaken PLC2 lettered-motor / duplicate OUTPUT protections."""

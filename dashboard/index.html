@@ -2094,7 +2094,10 @@
 
           <!-- Induct -->
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">1 · Induct</div>
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">1 · Induct</div>
+              <span id="sorter-induct-auth" class="text-[10px] text-slate-600"></span>
+            </div>
             <div class="flex flex-wrap gap-2 items-end">
               <div class="min-w-[12rem] flex-1">
                 <label class="block text-[10px] text-slate-500 mb-1">Induct conveyor</label>
@@ -2157,7 +2160,7 @@
                 <input id="sorter-divert-count" type="number" min="0" max="64" value="0"
                   class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
               </div>
-              <span class="text-[10px] text-slate-600 pb-2">Topology from RUN · divert output IO often REVIEW</span>
+              <span class="text-[10px] text-slate-600 pb-2">Topology from SrtZoneLane · output IO from Outpoints when lane join proves it</span>
             </div>
             <div id="sorter-divert-rows" class="space-y-1 max-h-56 overflow-y-auto"></div>
           </div>

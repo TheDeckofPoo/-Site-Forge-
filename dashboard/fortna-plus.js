@@ -5376,12 +5376,12 @@ function sorterBuildFromSiteModel(site) {
   const trackingPath = ed.tracking_path || sm.tracking_path || [];
   const fieldAuthority = ed.field_authority || sm.field_authority || pick.field_authority || {};
 
-  // PROVEN encoder links from Sorters+Encoders → tracking stubs (conveyor stays empty/UNKNOWN).
+  // Deep evidence: encoder + optional Mtrchain conveyor + Inpoints PE per section.
   const tracking = [];
   for (const tp of trackingPath) {
     const encTag = _sorterFieldValue(tp.encoder_tag) || _sorterFieldValue(tp.encoder_io) || '';
     const conv = _sorterFieldValue(tp.conveyor) || '';
-    const pe = _sorterFieldValue(tp.photoeye) || '';
+    const pe = _sorterFieldValue(tp.photoeye) || _sorterFieldValue(tp.induct_pe) || '';
     const auth = tp.authority || {};
     tracking.push(normalizeSorterTrackRow({
       conveyor: conv,
@@ -5410,6 +5410,13 @@ function sorterBuildFromSiteModel(site) {
       }));
     }
   }
+
+  const inductBlock = ed.induct || sm.induct || {};
+  const inductAuth = inductBlock.authority || {};
+  const inductConv = _sorterFieldValue(inductBlock.conveyor) || pick.induct_conveyor || '';
+  const inductPe = _sorterFieldValue(inductBlock.photoeye) || pick.induct_pe || '';
+  const inductEnc = _sorterFieldValue(inductBlock.encoder) || enc || '';
+  const trackingPes = tracking.map((t) => t.pe).filter(Boolean);
 
   const divert_rows = (divertRowsRaw || []).map((d) => {
     const auth = d.authority || {};
@@ -5448,22 +5455,29 @@ function sorterBuildFromSiteModel(site) {
     sorter_type: pick.sorter_type || '',
     sorter_name: name,
     area_name: pick.area_name || pick.main_area || ed.area_name || '',
-    induct_conveyor: pick.induct_conveyor || '',
-    induct_pe: pick.induct_pe || '',
-    induct_has_encoder: enc ? 'yes' : 'no',
+    induct_conveyor: inductConv,
+    induct_pe: inductPe,
+    induct_has_encoder: inductEnc || enc ? 'yes' : 'no',
     induct_encoder_type: 'Enc_RIOCard',
-    induct_encoder_tag: enc || '',
+    induct_encoder_tag: inductEnc || enc || '',
+    induct_authority: {
+      conveyor: inductAuth.conveyor || (inductConv ? 'DERIVED' : 'UNKNOWN'),
+      photoeye: inductAuth.photoeye || (inductPe ? 'PROVEN' : 'UNKNOWN'),
+      encoder: inductAuth.encoder || (inductEnc || enc ? 'PROVEN' : 'UNKNOWN'),
+    },
     tracking_count: tracking.length,
     tracking,
     divert_count: divert_rows.length || (Array.isArray(zoneLanes) ? zoneLanes.length : 0),
     divert_rows,
-    tracking_pe_count: 0,
-    tracking_pes: [],
+    tracking_pe_count: trackingPes.length,
+    tracking_pes: trackingPes,
     discovery_source: 'site_model',
     generation_state: pick.generation_state || ed.generation_state || ed.generation || 'NOT_SUPPORTED',
     generation_boundary: pick.generation_boundary || '',
     plc_generation: ed.plc_generation || sm.plc_generation || 'NOT_STARTED',
     field_authority: fieldAuthority,
+    application_structure: ed.application_structure || sm.application_structure || null,
+    coverage: ed.coverage || sm.coverage || null,
     scan_zone: (scanBosses[0] && (scanBosses[0].scan_zone?.value || scanBosses[0].scan_zone
       || _sorterFieldValue(scanBosses[0].scan_zone))) || '',
     app_controls: ed.app_controls || sm.app_controls || [],
@@ -5478,9 +5492,11 @@ function sorterBuildFromSiteModel(site) {
   if (!(cfg.tracking || []).some((t) => t && t.conveyor)) {
     cfg.configuration_required.push('tracking_conveyors');
   }
-  if ((cfg.divert_rows || []).some((d) => (d.authority?.divert_output_io || '').includes('REVIEW'))) {
+  if ((cfg.divert_rows || []).some((d) => String(d.authority?.divert_output_io || '').includes('REVIEW'))) {
     cfg.configuration_required.push('divert_output_io');
   }
+  if (!(cfg.sorter_type || '').trim()) cfg.configuration_required.push('sorter_type');
+  if (!(cfg.area_name || '').trim()) cfg.configuration_required.push('transport_area');
   return cfg;
 }
 
@@ -6038,6 +6054,15 @@ function renderSorterBuild() {
       inductP.innerHTML += `<option value="${escapeHtml(cur)}" selected>${escapeHtml(cur)} *</option>`;
     }
   }
+  const inductAuthEl = $('sorter-induct-auth');
+  if (inductAuthEl) {
+    const ia = s.induct_authority || {};
+    inductAuthEl.innerHTML = [
+      `conveyor ${sorterAuthorityBadge(ia.conveyor || (s.induct_conveyor ? 'DERIVED' : 'UNKNOWN'))}`,
+      `PE ${sorterAuthorityBadge(ia.photoeye || (s.induct_pe ? 'PROVEN' : 'UNKNOWN'))}`,
+      `enc ${sorterAuthorityBadge(ia.encoder || (s.induct_encoder_tag ? 'PROVEN' : 'UNKNOWN'))}`,
+    ].join(' · ');
+  }
 
   const inductHasEnc = $('sorter-induct-has-enc');
   const inductEncOpts = $('sorter-induct-enc-opts');
@@ -6102,15 +6127,18 @@ function renderSorterBuild() {
           `<option value="${escapeHtml(p)}" ${p === row.pe ? 'selected' : ''}>${escapeHtml(p)}</option>`
         ).join('');
         const showEnc = row.has_encoder === 'yes';
+        const tAuth = row.authority || {};
         return `<div class="rounded-lg border border-slate-800/80 bg-[#0a1016] p-2 space-y-1.5" data-track-i="${i}">
           <div class="flex flex-wrap gap-2 items-center">
             <span class="text-[10px] text-slate-600 w-6 mono">#${i + 1}</span>
             <select class="sorter-track-conv flex-1 min-w-[9rem] bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-slate-200" data-i="${i}">
               <option value="">Tracking conveyor…</option>${convOpts}
             </select>
+            ${sorterAuthorityBadge(tAuth.conveyor || (row.conveyor ? 'DERIVED' : 'UNKNOWN'))}
             <select class="sorter-track-pe flex-1 min-w-[9rem] bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-sky-300" data-i="${i}">
               <option value="">Tracking photoeye…</option>${peOpts}
             </select>
+            ${sorterAuthorityBadge(tAuth.photoeye || (row.pe ? 'PROVEN' : 'UNKNOWN'))}
             <label class="flex items-center gap-1 text-[10px] text-slate-500 shrink-0">
               <span>Enc</span>
               <select class="sorter-track-has-enc bg-[#101820] border border-slate-700 rounded-lg px-1.5 py-1 text-[10px] text-slate-200" data-i="${i}">

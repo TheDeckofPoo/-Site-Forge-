@@ -28,7 +28,7 @@ No `machine == "ORNCCP5"` branches in production discovery code.
 | Scan bosses (`SrtScanBoss`) | **1** | PROVEN |
 | Divert / zone lanes (`SrtZoneLane`) | **32** | topology PROVEN |
 | Tracking path stubs (per sorter encoder) | **5** | encoder PROVEN · conveyor UNKNOWN |
-| Divert output IO (`LaneEnableSignal`) | 32 | **REVIEW_REQUIRED** (INVALID) |
+| Divert output IO (`Outpoints`⋈`SrtZoneLane.Lane`) | 32 | **PROVEN** (LaneEnableSignal still INVALID) |
 
 ### Sorter names discovered (not hardcoded)
 

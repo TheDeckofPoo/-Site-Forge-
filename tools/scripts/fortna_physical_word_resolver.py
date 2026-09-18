@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Configio-primary physical Fortna word → RIO channel resolver (Greensboro-style).
+"""Configio-primary physical Fortna word → RIO channel resolver (FortnaPlus-style).
 
 Maps Configio.asc Octal_Word + Desc onto eipcfg adapters/modules to produce
 CPxRIO* channels. Does NOT hard-code word→adapter tables.
@@ -75,7 +75,7 @@ def _sanitize_adapter_fallback(name: str) -> str:
 
 
 def parse_configio_desc(desc: str) -> dict[str, Any] | None:
-    """Parse Greensboro Desc like CP2-1794-IA16-3 or CP31794-IA16-31."""
+    """Parse Fortna Configio Desc like CP2-1794-IA16-3 or CP31794-IA16-31."""
     d = (desc or "").strip()
     if not d:
         return None
@@ -101,8 +101,9 @@ def parse_configio_node_desc(desc: str) -> dict[str, Any] | None:
     """Parse PLC5-style Desc like CP5-NODE53-1A (panel + EIP node + chassis slot).
 
     Node number matches EIPAdapters TargetIP last octet (NODE53 → …53 → 1794-AENT-3).
-    Slot is corroboration only — authoritative module identity is EIPModules
-    InputBank/OutputBank on that adapter (never bank→slot arithmetic alone).
+    Slot corroborates EIPModules InputBank/OutputBank on that adapter (never
+    bank→slot arithmetic alone). A Desc slot that disagrees with the bank-
+    matched module is REVIEW_REQUIRED — do not invent or collapse endpoints.
     """
     d = (desc or "").strip()
     if not d:
@@ -303,7 +304,7 @@ def _adapter_for_node(
         m = re.search(r"\.(\d+)$", ip)
         if m and int(m.group(1)) == int(node):
             return ad
-    # Fallback: 1794-AENT-(node-50) for Greensboro CP5 nodes 51..58
+    # Fallback: 1794-AENT-(node-50) for CP* RIO nodes numbered 51..58
     idx = int(node) - 50
     if idx >= 1:
         want = {f"1794-AENT-{idx}", f"1794_AENT_{idx}", f"AENT-{idx}", f"AENT_{idx}"}
@@ -780,19 +781,40 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     if hit:
                         cfg_bank = cfg_bank - 1
                 if hit:
-                    chosen, direction = hit[0], hit[1]
-                    assign_how = "configio_node_eipmodules_bank"
-                    panel = panel or chosen.get("panel") or node_info.get("panel") or ""
-                    eip_bank_used = cfg_bank
-                    node_used = int(node_info.get("node") or 0)
-                    # Corroborate Desc slot vs EIPModules slot (diagnostic only)
+                    cand, cand_dir = hit[0], hit[1]
                     try:
                         desc_slot = int(node_info.get("desc_slot") or -1)
                     except (TypeError, ValueError):
                         desc_slot = -1
-                    if desc_slot >= 0 and int(chosen.get("slot") or -2) != desc_slot:
-                        # Keep EIPModules slot — Desc slot is corroboration, not override
-                        pass
+                    eip_slot_hit = int(cand.get("slot") or -2)
+                    # Conflicting Desc slot vs EIPModules bank match → do not
+                    # collapse onto the bank-matched channel (e.g. word 517
+                    # NODE52-8 / bank 32 vs IA16 slot3). Leave REVIEW_REQUIRED.
+                    if desc_slot >= 0 and eip_slot_hit >= 0 and desc_slot != eip_slot_hit:
+                        unresolved.append(
+                            {
+                                "octal_word": w,
+                                "panel": panel or node_info.get("panel") or "",
+                                "direction": cand_dir or direction,
+                                "low_desc": (low or {}).get("desc"),
+                                "high_desc": (high or {}).get("desc"),
+                                "name_hit": (name_hit or {}).get("name") if name_hit else None,
+                                "reason": "desc_slot_mismatch_eipmodules_bank",
+                                "classification": "REVIEW_REQUIRED",
+                                "configio_node": int(node_info.get("node") or 0),
+                                "configio_bank": cfg_bank,
+                                "desc_slot": desc_slot,
+                                "eipmodules_slot": eip_slot_hit,
+                                "eipmodules_module": cand.get("name"),
+                                "eipmodules_type": cand.get("type"),
+                            }
+                        )
+                        continue
+                    chosen, direction = cand, cand_dir
+                    assign_how = "configio_node_eipmodules_bank"
+                    panel = panel or chosen.get("panel") or node_info.get("panel") or ""
+                    eip_bank_used = cfg_bank
+                    node_used = int(node_info.get("node") or 0)
 
         if not chosen:
             unresolved.append(
@@ -803,6 +825,8 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                     "low_desc": (low or {}).get("desc"),
                     "high_desc": (high or {}).get("desc"),
                     "name_hit": (name_hit or {}).get("name") if name_hit else None,
+                    "reason": "no_eipmodules_bank_match",
+                    "classification": "REVIEW_REQUIRED",
                 }
             )
             continue
