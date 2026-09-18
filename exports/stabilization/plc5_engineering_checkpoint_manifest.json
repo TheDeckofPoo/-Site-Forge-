@@ -2,7 +2,7 @@
   "title": "ENGINEERING UX + TRANSPORT GEOMETRY + SORTER PHASE 1 HARDENING",
   "parent_sha": "da5e86da9dc849b77ef376e88dacf4151d54cec5",
   "branch": "feature/plc2-transport-fidelity",
-  "generated_at": "2026-09-18T08:12:30+00:00",
+  "generated_at": "2026-09-18T08:14:55.789995+00:00",
   "cp1_cp4_changed": false,
   "wcs_started": false,
   "decoder_architecture_rewritten": false,
@@ -36,12 +36,12 @@
       "exports/stabilization/transport_geometry_authority.json",
       "exports/stabilization/transport_geometry_acceptance.md"
     ],
-    "P500_diagnosis": "PROVEN_RUN STRAIGHT; old center±L/2 + presentation scatter made it look isolated",
-    "P536_diagnosis": "PROVEN_RUN ZEROPRESSURE; mates P534 gap≈0; hit now follows display transform",
+    "P500_diagnosis": "PROVEN_RUN STRAIGHT; old center\u00b1L/2 + presentation scatter made it look isolated",
+    "P536_diagnosis": "PROVEN_RUN ZEROPRESSURE; mates P534 gap\u22480; hit now follows display transform",
     "visual_discrepancy_resolved": true
   },
   "sorter_review": {
-    "lifecycle": "PENDING_REVIEW → ACCEPTED|EDITED → RESOLVED",
+    "lifecycle": "PENDING_REVIEW \u2192 ACCEPTED|EDITED \u2192 RESOLVED",
     "resolution_types": [
       "EDIT_REQUIRED",
       "ACCEPT_DERIVED",
@@ -50,9 +50,15 @@
       "OPTIONAL",
       "UNRESOLVED"
     ],
-    "resolved_demo": ["sorter_type", "transport_area", "tracking_offset"],
-    "remaining_typical": ["divert_pe"],
-    "bulk_divert": "Accept All Derived / Apply Value to Selected / Mark Commissioning — never UNKNOWN→PROVEN",
+    "resolved_demo": [
+      "sorter_type",
+      "transport_area",
+      "tracking_offset"
+    ],
+    "remaining_typical": [
+      "divert_pe"
+    ],
+    "bulk_divert": "Accept All Derived / Apply Value to Selected / Mark Commissioning \u2014 never UNKNOWN\u2192PROVEN",
     "persistence": "sorter_build.review_resolutions with evidence_fingerprint invalidation",
     "artifact": "exports/stabilization/sorter_review_lifecycle.json"
   },
@@ -66,7 +72,8 @@
     "operands_checked": 1871,
     "divert_rows": 32,
     "READY_FOR_STUDIO_TEST": true,
-    "quality_artifact": "exports/stabilization/sorter_phase1_quality.json"
+    "quality_artifact": "exports/stabilization/sorter_phase1_quality.json",
+    "manifest_git_matches_checkpoint": true
   },
   "safety": {
     "zones_before": [
@@ -82,18 +89,27 @@
       "Zone8_ESZone1",
       "Zone9_ESZone1"
     ],
-    "zones_after": ["ORNCCP5_ESZone1"],
-    "run_discovered": ["ORNCCP5_ESZone1"],
+    "zones_after": [
+      "ORNCCP5_ESZone1"
+    ],
+    "run_discovered": [
+      "ORNCCP5_ESZone1"
+    ],
     "test_default_removed": true,
     "membership_fail_safe": true,
     "artifact": "exports/stabilization/safety_canonical_reconciliation.json"
   },
-  "gate_o_32_vs_16": "UNKNOWN — leave 32",
+  "gate_o_32_vs_16": "UNKNOWN \u2014 leave 32",
   "permanent_tests": {
     "geometry_authority": "PASS",
     "sorter_review_7_11": "PASS",
     "safety_12_17": "PASS",
     "sorter_phase1_hot_build": "PASS",
     "hit_geometry": "PASS"
-  }
+  },
+  "checkpoint_sha": "2c9c60e8f1964bc271fb6dc52e8d48b2e8fec682",
+  "checkpoint_sha_short": "2c9c60e",
+  "build_manifest_git": "2c9c60e",
+  "l5x_sha256": "bcf032f80d5e32c54217a29c9df75e34eac7f47285a8d095bb3371f8f3bc1cf5",
+  "l5x_bytes": 4299283
 }

@@ -804,8 +804,8 @@
     "l5x_bytes": 4299283,
     "unresolved_tag_datatypes": [],
     "unresolved_datatype_members": [],
-    "expected_git": "da5e86d",
-    "git_in_l5x": "da5e86d",
+    "expected_git": "2c9c60e",
+    "git_in_l5x": "2c9c60e",
     "controller_description_len": 44
   },
   "l5x_integrity": {
@@ -854,9 +854,9 @@
     "has_IO_MAP_program": true,
     "unresolved_tag_datatypes": [],
     "unresolved_datatype_members": [],
-    "git_in_l5x": "da5e86d",
+    "git_in_l5x": "2c9c60e",
     "controller_description_len": 44,
-    "controller_description": "SiteForge ORNCCP5 | Git=da5e86d | 2026-09-18"
+    "controller_description": "SiteForge ORNCCP5 | Git=2c9c60e | 2026-09-18"
   },
   "studio_preflight": {
     "ok": true,
