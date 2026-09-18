@@ -2179,6 +2179,21 @@
       render();
       status(ev.target.checked ? 'Geometry debug ON (Advanced)' : 'Clean schematic (normal)');
     });
+    $('tb-export-geom-diag')?.addEventListener('click', () => {
+      const api = A();
+      const { tb, status } = api;
+      const area = typeof api.activeArea === 'function' ? api.activeArea() : null;
+      const n = area?.nodes?.find((x) => x.id === tb.selectedId);
+      if (!n) {
+        status('Select a transport node first, then Export geometry diagnostic');
+        return;
+      }
+      if (typeof api.exportGeometryDiagnostic === 'function') {
+        api.exportGeometryDiagnostic(n, area);
+      } else {
+        status('Geometry diagnostic API unavailable');
+      }
+    });
     $('tb-lane-separate')?.addEventListener('change', (ev) => {
       const { tb, render, status } = A();
       tb.laneSeparate = !!ev.target.checked;

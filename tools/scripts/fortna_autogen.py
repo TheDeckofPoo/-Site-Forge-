@@ -4690,12 +4690,14 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
         if suffix in ("MS_OK", "OL", "OVERLOAD", "OVL"):
             return f"{base}.I.MS_OK"
         # Discrete fault feedback (RUN Type often INVALID; desc "VFD### HAS FAULTED").
-        # Motor_Starter_UDT.Flt.Overload = "Motor Overload Fault" (library DOC_DEFINED).
-        # Contactor fault is a separate suffix when present.
-        if suffix in ("FLT", "FAULT", "FAULTED", "VFDFLT", "DRIVE_FLT", "DRV_FLT"):
-            return f"{base}.Flt.Overload"
+        # Library Motor_Starter_UDT.Flt is PS_Fault → member PS_Flt (BIT).
+        # (Older docs mentioned Motor_Starter_Flt.Overload — that nested type is NOT
+        # what Motor_Starter_UDT.Flt resolves to in OReilly_Library_v3.)
+        if suffix in ("FLT", "FAULT", "FAULTED", "VFDFLT", "DRIVE_FLT", "DRV_FLT", "OL", "OVERLOAD", "OVL"):
+            return f"{base}.Flt.PS_Flt"
         if suffix in ("CONT_FLT", "CONTACTOR_FLT", "C_FLT", "CONTACTOR_FAULT"):
-            return f"{base}.Flt.Contactor"
+            # PS_Fault has no Contactor bit — map to Contactor_OK when possible
+            return f"{base}.I.Contactor_OK"
         if suffix in ("EN", "ENABLE", "RUN", "CMD", "START"):
             # Output enable → UDT.O.Run; input-style EN rare → Contactor_OK
             if d in ("O", "OUT", "OUTPUT"):
@@ -5450,7 +5452,82 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                         extra_aoi_chunks.append(compiled["aoi_xml"])
                     if compiled.get("datatypes_xml"):
                         extra_dt_chunks.append(compiled["datatypes_xml"])
-                    programs_xml.append(compiled["program_xml"])
+                    sorter_prog_xml = compiled["program_xml"]
+                    # Sorter_Track uses <Root>.Flt.CommLoss. When Root is also an
+                    # emitted Module name, controller Tags with that name are scrubbed
+                    # (Studio AB module-defined tag conflict). Generic binding:
+                    #   ModuleName.Flt.CommLoss → ModuleName_Comm.Flt.CommLoss
+                    # and emit Comm_UDT ModuleName_Comm (Device-Comms companion pattern).
+                    # Non-module roots that already have tags (e.g. scanner UDT) stay.
+                    try:
+                        from fortna_l5x_structured_data import (  # noqa: WPS433
+                            emit_comm_udt_tag,
+                            parse_datatypes,
+                        )
+
+                        dts = parse_datatypes(library_text)
+                        # Module names known so far from EIP topology (final scrub uses modules_block)
+                        early_mods = set()
+                        for ad in getattr(inp, "eip_topology", None) or []:
+                            rio = (ad.get("rio_name") or "").strip()
+                            if rio:
+                                early_mods.add(rio)
+                            for ch in ad.get("children") or []:
+                                # Child modules are typically Parent_Slot
+                                slot = ch.get("flex_slot")
+                                if rio and slot is not None:
+                                    early_mods.add(f"{rio}_{int(slot)}")
+                        # Also scrape any already-built modules_block fragment if present
+                        early_mods |= set(
+                            re.findall(
+                                r'<Module\b[^>]*\bName="([^"]+)"',
+                                locals().get("modules_block") or "",
+                            )
+                        )
+                        comm_roots = sorted(
+                            set(
+                                re.findall(
+                                    r"\b([A-Za-z_][A-Za-z0-9_]*)\.Flt\.CommLoss\b",
+                                    sorter_prog_xml,
+                                )
+                            )
+                        )
+                        rewrites: list[dict[str, str]] = []
+                        emitted_comm: list[str] = []
+                        for root_name in comm_roots:
+                            # Already a declared non-module tag with Flt path → keep
+                            if root_name in seen_tag_names and root_name not in early_mods:
+                                continue
+                            # Module-name collision → companion *_Comm Comm_UDT
+                            if root_name in early_mods or re.match(
+                                r"^CP\d+RIO\d+(?:_\d+)?$", root_name, re.I
+                            ):
+                                companion = f"{root_name}_Comm"
+                                sorter_prog_xml = re.sub(
+                                    rf"(?<![A-Za-z0-9_]){re.escape(root_name)}\.Flt\.CommLoss",
+                                    f"{companion}.Flt.CommLoss",
+                                    sorter_prog_xml,
+                                )
+                                rewrites.append(
+                                    {"from": f"{root_name}.Flt.CommLoss", "to": f"{companion}.Flt.CommLoss"}
+                                )
+                                if companion not in seen_tag_names:
+                                    _upsert_tag_block(
+                                        emit_comm_udt_tag(companion, dts), prefer=False
+                                    )
+                                    emitted_comm.append(companion)
+                            else:
+                                # Non-module missing tag → emit Comm_UDT under root name
+                                if root_name not in seen_tag_names:
+                                    _upsert_tag_block(
+                                        emit_comm_udt_tag(root_name, dts), prefer=False
+                                    )
+                                    emitted_comm.append(root_name)
+                        sorter_report["comm_udt_rewrites"] = rewrites
+                        sorter_report["comm_udt_roots_emitted"] = emitted_comm
+                    except Exception as comm_ex:  # noqa: BLE001
+                        sorter_report["comm_udt_emit_error"] = str(comm_ex)
+                    programs_xml.append(sorter_prog_xml)
                     gold_program_names.append("Sorter_Track")
                     mode = sorter_report.get("mode") or "phase1_pack"
                     _emit_progress(

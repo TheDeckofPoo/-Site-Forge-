@@ -2062,6 +2062,23 @@
             </p>
           </div>
 
+          <!-- Gate G: actionable unresolved fields from sorter_build / field_authority / coverage -->
+          <div id="sorter-review-required" class="rounded-xl border border-amber-900/50 bg-amber-950/20 p-3 space-y-2 hidden" role="region" aria-label="Sorter review required">
+            <div class="flex items-center gap-2 flex-wrap">
+              <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
+              <span class="text-[11px] uppercase tracking-wider text-amber-300 font-semibold">Sorter Review Required</span>
+              <span id="sorter-review-count" class="ml-auto text-[10px] mono text-amber-200/80">0</span>
+            </div>
+            <p class="text-[9px] text-slate-500 leading-relaxed">
+              Actionable gaps only (<span class="text-amber-300">REVIEW_REQUIRED</span> /
+              <span class="text-fuchsia-300">ENGINEER_REQUIRED</span> /
+              <span class="text-rose-300">COMMISSIONING</span>).
+              <span class="text-slate-400">OPTIONAL</span> is listed separately and never mixed into review.
+              Click an item to focus the related field.
+            </p>
+            <div id="sorter-review-groups" class="space-y-2 text-[10px]"></div>
+          </div>
+
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
             <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">0b · Sorter type</div>
             <div class="flex flex-wrap gap-3 items-end">
@@ -2584,6 +2601,9 @@
                 <input type="checkbox" id="tb-advanced-debug" class="rounded border-slate-600 bg-slate-900">
                 Geometry debug view
               </label>
+              <button type="button" id="tb-export-geom-diag" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200" title="Export geometry diagnostic for selected node (report artifact only)">
+                Export geometry diagnostic…
+              </button>
               <label class="flex items-center gap-2 text-[11px] text-slate-300 px-1 py-1" title="Presentation-only lane separation for stacked bodies">
                 <input type="checkbox" id="tb-lane-separate" class="rounded border-slate-600 bg-slate-900" checked>
                 Separate stacked labels/bodies
@@ -2838,6 +2858,14 @@
               <div id="tb-insp-attached-wrap" class="space-y-2 border border-fuchsia-900/40 rounded-lg p-2 bg-fuchsia-950/10">
                 <div class="text-[10px] uppercase tracking-wider text-fuchsia-400/80 font-semibold">Attached devices</div>
                 <div id="tb-insp-attached" class="text-[11px] text-slate-300 space-y-1.5 leading-relaxed">—</div>
+              </div>
+              <!-- Gate K: geometry diagnostic (Advanced geometry debug only) -->
+              <div id="tb-insp-geom-diag" class="hidden space-y-1.5 border border-sky-900/40 rounded-lg p-2 bg-sky-950/10">
+                <div class="flex items-center gap-2">
+                  <div class="text-[10px] text-sky-400/90 uppercase tracking-wider font-semibold">Geometry diagnostic</div>
+                  <button type="button" id="tb-insp-geom-export" class="ml-auto text-[9px] text-sky-300 hover:text-sky-200">Export JSON</button>
+                </div>
+                <pre id="tb-insp-geom-diag-body" class="text-[9px] mono text-slate-400 overflow-x-auto max-h-48 whitespace-pre-wrap leading-relaxed">—</pre>
               </div>
               <div id="tb-insp-topo-wrap" class="space-y-2 border border-slate-800/80 rounded-lg p-2 bg-slate-950/40">
                 <div>

@@ -2560,6 +2560,138 @@
   /** Invisible selection target around belt centerline (~40–50px effective). */
   const SCHEMATIC_HIT_WIDTH = 50;
 
+  /**
+   * Gate K — transport geometry diagnostic for a selected node.
+   * Report / inspector artifact only — does NOT mutate production layout.
+   */
+  function buildGeometryDiagnostic(node, area) {
+    const n = node || {};
+    const a = area || activeArea();
+    const tag = String(n.conveyorTag || n.label || n.id || '').trim();
+    const offs = a ? (computePresentationOffsets(a.nodes || [], a) || {}) : {};
+    const off = offs[n.id] || { dx: 0, dy: 0 };
+    const entry = n.entryCanvas ? { ...n.entryCanvas } : null;
+    const exit = n.exitCanvas ? { ...n.exitCanvas } : null;
+    const mid = entry && exit
+      ? { x: (entry.x + exit.x) / 2, y: (entry.y + exit.y) / 2 }
+      : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
+    const rendered = {
+      anchors: {
+        entry: entry ? applyPresOffset(entry, off) : null,
+        exit: exit ? applyPresOffset(exit, off) : null,
+      },
+      centers: applyPresOffset(mid, off),
+      entry: entry ? applyPresOffset(entry, off) : null,
+      exit: exit ? applyPresOffset(exit, off) : null,
+      presentation_offset: off,
+    };
+    const ups = a ? getUpstreamTags(a, n.id) : [];
+    const path = displayPathCanvasForNode(n);
+    const evid = (CURVE_SYMBOL && CURVE_SYMBOL.EVIDENCE) || {};
+    return {
+      kind: 'TransportGeometryDiagnostic',
+      version: 1,
+      node_id: n.id || '',
+      conveyor_tag: tag,
+      run: {
+        X: n.sourceX != null ? n.sourceX : (n.x ?? null),
+        Y: n.sourceY != null ? n.sourceY : (n.y ?? null),
+        X_cord: n.sourceX ?? n.x ?? null,
+        Y_cord: n.sourceY ?? n.y ?? null,
+        Length: n.length ?? n.sourceLength ?? null,
+        Width: n.width ?? n.sourceWidth ?? null,
+        Angle: n.sourceAngle ?? n.rotation ?? n.angle ?? null,
+        Type: n.equipmentType || n.renderKind || n.kind || null,
+        Inside_Radius: n.insideRadius ?? n.Inside_Radius ?? null,
+      },
+      rendered,
+      hitbox: {
+        schematic_hit_width_px: SCHEMATIC_HIT_WIDTH,
+        visible_stroke_note: 'hit stroke is invisible; belt stroke unchanged',
+      },
+      upstream: ups,
+      downstream: n.terminal ? 'END' : (String(n.downstream || '').trim() || null),
+      provenance: {
+        geometry: (n.provenance && n.provenance.geometry) || (n.physical ? 'IMPORTED' : 'MANUAL'),
+        area: (n.provenance && n.provenance.area) || null,
+        safetyZone: (n.provenance && n.provenance.safetyZone) || null,
+        evidence: evid,
+        pathCanvas_cmds: Array.isArray(path) ? path.length : 0,
+        physical: !!n.physical,
+      },
+      // Diagnostic-only notes (never drive layout)
+      notes: [
+        'Gate K diagnostic — report/inspector only; production geometry layout unchanged',
+      ],
+    };
+  }
+
+  /**
+   * Gate K — optional site-specific diagnostic notes for known hard cases.
+   * Report artifact ONLY — never used as production layout branching.
+   */
+  function geometryDiagnosticSiteNotes(diag) {
+    const tag = String(diag?.conveyor_tag || '').toUpperCase();
+    const notes = [];
+    // Example hard cases for engineer report review (not production ifs)
+    if (tag === 'P500' || tag === 'P536') {
+      notes.push({
+        tag,
+        severity: 'diagnostic',
+        message: `${tag} flagged for geometry report review (anchors/angle/hitbox) — layout not altered`,
+      });
+    }
+    return notes;
+  }
+
+  async function exportGeometryDiagnostic(node, area) {
+    const diag = buildGeometryDiagnostic(node, area);
+    diag.site_notes = geometryDiagnosticSiteNotes(diag);
+    const payload = {
+      generated_at: new Date().toISOString(),
+      diagnostic: diag,
+      policy: {
+        production_layout_unchanged: true,
+        site_specific_notes_are_report_only: true,
+      },
+    };
+    const A = window.fortnaAPI || window.api || {};
+    const tag = diag.conveyor_tag || diag.node_id || 'node';
+    const safe = String(tag).replace(/[^\w.-]+/g, '_');
+    // Prefer Electron write when available; else download blob
+    try {
+      if (typeof A.writeTextFile === 'function') {
+        const pathHint = `exports/run-geometry/geom_diag_${safe}.json`;
+        await A.writeTextFile(pathHint, JSON.stringify(payload, null, 2));
+        status(`Geometry diagnostic → ${pathHint}`);
+        return payload;
+      }
+      if (typeof A.saveTextFile === 'function') {
+        await A.saveTextFile({
+          defaultPath: `geom_diag_${safe}.json`,
+          content: JSON.stringify(payload, null, 2),
+        });
+        status('Geometry diagnostic exported');
+        return payload;
+      }
+    } catch (err) {
+      status(`Geometry diagnostic export warn: ${err?.message || err}`);
+    }
+    try {
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const aEl = document.createElement('a');
+      aEl.href = url;
+      aEl.download = `geom_diag_${safe}.json`;
+      aEl.click();
+      URL.revokeObjectURL(url);
+      status(`Geometry diagnostic downloaded (${aEl.download})`);
+    } catch (err) {
+      status(`Geometry diagnostic failed: ${err?.message || err}`);
+    }
+    return payload;
+  }
+
   function distPointToSeg(px, py, x1, y1, x2, y2) {
     const dx = x2 - x1;
     const dy = y2 - y1;
@@ -4486,6 +4618,32 @@
     // Prefill attach-row tag list for default kind
     const addKind = $('tb-insp-device-kind')?.value || 'motor';
     fillTagSelect($('tb-insp-device-tag-new'), addKind, '');
+
+    // Gate K — geometry diagnostic panel when Advanced geometry debug is on
+    const geomHost = $('tb-insp-geom-diag');
+    const geomBody = $('tb-insp-geom-diag-body');
+    const debugOn = tb.viewMode === 'geom-debug' || !!tb.layers?.physical;
+    if (geomHost) {
+      geomHost.classList.toggle('hidden', !debugOn);
+      if (debugOn && geomBody) {
+        try {
+          const diag = buildGeometryDiagnostic(n, area);
+          geomBody.textContent = JSON.stringify({
+            run: diag.run,
+            rendered: diag.rendered,
+            hitbox: diag.hitbox,
+            upstream: diag.upstream,
+            downstream: diag.downstream,
+            provenance: diag.provenance,
+          }, null, 2);
+        } catch (err) {
+          geomBody.textContent = `diagnostic error: ${err?.message || err}`;
+        }
+      }
+    }
+    $('tb-insp-geom-export')?.addEventListener('click', () => {
+      exportGeometryDiagnostic(n, area);
+    });
   }
 
   /** Merge nodes: Attach motor/ES/PWS/ENC only — PEs use AOI fields above. */
@@ -5978,6 +6136,9 @@
     renderInventoryPanel,
     renderTopologyTable,
     renderInspector,
+    buildGeometryDiagnostic,
+    exportGeometryDiagnostic,
+    geometryDiagnosticSiteNotes,
     safetyForAreaName,
     listSafetyZoneNames,
     ensureSafetyZone,

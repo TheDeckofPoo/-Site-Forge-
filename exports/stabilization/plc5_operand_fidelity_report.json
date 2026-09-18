@@ -1,0 +1,46 @@
+{
+  "original_count": 62,
+  "remaining_count": 0,
+  "families": [
+    {
+      "family": "TIMER_MEMBER",
+      "count": 14,
+      "classification": "VALID_OPERAND_VALIDATOR_BUG",
+      "fixed": true
+    },
+    {
+      "family": "AOI_TRACK_DIVERT",
+      "count": 32,
+      "classification": "MISSING_AOI_MEMBER (sealed nested)",
+      "fixed": true,
+      "note": "accepted as external sealed AOI"
+    },
+    {
+      "family": "MODULE_FLT_COMM",
+      "count": 15,
+      "classification": "MISSING_DECLARATION / module-name scrub",
+      "fixed": true,
+      "binding": "Root.Flt.CommLoss \u2192 Root_Comm when Root is Module"
+    },
+    {
+      "family": "MODULE_IO_ALIAS",
+      "count": 1,
+      "classification": "MODULE_BINDING_REQUIRED",
+      "fixed": true,
+      "note": "SCN504:I.ConnectionFaulted external"
+    },
+    {
+      "family": "VFD_PS_FAULT",
+      "count": 2,
+      "classification": "WRONG_DATATYPE path",
+      "fixed": true,
+      "binding": ".Flt.Overload \u2192 .Flt.PS_Flt"
+    }
+  ],
+  "CP5RIO2_2": {
+    "oracle": "Module CP5RIO2_2 + Tag CP5RIO2_2 DataType=Comm_UDT",
+    "generated_before": "Module only \u2014 Tag scrubbed (module-name collision)",
+    "fix": "Rewrite to CP5RIO2_2_Comm.Flt.CommLoss + emit Comm_UDT companion (generic Device-Comms pattern)",
+    "fixed": true
+  }
+}

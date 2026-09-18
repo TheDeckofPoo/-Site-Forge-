@@ -24,6 +24,13 @@ _BUILTIN = {
     "BIT", "CONNECTION_STATUS", "ALARM_ANALOG", "ALARM_DIGITAL",
 }
 
+# Valid Logix structured builtins — members are real; do NOT reject as atomic.
+_STRUCTURED_BUILTIN_MEMBERS: dict[str, dict[str, str]] = {
+    "TIMER": {"PRE": "DINT", "ACC": "DINT", "EN": "BOOL", "TT": "BOOL", "DN": "BOOL"},
+    "COUNTER": {"PRE": "DINT", "ACC": "DINT", "CU": "BOOL", "CD": "BOOL", "DN": "BOOL", "OV": "BOOL", "UN": "BOOL"},
+    "CONTROL": {"LEN": "DINT", "POS": "DINT", "EN": "BOOL", "EU": "BOOL", "DN": "BOOL", "EM": "BOOL", "ER": "BOOL", "UL": "BOOL", "IN": "BOOL", "FD": "BOOL"},
+}
+
 _INSTR = ("XIC", "XIO", "OTE", "OTL", "OTU")
 
 
@@ -77,10 +84,24 @@ def _split_operand(operand: str) -> tuple[str, list[str], list[str]]:
     return base, segs, []
 
 
+def _members_for_type(
+    type_name: str,
+    datatypes: dict[str, dict[str, str]],
+) -> dict[str, str] | None:
+    """Return member map for UDT or structured builtin; None if unknown/sealed."""
+    if type_name in _STRUCTURED_BUILTIN_MEMBERS:
+        return _STRUCTURED_BUILTIN_MEMBERS[type_name]
+    if type_name in datatypes:
+        return datatypes[type_name]
+    return None
+
+
 def _resolve_members(
     base_type: str,
     segs: list[str],
     datatypes: dict[str, dict[str, str]],
+    *,
+    aoi_names: set[str] | None = None,
 ) -> dict[str, Any]:
     cur = base_type
     path_ok: list[str] = []
@@ -89,7 +110,8 @@ def _resolve_members(
             # Array index — accept if current type looks like array or STRUCT walk continues
             path_ok.append(seg)
             continue
-        if cur in _BUILTIN:
+        # Atomic builtins (BOOL/DINT/…) cannot have members
+        if cur in _BUILTIN and cur not in _STRUCTURED_BUILTIN_MEMBERS:
             return {
                 "ok": False,
                 "kind": "MEMBER_NOT_FOUND",
@@ -97,12 +119,31 @@ def _resolve_members(
                 "resolved_type": cur,
                 "path_ok": path_ok,
             }
-        members = datatypes.get(cur) or {}
+        members = _members_for_type(cur, datatypes)
+        if members is None:
+            # Sealed AOI / external type — cannot expand EncodedData; accept path
+            if aoi_names and cur in aoi_names:
+                return {
+                    "ok": True,
+                    "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+                    "resolved_type": cur,
+                    "path_ok": path_ok + [seg],
+                    "external": True,
+                    "note": f"Sealed AOI type {cur} members not expandable",
+                }
+            # Unknown nested type (often sealed AOI host used as UDT member type)
+            return {
+                "ok": True,
+                "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+                "resolved_type": cur,
+                "path_ok": path_ok + [seg],
+                "external": True,
+                "note": f"DataType {cur} not expandable — treating nested path as external",
+            }
         if seg not in members:
-            # Common Rockwell alias: some UDTs expose I/O as nested
             return {
                 "ok": False,
-                "kind": "MEMBER_NOT_FOUND" if path_ok else "MEMBER_NOT_FOUND",
+                "kind": "MEMBER_NOT_FOUND",
                 "failed_segment": seg,
                 "resolved_type": cur,
                 "path_ok": path_ok,
@@ -135,16 +176,20 @@ def validate_operand(
             "external": True,
         }
 
-    # Module-defined: CPxRIOn:I.Data[s].b — require module name exists when known
+    # Module-defined: CPxRIOn:I.Data[s].b or Scanner:I.ConnectionFaulted
     if re.match(r"^[A-Za-z_][A-Za-z0-9_]*:", op):
         mod = op.split(":", 1)[0]
         if module_names is not None and mod not in module_names:
+            # Still accept as external module-binding — Studio needs the Module
+            # element, but path shape is valid Logix. Report as external, not
+            # invalid_member (rough-build readiness; MODULE_BINDING_REQUIRED).
             return {
-                "ok": False,
-                "kind": "INVALID_MODULE_MEMBER",
+                "ok": True,
+                "kind": "MODULE_BINDING_REQUIRED",
                 "operand": op,
                 "base_tag": mod,
-                "failed_segment": mod,
+                "external": True,
+                "note": f"Module {mod} not in emitted Modules — engineer/hardware binding",
             }
         # Structure of AB modules is external — mark external when we cannot deep-validate
         if re.search(r":[IO]\.Data\[\d+\]\.\d+$", op):
@@ -177,10 +222,9 @@ def validate_operand(
         return {"ok": True, "kind": "TAG_OK", "operand": op, "base_tag": base, "datatype": tags[base]}
 
     dt = tags[base]
-    # Sealed AOI instance tags: member layout is inside EncodedData — cannot
-    # deterministically expand. Treat as external unless base type is a plain
-    # atomic (BOOL/DINT/…) which must NEVER have members.
-    if dt in _BUILTIN and segs:
+    # Structured builtins (TIMER/COUNTER/CONTROL) have real members — resolve them.
+    # Plain atomics (BOOL/DINT/…) must NEVER have members.
+    if dt in _BUILTIN and dt not in _STRUCTURED_BUILTIN_MEMBERS and segs:
         return {
             "ok": False,
             "kind": "MEMBER_NOT_FOUND",
@@ -201,16 +245,18 @@ def validate_operand(
             "external": True,
             "note": "Sealed AOI members not expandable from L5X EncodedData",
         }
-    result = _resolve_members(dt, segs, datatypes)
+    result = _resolve_members(dt, segs, datatypes, aoi_names=aoi_names)
     result["operand"] = op
     result["base_tag"] = base
     result["datatype"] = dt
+    if result.get("external"):
+        return result
     if not result.get("ok"):
         if len(result.get("path_ok") or []) > 0:
             result["kind"] = "NESTED_MEMBER_NOT_FOUND"
         result["failed_member_segment"] = result.get("failed_segment")
         # DataType missing entirely (common for sealed AOI host types) → external
-        if dt and dt not in datatypes and dt not in _BUILTIN:
+        if dt and dt not in datatypes and dt not in _BUILTIN and dt not in _STRUCTURED_BUILTIN_MEMBERS:
             return {
                 "ok": True,
                 "kind": "UNKNOWN_EXTERNAL_DEFINITION",
@@ -280,7 +326,7 @@ def validate_l5x_operands(l5x_text: str) -> dict[str, Any]:
             aoi_names=aoi_names,
         )
         row = {**item, **res}
-        if res.get("external") and res.get("kind") == "UNKNOWN_EXTERNAL_DEFINITION":
+        if res.get("external") and res.get("ok"):
             external.append(row)
         if not res.get("ok"):
             invalid.append(row)

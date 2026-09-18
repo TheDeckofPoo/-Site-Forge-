@@ -5141,10 +5141,248 @@ function sorterAuthorityBadge(auth) {
   if (a === 'DERIVED' || a === 'RUN_DERIVED') {
     return '<span class="px-1 rounded text-[9px] mono bg-sky-950/80 text-sky-300 border border-sky-800/60">DERIVED</span>';
   }
+  if (a === 'OPTIONAL') {
+    return '<span class="px-1 rounded text-[9px] mono bg-slate-900 text-slate-400 border border-slate-700">OPTIONAL</span>';
+  }
+  if (a === 'COMMISSIONING') {
+    return '<span class="px-1 rounded text-[9px] mono bg-rose-950/80 text-rose-300 border border-rose-800/60">COMMISSIONING</span>';
+  }
+  if (a === 'ENGINEER_REQUIRED' || a.includes('ENGINEER')) {
+    return '<span class="px-1 rounded text-[9px] mono bg-fuchsia-950/80 text-fuchsia-300 border border-fuchsia-800/60">ENGINEER</span>';
+  }
   if (a.includes('REVIEW')) {
     return '<span class="px-1 rounded text-[9px] mono bg-amber-950/80 text-amber-300 border border-amber-800/60">REVIEW</span>';
   }
   return '<span class="px-1 rounded text-[9px] mono bg-slate-900 text-slate-500 border border-slate-700">UNKNOWN</span>';
+}
+
+/** Gate G status vocabulary — never treat OPTIONAL as REVIEW_REQUIRED. */
+const SORTER_STATUS_CATS = Object.freeze({
+  PROVEN: 'PROVEN',
+  DERIVED: 'DERIVED',
+  REVIEW_REQUIRED: 'REVIEW_REQUIRED',
+  ENGINEER_REQUIRED: 'ENGINEER_REQUIRED',
+  COMMISSIONING: 'COMMISSIONING',
+  OPTIONAL: 'OPTIONAL',
+});
+
+const SORTER_REVIEW_ACTIONABLE = new Set([
+  'REVIEW_REQUIRED',
+  'ENGINEER_REQUIRED',
+  'COMMISSIONING',
+  'REVIEW',
+  'UNKNOWN', // blank required field still needs engineer action
+]);
+
+/** Map unresolved field keys → editable control ids (focus on click). */
+const SORTER_FIELD_FOCUS = Object.freeze({
+  induct_conveyor: 'sorter-induct-conv',
+  induct_pe: 'sorter-induct-pe',
+  induct_encoder: 'sorter-induct-enc-tag',
+  sorter_type: 'sorter-type',
+  transport_area: 'sorter-area-name',
+  area_name: 'sorter-area-name',
+  tracking_conveyors: 'sorter-track-count',
+  tracking_conveyor_chain: 'sorter-track-rows',
+  tracking_pe: 'sorter-pe-count',
+  divert_output_io: 'sorter-divert-rows',
+  divert_lane_topology: 'sorter-divert-rows',
+  divert_pe: 'sorter-divert-rows',
+});
+
+function _normalizeSorterStatus(raw) {
+  const a = String(raw || '').toUpperCase().trim();
+  if (!a) return '';
+  if (a === 'PROVEN' || a === 'RUN_EXPLICIT') return SORTER_STATUS_CATS.PROVEN;
+  if (a === 'DERIVED' || a === 'RUN_DERIVED') return SORTER_STATUS_CATS.DERIVED;
+  if (a === 'OPTIONAL' || a === 'N/A' || a === 'NOT_APPLICABLE') return SORTER_STATUS_CATS.OPTIONAL;
+  if (a === 'COMMISSIONING' || a.includes('COMMISSION')) return SORTER_STATUS_CATS.COMMISSIONING;
+  if (a === 'ENGINEER_REQUIRED' || a === 'ENGINEER' || a.includes('ENGINEER_REQUIRED')) {
+    return SORTER_STATUS_CATS.ENGINEER_REQUIRED;
+  }
+  if (a.includes('REVIEW') || a === 'UNKNOWN' || a === 'UNRESOLVED') {
+    return SORTER_STATUS_CATS.REVIEW_REQUIRED;
+  }
+  return a;
+}
+
+function _sorterReviewGroup(fieldKey) {
+  const k = String(fieldKey || '').toLowerCase();
+  if (k.includes('divert') || k.includes('lane') || k.includes('zone_lane')) return 'divert';
+  if (k.includes('track') || k.includes('encoder') || k.includes('induct_pe') || k === 'tracking_pe') {
+    return 'tracking';
+  }
+  return 'sorter';
+}
+
+/**
+ * Gate G — collect actionable unresolved fields from live sorter_build /
+ * field_authority / configuration_required / coverage. No hard-coded site lists.
+ */
+function collectSorterReviewItems(s) {
+  const cfg = s || {};
+  const items = [];
+  const seen = new Set();
+  const push = (field, status, detail, group) => {
+    const key = `${group || _sorterReviewGroup(field)}::${field}`;
+    if (seen.has(key)) return;
+    const st = _normalizeSorterStatus(status);
+    // Never mix OPTIONAL into the review actionable list
+    if (st === SORTER_STATUS_CATS.OPTIONAL || st === SORTER_STATUS_CATS.PROVEN
+      || st === SORTER_STATUS_CATS.DERIVED) {
+      return;
+    }
+    if (!SORTER_REVIEW_ACTIONABLE.has(st) && st !== SORTER_STATUS_CATS.REVIEW_REQUIRED
+      && st !== SORTER_STATUS_CATS.ENGINEER_REQUIRED
+      && st !== SORTER_STATUS_CATS.COMMISSIONING) {
+      return;
+    }
+    seen.add(key);
+    items.push({
+      field,
+      status: st || SORTER_STATUS_CATS.REVIEW_REQUIRED,
+      detail: detail || '',
+      group: group || _sorterReviewGroup(field),
+      focusId: SORTER_FIELD_FOCUS[field] || '',
+    });
+  };
+
+  (cfg.configuration_required || []).forEach((raw) => {
+    const field = String(raw || '').trim();
+    if (!field) return;
+    push(field, SORTER_STATUS_CATS.REVIEW_REQUIRED, 'configuration_required', _sorterReviewGroup(field));
+  });
+
+  const fa = cfg.field_authority || {};
+  Object.entries(fa).forEach(([field, auth]) => {
+    const st = _normalizeSorterStatus(auth);
+    if (st === SORTER_STATUS_CATS.OPTIONAL || st === SORTER_STATUS_CATS.PROVEN
+      || st === SORTER_STATUS_CATS.DERIVED) {
+      return;
+    }
+    if (st === SORTER_STATUS_CATS.REVIEW_REQUIRED
+      || st === SORTER_STATUS_CATS.ENGINEER_REQUIRED
+      || st === SORTER_STATUS_CATS.COMMISSIONING
+      || st === 'UNKNOWN') {
+      push(field, st === 'UNKNOWN' ? SORTER_STATUS_CATS.REVIEW_REQUIRED : st,
+        'field_authority', _sorterReviewGroup(field));
+    }
+  });
+
+  // Coverage gaps (when present on sorter_model / sorter_build)
+  const cov = cfg.coverage || {};
+  const gapLists = [
+    ...(Array.isArray(cov.gaps) ? cov.gaps : []),
+    ...(Array.isArray(cov.coverage_gaps) ? cov.coverage_gaps : []),
+    ...(Array.isArray(cov.unresolved) ? cov.unresolved : []),
+    ...(Array.isArray(cov.ENGINEER_REQUIRED?.fields) ? cov.ENGINEER_REQUIRED.fields : []),
+    ...(Array.isArray(cov.REVIEW_REQUIRED?.fields) ? cov.REVIEW_REQUIRED.fields : []),
+  ];
+  gapLists.forEach((g) => {
+    if (typeof g === 'string') {
+      push(g, SORTER_STATUS_CATS.REVIEW_REQUIRED, 'coverage', _sorterReviewGroup(g));
+      return;
+    }
+    if (g && typeof g === 'object') {
+      const field = String(g.field || g.name || g.key || '').trim();
+      if (!field) return;
+      push(field, g.authority || g.status || SORTER_STATUS_CATS.REVIEW_REQUIRED,
+        g.detail || 'coverage', _sorterReviewGroup(field));
+    }
+  });
+
+  // Divert rows with REVIEW divert_output_io
+  (cfg.divert_rows || []).forEach((d, i) => {
+    const auth = String(d?.authority?.divert_output_io || '').toUpperCase();
+    if (auth.includes('REVIEW') || auth === 'UNKNOWN' || !(d?.divert_output_io)) {
+      push(
+        `divert_output_io[${i}]`,
+        SORTER_STATUS_CATS.REVIEW_REQUIRED,
+        d?.name || d?.lane || `divert #${i + 1}`,
+        'divert',
+      );
+    }
+  });
+
+  return items;
+}
+
+/** Optional fields (informational) — never merged into REVIEW_REQUIRED list. */
+function collectSorterOptionalItems(s) {
+  const cfg = s || {};
+  const fa = cfg.field_authority || {};
+  const out = [];
+  Object.entries(fa).forEach(([field, auth]) => {
+    if (_normalizeSorterStatus(auth) === SORTER_STATUS_CATS.OPTIONAL) {
+      out.push({ field, status: SORTER_STATUS_CATS.OPTIONAL, group: _sorterReviewGroup(field) });
+    }
+  });
+  return out;
+}
+
+function focusSorterReviewField(focusId) {
+  if (!focusId) return;
+  const el = $(focusId);
+  if (!el) return;
+  try {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    el.focus?.();
+    el.classList?.add('ring-2', 'ring-amber-500/70');
+    setTimeout(() => el.classList?.remove('ring-2', 'ring-amber-500/70'), 1600);
+  } catch (_) { /* ignore */ }
+}
+
+function renderSorterReviewPanel(s) {
+  const host = $('sorter-review-required');
+  const groupsEl = $('sorter-review-groups');
+  const countEl = $('sorter-review-count');
+  if (!host || !groupsEl) return;
+  const items = collectSorterReviewItems(s);
+  const optional = collectSorterOptionalItems(s);
+  if (countEl) countEl.textContent = String(items.length);
+  if (!items.length && !optional.length) {
+    host.classList.add('hidden');
+    groupsEl.innerHTML = '';
+    return;
+  }
+  host.classList.remove('hidden');
+  const byGroup = { sorter: [], tracking: [], divert: [] };
+  items.forEach((it) => {
+    const g = byGroup[it.group] ? it.group : 'sorter';
+    byGroup[g].push(it);
+  });
+  const label = { sorter: 'Sorter', tracking: 'Tracking', divert: 'Divert' };
+  let html = '';
+  ['sorter', 'tracking', 'divert'].forEach((g) => {
+    const rows = byGroup[g];
+    if (!rows.length) return;
+    html += `<div class="rounded-lg border border-amber-900/30 bg-[#0a1016] p-2">
+      <div class="text-[9px] uppercase tracking-wider text-amber-500/90 font-semibold mb-1">${label[g]}</div>
+      <div class="space-y-1">`;
+    rows.forEach((it) => {
+      html += `<button type="button" class="sorter-review-item w-full text-left flex flex-wrap items-center gap-2 px-1.5 py-1 rounded hover:bg-amber-950/40 border border-transparent hover:border-amber-800/40"
+        data-focus="${escapeHtml(it.focusId || '')}" data-field="${escapeHtml(it.field)}">
+        <span class="mono text-amber-100/90">${escapeHtml(it.field)}</span>
+        ${sorterAuthorityBadge(it.status)}
+        <span class="text-slate-600 truncate">${escapeHtml(it.detail || '')}</span>
+      </button>`;
+    });
+    html += '</div></div>';
+  });
+  if (optional.length) {
+    html += `<div class="rounded-lg border border-slate-800 bg-[#0a1016] p-2">
+      <div class="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Optional (not review)</div>
+      <div class="flex flex-wrap gap-1">${optional.map((o) =>
+        `<span class="inline-flex items-center gap-1 mono text-slate-500">${escapeHtml(o.field)} ${sorterAuthorityBadge('OPTIONAL')}</span>`
+      ).join('')}</div>
+    </div>`;
+  }
+  groupsEl.innerHTML = html || '<div class="text-slate-600">No actionable review items.</div>';
+  groupsEl.querySelectorAll('.sorter-review-item').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      focusSorterReviewField(btn.getAttribute('data-focus') || '');
+    });
+  });
 }
 
 function _sorterFieldValue(v) {
@@ -6242,6 +6480,7 @@ function renderSorterBuild() {
       });
     }
   }
+  try { renderSorterReviewPanel(s); } catch (_) { /* ignore */ }
   updateSorterSummary();
 }
 

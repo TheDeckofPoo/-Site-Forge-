@@ -334,8 +334,22 @@ def _merge_engineer_zone(
             eng.get("silenceSource") or eng.get("silence_source") or ""
         ).strip()
         z["silenceOrigin"] = ORIGIN_ENGINEER
-    if eng.get("name") and eng.get("name") != z.get("name"):
-        z["name"] = str(eng["name"]).strip()
+    # Gate I — engineering_name editable; source_id immutable
+    src = str(eng.get("source_id") or eng.get("sourceId") or z.get("source_id") or z.get("name") or "").strip()
+    if src:
+        z["source_id"] = src
+        z["id"] = src
+    eng_name = str(
+        eng.get("engineering_name") or eng.get("engineeringName") or ""
+    ).strip()
+    if eng_name:
+        z["engineering_name"] = eng_name
+        z["name"] = eng_name
+        z["nameOrigin"] = ORIGIN_ENGINEER
+    elif eng.get("name") and eng.get("name") != z.get("name"):
+        # Legacy rename path — treat name as engineering_name, keep source_id
+        z["engineering_name"] = str(eng["name"]).strip()
+        z["name"] = z["engineering_name"]
         z["nameOrigin"] = ORIGIN_ENGINEER
     z["engineerEdited"] = True
     return z
@@ -395,11 +409,20 @@ def build_safety_model(
     """
     eng_build = dict(engineer_safety_build or {})
     eng_zones_list = list(eng_build.get("zones") or [])
-    eng_by_name = {
-        str(z.get("name") or z.get("id") or "").strip(): z
-        for z in eng_zones_list
-        if z and (z.get("name") or z.get("id"))
-    }
+    eng_by_name: dict[str, dict[str, Any]] = {}
+    for z in eng_zones_list:
+        if not z:
+            continue
+        for key in (
+            z.get("source_id"),
+            z.get("sourceId"),
+            z.get("id"),
+            z.get("engineering_name"),
+            z.get("name"),
+        ):
+            k = str(key or "").strip()
+            if k and k not in eng_by_name:
+                eng_by_name[k] = z
 
     devices: list[dict[str, Any]] = []
     if run_dir:
@@ -416,17 +439,47 @@ def build_safety_model(
     # Seed zone shells from Transport + named safety zones + engineer build
     seed_zones = list(transport_zones or [])
     named = list(eng_build.get("safety_zones") or [])  # optional explicit names
-    # Ensure every engineer zone appears even if Transport dropped it
-    for name, ez in eng_by_name.items():
-        if not any(str(z.get("name") or "") == name for z in seed_zones):
-            seed_zones.append(
-                {
-                    "name": name,
-                    "area": ez.get("area") or ez.get("areaRef") or "",
-                    "conveyors": ez.get("conveyors") or ez.get("conveyorRefs") or [],
-                    "members": ez.get("members") or [],
-                }
+
+    def _seed_ids(z: dict[str, Any]) -> set[str]:
+        return {
+            str(x or "").strip()
+            for x in (
+                z.get("source_id"),
+                z.get("sourceId"),
+                z.get("id"),
+                z.get("name"),
+                z.get("engineering_name"),
             )
+            if str(x or "").strip()
+        }
+
+    # Ensure every engineer zone appears even if Transport dropped it.
+    # Gate I — match by source_id so a rename does not duplicate the shell.
+    seen_eng: set[str] = set()
+    for ez in eng_zones_list:
+        if not ez:
+            continue
+        sid = str(
+            ez.get("source_id") or ez.get("sourceId") or ez.get("id") or ez.get("name") or ""
+        ).strip()
+        if not sid or sid in seen_eng:
+            continue
+        seen_eng.add(sid)
+        already = any(sid in _seed_ids(z) for z in seed_zones)
+        if already:
+            continue
+        seed_zones.append(
+            {
+                "name": sid,  # IR identity = source_id
+                "source_id": sid,
+                "engineering_name": str(
+                    ez.get("engineering_name") or ez.get("name") or sid
+                ).strip(),
+                "area": ez.get("area") or ez.get("areaRef") or "",
+                "conveyors": ez.get("conveyors") or ez.get("conveyorRefs") or [],
+                "members": ez.get("members") or [],
+            }
+        )
 
     # Named Safety Zone list (workbook.safety_zones) — Area≠Zone stubs
     safety_zone_names = [
@@ -454,18 +507,22 @@ def build_safety_model(
         convs = list(ir.conveyors or [])
         if not convs and area and area_conveyors:
             convs = list((area_conveyors or {}).get(area) or [])
+        # Gate J — only keep RUN members when already on IR (proven); never invent
+        ir_members = list(ir.members or [])
         auto = {
             "id": ir.name,
+            "source_id": ir.name,
             "name": ir.name,
+            "engineering_name": ir.name,
             "areaRef": area,
             "areaOrigin": ORIGIN_AUTO,
             "conveyorRefs": convs,
             "conveyorsOrigin": ORIGIN_AUTO if convs else ORIGIN_UNRESOLVED,
-            "members": list(ir.members or []),
-            "membersOrigin": ORIGIN_AUTO if ir.members else ORIGIN_UNRESOLVED,
-            "eStops": [m for m in (ir.members or []) if _classify_device(m) == "ESTOP"],
-            "esrDevices": [m for m in (ir.members or []) if _classify_device(m) == "ESR"],
-            "mcrDevices": [m for m in (ir.members or []) if _classify_device(m) == "MCR"],
+            "members": ir_members,
+            "membersOrigin": ORIGIN_AUTO if ir_members else ORIGIN_UNRESOLVED,
+            "eStops": [m for m in ir_members if _classify_device(m) == "ESTOP"],
+            "esrDevices": [m for m in ir_members if _classify_device(m) == "ESR"],
+            "mcrDevices": [m for m in ir_members if _classify_device(m) == "MCR"],
             "resetSource": ir.reset_source or (f"{area}.Reset" if area else ""),
             "resetOrigin": ORIGIN_AUTO if area else ORIGIN_UNRESOLVED,
             "silenceSource": ir.silence_source or (f"{area}.Silence" if area else ""),
@@ -483,8 +540,20 @@ def build_safety_model(
             "suggestions": [],
             "engineerEdited": False,
             "status": "UNRESOLVED",
+            "runDiscovered": True,
         }
-        merged = _merge_engineer_zone(auto, eng_by_name.get(ir.name))
+        # Match engineer overlay by source_id first, then display name
+        eng_hit = eng_by_name.get(ir.name)
+        if not eng_hit:
+            for ez in eng_zones_list:
+                ez_sid = str(ez.get("source_id") or ez.get("sourceId") or "").strip()
+                if ez_sid and ez_sid == ir.name:
+                    eng_hit = ez
+                    break
+                if str(ez.get("engineering_name") or ez.get("name") or "").strip() == ir.name:
+                    eng_hit = ez
+                    break
+        merged = _merge_engineer_zone(auto, eng_hit)
         merged["suggestions"] = suggest_devices_for_zone(merged, devices)
         # Attach physical IO refs for assigned members
         by_dev = {d["name"].upper(): d for d in devices}
@@ -649,10 +718,14 @@ def safety_build_workbook_payload(model: dict[str, Any]) -> dict[str, Any]:
     """Serialize SafetyModel → workbook.safety_build for Autogen/ES compiler."""
     zones = []
     for z in model.get("zones") or []:
+        sid = str(z.get("source_id") or z.get("id") or z.get("name") or "").strip()
+        eng = str(z.get("engineering_name") or z.get("name") or sid).strip()
         zones.append(
             {
-                "id": z.get("id") or z.get("name"),
-                "name": z.get("name"),
+                "id": sid,
+                "source_id": sid,
+                "name": eng,
+                "engineering_name": eng,
                 "area": z.get("areaRef") or "",
                 "areaRef": z.get("areaRef") or "",
                 "conveyors": list(z.get("conveyorRefs") or []),
@@ -671,6 +744,7 @@ def safety_build_workbook_payload(model: dict[str, Any]) -> dict[str, Any]:
                 "status": z.get("status"),
                 "fields": z.get("fields") or {},
                 "engineerEdited": bool(z.get("engineerEdited")),
+                "runDiscovered": bool(z.get("runDiscovered")),
             }
         )
     # Preserve full device records (zone ref / status / evidence / provenance)

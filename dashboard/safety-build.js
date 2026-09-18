@@ -28,15 +28,57 @@
     'evidence', 'physicalIoRef', 'origin', 'kind',
   ];
 
+  /** Logix / Studio tag: letter or underscore first, then alnum/underscore. */
+  const LOGIX_IDENT_RE = /^[A-Za-z_][A-Za-z0-9_]*$/;
+
   const state = {
     model: null,
     selectedZoneId: null,
     filter: '',
     inventoryFilter: '',
     dirty: false,
-    /** Zone names engineer deleted — must not reappear from Transport canvas seeds. */
+    /** Zone source_ids engineer deleted — must not reappear from Transport / RUN seeds. */
     deletedZones: new Set(),
   };
+
+  function validateLogixIdent(name) {
+    const s = String(name || '').trim();
+    if (!s) return { ok: false, error: 'Name required' };
+    if (s.length > 80) return { ok: false, error: 'Name too long (max 80)' };
+    if (!LOGIX_IDENT_RE.test(s)) {
+      return {
+        ok: false,
+        error: 'Invalid Logix identifier — letters/digits/underscore only; must start with letter or _',
+      };
+    }
+    return { ok: true, error: '' };
+  }
+
+  /** Immutable RUN / seed identity for a zone (never changes on rename). */
+  function zoneSourceId(z) {
+    if (!z) return '';
+    return String(z.source_id || z.sourceId || z.id || z.name || '').trim();
+  }
+
+  /** Display / emit name — engineering_name when set, else name. */
+  function zoneDisplayName(z) {
+    if (!z) return '';
+    return String(z.engineering_name || z.engineeringName || z.name || '').trim();
+  }
+
+  /**
+   * Gate J — membership only when PROVEN (CONFIRMED/HIGH) or ENGINEER_ASSIGNED.
+   * Digit-match suggestions never become members automatically.
+   */
+  function membersAreProven(origin, membershipConfidence) {
+    const o = String(origin || '').toUpperCase();
+    const c = String(membershipConfidence || '').toUpperCase();
+    if (o === 'ENGINEER_ASSIGNED' || o === 'ENGINEER') return true;
+    if (o === 'AUTO_RUN_PROVEN' || o === 'AUTO') {
+      return c === 'CONFIRMED' || c === 'HIGH' || c === 'HIGH_CONFIDENCE' || c === 'PROVEN';
+    }
+    return false;
+  }
 
   function $(id) {
     return document.getElementById(id);
@@ -143,23 +185,98 @@
     const cached = normalizeDeviceList(eng.devices || []);
     const devices = live.length ? live : cached;
 
-    // Merge transport + engineer zones (skip engineer-deleted names)
+    // Merge transport + engineer + RUN-discovered zones (skip engineer-deleted source_ids)
     const deleted = state.deletedZones;
-    const byName = new Map();
+    const byId = new Map(); // key = source_id (immutable)
+    const indexByDisplay = new Map(); // engineering_name / name → source_id
+
+    function putZone(z) {
+      const sid = zoneSourceId(z);
+      if (!sid || deleted.has(sid) || isCorruptZoneName(sid)) return null;
+      byId.set(sid, z);
+      const disp = zoneDisplayName(z);
+      if (disp) indexByDisplay.set(disp.toLowerCase(), sid);
+      if (z.name && String(z.name).toLowerCase() !== disp.toLowerCase()) {
+        indexByDisplay.set(String(z.name).toLowerCase(), sid);
+      }
+      return z;
+    }
+
+    function findZone(nameOrId) {
+      const raw = String(nameOrId || '').trim();
+      if (!raw) return null;
+      if (byId.has(raw)) return byId.get(raw);
+      const sid = indexByDisplay.get(raw.toLowerCase());
+      return sid ? byId.get(sid) : null;
+    }
+
+    // Gate H — RUN-discovered zone shells (devices=0, membership REVIEW until proven/engineer)
+    const runZones = Array.isArray(AS.runSafetyZones) ? AS.runSafetyZones : [];
+    runZones.forEach((rz) => {
+      const sid = zoneSourceId(rz) || String(rz.name || '').trim();
+      if (!sid || deleted.has(sid) || isCorruptZoneName(sid)) return;
+      if (findZone(sid)) return;
+      const areaRef = areaNameOf(rz.area || rz.areaRef) || '';
+      const provenMembers = membersAreProven(rz.membersOrigin, rz.membership_confidence)
+        ? [...(rz.members || [])].filter(Boolean)
+        : [];
+      putZone({
+        id: sid,
+        source_id: sid,
+        name: zoneDisplayName(rz) || sid,
+        engineering_name: zoneDisplayName(rz) || sid,
+        areaRef,
+        areaOrigin: 'AUTO_RUN_PROVEN',
+        conveyorRefs: [...(rz.conveyors || rz.conveyorRefs || [])],
+        conveyorsOrigin: (rz.conveyors || rz.conveyorRefs || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        // Gate J — do not auto-assign; only PROVEN membership survives
+        members: provenMembers,
+        membersOrigin: provenMembers.length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        membership_confidence: rz.membership_confidence || 'ENGINEER_REQUIRED',
+        eStops: [],
+        esrDevices: [],
+        mcrDevices: [],
+        resetSource: areaRef ? `${areaRef}.Reset` : '',
+        silenceSource: areaRef ? `${areaRef}.Silence` : '',
+        resetOrigin: areaRef ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        silenceOrigin: areaRef ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        suggestions: [],
+        engineerEdited: false,
+        status: 'REVIEW_REQUIRED',
+        fields: {},
+        runDiscovered: true,
+      });
+    });
+
     transportZones.forEach((z) => {
-      if (deleted.has(String(z.name || '').trim())) return;
-      if (isCorruptZoneName(z.name)) return;
+      const sid = String(z.name || '').trim();
+      if (!sid || deleted.has(sid) || isCorruptZoneName(sid)) return;
       const areaRef = areaNameOf(z.area) || String(z.area || '').trim();
       if (isCorruptZoneName(areaRef)) return;
-      byName.set(z.name, {
-        id: z.name,
-        name: z.name,
+      const existing = findZone(sid);
+      if (existing) {
+        if (!(existing.conveyorRefs || []).length && (z.conveyors || []).length) {
+          existing.conveyorRefs = [...z.conveyors];
+          existing.conveyorsOrigin = 'AUTO_RUN_PROVEN';
+        }
+        if (!existing.areaRef && areaRef) {
+          existing.areaRef = areaRef;
+          existing.areaOrigin = 'AUTO_RUN_PROVEN';
+        }
+        return;
+      }
+      putZone({
+        id: sid,
+        source_id: sid,
+        name: sid,
+        engineering_name: sid,
         areaRef: areaRef,
         areaOrigin: 'AUTO_RUN_PROVEN',
         conveyorRefs: [...(z.conveyors || [])],
         conveyorsOrigin: (z.conveyors || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
-        members: [...(z.members || [])],
-        membersOrigin: (z.members || []).length ? 'ENGINEER_ASSIGNED' : 'UNRESOLVED',
+        // Gate J — transport seed never invents device membership
+        members: [],
+        membersOrigin: 'UNRESOLVED',
         eStops: [],
         esrDevices: [],
         mcrDevices: [],
@@ -174,13 +291,16 @@
       });
     });
     (eng.zones || []).forEach((ez) => {
-      const name = String(ez.name || ez.id || '').trim();
+      const sid = zoneSourceId(ez) || String(ez.name || ez.id || '').trim();
       // Drop corrupt identities from prior Apply bug — do not suppress by string match alone;
       // never re-ingest zones whose name is the String(object) coercion artifact.
-      if (!name || deleted.has(name) || isCorruptZoneName(name)) return;
-      const cur = byName.get(name) || {
-        id: name,
-        name,
+      if (!sid || deleted.has(sid) || isCorruptZoneName(sid)) return;
+      const engName = String(ez.engineering_name || ez.engineeringName || ez.name || sid).trim();
+      const cur = findZone(sid) || {
+        id: sid,
+        source_id: sid,
+        name: engName,
+        engineering_name: engName,
         areaRef: '',
         conveyorRefs: [],
         members: [],
@@ -193,6 +313,19 @@
         status: 'REVIEW_REQUIRED',
         fields: {},
       };
+      cur.source_id = sid;
+      cur.id = sid;
+      // Gate I — engineering_name is editable; source_id stays immutable
+      if (ez.engineering_name || ez.engineeringName) {
+        cur.engineering_name = String(ez.engineering_name || ez.engineeringName).trim();
+        cur.name = cur.engineering_name;
+      } else if (ez.name && ez.name !== sid && ez.engineerEdited) {
+        cur.engineering_name = String(ez.name).trim();
+        cur.name = cur.engineering_name;
+      } else {
+        cur.engineering_name = cur.engineering_name || engName;
+        cur.name = cur.engineering_name;
+      }
       if (ez.area || ez.areaRef) {
         const ar = areaNameOf(ez.area || ez.areaRef);
         if (ar) {
@@ -235,7 +368,7 @@
         cur.conveyorRefs = [...areaConvs[cur.areaRef]];
         cur.conveyorsOrigin = 'AUTO_RUN_PROVEN';
       }
-      byName.set(name, cur);
+      putZone(cur);
     });
 
     // Ensure area-named default zones exist for each *current* workbook area only.
@@ -247,65 +380,76 @@
       if (!stem || isCorruptZoneName(stem)) return;
       const preferred = `${stem}_ESZone1`;
       if (deleted.has(preferred) || isCorruptZoneName(preferred)) return;
-      const existing = [...byName.keys()].find((k) => {
-        const kl = k.toLowerCase();
-        return kl === preferred.toLowerCase()
-          || kl.startsWith(`${stem.toLowerCase()}_eszone`);
+      const existing = [...byId.values()].find((z) => {
+        const keys = [zoneSourceId(z), zoneDisplayName(z), z.name].map((k) => String(k || '').toLowerCase());
+        return keys.includes(preferred.toLowerCase())
+          || keys.some((kl) => kl.startsWith(`${stem.toLowerCase()}_eszone`));
       });
       if (existing) return;
-      if (!byName.has(preferred)) {
-        byName.set(preferred, {
-          id: preferred,
-          name: preferred,
-          areaRef: an,
-          areaOrigin: 'AUTO_RUN_PROVEN',
-          conveyorRefs: [...(areaConvs[an] || [])],
-          conveyorsOrigin: (areaConvs[an] || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
-          members: [],
-          membersOrigin: 'UNRESOLVED',
-          eStops: [],
-          esrDevices: [],
-          mcrDevices: [],
-          resetSource: `${an}.Reset`,
-          silenceSource: `${an}.Silence`,
-          resetOrigin: 'AUTO_RUN_PROVEN',
-          silenceOrigin: 'AUTO_RUN_PROVEN',
-          suggestions: [],
-          engineerEdited: false,
-          status: 'REVIEW_REQUIRED',
-          fields: {},
-        });
-      }
+      putZone({
+        id: preferred,
+        source_id: preferred,
+        name: preferred,
+        engineering_name: preferred,
+        areaRef: an,
+        areaOrigin: 'AUTO_RUN_PROVEN',
+        conveyorRefs: [...(areaConvs[an] || [])],
+        conveyorsOrigin: (areaConvs[an] || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        // Gate J — shell only; membership REVIEW until engineer / PROVEN
+        members: [],
+        membersOrigin: 'UNRESOLVED',
+        eStops: [],
+        esrDevices: [],
+        mcrDevices: [],
+        resetSource: `${an}.Reset`,
+        silenceSource: `${an}.Silence`,
+        resetOrigin: 'AUTO_RUN_PROVEN',
+        silenceOrigin: 'AUTO_RUN_PROVEN',
+        suggestions: [],
+        engineerEdited: false,
+        status: 'REVIEW_REQUIRED',
+        fields: {},
+      });
     });
 
     // Drop stale zones from prior projects (saved localStorage) unless their Area
-    // still exists on this project OR they appear on the Transport canvas.
+    // still exists on this project OR they appear on the Transport canvas OR RUN-discovered.
     // Also drop coercion artifacts ([object Object]_ESZone*) permanently.
     const transportNames = new Set(
       transportZones.map((z) => String(z.name || '').trim()).filter((n) => n && !isCorruptZoneName(n)),
     );
-    for (const [name, z] of [...byName.entries()]) {
-      if (isCorruptZoneName(name) || isCorruptZoneName(z.areaRef)) {
-        byName.delete(name);
+    for (const [sid, z] of [...byId.entries()]) {
+      if (isCorruptZoneName(sid) || isCorruptZoneName(z.areaRef)) {
+        byId.delete(sid);
         continue;
       }
       const area = areaNameOf(z.areaRef) || String(z.areaRef || '').trim();
       z.areaRef = area;
-      const keep = transportNames.has(name)
+      const disp = zoneDisplayName(z);
+      const keep = transportNames.has(sid)
+        || transportNames.has(disp)
+        || z.runDiscovered
+        || z.engineerEdited
         || (area && areaSet.has(area))
         || (areaSet.size === 0 && transportNames.size === 0 && z.engineerEdited);
-      // If we have current areas and this zone's area is gone → drop
-      if (areaSet.size > 0 && area && !areaSet.has(area) && !transportNames.has(name)) {
-        byName.delete(name);
+      // If we have current areas and this zone's area is gone → drop (unless RUN/engineer)
+      if (areaSet.size > 0 && area && !areaSet.has(area)
+        && !transportNames.has(sid) && !transportNames.has(disp)
+        && !z.runDiscovered && !z.engineerEdited) {
+        byId.delete(sid);
         continue;
       }
-      // Orphan zone with no area and not on canvas → drop
-      if (!keep && areaSet.size > 0 && !transportNames.has(name)) {
-        byName.delete(name);
+      // Orphan zone with no area and not on canvas → drop (unless RUN shell)
+      if (!keep && areaSet.size > 0 && !transportNames.has(sid) && !transportNames.has(disp)) {
+        byId.delete(sid);
       }
     }
 
-    const zones = [...byName.values()].map((z) => {
+    const zones = [...byId.values()].map((z) => {
+      z.source_id = zoneSourceId(z) || z.name;
+      z.engineering_name = zoneDisplayName(z) || z.source_id;
+      z.name = z.engineering_name;
+      z.id = z.source_id;
       splitZoneMembers(z);
       const fields = {
         Area: z.areaRef ? 'READY' : 'UNRESOLVED',
@@ -507,6 +651,63 @@
     return out;
   }
 
+  /**
+   * Gate H — ingest RUN-proven zone shells immediately (devices may be 0).
+   * Membership stays REVIEW_REQUIRED unless PROVEN. Does not wait for Transport Apply.
+   */
+  function ingestRunDiscoveredZones(modelZones) {
+    const AS = ensureAutogenState();
+    const shells = [];
+    (modelZones || []).forEach((z) => {
+      const sid = zoneSourceId(z) || String(z.name || z.id || '').trim();
+      if (!sid || isCorruptZoneName(sid) || state.deletedZones.has(sid)) return;
+      const proven = membersAreProven(z.membersOrigin, z.membership_confidence);
+      shells.push({
+        id: sid,
+        source_id: sid,
+        name: String(z.engineering_name || z.engineeringName || z.name || sid).trim(),
+        engineering_name: String(z.engineering_name || z.engineeringName || z.name || sid).trim(),
+        area: z.areaRef || z.area || '',
+        areaRef: z.areaRef || z.area || '',
+        conveyors: z.conveyorRefs || z.conveyors || [],
+        conveyorRefs: z.conveyorRefs || z.conveyors || [],
+        // Gate J — never auto-assign; empty unless PROVEN
+        members: proven ? [...(z.members || [])].filter(Boolean) : [],
+        membersOrigin: proven && (z.members || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        membership_confidence: z.membership_confidence || 'ENGINEER_REQUIRED',
+        status: 'REVIEW_REQUIRED',
+        runDiscovered: true,
+      });
+    });
+    AS.runSafetyZones = shells;
+    if (!AS.safety_build) AS.safety_build = { zones: [] };
+    // Merge shells into draft zones by source_id without wiping engineer membership
+    const bySid = new Map();
+    (AS.safety_build.zones || []).forEach((z) => {
+      const sid = zoneSourceId(z) || String(z.name || '').trim();
+      if (sid) bySid.set(sid, z);
+    });
+    shells.forEach((shell) => {
+      const cur = bySid.get(shell.source_id);
+      if (!cur) {
+        bySid.set(shell.source_id, { ...shell });
+        return;
+      }
+      // Preserve engineer rename + membership; fill missing source_id
+      cur.source_id = cur.source_id || shell.source_id;
+      if (!cur.engineering_name && !cur.engineeringName) {
+        cur.engineering_name = shell.engineering_name;
+      }
+      cur.runDiscovered = true;
+      if (!(cur.members || []).length && shell.members.length) {
+        cur.members = [...shell.members];
+        cur.membersOrigin = 'AUTO_RUN_PROVEN';
+      }
+    });
+    AS.safety_build.zones = [...bySid.values()];
+    return shells;
+  }
+
   async function loadDevicesFromRun() {
     const A = api();
     const AS = ensureAutogenState();
@@ -517,8 +718,10 @@
       try {
         const res = await A.buildSafetyModel({});
         if ((res?.ok || res?.success) && res.model) {
+          // Gate H — show RUN zones immediately (even when devices=0)
+          try { ingestRunDiscoveredZones(res.model.zones || []); } catch (_) { /* ignore */ }
           const mapped = normalizeDeviceList(res.model.devices || []);
-          if (mapped.length) {
+          if (mapped.length || (res.model.zones || []).length) {
             AS.safetyDevices = mapped;
             // Keep devices on safety_build so rebuilds don't drop them
             if (!AS.safety_build) AS.safety_build = { zones: [] };
@@ -615,7 +818,14 @@
 
   function selectedZone() {
     if (!state.model) return null;
-    return (state.model.zones || []).find((z) => z.id === state.selectedZoneId || z.name === state.selectedZoneId) || null;
+    const want = String(state.selectedZoneId || '').trim();
+    if (!want) return null;
+    return (state.model.zones || []).find((z) =>
+      zoneSourceId(z) === want
+      || z.id === want
+      || z.name === want
+      || zoneDisplayName(z) === want
+    ) || null;
   }
 
   function badge(status) {
@@ -678,11 +888,14 @@
       : (z._draftReady
         ? '<span class="text-sky-300">APPLY TO PERSIST</span>'
         : '<span class="text-amber-300">REVIEW</span>');
+    const sid = zoneSourceId(z);
+    const disp = zoneDisplayName(z);
     host.innerHTML = `
       <div class="flex items-start gap-2 mb-2">
         <div class="min-w-0">
           <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Selected zone</div>
-          <div class="mono text-sm text-rose-200 font-semibold truncate">${escapeHtml(z.name)}</div>
+          <div class="mono text-sm text-rose-200 font-semibold truncate">${escapeHtml(disp)}</div>
+          ${sid && sid !== disp ? `<div class="text-[9px] text-slate-600 mono truncate">RUN ${escapeHtml(sid)}</div>` : ''}
           <div class="text-[10px] text-slate-500 mt-0.5">Area ${escapeHtml(z.areaRef || '—')}</div>
         </div>
         <div class="ml-auto text-[10px] shrink-0">${st}</div>
@@ -830,11 +1043,12 @@
       status('Check devices in Device Inventory first');
       return;
     }
-    const live = (state.model.zones || []).find((x) => x.name === z.name);
+    const live = findLiveZone(z);
     if (!live) return;
+    const liveSid = zoneSourceId(live);
     // Reassign: remove from other zones first (no duplicate membership)
     (state.model.zones || []).forEach((oz) => {
-      if (oz.name === z.name) return;
+      if (zoneSourceId(oz) === liveSid) return;
       const before = (oz.members || []).length;
       oz.members = (oz.members || []).filter(
         (m) => !names.some((n) => String(n).toUpperCase() === String(m).toUpperCase()),
@@ -850,7 +1064,7 @@
       names.forEach((n) => set.add(n));
       zz.members = [...set];
     });
-    status(`Assigned ${names.length} device(s) → ${z.name} (Apply Safety to persist)`);
+    status(`Assigned ${names.length} device(s) → ${zoneDisplayName(live)} (Apply Safety to persist)`);
   }
 
   /** Gate E — guided bulk assign: select → choose zone → confirm list → Apply later */
@@ -863,13 +1077,13 @@
       status('Check inventory devices first, then Assign Devices…');
       return;
     }
-    const zones = (state.model?.zones || []).map((z) => z.name).filter(Boolean);
+    const zones = (state.model?.zones || []).map((z) => zoneDisplayName(z)).filter(Boolean);
     if (!zones.length) {
       status('Create a Safety Zone on Transportation / Safety Build first');
       return;
     }
     const selected = selectedZone();
-    const defaultZone = selected?.name || zones[0];
+    const defaultZone = zoneDisplayName(selected) || zones[0];
     const zonePick = prompt(
       `Assign ${names.length} device(s) to which Safety Zone?\n\n`
       + `Zones:\n${zones.map((z) => `  • ${z}`).join('\n')}\n\n`
@@ -893,12 +1107,14 @@
       status('Assignment cancelled');
       return;
     }
-    const live = (state.model.zones || []).find((x) => x.name === dest);
+    const live = (state.model.zones || []).find((x) =>
+      zoneDisplayName(x) === dest || zoneSourceId(x) === dest
+    );
     if (!live) {
       status(`Zone ${dest} not in model`);
       return;
     }
-    state.selectedZoneId = dest;
+    state.selectedZoneId = zoneSourceId(live);
     mutateZone(live, (zz) => {
       const set = new Set(zz.members || []);
       names.forEach((n) => set.add(n));
@@ -916,21 +1132,27 @@
       return;
     }
     host.innerHTML = zones.map((z) => {
-      const sel = (z.id === state.selectedZoneId || z.name === state.selectedZoneId)
+      const sid = zoneSourceId(z);
+      const disp = zoneDisplayName(z);
+      const sel = (sid === state.selectedZoneId || disp === state.selectedZoneId || z.id === state.selectedZoneId)
         ? 'border-rose-500/60 bg-rose-950/20'
         : 'border-slate-800 hover:border-slate-600';
       const st = z.status === 'READY'
         ? '<span class="text-emerald-400">READY</span>'
         : '<span class="text-amber-300">REVIEW REQUIRED</span>';
+      const renamed = sid && disp && sid !== disp
+        ? `<div class="text-[9px] text-slate-600 mono mt-0.5">RUN ${escapeHtml(sid)}</div>`
+        : '';
       return `<div class="rounded-xl border ${sel} px-3 py-2.5 mb-2 transition flex items-start gap-2">
-        <button type="button" data-sb-zone="${escapeHtml(z.name)}" class="flex-1 text-left min-w-0">
+        <button type="button" data-sb-zone="${escapeHtml(sid)}" class="flex-1 text-left min-w-0">
           <div class="flex items-center gap-2">
-            <span class="mono text-sm text-rose-200 font-semibold truncate">${escapeHtml(z.name)}</span>
+            <span class="mono text-sm text-rose-200 font-semibold truncate">${escapeHtml(disp)}</span>
             <span class="ml-auto text-[10px] shrink-0">${st}</span>
           </div>
+          ${renamed}
           <div class="text-[10px] text-slate-500 mt-1">Area ${escapeHtml(z.areaRef || '—')} · Conv ${(z.conveyorRefs || []).length} · Devices ${(z.members || []).length}</div>
         </button>
-        <button type="button" data-sb-zone-del="${escapeHtml(z.name)}" title="Delete Safety Zone"
+        <button type="button" data-sb-zone-del="${escapeHtml(sid)}" title="Delete Safety Zone"
           class="shrink-0 mt-0.5 btn-ghost text-[10px] px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300 hover:bg-rose-950/40">
           <i class="fa-solid fa-trash"></i>
         </button>
@@ -940,7 +1162,7 @@
       btn.addEventListener('click', () => {
         state.selectedZoneId = btn.getAttribute('data-sb-zone');
         render();
-        highlightTransportZone(state.selectedZoneId);
+        highlightTransportZone(zoneDisplayName(selectedZone()) || state.selectedZoneId);
       });
     });
     host.querySelectorAll('[data-sb-zone-del]').forEach((btn) => {
@@ -969,13 +1191,18 @@
         <div class="w-28 text-right">${originChip(origin)}</div>
       </div>`;
 
+    const sid = zoneSourceId(z);
+    const disp = zoneDisplayName(z);
     host.innerHTML = `
       <div class="flex items-center gap-2 mb-3 flex-wrap">
-        <h3 class="text-base font-semibold text-rose-200 mono">${escapeHtml(z.name)}</h3>
+        <h3 class="text-base font-semibold text-rose-200 mono">${escapeHtml(disp)}</h3>
         <span class="text-[11px]">${
           z.status === 'READY' ? badge('READY')
             : (z._draftReady ? badge('APPLY TO PERSIST') : badge('REVIEW'))
         }</span>
+        <button type="button" id="sb-rename-zone" class="btn-ghost text-[10px] px-2 py-1 rounded-lg border border-slate-700" title="Rename engineering name (RUN source_id stays immutable)">
+          <i class="fa-solid fa-pen mr-1"></i>Rename
+        </button>
         <button type="button" id="sb-show-on-transport" class="ml-auto btn-ghost text-[10px] px-2 py-1 rounded-lg border border-slate-700">
           <i class="fa-solid fa-route mr-1"></i>Show on Transportation
         </button>
@@ -984,6 +1211,8 @@
         </button>
       </div>
       <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 mb-3">
+        ${row('Engineering name', escapeHtml(disp), 'READY', z.engineerEdited ? 'ENGINEER_ASSIGNED' : 'AUTO_RUN_PROVEN')}
+        ${row('Source identity (RUN)', escapeHtml(sid), 'READY', 'AUTO_RUN_PROVEN')}
         ${row('Area', escapeHtml(z.areaRef || '—'), f.Area, z.areaOrigin)}
         ${row('Conveyors', `${(z.conveyorRefs || []).length}`, f.Conveyors, z.conveyorsOrigin)}
         ${row('E-Stops', z.eStops.length ? escapeHtml(z.eStops.join(', ')) : 'none assigned', f['E-Stops'], z.membersOrigin)}
@@ -1034,7 +1263,7 @@
 
     renderDeviceLists(z);
     $('sb-show-on-transport')?.addEventListener('click', () => {
-      highlightTransportZone(z.name);
+      highlightTransportZone(zoneDisplayName(z) || z.name);
       if (typeof window.activateTab === 'function') window.activateTab('transport');
     });
     $('sb-device-filter')?.addEventListener('input', (ev) => {
@@ -1046,7 +1275,65 @@
     $('sb-add-selected')?.addEventListener('click', () => addSelectedDevices(z));
     $('sb-remove-selected')?.addEventListener('click', () => removeSelectedDevices(z));
     $('sb-accept-suggestions')?.addEventListener('click', () => acceptSuggestions(z));
-    $('sb-delete-zone')?.addEventListener('click', () => deleteSafetyZone(z.name));
+    $('sb-delete-zone')?.addEventListener('click', () => deleteSafetyZone(zoneSourceId(z) || z.name));
+    $('sb-rename-zone')?.addEventListener('click', () => renameSafetyZone(z));
+  }
+
+  /**
+   * Gate I — rename engineering_name only. source_id stays immutable.
+   * Does not duplicate the zone, drop members, or break reload/provenance.
+   */
+  function renameSafetyZone(z) {
+    const sid = zoneSourceId(z);
+    const cur = zoneDisplayName(z);
+    const next = prompt(
+      `Rename Safety Zone engineering name\n\n`
+      + `Source identity (immutable): ${sid}\n`
+      + `Logix rules: letter/_ start, letters/digits/_ only, max 80.\n`,
+      cur,
+    );
+    if (next == null) return;
+    const eng = String(next || '').trim();
+    if (!eng || eng === cur) return;
+    const v = validateLogixIdent(eng);
+    if (!v.ok) {
+      status(v.error);
+      return;
+    }
+    // Collision: another zone already uses this engineering_name
+    const clash = (state.model?.zones || []).find((oz) =>
+      zoneSourceId(oz) !== sid
+      && zoneDisplayName(oz).toLowerCase() === eng.toLowerCase()
+    );
+    if (clash) {
+      status(`Name “${eng}” already used by another zone — cancelled`);
+      return;
+    }
+    const live = (state.model.zones || []).find((x) => zoneSourceId(x) === sid);
+    if (!live) return;
+    const keptMembers = [...(live.members || [])];
+    live.engineering_name = eng;
+    live.name = eng;
+    live.source_id = sid;
+    live.id = sid;
+    live.engineerEdited = true;
+    live.members = keptMembers;
+    state.dirty = true;
+    state.selectedZoneId = sid;
+    persistLocalDraft();
+    state.model = buildClientModel();
+    // Ensure members survived rebuild keyed by source_id
+    const after = (state.model.zones || []).find((x) => zoneSourceId(x) === sid);
+    if (after && !(after.members || []).length && keptMembers.length) {
+      after.members = keptMembers;
+      after.membersOrigin = 'ENGINEER_ASSIGNED';
+      after.engineerEdited = true;
+      splitZoneMembers(after);
+    }
+    persistLocalDraft();
+    render();
+    syncReadiness();
+    status(`Renamed → ${eng} (source_id ${sid} preserved)`);
   }
 
   function serializeDevice(d) {
@@ -1133,28 +1420,39 @@
     persistLocalDraft();
     state.model = buildClientModel();
     persistLocalDraft(); // refresh stamped safetyZoneRef/status on devices
-    if (z.name) state.selectedZoneId = z.name;
+    const sid = zoneSourceId(z);
+    if (sid) state.selectedZoneId = sid;
     render();
     syncReadiness();
-    status(`${z.name}: membership updated (not yet Applied)`);
+    status(`${zoneDisplayName(z)}: membership updated (not yet Applied)`);
   }
 
-  function persistLocalDraft() {
-    const AS = ensureAutogenState();
-    const zones = (state.model?.zones || []).map((z) => ({
-      id: z.id || z.name,
-      name: z.name,
+  function serializeZone(z) {
+    const sid = zoneSourceId(z);
+    const eng = zoneDisplayName(z);
+    return {
+      id: sid,
+      source_id: sid,
+      name: eng,
+      engineering_name: eng,
       area: z.areaRef,
       areaRef: z.areaRef,
       conveyors: z.conveyorRefs || [],
       conveyorRefs: z.conveyorRefs || [],
       members: z.members || [],
       membersOrigin: z.membersOrigin,
+      membership_confidence: z.membership_confidence,
       resetSource: z.resetSource,
       silenceSource: z.silenceSource,
       engineerEdited: !!z.engineerEdited,
+      runDiscovered: !!z.runDiscovered,
       status: z.status,
-    }));
+    };
+  }
+
+  function persistLocalDraft() {
+    const AS = ensureAutogenState();
+    const zones = (state.model?.zones || []).map(serializeZone);
     const devices = (state.model?.devices || []).map(serializeDevice).filter(Boolean);
     AS.safety_build = {
       version: 1,
@@ -1240,12 +1538,18 @@
     status(`Deleted Safety Zone ${zname}`);
   }
 
+  function findLiveZone(z) {
+    const sid = zoneSourceId(z);
+    return (state.model.zones || []).find((x) =>
+      zoneSourceId(x) === sid || x.name === z.name
+    ) || null;
+  }
+
   function addSelectedDevices(z) {
     const names = [...document.querySelectorAll('#sb-available [data-sb-avail]:checked')]
       .map((el) => el.getAttribute('data-sb-avail'));
     if (!names.length) return;
-    // Find zone in live model
-    const live = (state.model.zones || []).find((x) => x.name === z.name);
+    const live = findLiveZone(z);
     if (!live) return;
     mutateZone(live, (zz) => {
       const set = new Set(zz.members || []);
@@ -1258,7 +1562,7 @@
     const names = new Set([...document.querySelectorAll('#sb-assigned [data-sb-asgn]:checked')]
       .map((el) => el.getAttribute('data-sb-asgn')));
     if (!names.size) return;
-    const live = (state.model.zones || []).find((x) => x.name === z.name);
+    const live = findLiveZone(z);
     if (!live) return;
     mutateZone(live, (zz) => {
       zz.members = (zz.members || []).filter((m) => !names.has(m));
@@ -1266,7 +1570,8 @@
   }
 
   function acceptSuggestions(z) {
-    const live = (state.model.zones || []).find((x) => x.name === z.name);
+    // Gate J — suggestions are never auto-assigned; this is an explicit engineer action.
+    const live = findLiveZone(z);
     if (!live) return;
     const sug = (live.suggestions || []).map((s) => s.name);
     if (!sug.length) {
@@ -1278,7 +1583,7 @@
       sug.forEach((n) => set.add(n));
       zz.members = [...set];
     });
-    status(`Accepted ${sug.length} suggestion(s) — engineer-owned`);
+    status(`Accepted ${sug.length} suggestion(s) — engineer-owned (not auto-assign)`);
   }
 
   function highlightTransportZone(zoneName) {
@@ -1375,9 +1680,11 @@
     state.model = buildClientModel();
     // Apply = reconcile/update by zone identity. Never emit coercion artifacts.
     const appliedZones = (state.model?.zones || [])
-      .filter((z) => z && z.name && !isCorruptZoneName(z.name))
+      .filter((z) => z && zoneSourceId(z) && !isCorruptZoneName(zoneSourceId(z)))
       .map((z) => {
         const areaRef = areaNameOf(z.areaRef) || '';
+        const sid = zoneSourceId(z);
+        const eng = zoneDisplayName(z);
         const members = [];
         const seenM = new Set();
         (z.members || []).forEach((m) => {
@@ -1389,8 +1696,10 @@
           members.push(nm);
         });
         return {
-          id: z.id || z.name,
-          name: z.name,
+          id: sid,
+          source_id: sid,
+          name: eng,
+          engineering_name: eng,
           area: areaRef,
           areaRef,
           conveyors: z.conveyorRefs || [],
@@ -1406,7 +1715,9 @@
           reset_source: z.resetSource || '',
           silence_source: z.silenceSource || '',
           membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
+          membership_confidence: z.membership_confidence,
           engineerEdited: !!z.engineerEdited,
+          runDiscovered: !!z.runDiscovered,
           status: z.status,
           fields: z.fields || {},
         };
