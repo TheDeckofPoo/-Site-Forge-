@@ -28,6 +28,79 @@
   const SPIRAL_MOTOR_MAX = 6;
   const SPIRAL_MOTOR_DEFAULT = 3;
 
+  /** Gate 2 — Site Forge canonical ownership bucket (not RUN provenance). */
+  const DEFAULT_AREA_NAME = 'Default Area';
+  const DEFAULT_AREA_ALIASES = new Set([
+    'default area',
+    'area_1',
+    'unassigned',
+    'main_area',
+    'run_imported',
+  ]);
+
+  function isDefaultAreaName(name) {
+    const s = String(name || '').trim().toLowerCase();
+    if (!s) return true;
+    if (DEFAULT_AREA_ALIASES.has(s)) return true;
+    if (/_imported$/i.test(s)) return true;
+    return false;
+  }
+
+  function isDefaultArea(area) {
+    if (!area) return false;
+    if (area.isDefault || area.defaultArea) return true;
+    return isDefaultAreaName(area.name);
+  }
+
+  function ownedTransportNodes(area) {
+    return (area?.nodes || []).filter(
+      (n) => n && !n.displayContext && n.plcOwned !== false
+        && !['OUT_OF_SCOPE', 'UNRESOLVED', 'EXTERNAL_REFERENCE'].includes(String(n.scopeClass || '').toUpperCase()),
+    );
+  }
+
+  function transportOwnershipCounts() {
+    const engineer = {};
+    let defaultN = 0;
+    let excl = 0;
+    const seen = new Set();
+    let dupes = 0;
+    (tb.areas || []).forEach((area) => {
+      (area.nodes || []).forEach((n) => {
+        if (!n) return;
+        const external = !!(n.displayContext || n.plcOwned === false
+          || ['OUT_OF_SCOPE', 'UNRESOLVED', 'EXTERNAL_REFERENCE'].includes(String(n.scopeClass || '').toUpperCase()));
+        const tag = String(n.conveyorTag || n.label || n.id || '').trim().toUpperCase();
+        if (external) {
+          excl += 1;
+          return;
+        }
+        if (!tag) return;
+        if (seen.has(tag)) {
+          dupes += 1;
+          return;
+        }
+        seen.add(tag);
+        if (isDefaultArea(area)) defaultN += 1;
+        else {
+          const nm = String(area.name || area.id || 'Area');
+          engineer[nm] = (engineer[nm] || 0) + 1;
+        }
+      });
+    });
+    const engTotal = Object.values(engineer).reduce((s, n) => s + n, 0);
+    const discovered = defaultN + engTotal + excl;
+    return {
+      discovered,
+      default: defaultN,
+      engineer,
+      engineer_total: engTotal,
+      proven_exclusions: excl,
+      dupes,
+      ok: dupes === 0 && discovered === defaultN + engTotal + excl,
+    };
+  }
+
   function normalizeSpiralMotors(node) {
     if (!node || !KIND_META[node.kind]?.isSpiral) return [];
     let count = Number(node.motorCount);
@@ -382,15 +455,63 @@
     return tb.areas.find((a) => a.id === tb.activeAreaId) || null;
   }
 
+  function ensureDefaultArea() {
+    // Gate 2 — always keep Default Area ownership bucket (unless project cleared)
+    if (tb.suppressDefaultArea) return null;
+    let d = (tb.areas || []).find((a) => isDefaultArea(a));
+    if (!d) {
+      d = {
+        id: uid('area'),
+        name: DEFAULT_AREA_NAME,
+        nodes: [],
+        wires: [],
+        isDefault: true,
+        defaultArea: true,
+        provenance: 'SITE_FORGE_DEFAULT',
+        defaultSafetyZone: '',
+      };
+      tb.areas.unshift(d);
+    } else {
+      d.isDefault = true;
+      d.defaultArea = true;
+      // Normalize legacy Unassigned / Transport_1 / *_Imported → Default Area label
+      if (isDefaultAreaName(d.name) && String(d.name).trim() !== DEFAULT_AREA_NAME) {
+        if (/^Transport_\d+$/i.test(d.name) || isDefaultAreaName(d.name)) {
+          d.name = DEFAULT_AREA_NAME;
+        }
+      }
+    }
+    return d;
+  }
+
   function ensureArea() {
     // Clear Current Project may leave canvas empty until Auto Build / Add area
     if (tb.suppressDefaultArea) return;
+    ensureDefaultArea();
     if (!tb.areas.length) {
-      const a = { id: uid('area'), name: 'Transport_1', nodes: [], wires: [] };
-      tb.areas.push(a);
-      tb.activeAreaId = a.id;
+      const a = ensureDefaultArea();
+      if (a) tb.activeAreaId = a.id;
     }
     if (!activeArea()) tb.activeAreaId = tb.areas[0].id;
+  }
+
+  /** Move all members of an engineer Area into Default Area (Gate 2 conservation). */
+  function returnAreaMembersToDefault(area) {
+    if (!area || isDefaultArea(area)) return 0;
+    const dest = ensureDefaultArea();
+    if (!dest || dest.id === area.id) return 0;
+    const moving = [...(area.nodes || [])];
+    moving.forEach((n) => {
+      // Preserve tag topology; drop area-local wire visuals
+      if (n && !n.provenance) n.provenance = {};
+      // Ownership only — do not rewrite RUN geometry provenance
+      if (n) n.provenance.area = 'SITE_FORGE_DEFAULT';
+    });
+    dest.nodes = dest.nodes || [];
+    dest.nodes.push(...moving);
+    area.nodes = [];
+    area.wires = [];
+    return moving.length;
   }
 
   function canonicalTransportHash() {
@@ -486,8 +607,13 @@
       const nodes = (area.nodes || []).filter(_nodeInControllerScope);
       const keep = new Set(nodes.map((n) => n.id));
       const wires = (area.wires || []).filter((w) => keep.has(w.from) && keep.has(w.to));
-      return { ...area, nodes, wires };
-    }).filter((a) => (a.nodes || []).length > 0);
+      const next = { ...area, nodes, wires };
+      if (isDefaultArea(next)) {
+        next.isDefault = true;
+        next.defaultArea = true;
+      }
+      return next;
+    }).filter((a) => (a.nodes || []).length > 0 || isDefaultArea(a));
   }
 
   function load() {
@@ -562,11 +688,22 @@
       // Ensure controlPanel exists on restored nodes (presentation metadata only)
       (tb.areas || []).forEach((area) => {
         if (area.defaultSafetyZone == null) area.defaultSafetyZone = '';
+        if (isDefaultArea(area)) {
+          area.isDefault = true;
+          area.defaultArea = true;
+          if (isDefaultAreaName(area.name) && String(area.name).trim() !== DEFAULT_AREA_NAME) {
+            area.name = DEFAULT_AREA_NAME;
+          }
+        }
         (area.nodes || []).forEach((n) => {
           if (n.controlPanel == null) n.controlPanel = '';
           if (n.safetyZone == null) n.safetyZone = '';
         });
       });
+      // Gate 2 — Default Area must exist after restore when canvas has equipment
+      if ((tb.areas || []).length && !tb.suppressDefaultArea) {
+        ensureDefaultArea();
+      }
     } catch (_) { /* ignore */ }
   }
 
@@ -1906,11 +2043,20 @@
   function refreshAreaSelect() {
     const sel = $('tb-area-select');
     if (!sel) return;
-    sel.innerHTML = tb.areas
-      .map(
-        (a) =>
-          `<option value="${a.id}" ${a.id === tb.activeAreaId ? 'selected' : ''}>${escapeHtml(a.name)}</option>`
-      )
+    // Default Area first, visually marked; engineer Areas follow
+    const ordered = [...(tb.areas || [])].sort((a, b) => {
+      const da = isDefaultArea(a) ? 0 : 1;
+      const db = isDefaultArea(b) ? 0 : 1;
+      if (da !== db) return da - db;
+      return String(a.name || '').localeCompare(String(b.name || ''));
+    });
+    sel.innerHTML = ordered
+      .map((a) => {
+        const label = isDefaultArea(a)
+          ? `${DEFAULT_AREA_NAME} (${ownedTransportNodes(a).length})`
+          : `${a.name} (${ownedTransportNodes(a).length})`;
+        return `<option value="${a.id}" ${a.id === tb.activeAreaId ? 'selected' : ''}>${escapeHtml(label)}</option>`;
+      })
       .join('');
     refreshSafetyZoneSelect();
   }
@@ -2393,13 +2539,13 @@
    * It MUST NOT be written into model provenance as physical orientation.
    */
   const CURVE_SYMBOL = Object.freeze({
-    // Oblong body ≈ normal conveyor weight; length ~50% of prior symbolic glyph
-    MIN_LENGTH_PX: 80,
-    LENGTH_STROKE_MULT: 4.5,
-    BODY_WIDTH_MIN: 18,
-    BODY_WIDTH_MAX: 28,
-    STROKE_MIN: 18,
-    STROKE_MAX: 28,
+    // Gate 5: oblong body ≈ normal conveyor weight; keep purple curve language
+    MIN_LENGTH_PX: 84,
+    LENGTH_STROKE_MULT: 4.6,
+    BODY_WIDTH_MIN: 19,
+    BODY_WIDTH_MAX: 30,
+    STROKE_MIN: 19,
+    STROKE_MAX: 30,
     // Standardized diagonal for the unknown-orientation glyph (UI-only degrees)
     SYMBOL_ANGLE_DEG: -35,
     BADGE: 'CURVE',
@@ -2860,24 +3006,42 @@
     const placed = [];
     const approxW = (tag) => Math.max(28, String(tag).length * 7.2);
     const H = 14;
+    const pad = 3;
     const collides = (box) => placed.some((p) => !(
-      box.x2 < p.x1 || box.x1 > p.x2 || box.y2 < p.y1 || box.y1 > p.y2
+      box.x2 + pad < p.x1 || box.x1 - pad > p.x2 || box.y2 + pad < p.y1 || box.y1 - pad > p.y2
     ));
     const results = [];
-    // Selected first, then longer runs (prefer keeping primary labels)
+    // Gate 5: selected > local > external; then longer runs keep primary labels
     const ordered = labelCandidates.slice().sort((a, b) => {
       if (a.selected !== b.selected) return a.selected ? -1 : 1;
+      if (!!a.external !== !!b.external) return a.external ? 1 : -1;
       return (b.priority || 0) - (a.priority || 0);
     });
     ordered.forEach((c) => {
       const w = approxW(c.tag);
-      const offsets = [
-        { dx: 0, dy: 0 }, // preferred — on body midpoint
-        { dx: 0, dy: -(H + 4) }, // above
-        { dx: 0, dy: (H + 4) }, // below
-        { dx: w * 0.35, dy: -(H + 2) },
-        { dx: -w * 0.35, dy: (H + 2) },
-      ];
+      const ext = !!c.external;
+      // External labels prefer offset slots to avoid colliding with local P-tags
+      const offsets = ext
+        ? [
+          { dx: 0, dy: -(H + 8) },
+          { dx: w * 0.45, dy: -(H + 6) },
+          { dx: -w * 0.45, dy: -(H + 6) },
+          { dx: w * 0.55, dy: (H + 4) },
+          { dx: -w * 0.55, dy: (H + 4) },
+          { dx: 0, dy: (H + 10) },
+          { dx: 0, dy: 0 },
+        ]
+        : [
+          { dx: 0, dy: 0 },
+          { dx: 0, dy: -(H + 5) },
+          { dx: 0, dy: (H + 5) },
+          { dx: w * 0.4, dy: -(H + 3) },
+          { dx: -w * 0.4, dy: (H + 3) },
+          { dx: w * 0.55, dy: 0 },
+          { dx: -w * 0.55, dy: 0 },
+          { dx: w * 0.35, dy: (H + 8) },
+          { dx: -w * 0.35, dy: -(H + 8) },
+        ];
       let chosen = null;
       for (let i = 0; i < offsets.length; i++) {
         const o = offsets[i];
@@ -2890,16 +3054,18 @@
         }
       }
       if (!chosen) {
-        // Collision remains — hide secondary labels; keep selected visible
         if (c.selected) {
           chosen = {
             x: c.x,
-            y: c.y - (H + 6),
-            box: { x1: c.x - w / 2, x2: c.x + w / 2, y1: c.y - H * 1.5, y2: c.y - H * 0.5 },
+            y: c.y - (H + 10),
+            box: { x1: c.x - w / 2, x2: c.x + w / 2, y1: c.y - H * 1.8, y2: c.y - H * 0.4 },
             hidden: false,
             offsetIndex: -1,
             forced: true,
           };
+        } else if (ext) {
+          // Prefer hiding colliding External text over covering local tags
+          chosen = { x: c.x, y: c.y, box: null, hidden: true, offsetIndex: -1 };
         } else {
           chosen = { x: c.x, y: c.y, box: null, hidden: true, offsetIndex: -1 };
         }
@@ -3044,11 +3210,16 @@
           return 'SAME_PHYSICAL_ASSEMBLY';
         }
       }
-      if (physicallyLinked(a, b) || endpointNear(a, b)) {
+      // Gate 4: RUN XY proximity alone is NOT a physical connection.
+      // Only proven physical wires keep bodies visually joined as CONNECTED_SERIAL.
+      if (physicallyLinked(a, b)) {
         const ra = String(a.renderKind || a.equipmentType || '').toUpperCase();
         const rb = String(b.renderKind || b.equipmentType || '').toUpperCase();
         if (ra.includes('CURVE') || rb.includes('CURVE')) return 'CURVE_ASSEMBLY';
         return 'CONNECTED_SERIAL';
+      }
+      if (endpointNear(a, b)) {
+        return 'NEAR_MISS_UNCONNECTED';
       }
       const da = angDelta(angOf(a), angOf(b));
       const ma = midOf(a);
@@ -3098,8 +3269,8 @@
       });
       if (group.length > 1) groups.push(group);
     });
-    // Wider gap — reduce body/label collisions without inventing topology.
-    const laneGap = 88;
+    // Gate 5: wider gap for dense parallel / branch stacks (presentation only).
+    const laneGap = 96;
     groups.forEach((group) => {
       group.sort((a, b) => String(a.conveyorTag || '').localeCompare(String(b.conveyorTag || '')));
       // Re-check: if any pair in the group is actually serial-connected, skip separation.
@@ -3399,13 +3570,20 @@
     const labelCandidates = [];
     nodes.forEach((n) => {
       const off = offsets[n.id] || { dx: 0, dy: 0 };
+      const isExt = !!(n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE');
+      // Gate 4: inset tips that RUN-XY-abut unconnected neighbors (no fake join paint)
+      const insets = isCurveNode(n) ? { entryInset: 0, exitInset: 0 }
+        : falseAbutmentInsets(n, nodes, area, offsets);
       // Prefer proven pathCanvas arc; synthesize quarter-turn for CURVE when degenerate
       const displayPath = displayPathCanvasForNode(n);
-      let d = offsetPathD(displayPath, off);
-      if (!d && n.entryCanvas && n.exitCanvas && !isCurveNode(n)) {
-        const a = applyPresOffset(n.entryCanvas, off);
-        const b = applyPresOffset(n.exitCanvas, off);
-        d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
+      let d = '';
+      if (!isCurveNode(n) && n.entryCanvas && n.exitCanvas) {
+        const rawA = applyPresOffset(n.entryCanvas, off);
+        const rawB = applyPresOffset(n.exitCanvas, off);
+        const inset = insetDisplayEndpoints(rawA, rawB, insets);
+        d = `M ${inset.entry.x} ${inset.entry.y} L ${inset.exit.x} ${inset.exit.y}`;
+      } else {
+        d = offsetPathD(displayPath, off);
       }
       // Curves: never paint RUN arcSamples (tangent hooks). Non-curves may use samples.
       if (!d && !isCurveNode(n) && n.arcSamplesCanvas?.length) {
@@ -3425,11 +3603,11 @@
       if (isCurveNode(n)) cls += ' tb-rk-curve';
       if (sel) cls += ' selected';
       if (amb) cls += ' tb-ambiguous';
-      if (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE') cls += ' tb-display-context tb-external-ref';
+      if (isExt) cls += ' tb-display-context tb-external-ref';
       if (cp === 'CP1' || cp === 'CP2' || cp === 'CP3') cls += ` tb-cp-${cp}`;
       else if (cp === 'Other') cls += ' tb-cp-Other';
       if (cpFilterActive()) cls += cpMatch ? ' tb-cp-match' : ' tb-cp-dim';
-      const tag = (n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE')
+      const tag = isExt
         ? (`→ External ${(n.conveyorTag || n.label || '').trim()}`.trim() || '→ External')
         : ((n.conveyorTag || n.label || '').trim() || 'P???');
       const mid0 = n.entryCanvas && n.exitCanvas
@@ -3507,10 +3685,12 @@
           anchorY: mid.y,
           selected: sel,
           priority: len,
+          external: isExt,
         });
       }
     });
     tb._schematicLabelPos = {};
+    // Gate 5: paint labels after bodies so z-order keeps identity readable
     placeSchematicLabels(labelCandidates).forEach((lab) => {
       if (lab.hidden) return;
       tb._schematicLabelPos[lab.id] = { x: lab.x, y: lab.y };
@@ -3521,8 +3701,12 @@
         html += `<line class="tb-schematic-leader" data-id="${escapeHtml(lab.id)}" x1="${ax}" y1="${ay}" x2="${lab.x}" y2="${lab.y}" />`;
       }
       const tipAttr = lab.tip ? `<title>${escapeHtml(lab.tip)}</title>` : '';
+      const labCls = lab.external
+        ? 'tb-schematic-label tb-schematic-label-hit tb-schematic-label-external'
+        : 'tb-schematic-label tb-schematic-label-hit';
+      const selCls = lab.selected ? ' tb-label-selected' : '';
       // Identity label is a FIRST-CLASS selection target (universal contract)
-      html += `<text class="tb-schematic-label tb-schematic-label-hit" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${tipAttr}${escapeHtml(lab.tag)}</text>`;
+      html += `<text class="${labCls}${selCls}" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y}">${tipAttr}${escapeHtml(lab.tag)}</text>`;
       // Invisible hit disc behind the number so short tags remain easy to click
       html += `<circle class="tb-schematic-label-disc" data-id="${escapeHtml(lab.id)}" cx="${lab.x}" cy="${lab.y}" r="16" />`;
       if (lab.secondary) {
@@ -3532,14 +3716,13 @@
         html += `<text class="${secCls}" data-id="${escapeHtml(lab.id)}" x="${lab.x}" y="${lab.y + 12}">${escapeHtml(lab.secondary)}</text>`;
       }
     });
-    // Mate marks (EXIT▶◀ENTRY): informational only; hide when relationships layer off
+    // Mate marks (EXIT▶◀ENTRY): only PHYSICAL_GEOMETRY / engineer override — never logical topology
     if (tb.layers?.relationships) {
       (area?.wires || []).forEach((w) => {
-        if (!w.physical) return;
-        const conf = String(w.confidence || '').toUpperCase();
-        if (!(conf === 'CONFIRMED' || conf.includes('HIGH'))) return;
         const a = (area.nodes || []).find((n) => n.id === w.from);
         const b = (area.nodes || []).find((n) => n.id === w.to);
+        const clsKind = classifyRenderedConnection(w, a, b);
+        if (!mayDrawPhysicalJoin(w, clsKind)) return;
         if (!a?.exitCanvas || !b?.entryCanvas) return;
         const oa = offsets[a.id] || { dx: 0, dy: 0 };
         const ob = offsets[b.id] || { dx: 0, dy: 0 };
@@ -4439,6 +4622,138 @@
     });
   }
 
+  /**
+   * Gate 4 — classify a rendered connection for viz (does not mutate topology).
+   * Classes: PHYSICAL_GEOMETRY | PROVEN_TOPOLOGY | DERIVED_TOPOLOGY | VISUAL_HELPER | UNKNOWN
+   * Draw priority for physical-looking joins:
+   *   ENGINEER_OVERRIDE > PROVEN_RUN_GEOMETRY > PROVEN_PHYSICAL_RELATIONSHIP > DERIVED_TOPOLOGY > FALLBACK
+   * Logical/control relationships must NEVER paint as physical belt joins.
+   * RUN XY proximity alone must NEVER invent connecting segments.
+   */
+  function classifyRenderedConnection(wire, fromNode, toNode) {
+    if (!wire) return 'UNKNOWN';
+    if (wire._temp || wire.visualHelper === true) return 'VISUAL_HELPER';
+    const conf = String(wire.confidence || '').toUpperCase();
+    const prov = String(wire.provenance || '').toUpperCase();
+    const auth = String(wire.authority || wire.overrideAuthority || '').toUpperCase();
+    const topo = String(
+      (fromNode && fromNode.topologyProvenance && fromNode.topologyProvenance.confidence)
+      || (fromNode && fromNode.topologyProvenance && fromNode.topologyProvenance.rule)
+      || ''
+    ).toUpperCase();
+    if (auth === 'ENGINEER_OVERRIDE' || wire.engineerOverride === true) {
+      return wire.physical ? 'PHYSICAL_GEOMETRY' : 'PROVEN_TOPOLOGY';
+    }
+    if (wire.physical && (conf === 'CONFIRMED' || conf.includes('HIGH'))) {
+      return 'PHYSICAL_GEOMETRY';
+    }
+    if (
+      conf.includes('PROVEN')
+      || prov.includes('MTRCHAIN')
+      || prov.includes('MERGE')
+      || topo.includes('PROVEN')
+      || topo.includes('MTRCHAIN')
+    ) {
+      return 'PROVEN_TOPOLOGY';
+    }
+    if (wire.physical === false || prov || conf.includes('DERIVED') || conf.includes('AUTO')) {
+      return 'DERIVED_TOPOLOGY';
+    }
+    if (!wire.physical) return 'DERIVED_TOPOLOGY';
+    if (wire.physical) return 'UNKNOWN';
+    return 'UNKNOWN';
+  }
+
+  /** True when a wire may paint a physical-looking EXIT▶◀ENTRY join / stub. */
+  function mayDrawPhysicalJoin(wire, cls) {
+    const auth = String(wire?.authority || wire?.overrideAuthority || '').toUpperCase();
+    if (auth === 'ENGINEER_OVERRIDE' || wire?.engineerOverride === true) return true;
+    return cls === 'PHYSICAL_GEOMETRY';
+  }
+
+  /** Proven physical mate between two node ids (CONFIRMED / HIGH only). */
+  function hasProvenPhysicalWire(area, aId, bId) {
+    return (area?.wires || []).some((w) => {
+      if (!w.physical) return false;
+      const conf = String(w.confidence || '').toUpperCase();
+      if (!(conf === 'CONFIRMED' || conf.includes('HIGH'))) return false;
+      return (w.from === aId && w.to === bId) || (w.from === bId && w.to === aId);
+    });
+  }
+
+  /**
+   * Gate 4 — presentation tip inset when RUN XY places bodies near each other
+   * without a proven physical wire. Prevents thick schematic strokes from
+   * paint-merging into a false discharge→horizontal join. Never invents wires.
+   */
+  function falseAbutmentInsets(n, nodes, area, offsets) {
+    const out = { entryInset: 0, exitInset: 0 };
+    if (!n?.entryCanvas || !n?.exitCanvas || isCurveNode(n)) return out;
+    const off = (offsets && offsets[n.id]) || { dx: 0, dy: 0 };
+    const en = applyPresOffset(n.entryCanvas, off);
+    const ex = applyPresOffset(n.exitCanvas, off);
+    const len = Math.hypot(ex.x - en.x, ex.y - en.y);
+    if (!(len > 4)) return out;
+    const swN = schematicStrokeWidth(n);
+    const minGap = 6;
+    (nodes || []).forEach((o) => {
+      if (!o || o.id === n.id || !o.entryCanvas || !o.exitCanvas) return;
+      if (hasProvenPhysicalWire(area, n.id, o.id)) return;
+      const oo = (offsets && offsets[o.id]) || { dx: 0, dy: 0 };
+      const oe = applyPresOffset(o.entryCanvas, oo);
+      const ox = applyPresOffset(o.exitCanvas, oo);
+      const olx = ox.x - oe.x;
+      const oly = ox.y - oe.y;
+      const olen = Math.hypot(olx, oly) || 1;
+      const swO = schematicStrokeWidth(o);
+      const need = (swN + swO) / 2 + minGap;
+      // Distance from our EXIT/ENTRY to other centerline segment
+      const distPtSeg = (px, py) => {
+        const t = Math.max(0, Math.min(1, ((px - oe.x) * olx + (py - oe.y) * oly) / (olen * olen)));
+        const qx = oe.x + t * olx;
+        const qy = oe.y + t * oly;
+        return Math.hypot(px - qx, py - qy);
+      };
+      const dExit = distPtSeg(ex.x, ex.y);
+      if (dExit < need) {
+        out.exitInset = Math.max(out.exitInset, Math.min(len * 0.35, need - dExit + 2));
+      }
+      const dEntry = distPtSeg(en.x, en.y);
+      if (dEntry < need) {
+        out.entryInset = Math.max(out.entryInset, Math.min(len * 0.35, need - dEntry + 2));
+      }
+      // Other tip lands near our body — inset our near side so paint doesn't merge
+      const distToOur = (px, py) => {
+        const t = Math.max(0, Math.min(1, ((px - en.x) * (ex.x - en.x) + (py - en.y) * (ex.y - en.y)) / (len * len)));
+        const qx = en.x + t * (ex.x - en.x);
+        const qy = en.y + t * (ex.y - en.y);
+        return { d: Math.hypot(px - qx, py - qy), t };
+      };
+      [oe, ox].forEach((pt) => {
+        const r = distToOur(pt.x, pt.y);
+        if (r.d >= need) return;
+        if (r.t > 0.55) out.exitInset = Math.max(out.exitInset, Math.min(len * 0.35, need - r.d + 2));
+        else if (r.t < 0.45) out.entryInset = Math.max(out.entryInset, Math.min(len * 0.35, need - r.d + 2));
+      });
+    });
+    return out;
+  }
+
+  function insetDisplayEndpoints(entry, exit, insets) {
+    if (!entry || !exit) return { entry, exit };
+    const len = Math.hypot(exit.x - entry.x, exit.y - entry.y);
+    if (!(len > 4)) return { entry, exit };
+    const ux = (exit.x - entry.x) / len;
+    const uy = (exit.y - entry.y) / len;
+    const ei = Math.max(0, Number(insets?.entryInset) || 0);
+    const xi = Math.max(0, Number(insets?.exitInset) || 0);
+    if (ei + xi >= len - 2) return { entry, exit };
+    return {
+      entry: { x: entry.x + ux * ei, y: entry.y + uy * ei },
+      exit: { x: exit.x - ux * xi, y: exit.y - uy * xi },
+    };
+  }
+
   function drawWires(temp) {
     const svg = $('tb-wires');
     const host = $('tb-nodes');
@@ -4456,6 +4771,8 @@
     svg.style.height = `${h}px`;
     svg.style.pointerEvents = 'none';
     let html = '';
+    const byId = {};
+    (area?.nodes || []).forEach((n) => { byId[n.id] = n; });
     // Visualization-only: when relationships are hidden, skip all wires except temp connect rubber-band.
     // Wire data on the model is never deleted.
     if (!showRel && !(temp && temp.from && temp.to)) {
@@ -4464,40 +4781,56 @@
     }
     (area?.wires || []).forEach((wire) => {
       if (!showRel) return;
+      const fromN = byId[wire.from];
+      const toN = byId[wire.to];
+      const clsKind = classifyRenderedConnection(wire, fromN, toN);
       const a = portCenter(wire.from, 'out');
       const b = portCenter(wire.to, wire.toPort || 'in');
       if (!a || !b) return;
       const dist = Math.hypot(b.x - a.x, b.y - a.y);
       const conf = String(wire.confidence || '').toUpperCase();
+      const physicalJoin = mayDrawPhysicalJoin(wire, clsKind);
       // Confirmed physical mates: endpoints coincide — mate mark drawn in schematic layer; no Bezier wire
-      if (wire.physical && (conf === 'CONFIRMED' || conf.includes('HIGH')) && dist < 12) {
+      if (physicalJoin && dist < 12) {
         return;
       }
+      // Gate 4: logical/control topology must not paint as a physical belt join.
+      // Proximity without PHYSICAL_GEOMETRY never invents a connecting segment.
       let d;
-      if (wire.physical && dist < 80) {
-        // Short mating stub — reads as physically joined EXIT▶◀ENTRY
+      let cls = `tb-wire tb-conn-${clsKind.toLowerCase()}`;
+      if (physicalJoin && dist < 80) {
         d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
-      } else if (wire.physical) {
-        // Still-disconnected physical candidate — thin dashed cue only (not topology invention)
+        cls += ' tb-physical';
+      } else if (physicalJoin) {
         d = `M ${a.x} ${a.y} L ${b.x} ${b.y}`;
-      } else {
+        cls += ' tb-physical';
+      } else if (clsKind === 'PROVEN_TOPOLOGY' || clsKind === 'DERIVED_TOPOLOGY') {
+        // Topology helper only — never a fake physical discharge segment
         const dx = Math.max(40, Math.abs(b.x - a.x) * 0.45);
         d = `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+        cls += ' tb-wire-topology';
+      } else if (clsKind === 'VISUAL_HELPER') {
+        const dx = Math.max(40, Math.abs(b.x - a.x) * 0.45);
+        d = `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+        cls += ' tb-wire-helper';
+      } else {
+        // UNKNOWN — dim topology cue only; do not imply physical join
+        const dx = Math.max(40, Math.abs(b.x - a.x) * 0.45);
+        d = `M ${a.x} ${a.y} C ${a.x + dx} ${a.y}, ${b.x - dx} ${b.y}, ${b.x} ${b.y}`;
+        cls += ' tb-wire-topology';
       }
-      let cls = 'tb-wire';
-      if (wire.physical) cls += ' tb-physical';
-      if (conf === 'CONFIRMED') cls += ' tb-conf-confirmed';
-      else if (conf.includes('HIGH')) cls += ' tb-conf-high';
+      if (physicalJoin && conf === 'CONFIRMED') cls += ' tb-conf-confirmed';
+      else if (physicalJoin && conf.includes('HIGH')) cls += ' tb-conf-high';
       else if (conf.includes('AMBIG')) cls += ' tb-conf-ambiguous';
-      const tip = wire.physical
-        ? `EXIT ▶◀ ENTRY · ${wire.confidence || 'physical'}${wire.distance != null ? ` · d=${wire.distance}` : ''}`
-        : 'topology wire';
-      html += `<path class="${cls}" d="${d}"><title>${escapeHtml(tip)}</title></path>`;
+      const tip = physicalJoin
+        ? `PHYSICAL_GEOMETRY · EXIT ▶◀ ENTRY · ${wire.confidence || 'physical'}${wire.distance != null ? ` · d=${wire.distance}` : ''}`
+        : `${clsKind} · logical/control (not a physical belt join)`;
+      html += `<path class="${cls}" d="${d}" data-conn-class="${clsKind}"><title>${escapeHtml(tip)}</title></path>`;
     });
     if (temp && temp.from && temp.to) {
       const dx = Math.max(40, Math.abs(temp.to.x - temp.from.x) * 0.45);
       const d = `M ${temp.from.x} ${temp.from.y} C ${temp.from.x + dx} ${temp.from.y}, ${temp.to.x - dx} ${temp.to.y}, ${temp.to.x} ${temp.to.y}`;
-      html += `<path class="tb-wire tb-wire-temp" d="${d}" />`;
+      html += `<path class="tb-wire tb-wire-temp tb-conn-visual_helper" d="${d}" data-conn-class="VISUAL_HELPER" />`;
     }
     svg.innerHTML = html;
   }
@@ -5036,24 +5369,34 @@
     $('tb-area-new')?.addEventListener('click', async () => {
       try {
         tb.suppressDefaultArea = false;
-        const def = `Transport_${tb.areas.length + 1}`;
+        ensureDefaultArea();
+        const engN = (tb.areas || []).filter((a) => !isDefaultArea(a)).length;
+        const def = `Area_${engN + 1}`;
         const name = await askText(
           'Create Area',
-          'Area Name (operational conveyor grouping — not a Safety Zone):',
+          'Engineer Area name (operational conveyor grouping — not Default Area, not a Safety Zone):',
           def
         );
         if (name === null || !(String(name).trim())) return;
         const areaName = String(name).trim();
+        if (isDefaultAreaName(areaName)) {
+          status(`“${areaName}” is reserved for the Default Area ownership bucket`);
+          return;
+        }
+        if ((tb.areas || []).some((a) => String(a.name || '').trim().toLowerCase() === areaName.toLowerCase())) {
+          status(`Area “${areaName}” already exists`);
+          return;
+        }
         const existing = listSafetyZoneNames();
         // Seed from current Area/layout name (ORNCCP2_Area → ORNCCP2_ESZoneN). Suggestion only.
         const zoneHint = nextSafetyZoneName(areaName);
         const zonePrompt = existing.length
-          ? `Default Safety Zone for “${areaName}”.\n`
+          ? `Optional Safety Zone default for conveyors in “${areaName}”.\n`
             + `Suggested: ${zoneHint}\n`
             + `Existing: ${existing.slice(0, 8).join(', ')}${existing.length > 8 ? '…' : ''}\n`
             + 'Pick an existing name, or type a new Safety Zone name to create it.\n'
             + 'Area ≠ Safety Zone — engineer may edit; not permanently derived from Area.'
-          : `Default Safety Zone for “${areaName}” (suggested from Area name).\n`
+          : `Optional Safety Zone default for conveyors in “${areaName}” (suggested from Area name).\n`
             + 'Area ≠ Safety Zone — conveyor-level value remains authoritative and editable.';
         const zoneIn = await askText('Safety Zone', zonePrompt, zoneHint);
         if (zoneIn === null) return; // cancelled
@@ -5064,6 +5407,9 @@
           name: areaName,
           nodes: [],
           wires: [],
+          isDefault: false,
+          defaultArea: false,
+          provenance: 'ENGINEER',
           defaultSafetyZone: defaultZone,
         };
         tb.areas.push(a);
@@ -5078,10 +5424,11 @@
         }
         save();
         render();
+        const counts = transportOwnershipCounts();
         status(
-          `Area “${a.name}” ready`
-          + (defaultZone ? ` · default Safety Zone “${defaultZone}”` : '')
-          + ' — topology Safety Zone dropdown remains authoritative'
+          `Engineer Area “${a.name}” ready`
+          + (defaultZone ? ` · Safety Zone “${defaultZone}”` : '')
+          + ` · Default Area ${counts.default} · engineer ${counts.engineer_total}`
         );
       } catch (err) {
         status(`New area error: ${err?.message || err}`);
@@ -5092,9 +5439,19 @@
     $('tb-area-rename')?.addEventListener('click', async () => {
       const a = activeArea();
       if (!a) return;
+      if (isDefaultArea(a)) {
+        status('Default Area cannot be renamed — it is the Site Forge ownership bucket');
+        return;
+      }
       const name = await askText('Rename area', 'New area name:', a.name);
       if (name === null || !(name || '').trim()) return;
-      a.name = name.trim();
+      const next = name.trim();
+      if (isDefaultAreaName(next)) {
+        status(`“${next}” is reserved for Default Area`);
+        return;
+      }
+      a.name = next;
+      a.provenance = 'ENGINEER';
       save();
       render();
       status(`Renamed area to “${a.name}”`);
@@ -5110,17 +5467,34 @@
     async function deleteActiveArea() {
       const a = activeArea();
       if (!a) return;
-      const ok = await askYesNo('Delete area', `Delete area “${a.name}” and its canvas?`);
+      if (isDefaultArea(a)) {
+        status('Default Area cannot be deleted — it is the Site Forge ownership bucket');
+        return;
+      }
+      const n = ownedTransportNodes(a).length;
+      const ok = await askYesNo(
+        'Delete area',
+        n
+          ? `Delete engineer Area “${a.name}”?\n\n${n} conveyor(s) return to Default Area (nothing disappears).`
+          : `Delete empty engineer Area “${a.name}”?`,
+      );
       if (!ok) return;
+      const returned = returnAreaMembersToDefault(a);
       tb.areas = tb.areas.filter((x) => x.id !== a.id);
-      tb.activeAreaId = tb.areas[0]?.id || null;
+      const def = ensureDefaultArea();
+      tb.activeAreaId = def?.id || tb.areas[0]?.id || null;
       tb.selectedId = null;
       tb.selectedDeviceId = null;
       resetPeRoleCheckboxes();
       ensureArea();
       save();
       render();
-      status(`Deleted area “${a.name}”`);
+      const counts = transportOwnershipCounts();
+      status(
+        `Deleted area “${a.name}”`
+        + (returned ? ` · ${returned} returned to Default Area` : '')
+        + ` · Default ${counts.default} · engineer ${counts.engineer_total}`
+      );
     }
     $('tb-area-delete')?.addEventListener('click', () => {
       deleteActiveArea().catch((err) => status(`Delete area error: ${err?.message || err}`));
@@ -5296,6 +5670,8 @@
     const areas = (tb.areas || []).map((area) => ({
       id: area.id,
       name: area.name || '',
+      isDefault: !!isDefaultArea(area),
+      defaultArea: !!isDefaultArea(area),
       defaultSafetyZone: area.defaultSafetyZone || '',
       nodes: (area.nodes || [])
         // Presentation-only displayContext neighbors never enter Autogen/workbook.
@@ -6258,6 +6634,13 @@
     showToast,
     activeArea,
     ensureArea,
+    ensureDefaultArea,
+    isDefaultArea,
+    isDefaultAreaName,
+    DEFAULT_AREA_NAME,
+    transportOwnershipCounts,
+    ownedTransportNodes,
+    returnAreaMembersToDefault,
     isConv,
     KIND_META,
     escapeHtml,
@@ -6300,6 +6683,11 @@
     toggleConnectMode,
     handleConnectModeClick,
     drawWires,
+    classifyRenderedConnection,
+    mayDrawPhysicalJoin,
+    hasProvenPhysicalWire,
+    falseAbutmentInsets,
+    insetDisplayEndpoints,
     ensureCanvasExtents,
     portCenter,
     collectValidation,

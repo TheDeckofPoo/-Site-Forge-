@@ -283,7 +283,10 @@ def _limit_wave_divert_rungs(program_xml: str, divert_n: int) -> tuple[str, int,
         rung = re.sub(r'Rung Number="\d+"', f'Rung Number="{i}"', rung, count=1)
         renumbered.append(rung)
     new_body = "".join(renumbered)
-    # Preserve non-rung preamble/epilogue if any
+    # Studio requires RLL rungs inside <RLLContent>…</RLLContent>. The rewrite
+    # extracts bare <Rung> nodes — always re-wrap (do not emit raw Rungs).
+    if new_body and "<RLLContent>" not in new_body:
+        new_body = f"<RLLContent>{new_body}</RLLContent>"
     new_prog = program_xml[: m.start()] + head + new_body + tail + program_xml[m.end() :]
     return new_prog, len(kept_waves), pack_total
 
@@ -398,9 +401,10 @@ def _append_build_config_routine(program_xml: str, sorter: dict, renames: list) 
         f'<Line Number="{i}"><Text><![CDATA[{_xml_escape(ln)}]]></Text></Line>'
         for i, ln in enumerate(lines)
     )
+    # Studio ST routines require <STContent>, not <STLines> (ignored → dropped logic).
     routine = (
         f'<Routine Name="Build_Config" Type="ST">'
-        f"<STLines>{st_body}</STLines></Routine>"
+        f"<STContent>{st_body}</STContent></Routine>"
     )
     if 'Name="Build_Config"' in program_xml:
         return program_xml

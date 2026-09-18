@@ -218,7 +218,9 @@
   border: 1px solid #777;
 }
 
+/* Gate 6: legacy RJ45 jack graphics hidden — they covered AENT catalog text */
 .point-port {
+  display: none;
   height: 31px;
   margin: 5px 10px;
   background: #151b20;
@@ -234,6 +236,23 @@
   font-size: 8px;
   left: 7px;
   top: 8px;
+}
+
+.point-eth-label {
+  margin: 4px 10px 2px;
+  text-align: center;
+  font-size: 9px;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.02em;
+}
+
+.point-adapter-clean .point-cat {
+  font-size: 11px;
+  padding: 8px 6px;
+  white-space: normal;
+  line-height: 1.2;
+  word-break: break-word;
 }
 
 .point-term {

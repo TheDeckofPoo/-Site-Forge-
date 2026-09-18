@@ -28,6 +28,13 @@ from fortna_es_compiler import (  # noqa: E402
     safety_readiness,
 )
 from fortna_estop_model import build_estop_model  # noqa: E402
+from fortna_default_ownership import (  # noqa: E402
+    DEFAULT_SAFETY_NAME,
+    UNASSIGNED_SAFETY_NAME,
+    make_default_safety_zone,
+    safety_ownership_counts,
+    safety_zone_is_default,
+)
 
 ORIGIN_AUTO = "AUTO_RUN_PROVEN"
 ORIGIN_ENGINEER = "ENGINEER_ASSIGNED"
@@ -703,11 +710,13 @@ def build_safety_model(
     area_conveyors: dict[str, list[str]] | None = None,
     engineer_safety_build: dict[str, Any] | None = None,
     library_has_aois: bool = True,
+    devices: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Build canonical SafetyModel.
 
     transport_zones: from Transport Apply [{name, area, conveyors, members?}]
     engineer_safety_build: persisted workbook.safety_build (engineer authoritative)
+    devices: optional explicit device list (tests / UI handoff); else RUN discovery
     """
     eng_build = dict(engineer_safety_build or {})
     eng_zones_list = list(eng_build.get("zones") or [])
@@ -726,8 +735,17 @@ def build_safety_model(
             if k and k not in eng_by_name:
                 eng_by_name[k] = z
 
-    devices: list[dict[str, Any]] = []
-    if run_dir:
+    disc_err: str | None
+    if devices is not None:
+        devices = [dict(d) if isinstance(d, dict) else {"name": str(d)} for d in devices]
+        disc_err = None
+    elif eng_build.get("devices"):
+        devices = [
+            dict(d) if isinstance(d, dict) else {"name": str(d)}
+            for d in (eng_build.get("devices") or [])
+        ]
+        disc_err = None
+    elif run_dir:
         try:
             devices = discover_safety_devices(run_dir, machine)
         except Exception as ex:
@@ -736,6 +754,7 @@ def build_safety_model(
         else:
             disc_err = None
     else:
+        devices = []
         disc_err = "no_run_dir"
 
     # Seed zone shells from Transport + named safety zones + engineer build
@@ -1097,12 +1116,26 @@ def build_safety_model(
 
     assigned = set(assignment.keys())
     unassigned = [d for d in devices if d["name"].upper() not in assigned]
+    # Gate 3 — stamp Default Safety ownership ref; status stays UNASSIGNED (fail-safe)
+    for d in unassigned:
+        d["safetyZoneRef"] = DEFAULT_SAFETY_NAME
+        d["defaultSafety"] = True
+        d["status"] = "UNASSIGNED"
     auto_n = sum(1 for d in devices if d.get("status") == "AUTO_RESOLVED")
     eng_n = sum(1 for d in devices if d.get("status") == "ENGINEER_ASSIGNED")
     un_n = sum(1 for d in devices if d.get("status") == "UNASSIGNED")
     devices_found = len(devices)
-    zones_ready = sum(1 for z in zones_out if z.get("status") == "READY")
-    zones_review = sum(1 for z in zones_out if z.get("status") == "REVIEW_REQUIRED")
+    operational_zones = [z for z in zones_out if not safety_zone_is_default(z)]
+    default_zone = make_default_safety_zone(
+        unassigned_members=[d["name"] for d in unassigned],
+        devices_found=devices_found,
+    )
+    zones_out = [default_zone] + operational_zones
+    zones_ready = sum(1 for z in operational_zones if z.get("status") == "READY")
+    zones_review = sum(
+        1 for z in operational_zones if z.get("status") == "REVIEW_REQUIRED"
+    ) + (1 if un_n else 0)
+    cons = safety_ownership_counts(devices, operational_zones, discovered=devices_found)
 
     def _names_of(kind: str) -> list[str]:
         return [d["name"] for d in devices if d.get("kind") == kind]
@@ -1130,13 +1163,15 @@ def build_safety_model(
         "unassignedDevices": [d["name"] for d in unassigned],
         "inventoryByKind": inventory_by_kind,
         "counts": {
-            "zones": len(zones_out),
+            "zones": len(operational_zones),
+            "engineer_zones": len(operational_zones),
             "ready": zones_ready,
             "review_required": zones_review,
             "zones_ready": zones_ready,
             "zones_review": zones_review,
             "devices": devices_found,
             "devices_found": devices_found,
+            "site_devices": devices_found,
             "estops": len(inventory_by_kind["ESTOP"]),
             "esr": len(inventory_by_kind["ESR"]),
             "mcr": len(inventory_by_kind["MCR"]),
@@ -1145,16 +1180,19 @@ def build_safety_model(
             "other_safety": len(inventory_by_kind["OTHER"]),
             "automatically_resolved": auto_n,
             "engineer_assigned": eng_n,
+            "assigned": auto_n + eng_n,
             "unassigned": un_n,
+            "default_safety": un_n,
             "unassigned_estops": sum(
                 1 for d in unassigned if d.get("kind") == "ESTOP"
             ),
             "completion_pct": round(
                 100 * (auto_n + eng_n) / max(1, devices_found)
             ),
+            "conservation_ok": bool(cons.get("ok")),
             "unresolved_io": sum(
                 1
-                for z in zones_out
+                for z in operational_zones
                 for f in (z.get("hard_missing") or [])
                 if f == "SafetyDevices"
             ),
@@ -1187,6 +1225,11 @@ def build_safety_model(
             "partial_es_emit_allowed": True,
             "no_ui_placeholder_zone_persist": True,
             "unknown_membership_fail_safe": True,
+            # Gate 3 — UNASSIGNED → REVIEW_REQUIRED; never permissive
+            "unassigned_is_review_required": True,
+            "default_safety_not_operational": True,
+            "default_safety_name": DEFAULT_SAFETY_NAME,
+            "unassigned_safety_name": UNASSIGNED_SAFETY_NAME,
         },
     }
     return model
@@ -1196,6 +1239,9 @@ def safety_build_workbook_payload(model: dict[str, Any]) -> dict[str, Any]:
     """Serialize SafetyModel → workbook.safety_build for Autogen/ES compiler."""
     zones = []
     for z in model.get("zones") or []:
+        # Gate 3 — Default/Unassigned Safety is ownership-only; never emit as ES zone
+        if safety_zone_is_default(z):
+            continue
         sid = str(z.get("source_id") or z.get("id") or z.get("name") or "").strip()
         eng = str(z.get("engineering_name") or z.get("name") or sid).strip()
         zones.append(

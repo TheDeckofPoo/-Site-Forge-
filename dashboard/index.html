@@ -313,6 +313,11 @@
     .tb-wire.tb-conf-confirmed { stroke: #22c55e; opacity: 0.35; stroke-dasharray: 3 5; }
     .tb-wire.tb-conf-high { stroke: #38bdf8; opacity: 0.28; stroke-dasharray: 4 6; }
     .tb-wire.tb-conf-ambiguous { stroke: #f59e0b; opacity: 0.22; stroke-dasharray: 3 5; }
+    /* Gate 4/5: topology helpers ≠ physical belt joins */
+    .tb-wire.tb-wire-topology { stroke: #64748b; stroke-width: 1.1; opacity: 0.22; stroke-dasharray: 6 5; }
+    .tb-wire.tb-wire-helper { stroke: #94a3b8; stroke-width: 1; opacity: 0.18; stroke-dasharray: 2 4; }
+    .tb-wire.tb-conn-proven_topology { stroke: #7c8a9a; opacity: 0.2; }
+    .tb-wire.tb-conn-derived_topology { stroke: #575f6b; opacity: 0.16; }
     /* Clean engineering layout: hide relationship wires unless toggled on */
     #tb-canvas.tb-hide-relationships .tb-wire:not(.tb-wire-temp) { display: none; }
     .tb-node.tb-physical { min-width: 100px; }
@@ -405,57 +410,64 @@
     }
     /* Physical schematic layer — continuous conveyor bodies (above relationship wires) */
     #tb-schematic { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 2; overflow: visible; }
-    .tb-schematic-body { fill: none; stroke: #94a3b8; stroke-linecap: round; stroke-linejoin: round; }
-    .tb-schematic-body.tb-rk-straight { stroke: #cbd5e1; }
-    .tb-schematic-body.tb-rk-zeropressure { stroke: #a5b4fc; }
-    .tb-schematic-body.tb-rk-belt { stroke: #67e8f9; stroke-dasharray: 10 4; }
+    .tb-schematic-body { fill: none; stroke: #a8b4c4; stroke-linecap: round; stroke-linejoin: round; }
+    .tb-schematic-body.tb-rk-straight { stroke: #d5dde8; }
+    .tb-schematic-body.tb-rk-zeropressure { stroke: #b4c0fc; }
+    .tb-schematic-body.tb-rk-belt { stroke: #7eecfa; stroke-dasharray: 10 4; }
     /* CURVE type with UNKNOWN orientation: straight placeholder, distinct accent */
-    /* Gate B: UNKNOWN-orientation CURVE oblong — conveyor weight, distinct violet fill */
+    /* Gate B/5: UNKNOWN-orientation CURVE oblong — purple language, readable weight */
     .tb-schematic-body.tb-rk-curve {
-      stroke: #a78bfa;
-      fill: rgba(139, 92, 246, 0.55);
+      stroke: #b39efa;
+      fill: rgba(139, 92, 246, 0.58);
       stroke-linecap: round;
       stroke-linejoin: round;
-      filter: drop-shadow(0 0 4px rgba(167, 139, 250, 0.65));
+      filter: drop-shadow(0 0 5px rgba(167, 139, 250, 0.7));
       stroke-dasharray: none;
-      stroke-width: 2.5 !important;
+      stroke-width: 2.75 !important;
     }
     .tb-schematic-body.tb-rk-curve.selected {
-      fill: rgba(232, 121, 249, 0.55) !important;
-      stroke: #e879f9 !important;
+      fill: rgba(232, 121, 249, 0.62) !important;
+      stroke: #f0abfc !important;
+      filter: drop-shadow(0 0 7px rgba(232,121,249,0.95)) drop-shadow(0 0 2px #e879f9);
     }
     .tb-curve-badge {
-      fill: #c4b5fd !important;
+      fill: #ddd6fe !important;
       font-size: 9px !important;
       font-weight: 800 !important;
       letter-spacing: 0.04em;
     }
     .tb-schematic-body.tb-rk-unknown { stroke: #64748b; stroke-dasharray: 3 3; }
     .tb-schematic-body.selected {
-      stroke: #e879f9 !important;
+      stroke: #f0abfc !important;
       stroke-width: inherit;
-      filter: drop-shadow(0 0 5px rgba(232,121,249,0.9)) drop-shadow(0 0 1px #e879f9);
+      filter: drop-shadow(0 0 7px rgba(232,121,249,0.95)) drop-shadow(0 0 2px #e879f9);
     }
     .tb-schematic-body.tb-hover {
-      stroke: #f0abfc !important;
-      filter: drop-shadow(0 0 4px rgba(240,171,252,0.75));
+      stroke: #f5d0fe !important;
+      filter: drop-shadow(0 0 5px rgba(240,171,252,0.85));
     }
     .tb-schematic-body.tb-ambiguous { stroke: #f59e0b; }
     .tb-schematic-label {
-      fill: #e2e8f0; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      fill: #f1f5f9; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 11px; font-weight: 700; text-anchor: middle; dominant-baseline: middle;
-      paint-order: stroke; stroke: #0a0f14; stroke-width: 3px;
+      paint-order: stroke; stroke: #0a0f14; stroke-width: 3.5px;
       cursor: pointer; pointer-events: auto;
     }
-    .tb-schematic-label.tb-hover, .tb-schematic-label-hit.tb-hover { fill: #f5d0fe; }
+    .tb-schematic-label.tb-label-selected {
+      fill: #f5d0fe; stroke: #3b0764; stroke-width: 4px;
+    }
+    .tb-schematic-label.tb-schematic-label-external {
+      fill: #94a3b8; font-size: 10px; font-weight: 600; opacity: 0.92;
+    }
+    .tb-schematic-label.tb-hover, .tb-schematic-label-hit.tb-hover { fill: #fce7f3; }
     .tb-schematic-label-disc {
       fill: transparent; stroke: transparent; cursor: pointer; pointer-events: all;
     }
-    .tb-schematic-label-disc.tb-hover { fill: rgba(232,121,249,0.12); stroke: rgba(232,121,249,0.35); stroke-width: 1; }
+    .tb-schematic-label-disc.tb-hover { fill: rgba(232,121,249,0.14); stroke: rgba(232,121,249,0.4); stroke-width: 1; }
     .tb-schematic-label-sec {
-      fill: #94a3b8; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      fill: #a8b4c4; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       font-size: 8px; font-weight: 600; text-anchor: middle; dominant-baseline: middle;
-      paint-order: stroke; stroke: #0a0f14; stroke-width: 2px; pointer-events: none; opacity: 0.9;
+      paint-order: stroke; stroke: #0a0f14; stroke-width: 2px; pointer-events: none; opacity: 0.92;
     }
     .tb-schematic-leader {
       stroke: #64748b; stroke-width: 1; stroke-dasharray: 3 2; fill: none; pointer-events: none; opacity: 0.75;
@@ -1749,9 +1761,12 @@
         .hw-ch-table tr.hw-ch-selected td { background: #0c4d8b; }
         .hw-ch-table tr[data-hw-ch] { cursor: pointer; }
         .hw-ch-table tr[data-hw-ch]:hover td { background: #0a2a40; }
-        .hw-ch-status-ok { color: #2ae99a; }
-        .hw-ch-status-spare { color: #94a3b8; }
-        .hw-ch-status-warn { color: #f5c84e; }
+        .hw-ch-status-ok { color: #2ae99a; } /* ASSIGNED */
+        .hw-ch-status-spare { color: #94a3b8; } /* PROVEN_SPARE */
+        .hw-ch-status-warn { color: #f5c84e; } /* UNRESOLVED OWNER */
+        .hw-ch-status-unused { color: #7dd3fc; } /* UNUSED_MAPPED */
+        .hw-ch-table tr.hw-ch-unused td { background: rgba(14, 116, 144, 0.12); }
+        .hw-ch-table tr.hw-ch-unresolved td { background: rgba(161, 98, 7, 0.12); }
         .hw-ch-table tr.hw-ch-muted td { opacity: 0.72; }
         .hw-ch-name-input {
           width: 100%; min-width: 8rem; background: #061018; border: 1px solid #1a4a66;
@@ -2037,16 +2052,18 @@
           </button>
         </div>
       </div>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0 text-[10px] mono">
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Zones</span> <span id="sb-count-zones" class="text-rose-200 float-right">—</span></div>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 shrink-0 text-[10px] mono" title="Gate 7 — one canonical inventory; zones are assignment views">
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Site devices</span> <span id="sb-count-found" class="text-slate-200 float-right">—</span></div>
+        <div class="rounded-lg border border-amber-900/40 bg-amber-950/20 px-2.5 py-1.5" title="Default/Unassigned Safety — ownership bucket, not an E-stop zone"><span class="text-amber-500/90">Default / Unassigned</span> <span id="sb-count-unassigned" class="text-amber-200 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Engineer zones</span> <span id="sb-count-zones" class="text-rose-200 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Assigned</span> <span id="sb-count-assigned" class="text-emerald-300 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">E-Stops</span> <span id="sb-count-estops" class="text-slate-200 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Ready</span> <span id="sb-count-ready" class="text-emerald-400 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Review</span> <span id="sb-count-review" class="text-amber-300 float-right">—</span></div>
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">E-Stops</span> <span id="sb-count-estops" class="text-slate-200 float-right">—</span></div>
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Devices Found</span> <span id="sb-count-found" class="text-slate-200 float-right">—</span></div>
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Auto Resolved</span> <span id="sb-count-auto" class="text-emerald-400/90 float-right">—</span></div>
         <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Engineer Assigned</span> <span id="sb-count-eng" class="text-fuchsia-300 float-right">—</span></div>
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Unassigned</span> <span id="sb-count-unassigned" class="text-amber-200 float-right">—</span></div>
-        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5 col-span-2 sm:col-span-4"><span class="text-slate-500">Completion</span> <span id="sb-count-completion" class="text-rose-200 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5"><span class="text-slate-500">Auto Resolved</span> <span id="sb-count-auto" class="text-emerald-400/90 float-right">—</span></div>
+        <div class="rounded-lg border border-slate-800 bg-[#0c1219] px-2.5 py-1.5 col-span-2 sm:col-span-3"><span class="text-slate-500">Completion</span> <span id="sb-count-completion" class="text-rose-200 float-right">—</span></div>
+        <span id="sb-count-default" class="hidden">—</span>
       </div>
       <div class="flex-1 min-h-0 grid grid-cols-1 lg:grid-cols-12 gap-3 overflow-hidden">
         <div class="lg:col-span-4 min-h-0 flex flex-col gap-3 overflow-hidden">

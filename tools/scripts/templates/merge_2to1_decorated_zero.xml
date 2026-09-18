@@ -1,0 +1,43 @@
+<Structure DataType="Merge_2to1">
+<DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>
+<DataValueMember Name="EnableOut" DataType="BOOL" Value="1"/>
+<DataValueMember Name="I_MainLane_Conv_Type" DataType="BOOL" Value="0"/>
+<DataValueMember Name="I_InductLane_Conv_Type" DataType="BOOL" Value="0"/>
+<DataValueMember Name="I_Enable_Upstream_ExitPE_Check" DataType="BOOL" Value="0"/>
+<DataValueMember Name="I_Hold_InductLane" DataType="BOOL" Value="0"/>
+<DataValueMember Name="I_Merge_FltClearTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="I_MergeCX_Enable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="I_MergeCX_TimeReset" DataType="BOOL" Value="0"/>
+<DataValueMember Name="I_MainLane_AddNotReadyBit" DataType="BOOL" Value="0"/>
+<DataValueMember Name="I_InductLane_AddNotlReadyBit" DataType="BOOL" Value="0"/>
+<DataValueMember Name="O_MainLane_Conv_RunHold" DataType="BOOL" Value="0"/>
+<DataValueMember Name="O_InductLane_Conv_RunHold" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_MainLane_ReleaseTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_MainLane_ClearTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_MainLane_NoCartonsTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_InductLane_ReleaseTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_InductLane_ClearTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_InductLane_NoCartonsTime" DataType="INT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_Current_MergeStop_ResetTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_Current_ReleaseLane" DataType="SINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_CurrentLane_ReleaseTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_CurrentLane_ClearTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_CurrentLane_NoCartonsTime" DataType="DINT" Radix="Decimal" Value="0"/>
+<DataValueMember Name="M_MainLane_ExitPEBlock" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_MainLane_ReadyToMerge" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_InductLane_ExitPEBlock" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_InductLane_ReadyToMerge" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_MainLane_ReleaseTime_Done" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_MainLane_ClearTime_ON" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_MainLane_NoCartonsTime_ON" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_MainLane_Conv_RunHold" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_InductLane_ReleaseTime_Done" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_InductLane_ClearTime_ON" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_InductLane_NoCartonsTime_ON" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_InductLane_Conv_RunHold" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_MainLaneSection_FltStop" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_InductLaneSection_FltStop" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_Merge_Stop_ForResetTime" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_MergeCX_Enable" DataType="BOOL" Value="0"/>
+<DataValueMember Name="M_InductLane_In_Hold" DataType="BOOL" Value="0"/>
+</Structure>

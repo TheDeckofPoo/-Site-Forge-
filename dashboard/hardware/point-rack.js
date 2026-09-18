@@ -138,7 +138,8 @@
     const cat = mod.catalog || mod.type || '1734-AENTR';
     const key = opts.moduleKey || '';
     const sel = opts.selected ? ' selected' : '';
-    return `<button type="button" data-hw-mod="${escapeHtml(key)}" class="point-adapter${sel}" title="${escapeHtml(cat)}">
+    // Gate 6: no RJ45 jack rectangles covering AENT catalog text — EtherNet/IP label only.
+    return `<button type="button" data-hw-mod="${escapeHtml(key)}" class="point-adapter point-adapter-clean${sel}" title="${escapeHtml(cat)}">
       <div class="point-cat">${escapeHtml(cat)}</div>
       <div class="point-brand">${escapeHtml(brandDirection('adapter'))}</div>
       <div class="point-leds adapter">
@@ -146,8 +147,7 @@
         <span class="point-led"></span><span class="point-led"></span>
       </div>
       <div class="point-thumb">NODE / IP</div>
-      <div class="point-port" title="EtherNet/IP 1"></div>
-      <div class="point-port" title="EtherNet/IP 2"></div>
+      <div class="point-eth-label">EtherNet/IP</div>
       <div class="point-term">${screwGrid(4)}</div>
       <div class="point-slot-tag">ADAPTER</div>
     </button>`;

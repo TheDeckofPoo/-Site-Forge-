@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from fortna_site_model import (
+    DEFAULT_AREA_ID,
     INCLUDED,
     PROV_ENGINEER,
     PROV_RUN_EXPLICIT,
@@ -24,6 +25,11 @@ from fortna_site_model import (
     canonical_id,
     make_object,
     normalize_name,
+)
+from fortna_default_ownership import (  # noqa: E402
+    DEFAULT_AREA_NAME,
+    area_is_default,
+    is_default_area_name,
 )
 
 # Relationship kinds that may pull attached devices when move_attached=True.
@@ -212,19 +218,89 @@ def create_area(model: SiteModel, name: str) -> dict[str, Any]:
     return area
 
 
-def delete_area(model: SiteModel, area_id: str) -> SiteModel:
-    """Delete an area only when empty (no equipment with that area_id)."""
+def _ensure_site_default_area(model: SiteModel) -> dict[str, Any]:
+    """Ensure Site Forge Default Area exists (Area_1 legacy alias accepted)."""
+    for a in model.areas or []:
+        if area_is_default(a) or is_default_area_name(
+            a.get("raw_name") or a.get("normalized_name") or a.get("name")
+        ):
+            a["default_area"] = True
+            a["isDefault"] = True
+            return a
+    # Prefer canonical Default Area name; keep Area_1 id compatibility via alias note
+    area = make_object(
+        "area",
+        DEFAULT_AREA_NAME,
+        source_table="",
+        source_row=None,
+        source_scope=SCOPE_ENGINEER,
+        active_state="ACTIVE_LIKELY",
+        inclusion=INCLUDED,
+        confidence="HIGH",
+        provenance=PROV_ENGINEER,
+        evidence=[{"kind": "default_area", "note": "Site Forge canonical ownership bucket"}],
+        generation_state="CONFIGURATION_REQUIRED",
+        area_id=DEFAULT_AREA_NAME,
+        run_derived=False,
+        default_area=True,
+        isDefault=True,
+    ).to_dict()
+    area["name"] = DEFAULT_AREA_NAME
+    # Legacy discovery still keys some paths on Area_1 — record alias only
+    area["aliases"] = [DEFAULT_AREA_ID]
+    model.areas = [area] + list(model.areas or [])
+    return area
+
+
+def delete_area(
+    model: SiteModel,
+    area_id: str,
+    *,
+    return_to_default: bool = True,
+) -> SiteModel:
+    """Delete an engineer Area.
+
+    Gate 2 — when return_to_default=True (default), members move to Default Area
+    so nothing disappears. Default Area itself cannot be deleted.
+    """
     area_id = str(area_id or "").strip()
     area = _find_area(model, area_id)
     if area is None:
         raise KeyError(f"area not found: {area_id}")
+    if area_is_default(area) or is_default_area_name(area_id):
+        raise ValueError("cannot delete Default Area")
+
     occupied = _equipment_in_area(model, area_id)
-    if occupied:
+    if occupied and not return_to_default:
         names = [e.get("raw_name") or e.get("normalized_name") for e in occupied[:8]]
         raise ValueError(
             f"area {area_id!r} is not empty ({len(occupied)} equipment); "
             f"move or reassign first. sample={names}"
         )
+
+    if occupied and return_to_default:
+        default = _ensure_site_default_area(model)
+        dest = (
+            default.get("raw_name")
+            or default.get("name")
+            or default.get("area_id")
+            or DEFAULT_AREA_NAME
+        )
+        for eq in occupied:
+            eq["area_id"] = dest
+            eq.setdefault("evidence", []).append(
+                {
+                    "kind": "area_delete_return_to_default",
+                    "from": area_id,
+                    "to": dest,
+                }
+            )
+        model.notes.append(
+            f"Area deleted {area_id}: {len(occupied)} equipment returned to {dest}"
+        )
+    else:
+        model.notes.append(f"Area deleted: {area_id}")
+
     want = normalize_name(area_id)
     model.areas = [a for a in model.areas if not _area_matches(a, area_id)]
     og = model.operational_groups or {}
@@ -234,7 +310,6 @@ def delete_area(model: SiteModel, area_id: str) -> SiteModel:
             for ea in og["engineering_areas"]
             if normalize_name(str(ea.get("raw_name") or ea.get("name") or "")) != want
         ]
-    model.notes.append(f"Area deleted: {area_id}")
     return model
 
 

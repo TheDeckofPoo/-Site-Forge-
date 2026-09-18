@@ -46,6 +46,9 @@ SCOPE_ENGINEER = "engineer"
 
 BLANK = {"", "N/A", "INVALID", "NONE", "~", "N/A~", "n/a"}
 DEFAULT_AREA_ID = "Area_1"
+# Site Forge UI / Transport canonical ownership bucket (Gate 2).
+# Area_1 remains the discovery placeholder alias; both count as default.
+DEFAULT_AREA_NAME = "Default Area"
 
 
 def _ts() -> str:
@@ -583,19 +586,25 @@ class SiteModel:
 
 
 def ensure_default_area(model: SiteModel) -> SiteModel:
-    """Ensure Area_1 exists and INCLUDED transport equipment is assigned.
+    """Ensure default ownership Area exists and INCLUDED equipment is assigned.
 
-    Product decision (Curtis): Engineering Area auto-discovery is NOT required.
-    Normal workflow is default Area_1 → engineer create/rename/split/move → regenerate.
-    Suggestions may exist elsewhere; they are never a generation gate.
+    Gate 2 — Site Forge canonical ownership (UI: "Default Area"). Discovery still
+    uses Area_1 as the stable id/alias. Workflow: default → engineer create/move.
+    Does NOT mutate RUN provenance on equipment.
     """
-    # Prefer keeping any engineer-created areas; still ensure Area_1 exists as default bucket.
-    has_area_1 = any(
-        (a.get("normalized_name") or "").upper() == DEFAULT_AREA_ID.upper()
-        or (a.get("raw_name") or "") == DEFAULT_AREA_ID
-        for a in model.areas
-    )
-    if not has_area_1:
+    def _is_default_row(a: dict[str, Any]) -> bool:
+        if a.get("default_area") or a.get("isDefault"):
+            return True
+        names = {
+            str(a.get("normalized_name") or "").upper(),
+            str(a.get("raw_name") or "").strip().upper(),
+            str(a.get("name") or "").strip().upper(),
+            str(a.get("area_id") or "").strip().upper(),
+        }
+        return bool(names & {DEFAULT_AREA_ID.upper(), DEFAULT_AREA_NAME.upper()})
+
+    has_default = any(_is_default_row(a) for a in model.areas)
+    if not has_default:
         area = make_object(
             "area",
             DEFAULT_AREA_ID,
@@ -610,24 +619,46 @@ def ensure_default_area(model: SiteModel) -> SiteModel:
                 {
                     "kind": "default_area",
                     "note": (
-                        "Area_1 is the default engineer workspace after RUN import. "
-                        "Area auto-inference is not required; engineer configures Areas."
+                        f"{DEFAULT_AREA_NAME} (id {DEFAULT_AREA_ID}) is the Site Forge "
+                        "ownership bucket after RUN import. Area auto-inference is not "
+                        "required; engineer configures Areas."
                     ),
                 }
             ],
             generation_state=GEN_CFG,
             run_derived=False,
             default_area=True,
+            isDefault=True,
         ).to_dict()
+        area["name"] = DEFAULT_AREA_ID
+        area["display_name"] = DEFAULT_AREA_NAME
         model.areas = [area] + list(model.areas or [])
+    else:
+        for a in model.areas:
+            if _is_default_row(a):
+                a["default_area"] = True
+                a["isDefault"] = True
+                a.setdefault("display_name", DEFAULT_AREA_NAME)
+
+    default_id = DEFAULT_AREA_ID
+    for a in model.areas:
+        if _is_default_row(a):
+            default_id = (
+                a.get("raw_name")
+                or a.get("name")
+                or a.get("area_id")
+                or DEFAULT_AREA_ID
+            )
+            break
 
     assigned = 0
     for eq in model.equipment:
         if eq.get("inclusion") == INCLUDED and not eq.get("area_id"):
-            eq["area_id"] = DEFAULT_AREA_ID
+            eq["area_id"] = default_id
+            # Ownership stamp only — do not rewrite RUN provenance fields
             assigned += 1
     model.notes.append(
-        f"Area_1 default workflow: {assigned} INCLUDED equipment assigned "
+        f"Default Area workflow: {assigned} INCLUDED equipment assigned to {default_id} "
         "(Area auto-discovery not required; engineer configures Areas)"
     )
     return model

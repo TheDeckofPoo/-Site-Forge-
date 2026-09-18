@@ -4465,27 +4465,40 @@ function renderHardwareChannelTable(ad, mod) {
     const ep = hwChannelEndpointLabel(ch);
     const selected = selBit != null && Number(bit) === Number(selBit);
     const addr = hwChannelPhysicalAddress(ad, mod, bit, ch);
+    // Gate 6: clear ASSIGNED / UNRESOLVED OWNER / UNUSED_MAPPED / PROVEN_SPARE distinction
+    const owner = String(ep.ownerState || '').toUpperCase();
     const statusCls = !ep.generate ? 'hw-ch-status-spare'
-      : ep.kind === 'ok' ? 'hw-ch-status-ok'
-      : ep.kind === 'warn' ? 'hw-ch-status-warn'
+      : ep.kind === 'ok' || owner === 'ASSIGNED' ? 'hw-ch-status-ok'
+      : ep.kind === 'unused' || owner === 'UNUSED_MAPPED' ? 'hw-ch-status-unused'
+      : ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER' ? 'hw-ch-status-warn'
       : 'hw-ch-status-spare';
     const statusTxt = !ep.generate ? '○ Muted'
-      : ep.kind === 'ok' ? (ep.overridden ? '● Engineer' : '● Active')
-      : ep.kind === 'unused' ? '○ UNUSED'
-      : ep.kind === 'warn' ? '● UNRESOLVED OWNER'
-      : '○ Spare';
-    const nameVal = (ep.kind === 'spare' || ep.kind === 'warn') && !ep.engineer ? '' : ep.text;
+      : (ep.kind === 'ok' || owner === 'ASSIGNED')
+        ? (ep.overridden ? '● ASSIGNED (engineer)' : '● ASSIGNED')
+      : (ep.kind === 'unused' || owner === 'UNUSED_MAPPED') ? '○ UNUSED_MAPPED'
+      : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER') ? '● UNRESOLVED OWNER'
+      : owner === 'ENGINEER_SPARE' ? '○ ENGINEER_SPARE'
+      : '○ PROVEN_SPARE';
+    const rowTone = !ep.generate ? ' hw-ch-muted'
+      : (ep.kind === 'unused' || owner === 'UNUSED_MAPPED') ? ' hw-ch-unused'
+      : (ep.kind === 'warn' || owner === 'UNRESOLVED_OWNER') ? ' hw-ch-unresolved'
+      : '';
+    const nameVal = (ep.kind === 'spare' || ep.kind === 'warn' || ep.kind === 'unused') && !ep.engineer
+      ? ''
+      : (ep.text === 'UNUSED' ? '' : ep.text);
     // Gate K: SPARE placeholder only for genuine spare — never for UNRESOLVED OWNER
     const namePlaceholder = ep.kind === 'warn'
       ? 'UNRESOLVED OWNER — assign name'
+      : ep.kind === 'unused'
+        ? 'UNUSED_MAPPED — mapped bit, no owner'
       : (ep.kind === 'spare' ? 'SPARE — click to name' : (ep.source || 'logical name'));
-    return `<tr class="${selected ? 'hw-ch-selected' : ''}${!ep.generate ? ' hw-ch-muted' : ''}" data-hw-ch="${bit}" data-hw-addr="${escapeHtml(addr)}">
+    return `<tr class="${selected ? 'hw-ch-selected' : ''}${rowTone}" data-hw-ch="${bit}" data-hw-addr="${escapeHtml(addr)}" data-owner-state="${escapeHtml(owner || ep.kind || '')}">
       <td class="mono">${bit}</td>
       <td class="mono text-cyan-200/90">${escapeHtml(addr)}</td>
       <td class="mono text-slate-400">${escapeHtml(typ)}</td>
       <td class="hw-ch-name-cell" onclick="event.stopPropagation()">
         <input type="text" class="hw-ch-name-input mono" data-hw-name="${escapeHtml(addr)}"
-          value="${escapeHtml(nameVal === 'SPARE' ? '' : nameVal)}"
+          value="${escapeHtml(nameVal === 'SPARE' || nameVal === 'UNUSED' ? '' : nameVal)}"
           placeholder="${escapeHtml(namePlaceholder)}"
           spellcheck="false" autocomplete="off"
           title="${escapeHtml(ep.source ? `RUN source: ${ep.source}` : 'Engineer logical name')}" />
@@ -4575,11 +4588,15 @@ function renderHardwareTerminalFace(ad, mod) {
     const ownerState = ep.ownerState || ch?.owner_state || (ep.kind === 'warn' ? 'UNRESOLVED_OWNER' : (ep.kind === 'spare' ? 'PROVEN_SPARE' : 'ASSIGNED'));
     const statusHtml = !ep.generate
       ? '<span>○ Muted (excluded from IO_MAP)</span>'
-      : ep.kind === 'ok'
-        ? `<span class="green">● ${ep.overridden ? 'Engineer override' : 'ASSIGNED'}</span>`
-        : ep.kind === 'warn'
+      : ep.kind === 'ok' || ownerState === 'ASSIGNED'
+        ? `<span class="green">● ${ep.overridden ? 'ASSIGNED (engineer)' : 'ASSIGNED'}</span>`
+        : ep.kind === 'unused' || ownerState === 'UNUSED_MAPPED'
+          ? '<span class="text-sky-300">○ UNUSED_MAPPED</span>'
+        : ep.kind === 'warn' || ownerState === 'UNRESOLVED_OWNER'
           ? '<span class="amber">● UNRESOLVED OWNER</span>'
-          : '<span>○ SPARE</span>';
+          : ownerState === 'ENGINEER_SPARE'
+            ? '<span>○ ENGINEER_SPARE</span>'
+          : '<span>○ PROVEN_SPARE</span>';
     detailHtml = `
       <div class="hw-ch-detail">
         <h3>Channel ${sel} — ${escapeHtml(ep.text)}</h3>
@@ -10473,14 +10490,15 @@ const SITE_FORGE_HELP = Object.freeze({
     'tb-bulk-apply': { tab: 'Transport', purpose: 'Apply Area / ES to selection — provenance ENGINEER. Local until Apply to Autogen.' },
     'tb-bulk-create-area': { tab: 'Transport', purpose: 'Create Area from Selection (name prompt — never inferred from geometry).' },
     'tb-bulk-add-to-area': { tab: 'Transport', purpose: 'Add Selection to an existing Area.' },
-    'tb-bulk-remove-from-area': { tab: 'Transport', purpose: 'Remove Selection from Area → Unassigned.' },
+    'tb-bulk-remove-from-area': { tab: 'Transport', purpose: 'Remove Selection from Area → Default Area (ownership bucket).' },
     'tb-bulk-chain': { tab: 'Transport', purpose: 'Select Chain — expand selection via connected wires (display).' },
     'tb-bulk-terminal': { tab: 'Transport', purpose: 'Mark Terminal on selection (authoritative topology).' },
     'tb-apply-autogen': { tab: 'Transport', purpose: 'Apply to Autogen — publish topology/Area/ES/PE into workbook. Ignores viewport/layers.' },
     'tb-goto-build-plc': { tab: 'Transport', purpose: 'Build PLC — jump to PLC Autogen Export (navigation).' },
-    'tb-auto-build-run': { tab: 'Transport', purpose: 'Rebuild Layout from RUN (recovery). Does not invent Areas/Safety.' },
-    'tb-area-new': { tab: 'Transport', purpose: 'New Area (optional default Safety Zone).' },
-    'tb-area-delete-btn': { tab: 'Transport', purpose: 'Delete current Area.' },
+    'tb-auto-build-run': { tab: 'Transport', purpose: 'Rebuild Layout from RUN — equipment lands in Default Area (Site Forge ownership; not RUN provenance).' },
+    'tb-area-new': { tab: 'Transport', purpose: 'Create engineer Area (Default Area remains the residual ownership bucket).' },
+    'tb-area-delete-btn': { tab: 'Transport', purpose: 'Delete engineer Area — members return to Default Area (cannot delete Default).' },
+    'tb-area-delete': { tab: 'Transport', purpose: 'Delete engineer Area — members return to Default Area (cannot delete Default).' },
     'sb-refresh': { tab: 'Safety', purpose: 'Refresh discovery — rebuild Safety model; keep engineer overrides.' },
     'sb-apply': { tab: 'Safety', purpose: 'Apply Safety — write safety_build into workbook (merge-safe).' },
     'sb-rename-zone': { tab: 'Safety', purpose: 'Rename engineering_name only; RUN source_id stays immutable.' },

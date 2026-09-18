@@ -6483,6 +6483,13 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
     l5x = _shorten_aoi_descriptions(l5x)
     # Last chance: any leftover gold Greensboro names → this site
     l5x = _retarget_gold_site_names(l5x, site_stem)
+    # Studio structure: RLLContent / STContent / Divert|Area L5K vs Decorated
+    try:
+        from fortna_l5x_studio_structure import sanitize_l5x_studio_structure
+
+        l5x = sanitize_l5x_studio_structure(l5x)
+    except Exception:
+        pass
     return l5x, report
 
 

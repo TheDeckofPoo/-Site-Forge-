@@ -5,7 +5,8 @@
 (function () {
   const HISTORY_MAX = 50;
   const LAYOUT_DX = 140;
-  const LAYOUT_DY = 90;
+  // Gate 5: slightly wider vertical pitch for dense branch / merge fans (fallback layout only)
+  const LAYOUT_DY = 98;
   const NODE_W = 110;
 
   function api() {
@@ -761,15 +762,29 @@
   }
 
   function ensureNamedArea(name) {
-    const { tb, uid } = A();
+    const { tb, uid, isDefaultAreaName, ensureDefaultArea, DEFAULT_AREA_NAME } = A();
     const want = String(name || '').trim();
     if (!want) return null;
+    if (typeof isDefaultAreaName === 'function' && isDefaultAreaName(want)) {
+      return typeof ensureDefaultArea === 'function'
+        ? ensureDefaultArea()
+        : null;
+    }
     let a = (tb.areas || []).find(
       (x) => String(x.name || '').trim().toLowerCase() === want.toLowerCase()
     );
     if (!a) {
       tb.suppressDefaultArea = false;
-      a = { id: uid('area'), name: want, nodes: [], wires: [] };
+      if (typeof ensureDefaultArea === 'function') ensureDefaultArea();
+      a = {
+        id: uid('area'),
+        name: want,
+        nodes: [],
+        wires: [],
+        isDefault: false,
+        defaultArea: false,
+        provenance: 'ENGINEER',
+      };
       tb.areas.push(a);
     }
     return a;
@@ -863,20 +878,27 @@
       status('Select conveyors first');
       return;
     }
-    const def = `Transport_${(tb.areas || []).length + 1}`;
+    const { isDefaultAreaName, ensureDefaultArea, DEFAULT_AREA_NAME } = A();
+    if (typeof ensureDefaultArea === 'function') ensureDefaultArea();
+    const engN = (tb.areas || []).filter((a) => !(typeof A().isDefaultArea === 'function' && A().isDefaultArea(a))).length;
+    const def = `Area_${engN + 1}`;
     const name = await askText(
       'Create Area from Selection',
-      'Area name (operational grouping — not a Safety Zone):',
+      'Engineer Area name (operational grouping — not Default Area, not a Safety Zone):',
       def
     );
     if (name === null || !(String(name).trim())) return;
     const areaName = String(name).trim();
+    if (typeof isDefaultAreaName === 'function' && isDefaultAreaName(areaName)) {
+      status(`“${areaName}” is reserved for ${DEFAULT_AREA_NAME || 'Default Area'}`);
+      return;
+    }
     const { listSafetyZoneNames, ensureSafetyZone } = A();
     const zoneHint = String(tb.buildContext?.safetyZone || '').trim()
       || (typeof listSafetyZoneNames === 'function' ? (listSafetyZoneNames()[0] || '') : '');
     const zoneIn = await askText(
-      'Default Safety Zone',
-      `Optional default Safety Zone for conveyors in “${areaName}”.\n`
+      'Safety Zone',
+      `Optional Safety Zone default for conveyors in “${areaName}”.\n`
         + 'Area ≠ Safety Zone. Conveyor-level value stays authoritative.',
       zoneHint
     );
@@ -889,6 +911,9 @@
       name: areaName,
       nodes: [],
       wires: [],
+      isDefault: false,
+      defaultArea: false,
+      provenance: 'ENGINEER',
       defaultSafetyZone: defaultZone,
     };
     tb.areas.push(a);
@@ -947,27 +972,28 @@
   }
 
   /**
-   * Remove selection from its current Area(s) into dedicated Unassigned
-   * (or a prompted destination). Does not invent controller ownership.
+   * Remove selection from engineer Area(s) back to Default Area (Gate 2).
+   * Site Forge ownership only — does not invent controller / RUN provenance.
    */
   async function removeSelectionFromArea() {
-    const { askText, status } = A();
+    const { status, ensureDefaultArea, DEFAULT_AREA_NAME, isDefaultArea } = A();
     const ids = selectionIds();
     if (!ids.length) {
       status('Select conveyors first');
       return;
     }
-    const typed = await askText(
-      'Remove Selection from Area',
-      'Destination area (default Unassigned — organizational only, not PLC ownership):',
-      'Unassigned'
-    );
-    if (typed === null) return;
-    const destName = String(typed).trim() || 'Unassigned';
+    const destName = DEFAULT_AREA_NAME || 'Default Area';
     pushHistory(`Remove Selection from Area (${ids.length} → ${destName})`);
-    const dest = ensureNamedArea(destName);
+    const dest = typeof ensureDefaultArea === 'function'
+      ? ensureDefaultArea()
+      : ensureNamedArea(destName);
     if (!dest) return;
-    moveSelectionToArea(dest, 'Removed to');
+    if (typeof isDefaultArea === 'function') {
+      dest.isDefault = true;
+      dest.defaultArea = true;
+      dest.name = destName;
+    }
+    moveSelectionToArea(dest, 'Returned to Default Area');
   }
 
   function deleteSelection() {
@@ -1951,10 +1977,13 @@
     const g = res.graph;
     // ONE transport equipment source: ControllerScope LOCAL + EXTERNAL_REFERENCE only.
     // displayContext neighbors used for geometry mating must NOT paint the whole site.
+    // Gate 2 — after Auto Build, all owned equipment lands in Default Area.
     tb.suppressDefaultArea = false;
     const rawAreas = Array.isArray(g.areas) ? g.areas : [];
     const keptNodeIds = new Set();
-    tb.areas = rawAreas.map((area) => {
+    const allOwned = [];
+    const allWires = [];
+    rawAreas.forEach((area) => {
       const nodes = (area.nodes || []).filter((n) => {
         const external = !!(n.externalReference || n.scopeClass === 'EXTERNAL_REFERENCE');
         const local = n.plcOwned !== false && !n.displayContext && !external
@@ -1976,17 +2005,37 @@
             controlPanel: n.controlPanel || '',
           };
         }
+        // Ownership → Default Area (Site Forge). Do not claim RUN area provenance.
+        const prov = { ...(n.provenance || {}) };
+        if (!prov.area || prov.area === 'SUGGESTED' || prov.area === 'IMPORTED') {
+          prov.area = 'SITE_FORGE_DEFAULT';
+        }
         return {
           ...n,
+          provenance: prov,
           scopeClass: n.scopeClass || 'LOCAL',
           plcOwned: true,
           displayContext: false,
           controlPanel: n.controlPanel || '',
         };
       });
-      const wires = (area.wires || []).filter((w) => keptNodeIds.has(w.from) && keptNodeIds.has(w.to));
-      return { ...area, nodes, wires };
-    }).filter((a) => (a.nodes || []).length > 0);
+      allOwned.push(...nodes);
+      (area.wires || []).forEach((w) => {
+        if (keptNodeIds.has(w.from) && keptNodeIds.has(w.to)) allWires.push(w);
+      });
+    });
+    const defName = (A().DEFAULT_AREA_NAME) || 'Default Area';
+    const defId = rawAreas[0]?.id || A().uid?.('area') || `area_default_${Date.now()}`;
+    tb.areas = [{
+      id: defId,
+      name: defName,
+      isDefault: true,
+      defaultArea: true,
+      provenance: 'SITE_FORGE_DEFAULT',
+      defaultSafetyZone: '',
+      nodes: allOwned,
+      wires: allWires,
+    }];
     // Auto-populate controlPanel ONLY when RUN evidence is clear; else leave empty
     {
       const { ensureControlPanel } = A();
@@ -1997,7 +2046,7 @@
         });
       });
     }
-    tb.activeAreaId = g.activeAreaId || tb.areas[0]?.id || null;
+    tb.activeAreaId = tb.areas[0]?.id || null;
     tb.selectedId = null;
     tb.selectedIds = [];
     tb.selectedDeviceId = null;
@@ -2050,35 +2099,29 @@
     });
     const cs = Number(tb.metrics.canvas_scale || g.canvasScale);
     if (cs && cs > 0) tb.view.canvasScale = cs;
-    // Prefer controller-scoped area name (matches Autogen ORNCCP2_Area family).
-    // Transport_1 is only the empty-canvas placeholder — rename after Auto Build.
-    let mach = '';
-    try {
-      const ws = await api.getWorkspace?.();
-      mach = String(ws?.active?.machine || ws?.active?.controller || '').toUpperCase();
-      if (!mach && ws?.active?.project_name) {
-        const mm = String(ws.active.project_name).match(/_([A-Z0-9]+)$/i);
-        if (mm) mach = mm[1].toUpperCase();
-      }
-    } catch (_) { /* ignore */ }
+    // Gate 2 — keep Default Area as Site Forge ownership (do not rename to machine_Area).
+    // Engineer creates named Areas and moves equipment; Default remains the residual bucket.
     (tb.areas || []).forEach((area) => {
-      const nm = String(area.name || '');
-      if (/^Transport_\d+$/i.test(nm) || /Imported/i.test(nm) || !nm) {
-        area.name = mach ? `${mach}_Area` : (g.areas?.[0]?.name || area.name || 'Transport');
+      if (typeof A().isDefaultArea === 'function' ? A().isDefaultArea(area) : area.isDefault) {
+        area.name = (A().DEFAULT_AREA_NAME) || 'Default Area';
+        area.isDefault = true;
+        area.defaultArea = true;
+        area.provenance = 'SITE_FORGE_DEFAULT';
       }
       (area.nodes || []).forEach((n) => {
         if (n.physical && (n.pathCanvas || n.entryCanvas)) n.schematic = true;
       });
     });
+    if (typeof A().ensureDefaultArea === 'function') A().ensureDefaultArea();
     save();
     render();
-    // Mark Area / ES as required when RUN did not supply confirmed values
+    // Default Area owns residual equipment — engineer Areas are optional.
+    // ES zone still required when RUN did not supply confirmed values.
     (tb.areas || []).forEach((area) => {
-      const suggested = /_Imported$/i.test(area.name || '') || /RUN_Imported/i.test(area.name || '');
+      const isDef = typeof A().isDefaultArea === 'function' ? A().isDefaultArea(area) : !!area.isDefault;
       (area.nodes || []).forEach((n) => {
-        const areaName = area.name || '';
-        const hasRealArea = areaName && !suggested && !/^ORNCCP\d+_Imported$/i.test(areaName);
-        n.areaRequired = !hasRealArea;
+        n.areaRequired = false; // Default Area satisfies Gate 2 ownership
+        if (!isDef && n.provenance) n.provenance.area = n.provenance.area || 'ENGINEER';
         const es = String(n.safetyZone || '').trim();
         const esDefault = !es || /_ESZone1$/i.test(es) || /^UNKNOWN$/i.test(es);
         n.esZoneRequired = esDefault;

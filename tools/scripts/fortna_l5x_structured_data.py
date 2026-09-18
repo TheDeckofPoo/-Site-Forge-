@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Any
 from xml.sax.saxutils import escape as _xml_escape
 
@@ -383,30 +384,34 @@ _MERGE_2TO1_L5K = (
     "0,0,0,[0,0,0],[0,0,0],32000]"
 )
 
-# Visible Decorated scalars for Merge_2to1 (EnableIn=1 matches gold). Nested
-# TIMER/UDT locals are carried by L5K; Studio accepts this hybrid.
-_MERGE_2TO1_DECORATED_SCALARS = (
-    '<DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>'
-    '<DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="I_MainLane_Conv_Type" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="I_InductLane_Conv_Type" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="I_Enable_Upstream_ExitPE_Check" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="I_Hold_InductLane" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="I_Merge_FltClearTime" DataType="INT" Radix="Decimal" Value="0"/>'
-    '<DataValueMember Name="I_MergeCX_Enable" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="I_MergeCX_TimeReset" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="I_MainLane_AddNotReadyBit" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="I_InductLane_AddNotlReadyBit" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="O_MainLane_Conv_RunHold" DataType="BOOL" Value="0"/>'
-    '<DataValueMember Name="O_InductLane_Conv_RunHold" DataType="BOOL" Value="0"/>'
+_MERGE_2TO1_TEMPLATE = (
+    Path(__file__).resolve().parent / "templates" / "merge_2to1_decorated_zero.xml"
 )
 
 
-def emit_merge_2to1_tag(name: str) -> str:
-    """Merge_2to1 AOI instance with gold L5K + non-empty Decorated Structure."""
-    struct = (
-        f'<Structure DataType="Merge_2to1">{_MERGE_2TO1_DECORATED_SCALARS}</Structure>'
+def _load_merge_2to1_decorated() -> str:
+    """Full AOI Decorated Structure from finished-cookie-cutter zero template.
+
+    Partial scalar-only Decorated caused Studio:
+      Format of data element value inside a structure element is invalid.
+    """
+    if _MERGE_2TO1_TEMPLATE.is_file():
+        body = _MERGE_2TO1_TEMPLATE.read_text(encoding="utf-8").strip()
+        if body.startswith("<Structure"):
+            return body
+        return f'<Structure DataType="Merge_2to1">{body}</Structure>'
+    # Minimal fallback — still better than truncated member list
+    return (
+        '<Structure DataType="Merge_2to1">'
+        '<DataValueMember Name="EnableIn" DataType="BOOL" Value="1"/>'
+        '<DataValueMember Name="EnableOut" DataType="BOOL" Value="0"/>'
+        "</Structure>"
     )
+
+
+def emit_merge_2to1_tag(name: str) -> str:
+    """Merge_2to1 AOI instance with gold L5K + complete Decorated Structure."""
+    struct = _load_merge_2to1_decorated()
     return (
         f'<Tag Name="{_xml_escape(name)}" TagType="Base" DataType="Merge_2to1" '
         f'Constant="false" ExternalAccess="Read/Write">'

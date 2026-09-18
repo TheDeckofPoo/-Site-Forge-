@@ -21,9 +21,61 @@
     AUTO_DEFAULT: 'AUTO_DEFAULT',
     UNKNOWN: 'UNKNOWN',
   };
+  /** Gate 3 — non-operational ownership bucket (NOT an E-stop zone). */
+  const DEFAULT_SAFETY_NAME = 'Default Safety';
+  const UNASSIGNED_SAFETY_NAME = 'Unassigned Safety';
+  const DEFAULT_SAFETY_ALIASES = new Set([
+    'default safety',
+    'unassigned safety',
+    'default',
+    'unassigned',
+  ]);
   const PLACEHOLDER_AREA_RE = /^Zone([1-9])_Area$/i;
   const PLACEHOLDER_ZONE_RE = /^Zone([1-9])_ESZone\d*$/i;
   const NUMERIC_STEM_ZONE_RE = /^(\d{2,})_ESZone\d*$/i;
+
+  function isDefaultSafetyName(name) {
+    const s = String(name || '').trim().toLowerCase();
+    return !s || DEFAULT_SAFETY_ALIASES.has(s);
+  }
+
+  function isDefaultSafetyZone(z) {
+    if (!z) return false;
+    if (z.isDefault || z.isUnassignedBucket || z.defaultSafety || z.operational === false) {
+      if (z.isDefault || z.isUnassignedBucket || z.defaultSafety) return true;
+    }
+    return isDefaultSafetyName(zoneSourceId(z)) || isDefaultSafetyName(zoneDisplayName(z));
+  }
+
+  function makeDefaultSafetyZone(unassignedMembers, devicesFound) {
+    const members = (unassignedMembers || []).map((m) => String(m || '').trim()).filter(Boolean);
+    return {
+      id: DEFAULT_SAFETY_NAME,
+      source_id: DEFAULT_SAFETY_NAME,
+      name: DEFAULT_SAFETY_NAME,
+      engineering_name: DEFAULT_SAFETY_NAME,
+      display_name: UNASSIGNED_SAFETY_NAME,
+      isDefault: true,
+      isUnassignedBucket: true,
+      defaultSafety: true,
+      operational: false,
+      areaRef: '',
+      conveyorRefs: [],
+      members,
+      membersOrigin: 'UNASSIGNED',
+      membership_status: 'REVIEW_REQUIRED',
+      status: 'REVIEW_REQUIRED',
+      provenance: 'SITE_FORGE_DEFAULT',
+      origin: 'SITE_FORGE_DEFAULT',
+      hard_missing: (members.length || devicesFound) ? ['SafetyDevices'] : [],
+      eStops: members.filter((m) => classifyDevName(m) === 'ESTOP'),
+      esrDevices: members.filter((m) => classifyDevName(m) === 'ESR'),
+      mcrDevices: members.filter((m) => classifyDevName(m) === 'MCR'),
+      csDevices: members.filter((m) => classifyDevName(m) === 'CS'),
+      eslsDevices: members.filter((m) => classifyDevName(m) === 'ESLS'),
+      note: 'Default/Unassigned Safety — ownership bucket only, NOT an operational E-stop zone.',
+    };
+  }
 
   const KIND_ORDER = ['ESTOP', 'ESR', 'MCR', 'CS', 'ESLS', 'OTHER'];
   const KIND_LABEL = {
@@ -233,6 +285,7 @@
 
   /** Meaningful zones for UI / production — drop unused test/default pollution. */
   function isMeaningfulZone(z) {
+    if (isDefaultSafetyZone(z)) return true; // Gate 3 — Default/Unassigned always visible
     const p = z.provenance || classifyZoneProvenance(z, {});
     if (p === PROVENANCE.TEST_FIXTURE) {
       return !!(z.engineerEdited && (z.members || []).length);
@@ -659,6 +712,20 @@
       ? Math.round((1000 * assignedN) / devicesFound) / 10
       : 0;
 
+    // Gate 3 — Default/Unassigned Safety bucket always present (not operational).
+    // Fixes: only engineer zone shown while N devices remain unassigned.
+    const operationalZones = zones.filter((z) => !isDefaultSafetyZone(z));
+    const defaultZone = makeDefaultSafetyZone(
+      unassigned.map((d) => d.name),
+      devicesFound,
+    );
+    // Point unassigned devices at the Default bucket for UI (status stays UNASSIGNED)
+    unassigned.forEach((d) => {
+      d.safetyZoneRef = DEFAULT_SAFETY_NAME;
+      d.defaultSafety = true;
+    });
+    const zonesOut = [defaultZone, ...operationalZones];
+
     const inventory = {};
     KIND_ORDER.forEach((k) => { inventory[k] = []; });
     deviceList.forEach((d) => {
@@ -672,19 +739,24 @@
       });
     });
 
+    const engineerZoneN = operationalZones.length;
     return {
       kind: 'SafetyModel',
       version: 1,
       devices: deviceList,
-      zones,
+      zones: zonesOut,
       unassignedDevices: unassigned.map((d) => d.name),
       inventory,
       counts: {
-        zones: zones.length,
-        ready: zones.filter((z) => z.status === 'READY').length,
-        review_required: zones.filter((z) => z.status === 'REVIEW_REQUIRED').length,
+        // Gate 7 — site totals (canonical inventory; zones are assignment views)
+        zones: engineerZoneN, // operational engineer zones only
+        engineer_zones: engineerZoneN,
+        ready: operationalZones.filter((z) => z.status === 'READY').length,
+        review_required: operationalZones.filter((z) => z.status === 'REVIEW_REQUIRED').length
+          + (unassigned.length ? 1 : 0),
         devices: devicesFound,
         devices_found: devicesFound,
+        site_devices: devicesFound,
         estops: deviceList.filter((d) => kindOf(d) === 'ESTOP').length,
         esr: deviceList.filter((d) => kindOf(d) === 'ESR').length,
         mcr: deviceList.filter((d) => kindOf(d) === 'MCR').length,
@@ -692,10 +764,13 @@
         esls: deviceList.filter((d) => kindOf(d) === 'ESLS').length,
         unassigned_estops: unassigned.filter((d) => kindOf(d) === 'ESTOP').length,
         unassigned: unassigned.length,
+        default_safety: unassigned.length,
+        assigned: assignedN,
         automatically_resolved: autoResolved.length,
         engineer_assigned: engAssigned.length,
         completion_pct: completionPct,
-        unresolved_io: zones.filter((z) => (z.hard_missing || []).includes('SafetyDevices')).length,
+        unresolved_io: operationalZones.filter((z) => (z.hard_missing || []).includes('SafetyDevices')).length,
+        conservation_ok: devicesFound === unassigned.length + assignedN,
       },
     };
   }
@@ -1151,6 +1226,10 @@
       status('Select a Safety Zone card first, then Assign Selected');
       return;
     }
+    if (isDefaultSafetyZone(z)) {
+      status('Select an engineer Safety Zone — Default/Unassigned is not an operational E-stop zone');
+      return;
+    }
     const names = [...(host?.querySelectorAll('[data-sb-inv]:checked') || [])]
       .map((el) => el.getAttribute('data-sb-inv'))
       .filter(Boolean);
@@ -1159,7 +1238,7 @@
       return;
     }
     const live = findLiveZone(z);
-    if (!live) return;
+    if (!live || isDefaultSafetyZone(live)) return;
     const liveSid = zoneSourceId(live);
     // Reassign: remove from other zones first (no duplicate membership)
     (state.model.zones || []).forEach((oz) => {
@@ -1185,20 +1264,33 @@
   /** Gate E — guided bulk assign: select → choose zone → confirm list → Apply later */
   function openAssignDevicesWizard() {
     const host = $('sb-inventory');
-    const names = [...(host?.querySelectorAll('[data-sb-inv]:checked') || [])]
-      .map((el) => el.getAttribute('data-sb-inv'))
-      .filter(Boolean);
+    const detail = $('sb-zone-detail');
+    const checked = [
+      ...(host?.querySelectorAll('[data-sb-inv]:checked') || []),
+      ...(detail?.querySelectorAll('[data-sb-inv]:checked') || []),
+    ];
+    const seen = new Set();
+    const names = [];
+    checked.forEach((el) => {
+      const n = el.getAttribute('data-sb-inv');
+      if (!n || seen.has(n.toUpperCase())) return;
+      seen.add(n.toUpperCase());
+      names.push(n);
+    });
     if (!names.length) {
-      status('Check inventory devices first, then Assign Devices…');
+      status('Check devices first (Default Safety list or inventory), then Assign Devices…');
       return;
     }
-    const zones = (state.model?.zones || []).map((z) => zoneDisplayName(z)).filter(Boolean);
+    const zones = (state.model?.zones || [])
+      .filter((z) => !isDefaultSafetyZone(z))
+      .map((z) => zoneDisplayName(z))
+      .filter(Boolean);
     if (!zones.length) {
-      status('Create a Safety Zone on Transportation / Safety Build first');
+      status('Create an engineer Safety Zone on Transportation / Safety Build first');
       return;
     }
     const selected = selectedZone();
-    const defaultZone = zoneDisplayName(selected) || zones[0];
+    const defaultZone = (selected && !isDefaultSafetyZone(selected) ? zoneDisplayName(selected) : '') || zones[0];
     const zonePick = prompt(
       `Assign ${names.length} device(s) to which Safety Zone?\n\n`
       + `Zones:\n${zones.map((z) => `  • ${z}`).join('\n')}\n\n`
@@ -1258,52 +1350,74 @@
     const host = $('sb-zone-list');
     if (!host || !state.model) return;
     // Gate T — show only meaningful zones after reconciliation
-    const zones = (state.model.zones || []).filter(isMeaningfulZone);
+    // Gate 3 — Default/Unassigned Safety always first and visually distinct
+    const zones = (state.model.zones || []).filter(isMeaningfulZone)
+      .sort((a, b) => {
+        const da = isDefaultSafetyZone(a) ? 0 : 1;
+        const db = isDefaultSafetyZone(b) ? 0 : 1;
+        return da - db;
+      });
     if (!zones.length) {
       host.innerHTML = '<div class="text-sm text-slate-500 p-4">No Safety Zones yet. RUN-discovered zones appear after import; or create one on Transportation / Safety Build.</div>';
       return;
     }
     host.innerHTML = zones.map((z) => {
       const sid = zoneSourceId(z);
-      const disp = zoneDisplayName(z);
-      const sel = (sid === state.selectedZoneId || disp === state.selectedZoneId || z.id === state.selectedZoneId)
-        ? 'border-rose-500/60 bg-rose-950/20'
-        : 'border-slate-800 hover:border-slate-600';
+      const isDef = isDefaultSafetyZone(z);
+      const disp = isDef ? `${DEFAULT_SAFETY_NAME} / ${UNASSIGNED_SAFETY_NAME}` : zoneDisplayName(z);
+      const sel = (sid === state.selectedZoneId || disp === state.selectedZoneId || z.id === state.selectedZoneId
+        || (isDef && isDefaultSafetyName(state.selectedZoneId)))
+        ? (isDef ? 'border-amber-500/50 bg-amber-950/20' : 'border-rose-500/60 bg-rose-950/20')
+        : (isDef ? 'border-amber-900/40 bg-amber-950/10 hover:border-amber-700/50' : 'border-slate-800 hover:border-slate-600');
       const mem = membershipStatusLabel(z);
-      const st = z.status === 'READY'
-        ? '<span class="text-emerald-400">READY</span>'
-        : mem.html;
+      const st = isDef
+        ? '<span class="text-amber-300">UNASSIGNED</span>'
+        : (z.status === 'READY'
+          ? '<span class="text-emerald-400">READY</span>'
+          : mem.html);
       const prov = z.provenance || classifyZoneProvenance(z, {});
-      const provChip = prov === PROVENANCE.RUN_DISCOVERED
-        ? '<span class="text-[8px] text-sky-400/90">RUN</span>'
-        : (prov === PROVENANCE.ENGINEER_CREATED
-          ? '<span class="text-[8px] text-fuchsia-300/90">ENGINEER</span>'
-          : `<span class="text-[8px] text-slate-600">${escapeHtml(prov)}</span>`);
-      const renamed = sid && disp && sid !== disp
+      const provChip = isDef
+        ? '<span class="text-[8px] text-amber-300/90">DEFAULT</span>'
+        : (prov === PROVENANCE.RUN_DISCOVERED
+          ? '<span class="text-[8px] text-sky-400/90">RUN</span>'
+          : (prov === PROVENANCE.ENGINEER_CREATED
+            ? '<span class="text-[8px] text-fuchsia-300/90">ENGINEER</span>'
+            : `<span class="text-[8px] text-slate-600">${escapeHtml(prov)}</span>`));
+      const renamed = !isDef && sid && zoneDisplayName(z) && sid !== zoneDisplayName(z)
         ? `<div class="text-[9px] text-slate-600 mono mt-0.5">source ${escapeHtml(sid)}</div>`
         : '';
-      const reviewN = (z.hard_missing || []).length || (z.status === 'READY' ? 0 : 1);
+      const reviewN = isDef
+        ? (z.members || []).length
+        : ((z.hard_missing || []).length || (z.status === 'READY' ? 0 : 1));
+      const delBtn = isDef
+        ? ''
+        : `<button type="button" data-sb-zone-del="${escapeHtml(sid)}" title="Delete Safety Zone — members return to Default/Unassigned"
+          class="shrink-0 mt-0.5 btn-ghost text-[10px] px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300 hover:bg-rose-950/40">
+          <i class="fa-solid fa-trash"></i>
+        </button>`;
       return `<div class="rounded-xl border ${sel} px-3 py-2.5 mb-2 transition flex items-start gap-2">
         <button type="button" data-sb-zone="${escapeHtml(sid)}" class="flex-1 text-left min-w-0">
           <div class="flex items-center gap-2">
-            <span class="mono text-sm text-rose-200 font-semibold truncate">${escapeHtml(disp)}</span>
+            <span class="mono text-sm ${isDef ? 'text-amber-200' : 'text-rose-200'} font-semibold truncate">${escapeHtml(disp)}</span>
             ${provChip}
             <span class="ml-auto text-[10px] shrink-0">${st}</span>
           </div>
           ${renamed}
-          <div class="text-[10px] text-slate-500 mt-1">Area ${escapeHtml(z.areaRef || '—')} · Assigned ${(z.members || []).length} · E-Stops ${(z.eStops || []).length} · Review ${reviewN}</div>
+          <div class="text-[10px] text-slate-500 mt-1">${isDef
+            ? `Ownership bucket · ${(z.members || []).length} unassigned · NOT an E-stop zone`
+            : `Area ${escapeHtml(z.areaRef || '—')} · Assigned ${(z.members || []).length} · E-Stops ${(z.eStops || []).length} · Review ${reviewN}`}</div>
         </button>
-        <button type="button" data-sb-zone-del="${escapeHtml(sid)}" title="Delete Safety Zone"
-          class="shrink-0 mt-0.5 btn-ghost text-[10px] px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300 hover:bg-rose-950/40">
-          <i class="fa-solid fa-trash"></i>
-        </button>
+        ${delBtn}
       </div>`;
     }).join('');
     host.querySelectorAll('[data-sb-zone]').forEach((btn) => {
       btn.addEventListener('click', () => {
         state.selectedZoneId = btn.getAttribute('data-sb-zone');
         render();
-        highlightTransportZone(zoneDisplayName(selectedZone()) || state.selectedZoneId);
+        const z = selectedZone();
+        if (z && !isDefaultSafetyZone(z)) {
+          highlightTransportZone(zoneDisplayName(z) || state.selectedZoneId);
+        }
       });
     });
     host.querySelectorAll('[data-sb-zone-del]').forEach((btn) => {
@@ -1333,7 +1447,47 @@
       </div>`;
 
     const sid = zoneSourceId(z);
-    const disp = zoneDisplayName(z);
+    const isDef = isDefaultSafetyZone(z);
+    const disp = isDef ? `${DEFAULT_SAFETY_NAME} / ${UNASSIGNED_SAFETY_NAME}` : zoneDisplayName(z);
+    if (isDef) {
+      const members = z.members || [];
+      const c = state.model?.counts || {};
+      host.innerHTML = `
+        <div class="flex items-center gap-2 mb-3 flex-wrap">
+          <h3 class="text-base font-semibold text-amber-200 mono">${escapeHtml(disp)}</h3>
+          <span class="text-[11px]">${badge('REVIEW')}</span>
+          <span class="text-[9px] text-amber-300/90 border border-amber-800/50 rounded px-1.5 py-0.5">NOT an E-stop zone</span>
+        </div>
+        <div class="rounded-xl border border-amber-900/40 bg-amber-950/10 p-3 mb-3 text-[11px] text-slate-300 leading-relaxed">
+          Site Forge ownership bucket for devices not yet assigned to an engineer Safety Zone.
+          <strong class="text-amber-200">UNASSIGNED → REVIEW_REQUIRED</strong> (fail-safe — never permissive).
+          Select devices below, then pick an engineer zone and <span class="mono">Assign Selected → Zone</span>.
+        </div>
+        <div class="grid grid-cols-2 gap-2 text-[10px] mono mb-3">
+          <div class="rounded-lg border border-slate-800 px-2 py-1.5"><span class="text-slate-500">Site devices</span><span class="float-right">${c.site_devices ?? c.devices_found ?? '—'}</span></div>
+          <div class="rounded-lg border border-amber-900/40 px-2 py-1.5"><span class="text-amber-500/90">Default / Unassigned</span><span class="float-right text-amber-200">${members.length}</span></div>
+          <div class="rounded-lg border border-slate-800 px-2 py-1.5"><span class="text-slate-500">Engineer zones</span><span class="float-right">${c.engineer_zones ?? c.zones ?? '—'}</span></div>
+          <div class="rounded-lg border border-slate-800 px-2 py-1.5"><span class="text-slate-500">Assigned</span><span class="float-right text-emerald-300">${c.assigned ?? '—'}</span></div>
+        </div>
+        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3">
+          <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Unassigned devices (${members.length})</div>
+          <div id="sb-available" class="max-h-[50vh] overflow-y-auto space-y-1 text-[12px] mono">${
+            members.length
+              ? members.map((m) => `
+                <label class="flex items-center gap-2 px-1 py-0.5 rounded hover:bg-slate-900/80 cursor-pointer">
+                  <input type="checkbox" data-sb-inv="${escapeHtml(m)}" class="rounded border-slate-600">
+                  <span class="text-slate-300">${escapeHtml(m)}</span>
+                  <span class="ml-auto text-[8px] text-amber-300/90">UNASSIGNED</span>
+                </label>`).join('')
+              : '<div class="text-slate-600 text-[11px] p-2">All discovered devices are assigned to engineer zones.</div>'
+          }</div>
+          <button type="button" id="sb-inv-assign-selected" class="mt-3 btn-primary w-full text-[11px] py-2 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">
+            Assign Selected → Engineer Zone…
+          </button>
+        </div>`;
+      $('sb-inv-assign-selected')?.addEventListener('click', () => openAssignDevicesWizard());
+      return;
+    }
     host.innerHTML = `
       <div class="flex items-center gap-2 mb-3 flex-wrap">
         <h3 class="text-base font-semibold text-rose-200 mono">${escapeHtml(disp)}</h3>
@@ -1347,7 +1501,7 @@
         <button type="button" id="sb-show-on-transport" class="ml-auto btn-ghost text-[10px] px-2 py-1 rounded-lg border border-slate-700">
           <i class="fa-solid fa-route mr-1"></i>Show on Transportation
         </button>
-        <button type="button" id="sb-delete-zone" class="btn-ghost text-[10px] px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300" title="Delete this Safety Zone">
+        <button type="button" id="sb-delete-zone" class="btn-ghost text-[10px] px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300" title="Delete this Safety Zone — members return to Default/Unassigned">
           <i class="fa-solid fa-trash mr-1"></i>Delete zone
         </button>
       </div>
@@ -1569,6 +1723,7 @@
   }
 
   function serializeZone(z) {
+    if (isDefaultSafetyZone(z)) return null; // never persist Default bucket as operational zone
     const sid = zoneSourceId(z);
     const eng = zoneDisplayName(z);
     const provenance = z.provenance
@@ -1594,12 +1749,13 @@
       provenance,
       origin: z.origin || provenance,
       status: z.status,
+      operational: true,
     };
   }
 
   function persistLocalDraft() {
     const AS = ensureAutogenState();
-    const zones = (state.model?.zones || []).map(serializeZone);
+    const zones = (state.model?.zones || []).map(serializeZone).filter(Boolean);
     const devices = (state.model?.devices || []).map(serializeDevice).filter(Boolean);
     AS.safety_build = {
       version: 1,
@@ -1650,11 +1806,15 @@
   function deleteSafetyZone(zoneName) {
     const zname = String(zoneName || '').trim();
     if (!zname) return;
+    if (isDefaultSafetyName(zname)) {
+      status('Default/Unassigned Safety cannot be deleted — it is the ownership bucket');
+      return;
+    }
     const ok = confirm(
       `Delete Safety Zone "${zname}"?\n\n`
       + '• Removes it from Safety Build\n'
       + '• Clears this zone off conveyors on Transportation\n'
-      + '• Assigned devices become UNASSIGNED\n\n'
+      + '• Assigned devices return to Default / Unassigned Safety\n\n'
       + 'This does not delete physical devices — only the zone membership.',
     );
     if (!ok) return;
@@ -1747,17 +1907,25 @@
   function renderCounts() {
     const c = state.model?.counts || {};
     const set = (id, v) => { const el = $(id); if (el) el.textContent = String(v ?? '—'); };
-    set('sb-count-zones', c.zones);
+    // Gate 7 — site devices, Default/Unassigned, engineer zones, assigned, E-stop, review
+    set('sb-count-zones', c.engineer_zones != null ? c.engineer_zones : c.zones);
     set('sb-count-ready', c.ready);
     set('sb-count-review', c.review_required);
     set('sb-count-estops', c.estops);
-    const unassigned = c.unassigned != null ? c.unassigned : c.unassigned_estops;
+    const unassigned = c.default_safety != null
+      ? c.default_safety
+      : (c.unassigned != null ? c.unassigned : c.unassigned_estops);
     set('sb-count-unassigned', unassigned);
-    set('sb-count-found', c.devices_found != null ? c.devices_found : c.devices);
+    set('sb-count-default', unassigned);
+    set('sb-count-found', c.site_devices != null ? c.site_devices : (c.devices_found != null ? c.devices_found : c.devices));
+    set('sb-count-assigned', c.assigned != null ? c.assigned : (
+      Math.max(0, (c.devices_found || c.devices || 0) - (unassigned || 0))
+    ));
     set('sb-count-auto', c.automatically_resolved);
     set('sb-count-eng', c.engineer_assigned);
     const pct = c.completion_pct;
-    set('sb-count-completion', pct == null ? '—' : `${pct}%`);
+    const cons = c.conservation_ok === false ? ' · CONSERVATION FAIL' : '';
+    set('sb-count-completion', pct == null ? '—' : `${pct}%${cons}`);
   }
 
   function render() {
@@ -1826,8 +1994,9 @@
     // Rebuild so devices carry stamped safetyZoneRef/status before persist
     state.model = buildClientModel();
     // Apply = reconcile/update by zone identity. Never emit coercion artifacts.
+    // Gate 3 — Default/Unassigned Safety is ownership-only; never persist as ES zone.
     const appliedZones = (state.model?.zones || [])
-      .filter((z) => z && zoneSourceId(z) && !isCorruptZoneName(zoneSourceId(z)))
+      .filter((z) => z && zoneSourceId(z) && !isCorruptZoneName(zoneSourceId(z)) && !isDefaultSafetyZone(z))
       .map((z) => {
         const areaRef = areaNameOf(z.areaRef) || '';
         const sid = zoneSourceId(z);

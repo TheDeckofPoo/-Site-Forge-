@@ -527,11 +527,16 @@ def apply_graph_to_workbook(graph: dict, workbook: dict | None = None) -> dict:
             str(area.get("defaultSafetyZone") or area.get("default_safety_zone") or "").strip()
             or _safety_for_area(aname)
         )
-        wb.setdefault("areas", []).append({
+        # Gate 2 — preserve Default Area ownership flag through Apply
+        row = {
             "name": aname,
             "safety_zone": area_default_sz,
             "conveyor_count": 0,
-        })
+        }
+        if area.get("isDefault") or area.get("defaultArea"):
+            row["isDefault"] = True
+            row["defaultArea"] = True
+        wb.setdefault("areas", []).append(row)
         existing_area_names.add(aname)
         opts = wb.get("options") if isinstance(wb.get("options"), dict) else {}
         area_opts = list(opts.get("areas") or [])

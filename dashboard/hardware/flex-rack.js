@@ -133,14 +133,14 @@
     const cat = mod.catalog || mod.type || '1794-AENT';
     const key = opts.moduleKey || '';
     const sel = opts.selected ? ' selected' : '';
-    // Gate A: no black RJ45 jack rectangles — they obscured catalog/face text.
-    // Child FLEX I/O module width (×1.20) and rack architecture unchanged.
+    // Gate A/6: no black RJ45 jack rectangles — AENT catalog text must stay readable.
+    // Child FLEX I/O module width (×1.20), two-rack viewport, and scrolling unchanged.
     return `<button type="button" data-hw-mod="${escapeHtml(key)}" class="flex-adapter flex-adapter-clean${sel}" title="${escapeHtml(cat)}">
       ${sideKeys()}
       <div class="flex-module-top">
         <div class="flex-brand-tiny">Allen-Bradley</div>
         <div class="flex-label-italic">FLEX I/O</div>
-        <div class="flex-cat">${escapeHtml(cat)}</div>
+        <div class="flex-cat" title="${escapeHtml(cat)}">${escapeHtml(cat)}</div>
       </div>
       <div class="flex-status-leds">
         <div><span></span>LINK 1</div>
