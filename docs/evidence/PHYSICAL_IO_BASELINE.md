@@ -1,5 +1,13 @@
 # Physical I/O Baseline
 
+Training docs for Configio / View I/O / IOCard (Desktop + `docs/training/`):
+
+- `FPC-IOCard-Interfaces.docx`
+- `FPC-FastIO-Configuration.docx`
+- `FPC-The-ViewIO-Screen-and-FORTNADT-Table.docx`
+
+See [`EXTERNAL_REFERENCE_MATERIALS.md`](EXTERNAL_REFERENCE_MATERIALS.md).
+
 Three separate concepts — never collapse them:
 
 ---

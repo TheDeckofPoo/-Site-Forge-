@@ -19,6 +19,15 @@ RUN Conveyor / MergeBoss / MergeInputs / Mtrchain / Jam*
 
 CURVE display polish is **presentation only** — does not mutate topology.
 
+### Training docs that explain these RUN tables
+
+See [`EXTERNAL_REFERENCE_MATERIALS.md`](EXTERNAL_REFERENCE_MATERIALS.md) and `docs/FPC_TRAINING_DOCUMENT_INDEX.md`:
+
+- `FPC-Merge-Modules.docx` → MergeBoss / MergeInputs  
+- `FPC-Motor-Startup-Chains.docx` → Mtrchain  
+- `FPC-Fulls-Jams-Fulljams.docx` → Jamcheck / Jamzones / Fullline  
+- Desktop corpus: `C:\Users\curtiskricke\Desktop\Fortna Plus`
+
 ---
 
 ## ORNCCP2 freeze targets (four merges)

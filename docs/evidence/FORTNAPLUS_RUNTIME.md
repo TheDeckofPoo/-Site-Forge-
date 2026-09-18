@@ -3,6 +3,18 @@
 Summarizes **proven** FortnaPlus behavior from CP1–CP4.  
 Claims here must remain backed by accepted tests/docs — do not invent.
 
+**Human-readable FPC module docs** (what each RUN table *means* for configuration):
+
+- Desktop: `C:\Users\curtiskricke\Desktop\Fortna Plus` (and nested `Fortna Training Docs\`)
+- Repo mirror: `docs/training/` + index `docs/FPC_TRAINING_DOCUMENT_INDEX.md`
+- Catalog: [`EXTERNAL_REFERENCE_MATERIALS.md`](EXTERNAL_REFERENCE_MATERIALS.md)
+
+**FortnaPlus C / `.mnu` sources** (runtime archaeology):
+
+- Desktop: `C:\Users\curtiskricke\Desktop\Fortna Plus\FortnaPlus files\`
+  (`fortna.mnu`, `project.mnu`, `table_api.c`, `menu_api.c`, `fortna.c`, …)
+- Also appears inside RUN extracts as `RUN/FORTNA/fortna.mnu`
+
 ---
 
 ## File resolution precedence

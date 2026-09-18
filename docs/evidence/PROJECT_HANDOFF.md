@@ -43,6 +43,13 @@ Tip at docs refresh time included `8c28daf` lineage — **always re-check `git l
 | Safety | [SAFETY_BASELINE.md](SAFETY_BASELINE.md) |
 | Physical I/O | [PHYSICAL_IO_BASELINE.md](PHYSICAL_IO_BASELINE.md) |
 | Sorter | [SORTER_BASELINE.md](SORTER_BASELINE.md) |
+| FPC training + FortnaPlus sources + finished L5X oracles | [EXTERNAL_REFERENCE_MATERIALS.md](EXTERNAL_REFERENCE_MATERIALS.md) |
+| FPC training index (in-repo) | [`docs/FPC_TRAINING_DOCUMENT_INDEX.md`](../FPC_TRAINING_DOCUMENT_INDEX.md) |
+
+Desktop paths Curtis keeps:
+
+- `C:\Users\curtiskricke\Desktop\Fortna Plus`
+- `C:\Users\curtiskricke\Desktop\WIth GPT\Folder to GPT`
 
 ---
 

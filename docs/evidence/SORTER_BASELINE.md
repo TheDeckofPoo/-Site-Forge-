@@ -9,6 +9,14 @@ Separate:
 
 Finished PLC5 is **never** a discovery source.
 
+### Training docs + validation oracles
+
+- FPC meaning: `FPC-Sorter-Control-Module.docx`, `FPC-Shifter-And-Sorter-Configuration.docx`, `FPC-SorterConfigurationChecklist.docx`  
+  (Desktop: `C:\Users\curtiskricke\Desktop\Fortna Plus` · Repo: `docs/training/`)  
+- Finished PLC5 architecture oracle (local):  
+  `C:\Users\curtiskricke\Desktop\WIth GPT\Folder to GPT\ORLY_Greensboro_NC_PLC5_RTfinished.L5X`  
+- Catalog: [`EXTERNAL_REFERENCE_MATERIALS.md`](EXTERNAL_REFERENCE_MATERIALS.md)
+
 ---
 
 ## Cross-site discovery (blind)

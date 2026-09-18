@@ -1,5 +1,10 @@
 # Safety Baseline
 
+Training context: `FPC-StartStopZones.docx` (and related zone docs) under  
+`C:\Users\curtiskricke\Desktop\Fortna Plus` / `docs/training/`.  
+ES structural oracle: `Folder to GPT\ES_Program.L5X` + `docs/es-reference/`.  
+Catalog: [`EXTERNAL_REFERENCE_MATERIALS.md`](EXTERNAL_REFERENCE_MATERIALS.md).
+
 Separate three concerns:
 
 | Concern | Meaning |

@@ -10,11 +10,13 @@
 
 ## Read in this order
 
-1. **This file** — index
-2. `partial_build_contract.md` — FOUND≠INCLUDED≠GENERATED (product law)
-3. `../README.md` (repo root) — full Site Forge + handoff table
-4. `../../docs/REGRESSION_MANIFEST.md` — accepted layers + test commands
-5. Individual reports below as needed
+1. **`docs/evidence/README.md`** — primary product evidence index (preferred)
+2. **This file** — stabilization artifact index
+3. `partial_build_contract.md` — FOUND≠INCLUDED≠GENERATED (product law)
+4. `docs/evidence/EXTERNAL_REFERENCE_MATERIALS.md` — Desktop Fortna Plus training docs + FortnaPlus sources + finished L5X oracles
+5. `docs/FPC_TRAINING_DOCUMENT_INDEX.md` — which Word doc explains which RUN tables
+6. `../../docs/REGRESSION_MANIFEST.md` — accepted layers + test commands
+7. Individual reports below as needed
 
 ---
 

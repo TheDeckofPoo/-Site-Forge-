@@ -108,8 +108,18 @@ Machine-readable: [`config/run_evidence_authority.json`](../../config/run_eviden
 | [PHYSICAL_IO_BASELINE.md](PHYSICAL_IO_BASELINE.md) | Logical vs RUN physical vs Logix endpoint |
 | [SORTER_BASELINE.md](SORTER_BASELINE.md) | Blind RUN discovery vs PLC validation |
 | [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) | 5–10 minute orientation |
+| [EXTERNAL_REFERENCE_MATERIALS.md](EXTERNAL_REFERENCE_MATERIALS.md) | Curtis Desktop: FPC training docs, FortnaPlus sources, finished-PLC oracles |
 
-Also: [`docs/DOCUMENTATION_INDEX.md`](../DOCUMENTATION_INDEX.md) · [`docs/REGRESSION_MANIFEST.md`](../REGRESSION_MANIFEST.md) · [`exports/stabilization/README.md`](../../exports/stabilization/README.md)
+Also: [`docs/DOCUMENTATION_INDEX.md`](../DOCUMENTATION_INDEX.md) · [`docs/FPC_TRAINING_DOCUMENT_INDEX.md`](../FPC_TRAINING_DOCUMENT_INDEX.md) · [`docs/REGRESSION_MANIFEST.md`](../REGRESSION_MANIFEST.md) · [`exports/stabilization/README.md`](../../exports/stabilization/README.md)
+
+### Curtis Desktop reference folders
+
+| Path | Contents |
+|------|----------|
+| `C:\Users\curtiskricke\Desktop\Fortna Plus` | FPC training Word docs + `FortnaPlus files\` (.mnu / C sources) |
+| `C:\Users\curtiskricke\Desktop\WIth GPT\Folder to GPT` | Finished PLC2/4/5 L5X validation oracles + Site Forge export |
+
+In-repo training corpus: `docs/training/` (indexed by `docs/FPC_TRAINING_DOCUMENT_INDEX.md`).
 
 ---
 

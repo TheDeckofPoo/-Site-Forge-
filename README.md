@@ -14,10 +14,17 @@ It does **not** launch Studio 5000.
 |-----|-----|
 | **[`docs/evidence/README.md`](docs/evidence/README.md)** | Primary evidence index |
 | **[`docs/evidence/PROJECT_HANDOFF.md`](docs/evidence/PROJECT_HANDOFF.md)** | 5–10 minute orientation |
+| [`docs/evidence/EXTERNAL_REFERENCE_MATERIALS.md`](docs/evidence/EXTERNAL_REFERENCE_MATERIALS.md) | Desktop Fortna Plus training docs + FortnaPlus sources + finished L5X oracles |
+| [`docs/FPC_TRAINING_DOCUMENT_INDEX.md`](docs/FPC_TRAINING_DOCUMENT_INDEX.md) | Which FPC Word doc explains which RUN tables |
 | [`docs/evidence/ACCEPTED_CHECKPOINTS.md`](docs/evidence/ACCEPTED_CHECKPOINTS.md) | Frozen / accepted registry |
 | [`docs/RUN_EVIDENCE_AUTHORITY.md`](docs/RUN_EVIDENCE_AUTHORITY.md) | What evidence owns which fact |
 | [`docs/AI_BUILD_PROTOCOL.md`](docs/AI_BUILD_PROTOCOL.md) | Curtis ↔ Review AI ↔ Coding AI |
 | [`docs/DOCUMENTATION_INDEX.md`](docs/DOCUMENTATION_INDEX.md) | Doc status map |
+
+**Curtis Desktop (local, not in Git):**
+
+- `C:\Users\curtiskricke\Desktop\Fortna Plus` — FPC training modules + `FortnaPlus files\`
+- `C:\Users\curtiskricke\Desktop\WIth GPT\Folder to GPT` — finished PLC2/4/5 oracles + Site Forge L5X exports
 
 **Verify tip:** `git rev-parse HEAD` on branch `feature/plc2-transport-fidelity`
 

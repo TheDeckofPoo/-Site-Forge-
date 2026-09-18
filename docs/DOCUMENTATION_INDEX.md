@@ -7,6 +7,9 @@ Do not delete historical docs in this task — mark and link forward.
 | Document | Purpose | Status | Authoritative replacement |
 |----------|---------|--------|---------------------------|
 | `docs/evidence/README.md` | Evidence entry point | **CURRENT** | — |
+| `docs/evidence/EXTERNAL_REFERENCE_MATERIALS.md` | Desktop FPC training + FortnaPlus sources + L5X oracles | **CURRENT** | — |
+| `docs/FPC_TRAINING_DOCUMENT_INDEX.md` | Ranked FPC Word corpus → RUN tables | **CURRENT** | — |
+| `docs/training/` | In-repo FPC training Word docs | **CURRENT** | Desktop may be newer working copy |
 | `docs/evidence/PROJECT_HANDOFF.md` | 5–10 min orientation | **CURRENT** | — |
 | `docs/evidence/ACCEPTED_CHECKPOINTS.md` | Checkpoint registry | **CURRENT** | — |
 | `docs/evidence/FORTNAPLUS_RUNTIME.md` | Runtime summary | **CURRENT** | Detail: FORTNAPLUS_MNU_* |
