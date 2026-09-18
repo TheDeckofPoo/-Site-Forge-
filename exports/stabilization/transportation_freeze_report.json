@@ -1,0 +1,20 @@
+{
+  "site": "ORNCCP2",
+  "run": "C:\\dev\\worktree\\FortnaPlus\\workspace\\active\\RUN",
+  "MergeBoss_count": 5,
+  "MergeBoss_ids": [
+    "MERGE_316_SPUR",
+    "MERGE_324_SPUR",
+    "MERGE_400_2-1",
+    "MERGE_406_3-1",
+    "N/A"
+  ],
+  "expected_four_present": true,
+  "MergeInputs_count": 15,
+  "Jamcheck_count": 600,
+  "Jamzones_count": 100,
+  "Mtrchain_count": 400,
+  "CURVE_count": 69,
+  "Conveyor_count": 6000,
+  "status": "PASS"
+}

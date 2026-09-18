@@ -174,10 +174,10 @@
   justify-content: flex-start;
   overflow-x: auto;
   overflow-y: hidden;
-  /* Gate J: ≈2 full modules visible; horizontal rack navigation */
-  min-height: 320px;
+  /* Compact CAD rack — several modules visible; horizontal scroll for long racks */
+  min-height: 200px;
   max-width: 100%;
-  padding: 8px;
+  padding: 6px;
   background:
     radial-gradient(circle at center, #0a1720 0, #061018 60%, #040a0f 100%);
 }
@@ -203,20 +203,20 @@
 }
 
 .flex-slot-label {
-  width: 168px;
+  width: 70px;
   border: 1px solid #735a24;
   border-radius: 5px;
   background: #07121a;
   text-align: center;
-  padding-top: 5px;
+  padding-top: 4px;
   color: #eef7fb;
-  font-size: 11px;
-  line-height: 15px;
+  font-size: 10px;
+  line-height: 13px;
   flex: 0 0 auto;
 }
 
 .flex-slot-label.adapter-slot {
-  width: 200px;
+  width: 100px;
 }
 
 .flex-slot-label.selected {
@@ -263,16 +263,17 @@
 }
 
 .flex-adapter {
-  width: 200px;
-  height: 280px;
-  border-radius: 7px 7px 4px 4px;
+  /* Compact CAD — adapter slightly wider than I/O modules */
+  width: 100px;
+  height: 155px;
+  border-radius: 6px 6px 3px 3px;
 }
 
 .flex-io {
-  /* ≈2 modules visible in center rack viewport at normal desktop width */
-  width: 168px;
-  height: 260px;
-  border-radius: 5px;
+  /* ~1/3 of prior bloated 168×260 — several modules fit across desktop */
+  width: 70px;
+  height: 138px;
+  border-radius: 4px;
 }
 
 .flex-adapter:hover,
@@ -282,15 +283,15 @@
 
 .flex-adapter.selected,
 .flex-io.selected {
-  outline: 3px solid #10c5ff;
-  outline-offset: 2px;
-  box-shadow: 0 0 14px #0bb8ffaa, 0 4px 10px #0009;
+  outline: 2px solid #10c5ff;
+  outline-offset: 1px;
+  box-shadow: 0 0 8px #0bb8ff99, 0 3px 8px #0009;
   z-index: 5;
 }
 
 .flex-module-top {
-  height: 64px;
-  padding: 7px 8px 5px;
+  height: 42px;
+  padding: 4px 5px 3px;
   border-bottom: 1px solid #a6adb0;
   position: relative;
 }
@@ -467,7 +468,8 @@
 .flex-mod { display: none !important; }
 
 @media (max-width: 1300px) {
-  .flex-io { width: 140px; height: 220px; }
+  .flex-io { width: 64px; height: 128px; }
+  .flex-adapter { width: 90px; height: 145px; }
   .flex-slot-label { width: 84px; }
   .flex-slot-label.adapter-slot { width: 142px; }
 }

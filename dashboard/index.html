@@ -1375,7 +1375,7 @@
     </section>
 
     <!-- I/O banks + drive params + electrical prints (primary tab) -->
-    <section id="tab-io" class="hw-io-page p-3 gap-3 flex flex-col bg-[#05090D] overflow-y-auto">
+    <section id="tab-io" class="hw-io-page h-full p-3 gap-3 flex flex-col bg-[#05090D] overflow-y-auto min-h-0">
       <details class="workflow-help shrink-0 px-3 py-2">
         <summary class="text-sm font-semibold text-cyan-400">How to use I/O &amp; Prints — workflow</summary>
         <div class="workflow-chart mt-3">
@@ -1729,24 +1729,31 @@
         .hw-ch-gen-label { display: inline-flex; align-items: center; gap: 4px; color: #9ebbc9; font-size: 10px; cursor: pointer; }
         .hw-ch-gen-input { accent-color: #34d399; }
 
-        /* Gate J — page-level Hardware/I/O scroll */
-        .hw-io-page { height: auto !important; max-height: none; }
-        .hw-io-rack-viewport { min-height: 300px; }
+        /* Gate A — Hardware/I/O: page scrolls inside tab; rack is compact CAD */
+        .hw-io-page {
+          /* Fill main; THIS is the vertical scroll container (main is overflow:hidden) */
+          height: 100%;
+          max-height: 100%;
+          overflow-x: hidden;
+          overflow-y: auto;
+          overscroll-behavior: contain;
+        }
+        .hw-io-rack-viewport { min-height: 180px; }
         .hw-io-inspector .hw-term-panel { gap: 6px; }
-        /* Compact Selected Module Inspector */
+        /* Selected Module Inspector: KEEP narrow width; make VERTICAL face taller */
         .hw-term-panel { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
-        .hw-term-body { display: grid; grid-template-columns: 100px 1fr; gap: 6px; align-items: start; }
+        .hw-term-body { display: grid; grid-template-columns: 110px 1fr; gap: 6px; align-items: start; }
         .hw-vert-mod {
-          width: 100px; min-height: 240px; margin: 0 auto;
+          width: 110px; min-height: 420px; margin: 0 auto;
           background: linear-gradient(145deg, #edf0f1, #bdc3c6);
           border: 1px solid #899196; border-radius: 8px; color: #111;
           position: relative; box-shadow: 0 3px 10px #0009;
         }
-        .hw-vert-mod .vhead { height: 72px; padding: 8px; font-size: 9px; border-bottom: 1px solid #a6adb0; }
-        .hw-vert-mod .vcat { text-align: center; font-weight: 800; margin-top: 8px; font-size: 11px; }
-        .hw-vert-rows { position: absolute; left: 10px; right: 10px; top: 76px; bottom: 16px; overflow: auto; }
+        .hw-vert-mod .vhead { height: 64px; padding: 6px; font-size: 9px; border-bottom: 1px solid #a6adb0; }
+        .hw-vert-mod .vcat { text-align: center; font-weight: 800; margin-top: 6px; font-size: 11px; }
+        .hw-vert-rows { position: absolute; left: 8px; right: 8px; top: 68px; bottom: 12px; overflow: auto; }
         .hw-trow {
-          height: 22px; display: grid; grid-template-columns: 24px 22px 14px; align-items: center;
+          height: 24px; display: grid; grid-template-columns: 24px 22px 14px; align-items: center;
           gap: 2px; margin-bottom: 1px; width: 100%; padding: 0; border: none; background: transparent; cursor: pointer;
         }
         .hw-trow.selected .hw-tnum { background: #10c5ff; }

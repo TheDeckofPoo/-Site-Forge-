@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "title": "RUN Evidence Authority Matrix",
+  "doc": "docs/RUN_EVIDENCE_AUTHORITY.md",
+  "confidence_levels": [
+    "PROVEN",
+    "DERIVED",
+    "ENGINEER_ASSIGNED",
+    "REVIEW_REQUIRED",
+    "UNKNOWN"
+  ],
+  "forbidden_levels": ["GUESSED", "ASSUMED", "PROBABLY"],
+  "file_resolution_precedence": [
+    "Table.rom.<MACHINE>",
+    "Table.rom",
+    "Table.asc.<MACHINE>",
+    "Table.asc"
+  ],
+  "facts": [
+    {
+      "fact": "equipment_existence",
+      "primary": ["Conveyor"],
+      "supporting": ["schema_relationships"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "equipment_type",
+      "primary": ["Conveyor.Type"],
+      "supporting": [],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "motor_chain",
+      "primary": ["Mtrchain"],
+      "supporting": ["Conveyor"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "merge_identity",
+      "primary": ["MergeBoss"],
+      "supporting": ["schema_relationships"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "merge_type",
+      "primary": ["MergeBoss"],
+      "supporting": ["MergeInputs"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "merge_lane_membership",
+      "primary": ["MergeInputs"],
+      "supporting": ["ReleaseIO", "Mtrchain"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "jam_relationship",
+      "primary": ["Jamcheck", "Jamzones"],
+      "supporting": ["schema_relationships"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "physical_io_endpoint",
+      "primary": ["Configio"],
+      "supporting": ["EIPModules", "schema"],
+      "fallback": "REVIEW_REQUIRED",
+      "notes": "Exact physical identity is authoritative; never collapse lettered identities by fuzzy name"
+    },
+    {
+      "fact": "safety_device_existence",
+      "primary": ["EStop", "Conveyor_IO", "Safety_tables"],
+      "supporting": ["schema_refs"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "safety_zone_membership",
+      "primary": ["ENGINEER_ASSIGNED"],
+      "supporting": ["RUN_proven_HIGH_only"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "display_geometry",
+      "primary": ["entryCanvas", "exitCanvas", "pathCanvas", "sourceAngle"],
+      "supporting": ["sweepDeg", "insideRadius", "b", "runB"],
+      "fallback": "deterministic_siteforge_layout"
+    },
+    {
+      "fact": "curve_display_heading",
+      "primary": ["entryCanvas->exitCanvas"],
+      "supporting": ["pathCanvas_chord", "sourceAngle"],
+      "fallback": "symbolic_angle",
+      "not_proven": ["physical_left_right_elbow"]
+    },
+    {
+      "fact": "curve_physical_elbow_chirality",
+      "primary": [],
+      "supporting": [],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "sorter_existence",
+      "primary": ["Sorters.Sorter Name"],
+      "supporting": ["SrtAppControl"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "sorter_identity",
+      "primary": ["Sorters.Sorter Name", "Sorters.Machine"],
+      "supporting": ["Encoders", "SrtAppControl"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "sorter_type",
+      "primary": [],
+      "supporting": ["name_tokens_DERIVED"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "sorter_divert_lane_topology",
+      "primary": ["SrtZoneLane"],
+      "supporting": ["SrtScanBoss"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "sorter_divert_output_io",
+      "primary": [],
+      "supporting": ["engineer_map", "Configio_when_named"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "sorter_induct_chain",
+      "primary": [],
+      "supporting": ["SrtScanBoss.ScanZone"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "sorter_motor",
+      "primary": ["SrtAppControl.SorterCnvMtr_when_valid"],
+      "supporting": ["Encoders.EnableBit"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "sorter_track_offset_trigger",
+      "primary": [],
+      "supporting": ["Encoders.Ticks_Per_Foot"],
+      "fallback": "UNKNOWN"
+    }
+  ]
+}

@@ -2427,6 +2427,33 @@
    * body on a diagonal. UI-ONLY symbol; does NOT set engineering orientation.
    * curveType remains PROVEN; physicalTurnOrientation / displayOrientation = UNKNOWN.
    */
+  /**
+   * DISPLAY direction vector for CURVE placeholder (Gate B).
+   * Uses PROVEN entry/exit (or pathCanvas chord) when available.
+   * Returns radians for UI paint only — does NOT set physical LEFT/RIGHT elbow.
+   */
+  function curveDisplayDirectionRad(n) {
+    if (n?.entryCanvas && n?.exitCanvas) {
+      const dx = Number(n.exitCanvas.x) - Number(n.entryCanvas.x);
+      const dy = Number(n.exitCanvas.y) - Number(n.entryCanvas.y);
+      if (Math.hypot(dx, dy) > 0.5) return Math.atan2(dy, dx);
+    }
+    const path = n?.pathCanvas;
+    if (Array.isArray(path) && path.length >= 2) {
+      const a = path.find((c) => String(c.cmd || '').toLowerCase() === 'move') || path[0];
+      const b = path[path.length - 1];
+      const dx = Number(b.x) - Number(a.x);
+      const dy = Number(b.y) - Number(a.y);
+      if (Math.hypot(dx, dy) > 0.5) return Math.atan2(dy, dx);
+    }
+    if (n?.sourceAngle != null && Number.isFinite(Number(n.sourceAngle))) {
+      // PROVEN field used as DISPLAY heading only (degrees → radians); not elbow chirality
+      return (-Number(n.sourceAngle) * Math.PI) / 180;
+    }
+    // Fallback symbolic angle — still UNKNOWN physical orientation
+    return (CURVE_SYMBOL.SYMBOL_ANGLE_DEG * Math.PI) / 180;
+  }
+
   function curveUnknownOrientationSymbolPath(n) {
     const bodyW = curveSymbolBodyWidth(n);
     const minLen = Math.max(CURVE_SYMBOL.MIN_LENGTH_PX, bodyW * CURVE_SYMBOL.LENGTH_STROKE_MULT);
@@ -2439,8 +2466,8 @@
       mx = Number(n.x) || 0;
       my = Number(n.y) || 0;
     }
-    // UI-only symbol angle — never treat as physicalTurnOrientation / LEFT / RIGHT
-    const ang = (CURVE_SYMBOL.SYMBOL_ANGLE_DEG * Math.PI) / 180;
+    // Align oblong with proven display vector when available; NEVER claim LEFT/RIGHT elbow
+    const ang = curveDisplayDirectionRad(n);
     const halfL = minLen / 2;
     const halfW = bodyW / 2;
     const ux = Math.cos(ang);
