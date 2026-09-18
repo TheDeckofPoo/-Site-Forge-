@@ -10379,7 +10379,7 @@ const SITE_FORGE_HELP = Object.freeze({
     { id: 'sawtooth', title: 'Sawtooth Merge', blurb: 'Collector/lane merge from RUN SawLane. Apply sawtooth → Autogen.' },
     { id: 'autogen', title: 'PLC Autogen', blurb: 'Compile hub + Export L5X Package. Soft REVIEW does not hard-block; INCLUDED ERROR does.' },
     { id: 'tools', title: 'Docs / Workspace / Recipes', blurb: 'Secondary tools. Recipes mutate RUN tables; Workspace is alternate Import.' },
-    { id: 'runtime', title: 'Runtime / Diagnostics', blurb: 'Git SHA, branch, source roots, mode. Copy Runtime Info. Feature self-check for Help, I/O ownership, VFD/IO_MAP classifiers.' },
+    { id: 'runtime', title: 'Runtime / Diagnostics', blurb: 'Git SHA, branch, source roots, mode. Copy Runtime Info. Feature self-check for Help, I/O ownership, VFD/IO_MAP classifiers. Latest site_forge log path + Reveal logs folder.' },
   ],
   workflow: [
     'RUN Import (.tar.gz)',
@@ -10395,6 +10395,7 @@ const SITE_FORGE_HELP = Object.freeze({
     'sf-runtime-sha': { tab: 'Global', purpose: 'Runtime provenance chip (short Git SHA). Opens Help → Runtime.' },
     'sf-help-copy-runtime': { tab: 'Global', purpose: 'Copy Runtime Info — provenance JSON + last diagnostics to clipboard.' },
     'sf-help-run-selfcheck': { tab: 'Global', purpose: 'Re-run feature self-check (Help drawer, I/O ownership renderer, VFD/IO_MAP classifiers).' },
+    'sf-help-reveal-logs': { tab: 'Global', purpose: 'Reveal exports/logs folder (site_forge_*.log). No full log viewer.' },
     'sf-help-inspect': { tab: 'Global', purpose: 'Inspect next control click — maps control id to SITE_FORGE_HELP purpose.' },
     'btn-io-browse-run': { tab: 'I/O', purpose: 'Load RUN .tar.gz — sets active workspace; triggers Transport Auto Build.' },
     'btn-io-clear-run': { tab: 'I/O', purpose: 'Clear loaded RUN presentation / related state.' },
@@ -10686,7 +10687,62 @@ async function runSiteForgeFeatureSelfCheck() {
         + `<span class="text-slate-500">${escapeHtml(c.id)}:</span> `
         + `<span class="text-slate-300">${escapeHtml(c.detail || '')}</span></div>`).join('');
   }
+  loadSiteForgeLogInfo().catch(() => {});
   return _sfFeatureSelfCheck;
+}
+
+/** Gate 7 — show latest site_forge_*.log path (no full viewer). */
+let _sfLogInfo = null;
+
+async function loadSiteForgeLogInfo() {
+  const host = $('sf-help-logs');
+  const api = window.fortnaAPI;
+  if (!api?.listLatestLog && !api?.getLogsDir) {
+    _sfLogInfo = { path: null, logsDir: 'exports/logs', note: 'IPC unavailable (non-Electron)' };
+    if (host) {
+      host.innerHTML = `<div class="text-slate-500">Latest log: n/a (non-Electron)</div>`
+        + `<div class="text-slate-600">Folder: exports/logs</div>`;
+    }
+    return _sfLogInfo;
+  }
+  try {
+    const latest = api.listLatestLog ? await api.listLatestLog() : null;
+    const dirRes = (!latest?.logsDir && api.getLogsDir) ? await api.getLogsDir() : null;
+    const logsDir = latest?.logsDir || dirRes?.path || 'exports/logs';
+    const logPath = latest?.path || null;
+    _sfLogInfo = { path: logPath, logsDir, count: latest?.count || 0 };
+    if (host) {
+      host.innerHTML = `<div><span class="text-slate-500">Latest log:</span> `
+        + `<span class="text-slate-300 break-all">${escapeHtml(logPath || '(none yet)')}</span></div>`
+        + `<div><span class="text-slate-500">Folder:</span> `
+        + `<span class="text-slate-300 break-all">${escapeHtml(logsDir)}</span></div>`;
+    }
+  } catch (e) {
+    _sfLogInfo = { path: null, error: String(e?.message || e) };
+    if (host) {
+      host.innerHTML = `<div class="text-amber-400">Log path unavailable: ${escapeHtml(String(e?.message || e))}</div>`;
+    }
+  }
+  return _sfLogInfo;
+}
+
+async function revealSiteForgeLogsFolder() {
+  const api = window.fortnaAPI;
+  let dir = _sfLogInfo?.logsDir;
+  try {
+    if (!dir && api?.getLogsDir) {
+      const r = await api.getLogsDir();
+      dir = r?.path;
+    }
+  } catch (_) { /* fall through */ }
+  dir = dir || 'exports/logs';
+  try {
+    if (api?.openPath) {
+      await api.openPath(dir);
+    }
+  } catch (e) {
+    console.warn('Reveal logs folder failed', e);
+  }
 }
 
 async function copyRuntimeInfo() {
@@ -10713,12 +10769,14 @@ function initSiteForgeHelp() {
     sfHelpSetOpen(true);
     loadRuntimeProvenance();
     runSiteForgeFeatureSelfCheck();
+    loadSiteForgeLogInfo();
   });
   $('sf-runtime-sha')?.addEventListener('click', () => {
     sfHelpRenderLists($('sf-help-filter')?.value || '');
     sfHelpSetOpen(true);
     loadRuntimeProvenance();
     runSiteForgeFeatureSelfCheck();
+    loadSiteForgeLogInfo();
     $('sf-help-runtime')?.scrollIntoView?.({ block: 'nearest' });
   });
   $('sf-help-close')?.addEventListener('click', () => sfHelpSetOpen(false));
@@ -10729,6 +10787,7 @@ function initSiteForgeHelp() {
   });
   $('sf-help-copy-runtime')?.addEventListener('click', () => { copyRuntimeInfo(); });
   $('sf-help-run-selfcheck')?.addEventListener('click', () => { runSiteForgeFeatureSelfCheck(); });
+  $('sf-help-reveal-logs')?.addEventListener('click', () => { revealSiteForgeLogsFolder(); });
   document.addEventListener('click', (ev) => {
     if (!$('sf-help-inspect')?.checked) return;
     if (ev.target.closest?.('#sf-help-drawer') || ev.target.closest?.('#btn-sf-help')) return;
@@ -10754,8 +10813,11 @@ function initSiteForgeHelp() {
     runFeatureSelfCheck: runSiteForgeFeatureSelfCheck,
     getRuntimeProvenance: () => _sfRuntimeProvenance,
     getLastSelfCheck: () => _sfFeatureSelfCheck,
+    getLogInfo: () => _sfLogInfo,
+    loadLogInfo: loadSiteForgeLogInfo,
   };
   loadRuntimeProvenance().catch(() => {});
+  loadSiteForgeLogInfo().catch(() => {});
 }
 
 try { initSiteForgeHelp(); } catch (e) { console.warn('Site Forge Help init failed', e); }

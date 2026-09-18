@@ -493,9 +493,21 @@ Source of truth for copy: this manual + the JS map kept in sync for high-traffic
 | Copy Runtime Info | `#sf-help-copy-runtime` | `copyRuntimeInfo()` → `fortnaAPI.clipboardWriteText` | Copies provenance + diagnostics JSON |
 | Help → Diagnostics | `#sf-help-diagnostics` | `runSiteForgeFeatureSelfCheck()` (+ IPC `runtime-feature-self-check`) | Live checks: Help DOM, `hwChannelEndpointLabel(UNRESOLVED_OWNER)`, `classifyDevice` VFD rules, python `classify_cp_io_operand` |
 | Diagnostics Re-run | `#sf-help-run-selfcheck` | `runSiteForgeFeatureSelfCheck()` | Re-exercises the same live functions |
+| Help → Logs path | `#sf-help-logs` | IPC `list-latest-log` / `get-logs-dir` | Shows latest `exports/logs/site_forge_*.log` path (no full viewer) |
+| Reveal logs folder | `#sf-help-reveal-logs` | `openPath(logsDir)` via IPC `get-logs-dir` | Opens `exports/logs` in Explorer |
 
 Launch provenance write path: `desktop/Launch-Electron.ps1` → `desktop/.runtime_build.json`; collector `tools/scripts/fortna_runtime_provenance.py`.  
 Full launcher audit: `docs/SITE_FORGE_LAUNCH_RUNTIME_PROVENANCE.md`.
+
+### Gate 7 — Site Forge logs + I/O trace CLI
+
+| Item | Path / command |
+|------|----------------|
+| Log writer | `tools/scripts/fortna_site_forge_log.py` → `append_log(event_type, payload)` |
+| Log files | `exports/logs/site_forge_<timestamp>.log` (JSON lines; runtime SHA via `fortna_runtime_provenance` when available) |
+| Hardware I/O build summary | `python tools/scripts/fortna_hardware_io_model.py --run-dir <RUN>` emits `hardware_io_model_build` log line |
+| I/O channel trace CLI | `python tools/scripts/fortna_io_channel_trace.py [--run-dir <RUN>]` — emits `io_channel_trace` summary log line via `append_log` |
+| Latest / dir helpers | `python tools/scripts/fortna_site_forge_log.py --latest` · `--logs-dir` · `--list` |
 
 ---
 
@@ -512,6 +524,7 @@ Full launcher audit: `docs/SITE_FORGE_LAUNCH_RUNTIME_PROVENANCE.md`.
 | In-product help | **YES** — Help drawer + `SITE_FORGE_HELP` map |
 | Runtime provenance UI | **YES** — Help → Runtime + `#sf-runtime-sha` + Copy Runtime Info |
 | Feature self-check (31add80) | **YES** — Help → Diagnostics (live function exercise) |
+| Site Forge logs (Gate 7) | **YES** — `exports/logs` + Help → Reveal logs folder |
 
 ---
 

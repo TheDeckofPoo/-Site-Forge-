@@ -35,9 +35,24 @@
     "ASSIGNED": "Proven RUN or engineer logical owner",
     "UNRESOLVED_OWNER": "Topology known; owner failed or conflicted — UI must not show SPARE",
     "ENGINEER_SPARE": "Engineer explicitly spared",
-    "PROVEN_SPARE": "Positive Fortna spare evidence only (Conveyor SPARE token or Configio Desc spare token) — never absence of owner join",
+    "PROVEN_SPARE": "Spare token OR mapped module unused bit (topology-only Configio Desc → CONFIGIO_MAPPED_UNUSED_BIT)",
     "UNKNOWN": "Incomplete physical endpoint"
   },
+  "rejection_reasons": [
+    "PANEL_NODE_NOT_RESOLVED",
+    "EIP_BANK_NOT_FOUND",
+    "SLOT_MISMATCH",
+    "BIT_OUT_OF_RANGE",
+    "CONFIGIO_ROW_NOT_LOADED",
+    "MODULE_TYPE_MISMATCH",
+    "OWNER_REFERENCE_TARGET_MISSING",
+    "MULTIPLE_ENDPOINT_CANDIDATES",
+    "DIRECTION_CONFLICT",
+    "OWNER_CONFLICT",
+    "CONVEYOR_RESOLVE_FAILED",
+    "CONFIGIO_SIGNAL_UNBOUND",
+    "OWNER_RESOLUTION_FAILED"
+  ],
   "symbol_classes": [
     "PHYSICAL_INPUT",
     "PHYSICAL_OUTPUT",
@@ -94,10 +109,16 @@
       "fix": "Gate G class matrix; NETWORK_DEVICE_* and LOGICAL_SIGNAL do not require physical endpoint"
     },
     {
-      "id": "missing_owner_is_spare",
-      "statement": "Missing owner on known topology is SPARE",
+      "id": "topology_desc_is_occupancy",
+      "statement": "Configio PANEL-NODE / PANEL-CATALOG Desc means every bit is occupied",
       "status": "REMOVED_FIXED",
-      "fix": "UNRESOLVED_OWNER vs PROVEN_SPARE; UI shows UNRESOLVED OWNER not SPARE"
+      "fix": "Topology addressing only; unused mapped bit → PROVEN_SPARE (CONFIGIO_MAPPED_UNUSED_BIT); non-topology signal claim unbound → UNRESOLVED_OWNER"
+    },
+    {
+      "id": "missing_owner_is_spare",
+      "statement": "Non-topology Configio signal claim + missing owner is SPARE",
+      "status": "REMOVED_FIXED",
+      "fix": "UNRESOLVED_OWNER with rejection_reason; UI shows UNRESOLVED OWNER not SPARE"
     },
     {
       "id": "unknown_auto_bool",

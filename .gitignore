@@ -38,6 +38,8 @@ exports/ignition-build/**
 !exports/ignition-build/.gitkeep
 exports/plc/**
 !exports/plc/.gitkeep
+exports/logs/**
+!exports/logs/.gitkeep
 exports/**/*.L5X
 exports/**/*.zip
 exports/**/*.svg

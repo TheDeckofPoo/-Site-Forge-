@@ -6,6 +6,8 @@ contextBridge.exposeInMainWorld('fortnaAPI', {
   close: () => ipcRenderer.send('window-close'),
   getRuntimeProvenance: () => ipcRenderer.invoke('get-runtime-provenance'),
   runtimeFeatureSelfCheck: () => ipcRenderer.invoke('runtime-feature-self-check'),
+  getLogsDir: () => ipcRenderer.invoke('get-logs-dir'),
+  listLatestLog: () => ipcRenderer.invoke('list-latest-log'),
   searchDocs: (q) => ipcRenderer.invoke('search-docs', q),
   getRecipes: () => ipcRenderer.invoke('get-recipes'),
   getDocIndex: () => ipcRenderer.invoke('get-doc-index'),

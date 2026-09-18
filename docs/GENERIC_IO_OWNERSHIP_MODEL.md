@@ -55,11 +55,11 @@ Canonical `physical_endpoint` dimensions (proven Fortna only):
 | `ASSIGNED` | Proven RUN or engineer logical owner | Active name |
 | `UNRESOLVED_OWNER` | Topology known; owner failed / conflicted | **UNRESOLVED OWNER** (amber) — not SPARE |
 | `ENGINEER_SPARE` | Engineer explicitly spared the bit | SPARE |
-| `PROVEN_SPARE` | Positive Fortna spare evidence (Conveyor SPARE / Configio Desc spare token) | `SPARE — click to name` |
+| `PROVEN_SPARE` | Positive spare token **or** mapped module bit with no Conveyor owner and only topology-form Configio Desc (`CONFIGIO_MAPPED_UNUSED_BIT`) | `SPARE — click to name` |
 | `UNKNOWN` | Incomplete physical endpoint | warn / review |
 
-`"SPARE — click to name"` is **only** for genuine spare (`PROVEN_SPARE` / `ENGINEER_SPARE`).  
-Failed owner resolution must never be labeled SPARE.
+`"SPARE — click to name"` is for genuine spare (`PROVEN_SPARE` / `ENGINEER_SPARE`), including unused points on installed modules.  
+`UNRESOLVED_OWNER` is reserved for conflict, failed named Conveyor resolve, non-topology Configio signal claims that could not bind, or explicit `owner_resolution_failed` — never for topology-only Desc.
 
 ---
 
@@ -106,9 +106,10 @@ Disposition (with WHY / provenance):
 | Configio Bank alone determines Logix slot | **REMOVED/FIXED** — EIPModules bank→slot; Desc slot corroboration; REVIEW on mismatch |
 | Name equality / prefix implies same owner (`P220`/`P220A`) | **REMOVED/FIXED** — exact identity only; lettered motors preserved |
 | All `CP_I`/`CP_O` operands are discrete physical | **REMOVED/FIXED** — class matrix; NETWORK_DEVICE_* / LOGICAL_SIGNAL need no endpoint |
-| Missing owner on known topology = SPARE | **REMOVED/FIXED** — occupied Configio claim + unresolved owner → `UNRESOLVED_OWNER`; `PROVEN_SPARE` requires spare token evidence |
+| Topology Desc (PANEL-NODE / PANEL-CATALOG) = channel occupancy | **REMOVED/FIXED** — topology addressing only; unused mapped bit → `PROVEN_SPARE` (`CONFIGIO_MAPPED_UNUSED_BIT`) |
+| Non-topology Configio signal claim + no owner = SPARE | **REMOVED/FIXED** — → `UNRESOLVED_OWNER` with `rejection_reason` |
 | Unknown symbol → invent BOOL | **REMOVED/FIXED** — Gate H dispositions |
-| Configio Desc PANEL-CATALOG / PANEL-NODE forms | **JUSTIFIED** — proven Fortna Desc patterns |
+| Configio Desc PANEL-CATALOG / PANEL-NODE forms | **JUSTIFIED** — proven Fortna Desc patterns (topology evidence, not owner names) |
 | Family-aware Data[] index (1794 vs 1734) | **JUSTIFIED** — hardware family module |
 | Conveyor.asc is engineering owner catalog for discrete points | **JUSTIFIED** — Parts → owner; Type=INVALID may be LOGICAL_SIGNAL |
 | PhysicalWordResolver is sole Hardware/IO_MAP topology authority | **JUSTIFIED** — single tree |

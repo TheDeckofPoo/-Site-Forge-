@@ -6,6 +6,7 @@ HardwareIOModel
 Hardware Family
        ├── 1794 FLEX I/O
        ├── 1734 POINT I/O
+       ├── ETHERNET_DRIVE (PowerFlex / 20-COMM / PF70 — NOT Flex AENT)
        └── future family
               ↓
       correct renderer / module semantics / L5X generation
@@ -21,6 +22,7 @@ from typing import Any, Callable
 
 FAMILY_FLEX = "1794"
 FAMILY_POINT = "1734"
+FAMILY_ETHERNET_DRIVE = "ETHERNET_DRIVE"
 FAMILY_UNKNOWN = "UNKNOWN"
 
 # Compiler-supported POINT child catalogs (must match fortna_autogen EIP_CHILD_TEMPLATE).
@@ -107,6 +109,22 @@ FAMILIES: dict[str, HardwareFamily] = {
 
 
 _CATALOG_RE = re.compile(r"^(\d{4})-([A-Za-z0-9]+)", re.I)
+# Proven EIP PowerFlex / drive catalog patterns (topology presentation only).
+# 20AD… / 20BD… = PF70-style; 22A/B/C = PF4/40/400; 25B/C = PF525/755.
+_DRIVE_CATALOG_RE = re.compile(
+    r"^(?:"
+    r"20-COMM|"
+    r"20COMM|"
+    r"20[ABCD]|"  # PF70 / PF700 / PF753 family catalogs (e.g. 20AD014A3AYNANNN)
+    r"22[ABC]|"  # PF4 / PF40 / PF400
+    r"25[ABC]|"  # PF525 / PF755
+    r"PF70|"
+    r"PF525|"
+    r"PF755|"
+    r"POWERFLEX"
+    r")",
+    re.I,
+)
 
 
 def normalize_catalog(raw: str | None) -> str:
@@ -117,11 +135,39 @@ def normalize_catalog(raw: str | None) -> str:
     return cat
 
 
+def is_ethernet_drive_catalog(catalog: str | None) -> bool:
+    """True for PowerFlex / 20-COMM / PF70 / Drive EIP catalogs — never Flex AENT."""
+    raw = str(catalog or "").strip()
+    if not raw:
+        return False
+    u = raw.upper()
+    cat = normalize_catalog(raw)
+    if "1794" in cat or "1734" in cat or "1738" in cat:
+        return False
+    if "AENT" in cat:
+        return False
+    if "POWERFLEX" in u or "PF70" in u or "PF525" in u or "PF755" in u or "PF4" in u:
+        return True
+    if "20-COMM" in u or cat.startswith("20COMM") or cat.startswith("20-COMM"):
+        return True
+    if _DRIVE_CATALOG_RE.match(cat) or _DRIVE_CATALOG_RE.match(u.replace(" ", "")):
+        return True
+    # Generic 'Drive' token only when not an I/O family catalog
+    if re.search(r"\bDRIVE\b", u) and not cat[:4].isdigit():
+        return True
+    return False
+
+
 def detect_family_from_catalog(catalog: str | None) -> str:
-    """Map a single catalog number to family id. Unknown stays UNKNOWN — never invent 1794."""
+    """Map a single catalog number to family id. Unknown stays UNKNOWN — never invent 1794.
+
+    PowerFlex / 20-COMM / PF70 drive catalogs → ETHERNET_DRIVE (not Flex AENT).
+    """
     cat = normalize_catalog(catalog)
     if not cat:
         return FAMILY_UNKNOWN
+    if is_ethernet_drive_catalog(catalog):
+        return FAMILY_ETHERNET_DRIVE
     m = _CATALOG_RE.match(cat)
     if m:
         prefix = m.group(1)
@@ -141,6 +187,7 @@ def detect_family_from_types(types: list[str] | None) -> str:
 
     Prefer explicit POINT / FLEX evidence. Do NOT default unknown → 1794.
     Mixed evidence prefers POINT if any 1734 present (never translate POINT→FLEX).
+    Drive-only sets return ETHERNET_DRIVE.
     """
     found: set[str] = set()
     for t in types or []:
@@ -151,6 +198,8 @@ def detect_family_from_types(types: list[str] | None) -> str:
         return FAMILY_POINT
     if FAMILY_FLEX in found:
         return FAMILY_FLEX
+    if FAMILY_ETHERNET_DRIVE in found:
+        return FAMILY_ETHERNET_DRIVE
     return FAMILY_UNKNOWN
 
 
@@ -178,6 +227,8 @@ def channel_capacity_for_catalog(catalog: str | None, *, connection: str = "") -
     """Digital channel capacity from catalog — family-agnostic bounds."""
     u = normalize_catalog(catalog)
     conn = (connection or "").upper()
+    if is_ethernet_drive_catalog(catalog):
+        return 0
     if conn == "HEADNODE" or "AENT" in u:
         return 0
     if any(x in u for x in ("OA8", "OB8", "IA8", "IB8")):
@@ -196,19 +247,28 @@ def max_bits_for_catalog(catalog: str | None) -> int:
 
 
 def is_adapter_catalog(catalog: str | None) -> bool:
+    """True for FLEX/POINT AENT adapters only — PowerFlex drives are never adapters."""
+    if is_ethernet_drive_catalog(catalog):
+        return False
     u = normalize_catalog(catalog)
     return "AENT" in u
 
 
 def compiler_supports_catalog(catalog: str | None) -> tuple[bool, str]:
-    """Return (ok, reason). Adapters always ok when family known; children need template."""
+    """Return (ok, reason). Adapters always ok when family known; children need template.
+
+    ETHERNET_DRIVE is topology-classification only — not an I/O child template path.
+    """
     cat = normalize_catalog(catalog)
-    fam_id = detect_family_from_catalog(cat)
+    fam_id = detect_family_from_catalog(catalog if catalog else cat)
+    if fam_id == FAMILY_ETHERNET_DRIVE:
+        # Classification only — do not activate ETHERNET_VFD_UDT generation here
+        return True, ""
     if fam_id == FAMILY_UNKNOWN:
         return False, f"Unknown hardware family for catalog: {cat or '(empty)'}"
     fam = get_family(fam_id)
     assert fam is not None
-    if is_adapter_catalog(cat):
+    if is_adapter_catalog(catalog if catalog else cat):
         # Accept known adapters; unknown AENT revision still blocks precisely
         base = cat.split("/")[0]
         if any(base.startswith(a) or a.startswith(base) for a in fam.supported_adapters):
@@ -268,6 +328,11 @@ def family_scheme_description(family: str | None) -> str:
             "1734 POINT: Data[slot] print-accurate chassis addressing "
             "(no Flex slot-1 shift)"
         )
+    if str(family or "").strip() == FAMILY_ETHERNET_DRIVE:
+        return (
+            "ETHERNET_DRIVE: PowerFlex / 20-COMM / PF70 topology presentation; "
+            "not Flex AENT; no ETHERNET_VFD_UDT auto-generation"
+        )
     return "family unknown — no Flex slot-1 assumption applied"
 
 
@@ -275,6 +340,7 @@ def family_scheme_description(family: str | None) -> str:
 RENDERER_BY_FAMILY = {
     FAMILY_FLEX: "flex",
     FAMILY_POINT: "point",
+    FAMILY_ETHERNET_DRIVE: "ethernet_drive",
 }
 
 

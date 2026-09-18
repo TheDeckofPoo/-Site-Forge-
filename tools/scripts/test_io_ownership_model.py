@@ -23,10 +23,18 @@ from fortna_hardware_io_model import (  # noqa: E402
     OWNER_ENGINEER_SPARE,
     OWNER_PROVEN_SPARE,
     OWNER_UNRESOLVED,
+    REJECTION_OWNER_CONFLICT,
     enrich_channel_ownership,
     make_physical_endpoint,
+    module_ownership_audit_pass,
     physical_endpoints_equal,
     resolve_owner_state,
+)
+from fortna_hardware_family import (  # noqa: E402
+    FAMILY_ETHERNET_DRIVE,
+    FAMILY_FLEX,
+    detect_family_from_catalog,
+    renderer_for_family,
 )
 from fortna_plc_symbol_registry import (  # noqa: E402
     LOGICAL_SIGNAL,
@@ -106,13 +114,14 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         self.assertEqual(ch["owner_state"], OWNER_UNRESOLVED)
         self.assertTrue(ch["unresolved"])
         self.assertFalse(ch.get("is_spare"))
+        self.assertEqual(ch.get("rejection_reason"), REJECTION_OWNER_CONFLICT)
         self.assertNotEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
 
     def test_configio_occupied_without_owner_is_unresolved_not_spare(self) -> None:
-        """Configio non-spare claim + owner cannot complete → UNRESOLVED_OWNER.
+        """Non-topology Configio signal claim + owner cannot complete → UNRESOLVED_OWNER.
 
         Absence of successful owner join must never become PROVEN_SPARE when
-        Configio indicates the channel is occupied/claimed.
+        Configio has a real (non-topology) occupancy/signal claim.
         """
         ep = make_physical_endpoint(
             machine="ORNCCP2",
@@ -135,8 +144,8 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         self.assertEqual(st, OWNER_UNRESOLVED)
         self.assertNotEqual(st, OWNER_PROVEN_SPARE)
 
-    def test_enrich_configio_occupied_unresolved_owner(self) -> None:
-        """Synthetic channel: valid rack/module/channel, Configio occupies, owner fails."""
+    def test_enrich_configio_signal_claim_unresolved_owner(self) -> None:
+        """Non-topology Configio Desc (signal name) + owner fails → UNRESOLVED, never SPARE."""
         ch = {
             "physical_address": "CP2RIO0:O.Data[0].0",
             "fortna_word": 200,
@@ -144,9 +153,10 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
             "direction": "O",
             "type": "1794-OA8I",
             "bit_half": "low",
-            "low_desc": "CP2-1794-OA8I-1",  # non-spare Configio Desc
-            "high_desc": "CP2-1794-OA8I-2",
+            "low_desc": "MEMWD1",  # non-topology signal/name claim
+            "high_desc": "MEMWD2",
             "owner_resolution_failed": True,
+            "configio_occupied": True,
         }
         enrich_channel_ownership(
             ch,
@@ -159,7 +169,88 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         self.assertTrue(ch["unresolved"])
         self.assertFalse(ch.get("is_spare"))
         self.assertTrue(ch.get("configio_occupied"))
+        self.assertIsNotNone(ch.get("rejection_reason"))
         self.assertNotEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
+
+    def test_topology_desc_alone_unused_bit_is_proven_spare(self) -> None:
+        """Topology Desc CP5-NODE51-1A alone ≠ occupied → unused bit PROVEN_SPARE."""
+        ch = {
+            "physical_address": "CP5RIO0:O.Data[0].0",
+            "fortna_word": 500,
+            "fortna_bit": 0,
+            "direction": "O",
+            "type": "1794-OB16P",
+            "bit_half": "low",
+            "low_desc": "CP5-NODE51-1A",
+            "configio_desc": "CP5-NODE51-1A",
+        }
+        enrich_channel_ownership(
+            ch,
+            machine="ORNCCP5",
+            claims={"owners": {}, "conflicts": {}, "spare_channels": set()},
+            adapter={"rio_name": "CP5RIO0"},
+            module={"slot": 1, "data_index": 0, "direction": "O", "type": "1794-OB16P"},
+        )
+        self.assertEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
+        self.assertEqual(ch.get("owner_source"), "CONFIGIO_MAPPED_UNUSED_BIT")
+        self.assertTrue(ch.get("is_spare"))
+        self.assertFalse(ch.get("unresolved"))
+        self.assertFalse(ch.get("configio_occupied"))
+        self.assertTrue(ch.get("configio_topology"))
+
+    def test_panel_catalog_topology_desc_unused_bit_proven_spare(self) -> None:
+        """PANEL-CATALOG Desc CP2-1794-IA16-3 alone ≠ occupied → PROVEN_SPARE."""
+        ch = {
+            "physical_address": "CP2RIO0:I.Data[1].7",
+            "fortna_word": 201,
+            "fortna_bit": 7,
+            "direction": "I",
+            "type": "1794-IA16",
+            "bit_half": "low",
+            "low_desc": "CP2-1794-IA16-3",
+        }
+        enrich_channel_ownership(
+            ch,
+            machine="ORNCCP2",
+            claims={"owners": {}, "conflicts": {}, "spare_channels": set()},
+            adapter={"rio_name": "CP2RIO0"},
+            module={"slot": 2, "data_index": 1, "direction": "I", "type": "1794-IA16"},
+        )
+        self.assertEqual(ch["owner_state"], OWNER_PROVEN_SPARE)
+        self.assertEqual(ch.get("owner_source"), "CONFIGIO_MAPPED_UNUSED_BIT")
+        self.assertFalse(ch.get("configio_occupied"))
+
+    def test_conveyor_owner_still_assigned_with_topology_desc(self) -> None:
+        """Conveyor owner still ASSIGNED even when Configio Desc is topology-only."""
+        ch = {
+            "physical_address": "CP5RIO0:O.Data[0].2",
+            "fortna_word": 500,
+            "fortna_bit": 2,
+            "direction": "O",
+            "type": "1794-OB16P",
+            "bit_half": "low",
+            "low_desc": "CP5-NODE51-1A",
+        }
+        enrich_channel_ownership(
+            ch,
+            machine="ORNCCP5",
+            claims={
+                "owners": {
+                    "CP5RIO0:O.Data[0].2": {
+                        "name": "5MCR1",
+                        "source_table": "FORTNA/Conveyor.asc",
+                    }
+                },
+                "conflicts": {},
+                "spare_channels": set(),
+            },
+            adapter={"rio_name": "CP5RIO0"},
+            module={"slot": 1, "data_index": 0, "direction": "O", "type": "1794-OB16P"},
+        )
+        self.assertEqual(ch["owner_state"], OWNER_ASSIGNED)
+        self.assertEqual(ch.get("engineering_owner"), "5MCR1")
+        self.assertEqual(ch.get("owner_source"), "RUN_CONVEYOR")
+        self.assertFalse(ch.get("is_spare"))
 
     def test_configio_spare_token_is_proven_spare(self) -> None:
         """True spare: Configio Desc SPARE token → PROVEN_SPARE."""
@@ -227,8 +318,8 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         self.assertTrue(ch.get("is_spare"))
         self.assertFalse(ch.get("unresolved"))
 
-    def test_topo_without_spare_evidence_not_proven_spare(self) -> None:
-        """Topology alone (no spare token) must not classify as PROVEN_SPARE."""
+    def test_non_topology_occupancy_without_owner_not_proven_spare(self) -> None:
+        """Real Configio occupancy/signal claim + no owner → UNRESOLVED, never SPARE."""
         ep = make_physical_endpoint(
             rio_name="CP2RIO0",
             direction="I",
@@ -247,6 +338,26 @@ class TestUnresolvedOwnerNotSpare(unittest.TestCase):
         )
         self.assertEqual(st, OWNER_UNRESOLVED)
         self.assertNotEqual(st, OWNER_PROVEN_SPARE)
+
+    def test_mapped_endpoint_without_owner_is_proven_spare(self) -> None:
+        """Mapped physical endpoint + no owner + no signal claim → PROVEN_SPARE."""
+        ep = make_physical_endpoint(
+            rio_name="CP2RIO0",
+            direction="I",
+            data_index=1,
+            bit=3,
+            module_slot=2,
+            bank_word=201,
+            module_type="1794-IA16",
+            channel="CP2RIO0:I.Data[1].3",
+        )
+        st = resolve_owner_state(
+            physical_endpoint=ep,
+            engineering_owner=None,
+            topology_known=True,
+            configio_occupied=False,
+        )
+        self.assertEqual(st, OWNER_PROVEN_SPARE)
 
 
 class TestPhysicalEndpointEqualityNotPrefix(unittest.TestCase):
@@ -499,6 +610,75 @@ class TestPlc5Plc2CollisionStillPass(unittest.TestCase):
             if found:
                 break
         self.assertTrue(found, "expected enriched channels with physical_endpoint")
+
+
+class TestPowerFlexNotFlexAent(unittest.TestCase):
+    def test_powerflex_catalog_not_renderer_flex(self) -> None:
+        for cat in (
+            "25B-D4P0N104",
+            "20-COMM-E",
+            "PowerFlex 70",
+            "PF70",
+            "20AD014A3AYNANNN",
+        ):
+            fam = detect_family_from_catalog(cat)
+            self.assertEqual(fam, FAMILY_ETHERNET_DRIVE, cat)
+            self.assertEqual(renderer_for_family(fam), "ethernet_drive", cat)
+            self.assertNotEqual(renderer_for_family(fam), "flex", cat)
+
+    def test_flex_aent_still_flex(self) -> None:
+        self.assertEqual(detect_family_from_catalog("1794-AENT"), FAMILY_FLEX)
+        self.assertEqual(renderer_for_family(FAMILY_FLEX), "flex")
+
+
+class TestModuleOwnershipAudit(unittest.TestCase):
+    def test_module_with_run_claims_cannot_pass_if_ownership_absent(self) -> None:
+        """Hardware module with RUN claims cannot PASS if all ownership absent."""
+        mod = {
+            "slot": 1,
+            "type": "1794-OB16P",
+            "channel_capacity": 16,
+            "expected_occupied": 2,
+            "channels": [
+                {
+                    "owner_state": OWNER_PROVEN_SPARE,
+                    "owner_source": "CONFIGIO_MAPPED_UNUSED_BIT",
+                    "engineering_owner": None,
+                    "sourceName": "SPARE",
+                },
+                {
+                    "owner_state": OWNER_PROVEN_SPARE,
+                    "owner_source": "CONFIGIO_MAPPED_UNUSED_BIT",
+                    "engineering_owner": None,
+                    "sourceName": "SPARE",
+                },
+            ],
+        }
+        audit = module_ownership_audit_pass(mod)
+        self.assertFalse(audit["ok"])
+        self.assertIn("RUN_CLAIMS", audit["reason"])
+
+    def test_module_with_assigned_claims_passes(self) -> None:
+        mod = {
+            "slot": 1,
+            "type": "1794-OB16P",
+            "channels": [
+                {
+                    "owner_state": OWNER_ASSIGNED,
+                    "owner_source": "RUN_CONVEYOR",
+                    "engineering_owner": "5MCR1",
+                    "logical_endpoint": {"name": "5MCR1"},
+                },
+                {
+                    "owner_state": OWNER_PROVEN_SPARE,
+                    "owner_source": "CONFIGIO_MAPPED_UNUSED_BIT",
+                    "engineering_owner": None,
+                },
+            ],
+        }
+        audit = module_ownership_audit_pass(mod)
+        self.assertTrue(audit["ok"])
+        self.assertGreaterEqual(audit["assigned"], 1)
 
 
 if __name__ == "__main__":

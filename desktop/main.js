@@ -18,6 +18,7 @@ const IGNITION_BUILD_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_i
 const IGNITION_DEPLOY_SAFE = path.join(REPO_ROOT, 'tools', 'scripts', '_deploy_designer_safe_ignition.py');
 const RUNTIME_PROVENANCE_SCRIPT = path.join(REPO_ROOT, 'tools', 'scripts', 'fortna_runtime_provenance.py');
 const RUNTIME_BUILD_JSON = path.join(__dirname, '.runtime_build.json');
+const LOGS_DIR = path.join(REPO_ROOT, 'exports', 'logs');
 const DEFAULT_AUTOGEN_LIBRARY = path.join(REPO_ROOT, 'tools', 'libraries', 'OReilly_Library_v3.L5X');
 const ACTIVE_META = path.join(REPO_ROOT, 'workspace', 'active-meta.json');
 const ACTIVE_DIR = path.join(REPO_ROOT, 'workspace', 'active');
@@ -460,6 +461,74 @@ function createWindow() {
       };
     } catch (e) {
       return { success: false, ok: false, message: e.message || String(e), checks: [] };
+    }
+  });
+
+  /** Gate 7 — Help → Diagnostics log folder helpers */
+  function ensureLogsDir() {
+    try {
+      if (!fs.existsSync(LOGS_DIR)) fs.mkdirSync(LOGS_DIR, { recursive: true });
+    } catch (_) { /* best-effort */ }
+    return LOGS_DIR;
+  }
+
+  function listSiteForgeLogs() {
+    ensureLogsDir();
+    try {
+      return fs.readdirSync(LOGS_DIR)
+        .filter((n) => /^site_forge_.*\.log$/i.test(n))
+        .map((n) => {
+          const full = path.join(LOGS_DIR, n);
+          let mtime = 0;
+          try { mtime = fs.statSync(full).mtimeMs; } catch (_) { /* skip */ }
+          return { name: n, path: full, mtime };
+        })
+        .sort((a, b) => b.mtime - a.mtime);
+    } catch (_) {
+      return [];
+    }
+  }
+
+  ipcMain.handle('get-logs-dir', async () => {
+    try {
+      const dir = ensureLogsDir();
+      return { success: true, path: dir };
+    } catch (e) {
+      return { success: false, message: e.message || String(e), path: LOGS_DIR };
+    }
+  });
+
+  ipcMain.handle('list-latest-log', async () => {
+    try {
+      ensureLogsDir();
+      // Prefer pointer written by fortna_site_forge_log.py
+      let pointerPath = null;
+      try {
+        const pointerFile = path.join(LOGS_DIR, 'site_forge_latest.path');
+        if (fs.existsSync(pointerFile)) {
+          const raw = String(fs.readFileSync(pointerFile, 'utf-8') || '').trim();
+          if (raw && fs.existsSync(raw)) pointerPath = raw;
+        }
+      } catch (_) { /* fall through to mtime scan */ }
+      const logs = listSiteForgeLogs();
+      const latest = pointerPath
+        ? { path: pointerPath, name: path.basename(pointerPath) }
+        : (logs[0] || null);
+      return {
+        success: true,
+        path: latest ? latest.path : null,
+        name: latest ? latest.name : null,
+        logsDir: ensureLogsDir(),
+        count: logs.length,
+      };
+    } catch (e) {
+      return {
+        success: false,
+        message: e.message || String(e),
+        path: null,
+        logsDir: LOGS_DIR,
+        count: 0,
+      };
     }
   });
 

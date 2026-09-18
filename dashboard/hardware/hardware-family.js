@@ -9,6 +9,7 @@
 
   const FAMILY_FLEX = '1794';
   const FAMILY_POINT = '1734';
+  const FAMILY_ETHERNET_DRIVE = 'ETHERNET_DRIVE';
   const FAMILY_UNKNOWN = 'UNKNOWN';
 
   const FAMILIES = {
@@ -24,6 +25,12 @@
       rendererId: 'point',
       adapterDefault: '1734-AENTR',
     },
+    [FAMILY_ETHERNET_DRIVE]: {
+      family: FAMILY_ETHERNET_DRIVE,
+      label: 'Ethernet Drive',
+      rendererId: 'ethernet_drive',
+      adapterDefault: '',
+    },
   };
 
   function normalizeCatalog(raw) {
@@ -33,9 +40,24 @@
     return cat;
   }
 
+  function isEthernetDriveCatalog(catalog) {
+    const raw = String(catalog || '').trim();
+    if (!raw) return false;
+    const u = raw.toUpperCase();
+    const cat = normalizeCatalog(raw);
+    if (cat.includes('1794') || cat.includes('1734') || cat.includes('1738') || cat.includes('AENT')) {
+      return false;
+    }
+    if (/POWERFLEX|PF70|PF525|PF755|\bPF4\b|20-COMM|20COMM/.test(u)) return true;
+    if (/^20[ABCD]|^22[ABC]|^25[ABC]/.test(cat)) return true;
+    if (/\bDRIVE\b/.test(u) && !/^\d{4}/.test(cat)) return true;
+    return false;
+  }
+
   function detectFamilyFromCatalog(catalog) {
     const cat = normalizeCatalog(catalog);
     if (!cat) return FAMILY_UNKNOWN;
+    if (isEthernetDriveCatalog(catalog)) return FAMILY_ETHERNET_DRIVE;
     if (cat.startsWith('1734') || cat.startsWith('1738') || cat.includes('1734') || cat.includes('1738')) {
       return FAMILY_POINT;
     }
@@ -48,23 +70,29 @@
   function detectFamilyFromModules(modules) {
     let sawPoint = false;
     let sawFlex = false;
+    let sawDrive = false;
     (modules || []).forEach((m) => {
       const explicit = String(m?.family || '').trim();
       if (explicit === FAMILY_POINT) sawPoint = true;
       if (explicit === FAMILY_FLEX) sawFlex = true;
+      if (explicit === FAMILY_ETHERNET_DRIVE) sawDrive = true;
       const fam = detectFamilyFromCatalog(m?.catalog || m?.type || '');
       if (fam === FAMILY_POINT) sawPoint = true;
       if (fam === FAMILY_FLEX) sawFlex = true;
+      if (fam === FAMILY_ETHERNET_DRIVE) sawDrive = true;
     });
     if (sawPoint) return FAMILY_POINT;
     if (sawFlex) return FAMILY_FLEX;
+    if (sawDrive) return FAMILY_ETHERNET_DRIVE;
     return FAMILY_UNKNOWN;
   }
 
   function adapterFamily(ad) {
     if (!ad) return FAMILY_UNKNOWN;
     const explicit = String(ad.family || '').trim();
-    if (explicit === FAMILY_POINT || explicit === FAMILY_FLEX) return explicit;
+    if (explicit === FAMILY_POINT || explicit === FAMILY_FLEX || explicit === FAMILY_ETHERNET_DRIVE) {
+      return explicit;
+    }
     return detectFamilyFromModules(ad.modules || []);
   }
 
@@ -72,6 +100,7 @@
     const fam = adapterFamily(ad);
     if (fam === FAMILY_POINT) return 'point';
     if (fam === FAMILY_FLEX) return 'flex';
+    if (fam === FAMILY_ETHERNET_DRIVE) return 'ethernet_drive';
     // Unknown: prefer Flex visual only when no POINT catalog present
     return 'flex';
   }
@@ -90,10 +119,14 @@
     // Group consecutive adapters by renderer so mixed sites keep both visuals
     const cards = list.map((ad) => {
       const rid = rendererIdForAdapter(ad);
+      if (rid === 'ethernet_drive') {
+        const name = String(ad?.name || ad?.rio_name || 'drive').trim();
+        return `<div class="text-sm text-slate-400 py-4 px-3 rounded border border-slate-800 bg-[#0a1018]">Ethernet drive (not Flex AENT): <span class="mono text-slate-300">${name}</span></div>`;
+      }
       if (rid === 'point' && global.PointRack && typeof global.PointRack.renderRacks === 'function') {
         return global.PointRack.renderRacks([ad], opts);
       }
-      if (global.FlexRack && typeof global.FlexRack.renderRacks === 'function') {
+      if (rid !== 'ethernet_drive' && global.FlexRack && typeof global.FlexRack.renderRacks === 'function') {
         return global.FlexRack.renderRacks([ad], opts);
       }
       return `<div class="text-sm text-slate-500 py-4 text-center">No renderer for family ${rid}</div>`;
@@ -116,9 +149,11 @@
   global.HardwareFamily = {
     FAMILY_FLEX,
     FAMILY_POINT,
+    FAMILY_ETHERNET_DRIVE,
     FAMILY_UNKNOWN,
     FAMILIES,
     normalizeCatalog,
+    isEthernetDriveCatalog,
     detectFamilyFromCatalog,
     detectFamilyFromModules,
     adapterFamily,

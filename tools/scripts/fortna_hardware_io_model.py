@@ -50,6 +50,37 @@ OWNER_STATES = (
     OWNER_UNKNOWN,
 )
 
+# UNRESOLVED_OWNER rejection reasons (enum — every unresolved channel must set one).
+REJECTION_PANEL_NODE_NOT_RESOLVED = "PANEL_NODE_NOT_RESOLVED"
+REJECTION_EIP_BANK_NOT_FOUND = "EIP_BANK_NOT_FOUND"
+REJECTION_SLOT_MISMATCH = "SLOT_MISMATCH"
+REJECTION_BIT_OUT_OF_RANGE = "BIT_OUT_OF_RANGE"
+REJECTION_CONFIGIO_ROW_NOT_LOADED = "CONFIGIO_ROW_NOT_LOADED"
+REJECTION_MODULE_TYPE_MISMATCH = "MODULE_TYPE_MISMATCH"
+REJECTION_OWNER_REFERENCE_TARGET_MISSING = "OWNER_REFERENCE_TARGET_MISSING"
+REJECTION_MULTIPLE_ENDPOINT_CANDIDATES = "MULTIPLE_ENDPOINT_CANDIDATES"
+REJECTION_DIRECTION_CONFLICT = "DIRECTION_CONFLICT"
+REJECTION_OWNER_CONFLICT = "OWNER_CONFLICT"
+REJECTION_CONVEYOR_RESOLVE_FAILED = "CONVEYOR_RESOLVE_FAILED"
+REJECTION_CONFIGIO_SIGNAL_UNBOUND = "CONFIGIO_SIGNAL_UNBOUND"
+REJECTION_OWNER_RESOLUTION_FAILED = "OWNER_RESOLUTION_FAILED"
+
+REJECTION_REASONS = (
+    REJECTION_PANEL_NODE_NOT_RESOLVED,
+    REJECTION_EIP_BANK_NOT_FOUND,
+    REJECTION_SLOT_MISMATCH,
+    REJECTION_BIT_OUT_OF_RANGE,
+    REJECTION_CONFIGIO_ROW_NOT_LOADED,
+    REJECTION_MODULE_TYPE_MISMATCH,
+    REJECTION_OWNER_REFERENCE_TARGET_MISSING,
+    REJECTION_MULTIPLE_ENDPOINT_CANDIDATES,
+    REJECTION_DIRECTION_CONFLICT,
+    REJECTION_OWNER_CONFLICT,
+    REJECTION_CONVEYOR_RESOLVE_FAILED,
+    REJECTION_CONFIGIO_SIGNAL_UNBOUND,
+    REJECTION_OWNER_RESOLUTION_FAILED,
+)
+
 _SPARE_NAME_TOKENS = frozenset(
     {"", "SPARE", "INVALID", "N/A", "NONE", "NULL", "—", "-", "(SPARE)", "(CLEARED)"}
 )
@@ -209,23 +240,40 @@ def _is_spare_token(name: str | None) -> bool:
 
 
 def _configio_desc_claim(desc: str | None) -> str:
-    """Classify a Configio Desc as spare | occupied | none (Gate D)."""
+    """Classify a Configio Desc as spare | occupied | topology | none (Gate D).
+
+    PANEL-NODE / PANEL-CATALOG Desc forms (e.g. CP5-NODE51-1A, CP2-1794-IA16-3)
+    are module topology addressing only — not engineering owner names and not
+    proof that every bit on the word is an occupied signal waiting for an owner.
+    """
     d = str(desc or "").strip()
     if not d:
         return "none"
     if _is_spare_token(d):
         return "spare"
+    try:
+        from fortna_physical_word_resolver import configio_desc_evidence
+
+        ev = configio_desc_evidence(d)
+        if ev and ev.get("form") in ("panel_node", "panel_catalog"):
+            return "topology"
+    except Exception:
+        pass
+    # Non-topology Desc (signal / name claim) → occupancy evidence
     return "occupied"
 
 
-def _channel_configio_claim(ch: dict[str, Any] | None) -> tuple[bool, bool]:
-    """Return (configio_occupied, configio_spare) from channel Configio Desc evidence.
+def _channel_configio_claim(ch: dict[str, Any] | None) -> tuple[bool, bool, bool]:
+    """Return (configio_occupied, configio_spare, configio_topology) from Desc evidence.
 
     Prefer the bit_half-appropriate Desc (low_desc / high_desc); fall back to any
     Desc stamped on the channel or its provenance.
+
+    Topology forms never count as occupancy. Occupied is reserved for non-topology
+    signal/name claims that could not bind to a Conveyor owner.
     """
     if not isinstance(ch, dict):
-        return False, False
+        return False, False, False
     bit_half = str(ch.get("bit_half") or "").strip().lower()
     prov = ch.get("provenance") if isinstance(ch.get("provenance"), dict) else {}
     ordered: list[Any] = []
@@ -242,13 +290,16 @@ def _channel_configio_claim(ch: dict[str, Any] | None) -> tuple[bool, bool]:
             ch.get("low_desc"),
         ]
     )
+    saw_topology = False
     for raw in ordered:
         claim = _configio_desc_claim(raw)
         if claim == "spare":
-            return False, True
+            return False, True, False
         if claim == "occupied":
-            return True, False
-    return False, False
+            return True, False, False
+        if claim == "topology":
+            saw_topology = True
+    return False, False, saw_topology
 
 
 def resolve_owner_state(
@@ -266,11 +317,14 @@ def resolve_owner_state(
 ) -> str:
     """Classify engineering owner relative to a physical endpoint (Gate D).
 
-    PROVEN_SPARE requires positive Fortna spare evidence (Conveyor SPARE token,
-    Configio Desc spare token, or spare_claim). Absence of a successful owner
-    join is NOT spare proof when Configio indicates the endpoint is occupied
-    (non-spare Desc) — that is UNRESOLVED_OWNER.
-    "SPARE — click to name" applies only to genuine spare states.
+    PROVEN_SPARE when:
+      - positive spare token (Conveyor SPARE / Configio Desc spare), or
+      - mapped physical endpoint + no Conveyor owner + no non-topology Configio
+        signal claim (unused point on an installed module).
+
+    UNRESOLVED_OWNER only for conflict, failed named resolve, non-topology
+    Configio signal claim that could not bind, or explicit owner_resolution_failed.
+    Topology-only Configio Desc is never occupancy.
     """
     ep = physical_endpoint if isinstance(physical_endpoint, dict) else None
     ep_ok = bool(ep and (ep.get("endpoint_id") or ep.get("channel")))
@@ -283,20 +337,92 @@ def resolve_owner_state(
     if owner_conflict or owner_resolution_failed:
         # Topology known but owner could not be bound uniquely / at all
         return OWNER_UNRESOLVED if topo else OWNER_UNKNOWN
-    # Positive spare evidence only — never invent SPARE from missing/empty owner.
-    # Empty string is a spare *token* for name filters, but not spare *proof*.
+    # Positive spare token evidence
     if spare_claim or (owner and _is_spare_token(owner)) or configio_spare:
         return OWNER_PROVEN_SPARE if topo else OWNER_UNKNOWN
-    # Occupied/claimed physical endpoint + no resolvable owner → UNRESOLVED
+    # Non-topology Configio signal/name claim + no resolvable owner → UNRESOLVED
     if topo and configio_occupied and not owner:
         return OWNER_UNRESOLVED
+    # Mapped endpoint + no owner + topology-only / empty Desc → unused module bit
     if topo and not owner:
-        # Physical endpoint known without spare proof cannot be PROVEN_SPARE
-        # by absence of owner join alone.
-        return OWNER_UNRESOLVED
+        return OWNER_PROVEN_SPARE
     if not topo and not owner:
         return OWNER_UNKNOWN
     return OWNER_UNKNOWN
+
+
+def _rejection_reason_for_unresolved(
+    *,
+    owner_conflict: bool = False,
+    owner_resolution_failed: bool = False,
+    configio_occupied: bool = False,
+    explicit_reason: str | None = None,
+) -> str:
+    """Pick a rejection_reason enum value for an UNRESOLVED_OWNER channel."""
+    raw = str(explicit_reason or "").strip().upper()
+    if raw in REJECTION_REASONS:
+        return raw
+    if owner_conflict:
+        return REJECTION_OWNER_CONFLICT
+    if raw in {"PHYSICAL_RESOLVE_FAILED", "CONVEYOR_RESOLVE_FAILED", "EMPTY_CHANNEL"}:
+        return REJECTION_CONVEYOR_RESOLVE_FAILED
+    if owner_resolution_failed:
+        return REJECTION_OWNER_RESOLUTION_FAILED
+    if configio_occupied:
+        return REJECTION_CONFIGIO_SIGNAL_UNBOUND
+    return REJECTION_OWNER_REFERENCE_TARGET_MISSING
+
+
+def module_ownership_audit_pass(module: dict[str, Any] | None) -> dict[str, Any]:
+    """Audit helper: module with RUN/Conveyor claims cannot PASS if all ownership absent.
+
+    Returns {ok, reason, expected_occupied, assigned, unresolved, spare}.
+    """
+    mod = module if isinstance(module, dict) else {}
+    channels = list(mod.get("channels") or [])
+    assigned = sum(1 for c in channels if c.get("owner_state") == OWNER_ASSIGNED)
+    unresolved = sum(1 for c in channels if c.get("owner_state") == OWNER_UNRESOLVED)
+    spare = sum(
+        1
+        for c in channels
+        if c.get("owner_state") in (OWNER_PROVEN_SPARE, OWNER_ENGINEER_SPARE)
+    )
+    # Expected occupied = Conveyor-named claims on this module's channels
+    expected = 0
+    for c in channels:
+        le = c.get("logical_endpoint") if isinstance(c.get("logical_endpoint"), dict) else None
+        name = ""
+        if le:
+            name = str(le.get("name") or "").strip()
+        if not name:
+            name = str(c.get("engineering_owner") or c.get("sourceName") or "").strip()
+        if name and not _is_spare_token(name):
+            expected += 1
+        elif c.get("owner_source") == "RUN_CONVEYOR":
+            expected += 1
+    # Explicit module-level claim count when stamped by builder
+    if mod.get("expected_occupied") is not None:
+        try:
+            expected = max(expected, int(mod.get("expected_occupied") or 0))
+        except (TypeError, ValueError):
+            pass
+    ok = True
+    reason = ""
+    if expected > 0 and assigned == 0 and unresolved == 0 and spare >= expected:
+        # All claimed points classified spare / absent ownership — fail audit
+        ok = False
+        reason = "RUN_CLAIMS_PRESENT_BUT_NO_ASSIGNED_OR_UNRESOLVED_OWNERSHIP"
+    elif expected > 0 and assigned == 0 and unresolved == 0:
+        ok = False
+        reason = "RUN_CLAIMS_PRESENT_BUT_OWNERSHIP_ABSENT"
+    return {
+        "ok": ok,
+        "reason": reason,
+        "expected_occupied": expected,
+        "assigned": assigned,
+        "unresolved": unresolved,
+        "spare": spare,
+    }
 
 def _index_conveyor_claims(resolver: PhysicalWordResolver) -> dict[str, Any]:
     """Index Conveyor.asc claims by physical channel — owners, spares, conflicts.
@@ -472,13 +598,17 @@ def enrich_channel_ownership(
 
     owner_conflict = bool(addr and addr in conflicts and len(conflicts[addr]) > 1)
     spare_claim = bool(addr and addr in spare_channels)
-    configio_occupied, configio_spare = _channel_configio_claim(ch)
+    configio_occupied, configio_spare, configio_topology = _channel_configio_claim(ch)
     # Explicit caller overrides (synthetic / known-site tests)
     if ch.get("configio_occupied") is True:
         configio_occupied = True
         configio_spare = False
+        configio_topology = False
     if ch.get("configio_spare") is True or ch.get("configio_spare_claim") is True:
         configio_spare = True
+        configio_occupied = False
+    if ch.get("configio_topology") is True:
+        configio_topology = True
         configio_occupied = False
 
     # Engineer explicit spare / clear
@@ -530,10 +660,11 @@ def enrich_channel_ownership(
         elif configio_spare:
             owner_source = "CONFIGIO_SPARE"
         else:
-            owner_source = "PROVEN_SPARE"
+            # Unused bit on installed / topology-mapped module
+            owner_source = "CONFIGIO_MAPPED_UNUSED_BIT"
     elif state == OWNER_UNRESOLVED and not engineering_owner and owner_source == "NONE":
         owner_source = (
-            "CONFIGIO_OCCUPIED_UNRESOLVED" if configio_occupied else "OWNER_UNRESOLVED"
+            "CONFIGIO_SIGNAL_UNBOUND" if configio_occupied else "OWNER_UNRESOLVED"
         )
 
     ch["engineering_owner"] = engineering_owner
@@ -542,13 +673,25 @@ def enrich_channel_ownership(
     ch["resolution_status"] = state
     ch["configio_occupied"] = bool(configio_occupied and not configio_spare)
     ch["configio_spare"] = bool(configio_spare)
+    ch["configio_topology"] = bool(configio_topology and not configio_occupied and not configio_spare)
     # Flags consumed by Hardware UI / FlexRack
     ch["unresolved"] = state == OWNER_UNRESOLVED
     ch["is_unresolved"] = state == OWNER_UNRESOLVED
     ch["is_spare"] = state in (OWNER_PROVEN_SPARE, OWNER_ENGINEER_SPARE)
+    if state == OWNER_UNRESOLVED:
+        ch["rejection_reason"] = _rejection_reason_for_unresolved(
+            owner_conflict=owner_conflict,
+            owner_resolution_failed=owner_resolution_failed,
+            configio_occupied=bool(configio_occupied and not configio_spare),
+            explicit_reason=ch.get("rejection_reason") or ch.get("resolve_fail_reason"),
+        )
+    else:
+        ch.pop("rejection_reason", None)
     if not ch.get("sourceName"):
         ch["sourceName"] = run_owner or (
-            "SPARE" if (spare_claim or configio_spare) else ""
+            "SPARE"
+            if (spare_claim or configio_spare or state == OWNER_PROVEN_SPARE)
+            else ""
         )
     if ch.get("effectiveName") is None:
         ch["effectiveName"] = engineering_owner
@@ -698,10 +841,14 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
             conn = mod.get("connection") or ""
             direction = mod.get("direction") or ""
             data_index = mod.get("data_index")
-            is_head = (conn or "").upper() == "HEADNODE" or "AENT" in (mtype or "").upper()
             mod_family = (
                 mod.get("family")
                 or detect_family_from_catalog(mtype)
+            )
+            # Drive devices are never Flex/POINT adapter cards (even if HEADNODE-tagged).
+            is_drive = str(mod_family or "") == "ETHERNET_DRIVE"
+            is_head = (not is_drive) and (
+                (conn or "").upper() == "HEADNODE" or "AENT" in (mtype or "").upper()
             )
             mod_stub = {
                 "slot": mod.get("slot"),
@@ -733,29 +880,29 @@ def build_hardware_io_model(run_dir: Path | str, machine: str = "") -> dict[str,
                 for c in channels
                 if c.get("owner_state") in (OWNER_PROVEN_SPARE, OWNER_ENGINEER_SPARE)
             )
-            modules_out.append(
-                {
-                    "slot": mod.get("slot"),
-                    "name": mod.get("name") or "",
-                    "type": mtype,
-                    "catalog": mtype,
-                    "direction": direction,
-                    "connection": conn,
-                    "family": mod_family,
-                    "data_index": data_index,
-                    "is_adapter_card": bool(is_head),
-                    "channel_capacity": capacity,
-                    "channels_used": used,
-                    "channels_unresolved": unresolved_ch,
-                    "channels_spare": spare_ch,
-                    "channels": channels,
-                    "visual_support": (
-                        "modeled"
-                        if mod_family in ("1794", "1734") and capacity >= 0
-                        else "generic"
-                    ),
-                }
-            )
+            mod_row = {
+                "slot": mod.get("slot"),
+                "name": mod.get("name") or "",
+                "type": mtype,
+                "catalog": mtype,
+                "direction": direction,
+                "connection": conn,
+                "family": mod_family,
+                "data_index": data_index,
+                "is_adapter_card": bool(is_head),
+                "channel_capacity": capacity,
+                "channels_used": used,
+                "channels_unresolved": unresolved_ch,
+                "channels_spare": spare_ch,
+                "channels": channels,
+                "visual_support": (
+                    "modeled"
+                    if mod_family in ("1794", "1734") and capacity >= 0
+                    else ("ethernet_drive" if is_drive else "generic")
+                ),
+            }
+            mod_row["ownership_audit"] = module_ownership_audit_pass(mod_row)
+            modules_out.append(mod_row)
         ad_family = (
             ad.get("family")
             or adapter_family_from_modules(modules_out)
@@ -1004,6 +1151,35 @@ def main(argv: list[str] | None = None) -> int:
         err = {"ok": False, "error": str(e)}
         print(json.dumps(err))
         return 1
+
+    # Gate 7 — summary line into exports/logs (best-effort)
+    try:
+        from fortna_site_forge_log import append_log
+
+        stats = model.get("stats") or {}
+        adapters = model.get("adapters") or []
+        mod_n = sum(len(a.get("modules") or []) for a in adapters)
+        ch_n = sum(
+            len(m.get("channels") or [])
+            for a in adapters
+            for m in (a.get("modules") or [])
+        )
+        append_log(
+            "hardware_io_model_build",
+            {
+                "ok": True,
+                "machine": (model.get("controller") or {}).get("machine"),
+                "run_dir": str(run_dir),
+                "adapters": len(adapters),
+                "modules": mod_n,
+                "channels": ch_n,
+                "owner_states": (stats.get("owner_states") or {}),
+                "unresolved_owner_count": stats.get("unresolved_owner_count"),
+                "assigned_owner_count": stats.get("assigned_owner_count"),
+            },
+        )
+    except Exception:
+        pass
 
     text = json.dumps(model, indent=2)
     if args.out:
