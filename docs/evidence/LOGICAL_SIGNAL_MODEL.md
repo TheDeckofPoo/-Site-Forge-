@@ -2,6 +2,10 @@
 
 **Machine-readable twin:** [`config/program_packs/logical_signal_model.json`](../../config/program_packs/logical_signal_model.json)
 
+**Production preservation:** [`tools/scripts/fortna_control_model.py`](../../tools/scripts/fortna_control_model.py) → workbook `control_build`  
+(`LogicalSignalModel` + `StartStopModel` + `JamZoneModel` + `FortnaEngineeringGraph`).  
+`Conveyor.Type=INVALID` on a named row may be `LOGICAL_SIGNAL` (survive). Field value `INVALID` = absent.
+
 ## What Curtis means
 
 FortnaPlus table fields such as Jam_Zones **Jammed Bit**, **Enable Bit**, **Start/Stop/Reset Button**, and Motor_Chains **Motor_Name** / **Timer_Name** / **Motor_Chained\*** are **named logical references** selectable inside FortnaPlus UI fields.

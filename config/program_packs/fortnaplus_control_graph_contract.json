@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "model": "FortnaEngineeringGraph",
+  "gate": "H",
+  "doc": "docs/evidence/FORTNAPLUS_CONTROL_GRAPH.md",
+  "status": "ARCHITECTURE_DEFINED",
+  "implementation": "NOT_STARTED",
+  "placement": {
+    "sits_on_top_of": "CP3_reference_resolver",
+    "fork_cp3": false,
+    "consumes": [
+      "artifacts/fortna-reference-graph-*.json",
+      "CP3 relationship edges"
+    ],
+    "feeds": [
+      "LogicalSignalModel",
+      "StartStopModel",
+      "JamZoneModel",
+      "TransportModel_refs"
+    ]
+  },
+  "rules": [
+    "Semantic edge types only where Fortna mnu DLIST and/or FPC docs prove meaning",
+    "Otherwise emit generic_reference",
+    "Field-value INVALID means absent — no edge",
+    "Conveyor Type=INVALID does not invalidate a resolved edge",
+    "No production site-specific decision logic"
+  ],
+  "generic_edge_types": [
+    {
+      "id": "generic_reference",
+      "meaning": "CP3 RESOLVED selection without stronger semantic label"
+    },
+    {
+      "id": "absent_selection",
+      "meaning": "Explicit INVALID/empty source value"
+    }
+  ],
+  "semantic_edge_types": [
+    {
+      "id": "jamzone_latch_signal",
+      "source": {"menu": "Jamzones", "field": "Latch Bit"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST", "FPC-StartStopZones"]
+    },
+    {
+      "id": "jamzone_jammed_signal",
+      "source": {"menu": "Jamzones", "field": "Jammed Bit"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "jamzone_enable_signal",
+      "source": {"menu": "Jamzones", "field": "Enable Bit"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST", "CombinedJamZones"]
+    },
+    {
+      "id": "jamzone_start_button",
+      "source": {"menu": "Jamzones", "field": "Start Button"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "jamzone_stop_button",
+      "source": {"menu": "Jamzones", "field": "Stop Button"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "jamzone_reset_button",
+      "source": {"menu": "Jamzones", "field": "Reset Button"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"],
+      "invalid_means": "absent"
+    },
+    {
+      "id": "jamzone_start_stop_timer",
+      "source": {"menu": "Jamzones", "field": "Start Stop Timer"},
+      "target_menu": "timemenu",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "jamzone_owner",
+      "source": {"menu": "Jamzones", "field": "Zone Owner "},
+      "target_menu": "Machine",
+      "proof": ["fortna.mnu DLIST"],
+      "schema_note": "trailing space in field name"
+    },
+    {
+      "id": "jamzone_in_start_stop_zone",
+      "source": {"menu": "Jamzones", "field": "StartStopZone"},
+      "target_menu": "StartStopZones",
+      "proof": ["fortna.mnu DLIST", "FPC-StartStopZones"]
+    },
+    {
+      "id": "jamcheck_in_jamzone",
+      "source": {"menu": "Jamcheck", "field": "Zone"},
+      "target_menu": "Jamzones",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "jamcheck_sensor",
+      "source": {"menu": "Jamcheck", "field": "Sensor_Name"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "jamcheck_conveyor",
+      "source": {"menu": "Jamcheck", "field": "Conveyor_Name"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "jamcheck_owner",
+      "source": {"menu": "Jamcheck", "field": "Jam_Owner"},
+      "target_menu": "Machine",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "mtrchain_member",
+      "source": {"menu": "Mtrchain", "field": "Motor_Chained1..10"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"],
+      "invalid_means": "absent_slot"
+    },
+    {
+      "id": "mtrchain_motor_index",
+      "source": {"menu": "Mtrchain", "field": "Motor_Ndx"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "mtrchain_aux",
+      "source": {"menu": "Mtrchain", "field": "Motor_Aux"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST", "FPC-StartStopZones latch/aux"]
+    },
+    {
+      "id": "mtrchain_enabled",
+      "source": {"menu": "Mtrchain", "field": "Enabled"},
+      "target_menu": "Conveyor",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "mtrchain_timer",
+      "source": {"menu": "Mtrchain", "field": "Timer_Name|RUN Timer_Name"},
+      "target_menu": "timemenu",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "mtrchain_horn",
+      "source": {"menu": "Mtrchain", "field": "Horn"},
+      "target_menu": "horns",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "mtrchain_stop_zone",
+      "source": {"menu": "Mtrchain", "field": "Stop Zone"},
+      "target_menu": "Jamzones",
+      "proof": ["fortna.mnu DLIST → Jamzones"],
+      "notes": "Do not map Stop Zone to StartStopZones; mnu proves Jamzones"
+    },
+    {
+      "id": "part_machine_owner",
+      "source": {"menu": "Conveyor", "field": "Machine_Name"},
+      "target_menu": "Machine",
+      "proof": ["fortna.mnu DLIST"]
+    },
+    {
+      "id": "combined_jam_enable",
+      "source": {"menu": "CombinedJamZones", "field": "JamEnableCombined"},
+      "target_menu": "Jamzones",
+      "proof": ["FPC CombinedJamZones documented relationship"]
+    }
+  ],
+  "not_semantic_yet": [
+    "engineering_area_to_start_stop_zone",
+    "finished_plc_bool_name_similarity",
+    "physical_conveyor_successor",
+    "sorter_divert_timing"
+  ],
+  "anti_cheat": {
+    "no_production_site_specific_decision_logic": true,
+    "site_names_docs_examples_only": true
+  }
+}

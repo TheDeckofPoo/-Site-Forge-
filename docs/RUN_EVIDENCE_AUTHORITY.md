@@ -55,12 +55,23 @@ Naming similarity alone must **never** outrank explicit physical or relational e
 | Engineering Fact | Primary Evidence | Supporting Evidence | Fallback |
 |------------------|------------------|---------------------|----------|
 | Equipment existence | Conveyor | schema relationships | REVIEW_REQUIRED |
-| Equipment type (STRAIGHT/CURVE/…) | Conveyor.Type | — | UNKNOWN |
+| **Part identity** (`IO_Name`) | Conveyor.`IO_Name` (Parts_Menu) | CP2 typed records | REVIEW_REQUIRED |
+| Equipment type (STRAIGHT/CURVE/…) | Conveyor.Type | convtype vocabulary | UNKNOWN |
+| **Part physical geometry** (X/Y/Length/Width) | Conveyor.`X_cord`/`Y_cord`/`Length`/`Width` | geometry calibration | REVIEW_REQUIRED |
+| **Part angle** | Conveyor.`Angle` | entry→exit DERIVED | UNKNOWN |
+| **Part curve radius** | Conveyor.`Inside_Radius` (+ tangents) | — | UNKNOWN |
 | Motor ↔ conveyor chain | Mtrchain | Conveyor | REVIEW_REQUIRED |
 | Merge identity | MergeBoss | schema relationships | UNKNOWN |
 | Merge type (SPUR/2-1/3-1) | MergeBoss | MergeInputs | UNKNOWN |
 | Merge lane membership | MergeInputs | ReleaseIO / Mtrchain | REVIEW_REQUIRED |
-| Jam relationship | Jamcheck / Jamzones | schema relationships | REVIEW_REQUIRED |
+| Jam relationship (Jamcheck↔zone) | Jamcheck / Jamzones | schema relationships | REVIEW_REQUIRED |
+| **Jam zone identity** | Jamzones.`Zone Name` | Jamcheck.`Zone`; CombinedJamZones | UNKNOWN |
+| **StartStop zone identity** | StartStopZones.`Zone Name` | Jamzones.`StartStopZone` | UNKNOWN |
+| **Zone ownership** | Jamzones.`Zone Owner ` → Machine; Jamcheck.`Jam_Owner`; Conveyor.`Machine_Name` | Configio / word ownership | REVIEW_REQUIRED |
+| **Enable / start / stop / reset selections** | Jamzones Enable/Start/Stop/Reset Button → Conveyor (CP3) | Type discriminates PB vs logical MEM | INVALID = absent |
+| **Logical signal reference** | CP3 SELECTION on Jamzones/Mtrchain → Conveyor/timemenu/… | [`LOGICAL_SIGNAL_MODEL.md`](evidence/LOGICAL_SIGNAL_MODEL.md) | INVALID = absent |
+| **Timer reference** | field → `timemenu` (e.g. Jamzones Start Stop Timer; Mtrchain Timer_Name) | timemenu ASC | PROVEN when CP3 RESOLVED |
+| **Motor-chain logical refs** | Mtrchain Motor_Ndx/Chained*/Aux/Enabled/Horn/Stop Zone (CP3) | Stop Zone DLIST → **Jamzones** | INVALID slot = absent |
 | Physical I/O endpoint | Configio | EIPModules / schema | REVIEW_REQUIRED |
 | Safety device existence | EStop / Conveyor IO / Safety tables | schema refs | REVIEW_REQUIRED |
 | Safety zone membership | ENGINEER_ASSIGNED (Safety Build) | RUN-proven only when confidence HIGH | REVIEW_REQUIRED |
@@ -82,17 +93,22 @@ Naming similarity alone must **never** outrank explicit physical or relational e
 | FortnaPlus field reference target menu | `.mnu` DLIST / `find_data_source` / CP3 graph | `artifacts/mnu-relationships.json` | UNKNOWN |
 | Jamzones enable/jam/button refs | Jamzones field → **Conveyor** / **timemenu** / **Machine** / **StartStopZones** (CP3) | Conveyor.Type classifies physical vs logical catalog row — Type=INVALID ≠ void | PROVEN target menu; REVIEW for physical endpoint |
 | Mtrchain motor/chain refs | Mtrchain field → **Conveyor** / **timemenu** / **horns** / **Jamzones** (CP3) | Conveyor.Type per member | PROVEN target menu; INVALID slot = absent |
-| Timer reference | field → `timemenu` | timer ASC | PROVEN when CP3 RESOLVED |
 | Internal / logical Conveyor signal | Conveyor catalog identity selected by Jamzones/Mtrchain (often Type=INVALID) | CP3 edge + Conveyor row | PROVEN as named ref; not a mechanical belt |
 | Absent Fortna reference | explicit `INVALID` / empty token | — | keep ABSENT (never invent BOOL) |
+| Object taxonomy class | [`FORTNAPLUS_OBJECT_TAXONOMY.md`](evidence/FORTNAPLUS_OBJECT_TAXONOMY.md) | Conveyor.Type + menu | UNKNOWN |
+| Parts geometry authority | RUN Conveyor X/Y/L/W/Angle/IR (**PRIMARY**) | Site Forge display canvas **DERIVED** | ENGINEER_ASSIGNED override |
+| StartStop/Jam PLC shape | — (not RUN) | finished PLC2/4/5 **oracle only** — [`STARTSTOP_JAM_PLC_MAPPING.md`](evidence/STARTSTOP_JAM_PLC_MAPPING.md) | NOT discovery authority |
 | Sorter_Track program architecture | — (not RUN) | PLC5 RTfinished / gold pack **oracle only** | NOT discovery authority |
 | Sorter ↔ WCS handshake tags | — (not RUN) | Dual-referenced controller tags in PLC5 oracle (34 roots) | Oracle-only; emit via WCSModel/engineer |
-| Physical I/O endpoint | Configio | EIPModules / NODE Desc | REVIEW_REQUIRED |
 
 See also:
 
 - `exports/stabilization/sorter_evidence_inventory.md` / `plc5_sorter_deep_autofill.md`
 - [`docs/evidence/LOGICAL_SIGNAL_MODEL.md`](evidence/LOGICAL_SIGNAL_MODEL.md)
+- [`docs/evidence/FORTNAPLUS_OBJECT_TAXONOMY.md`](evidence/FORTNAPLUS_OBJECT_TAXONOMY.md)
+- [`docs/evidence/FORTNAPLUS_PARTS_MODEL.md`](evidence/FORTNAPLUS_PARTS_MODEL.md)
+- [`docs/evidence/FORTNAPLUS_CONTROL_GRAPH.md`](evidence/FORTNAPLUS_CONTROL_GRAPH.md)
+- [`docs/evidence/STARTSTOP_JAM_PLC_MAPPING.md`](evidence/STARTSTOP_JAM_PLC_MAPPING.md)
 - [`docs/evidence/SORTER_TRACK_PROGRAM_PACK.md`](evidence/SORTER_TRACK_PROGRAM_PACK.md)
 - [`docs/evidence/WCS_PROGRAM_PACK.md`](evidence/WCS_PROGRAM_PACK.md)
 - [`docs/PLC_PROGRAM_PACK_ARCHITECTURE.md`](PLC_PROGRAM_PACK_ARCHITECTURE.md)

@@ -24,10 +24,38 @@
       "fallback": "REVIEW_REQUIRED"
     },
     {
+      "fact": "part_identity",
+      "primary": ["Conveyor.IO_Name"],
+      "supporting": ["Parts_Menu", "CP2_typed_records"],
+      "fallback": "REVIEW_REQUIRED",
+      "notes": "Parts_Menu UI edits Conveyor table; IO_Name is catalog identity"
+    },
+    {
       "fact": "equipment_type",
       "primary": ["Conveyor.Type"],
-      "supporting": [],
+      "supporting": ["convtype"],
+      "fallback": "UNKNOWN",
+      "notes": "Type=INVALID on a Conveyor row ≠ discard; may be logical catalog object"
+    },
+    {
+      "fact": "part_physical_geometry",
+      "primary": ["Conveyor.X_cord", "Conveyor.Y_cord", "Conveyor.Length", "Conveyor.Width"],
+      "supporting": ["RUN_GEOMETRY_CALIBRATION", "Inside_Radius", "tangents"],
+      "fallback": "REVIEW_REQUIRED",
+      "notes": "PRIMARY physical authority; Site Forge display canvas is DERIVED presentation — do not replace Transport geometry code in Gate C docs-only checkpoint"
+    },
+    {
+      "fact": "part_angle",
+      "primary": ["Conveyor.Angle"],
+      "supporting": ["entry_exit_DERIVED"],
       "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "part_curve_inside_radius",
+      "primary": ["Conveyor.Inside_Radius"],
+      "supporting": ["Infeed_Tangent", "Discharge_Tangent"],
+      "fallback": "UNKNOWN",
+      "not_proven": ["physical_left_right_elbow"]
     },
     {
       "fact": "motor_chain",
@@ -58,6 +86,54 @@
       "primary": ["Jamcheck", "Jamzones"],
       "supporting": ["schema_relationships"],
       "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "jam_zone_identity",
+      "primary": ["Jamzones.Zone Name"],
+      "supporting": ["Jamcheck.Zone", "CombinedJamZones"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "start_stop_zone_identity",
+      "primary": ["StartStopZones.Zone Name"],
+      "supporting": ["Jamzones.StartStopZone"],
+      "fallback": "UNKNOWN",
+      "notes": "StartStop zone ≠ Engineering Area"
+    },
+    {
+      "fact": "zone_ownership",
+      "primary": ["Jamzones.Zone Owner ", "Jamcheck.Jam_Owner", "Conveyor.Machine_Name"],
+      "supporting": ["Configio", "word_ownership"],
+      "fallback": "REVIEW_REQUIRED",
+      "notes": "Jamzones field name has trailing space in fortna.mnu"
+    },
+    {
+      "fact": "enable_start_stop_reset_selections",
+      "primary": ["Jamzones.Enable Bit", "Jamzones.Start Button", "Jamzones.Stop Button", "Jamzones.Reset Button"],
+      "supporting": ["Conveyor_catalog", "CP3_SELECTION"],
+      "fallback": "INVALID_means_absent",
+      "notes": "Targets are Conveyor identities (physical PB or logical/memory). INVALID = absent."
+    },
+    {
+      "fact": "timer_reference",
+      "primary": ["CP3_SELECTION_to_timemenu"],
+      "supporting": ["Jamzones.Start Stop Timer", "Mtrchain.Timer_Name", "Mtrchain.RUN Timer_Name", "timemenu.asc"],
+      "fallback": "INVALID_means_absent",
+      "notes": "PROVEN when CP3 RESOLVED"
+    },
+    {
+      "fact": "logical_signal_reference",
+      "primary": ["CP3_SELECTION_Jamzones_Mtrchain"],
+      "supporting": ["Conveyor_catalog", "timemenu", "Machine", "StartStopZones", "horns", "Jamzones"],
+      "fallback": "INVALID_means_absent",
+      "notes": "See docs/evidence/LOGICAL_SIGNAL_MODEL.md and FORTNAPLUS_OBJECT_TAXONOMY.md"
+    },
+    {
+      "fact": "motor_chain_logical_refs",
+      "primary": ["CP3_SELECTION_Mtrchain_fields"],
+      "supporting": ["Mtrchain.asc", "Conveyor_catalog", "timemenu", "horns", "Jamzones"],
+      "fallback": "INVALID_means_absent",
+      "notes": "Stop Zone DLIST target is Jamzones (fortna.mnu). Do not rewrite frozen Transportation Mtrchain behavior this checkpoint."
     },
     {
       "fact": "physical_io_endpoint",
@@ -174,6 +250,26 @@
       "notes": "Motor_Name/Timer_Name/Motor_Chained* are menu selections, not finished-PLC BOOL archaeology."
     },
     {
+      "fact": "object_taxonomy_class",
+      "primary": ["Conveyor.Type", "target_menu"],
+      "supporting": ["docs/evidence/FORTNAPLUS_OBJECT_TAXONOMY.md", "config/program_packs/fortnaplus_object_taxonomy.json"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "parts_geometry_authority",
+      "primary": ["Conveyor.X_cord", "Conveyor.Y_cord", "Conveyor.Length", "Conveyor.Width", "Conveyor.Angle", "Conveyor.Type", "Conveyor.Inside_Radius"],
+      "supporting": ["display_canvas_DERIVED", "ENGINEER_ASSIGNED_override"],
+      "fallback": "deterministic_siteforge_layout",
+      "notes": "RUN Parts geometry PRIMARY for physical; display canvas secondary. Docs-only Gate C — no Transport geometry rewrite."
+    },
+    {
+      "fact": "startstop_jam_plc_architecture",
+      "primary": [],
+      "supporting": ["finished_PLC2_oracle", "finished_PLC4_oracle", "finished_PLC5_oracle"],
+      "fallback": "NOT_DISCOVERY_AUTHORITY",
+      "notes": "Validation oracle only. See docs/evidence/STARTSTOP_JAM_PLC_MAPPING.md"
+    },
+    {
       "fact": "sorter_track_program_architecture",
       "primary": [],
       "supporting": ["finished_PLC5_oracle", "gold_Sorter_Track_Program_L5X"],
@@ -193,6 +289,76 @@
       "supporting": ["finished_PLC5_oracle_dual_referenced_controller_tags"],
       "fallback": "ENGINEER_ASSIGNED_or_WCSModel",
       "notes": "34 proven shared controller roots in PLC5 RTfinished oracle — not RUN authority"
+    },
+    {
+      "fact": "part_identity",
+      "primary": ["Conveyor.IO_Name"],
+      "supporting": ["Parts_Menu_UI", "schema"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "part_geometry_xy",
+      "primary": ["Conveyor.X_cord", "Conveyor.Y_cord"],
+      "supporting": ["Parts_Menu"],
+      "fallback": "deterministic_siteforge_layout",
+      "notes": "FortnaPlus Parts geometry is PROVEN display/config; do not silently replace accepted Transport physical-layout geometry without regression"
+    },
+    {
+      "fact": "part_angle",
+      "primary": ["Conveyor.Angle"],
+      "supporting": ["Parts_Menu"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "part_type",
+      "primary": ["Conveyor.Type"],
+      "supporting": ["convtype"],
+      "fallback": "UNKNOWN",
+      "notes": "Type=INVALID on a named row may still be a LOGICAL_SIGNAL catalog object"
+    },
+    {
+      "fact": "logical_signal_object",
+      "primary": ["Conveyor_catalog_row", "Jamzones_or_Mtrchain_SELECTION"],
+      "supporting": ["fortna_control_model.classify_conveyor_row"],
+      "fallback": "REVIEW_REQUIRED",
+      "notes": "physicalEndpoint always null for LOGICAL_SIGNAL; separate from HardwareIOModel"
+    },
+    {
+      "fact": "timer_reference",
+      "primary": ["DLIST_to_timemenu"],
+      "supporting": ["Jamzones.Start Stop Timer", "Mtrchain.Timer_Name"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "startstop_zone",
+      "primary": ["StartStopZones.Zone Name"],
+      "supporting": ["Jamzones.StartStopZone"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "jam_zone",
+      "primary": ["Jamzones.Zone Name"],
+      "supporting": ["Jamcheck.Zone", "StartStopZones"],
+      "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "zone_ownership",
+      "primary": ["Jamzones.Zone Owner"],
+      "supporting": ["Machine"],
+      "fallback": "REVIEW_REQUIRED"
+    },
+    {
+      "fact": "enable_start_stop_reset_signals",
+      "primary": ["Jamzones.Enable Bit", "Jamzones.Start Button", "Jamzones.Stop Button", "Jamzones.Reset Button"],
+      "supporting": ["Conveyor_catalog_classification"],
+      "fallback": "ABSENT_when_INVALID"
+    },
+    {
+      "fact": "motor_chain_logical_reference",
+      "primary": ["Mtrchain_SELECTION_fields"],
+      "supporting": ["Conveyor_catalog_classification"],
+      "fallback": "ABSENT_when_INVALID",
+      "notes": "Frozen Transport Mtrchain topology proofs unchanged; this fact enriches target class only"
     }
   ]
 }

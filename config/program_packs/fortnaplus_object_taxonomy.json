@@ -1,0 +1,220 @@
+{
+  "version": 1,
+  "title": "FortnaPlus Object Taxonomy",
+  "doc": "docs/evidence/FORTNAPLUS_OBJECT_TAXONOMY.md",
+  "gate": "B",
+  "status": "MODEL_DEFINED",
+  "compiler_implementation": "NOT_STARTED",
+  "invalid_semantics": {
+    "field_value_INVALID": {
+      "id": "ABSENT_REFERENCE",
+      "meaning": "Selection token INVALID/empty — explicit absent reference",
+      "action": "keep_absent_never_fabricate"
+    },
+    "conveyor_row_Type_INVALID": {
+      "id": "LOGICAL_OR_NON_MECHANICAL_CATALOG_ROW",
+      "meaning": "Conveyor catalog row with Type=INVALID remains a valid named reference target when IO_Name is usable",
+      "action": "do_not_discard_from_reference_catalog"
+    }
+  },
+  "provenance_chain": [
+    "fortna.mnu/project.mnu",
+    "CP1_find_data_source",
+    "CP2_typed_records",
+    "CP3_reference_graph",
+    "RUN_ASC"
+  ],
+  "evidence_sources": [
+    "artifacts/mnu-relationships.json",
+    "artifacts/mnu-schema.json",
+    "artifacts/fortna-reference-graph-plc2.json",
+    "artifacts/fortna-reference-graph-plc4.json",
+    "artifacts/fortna-reference-graph-plc5.json",
+    "tools/scripts/fortna_reference_resolver.py",
+    "docs/evidence/LOGICAL_SIGNAL_MODEL.md"
+  ],
+  "universal_catalogs": [
+    "Conveyor",
+    "timemenu",
+    "Machine",
+    "StartStopZones",
+    "Jamzones",
+    "horns",
+    "Errors"
+  ],
+  "conveyor_type_vocabulary_observed": [
+    "STRAIGHT",
+    "CURVE",
+    "BELT",
+    "ZEROPRESSURE",
+    "TRIANG",
+    "MOTOR",
+    "PHOTOCELL",
+    "PROXPART",
+    "BEACON",
+    "IMAGE",
+    "INVALID"
+  ],
+  "classes": [
+    {
+      "id": "mechanical_conveyor",
+      "menu": "Conveyor",
+      "identity_field": "IO_Name",
+      "type_values": ["STRAIGHT", "CURVE", "BELT", "ZEROPRESSURE", "TRIANG"],
+      "referenceable": true
+    },
+    {
+      "id": "motor_or_drive",
+      "menu": "Conveyor",
+      "identity_field": "IO_Name",
+      "type_values": ["MOTOR"],
+      "referenceable": true
+    },
+    {
+      "id": "photoeye",
+      "menu": "Conveyor",
+      "identity_field": "IO_Name",
+      "type_values": ["PHOTOCELL"],
+      "referenceable": true
+    },
+    {
+      "id": "pushbutton_or_prox",
+      "menu": "Conveyor",
+      "identity_field": "IO_Name",
+      "type_values": ["PROXPART"],
+      "referenceable": true
+    },
+    {
+      "id": "beacon_or_annunciator",
+      "menu": "Conveyor",
+      "identity_field": "IO_Name",
+      "type_values": ["BEACON"],
+      "referenceable": true
+    },
+    {
+      "id": "display_image_part",
+      "menu": "Conveyor",
+      "identity_field": "IO_Name",
+      "type_values": ["IMAGE"],
+      "referenceable": true
+    },
+    {
+      "id": "logical_internal_signal",
+      "menu": "Conveyor",
+      "identity_field": "IO_Name",
+      "type_values": ["INVALID"],
+      "referenceable": true,
+      "notes": "Only when IO_Name is a usable identity referenced by SELECTION fields; not spare placeholders"
+    },
+    {
+      "id": "spare_or_placeholder_part",
+      "menu": "Conveyor",
+      "identity_field": "IO_Name",
+      "referenceable": false,
+      "notes": "IO_Name INVALID/SPARE/blank — not a selection target"
+    },
+    {
+      "id": "timer",
+      "menu": "timemenu",
+      "identity_field": "Timer_Name",
+      "referenceable": true
+    },
+    {
+      "id": "machine_owner",
+      "menu": "Machine",
+      "identity_field": "Machine identity",
+      "referenceable": true
+    },
+    {
+      "id": "start_stop_zone",
+      "menu": "StartStopZones",
+      "identity_field": "Zone Name",
+      "referenceable": true
+    },
+    {
+      "id": "jam_zone",
+      "menu": "Jamzones",
+      "identity_field": "Zone Name",
+      "referenceable": true
+    },
+    {
+      "id": "horn",
+      "menu": "horns",
+      "identity_field": "horn identity",
+      "referenceable": true
+    },
+    {
+      "id": "error_object",
+      "menu": "Errors",
+      "identity_field": "error identity",
+      "referenceable": true
+    },
+    {
+      "id": "merge_boss",
+      "menu": "MergeBoss",
+      "referenceable": true
+    },
+    {
+      "id": "merge_input",
+      "menu": "MergeInputs",
+      "referenceable": true
+    },
+    {
+      "id": "encoder",
+      "menu": "Encoders",
+      "referenceable": true
+    },
+    {
+      "id": "configio_point",
+      "menu": "Configio",
+      "referenceable": true
+    },
+    {
+      "id": "io_card",
+      "menu": "IOCard",
+      "referenceable": true
+    },
+    {
+      "id": "absent_reference",
+      "menu": null,
+      "referenceable": false,
+      "notes": "Field-value INVALID / empty token"
+    }
+  ],
+  "validation_oracle_examples_only": [
+    {
+      "label": "Jamzones Enable Bit → logical Conveyor",
+      "source": "Jamzones.Enable Bit",
+      "raw": "ENABLE_SAWTOOTH",
+      "target": "Conveyor::ENABLE_SAWTOOTH",
+      "conveyor_type": "INVALID",
+      "cp3": "RESOLVED"
+    },
+    {
+      "label": "Jamzones Latch Bit → logical Conveyor",
+      "source": "Jamzones.Latch Bit",
+      "raw": "LATCH_TAKEAWAY",
+      "target": "Conveyor::LATCH_TAKEAWAY",
+      "conveyor_type": "INVALID",
+      "cp3": "RESOLVED"
+    },
+    {
+      "label": "Jamzones StartStopZone",
+      "source": "Jamzones.StartStopZone",
+      "raw": "SAWTOOTH, CITY, DANCE",
+      "target": "StartStopZones::SAWTOOTH, CITY, DANCE",
+      "cp3": "RESOLVED"
+    },
+    {
+      "label": "Jamzones Reset Button absent",
+      "source": "Jamzones.Reset Button",
+      "raw": "INVALID",
+      "target": null,
+      "meaning": "ABSENT_REFERENCE"
+    }
+  ],
+  "anti_cheat": {
+    "no_production_site_specific_decision_logic": true,
+    "site_names_docs_examples_only": true
+  }
+}

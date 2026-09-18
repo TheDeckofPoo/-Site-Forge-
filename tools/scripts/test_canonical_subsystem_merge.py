@@ -17,6 +17,7 @@ def merge_workbook(
     sorter=None,
     conveyors=None,
     sawtooth=None,
+    control=None,
 ) -> dict:
     """Mirrors live Sorter/Safety Apply merge: never hollow Transport or sibling builds.
 
@@ -47,6 +48,10 @@ def merge_workbook(
         out["sorter_build"] = mem["sorter_build"]
     elif disk.get("sorter_build"):
         out["sorter_build"] = disk["sorter_build"]
+    if control is not None:
+        out["control_build"] = control
+    else:
+        out["control_build"] = mem.get("control_build") or disk.get("control_build")
     return out
 
 
@@ -77,6 +82,17 @@ class TestCanonicalSubsystemMerge(unittest.TestCase):
             {},
             sorter={"sorters": [{"name": "504_BELT"}], "appliedAt": "t2"},
         )
+        # Apply/reconcile StartStop/Jam control model
+        disk = merge_workbook(
+            disk,
+            {},
+            control={
+                "version": 1,
+                "startstop": {"zone_count": 2, "zones": [{"name": "AREA_A"}]},
+                "jam": {"zone_count": 1},
+                "logical_signals": {"signal_count": 3, "referenced_count": 2},
+            },
+        )
         # Modify Transport again
         disk = merge_workbook(
             disk,
@@ -86,9 +102,20 @@ class TestCanonicalSubsystemMerge(unittest.TestCase):
                 {"conveyor": "P402", "main_area": "ZZ_A", "include": True},
             ],
         )
+        # Apply Safety again + reload shape
+        disk = merge_workbook(
+            disk,
+            {"conveyors": []},
+            safety={
+                "zones": [{"name": "ZZ_A_ESZone1", "members": ["4ES", "5ES"], "area": "ZZ_A"}],
+                "appliedAt": "t3",
+            },
+        )
         self.assertEqual(len(disk["conveyors"]), 2)
-        self.assertEqual(disk["safety_build"]["zones"][0]["name"], "ZZ_A_ESZone1")
+        self.assertEqual(disk["safety_build"]["zones"][0]["members"], ["4ES", "5ES"])
         self.assertEqual(disk["sorter_build"]["sorters"][0]["name"], "504_BELT")
+        self.assertEqual(disk["control_build"]["startstop"]["zone_count"], 2)
+        self.assertEqual(disk["control_build"]["logical_signals"]["referenced_count"], 2)
 
     def test_sorter_apply_does_not_drop_safety_when_mem_hollow(self) -> None:
         disk = {
