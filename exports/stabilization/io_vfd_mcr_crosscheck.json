@@ -1,0 +1,273 @@
+{
+  "version": 1,
+  "title": "IO / VFD / MCR known-site cross-check matrix fragment",
+  "gate": "P_fragment",
+  "generated_at": "2026-09-18",
+  "blind_test": {
+    "allowed_runs": [
+      "workspace/cp4-run",
+      "workspace/cp5-run",
+      "workspace/_plc2_run_peek"
+    ],
+    "held_back_site_inspected": false
+  },
+  "legend": {
+    "physical_in": "Configio-proven discrete input channel",
+    "physical_out": "Configio-proven discrete output channel",
+    "motor": "Motor starter run / aux",
+    "pe": "Photoeye",
+    "vfd_cmd": "VFD start/enable command (discrete)",
+    "vfd_status": "VFD running / fault status (discrete)",
+    "logical": "Conveyor catalog logical / Type=INVALID named object without treating as spare",
+    "module_comm": "Network/module comm object (not populated for VFD on these known sites)",
+    "mcr": "MCR coil command",
+    "mcr_aux": "MCR aux feedback"
+  },
+  "rows": [
+    {
+      "site": "ORNCCP2",
+      "class": "physical_out",
+      "fortna_name": "2MCR1",
+      "direction": "O",
+      "word": "200",
+      "bit": "2",
+      "physical_address": "CP2RIO0:0:O.Data.2",
+      "module_type": "1794-OA8I",
+      "canonical_ref": "CP2_MCR1 / T_2MCR1 (ES_UDT)",
+      "reference_class": "physical_discrete_io",
+      "evidence": "exports/stabilization/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP2",
+      "class": "physical_in",
+      "fortna_name": "2MCR1_AUX",
+      "direction": "I",
+      "word": "201",
+      "bit": "2",
+      "physical_address": "CP2RIO0:1:I.Data.2",
+      "module_type": "1794-IA16",
+      "canonical_ref": "ES_UDT.I.ES_OK consumer path",
+      "reference_class": "physical_discrete_io",
+      "evidence": "exports/stabilization/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP2",
+      "class": "mcr",
+      "fortna_name": "3MCR1",
+      "direction": "O",
+      "word": "300",
+      "bit": "2",
+      "physical_address": "CP3RIO0:0:O.Data.2",
+      "notes": "Distinct from 3MCR1_AUX",
+      "evidence": "exports/stabilization/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP2",
+      "class": "mcr_aux",
+      "fortna_name": "3MCR1_AUX",
+      "direction": "I",
+      "word": "301",
+      "bit": "2",
+      "physical_address": "CP3RIO0:1:I.Data.2",
+      "evidence": "exports/stabilization/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP2",
+      "class": "pe",
+      "fortna_name": "PE1000_J",
+      "direction": "I",
+      "word": "210",
+      "evidence": "exports/stabilization/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP2",
+      "class": "motor",
+      "fortna_name": "M1000",
+      "direction": "O",
+      "word": "211",
+      "evidence": "exports/stabilization/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP2",
+      "class": "motor",
+      "fortna_name": "M1000_AUX",
+      "direction": "I",
+      "word": "205",
+      "notes": "Motor aux — not MCR aux",
+      "evidence": "exports/stabilization/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP2",
+      "class": "vfd_cmd",
+      "fortna_name": null,
+      "notes": "ORNCCP2 Machine_Name owns 0 VFD Conveyor rows; no discrete VFD cmd expected",
+      "evidence": "workspace/_plc2_run_peek RUN Conveyor.asc Machine_Name filter"
+    },
+    {
+      "site": "ORNCCP2",
+      "class": "module_comm",
+      "fortna_name": null,
+      "notes": "No Ethernet VFD_UDT / PowerFlex module binding in ORNCCP2.L5X transport path",
+      "evidence": "exports/stabilization/ORNCCP2.L5X"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "vfd_cmd",
+      "fortna_name": "VFD118_EN",
+      "direction": null,
+      "word": "423",
+      "bit": "0",
+      "description": "START VFD118",
+      "canonical_ref": "P118_VFD.O.Run",
+      "reference_class": "physical_discrete_io_candidate",
+      "evidence": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "vfd_status",
+      "fortna_name": "VFD118_AUX",
+      "word": "424",
+      "bit": "0",
+      "description": "VFD118 IS RUNNING",
+      "canonical_ref": "P118_VFD.I.Auxiliary_Forward",
+      "evidence": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "vfd_status",
+      "fortna_name": "VFD118_FLT",
+      "word": "424",
+      "bit": "1",
+      "description": "VFD118 HAS FAULTED",
+      "canonical_ref": "P118_VFD.Flt.PS_Flt",
+      "evidence": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "mcr",
+      "fortna_name": "1MCR1",
+      "word": "100",
+      "bit": "2",
+      "description": "ENERGIZE MASTER CONTROL RELAY 1MCR1",
+      "type": "INVALID",
+      "reference_class": "logical_catalog_row_with_physical_candidate",
+      "evidence": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "mcr_aux",
+      "fortna_name": "1MCR1_AUX",
+      "word": "101",
+      "bit": "2",
+      "description": "MASTER CONTROL RELAY 1MCR1 IS ENERGIZED",
+      "type": "INVALID",
+      "evidence": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "pe",
+      "fortna_name": "PE104_JF",
+      "word": "105",
+      "evidence": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "motor",
+      "fortna_name": "M100",
+      "word": "102",
+      "evidence": "workspace/cp4-run/RUN/FORTNA/Conveyor.asc"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "logical",
+      "fortna_name": "1MCR1",
+      "notes": "Type=INVALID catalog row remains referenceable named object; still has word/bit candidate",
+      "evidence": "docs/evidence/FORTNAPLUS_OBJECT_TAXONOMY.md"
+    },
+    {
+      "site": "ORNCCP4",
+      "class": "module_comm",
+      "fortna_name": null,
+      "notes": "SpdControl VFD_NetCTRL/NetREF/Reset/Aux all INVALID on known sites — ethernet VFD path NOT_CONFIGURED",
+      "evidence": "workspace/cp4-run/RUN/PROJECT/SpdControl.asc"
+    },
+    {
+      "site": "ORNCCP5",
+      "class": "vfd_cmd",
+      "fortna_name": "VFD444_EN",
+      "direction": "O",
+      "word": "524",
+      "bit": "0",
+      "physical_address": "CP5RIO2:4:O.Data.0",
+      "module_type": "1794-OB16P",
+      "canonical_ref": "P444_VFD.O.Run",
+      "evidence": "exports/stabilization/plc5_hotbuild_full/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP5",
+      "class": "vfd_status",
+      "fortna_name": "VFD444_AUX",
+      "direction": "I",
+      "word": "525",
+      "bit": "0",
+      "physical_address": "CP5RIO2:5:I.Data.0",
+      "module_type": "1794-IB16",
+      "canonical_ref": "P444_VFD.I.Auxiliary_Forward",
+      "evidence": "exports/stabilization/plc5_hotbuild_full/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP5",
+      "class": "vfd_status",
+      "fortna_name": "VFD444_FLT",
+      "direction": "I",
+      "word": "525",
+      "bit": "1",
+      "physical_address": "CP5RIO2:5:I.Data.1",
+      "canonical_ref": "P444_VFD.Flt.PS_Flt",
+      "evidence": "exports/stabilization/plc5_hotbuild_full/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP5",
+      "class": "mcr",
+      "fortna_name": "5MCR1",
+      "direction": "O",
+      "word": "500",
+      "bit": "2",
+      "physical_address": "CP5RIO0:0:O.Data.2",
+      "evidence": "exports/stabilization/plc5_hotbuild_full/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP5",
+      "class": "mcr_aux",
+      "fortna_name": "5MCR1_AUX",
+      "direction": "I",
+      "word": "501",
+      "bit": "2",
+      "physical_address": "CP5RIO0:1:I.Data.2",
+      "evidence": "exports/stabilization/plc5_hotbuild_full/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP5",
+      "class": "pe",
+      "fortna_name": "PE444_P",
+      "direction": "I",
+      "word": "510",
+      "evidence": "exports/stabilization/plc5_hotbuild_full/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP5",
+      "class": "motor",
+      "fortna_name": "M440",
+      "direction": "O",
+      "word": "502",
+      "evidence": "exports/stabilization/plc5_hotbuild_full/physical_io_map.csv"
+    },
+    {
+      "site": "ORNCCP5",
+      "class": "module_comm",
+      "fortna_name": null,
+      "notes": "ORNCCP5.L5X: 29x P*_VFD Motor_Starter_UDT; Fast_Conv/Slow_Flt IO_VFD=NO_VFD; no PowerFlex ethernet modules",
+      "evidence": "exports/stabilization/plc5_hotbuild_full/ORNCCP5.L5X"
+    }
+  ]
+}

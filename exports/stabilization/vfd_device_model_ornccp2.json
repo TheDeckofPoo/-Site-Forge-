@@ -1,0 +1,41 @@
+{
+  "model": "VFDDeviceModel",
+  "generated_at": "2026-09-18T16:12:44.350938+00:00",
+  "run_dir": "workspace\\_plc2_run_peek\\RUN",
+  "machine_filter": "ORNCCP2",
+  "binding_default": "DISCRETE_MOTOR_STARTER",
+  "hardware_io_rule": "Physical channels belong in HardwareIOModel; VFDDeviceModel owns drive identity / roles / PLC UDT binding.",
+  "spdcontrol": {
+    "path": "workspace\\_plc2_run_peek\\RUN\\PROJECT\\SpdControl.asc",
+    "configured_refs": [],
+    "field_states": {
+      "VFD_NetCTRL": "INVALID_OR_EMPTY",
+      "VFD_NetREF": "INVALID_OR_EMPTY",
+      "VFD_Reset": "INVALID_OR_EMPTY",
+      "VFD_Aux": "INVALID_OR_EMPTY",
+      "VFD_RstTimer": "INVALID_OR_EMPTY"
+    },
+    "ethernet_candidate": false
+  },
+  "gpxbelt": {
+    "path": "workspace\\_plc2_run_peek\\RUN\\FORTNA\\GpxBelt.asc",
+    "configured_refs": [],
+    "field_states": {
+      "VFD_EN": "INVALID_OR_EMPTY",
+      "VFD_S1": "INVALID_OR_EMPTY",
+      "VFD_S2": "INVALID_OR_EMPTY",
+      "VFD_S3": "INVALID_OR_EMPTY"
+    }
+  },
+  "device_count": 0,
+  "devices": [],
+  "counts_by_binding": {
+    "DISCRETE_MOTOR_STARTER": 0,
+    "ETHERNET_VFD_UDT": 0
+  },
+  "notes": [
+    "Known PLC2/4/5 sites use DISCRETE_MOTOR_STARTER (P###_VFD Motor_Starter_UDT).",
+    "SpdControl VFD_Net* / VFD_Reset / VFD_Aux INVALID \u21d2 NOT_CONFIGURED ethernet path.",
+    "Do not emit VFD_UDT instances without configured network evidence."
+  ]
+}

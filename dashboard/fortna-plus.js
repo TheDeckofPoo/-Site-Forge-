@@ -362,6 +362,10 @@ function computeCompileHubReadiness() {
     const unresolvedWords = hw
       ? ((hw.unresolved_words || []).length || hw.stats?.unresolved_count || 0)
       : 0;
+    const unresolvedOwners = hw
+      ? (hw.stats?.unresolved_owner_count || 0)
+      : 0;
+    const unresolvedN = unresolvedWords + unresolvedOwners;
     const adapterN = hw ? ((hw.adapters || []).length || hw.stats?.adapter_count || 0) : 0;
     if (autogenState.lastGenerateIoMapError) {
       e.status = 'ERROR';
@@ -373,15 +377,15 @@ function computeCompileHubReadiness() {
       e.detail = 'Load RUN on I/O & Prints';
     } else if (e.dirty && e.appliedAt) {
       e.status = 'CHANGED';
-      e.unresolved = unresolvedWords;
+      e.unresolved = unresolvedN;
       e.detail = `Edited since Apply · ${formatAppliedAt(e.appliedAt)}`
-        + (hw ? ` · resolver ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s)` : '');
+        + (hw ? ` · resolver ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s) · ${unresolvedOwners} unresolved owner(s)` : '');
     } else {
-      e.status = 'READY';
-      e.unresolved = unresolvedWords;
+      e.status = unresolvedOwners > 0 ? 'REVIEW_REQUIRED' : 'READY';
+      e.unresolved = unresolvedN;
       if (!e.appliedAt) e.appliedAt = new Date().toISOString();
       e.detail = hw
-        ? `Resolver tree · ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s) · IO_MAP included`
+        ? `Resolver tree · ${adapterN} adapter(s) · ${unresolvedWords} unresolved word(s) · ${unresolvedOwners} unresolved owner(s) · IO_MAP included`
           + (e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : '')
         : `RUN loaded · IO_MAP included${e.appliedAt ? ` · applied ${formatAppliedAt(e.appliedAt)}` : ''}`;
     }
@@ -4206,12 +4210,25 @@ function renderHardwareRacks() {
   bindHwModuleClicks(tree);
 }
 
-/** Channel endpoint label: effective (engineer) name, RUN source, SPARE, or unresolved. */
+/** Channel endpoint label: effective (engineer) name, RUN source, SPARE, or UNRESOLVED OWNER.
+ * Gate D/K: "SPARE — click to name" ONLY for genuine spare — never for failed owner resolution.
+ */
 function hwChannelEndpointLabel(ch) {
-  if (!ch) return { text: 'SPARE', kind: 'spare', source: '', engineer: '', generate: true };
+  if (!ch) {
+    return {
+      text: 'SPARE',
+      kind: 'spare',
+      source: '',
+      engineer: '',
+      generate: true,
+      ownerState: 'PROVEN_SPARE',
+    };
+  }
+  const ownerState = String(ch.owner_state || ch.resolution_status || '').toUpperCase();
   const engineer = String(
     ch.engineerName
     || (ch.logical_endpoint?.engineer_override ? (ch.logical_endpoint?.name || '') : '')
+    || ch.engineering_owner
     || ''
   ).trim();
   const source = String(
@@ -4221,10 +4238,34 @@ function hwChannelEndpointLabel(ch) {
     || ''
   ).trim();
   const effective = String(
-    ch.effectiveName || engineer || source || ch.logical_endpoint?.name || ''
+    ch.effectiveName || engineer || source || ch.logical_endpoint?.name || ch.engineering_owner || ''
   ).trim();
   const generate = ch.generate !== false && !ch.muted;
-  if (effective) {
+
+  // Gate D: UNRESOLVED_OWNER is never displayed as SPARE
+  if (ownerState === 'UNRESOLVED_OWNER' || ch.unresolved === true || ch.is_unresolved === true) {
+    if (effective && !/^(SPARE|UNRESOLVED)/i.test(effective)) {
+      return {
+        text: effective,
+        kind: 'ok',
+        source,
+        engineer: engineer || '',
+        generate,
+        overridden: !!(engineer && engineer !== source),
+        ownerState: 'ASSIGNED',
+      };
+    }
+    return {
+      text: 'UNRESOLVED OWNER',
+      kind: 'warn',
+      source,
+      engineer: engineer || '',
+      generate,
+      ownerState: 'UNRESOLVED_OWNER',
+    };
+  }
+
+  if (effective && !/^(SPARE)$/i.test(effective)) {
     return {
       text: effective,
       kind: 'ok',
@@ -4232,15 +4273,33 @@ function hwChannelEndpointLabel(ch) {
       engineer: engineer || '',
       generate,
       overridden: !!(engineer && engineer !== source),
+      ownerState: ownerState || 'ASSIGNED',
     };
   }
+
   const truly = (typeof FlexRack !== 'undefined' && FlexRack.isTrulyUnresolved)
     ? FlexRack.isTrulyUnresolved(ch)
     : false;
-  if (truly) return { text: 'unresolved', kind: 'warn', source: '', engineer: '', generate };
-  return { text: 'SPARE', kind: 'spare', source: '', engineer: '', generate };
+  if (truly) {
+    return {
+      text: 'UNRESOLVED OWNER',
+      kind: 'warn',
+      source: '',
+      engineer: '',
+      generate,
+      ownerState: 'UNRESOLVED_OWNER',
+    };
+  }
+  const spareState = ownerState === 'ENGINEER_SPARE' ? 'ENGINEER_SPARE' : 'PROVEN_SPARE';
+  return {
+    text: 'SPARE',
+    kind: 'spare',
+    source: source || '',
+    engineer: '',
+    generate,
+    ownerState: spareState,
+  };
 }
-
 function hwChannelPhysicalAddress(ad, mod, bit, ch) {
   if (ch?.physical_address) return ch.physical_address;
   const dir = (mod.direction || 'I').charAt(0).toUpperCase();
@@ -4383,10 +4442,13 @@ function renderHardwareChannelTable(ad, mod) {
       : 'hw-ch-status-spare';
     const statusTxt = !ep.generate ? '○ Muted'
       : ep.kind === 'ok' ? (ep.overridden ? '● Engineer' : '● Active')
-      : ep.kind === 'warn' ? '● Unresolved'
+      : ep.kind === 'warn' ? '● UNRESOLVED OWNER'
       : '○ Spare';
-    const nameVal = ep.kind === 'spare' && !ep.engineer ? '' : ep.text;
-    const namePlaceholder = ep.kind === 'spare' ? 'SPARE — click to name' : (ep.source || 'logical name');
+    const nameVal = (ep.kind === 'spare' || ep.kind === 'warn') && !ep.engineer ? '' : ep.text;
+    // Gate K: SPARE placeholder only for genuine spare — never for UNRESOLVED OWNER
+    const namePlaceholder = ep.kind === 'warn'
+      ? 'UNRESOLVED OWNER — assign name'
+      : (ep.kind === 'spare' ? 'SPARE — click to name' : (ep.source || 'logical name'));
     return `<tr class="${selected ? 'hw-ch-selected' : ''}${!ep.generate ? ' hw-ch-muted' : ''}" data-hw-ch="${bit}" data-hw-addr="${escapeHtml(addr)}">
       <td class="mono">${bit}</td>
       <td class="mono text-cyan-200/90">${escapeHtml(addr)}</td>
@@ -4477,26 +4539,33 @@ function renderHardwareTerminalFace(ad, mod) {
     const ch = hit?.ch || null;
     const ep = hwChannelEndpointLabel(ch);
     const addr = hwChannelPhysicalAddress(ad, mod, sel, ch);
-    const cfg = `${cat.replace(/\/[A-Z]$/i, '')}/${mod.slot ?? '?'}/${sel}`;
+    const pep = ch?.physical_endpoint || {};
+    const cfg = `${cat.replace(/\/[A-Z]$/i, '')}/${mod.slot ?? pep.module_slot ?? '?'}/${sel}`;
     const typ = hwChannelDirectionLabel(mod);
+    const ownerState = ep.ownerState || ch?.owner_state || (ep.kind === 'warn' ? 'UNRESOLVED_OWNER' : (ep.kind === 'spare' ? 'PROVEN_SPARE' : 'ASSIGNED'));
     const statusHtml = !ep.generate
       ? '<span>○ Muted (excluded from IO_MAP)</span>'
       : ep.kind === 'ok'
-        ? `<span class="green">● ${ep.overridden ? 'Engineer override' : 'Active'}</span>`
+        ? `<span class="green">● ${ep.overridden ? 'Engineer override' : 'ASSIGNED'}</span>`
         : ep.kind === 'warn'
-          ? '<span class="amber">● Unresolved</span>'
-          : '<span>○ Spare</span>';
+          ? '<span class="amber">● UNRESOLVED OWNER</span>'
+          : '<span>○ SPARE</span>';
     detailHtml = `
       <div class="hw-ch-detail">
         <h3>Channel ${sel} — ${escapeHtml(ep.text)}</h3>
-        Type: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(typ)} (from physical module)<br>
-        RUN source: &nbsp;&nbsp;&nbsp; ${escapeHtml(ep.source || '—')}<br>
-        Engineer name: ${escapeHtml(ep.engineer || '—')}<br>
-        Effective: &nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ep.text)}<br>
-        ConfigIO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(cfg)}<br>
-        PLC Address: &nbsp;&nbsp;&nbsp; ${escapeHtml(addr)}<br>
-        Status: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${statusHtml}<br>
-        <span class="text-slate-500">Edit Name / Generate in the channel table. Muted channels stay visible but are not emitted to IO_MAP.</span>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Physical endpoint</div>
+        Direction: &nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(typ)} / ${escapeHtml(pep.direction || mod.direction || '—')}<br>
+        Module: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(pep.module_type || cat || '—')}<br>
+        Slot: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(String(pep.module_slot ?? mod.slot ?? '—'))}<br>
+        Channel: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(String(pep.bit ?? sel))}<br>
+        PLC Address: &nbsp;&nbsp; ${escapeHtml(pep.channel || addr)}<br>
+        ConfigIO: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(cfg)} · word ${escapeHtml(String(ch?.fortna_word ?? pep.bank_word ?? '—'))}<br>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 mt-2 mb-1">Engineering owner</div>
+        RUN source: &nbsp;&nbsp;&nbsp; ${escapeHtml(ep.source || ch?.run_source || '—')}<br>
+        Owner: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ${escapeHtml(ch?.engineering_owner || ep.engineer || ep.text || '—')}<br>
+        Owner source: &nbsp; ${escapeHtml(ch?.owner_source || '—')}<br>
+        Resolution: &nbsp;&nbsp;&nbsp; ${escapeHtml(ownerState)} · ${statusHtml}<br>
+        <span class="text-slate-500">Physical endpoint is immutable. ${ep.kind === 'warn' ? 'UNRESOLVED OWNER is not SPARE — assign a logical name.' : 'Edit Name / Generate in the channel table.'}</span>
       </div>`;
   }
 
@@ -10280,3 +10349,198 @@ init().then(() => {
   if (state.workspace) refreshIoBanks();
   return initAutogenDefaults();
 }).catch((e) => log(e.message, 'err'));
+
+/* ===== GATE N — In-product Help drawer (manual-backed control map) ===== */
+const SITE_FORGE_HELP = Object.freeze({
+  sections: [
+    { id: 'workflow', title: 'GATE O — Workflow', blurb: 'RUN Import → Auto Build → Canonical Model → Review/Correct → Apply → Autogen → PLC Compiler (Studio). Tabs edit the same project model.' },
+    { id: 'io', title: 'I/O & Prints', blurb: 'Owns active RUN + HardwareIO Name/Generate overrides. Import triggers Transport silent Auto Build.' },
+    { id: 'transport', title: 'Transport Build', blurb: 'Areas, topology, PE roles, ES zones. Apply to Autogen publishes IR; viewport Fit/Zoom are display-only.' },
+    { id: 'safety', title: 'Safety Build', blurb: 'Safety Zone membership (≠ Area). Assign Devices / Rename / Apply Safety → workbook.safety_build.' },
+    { id: 'sorter', title: 'Sorter Build', blurb: 'Induct/track/divert. Accept Derived / Edit / Commissioning. Apply sorter → Autogen.' },
+    { id: 'sawtooth', title: 'Sawtooth Merge', blurb: 'Collector/lane merge from RUN SawLane. Apply sawtooth → Autogen.' },
+    { id: 'autogen', title: 'PLC Autogen', blurb: 'Compile hub + Export L5X Package. Soft REVIEW does not hard-block; INCLUDED ERROR does.' },
+    { id: 'tools', title: 'Docs / Workspace / Recipes', blurb: 'Secondary tools. Recipes mutate RUN tables; Workspace is alternate Import.' },
+  ],
+  workflow: [
+    'RUN Import (.tar.gz)',
+    'Auto Build (silent Transport layout)',
+    'Canonical Engineering Model (all tabs)',
+    'Review / Correct',
+    'Apply (per subsystem → workbook)',
+    'Autogen Export L5X',
+    'Studio 5000 (manual open — app never launches Studio)',
+  ],
+  controls: {
+    'btn-sf-help': { tab: 'Global', purpose: 'Open this Help drawer (manual sections + control map).' },
+    'btn-io-browse-run': { tab: 'I/O', purpose: 'Load RUN .tar.gz — sets active workspace; triggers Transport Auto Build.' },
+    'btn-io-clear-run': { tab: 'I/O', purpose: 'Clear loaded RUN presentation / related state.' },
+    'hw-io-panel-select': { tab: 'I/O', purpose: 'Filter Hardware CAD by Control Panel (display).' },
+    'hw-io-rio-select': { tab: 'I/O', purpose: 'Filter Hardware CAD by Remote I/O (display).' },
+    'btn-add-remote': { tab: 'I/O', purpose: 'Add remote panel name for print OCR.' },
+    'btn-browse-remote-prints': { tab: 'I/O', purpose: 'Browse panel PDFs for OCR.' },
+    'btn-io-clear-prints': { tab: 'I/O', purpose: 'Clear panel PDFs and OCR/crosswalk results.' },
+    'btn-run-ocr': { tab: 'I/O', purpose: 'OCR prints vs tar.gz banks — diagnostic; does not rewrite Autogen.' },
+    'btn-refresh-banks': { tab: 'I/O', purpose: 'Refresh I/O banks from active RUN.' },
+    'tb-connect-mode': { tab: 'Transport', purpose: 'Connect mode: wire EXIT → ENTRY (authoritative topology when committed).' },
+    'tb-fit': { tab: 'Transport', purpose: 'Fit System — viewport only (TOP-CENTER). Display-only.' },
+    'tb-fit-system': { tab: 'Transport', purpose: 'Fit System (same as Fit). Display-only.' },
+    'tb-zoom-out': { tab: 'Transport', purpose: 'Zoom out (viewport center). Display-only.' },
+    'tb-zoom-in': { tab: 'Transport', purpose: 'Zoom in (viewport center). Display-only.' },
+    'tb-home': { tab: 'Transport', purpose: 'Home — reset zoom/pan. Display-only.' },
+    'tb-zoom-100': { tab: 'Transport', purpose: 'Reset view to 100% zoom. Display-only.' },
+    'tb-geometry-mode': { tab: 'Transport', purpose: 'Geometry authority: RUN/Physical · Engineering Override · Diagnostic.' },
+    'tb-undo': { tab: 'Transport', purpose: 'Undo canvas edit (Ctrl+Z). Restores areas/selection; save().' },
+    'tb-redo': { tab: 'Transport', purpose: 'Redo canvas edit (Ctrl+Y).' },
+    'tb-bulk-apply': { tab: 'Transport', purpose: 'Apply Area / ES to selection — provenance ENGINEER. Local until Apply to Autogen.' },
+    'tb-bulk-create-area': { tab: 'Transport', purpose: 'Create Area from Selection (name prompt — never inferred from geometry).' },
+    'tb-bulk-add-to-area': { tab: 'Transport', purpose: 'Add Selection to an existing Area.' },
+    'tb-bulk-remove-from-area': { tab: 'Transport', purpose: 'Remove Selection from Area → Unassigned.' },
+    'tb-bulk-chain': { tab: 'Transport', purpose: 'Select Chain — expand selection via connected wires (display).' },
+    'tb-bulk-terminal': { tab: 'Transport', purpose: 'Mark Terminal on selection (authoritative topology).' },
+    'tb-apply-autogen': { tab: 'Transport', purpose: 'Apply to Autogen — publish topology/Area/ES/PE into workbook. Ignores viewport/layers.' },
+    'tb-goto-build-plc': { tab: 'Transport', purpose: 'Build PLC — jump to PLC Autogen Export (navigation).' },
+    'tb-auto-build-run': { tab: 'Transport', purpose: 'Rebuild Layout from RUN (recovery). Does not invent Areas/Safety.' },
+    'tb-area-new': { tab: 'Transport', purpose: 'New Area (optional default Safety Zone).' },
+    'tb-area-delete-btn': { tab: 'Transport', purpose: 'Delete current Area.' },
+    'sb-refresh': { tab: 'Safety', purpose: 'Refresh discovery — rebuild Safety model; keep engineer overrides.' },
+    'sb-apply': { tab: 'Safety', purpose: 'Apply Safety — write safety_build into workbook (merge-safe).' },
+    'sb-rename-zone': { tab: 'Safety', purpose: 'Rename engineering_name only; RUN source_id stays immutable.' },
+    'btn-divert-accept-derived': { tab: 'Sorter', purpose: 'Accept All Derived divert PE → ENGINEER_ACCEPTED. Never UNKNOWN→PROVEN.' },
+    'btn-divert-apply-pe': { tab: 'Sorter', purpose: 'Apply PE value to selected divert rows.' },
+    'btn-divert-mark-commission': { tab: 'Sorter', purpose: 'Mark selected divert PE as COMMISSIONING.' },
+    'btn-sorter-save': { tab: 'Sorter', purpose: 'Apply sorter → Autogen workbook; hub READY or REVIEW_REQUIRED.' },
+    'btn-sorter-clear': { tab: 'Sorter', purpose: 'Clear sorter fields and reset readiness.' },
+    'btn-saw-save': { tab: 'Sawtooth', purpose: 'Apply sawtooth → Autogen workbook; hub READY or REVIEW_REQUIRED.' },
+    'btn-saw-reload-sitemodel': { tab: 'Sawtooth', purpose: 'Reload from SiteModel/RUN — discards local edits.' },
+    'btn-saw-clear': { tab: 'Sawtooth', purpose: 'Clear sawtooth config.' },
+    'btn-autogen-from-run': { tab: 'Autogen', purpose: 'Export L5X Package (Build PLC). Writes exports; does not launch Studio.' },
+    'btn-autogen-workbook-build': { tab: 'Autogen', purpose: 'Refresh site config from RUN (keeps edits).' },
+    'btn-autogen-workbook-save': { tab: 'Autogen', purpose: 'Save Autogen workbook to disk.' },
+    'btn-hub-from-transport': { tab: 'Autogen', purpose: 'Pull Transport Build graph into Autogen workbook.' },
+    'btn-hub-save-transport-wb': { tab: 'Autogen', purpose: 'Save Autogen workbook to disk.' },
+    'btn-clear-project-builds': { tab: 'Autogen', purpose: 'Clear current project builds (not libraries/docs/fixtures).' },
+    'btn-browse-archive': { tab: 'Workspace', purpose: 'Browse RUN archive (alternate Import).' },
+    'btn-clear-workspace': { tab: 'Workspace', purpose: 'Clear workspace extract (workbook kept by design).' },
+    'btn-apply': { tab: 'Recipes', purpose: 'Apply selected recipe to RUN tables (not Autogen workbook Apply).' },
+    'btn-reindex': { tab: 'Docs', purpose: 'Reindex documentation for search.' },
+  },
+});
+
+function sfHelpSetOpen(open) {
+  const drawer = $('sf-help-drawer');
+  const backdrop = $('sf-help-backdrop');
+  if (!drawer) return;
+  const on = !!open;
+  drawer.dataset.open = on ? '1' : '0';
+  drawer.setAttribute('aria-hidden', on ? 'false' : 'true');
+  if (backdrop) {
+    backdrop.dataset.open = on ? '1' : '0';
+    backdrop.setAttribute('aria-hidden', on ? 'false' : 'true');
+  }
+  if (!on) {
+    const insp = $('sf-help-inspect');
+    if (insp) insp.checked = false;
+    document.body.classList.remove('sf-help-inspect');
+  }
+}
+
+function sfHelpShowControl(id, meta) {
+  const detail = $('sf-help-detail');
+  if (!detail) return;
+  const m = meta || SITE_FORGE_HELP.controls[id];
+  if (!m) {
+    detail.classList.remove('hidden');
+    detail.innerHTML = `<div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">Control</div>
+      <div class="mono text-cyan-200">#${escapeHtml(id || '—')}</div>
+      <div class="text-slate-500 mt-1">No help entry yet — see docs/SITE_FORGE_ENGINEERING_UI_MANUAL.md</div>`;
+    return;
+  }
+  detail.classList.remove('hidden');
+  detail.innerHTML = `<div class="text-[10px] uppercase tracking-wider text-slate-500 mb-1">${escapeHtml(m.tab || 'Control')}</div>
+    <div class="mono text-cyan-200">#${escapeHtml(id)}</div>
+    <div class="text-slate-300 mt-1 leading-relaxed">${escapeHtml(m.purpose || '')}</div>`;
+}
+
+function sfHelpRenderLists(filter) {
+  const q = String(filter || '').trim().toLowerCase();
+  const secHost = $('sf-help-sections');
+  const ctlHost = $('sf-help-controls');
+  const wfHost = $('sf-help-workflow');
+  if (wfHost && !wfHost.dataset.ready) {
+    wfHost.innerHTML = SITE_FORGE_HELP.workflow.map((s) => `<li>${escapeHtml(s)}</li>`).join('');
+    wfHost.dataset.ready = '1';
+  }
+  if (secHost) {
+    secHost.innerHTML = SITE_FORGE_HELP.sections
+      .filter((s) => !q || s.title.toLowerCase().includes(q) || s.blurb.toLowerCase().includes(q))
+      .map((s) => `<li class="rounded-lg border border-slate-800 bg-[#0a1018] px-2 py-1.5">
+        <div class="text-cyan-200/90 font-medium">${escapeHtml(s.title)}</div>
+        <div class="text-slate-500 leading-relaxed mt-0.5">${escapeHtml(s.blurb)}</div>
+      </li>`).join('') || '<li class="text-slate-600">No sections match</li>';
+  }
+  if (ctlHost) {
+    const entries = Object.entries(SITE_FORGE_HELP.controls)
+      .filter(([id, m]) => !q
+        || id.toLowerCase().includes(q)
+        || (m.tab || '').toLowerCase().includes(q)
+        || (m.purpose || '').toLowerCase().includes(q));
+    ctlHost.innerHTML = entries.map(([id, m]) =>
+      `<li><button type="button" class="sf-help-ctl w-full text-left rounded-lg border border-slate-800 hover:border-cyan-800/50 bg-[#0a1018] px-2 py-1.5"
+        data-help-id="${escapeHtml(id)}">
+        <div class="flex gap-2 items-baseline"><span class="mono text-cyan-300/90 text-[10px]">#${escapeHtml(id)}</span>
+          <span class="text-[9px] text-slate-600 uppercase">${escapeHtml(m.tab || '')}</span></div>
+        <div class="text-slate-400 leading-snug mt-0.5">${escapeHtml(m.purpose || '')}</div>
+      </button></li>`).join('') || '<li class="text-slate-600">No controls match</li>';
+    ctlHost.querySelectorAll('.sf-help-ctl').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const id = btn.getAttribute('data-help-id') || '';
+        sfHelpShowControl(id);
+        const el = id ? document.getElementById(id) : null;
+        if (el) {
+          try {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList?.add?.('ring-2', 'ring-cyan-500/60');
+            setTimeout(() => el.classList?.remove?.('ring-2', 'ring-cyan-500/60'), 1400);
+          } catch (_) { /* ignore */ }
+        }
+      });
+    });
+  }
+}
+
+function initSiteForgeHelp() {
+  const openBtn = $('btn-sf-help');
+  if (!openBtn || openBtn.dataset.helpBound) return;
+  openBtn.dataset.helpBound = '1';
+  openBtn.addEventListener('click', () => {
+    sfHelpRenderLists($('sf-help-filter')?.value || '');
+    sfHelpSetOpen(true);
+  });
+  $('sf-help-close')?.addEventListener('click', () => sfHelpSetOpen(false));
+  $('sf-help-backdrop')?.addEventListener('click', () => sfHelpSetOpen(false));
+  $('sf-help-filter')?.addEventListener('input', (ev) => sfHelpRenderLists(ev.target.value));
+  $('sf-help-inspect')?.addEventListener('change', (ev) => {
+    document.body.classList.toggle('sf-help-inspect', !!ev.target.checked);
+  });
+  document.addEventListener('click', (ev) => {
+    if (!$('sf-help-inspect')?.checked) return;
+    if (ev.target.closest?.('#sf-help-drawer') || ev.target.closest?.('#btn-sf-help')) return;
+    const hit = ev.target.closest?.('[id]');
+    if (!hit || !hit.id) return;
+    ev.preventDefault();
+    ev.stopPropagation();
+    sfHelpShowControl(hit.id);
+    $('sf-help-inspect').checked = false;
+    document.body.classList.remove('sf-help-inspect');
+    if ($('sf-help-drawer')?.dataset.open !== '1') {
+      sfHelpRenderLists($('sf-help-filter')?.value || '');
+      sfHelpSetOpen(true);
+    }
+  }, true);
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape' && $('sf-help-drawer')?.dataset.open === '1') sfHelpSetOpen(false);
+  });
+}
+
+try { initSiteForgeHelp(); } catch (e) { console.warn('Site Forge Help init failed', e); }

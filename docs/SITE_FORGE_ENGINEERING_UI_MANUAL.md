@@ -1,24 +1,73 @@
 # Site Forge Engineering UI Manual
 
-**Gate 1 — Current implementation as traced from dashboard + desktop IPC (feature/plc2-transport-fidelity).**  
+**Gates L / M / N / O — CURRENT implementation traced from source (feature/plc2-transport-fidelity).**  
 Sources: `dashboard/index.html`, `dashboard/fortna-plus.js`, `dashboard/transport-build.js`, `dashboard/transport-build-pass2.js`, `dashboard/safety-build.js`, `desktop/main.js`, `desktop/preload.js`.  
-This document describes the UI that exists today. It does not redesign screens.
+This document describes the UI that exists today. It does not invent screens or held-back sites.
+
+In-product help: header **?** opens a Help drawer (`#sf-help-drawer`) keyed by control `id` via `SITE_FORGE_HELP` in `fortna-plus.js`.
 
 ---
 
-## Compact workflow
+## GATE O — Engineering workflow
 
 ```
-RUN (.tar.gz)
-  → Auto Build (layout from RUN physical geometry; silent on import)
-  → Canonical Engineering Model (Transport canvas · Safety · Sorter · Sawtooth · HardwareIO)
-  → Engineer Review / Edit
-  → Apply (per subsystem → workspace/autogen_workbook.json)
+RUN Import (.tar.gz on I/O & Prints or Workspace)
+  → Auto Build (silent Transport layout from RUN physical geometry)
+  → Canonical Engineering Model
+        (same project model edited by every tab:
+         Transport canvas · Safety · Sorter · Sawtooth · Hardware I/O · Autogen workbook)
+  → Review / Correct (engineer edits; REVIEW_REQUIRED is soft unless ERROR on INCLUDED)
+  → Apply (per subsystem → workspace/autogen_workbook.json + readiness appliedAt)
   → Autogen (Export L5X Package → fortna_autogen.py)
-  → PLC Compiler (Studio 5000 opens L5X as NEW project; app never launches Studio)
+  → PLC Compiler (Studio 5000 opens L5X as a NEW project; Site Forge never launches Studio)
 ```
 
-Transport strip mirrors the same path: Import RUN → Layout → Review/Correct → Apply to Autogen → Build PLC (`#tb-workflow-strip`).
+Transport strip (`#tb-workflow-strip`): **Import RUN → Layout → Review/Correct → Apply to Autogen → Build PLC**.
+
+### Same canonical project model
+
+All primary tabs edit facets of **one** project:
+
+| Facet | Live draft | Published on Apply |
+|-------|------------|--------------------|
+| Transport Areas / topology / PE / ES zone names | localStorage `siteforge.transportBuild.v2` | workbook conveyors / areas / merges via `transport-apply-autogen` |
+| Safety Zones / membership | `siteforge.safetyBuild.v1` | `workbook.safety_build` |
+| Sorter induct / track / divert | `fortna_sorter_build` | `workbook.sorter_build` |
+| Sawtooth collector / lanes | `fortna_sawtooth_build` | `workbook.sawtooth_build` |
+| Hardware channel Name / Generate | (immediate IPC) | `workspace/hardware_io_overrides.json` |
+| Site config / packs | memory `autogenState.workbook` | `workspace/autogen_workbook.json` |
+
+### Lifecycle vocabulary (Found / Active / Included / Generated)
+
+From `autogenBuildPreflight()` / Compile Hub / Safety emit contract (`FOUND≠INCLUDED≠GENERATED`):
+
+| Term | Meaning in product |
+|------|--------------------|
+| **FOUND** | RUN evidence discovered; not yet Applied / not INCLUDED. Soft — does **not** hard-block Export. |
+| **ACTIVE** | Currently selected panel / zone / selection in the editor (UI focus). Not a publish state. |
+| **CONFIGURED** | Engineer edited the local draft model (dirty / CHANGED since last Apply). |
+| **INCLUDED** | Apply wrote into workbook + readiness `appliedAt` (or READY). Pack is eligible for emit. |
+| **GENERATED** | Present in last L5X emit report (e.g. Safe_Logic members actually emitted). |
+| **UNASSIGNED** | Discovered but not membership-assigned. ≠ ERROR ≠ SAFE. |
+
+Hub labels: `NOT DETECTED` · `DETECTED — REVIEW REQUIRED` · `CHANGED SINCE LAST APPLY` · `READY FOR AUTOGEN` · `ERROR / BLOCKED`.
+
+Hard-block Export only when: mandatory pack ERROR, an **INCLUDED** subsystem is ERROR, or Safety emit ERROR. Soft REVIEW_REQUIRED (partial Safety, unapplied Saw/Sorter, FOUND conveyors) allows Partial Build when `partialBuildAllowed`.
+
+### Provenance / authority vocabulary (where they exist)
+
+| Token | Where used | Meaning |
+|-------|------------|---------|
+| **PROVEN** / **PROVEN_RUN** / **AUTO_RUN_PROVEN** / **RUN_EXPLICIT** | Transport geometry, Safety membership, Sorter divert/track PE | Direct RUN / decoder evidence |
+| **DERIVED** / **RUN_DERIVED** | Sorter divert PE / tracking offset; Transport presentation offsets | Computed from RUN — Accept or Edit; never invent |
+| **ENGINEER_ASSIGNED** / **ENGINEER** | Area/ES bulk apply, Safety assign/rename, geometry override | Engineer authored |
+| **ENGINEER_ACCEPTED** | Sorter review Accept derived | Engineer accepted DERIVED without changing value |
+| **ENGINEER_REQUIRED** | Sorter / Saw unresolved fields | Must edit before READY |
+| **REVIEW_REQUIRED** | Hub, Safety zones, Sorter review panel | Soft review; fail-safe membership |
+| **COMMISSIONING** | Sorter tracking offset / divert Mark Commissioning | Field deferred to site commission |
+| **OPTIONAL** | Sorter optional fields | Informational — never merged into REVIEW_REQUIRED |
+| **UNKNOWN** | Missing PE role, CURVE orientation, unplaced geometry | Not inventable; may block PE ROLE REQUIRED emit |
+| **FALLBACK_LAYOUT** / **DERIVED_TOPOLOGY** | Transport Auto Layout | Presentation only; never overwrites PROVEN_RUN / ENGINEER_ASSIGNED |
 
 ---
 
@@ -33,297 +82,360 @@ Transport strip mirrors the same path: Import RUN → Layout → Review/Correct 
 | **Sawtooth Merge** | `sawtooth` / `#tab-sawtooth` | `fortna-plus.js` sawtooth section |
 | **PLC Autogen** | `autogen` / `#tab-autogen` | `fortna-plus.js` + IPC `autogen-*` |
 | Docs | `search` / `#tab-search` | doc index IPC |
-| Workspace | `workspace` / `#tab-workspace` | import/clear workspace |
+| Workspace | `workspace` / `#tab-workspace` | import / clear workspace |
 | Recipes | `recipes` / `#tab-recipes` | recipe apply IPC |
-| *(hidden panes still in `ALL_TABS`)* | `plc`, `ignition` | legacy PLC export / Ignition |
+| *(hidden in `ALL_TABS`)* | `plc`, `ignition` | legacy PLC export / Ignition |
 
-Landing tab: **I/O & Prints**. Tab switch: `activateTab()` in `fortna-plus.js`.
-
+Landing tab: **I/O & Prints**. Switch: `activateTab()` in `fortna-plus.js`.  
 Compile-hub readiness keys: `hardware`, `transport`, `sawtooth`, `sorter`, `system`, `safety` (`ensureAutogenReadiness()`).
 
 ---
 
-## REVIEW_REQUIRED (product contract)
+## 1. I/O & Prints (RUN Import / Workspace entry + Hardware I/O)
 
-From `autogenBuildPreflight()` / hub cards:
-
-| Concept | Meaning |
-|---------|---------|
-| **FOUND** | RUN evidence exists; not yet Applied / not INCLUDED |
-| **CONFIGURED** | Engineer edited local model |
-| **INCLUDED** | Apply wrote into workbook + readiness `appliedAt` set (or READY) |
-| **GENERATED** | Present in last L5X emit report |
-| **REVIEW_REQUIRED** | Soft review — **does not hard-block** Export |
-| **ERROR** | Hard-block only when mandatory pack ERROR, or INCLUDED subsystem ERROR, or Safety emit ERROR |
-
-Labels: `NOT DETECTED` · `DETECTED — REVIEW REQUIRED` · `CHANGED SINCE LAST APPLY` · `READY FOR AUTOGEN` · `ERROR / BLOCKED`.
-
-Partial Build: unassigned Safety, incomplete membership, detected-but-not-Applied Saw/Sorter → soft reviews; Export still allowed when `partialBuildAllowed`.
-
----
-
-## 1. I/O & Prints (Project / Import + Hardware I/O)
-
-### Purpose
+### PURPOSE
 Owns the **active RUN**. Loads `.tar.gz`, drives HardwareIOModel CAD (tree / FLEX rack / channel table), optional panel PDF OCR vs RUN banks. Autogen and Transport consume this RUN — other tabs do not re-import.
 
-### Canonical model(s)
+### RUN / Fortna evidence
+PhysicalWordResolver / HardwareIOModel banks, modules, channels; conveyor/device lists used by SiteModel editors after import.
+
+### CANONICAL MODEL
 - Workspace active extract (`fortnaAPI.importRun` / `getWorkspace`)
 - HardwareIOModel via `getHardwareIo` (+ engineer channel overrides → `workspace/hardware_io_overrides.json`)
-- I/O banks / OCR crosswalk (diagnostics)
+- I/O banks / OCR crosswalk (diagnostics only)
 
-### RUN evidence consumed
-PhysicalWordResolver / HardwareIOModel banks, modules, channels; conveyor/device lists for other tabs after import.
+### AUTO BUILD populates
+On successful RUN import, Transport `transportAutoBuildFromRun({ silent: true })` runs from the load path; SiteModel editors populate Sorter/Sawtooth.
 
-### Engineer-editable fields
-Channel **Name** / **Generate** overrides on selected module; panel/RIO filter selects; print PDFs for OCR.
+### ENGINEER edits
+Channel **Name** / **Generate** on selected module; panel/RIO filter selects; print PDFs for OCR.
 
-### Apply / Auto Build / Persist / Downstream
+### APPLY does
+No named Apply button. Channel edits call `saveHardwareIoChannel` immediately on blur/change.
 
-| Action | Behavior |
-|--------|----------|
-| **Apply** | N/A as named button; channel edits call `saveHardwareIoChannel` immediately |
-| **Auto Build** | On successful RUN import, Transport `transportAutoBuildFromRun({ silent: true })` runs from load path |
-| **Persisted** | Active workspace under `workspace/active*`; channel overrides JSON; OCR last-result cache |
-| **→ Autogen** | RUN banks → always-on IO_MAP; workbook refresh uses active RUN |
-| **→ PLC compiler** | IO_MAP + Flex tree in L5X from `fortna_autogen.py` |
-| **REVIEW_REQUIRED** | Hardware hub soft-review if banks incomplete; IO_MAP generate failure → hub `hardware` **ERROR** |
+### PERSISTS
+Active workspace under `workspace/active*`; `hardware_io_overrides.json`; OCR last-result cache.
+
+### Reaches AUTOGEN
+RUN banks → always-on IO_MAP; workbook refresh uses active RUN.
+
+### Reaches PLC COMPILER
+IO_MAP + Flex tree in L5X from `fortna_autogen.py`.
+
+### REVIEW / ERROR
+Hardware hub soft-review if banks incomplete; IO_MAP generate failure → hub `hardware` **ERROR**.
 
 ### Controls
 
-| Label | Handler | Mutation | Authority | Persist | Downstream | Prerequisites / failure |
-|-------|---------|----------|-----------|---------|------------|-------------------------|
-| **Load RUN** (`#btn-io-browse-run`) | browse + `importRun` | Sets active workspace / machine | Engineering (project root) | Disk extract | Triggers Transport auto-build, SiteModel editors | Needs Electron; fails if archive invalid |
-| **Clear** (`#btn-io-clear-run`) | clear RUN UI + related state | Clears loaded RUN presentation | Engineering | May clear active | Stale Autogen until re-import | Confirm path in handler |
-| Dropzone `#io-run-dropzone` | same import path | Same as Load RUN | Engineering | Disk | Same | `.tar.gz` only |
-| **Control Panel** / **Remote I/O** selects | filter Hardware CAD | Display filter only | Display | Session | None | RUN loaded |
-| Channel Name / Generate | `saveHardwareIoChannel` | Override channel emit metadata | Engineering-authoritative for IO_MAP | `hardware_io_overrides.json` | Autogen IO_MAP | Module selected; IPC required |
-| **Add Remote** / browse prints / **Clear prints** | print list + OCR prep | Print file set | Engineering (prints) | OCR cache | OCR crosswalk only | PDFs optional |
-| **Run OCR** (`#btn-run-ocr`) | `ocrPrints` | PRINT column vs tar.gz | Display / diagnostic | Last OCR result | Does not rewrite Autogen | Needs prints + master; disabled otherwise |
-| **Refresh banks** | `refreshIoBanks` | Re-read banks from RUN | Display refresh | None new | Diagnostics | RUN loaded |
+| Label | Tab | Purpose | Handler | Model mutation | Display vs eng | Persist | Downstream | Prerequisite | Review/error |
+|-------|-----|---------|---------|----------------|----------------|---------|------------|--------------|--------------|
+| **Load RUN** `#btn-io-browse-run` | I/O | Browse `.tar.gz` | browse + `importRun` | Sets active workspace | Engineering (project root) | Disk extract | Triggers Transport auto-build, SiteModel | Electron | Invalid archive fails |
+| Dropzone `#io-run-dropzone` | I/O | Drop `.tar.gz` | same import path | Same | Engineering | Disk | Same | `.tar.gz` only | Same |
+| **Clear** `#btn-io-clear-run` | I/O | Clear loaded RUN UI | clear RUN handler | Clears presentation / related | Engineering | May clear active | Stale Autogen until re-import | Confirm in handler | — |
+| **Control Panel** `#hw-io-panel-select` | I/O | Filter CAD by panel | change → filter | Display filter | Display | Session | None | RUN loaded | — |
+| **Remote I/O** `#hw-io-rio-select` | I/O | Filter by RIO | change → filter | Display filter | Display | Session | None | RUN loaded | — |
+| Module / channel select | I/O | Select module/channel | tree / rack click | Selection only | Display | Session | Enables Name/Generate | RUN + banks | — |
+| Channel **Name** `.hw-ch-name-input` | I/O | Engineer override emit name | blur → `saveHardwareIoChannel` | Override channel name | Engineering-authoritative | `hardware_io_overrides.json` | Autogen IO_MAP | Module selected; IPC | Invalid Logix name flagged |
+| Channel **Generate** `.hw-ch-gen-input` | I/O | Mute/include in IO_MAP | change → `saveHardwareIoChannel` | `generate` flag; Spare when off | Engineering-authoritative | overrides JSON | Autogen IO_MAP | Module selected | Muted = Spare (visible, not emitted) |
+| Status ● Active / ○ Spare | I/O | Show emit status | render only | None | Display | — | — | — | Spare ≠ deleted |
+| **Add Remote** `#btn-add-remote` | I/O | Add remote panel name | add remote | Print panel list | Engineering (prints) | Session / OCR | OCR only | — | — |
+| **Browse panel PDFs** `#btn-browse-remote-prints` | I/O | Attach PDFs | browse prints | Print file set | Engineering (prints) | OCR cache | OCR crosswalk | — | — |
+| **Clear prints** `#btn-io-clear-prints` | I/O | Clear PDFs + merge | clear prints | Clears prints/OCR | Engineering | Cache clear | Diagnostics | — | — |
+| **Run OCR** `#btn-run-ocr` | I/O | OCR prints vs tar.gz | `ocrPrints` | PRINT column | Display / diagnostic | Last OCR | Does not rewrite Autogen | Prints + master; disabled else | Soft |
+| **Refresh banks** `#btn-refresh-banks` | I/O | Re-read banks from RUN | `refreshIoBanks` | Refresh display | Display refresh | None new | Diagnostics | RUN loaded | — |
+| **Print repo** `#btn-print-repo` | I/O | Browse loaded PDFs | open print list | None | Display | — | — | Prints loaded | — |
+| Crosswalk tabs matched/Remote/Print/tar.gz/Panels | I/O | Filter OCR table | `data-cw-tab` | Display filter | Display | — | — | OCR ran | — |
 
-Hidden legacy: `#btn-set-master`, `#btn-browse-master-prints`, `#btn-browse-prints` (aria-hidden).
+Hidden legacy (aria-hidden): `#btn-set-master`, `#btn-browse-master-prints`, `#btn-browse-prints`.
 
 ---
 
 ## 2. Transport Build
 
-### Purpose
+### PURPOSE
 Author **Areas**, conveyor topology, merges, PE roles, ES Zone names on conveyors, and presentation geometry. Primary engineering surface for Transportation IR.
 
-### Canonical model(s)
-- In-memory `tb` graph: `areas[]` (nodes, wires), `safetyZones[]`, `buildContext`, layers/view
-- localStorage key from `STORE_KEY` in `transport-build.js` (`save()` / `load()`)
-- On **Apply**: canonical graph via `buildCanonicalApplyGraph()` → IPC `transport-apply-autogen` → `workspace/autogen_workbook.json` (+ `exports/transport-poc` merges artifact)
+### RUN / Fortna evidence
+`transport-auto-build-from-run` → physical layout → nodes with RUN X/Y/Angle/Length, high-confidence wires, decoder inventory for unplaced tags. Does **not** invent Area/ES names.
 
-### RUN evidence consumed
-`transport-auto-build-from-run` → `fortna_cp5a_transport_mapper.py` / physical layout → nodes with RUN X/Y/Angle/Length, high-confidence wires, decoder inventory for unplaced tags. Does **not** invent Area/ES names.
+### CANONICAL MODEL
+In-memory `tb` graph (`areas[]`, `safetyZones[]`, `buildContext`, layers/view); localStorage `STORE_KEY` (`siteforge.transportBuild.v2`); on Apply → `buildCanonicalApplyGraph()` → IPC `transport-apply-autogen` → workbook.
 
-### Engineer-editable fields
+### AUTO BUILD populates
+Silent on RUN load (`autoBuildFromRun({ silent: true })`). Manual **Rebuild Layout** replaces positions/wires from RUN only.
+
+### ENGINEER edits
 Area name/membership; `safetyZone` / ES Zone; `downstream` / wires; `terminal`; merge PE fields; attached devices + PE roles; conveyor tags; curve display angle (presentation); geometry overrides when mode = Engineering Override.
 
-### Apply
-`#tb-apply-autogen` → `applyMergesToAutogenUi()` → `buildCanonicalApplyGraph()` → `window.applyTransportMergesToAutogen` / `fortnaAPI.transportApplyAutogen`.  
-Serializes topology + Area/ES/PE/relationships only — **excludes** pathCanvas, view, layers, presentationOffset. Sets hub transport READY via `setAutogenReadinessApplied('transport', …)`. Canvas must not mutate during Apply (hash guard).
+### APPLY does
+`#tb-apply-autogen` → `applyMergesToAutogenUi()` → `buildCanonicalApplyGraph()` → `transportApplyAutogen`. Serializes topology + Area/ES/PE/relationships only — **excludes** pathCanvas, view, layers, presentationOffset. Sets hub transport READY via `setAutogenReadinessApplied('transport', …)`.
 
-### Auto Build / Rebuild Layout
-- Silent: on RUN load (`autoBuildFromRun({ silent: true })`)
-- Manual: **Rebuild Layout** (`#tb-auto-build-run`) → `autoBuildFromRun({ rebuild: true })` with confirm; replaces positions/wires from RUN; pushes undo history; does not invent Areas/Safety
+### PERSISTS
+localStorage on `save()`; workbook on Apply.
 
-### Persist / Downstream / REVIEW
+### Reaches AUTOGEN
+Areas → `main_area`; merges; PE roles; safety zone conveyor refs.
 
-| Layer | What |
-|-------|------|
-| **Persisted (local)** | `save()` → localStorage areas/safetyZones/layers + projectIdentity |
-| **Persisted (Apply)** | Workbook conveyors/areas/merges_2to1/safetyBuild fragment via Python apply |
-| **→ Autogen** | Areas → `main_area`; merges; PE roles; safety zone conveyor refs |
-| **→ PLC** | Area programs, merge AOIs, transport stubs when Export runs |
-| **REVIEW_REQUIRED** | Unassigned/unplaced conveyors are FOUND (soft). After Apply, canvas edits → `markAutogenReadinessDirty('transport')` → CHANGED until re-Apply |
+### Reaches PLC COMPILER
+Area programs, merge AOIs, transport stubs when Export runs.
 
-### Transportation controls (traced)
+### REVIEW / ERROR
+Unassigned/unplaced conveyors are FOUND (soft). After Apply, canvas edits → `markAutogenReadinessDirty('transport')` → CHANGED until re-Apply. PE ROLE REQUIRED blocks emit until resolved.
 
-| Exact label | Source handler | State mutation | Display vs authoritative | Persist | Downstream | Prerequisites / failure |
-|-------------|----------------|----------------|--------------------------|---------|------------|-------------------------|
-| **Apply Area / ES** | `applyBulkEdit()` (pass2) | `moveNodeToArea`; `n.safetyZone`; `provenance.area/safetyZone='ENGINEER'` | Authoritative engineering | `save()` localStorage | Autogen only after Apply to Autogen | Selection required; needs Area and/or ES text |
-| **Create Area from Selection** | `createAreaFromSelection()` | New area; move selection; optional `defaultSafetyZone` | Authoritative (Area metadata) | `save()` | Workbook on Apply | Selection; name prompt; never inferred from geometry |
-| **Add Selection to Area** | `addSelectionToArea()` → `moveSelectionToArea` | Moves nodes; `provenance.area='ENGINEER'` | Authoritative | `save()` | Workbook on Apply | Selection; existing area pick |
-| **Remove Selection from Area** | `removeSelectionFromArea()` | Move to Unassigned (or typed dest) | Authoritative organizational | `save()` | Workbook on Apply | Selection; does not invent PLC ownership |
-| **Select Chain** | `selectChainFromPrimary()` | Expands `selectedIds` via wires BFS | Display selection | None | None | Active area + selection |
-| **Mark Terminal** | `markTerminalSelection(true)` | `n.terminal=true` | Authoritative topology | `save()` | Canonical Apply includes `terminal` | Selection or ctx node |
-| **Geometry** select (`#tb-geometry-mode`) | `setGeometryAuthorityMode(mode)` | `tb.geometryAuthorityMode` = run/override/diagnostic | Display authority (diagnostic forces geom-debug) | Not in Apply payload | Presentation / override edit path | Default RUN/Physical |
-| **Undo** / **Redo** | `undo()` / `redo()` (pass2 history) | Restores snapshot of areas/selection | Authoritative restore of canvas | `save()` on restore | Dirty hub if previously Applied | Empty stack → status only |
-| **Fit System** (`#tb-fit`, `#tb-fit-system`) | `fitSystem()` / `fitVisible` fallback | Viewport zoom/pan only | **Display-only** | None | None | Nodes present |
-| Fit Visible / Fit All / Center Selected / Fit Area / Fit Site / Home / 100% | `fitVisible`, `fitAll`, `centerSelected`, `fitArea`, `fitSite`, `resetView100` | Viewport only | Display-only | None | None | — |
-| Zoom − / + | `zoomByFactor` | Viewport | Display-only | None | None | — |
-| Right-click **Continue Run…** | `openContinueRun` | Continue-run UI | Engineering (add unplaced) | On commit | Topology | Unplaced inventory |
-| Right-click **Mark / Clear Terminal** | `markTerminalSelection` | `terminal` | Authoritative | `save()` | Apply | — |
-| Right-click **Select Chain** | `selectChainFromPrimary` | Selection | Display | None | None | — |
-| Right-click **Add to New/Existing Area…**, **→ area**, **Remove from Area…** | `createAreaFromSelection` / `addSelectionToArea` / `moveSelectionToArea` / `removeSelectionFromArea` | Area membership | Authoritative | `save()` | Apply | — |
-| Right-click **CURVE display angle** | `setCurveDisplayAngle` | `curveDisplayAngle` | **Presentation only** (also copied in Apply as non-topology) | `save()` | Not PLC L/R | Curve kinds only |
-| Right-click **Delete** | `deleteSelection` | Removes nodes/wires | Authoritative | `save()` | Apply | — |
-| Inspector **Rotate** (`#tb-insp-rotate`) | rotate handler in `bindUi` | Node rotation 90° | Geometry / presentation | `save()` | Presentation; override mode | Node selected |
-| **Apply to Autogen** | `applyMergesToAutogenUi` | Workbook via IPC; hub READY | Authoritative publish | Workbook + localStorage workflow | Autogen/Export | Desktop IPC; shows failure dialog |
-| **Build PLC** (`#tb-goto-build-plc`) | `activateTab('autogen')` + scroll to Export | Navigation only | Display | None | Highlights Export L5X | Shown after successful Apply |
-| **Rebuild Layout** | `autoBuildFromRun({ rebuild:true })` | Replaces canvas from RUN graph | Authoritative layout recovery | `save()` after build | Unplaced inventory | Confirm; IPC `transportAutoBuildFromRun` |
-| **Connect** | `toggleConnectMode` | EXIT→ENTRY wire mode | Authoritative when wired | `save()` on connect | Apply | — |
-| **New** / **Delete** area | toolbar new-area / `deleteActiveArea` | Area list | Authoritative | `save()` | Apply | — |
-| **Build Chain…** / dialog OK | `openChainDialog` / `commitChain` | Creates/connects conv nodes in Build Context | Authoritative | `save()` | Apply | Unknown tags blocked unless allow-unknown |
-| **Continue Run** / Add | `continueRunTo` | Places unplaced P### downstream | Authoritative | `save()` | Apply | Selected conveyor |
-| **Auto Layout (topology)** | `autoLayoutArea` / `autoLayoutSelection` | Positions fallback-layout-eligible nodes only | Presentation (skips PROVEN_RUN / ENGINEER_ASSIGNED) | `save()` | Not Autogen geometry | — |
-| Advanced layers / relationships / lane separate / geom debug | layer checkboxes | `tb.layers` / `viewMode` | Display-only | localStorage layers | Ignored by Apply | — |
-| **Export geometry diagnostic…** | `exportGeometryDiagnostic` | Writes diagnostic artifact | Report only | File export | None | Node selected |
-| Topology table / inspector fields | various `bindUi` / topo listeners | Tags, downstream, merge PEs, PE roles, devices | Authoritative when changed | `save()` | Apply PE roles filter RUN/manual | PE ROLE REQUIRED blocks emit until resolved |
+### Transportation controls (required inventory)
 
-IPC backing: `preload.js` → `transportApplyAutogen`, `transportAutoBuildFromRun`, `transportBuildPoc`, `transportLatestMerges`; `main.js` handlers `transport-apply-autogen`, `transport-auto-build-from-run`.
+| Label | Tab | Purpose | Handler | Model mutation | Display vs eng | Persist | Downstream | Prerequisite | Review/error |
+|-------|-----|---------|---------|----------------|----------------|---------|------------|--------------|--------------|
+| **Connect** `#tb-connect-mode` | Transport | EXIT→ENTRY wire mode | `toggleConnectMode` | Wire mode; wire on click | Authoritative when wired | `save()` on connect | Apply topology | — | — |
+| **Fit System** `#tb-fit` / `#tb-fit-system` | Transport | Fit width, X-centered, top-biased | `fitSystem` / `fitVisible` fallback | Viewport zoom/pan | **Display-only** | None | None | Nodes present | — |
+| Zoom − `#tb-zoom-out` | Transport | Zoom out | `zoomByFactor` | Viewport | Display-only | None | None | — | — |
+| Zoom + `#tb-zoom-in` | Transport | Zoom in | `zoomByFactor` | Viewport | Display-only | None | None | — | — |
+| **Home** `#tb-home` / `#tb-zoom-reset` | Transport | Reset zoom/pan | `resetView100` | Viewport | Display-only | None | None | — | — |
+| **100%** `#tb-zoom-100` | Transport | Reset view 100% | `resetView100` | Viewport | Display-only | None | None | — | — |
+| Fit Visible / Fit All / Center Selected / Fit Area / Fit Site | Transport | Viewport variants | `fitVisible`, `fitAll`, `centerSelected`, `fitArea`, `fitSite` | Viewport | Display-only | None | None | — | — |
+| **Geometry** `#tb-geometry-mode` | Transport | RUN/Physical · Override · Diagnostic | `setGeometryAuthorityMode` | `tb.geometryAuthorityMode` | Display authority (diagnostic → geom-debug) | Not in Apply payload | Presentation / override edit | Default RUN/Physical | — |
+| **Undo** `#tb-undo` | Transport | Undo (Ctrl+Z) | `undo()` pass2 | Restores areas/selection | Authoritative restore | `save()` | Dirty hub if Applied | Empty stack → status | — |
+| **Redo** `#tb-redo` | Transport | Redo (Ctrl+Y) | `redo()` | Restores snapshot | Authoritative | `save()` | Dirty hub | Empty stack | — |
+| **Apply Area / ES** `#tb-bulk-apply` | Transport | Area + ES Zone on selection | `applyBulkEdit()` | `moveNodeToArea`; `n.safetyZone`; `provenance.area/safetyZone='ENGINEER'` | Authoritative | `save()` | Autogen after Apply to Autogen | Selection; Area and/or ES text | Status if neither set |
+| **Create Area from Selection** `#tb-bulk-create-area` | Transport | New Area from selection | `createAreaFromSelection()` | New area; move selection; optional defaultSafetyZone | Authoritative | `save()` | Workbook on Apply | Selection; name prompt | Never inferred from geometry |
+| **Add Selection to Area** `#tb-bulk-add-to-area` | Transport | Move into existing Area | `addSelectionToArea()` | Moves nodes; `provenance.area='ENGINEER'` | Authoritative | `save()` | Workbook on Apply | Selection; area pick | — |
+| **Remove Selection from Area** `#tb-bulk-remove-from-area` | Transport | Move to Unassigned | `removeSelectionFromArea()` | Membership clear | Authoritative organizational | `save()` | Workbook on Apply | Selection | Does not invent PLC ownership |
+| **Select Chain** `#tb-bulk-chain` | Transport | Expand selection via wires BFS | `selectChainFromPrimary()` | `selectedIds` | Display selection | None | None | Active area + selection | — |
+| **Mark Terminal** `#tb-bulk-terminal` | Transport | Mark conveyor terminal | `markTerminalSelection(true)` | `n.terminal=true` | Authoritative topology | `save()` | Canonical Apply includes `terminal` | Selection or ctx node | — |
+| Bulk **Delete** `#tb-bulk-delete` | Transport | Delete selection | `deleteSelection` | Removes nodes/wires | Authoritative | `save()` | Apply | Selection | — |
+| Right-click **Continue Run…** | Transport | Place unplaced downstream | `openContinueRun` | Continue-run UI → place | Engineering | On commit | Topology | Unplaced inventory | — |
+| Right-click **Mark / Clear Terminal** | Transport | Toggle terminal | `markTerminalSelection` | `terminal` | Authoritative | `save()` | Apply | — | — |
+| Right-click **Select Chain** | Transport | Expand selection | `selectChainFromPrimary` | Selection | Display | None | None | — | — |
+| Right-click **Add to New/Existing Area…**, **→ area**, **Remove from Area…** | Transport | Area membership | create/add/move/remove area helpers | Area membership | Authoritative | `save()` | Apply | — | — |
+| Right-click **CURVE display angle** | Transport | Elbow paint L/R display | `setCurveDisplayAngle` | `curveDisplayAngle` | **Presentation only** | `save()` | Not PLC L/R | Curve kinds | Orientation may be UNKNOWN |
+| Right-click **Delete** | Transport | Delete under cursor | `deleteSelection` | Removes | Authoritative | `save()` | Apply | — | — |
+| Inspector **Rotate** `#tb-insp-rotate` | Transport | Rotate node 90° | bindUi rotate | Node rotation | Geometry / presentation | `save()` | Presentation; override mode | Node selected | — |
+| Inspector Downstream / Terminal / Merge PEs / Devices / PE roles | Transport | Topology + PE authoring | bindUi / topo listeners | Tags, downstream, merge PEs, PE roles | Authoritative when changed | `save()` | Apply PE roles | PE ROLE REQUIRED until resolved | Blocks emit if UNKNOWN role required |
+| **Apply to Autogen** `#tb-apply-autogen` | Transport | Publish Transport IR | `applyMergesToAutogenUi` | Workbook via IPC; hub READY | Authoritative publish | Workbook + localStorage | Autogen/Export | Desktop IPC | Failure dialog |
+| **Build PLC** `#tb-goto-build-plc` | Transport | Jump to Autogen Export | `activateTab('autogen')` + scroll | Navigation only | Display | None | Highlights Export | Shown after successful Apply | — |
+| **Rebuild Layout** `#tb-auto-build-run` | Transport | Recovery rebuild from RUN | `autoBuildFromRun({ rebuild:true })` | Replaces canvas from RUN | Authoritative layout recovery | `save()` after build | Unplaced inventory | Confirm; IPC | Does not invent Areas/Safety |
+| **New** area `#tb-area-new` | Transport | Create Area | toolbar new-area | Area list | Authoritative | `save()` | Apply | — | Optional default Safety Zone |
+| **Delete** area `#tb-area-delete-btn` / `#tb-area-delete` | Transport | Delete current area | `deleteActiveArea` | Area list | Authoritative | `save()` | Apply | — | — |
+| Area select `#tb-area-select` | Transport | Switch active area | change handler | View focus | Display + build context | Session | — | — | — |
+| **Build Chain…** `#tb-build-chain` | Transport | Create/connect chain | `openChainDialog` / `commitChain` | Conv nodes in Build Context | Authoritative | `save()` | Apply | Unknown tags blocked unless allow-unknown | — |
+| **Continue Run** `#tb-continue-run` | Transport | Place unplaced P### | `continueRunTo` | Places downstream | Authoritative | `save()` | Apply | Selected conveyor | — |
+| **Auto Layout (topology)** `#tb-auto-layout` | Transport | Fallback positions | `autoLayoutArea` / selection | Positions fallback-eligible only | Presentation (skips PROVEN_RUN / ENGINEER_ASSIGNED) | `save()` | Not Autogen geometry | — | Skipped count in status |
+| Advanced layers / relationships / lane separate / geom debug | Transport | Viz toggles | layer checkboxes | `tb.layers` / `viewMode` | Display-only | localStorage layers | Ignored by Apply | — | — |
+| **Export geometry diagnostic…** `#tb-export-geom-diag` | Transport | Report artifact | `exportGeometryDiagnostic` | Writes diagnostic | Report only | File export | None | Node selected | — |
+
+IPC: `preload.js` → `transportApplyAutogen`, `transportAutoBuildFromRun`; `main.js` → `transport-apply-autogen`, `transport-auto-build-from-run`.
 
 ---
 
 ## 3. Safety Build
 
-### Purpose
-Complete Safety Zone membership (E-Stop / ESR / MCR / reset / silence) seeded from Transport + RUN discovery. Area ≠ Safety Zone.
+### PURPOSE
+Complete Safety Zone membership (E-Stop / ESR / MCR / reset / silence) seeded from Transport + RUN discovery. **Area ≠ Safety Zone.**
 
-### Canonical model(s)
-- Client model from `buildClientModel()` (zones, devices, unassigned)
-- Draft: `localStorage siteforge.safetyBuild.v1`
-- Applied: `autogenState.safety_build` / `workbook.safety_build`
-
-### RUN evidence
+### RUN / Fortna evidence
 `build-safety-model` IPC + Transport canvas zones; proven membership vs REVIEW_REQUIRED membership.
 
-### Engineer-editable
-Zone rename; add/remove devices; accept suggestions; delete zone; reset/silence sources (detail UI).
+### CANONICAL MODEL
+Client model from `buildClientModel()`; draft `localStorage siteforge.safetyBuild.v1`; applied `workbook.safety_build`.
 
-### Apply
-**Apply Safety** (`#sb-apply`) → `applySafety()`: merge-save workbook via `autogenWorkbookSave` (never hollow Transport conveyors). Hub status from `syncReadiness()` only — **does not** force READY via `setAutogenReadinessApplied`.
+### AUTO BUILD populates
+Zones ingest on refresh / Transport seed (`ingestRunDiscoveredZones`). No separate Auto Build button.
 
-### Auto Build
-Zones ingest on refresh / Transport seed (`ingestRunDiscoveredZones`); not a separate “Auto Build” button.
+### ENGINEER edits
+Zone rename (`engineering_name` only; `source_id` immutable); add/remove devices; accept suggestions; delete zone; reset/silence sources.
 
-### Persist / Downstream / REVIEW
-| | |
-|--|--|
-| Persist | local draft + workbook `safety_build` on Apply |
-| → Autogen / PLC | Program ES from READY zones; partial/fail-safe shell when review remains |
-| REVIEW_REQUIRED | Any unassigned device or non-READY zone → hub soft review; Export allowed |
+### APPLY does
+**Apply Safety** `#sb-apply` → `applySafety()`: merge-save workbook via `autogenWorkbookSave` (never hollow Transport conveyors). Hub status from `syncReadiness()` — does **not** force READY via `setAutogenReadinessApplied`.
+
+### PERSISTS
+Local draft continuously; workbook `safety_build` on Apply.
+
+### Reaches AUTOGEN / PLC
+Program ES from READY zones; partial/fail-safe shell when review remains.
+
+### REVIEW / ERROR
+Unassigned device or non-READY zone → hub soft REVIEW_REQUIRED; Export allowed. INCLUDED Safety ERROR hard-blocks.
 
 ### Controls
 
-| Label | Handler | Mutation | Authority | Persist | Downstream | Notes |
-|-------|---------|----------|-----------|---------|------------|-------|
-| **Refresh discovery** | `refreshModel` | Rebuild model; keep engineer overrides | Mix | Draft | Hub sync | — |
-| **Apply Safety** | `applySafety` | Write `safety_build` | Authoritative | Workbook merge | ES emit | Soft review OK |
-| Zone list / detail actions (`sb-add-selected`, `sb-remove-selected`, `sb-accept-suggestions`, `sb-delete-zone`, `sb-rename-zone`, `sb-show-on-transport`) | rendered in `renderZoneDetail` | Membership / names | Authoritative | Draft then Apply | Transport highlight | Dynamic DOM |
+| Label | Tab | Purpose | Handler | Model mutation | Display vs eng | Persist | Downstream | Prerequisite | Review/error |
+|-------|-----|---------|---------|----------------|----------------|---------|------------|--------------|--------------|
+| **Refresh discovery** `#sb-refresh` | Safety | Rebuild model; keep overrides | `refreshModel` | Rebuild zones/devices | Mix | Draft | Hub sync | — | — |
+| **Apply Safety** `#sb-apply` | Safety | Publish safety_build | `applySafety` | Write `safety_build` | Authoritative | Workbook merge | ES emit | Model present | Soft review OK |
+| **Assign Devices…** `#sb-inv-assign` | Safety | Wizard: pick zone + confirm | `openAssignDevicesWizard` | Membership; `membersOrigin=ENGINEER_ASSIGNED` | Authoritative | Draft until Apply | Apply Safety | Checked inventory + zones | Prompt/confirm |
+| **Assign Selected → Zone** `#sb-inv-assign-selected` | Safety | Assign checks → selected zone | `assignCheckedToSelectedZone` | Membership ENGINEER_ASSIGNED | Authoritative | Draft | Apply Safety | Checks + selected zone | Status if missing |
+| **Assign Selected** `#sb-add-selected` | Safety | Add available → zone | `addSelectedDevices` | Members | Authoritative | Draft | Apply | Zone selected | — |
+| **← Remove** `#sb-remove-selected` | Safety | Unassign from zone | `removeSelectedDevices` | Members | Authoritative | Draft | Apply | — | — |
+| **Suggestions** `#sb-accept-suggestions` | Safety | Accept digit-match suggestions | `acceptSuggestions` | Members ENGINEER | Authoritative | Draft | Apply | Suggestions present | — |
+| **Rename** `#sb-rename-zone` | Safety | Rename engineering_name | `renameSafetyZone` | `engineering_name` / `name`; source_id fixed | Authoritative | Draft | Apply | Logix ident rules | Collision cancelled |
+| **Delete zone** `#sb-delete-zone` / zone trash | Safety | Delete Safety Zone | `deleteSafetyZone` | Remove zone | Authoritative | Draft | Apply | Confirm | — |
+| **Show on Transportation** `#sb-show-on-transport` | Safety | Highlight + jump Transport | `highlightTransportZone` + `activateTab` | Navigation / highlight | Display | None | None | Zone selected | — |
+| Zone list cards | Safety | Select zone | `data-sb-zone` click | Selection ACTIVE | Display | Session | Detail render | — | READY vs REVIEW chip |
+| Inventory filter `#sb-inv-filter` / `#sb-device-filter` | Safety | Filter device lists | input handlers | Filter only | Display | Session | None | — | — |
+
+Counts strip: Zones / Ready / Review / E-Stops / Devices Found / Auto Resolved / Engineer Assigned / Unassigned / Completion — display from model.
 
 ---
 
 ## 4. Sorter Build
 
-### Purpose
+### PURPOSE
 Configure sorter induct / tracking / diverts from RUN + SiteModel; publish `sorter_build` for Sorter_Track pack.
 
-### Canonical model
+### RUN / Fortna evidence
+SiteModel sorter objects; divert PE authorities (PROVEN / DERIVED / COMMISSIONING / ENGINEER_REQUIRED / REVIEW_REQUIRED / OPTIONAL / UNKNOWN).
+
+### CANONICAL MODEL
 `autogenState.sorter` (+ workbook `sorter_build`); localStorage `fortna_sorter_build`.
 
-### RUN evidence
-SiteModel sorter objects, divert PE authorities (PROVEN / DERIVED / COMMISSIONING / ENGINEER_REQUIRED / REVIEW_REQUIRED).
+### AUTO BUILD populates
+SiteModel populate on import (`applySiteModelToEditors`) — no dedicated button.
 
-### Apply
-**Apply sorter → Autogen** (`#btn-sorter-save`): merge workbook save; READY only if data + phase1 OK + `configuration_required` empty; else REVIEW_REQUIRED with `appliedAt` possible.
+### ENGINEER edits
+Type, Transportation Area, induct conv/PE/encoder, track count/rows, divert count/PEs, PE list, tracking offset + state; review Accept/Edit/Commissioning.
 
-### Controls (primary)
+### APPLY does
+**Apply sorter → Autogen** `#btn-sorter-save`: merge workbook save; READY only if data + phase1 OK + `configuration_required` empty; else REVIEW_REQUIRED (may still set `appliedAt`).
 
-| Label | Handler | Mutation | Notes |
-|-------|---------|----------|-------|
-| **Accept All Derived** | divert accept handler | DERIVED PE → ENGINEER_ACCEPTED; never UNKNOWN→PROVEN | Gate N |
-| **Apply PE to Selected** | bulk PE | Sets divert_pe + ENGINEER_REQUIRED if not PROVEN | Needs bulk PE value + checkboxes |
-| **Mark Selected for Commissioning** | commission handler | `authority.divert_pe=COMMISSIONING` | — |
-| **Apply sorter → Autogen** | sorter save | workbook.sorter_build; hub | Merge-safe vs Transport/Safety |
-| **Clear sorter fields** | clear | defaultSorterConfig; readiness reset | — |
-| Tracking offset / type / area / row editors | various | `autogenState.sorter` | `touchSorter` dirties hub |
+### PERSISTS
+localStorage on touch; workbook on Apply.
 
-**Auto Build:** SiteModel populate on import (`applySiteModelToEditors`) — no dedicated button.  
-**→ PLC:** Sorter_Track when hub READY / opt checked during `runAutogenGenerate`.
+### Reaches AUTOGEN / PLC
+Sorter_Track when hub READY / opt checked during `runAutogenGenerate`.
+
+### REVIEW / ERROR
+Review panel counts Review Required / Engineer Required / Commissioning / Optional / Resolved. Soft until INCLUDED ERROR.
+
+### Controls
+
+| Label | Tab | Purpose | Handler | Model mutation | Display vs eng | Persist | Downstream | Prerequisite | Review/error |
+|-------|-----|---------|---------|----------------|----------------|---------|------------|--------------|--------------|
+| **Accept All Derived** `#btn-divert-accept-derived` | Sorter | Bulk accept DERIVED divert PE | divert accept handler | DERIVED → ENGINEER_ACCEPTED; **never UNKNOWN→PROVEN** | Authoritative | Draft / localStorage | Apply | Derived rows | Soft |
+| **Apply PE to Selected** `#btn-divert-apply-pe` | Sorter | Bulk set divert_pe | bulk PE handler | divert_pe + ENGINEER_REQUIRED if not PROVEN | Authoritative | Draft | Apply | Bulk PE value + checkboxes | — |
+| **Mark Selected for Commissioning** `#btn-divert-mark-commission` | Sorter | Mark divert_pe COMMISSIONING | commission handler | `authority.divert_pe=COMMISSIONING` | Authoritative | Draft | Apply | Selection | Soft |
+| Review **Accept derived** `.sorter-review-accept` | Sorter | Accept DERIVED item | `acceptSorterReviewItem` | `review_resolutions`; ENGINEER_ACCEPTED | Authoritative | Draft | Hub dirty | Review item | — |
+| Review **Acknowledge** | Sorter | Accept PROVEN acknowledgment | `acceptSorterReviewItem` | Resolution ACCEPTED | Authoritative | Draft | — | — | — |
+| Review **Edit** / **Edit field** / **Enter / commission** `.sorter-review-edit` | Sorter | Focus field for edit | `focusSorterReviewField` | Focus only until edit | Display → eng on change | — | — | focusId | — |
+| Review **Confirm commissioning** | Sorter | Confirm COMMISSIONING value | accept with `data-mode=commission` | tracking_offset_authority=COMMISSIONING | Authoritative | Draft | Apply | Offset field | Soft |
+| Review **Mark reviewed** | Sorter | Mark field reviewed | `acceptSorterReviewItem` | Resolution | Authoritative | Draft | — | divert_pe / tracking_offset | — |
+| **Apply sorter → Autogen** `#btn-sorter-save` | Sorter | Publish sorter_build | sorter save listener | workbook.sorter_build; hub | Authoritative | Workbook | Sorter_Track | Merge-safe vs Transport/Safety | READY or REVIEW_REQUIRED |
+| **Clear sorter fields** `#btn-sorter-clear` | Sorter | Reset config | `defaultSorterConfig` | Clear sorter | Engineering reset | localStorage clear | Readiness reset | — | — |
+| Type / Area / Induct / Track / Divert / PE / Offset editors | Sorter | Author config | change → `touchSorter` | `autogenState.sorter` | Authoritative draft | localStorage | Apply | RUN / SiteModel | Dirties hub |
 
 ---
 
 ## 5. Sawtooth Merge
 
-### Purpose
+### PURPOSE
 Collector / lane saw-merge design (PLC4 pattern) → `Sawtooth_Merge` pack.
 
-### Canonical model
+### RUN / Fortna evidence
+SawMerge/SawLane (and HS*) tables via SiteModel auto-populate on import. Lane count is RUN-owned (readonly `#saw-lane-count`).
+
+### CANONICAL MODEL
 `autogenState.sawtooth` / `workbook.sawtooth_build`; localStorage `fortna_sawtooth_build`.
 
-### RUN evidence
-SawMerge/SawLane (and HS*) tables via SiteModel auto-populate on import.
+### AUTO BUILD populates
+`applySiteModelToEditors` on import.
 
-### Apply
-**Apply sawtooth → Autogen** (`#btn-saw-save`): `persistSawtoothToWorkbook` + workbook save; READY iff configured and `configuration_required` empty; else REVIEW_REQUIRED.
+### ENGINEER edits
+Collector/downstream conv, encoder, speeds, jam/EOW PEs, area, track PEs, gap/timer/IPP params, enable flags.
+
+### APPLY does
+**Apply sawtooth → Autogen** `#btn-saw-save`: `persistSawtoothToWorkbook` + workbook save; READY iff configured and `configuration_required` empty; else REVIEW_REQUIRED.
+
+### PERSISTS
+localStorage on touch; workbook on Apply.
+
+### Reaches AUTOGEN / PLC
+Sawtooth_Merge when READY / opt checked.
+
+### REVIEW / ERROR
+Unresolved keys → REVIEW_REQUIRED; FOUND-not-INCLUDED does not hard-block Partial Build.
 
 ### Controls
 
-| Label | Handler | Notes |
-|-------|---------|-------|
-| **Apply sawtooth → Autogen** | saw-save listener | Hub READY or REVIEW |
-| **Reload from RUN** | `applySiteModelToEditors` | Discards local edits |
-| **Clear** | `defaultSawtoothConfig` | Resets readiness |
-| **Prefill PLC4 demo** | DEV hardcoded | **Not for acceptance** |
-| Lane/collector/encoder fields | renderSawtoothBuild binders | Engineer edits |
+| Label | Tab | Purpose | Handler | Model mutation | Notes |
+|-------|-----|---------|---------|----------------|-------|
+| **Apply sawtooth → Autogen** `#btn-saw-save` | Sawtooth | Publish | saw-save listener | workbook + hub READY/REVIEW | Merge-safe |
+| **Reload from RUN** `#btn-saw-reload-sitemodel` | Sawtooth | Discard local; reload SiteModel | `applySiteModelToEditors` | Reset from RUN | Confirm intent via title |
+| **Clear** `#btn-saw-clear` | Sawtooth | Reset | `defaultSawtoothConfig` | Clear + readiness | — |
+| **Prefill PLC4 demo** `#btn-saw-defaults-plc4` | Sawtooth | DEV hardcoded | demo fill | **Not for acceptance** | Hidden/dev |
+| Lane/collector/encoder/PE/param fields | Sawtooth | Author config | renderSawtoothBuild binders | `autogenState.sawtooth` | Engineer edits |
+
+*(Merge is not a separate primary nav tab; 2-to-1 merges live on Transport canvas + Autogen opt `merges-2to1`.)*
 
 ---
 
-## 6. PLC Autogen (Autogen / Build)
+## 6. PLC Autogen (Autogen / Build / Export)
 
-### Purpose
+### PURPOSE
 Compile hub: readiness cards + **Export L5X Package** (`#btn-autogen-from-run` → `runAutogenGenerate('run')` → `fortnaAPI.autogenGenerate` → `fortna_autogen.py`).
 
-### Canonical model
-`workspace/autogen_workbook.json` (stable path; survives RUN clear unless project clear). Merged disk+memory before generate (Transport conveyors, safety_build, sawtooth_build, sorter_build).
+### RUN / Fortna evidence
+Active RUN + merged workbook (Transport, Safety, Saw, Sorter, Hardware overrides).
 
-### Always-included packs
-Sys · Devices_Comm · NTP · System_Logic · System · IO_MAP.
+### CANONICAL MODEL
+`workspace/autogen_workbook.json` (stable; survives RUN clear unless project clear).
 
-### Evidence / Apply-driven packs
-Sawtooth_Merge, Sorter_Track, merges from workbook, WCS / ShippingSorter when SiteModel supports.
+### AUTO BUILD populates
+Workbook build / Refresh site config re-scans RUN (keeps edits).
 
-### Key controls
+### ENGINEER edits
+Pack checkboxes, site config table, catalog chips, Twin patches, Excel path (advanced).
 
-| Label | Handler | Mutation / effect |
-|-------|---------|-------------------|
-| **Export L5X Package** | `runAutogenGenerate('run')` | Writes `exports/autogen` (+ current); preflight soft/hard; **does not launch Studio** |
-| **Refresh site config** | workbook build IPC | Re-scan RUN; keeps edits |
-| **Save** workbook (`#btn-autogen-workbook-save`) | `autogenWorkbookSave` | Disk workbook |
-| Browse library / Excel / Inspect / Generate | legacy/advanced | Excel path optional |
-| Twin Refresh / Search / Propose / Apply | twin IPC | Gap patches into workbook |
-| Open out / Reveal L5X / Copy path | `openPath` / clipboard | Presentation of outputs |
-| Catalog Add buttons | workbook catalog rows | Site config table |
-| **From Transport** / **Save Transport WB** (hub) | `applyTransportMergesToAutogen` / workbook save | Pull graph / persist |
-| **Clear current project builds** | `clearCurrentProject` | Wipes RUN extract, edits, Transport/Saw/Sorter, matching autogen outs — not libraries |
+### APPLY does
+Subsystem Applies elsewhere; hub **From Transport** / **Save** / workbook Save publish workbook facets. Export is Build, not Apply.
 
-### REVIEW_REQUIRED on Build
-Soft reviews logged; Safety partial → `BUILD GENERATED WITH REVIEW ITEMS`; ES omit/partial keeps safety hub REVIEW. Hard ERROR blocks Export.
+### PERSISTS
+Workbook on Save / subsystem Apply; L5X under `exports/autogen` (+ current).
+
+### Reaches PLC COMPILER
+Engineer opens L5X in Studio 5000 manually. App **does not launch Studio**.
+
+### REVIEW / ERROR
+Soft reviews logged; Safety partial → `BUILD GENERATED WITH REVIEW ITEMS`. Hard ERROR blocks Export.
+
+### Controls
+
+| Label | Tab | Purpose | Handler | Mutation / effect |
+|-------|-----|---------|---------|-------------------|
+| **Export L5X Package** `#btn-autogen-from-run` | Autogen | Build PLC package | `runAutogenGenerate('run')` | Writes exports; preflight soft/hard; no Studio launch |
+| **Refresh site config** `#btn-autogen-workbook-build` | Autogen | Re-scan RUN | workbook build IPC | Keeps edits |
+| **Save** `#btn-autogen-workbook-save` | Autogen | Persist workbook | `autogenWorkbookSave` | Disk workbook |
+| Browse library / Excel / Inspect / Generate | Autogen | Advanced/legacy | various | Excel path optional |
+| Twin Refresh / Search / Propose / Apply | Autogen | Gap patches | twin IPC | Patches into workbook |
+| Open out / Reveal L5X / Copy path | Autogen | Open outputs | `openPath` / clipboard | Display of outputs |
+| Catalog Add buttons | Autogen | Site config rows | cat add handlers | Catalog chips |
+| Pack opts Sys/System/Logic/IO_MAP/merges/sorter/saw/wcs… | Autogen | Include packs | checkbox change | Generate options (IO_MAP always on) |
+| Hub **From Transport** `#btn-hub-from-transport` | Autogen | Pull Transport graph | `applyTransportMergesToAutogen` | Workbook |
+| Hub **Save Transport WB** `#btn-hub-save-transport-wb` | Autogen | Save workbook | workbook save | Disk |
+| **Clear current project builds** `#btn-clear-project-builds` | Autogen | Wipe project state | `clearCurrentProject` | Clears RUN/edits/Transport/Saw/Sorter/outs — not libraries |
+| Tab jumps to I/O / Transport / Saw / Sorter / Safety | Autogen | Navigation | `data-jump-tab` | Display |
+
+Always-included packs: Sys · Devices_Comm · NTP · System_Logic · System · IO_MAP.  
+Evidence packs: Sawtooth_Merge, Sorter_Track, merges, WCS / ShippingSorter when SiteModel supports.
 
 ---
 
-## 7. Workspace / Docs / Recipes (secondary)
+## 7. Workspace / Docs / Recipes / System (secondary)
 
-### Workspace (`#tab-workspace`)
+### Workspace `#tab-workspace`
 | Control | Handler | Role |
 |---------|---------|------|
-| Browse archive | `selectArchive` / import | Project/Import alternate to I/O Load RUN |
+| Browse archive `#btn-browse-archive` | `selectArchive` / import | Alternate RUN Import |
 | Open folder / Exports | `openPath` | Display |
-| Clear workspace | `clearWorkspace` | Keeps workbook by design in main |
-| **Apply** (`#btn-apply`) | recipes only when on Recipes — also wired as recipe apply | See Recipes |
+| Clear workspace `#btn-clear-workspace` | `clearWorkspace` | Keeps workbook by design in main |
+| Dropzone | import | Same as browse |
 
-### Docs (`#tab-search`)
-Search input + quick badges → `searchDocs`; **Reindex** → `reindexDocs`. Display-only vs engineering models.
+### Docs `#tab-search`
+Search + quick badges → `searchDocs`; **Reindex** `#btn-reindex` → `reindexDocs`. Display-only vs engineering models.
 
-### Recipes (`#tab-recipes`)
-Recipe list + params; **Apply** → `fortnaAPI.applyRecipe`. Mutates RUN tables (clone device, add PE, etc.); not Autogen workbook Apply.
+### Recipes `#tab-recipes`
+Recipe list + params; **Apply** `#btn-apply` → `fortnaAPI.applyRecipe`. Mutates RUN tables (clone device, add PE, etc.); **not** Autogen workbook Apply.
 
-### Hidden `#tab-plc` / `#tab-ignition`
-Legacy PLC export / Ignition layout builders (`exportPlc`, `ignitionBuildLayout`). Not in primary nav.
+### Hidden System panes
+`#tab-plc` / `#tab-ignition` — legacy PLC export / Ignition builders (`exportPlc`, `ignitionBuildLayout`). Not in primary nav. Window chrome Minimize/Maximize/Close → `fortnaAPI.*`.
 
 ---
 
@@ -331,7 +443,7 @@ Legacy PLC export / Ignition layout builders (`exportPlc`, `ignitionBuildLayout`
 
 | Surface | Local draft | Published artifact | Consumer |
 |---------|-------------|--------------------|----------|
-| Transport canvas | localStorage `STORE_KEY` | workbook via `transport-apply-autogen` | Autogen areas/merges |
+| Transport canvas | localStorage `siteforge.transportBuild.v2` | workbook via `transport-apply-autogen` | Autogen areas/merges |
 | Safety | `siteforge.safetyBuild.v1` | `workbook.safety_build` | Program ES |
 | Sorter | `fortna_sorter_build` | `workbook.sorter_build` | Sorter_Track |
 | Sawtooth | `fortna_sawtooth_build` | `workbook.sawtooth_build` | Sawtooth_Merge |
@@ -346,27 +458,42 @@ Exposed on `window.fortnaAPI` (`desktop/preload.js`):
 
 | API | Main channel | Used by |
 |-----|--------------|---------|
-| `importRun` | `import-run` | I/O Load RUN |
+| `importRun` | `import-run` | I/O / Workspace Load RUN |
 | `transportAutoBuildFromRun` | `transport-auto-build-from-run` | Transport Auto Build / Rebuild |
 | `transportApplyAutogen` | `transport-apply-autogen` | Apply to Autogen |
 | `autogenGenerate` | `autogen-generate` | Export L5X Package (Build PLC) |
 | `autogenWorkbookBuild/Save/Load` | `autogen-workbook-*` | Site config / Apply merges |
 | `buildSafetyModel` | `build-safety-model` | Safety discovery |
-| `getHardwareIo` / `saveHardwareIoChannel` | hardware IO | I/O CAD |
+| `getHardwareIo` / `saveHardwareIoChannel` | hardware IO | I/O CAD Name/Generate |
 | `clearCurrentProject` | `clear-current-project` | Hub clear |
+| `applyRecipe` / `searchDocs` / `reindexDocs` | recipe / docs | Recipes / Docs |
+
+---
+
+## GATE N — In-product help
+
+| Affordance | Location | Behavior |
+|------------|----------|----------|
+| **?** Help button `#btn-sf-help` | Title bar | Opens `#sf-help-drawer` |
+| Help drawer | Right slide-over | Section list (this manual outline) + control lookup from `SITE_FORGE_HELP` keyed by control `id` |
+| Contextual | Optional “Inspect” toggle in drawer | Next click on a control with an `id` shows its purpose from the map (no giant modal) |
+
+Source of truth for copy: this manual + the JS map kept in sync for high-traffic controls.
 
 ---
 
 ## Counts (this gate)
 
-| Metric | Approx. |
-|--------|---------|
+| Metric | Count |
+|--------|-------|
 | Visible primary engineering tabs | **6** (I/O, Transport, Safety, Sorter, Sawtooth, Autogen) |
 | Secondary tool tabs | **3** (Docs, Workspace, Recipes) |
 | Tab panes in `ALL_TABS` | **11** (includes hidden plc + ignition) |
-| User-facing controls documented | **~120+** (toolbar, bulk bar, ctx menu, inspector, hub, IO, Safety/Sorter/Saw actions) |
-| Transportation-specific controls traced to real handlers | **Yes** — Apply Area/ES, Create/Add/Remove Area, Select Chain, Mark Terminal, geometry mode, undo/redo, Fit System, right-click Area/geometry/orientation, Apply to Autogen, Build PLC (nav to Export) |
+| Documented user-facing controls (inventory rows) | **92** (Controls sections; +vocab/persist/IPC tables elsewhere) |
+| Transportation-specific controls traced to real handlers | **Yes** — Connect, Fit System, zoom −/+, Home, 100%, Geometry mode, Undo, Redo, Apply Area/ES, Create/Add/Remove Area, Select Chain, Mark Terminal, right-click/context, Apply to Autogen, Build PLC |
+| Safety / Sorter / Hardware specifics | **Yes** — Assign Devices, Apply Safety, Safety rename, Sorter Accept/Edit/Commissioning, divert bulk, module/channel selection, Name, Generate, Spare/Status |
+| In-product help | **YES** — Help drawer + `SITE_FORGE_HELP` map |
 
 ---
 
-*End of Gate 1 Engineering UI Manual. Implementation-traced; no UI redesign.*
+*End of Gates L/M/N/O Engineering UI Manual. Implementation-traced; no UI redesign; no held-back site search.*

@@ -1,0 +1,789 @@
+{
+  "model": "VFDDeviceModel",
+  "generated_at": "2026-09-18T16:12:44.222348+00:00",
+  "run_dir": "workspace\\cp4-run\\RUN",
+  "machine_filter": "ORNCCP4",
+  "binding_default": "DISCRETE_MOTOR_STARTER",
+  "hardware_io_rule": "Physical channels belong in HardwareIOModel; VFDDeviceModel owns drive identity / roles / PLC UDT binding.",
+  "spdcontrol": {
+    "path": "workspace\\cp4-run\\RUN\\PROJECT\\SpdControl.asc",
+    "configured_refs": [],
+    "field_states": {
+      "VFD_NetCTRL": "INVALID_OR_EMPTY",
+      "VFD_NetREF": "INVALID_OR_EMPTY",
+      "VFD_Reset": "INVALID_OR_EMPTY",
+      "VFD_Aux": "INVALID_OR_EMPTY",
+      "VFD_RstTimer": "INVALID_OR_EMPTY"
+    },
+    "ethernet_candidate": false
+  },
+  "gpxbelt": {
+    "path": "workspace\\cp4-run\\RUN\\FORTNA\\GpxBelt.asc",
+    "configured_refs": [],
+    "field_states": {
+      "VFD_EN": "INVALID_OR_EMPTY",
+      "VFD_S1": "INVALID_OR_EMPTY",
+      "VFD_S2": "INVALID_OR_EMPTY",
+      "VFD_S3": "INVALID_OR_EMPTY"
+    }
+  },
+  "device_count": 13,
+  "devices": [
+    {
+      "device_id": "VFD118",
+      "drive_identity": "VFD118",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P118_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD118_FLT",
+          "suffix": "FLT",
+          "role": "FAULT_STATUS",
+          "description": "VFD118 HAS FAULTED",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "1",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P118_VFD.Flt.PS_Flt",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD118_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD118 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "0",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P118_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD118_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD118",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "0",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P118_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "FAULT_STATUS",
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD120",
+      "drive_identity": "VFD120",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P120_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD120_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD120 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "2",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P120_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD120_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD120",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "1",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P120_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD216",
+      "drive_identity": "VFD216",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P216_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD216_FLT",
+          "suffix": "FLT",
+          "role": "FAULT_STATUS",
+          "description": "VFD216 HAS FAULTED",
+          "type": "INVALID",
+          "word": "424",
+          "bit": "4",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P216_VFD.Flt.PS_Flt",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD216_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD216 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "3",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P216_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD216_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD216",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "2",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P216_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "FAULT_STATUS",
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD218",
+      "drive_identity": "VFD218",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P218_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD218_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD218 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "5",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P218_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD218_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD218",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "3",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P218_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD219",
+      "drive_identity": "VFD219",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P219_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD219_FLT",
+          "suffix": "FLT",
+          "role": "FAULT_STATUS",
+          "description": "VFD219 HAS FAULTED",
+          "type": "INVALID",
+          "word": "1006",
+          "bit": "16",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P219_VFD.Flt.PS_Flt",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD219_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD219 IS RUNNING",
+          "type": "MOTOR",
+          "word": "1006",
+          "bit": "15",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P219_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD219",
+          "suffix": "(bare)",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD219",
+          "type": "MOTOR",
+          "word": "1010",
+          "bit": "1",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P219_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "FAULT_STATUS",
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD410",
+      "drive_identity": "VFD410",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P410_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD410_FLT",
+          "suffix": "FLT",
+          "role": "FAULT_STATUS",
+          "description": "VFD410 HAS FAULTED",
+          "type": "INVALID",
+          "word": "424",
+          "bit": "7",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P410_VFD.Flt.PS_Flt",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD410_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD410 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "6",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P410_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD410_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD410",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "4",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P410_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "FAULT_STATUS",
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD412",
+      "drive_identity": "VFD412",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P412_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD412_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD412 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "10",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P412_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD412_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD412",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "5",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P412_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD414",
+      "drive_identity": "VFD414",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P414_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD414_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD414 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "11",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P414_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD414_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD414",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "6",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P414_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD422",
+      "drive_identity": "VFD422",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P422_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD422_FLT",
+          "suffix": "FLT",
+          "role": "FAULT_STATUS",
+          "description": "VFD422 HAS FAULTED",
+          "type": "INVALID",
+          "word": "424",
+          "bit": "13",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P422_VFD.Flt.PS_Flt",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD422_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD422 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "12",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P422_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD422_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD422",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "7",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P422_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "FAULT_STATUS",
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD424",
+      "drive_identity": "VFD424",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P424_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD424_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD424 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "14",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P424_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD424_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD424",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "10",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P424_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD834",
+      "drive_identity": "VFD834",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P834_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD834_FLT",
+          "suffix": "FLT",
+          "role": "FAULT_STATUS",
+          "description": "VFD834 HAS FAULTED",
+          "type": "INVALID",
+          "word": "424",
+          "bit": "16",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P834_VFD.Flt.PS_Flt",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD834_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD834 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "15",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P834_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD834_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD834",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "11",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P834_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "FAULT_STATUS",
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD836",
+      "drive_identity": "VFD836",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P836_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD836_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD836 IS RUNNING",
+          "type": "MOTOR",
+          "word": "424",
+          "bit": "17",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P836_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD836_EN",
+          "suffix": "EN",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD836",
+          "type": "MOTOR",
+          "word": "423",
+          "bit": "12",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P836_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    },
+    {
+      "device_id": "VFD219A",
+      "drive_identity": "VFD219A",
+      "machine_name": "ORNCCP4",
+      "binding": "DISCRETE_MOTOR_STARTER",
+      "plc_tag": "P219A_VFD",
+      "plc_datatype": "Motor_Starter_UDT",
+      "signals": [
+        {
+          "io_name": "VFD219A_AUX",
+          "suffix": "AUX",
+          "role": "RUNNING_FEEDBACK",
+          "description": "VFD219A IS RUNNING",
+          "type": "MOTOR",
+          "word": "1006",
+          "bit": "17",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P219A_VFD.I.Auxiliary_Forward",
+          "reference_class": "physical_discrete_io_candidate"
+        },
+        {
+          "io_name": "VFD219A",
+          "suffix": "(bare)",
+          "role": "START_ENABLE_CMD",
+          "description": "START VFD219A",
+          "type": "MOTOR",
+          "word": "1010",
+          "bit": "0",
+          "module_type_row": "N/A",
+          "physical_endpoint": "CONFIGIO_CANDIDATE",
+          "canonical_member": "P219A_VFD.O.Run",
+          "reference_class": "physical_discrete_io_candidate"
+        }
+      ],
+      "ownership": {
+        "source_table": "FORTNA/Conveyor.asc",
+        "owner_machine": "ORNCCP4"
+      },
+      "network": {
+        "spdcontrol_bound": false,
+        "module_bound": false,
+        "comm_state": "NOT_APPLICABLE_DISCRETE"
+      },
+      "provenance": "RUN_EXPLICIT",
+      "binding_review": null,
+      "roles_present": [
+        "RUNNING_FEEDBACK",
+        "START_ENABLE_CMD"
+      ]
+    }
+  ],
+  "counts_by_binding": {
+    "DISCRETE_MOTOR_STARTER": 13,
+    "ETHERNET_VFD_UDT": 0
+  },
+  "notes": [
+    "Known PLC2/4/5 sites use DISCRETE_MOTOR_STARTER (P###_VFD Motor_Starter_UDT).",
+    "SpdControl VFD_Net* / VFD_Reset / VFD_Aux INVALID \u21d2 NOT_CONFIGURED ethernet path.",
+    "Do not emit VFD_UDT instances without configured network evidence."
+  ]
+}

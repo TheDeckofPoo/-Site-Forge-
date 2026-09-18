@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-"""Regression: VFD###_FLT → P###_VFD.Flt.Overload (IO_MAP operand base exists)."""
+"""Regression: VFD###_FLT → P###_VFD.Flt.PS_Flt (library Motor_Starter_UDT.Flt)."""
 from __future__ import annotations
 
-import re
 import sys
 import unittest
 from pathlib import Path
@@ -14,15 +13,20 @@ sys.path.insert(0, str(ROOT / "tools" / "scripts"))
 class TestVfdFltMember(unittest.TestCase):
     def test_suffix_mapping_in_source(self):
         text = (ROOT / "tools" / "scripts" / "fortna_autogen.py").read_text(encoding="utf-8")
-        self.assertIn('return f"{base}.Flt.Overload"', text)
+        self.assertIn('return f"{base}.Flt.PS_Flt"', text)
         self.assertIn('"FLT"', text)
 
-    def test_library_has_overload_member(self):
+    def test_library_ps_fault_member(self):
         lib = (ROOT / "tools" / "libraries" / "OReilly_Library_v3.L5X").read_text(
             encoding="utf-8", errors="ignore"
         )
-        self.assertIn('Name="Motor_Starter_Flt"', lib)
-        self.assertIn('Name="Overload"', lib)
+        self.assertIn('Name="PS_Fault"', lib)
+        self.assertIn('Name="PS_Flt"', lib)
+        # Motor_Starter_UDT.Flt must be PS_Fault (not Motor_Starter_Flt)
+        self.assertRegex(
+            lib,
+            r'<DataType Name="Motor_Starter_UDT"[\s\S]*?<Member Name="Flt" DataType="PS_Fault"',
+        )
 
     def test_run_points_exist_cp4(self):
         from fortna_asc import read_asc

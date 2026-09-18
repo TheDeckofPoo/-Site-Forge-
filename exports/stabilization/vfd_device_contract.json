@@ -1,0 +1,141 @@
+{
+  "version": 1,
+  "title": "FortnaPlus VFD Device Contract",
+  "gates": ["E", "F", "I"],
+  "generated_at": "2026-09-18",
+  "blind_test": {
+    "allowed_runs": [
+      "workspace/cp4-run",
+      "workspace/cp5-run",
+      "workspace/_plc2_run_peek"
+    ],
+    "held_back_site_inspected": false
+  },
+  "source_model": {
+    "discrete_points": {
+      "table": "FORTNA/Conveyor.asc",
+      "identity_field": "IO_Name",
+      "machine_field": "Machine_Name",
+      "known_site_suffixes": ["AUX", "EN", "FLT", "(bare)"],
+      "roles": [
+        {
+          "role": "START_ENABLE_CMD",
+          "suffixes": ["EN", "(bare)"],
+          "description_markers": ["START VFD"],
+          "signal_kind": "command",
+          "typical_direction": "O",
+          "reference_class": "physical_discrete_io_when_configio_proven",
+          "canonical_member_discrete_ms": "P{num}_VFD.O.Run"
+        },
+        {
+          "role": "RUNNING_FEEDBACK",
+          "suffixes": ["AUX"],
+          "description_markers": ["IS RUNNING"],
+          "signal_kind": "status",
+          "typical_direction": "I",
+          "reference_class": "physical_discrete_io_when_configio_proven",
+          "canonical_member_discrete_ms": "P{num}_VFD.I.Auxiliary_Forward"
+        },
+        {
+          "role": "FAULT_STATUS",
+          "suffixes": ["FLT", "FAULT", "FAULTED"],
+          "description_markers": ["HAS FAULTED"],
+          "signal_kind": "status",
+          "typical_direction": "I",
+          "reference_class": "physical_discrete_io_when_configio_proven",
+          "canonical_member_discrete_ms": "P{num}_VFD.Flt.PS_Flt"
+        }
+      ],
+      "known_site_counts": {
+        "ORNCCP2": {"vfd_rows": 0, "note": "no VFD Conveyor ownership"},
+        "ORNCCP4": {"vfd_rows": 32, "roles_observed": ["START_ENABLE_CMD", "RUNNING_FEEDBACK", "FAULT_STATUS"]},
+        "ORNCCP5": {"vfd_rows": 34, "roles_observed": ["START_ENABLE_CMD", "RUNNING_FEEDBACK", "FAULT_STATUS"]}
+      }
+    },
+    "network_selection_fields": {
+      "menu": "SpdControl",
+      "asc": "PROJECT/SpdControl.asc",
+      "mnu": "PROJECT/project.mnu",
+      "fields": [
+        {"name": "VFD_NetCTRL", "target": "Conveyor", "known_site_state": "INVALID_UNCONFIGURED"},
+        {"name": "VFD_NetREF", "target": "Conveyor", "known_site_state": "INVALID_UNCONFIGURED"},
+        {"name": "VFD_Reset", "target": "Conveyor", "known_site_state": "INVALID_UNCONFIGURED"},
+        {"name": "VFD_Aux", "target": "Conveyor", "known_site_state": "INVALID_UNCONFIGURED"},
+        {"name": "VFD_RstTimer", "target": "timemenu", "known_site_state": "N/A"}
+      ],
+      "policy": "OPTIONAL_NOT_CONFIGURED_when_INVALID_do_not_fabricate"
+    },
+    "graphics_fields": {
+      "menu": "GpxBelt",
+      "asc": "FORTNA/GpxBelt.asc",
+      "fields": ["VFD_EN", "VFD_S1", "VFD_S2", "VFD_S3"],
+      "target": "Conveyor",
+      "known_site_state": "INVALID_UNCONFIGURED"
+    },
+    "library_ethernet_capability": {
+      "datatype": "VFD_UDT",
+      "null_tag": "NO_VFD",
+      "aois": ["AB_VFD35", "AB_VFD525", "AB_VFD750"],
+      "vfd_in_status_bits": [
+        "Ready", "Active", "Faulted", "AtReference", "Accelerating", "Decelerating",
+        "ActualDir", "CommandDir", "CommFreqCnt", "CommLogicCnt"
+      ],
+      "vfd_out_command_bits": [
+        "Start", "Stop", "Jog", "ClearFaults", "Forward", "Reverse",
+        "ForceKeypadCtrl", "MOPIncrement", "MOPDecrement", "AccelRate1", "AccelRate2",
+        "DecelRate1", "DecelRate2"
+      ],
+      "comm_fields": ["Sts_CommFlt", "IP_Address", "MACId", "Comm_Code"]
+    }
+  },
+  "canonical_model": {
+    "choice": "VFDDeviceModel",
+    "reuse": [
+      "Motor_Starter_UDT via P###_VFD for DISCRETE_MOTOR_STARTER",
+      "VFD_UDT / AB_VFD* for ETHERNET_VFD_UDT when proven",
+      "HardwareIOModel for physical channels only",
+      "SiteModel.vfds/drives as discovery lists"
+    ],
+    "bindings": {
+      "DISCRETE_MOTOR_STARTER": {
+        "plc_tag_pattern": "P{num}_VFD",
+        "datatype": "Motor_Starter_UDT",
+        "fast_conv_io_vfd": "NO_VFD",
+        "slow_flt_io_ms": "P{num}_VFD",
+        "slow_flt_io_vfd": "NO_VFD"
+      },
+      "ETHERNET_VFD_UDT": {
+        "plc_tag_pattern": "site-specific VFD_UDT instance",
+        "datatype": "VFD_UDT",
+        "activation_requires": [
+          "configured SpdControl VFD_* selection not INVALID",
+          "network module / drive binding evidence"
+        ],
+        "known_sites_activated": false
+      }
+    },
+    "hardware_io_rule": "Do not force VFD command/status into HardwareIOModel as the device; channels may alias UDT members via IO_MAP."
+  },
+  "generation_gate_i": {
+    "ORNCCP5": {
+      "l5x": "exports/stabilization/plc5_hotbuild_full/ORNCCP5.L5X",
+      "P_VFD_Motor_Starter_UDT_count": 29,
+      "bare_VFD_bool_tags": 0,
+      "fast_conv_io_vfd": "NO_VFD",
+      "slow_flt_io_vfd": "NO_VFD",
+      "ethernet_powerflex_modules": 0,
+      "iomap_members_observed": [
+        "I.Auxiliary_Forward",
+        "O.Run",
+        "Flt.PS_Flt"
+      ],
+      "verdict": "PASS_DISCRETE_PATH"
+    },
+    "ORNCCP2": {
+      "l5x": "exports/stabilization/ORNCCP2.L5X",
+      "P_VFD_count": 0,
+      "vfd_conveyor_rows": 0,
+      "verdict": "PASS_NO_VFD_EXPECTED"
+    }
+  }
+}

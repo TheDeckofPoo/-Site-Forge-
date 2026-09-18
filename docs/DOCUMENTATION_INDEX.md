@@ -16,6 +16,7 @@ Do not delete historical docs in this task — mark and link forward.
 | `docs/evidence/TRANSPORTATION_BASELINE.md` | Transport freeze | **CURRENT** | — |
 | `docs/evidence/SAFETY_BASELINE.md` | Safety baseline | **CURRENT** | — |
 | `docs/evidence/PHYSICAL_IO_BASELINE.md` | I/O identity pipeline | **CURRENT** | — |
+| `docs/GENERIC_IO_OWNERSHIP_MODEL.md` | Physical endpoint vs engineering owner (Gates B–D/G/H/K) | **CURRENT** | `exports/stabilization/io_ownership_pipeline.json` |
 | `docs/evidence/SORTER_BASELINE.md` | Sorter discovery | **CURRENT** | — |
 | `docs/evidence/SORTER_TRACK_PROGRAM_PACK.md` | Sorter_Track pack contract (oracle) | **CURRENT** | — |
 | `docs/evidence/WCS_PROGRAM_PACK.md` | WCS pack contract (PLC4/PLC5) | **CURRENT** | — |

@@ -1,0 +1,158 @@
+{
+  "version": 1,
+  "title": "Generic I/O Ownership Pipeline",
+  "doc": "docs/GENERIC_IO_OWNERSHIP_MODEL.md",
+  "gates": ["B", "C", "D", "G", "H", "K"],
+  "pipeline": [
+    {"step": 1, "id": "RUN", "artifacts": ["project.cfg", "FORTNA/*", "PROJECT/*"]},
+    {"step": 2, "id": "Configio", "artifacts": ["FORTNA/Configio.asc", "FORTNA/Configio.asc.<MACHINE>"], "fields": ["Octal_Word", "Desc", "Bank", "LoHi", "In_Out"]},
+    {"step": 3, "id": "EIPModules", "artifacts": ["*-RTA-eipcfg.xml", "PROJECT/EIPModules.asc*"], "fields": ["Adapter", "Slot", "Type", "InputBank", "OutputBank", "TargetIP"]},
+    {"step": 4, "id": "Parts", "artifacts": ["FORTNA/Conveyor.asc"], "fields": ["IO_Name", "IO_Address_Word", "IO_Address_Bit", "Type"]},
+    {"step": 5, "id": "PhysicalWordResolver", "module": "fortna_physical_word_resolver", "output": "by_word_bit + channel"},
+    {"step": 6, "id": "HardwareIOModel", "module": "fortna_hardware_io_model", "output": "physical_endpoint + owner_state"},
+    {"step": 7, "id": "EngineeringOwner", "states": ["ASSIGNED", "UNRESOLVED_OWNER", "ENGINEER_SPARE", "PROVEN_SPARE", "UNKNOWN"]},
+    {"step": 8, "id": "CanonicalEndpoint", "equality": "exact_dimension", "forbidden": ["string_similarity", "name_prefix_collapse", "bank_alone_slot_math"]},
+    {"step": 9, "id": "IO_MAP", "routines": ["CP_I", "CP_O"], "symbol_registry": "fortna_plc_symbol_registry"},
+    {"step": 10, "id": "PLC", "artifacts": ["L5X", "studio_preflight", "operand_validator"]}
+  ],
+  "physical_endpoint_dimensions": [
+    "machine",
+    "panel",
+    "node",
+    "adapter",
+    "rio_name",
+    "module_slot",
+    "data_index",
+    "bank_word",
+    "bit",
+    "direction",
+    "module_type",
+    "family",
+    "channel",
+    "endpoint_id"
+  ],
+  "owner_states": {
+    "ASSIGNED": "Proven RUN or engineer logical owner",
+    "UNRESOLVED_OWNER": "Topology known; owner failed or conflicted — UI must not show SPARE",
+    "ENGINEER_SPARE": "Engineer explicitly spared",
+    "PROVEN_SPARE": "RUN spare or unused Configio capacity bit",
+    "UNKNOWN": "Incomplete physical endpoint"
+  },
+  "symbol_classes": [
+    "PHYSICAL_INPUT",
+    "PHYSICAL_OUTPUT",
+    "NETWORK_DEVICE_COMMAND",
+    "NETWORK_DEVICE_STATUS",
+    "LOGICAL_SIGNAL",
+    "MODULE_REFERENCE",
+    "ALIAS",
+    "TIMER",
+    "AOI_INSTANCE",
+    "CONTROLLER_TAG",
+    "PROGRAM_TAG",
+    "UNKNOWN"
+  ],
+  "physical_endpoint_policy": {
+    "required_classes": ["PHYSICAL_INPUT", "PHYSICAL_OUTPUT"],
+    "forbidden_invent_classes": [
+      "NETWORK_DEVICE_COMMAND",
+      "NETWORK_DEVICE_STATUS",
+      "LOGICAL_SIGNAL",
+      "TIMER",
+      "AOI_INSTANCE",
+      "ALIAS"
+    ]
+  },
+  "unknown_symbol_policy": {
+    "forbidden": [
+      "auto_BOOL",
+      "fake_module",
+      "TRUE_FALSE_stub",
+      "NOP_replace",
+      "silent_omit",
+      "name_prefix_guess"
+    ],
+    "dispositions": ["FATAL", "ENGINEER_REQUIRED", "OPTIONAL", "ABSENT_REFERENCE"]
+  },
+  "assumptions": [
+    {
+      "id": "configio_bank_alone_slot",
+      "statement": "Configio Bank alone determines Logix Data[] slot",
+      "status": "REMOVED_FIXED",
+      "fix": "EIPModules InputBank/OutputBank + Desc slot corroboration; REVIEW_REQUIRED on mismatch"
+    },
+    {
+      "id": "name_prefix_ownership",
+      "statement": "Name equality / prefix implies same owner (P220 vs P220A)",
+      "status": "REMOVED_FIXED",
+      "fix": "Exact logical identity; physical_endpoints_equal rejects prefix collapse"
+    },
+    {
+      "id": "all_cp_io_are_discrete_physical",
+      "statement": "All CP_I/CP_O operands are discrete physical endpoints",
+      "status": "REMOVED_FIXED",
+      "fix": "Gate G class matrix; NETWORK_DEVICE_* and LOGICAL_SIGNAL do not require physical endpoint"
+    },
+    {
+      "id": "missing_owner_is_spare",
+      "statement": "Missing owner on known topology is SPARE",
+      "status": "REMOVED_FIXED",
+      "fix": "UNRESOLVED_OWNER vs PROVEN_SPARE; UI shows UNRESOLVED OWNER not SPARE"
+    },
+    {
+      "id": "unknown_auto_bool",
+      "statement": "Unknown symbol may be auto-declared as BOOL",
+      "status": "REMOVED_FIXED",
+      "fix": "Gate H unknown_symbol_policy + may_auto_declare_bool deny"
+    },
+    {
+      "id": "configio_desc_forms",
+      "statement": "Configio Desc PANEL-CATALOG and PANEL-NODE forms",
+      "status": "JUSTIFIED",
+      "fix": "Proven Fortna Desc patterns in PhysicalWordResolver"
+    },
+    {
+      "id": "family_aware_data_index",
+      "statement": "1794 Flex uses slot-1 Data[]; 1734 POINT keeps chassis slot",
+      "status": "JUSTIFIED",
+      "fix": "fortna_hardware_family"
+    },
+    {
+      "id": "conveyor_owner_catalog",
+      "statement": "Conveyor.asc is engineering owner catalog for discrete points",
+      "status": "JUSTIFIED",
+      "fix": "Parts → owner; Type=INVALID may be LOGICAL_SIGNAL with physicalEndpoint=null"
+    },
+    {
+      "id": "resolver_sole_topology",
+      "statement": "PhysicalWordResolver is sole Hardware/IO_MAP topology authority",
+      "status": "JUSTIFIED",
+      "fix": "HardwareIOModel is a thin consumer; no independent rediscovery"
+    }
+  ],
+  "ui": {
+    "unresolved_owner_label": "UNRESOLVED OWNER",
+    "spare_placeholder": "SPARE — click to name",
+    "unresolved_placeholder": "UNRESOLVED OWNER — assign name",
+    "inspector_fields": [
+      "physical_endpoint",
+      "module",
+      "slot",
+      "channel",
+      "direction",
+      "run_source",
+      "engineering_owner",
+      "owner_source",
+      "resolution_status"
+    ],
+    "preserved": ["FLEX_width", "AENT", "two_rack_viewport", "scrolling", "selected_channel_table"]
+  },
+  "code": {
+    "hardware_model": "tools/scripts/fortna_hardware_io_model.py",
+    "overrides": "tools/scripts/fortna_hardware_io_overrides.py",
+    "resolver": "tools/scripts/fortna_physical_word_resolver.py",
+    "symbol_registry": "tools/scripts/fortna_plc_symbol_registry.py",
+    "control_model": "tools/scripts/fortna_control_model.py",
+    "ui": ["dashboard/fortna-plus.js", "dashboard/hardware/flex-rack.js", "dashboard/hardware/point-rack.js"]
+  }
+}

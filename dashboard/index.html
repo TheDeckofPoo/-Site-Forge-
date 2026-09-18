@@ -633,6 +633,36 @@
       transition: transform 0.15s ease;
     }
     .workflow-help[open] > summary::before { transform: rotate(90deg); }
+
+    /* GATE N — lightweight Help drawer (manual-backed, not a giant modal) */
+    #sf-help-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: min(380px, 92vw);
+      height: 100vh;
+      z-index: 300;
+      background: #0c1219;
+      border-left: 1px solid #2a3f55;
+      box-shadow: -8px 0 32px rgba(0,0,0,0.45);
+      transform: translateX(100%);
+      transition: transform 0.18s ease;
+      display: flex;
+      flex-direction: column;
+    }
+    #sf-help-drawer[data-open="1"] { transform: translateX(0); }
+    #sf-help-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 299;
+      background: rgba(0,0,0,0.35);
+      display: none;
+    }
+    #sf-help-backdrop[data-open="1"] { display: block; }
+    body.sf-help-inspect [id]:hover {
+      outline: 1px dashed rgba(34, 211, 238, 0.55);
+      outline-offset: 2px;
+    }
     .workflow-chart {
       display: flex;
       flex-wrap: wrap;
@@ -744,6 +774,9 @@
       <div id="project-health-strip" class="hidden sm:flex items-center gap-1.5 mr-2 text-[10px] mono text-slate-400 overflow-x-auto max-w-[52vw]" title="Project Health — mirrors Compile Hub readiness (click to jump)"></div>
       <span id="index-status" class="status-pill status-idle shrink-0">0 docs indexed</span>
       <span id="workspace-status" class="status-pill status-idle shrink-0">No RUN loaded</span>
+      <button type="button" id="btn-sf-help" class="w-8 h-8 rounded hover:bg-slate-800 text-cyan-400/90 border border-cyan-900/40" title="Help — Site Forge engineering UI (manual)">
+        <span class="text-sm font-bold" aria-hidden="true">?</span>
+      </button>
       <button onclick="fortnaAPI.minimize()" class="w-8 h-8 rounded hover:bg-slate-800 text-slate-400" title="Minimize"><i class="fa-solid fa-minus text-xs"></i></button>
       <button onclick="fortnaAPI.maximize()" class="w-8 h-8 rounded hover:bg-slate-800 text-slate-400" title="Maximize"><i class="fa-regular fa-square text-xs"></i></button>
       <button onclick="fortnaAPI.close()" class="w-8 h-8 rounded hover:bg-red-900/50 text-slate-400 hover:text-red-300" title="Close"><i class="fa-solid fa-xmark text-xs"></i></button>
@@ -3134,6 +3167,42 @@
 
   <link rel="stylesheet" href="hardware/flex-hardware.css">
   <link rel="stylesheet" href="hardware/point-hardware.css">
+  <!-- GATE N — Help drawer (manual sections + control-id map) -->
+  <div id="sf-help-backdrop" data-open="0" aria-hidden="true"></div>
+  <aside id="sf-help-drawer" data-open="0" role="dialog" aria-label="Site Forge Help" aria-hidden="true">
+    <div class="flex items-center gap-2 px-3 py-2.5 border-b border-slate-800 shrink-0">
+      <span class="text-sm font-semibold text-cyan-300">Help</span>
+      <span class="text-[10px] text-slate-500 mono">Engineering UI</span>
+      <button type="button" id="sf-help-close" class="ml-auto btn-ghost text-xs px-2 py-1 rounded-lg text-slate-400" title="Close">✕</button>
+    </div>
+    <div class="px-3 py-2 border-b border-slate-800 shrink-0 space-y-2">
+      <label class="flex items-center gap-2 text-[11px] text-slate-400 cursor-pointer select-none">
+        <input type="checkbox" id="sf-help-inspect" class="rounded border-slate-600 bg-slate-900">
+        Inspect next control click
+      </label>
+      <input id="sf-help-filter" type="search" placeholder="Filter controls / sections…"
+        class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] text-slate-200">
+    </div>
+    <div id="sf-help-detail" class="hidden shrink-0 mx-3 mt-2 rounded-lg border border-cyan-900/50 bg-cyan-950/20 p-2.5 text-[11px] text-slate-300"></div>
+    <div class="flex-1 min-h-0 overflow-y-auto px-3 py-2 space-y-3 text-[11px]">
+      <div>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Workflow</div>
+        <ol id="sf-help-workflow" class="list-decimal list-inside text-slate-400 space-y-0.5 leading-relaxed"></ol>
+      </div>
+      <div>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Manual sections</div>
+        <ul id="sf-help-sections" class="space-y-1 text-slate-300"></ul>
+      </div>
+      <div>
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Controls</div>
+        <ul id="sf-help-controls" class="space-y-1"></ul>
+      </div>
+      <p class="text-[10px] text-slate-600 leading-relaxed pb-4">
+        Full text: <span class="mono text-slate-500">docs/SITE_FORGE_ENGINEERING_UI_MANUAL.md</span>
+      </p>
+    </div>
+  </aside>
+
   <script src="hardware/flex-rack.js"></script>
   <script src="hardware/point-rack.js"></script>
   <script src="hardware/hardware-family.js"></script>

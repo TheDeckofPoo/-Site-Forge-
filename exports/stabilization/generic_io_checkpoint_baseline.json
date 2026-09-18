@@ -1,0 +1,35 @@
+{
+  "gate": "A",
+  "parent_sha": "481f82c69f5241e5df54e07e2020c063d61dfa51",
+  "recorded_at": "2026-09-18T16:03:59.498672+00:00",
+  "allowed_evidence_roots": [
+    "workspace/cp5-run",
+    "workspace/cp4-run",
+    "workspace/_plc2_run_peek",
+    "existing cataloged docs/artifacts/mnu/FortnaPlus source"
+  ],
+  "held_back_site_inspected": false,
+  "baseline_tests": {
+    "sorter_phase1_hot_build+geometry+safety+review+lane_divert": "62 OK"
+  },
+  "preserve": [
+    "CP1-CP4",
+    "Transportation",
+    "geometry authority",
+    "Mtrchain",
+    "MergeBoss/MergeInputs",
+    "CURVE",
+    "Areas",
+    "Safety",
+    "Hardware I/O",
+    "P220/P220A",
+    "logical signals",
+    "StartStop/Jam",
+    "Sorter",
+    "operand fidelity",
+    "PLC2 zero sorter",
+    "PLC5 five sorters",
+    "32 lane rows"
+  ],
+  "status": "BASELINE_FROZEN"
+}

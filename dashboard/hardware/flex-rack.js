@@ -99,10 +99,15 @@
     return out;
   }
 
-  /** True only when the model marks a failed/pending assignment — not empty spare. */
+  /** True only when owner resolution failed — never ordinary SPARE capacity (Gate D/K). */
   function isTrulyUnresolved(ch) {
     if (!ch) return false;
-    if (ch.logical_endpoint && ch.logical_endpoint.name) return false;
+    const ownerState = String(ch.owner_state || ch.resolution_status || '').toUpperCase();
+    if (ownerState === 'UNRESOLVED_OWNER') return true;
+    if (ownerState === 'PROVEN_SPARE' || ownerState === 'ENGINEER_SPARE' || ownerState === 'ASSIGNED') {
+      return false;
+    }
+    if (ch.engineering_owner || (ch.logical_endpoint && ch.logical_endpoint.name)) return false;
     const st = String(ch.status || ch.resolve_status || ch.endpoint_status || '').toLowerCase();
     if (/unresolv|error|fail|missing|conflict/.test(st)) return true;
     const how = String(ch.provenance?.assign_how || ch.assign_how || '').toLowerCase();
