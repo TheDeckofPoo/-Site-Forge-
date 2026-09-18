@@ -12,6 +12,19 @@
     UNRESOLVED: 'UNRESOLVED',
   };
 
+  /** Gate R — zone provenance classes */
+  const PROVENANCE = {
+    RUN_DISCOVERED: 'RUN_DISCOVERED',
+    ENGINEER_CREATED: 'ENGINEER_CREATED',
+    LEGACY_CANONICAL: 'LEGACY_CANONICAL',
+    TEST_FIXTURE: 'TEST_FIXTURE',
+    AUTO_DEFAULT: 'AUTO_DEFAULT',
+    UNKNOWN: 'UNKNOWN',
+  };
+  const PLACEHOLDER_AREA_RE = /^Zone([1-9])_Area$/i;
+  const PLACEHOLDER_ZONE_RE = /^Zone([1-9])_ESZone\d*$/i;
+  const NUMERIC_STEM_ZONE_RE = /^(\d{2,})_ESZone\d*$/i;
+
   const KIND_ORDER = ['ESTOP', 'ESR', 'MCR', 'CS', 'ESLS', 'OTHER'];
   const KIND_LABEL = {
     ESTOP: 'ESTOPS',
@@ -155,6 +168,70 @@
     return !s || /\[object\s+Object\]/i.test(s);
   }
 
+  function isUiPlaceholderArea(name) {
+    return PLACEHOLDER_AREA_RE.test(String(name || '').trim());
+  }
+
+  function isPlaceholderOrTestZoneName(name) {
+    const s = String(name || '').trim();
+    if (!s || isCorruptZoneName(s)) return true;
+    if (PLACEHOLDER_ZONE_RE.test(s)) return true;
+    if (NUMERIC_STEM_ZONE_RE.test(s)) return true;
+    return false;
+  }
+
+  /**
+   * Gate R — classify zone provenance for persistence / UI filtering.
+   * Zone existence ≠ Safety device membership.
+   */
+  function classifyZoneProvenance(z, ctx) {
+    const sid = zoneSourceId(z);
+    const disp = zoneDisplayName(z);
+    const area = areaNameOf(z.areaRef || z.area) || String(z.areaRef || '').trim();
+    const runIds = ctx?.runIds || new Set();
+    const convRefs = ctx?.convRefs || new Set();
+    if (!sid && !disp) return PROVENANCE.UNKNOWN;
+    if (isCorruptZoneName(sid) || isCorruptZoneName(disp)) return PROVENANCE.TEST_FIXTURE;
+    const engineer = !!(z.engineerEdited
+      || String(z.membersOrigin || '').toUpperCase() === 'ENGINEER_ASSIGNED'
+      || z.createdBy === 'engineer');
+    if (engineer && ((z.members || []).length || z.createdBy === 'engineer' || z.engineerEdited)) {
+      if (isPlaceholderOrTestZoneName(sid) || isPlaceholderOrTestZoneName(disp)) {
+        return engineer ? PROVENANCE.ENGINEER_CREATED : PROVENANCE.TEST_FIXTURE;
+      }
+      return PROVENANCE.ENGINEER_CREATED;
+    }
+    if (z.runDiscovered || runIds.has(sid) || runIds.has(disp)) {
+      if (isPlaceholderOrTestZoneName(sid) || isPlaceholderOrTestZoneName(disp)) {
+        return PROVENANCE.TEST_FIXTURE;
+      }
+      return PROVENANCE.RUN_DISCOVERED;
+    }
+    if (isPlaceholderOrTestZoneName(sid) || isPlaceholderOrTestZoneName(disp)) {
+      return PROVENANCE.TEST_FIXTURE;
+    }
+    if (isUiPlaceholderArea(area) && !engineer) return PROVENANCE.TEST_FIXTURE;
+    if (convRefs.has(sid) || convRefs.has(disp)) return PROVENANCE.LEGACY_CANONICAL;
+    // Area-named ${stem}_ESZone1 shell with no members / no conveyor refs
+    if (/_ESZone1$/i.test(sid || disp) && !(z.members || []).length
+      && !convRefs.has(sid) && !convRefs.has(disp) && !engineer) {
+      return PROVENANCE.AUTO_DEFAULT;
+    }
+    return PROVENANCE.UNKNOWN;
+  }
+
+  /** Meaningful zones for UI / production — drop unused test/default pollution. */
+  function isMeaningfulZone(z) {
+    const p = z.provenance || classifyZoneProvenance(z, {});
+    if (p === PROVENANCE.TEST_FIXTURE) {
+      return !!(z.engineerEdited && (z.members || []).length);
+    }
+    if (p === PROVENANCE.AUTO_DEFAULT) {
+      return false;
+    }
+    return true;
+  }
+
   function areaConveyorsFromWorkbook() {
     const wb = ensureAutogenState().workbook || {};
     const map = {};
@@ -211,12 +288,16 @@
     }
 
     // Gate H — RUN-discovered zone shells (devices=0, membership REVIEW until proven/engineer)
+    // Appear immediately after import/model build — not only after Build.
     const runZones = Array.isArray(AS.runSafetyZones) ? AS.runSafetyZones : [];
     runZones.forEach((rz) => {
       const sid = zoneSourceId(rz) || String(rz.name || '').trim();
       if (!sid || deleted.has(sid) || isCorruptZoneName(sid)) return;
+      // Gate R — never ingest Zone1..Zone9 / numeric test shells as RUN-discovered
+      if (isPlaceholderOrTestZoneName(sid)) return;
       if (findZone(sid)) return;
       const areaRef = areaNameOf(rz.area || rz.areaRef) || '';
+      if (isUiPlaceholderArea(areaRef)) return;
       const provenMembers = membersAreProven(rz.membersOrigin, rz.membership_confidence)
         ? [...(rz.members || [])].filter(Boolean)
         : [];
@@ -233,6 +314,7 @@
         members: provenMembers,
         membersOrigin: provenMembers.length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
         membership_confidence: rz.membership_confidence || 'ENGINEER_REQUIRED',
+        membership_status: provenMembers.length ? 'PROVEN' : 'REVIEW_REQUIRED',
         eStops: [],
         esrDevices: [],
         mcrDevices: [],
@@ -245,12 +327,14 @@
         status: 'REVIEW_REQUIRED',
         fields: {},
         runDiscovered: true,
+        provenance: PROVENANCE.RUN_DISCOVERED,
       });
     });
 
     transportZones.forEach((z) => {
       const sid = String(z.name || '').trim();
       if (!sid || deleted.has(sid) || isCorruptZoneName(sid)) return;
+      if (isPlaceholderOrTestZoneName(sid) && !(z.conveyors || []).length) return;
       const areaRef = areaNameOf(z.area) || String(z.area || '').trim();
       if (isCorruptZoneName(areaRef)) return;
       const existing = findZone(sid);
@@ -371,53 +455,29 @@
       putZone(cur);
     });
 
-    // Ensure area-named default zones exist for each *current* workbook area only.
-    // areas is already normalized to string names via areaNameOf.
-    const areaSet = new Set(areas);
-    areas.forEach((an) => {
-      if (!an || isCorruptZoneName(an)) return;
-      const stem = an.replace(/_Area$/i, '');
-      if (!stem || isCorruptZoneName(stem)) return;
-      const preferred = `${stem}_ESZone1`;
-      if (deleted.has(preferred) || isCorruptZoneName(preferred)) return;
-      const existing = [...byId.values()].find((z) => {
-        const keys = [zoneSourceId(z), zoneDisplayName(z), z.name].map((k) => String(k || '').toLowerCase());
-        return keys.includes(preferred.toLowerCase())
-          || keys.some((kl) => kl.startsWith(`${stem.toLowerCase()}_eszone`));
-      });
-      if (existing) return;
-      putZone({
-        id: preferred,
-        source_id: preferred,
-        name: preferred,
-        engineering_name: preferred,
-        areaRef: an,
-        areaOrigin: 'AUTO_RUN_PROVEN',
-        conveyorRefs: [...(areaConvs[an] || [])],
-        conveyorsOrigin: (areaConvs[an] || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
-        // Gate J — shell only; membership REVIEW until engineer / PROVEN
-        members: [],
-        membersOrigin: 'UNRESOLVED',
-        eStops: [],
-        esrDevices: [],
-        mcrDevices: [],
-        resetSource: `${an}.Reset`,
-        silenceSource: `${an}.Silence`,
-        resetOrigin: 'AUTO_RUN_PROVEN',
-        silenceOrigin: 'AUTO_RUN_PROVEN',
-        suggestions: [],
-        engineerEdited: false,
-        status: 'REVIEW_REQUIRED',
-        fields: {},
-      });
-    });
+    // Gate R — do NOT auto-create ${stem}_ESZone1 for every workbook area.
+    // That AUTO_DEFAULT path minted Zone1_ESZone1..Zone9_ESZone1 / 123456_ESZone1
+    // from UI placeholders and leaked them into production canonical.
+    // Zones come from: RUN-discovered, Transport conveyor.safetyZone, engineer create.
+    const areaSet = new Set(areas.filter((a) => a && !isUiPlaceholderArea(a)));
 
-    // Drop stale zones from prior projects (saved localStorage) unless their Area
-    // still exists on this project OR they appear on the Transport canvas OR RUN-discovered.
+    // Drop stale zones from prior projects (saved localStorage) unless RUN /
+    // engineer / transport-referenced. Never keep unused ZoneN / numeric tests.
     // Also drop coercion artifacts ([object Object]_ESZone*) permanently.
     const transportNames = new Set(
       transportZones.map((z) => String(z.name || '').trim()).filter((n) => n && !isCorruptZoneName(n)),
     );
+    const convRefs = new Set(transportNames);
+    (eng.zones || []).forEach((ez) => {
+      const sid = zoneSourceId(ez);
+      if (sid && (ez.engineerEdited || (ez.members || []).length)) convRefs.add(sid);
+    });
+    const runIds = new Set(
+      (Array.isArray(AS.runSafetyZones) ? AS.runSafetyZones : [])
+        .map((z) => zoneSourceId(z) || String(z.name || '').trim())
+        .filter((n) => n && !isPlaceholderOrTestZoneName(n)),
+    );
+    const provCtx = { runIds, convRefs };
     for (const [sid, z] of [...byId.entries()]) {
       if (isCorruptZoneName(sid) || isCorruptZoneName(z.areaRef)) {
         byId.delete(sid);
@@ -426,20 +486,29 @@
       const area = areaNameOf(z.areaRef) || String(z.areaRef || '').trim();
       z.areaRef = area;
       const disp = zoneDisplayName(z);
+      z.provenance = classifyZoneProvenance(z, provCtx);
+      // Gate R — drop test/default pollution unless engineer-authored with members
+      if (!isMeaningfulZone(z)) {
+        byId.delete(sid);
+        continue;
+      }
       const keep = transportNames.has(sid)
         || transportNames.has(disp)
         || z.runDiscovered
         || z.engineerEdited
-        || (area && areaSet.has(area))
-        || (areaSet.size === 0 && transportNames.size === 0 && z.engineerEdited);
+        || z.provenance === PROVENANCE.RUN_DISCOVERED
+        || z.provenance === PROVENANCE.ENGINEER_CREATED
+        || z.provenance === PROVENANCE.LEGACY_CANONICAL
+        || (area && areaSet.has(area) && !isPlaceholderOrTestZoneName(sid));
       // If we have current areas and this zone's area is gone → drop (unless RUN/engineer)
       if (areaSet.size > 0 && area && !areaSet.has(area)
         && !transportNames.has(sid) && !transportNames.has(disp)
-        && !z.runDiscovered && !z.engineerEdited) {
+        && !z.runDiscovered && !z.engineerEdited
+        && z.provenance !== PROVENANCE.ENGINEER_CREATED) {
         byId.delete(sid);
         continue;
       }
-      // Orphan zone with no area and not on canvas → drop (unless RUN shell)
+      // Orphan zone with no area and not on canvas → drop (unless RUN/engineer shell)
       if (!keep && areaSet.size > 0 && !transportNames.has(sid) && !transportNames.has(disp)) {
         byId.delete(sid);
       }
@@ -661,22 +730,28 @@
     (modelZones || []).forEach((z) => {
       const sid = zoneSourceId(z) || String(z.name || z.id || '').trim();
       if (!sid || isCorruptZoneName(sid) || state.deletedZones.has(sid)) return;
+      // Gate R — placeholders are never RUN-discovered
+      if (isPlaceholderOrTestZoneName(sid)) return;
+      const areaRef = areaNameOf(z.areaRef || z.area) || String(z.areaRef || z.area || '').trim();
+      if (isUiPlaceholderArea(areaRef) && !(z.members || []).length) return;
       const proven = membersAreProven(z.membersOrigin, z.membership_confidence);
       shells.push({
         id: sid,
         source_id: sid,
         name: String(z.engineering_name || z.engineeringName || z.name || sid).trim(),
         engineering_name: String(z.engineering_name || z.engineeringName || z.name || sid).trim(),
-        area: z.areaRef || z.area || '',
-        areaRef: z.areaRef || z.area || '',
+        area: areaRef,
+        areaRef,
         conveyors: z.conveyorRefs || z.conveyors || [],
         conveyorRefs: z.conveyorRefs || z.conveyors || [],
         // Gate J — never auto-assign; empty unless PROVEN
         members: proven ? [...(z.members || [])].filter(Boolean) : [],
         membersOrigin: proven && (z.members || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
         membership_confidence: z.membership_confidence || 'ENGINEER_REQUIRED',
+        membership_status: proven && (z.members || []).length ? 'PROVEN' : 'REVIEW_REQUIRED',
         status: 'REVIEW_REQUIRED',
         runDiscovered: true,
+        provenance: PROVENANCE.RUN_DISCOVERED,
       });
     });
     AS.runSafetyZones = shells;
@@ -1123,12 +1198,29 @@
     status(`Assigned ${names.length} device(s) → ${dest} (Apply Safety to persist)`);
   }
 
+  function membershipStatusLabel(z) {
+    const members = z.members || [];
+    const origin = String(z.membersOrigin || '').toUpperCase();
+    if (members.length && (origin === 'ENGINEER_ASSIGNED' || origin === 'ENGINEER')) {
+      return { key: 'ENGINEER_ASSIGNED', html: '<span class="text-fuchsia-300">ENGINEER ASSIGNED</span>' };
+    }
+    if (members.length && (origin === 'AUTO_RUN_PROVEN' || origin === 'AUTO')) {
+      return { key: 'PROVEN', html: '<span class="text-emerald-400">PROVEN</span>' };
+    }
+    if (members.length) {
+      return { key: 'ASSIGNED', html: '<span class="text-sky-300">ASSIGNED</span>' };
+    }
+    // Gate J/T — unknown membership stays fail-safe REVIEW_REQUIRED
+    return { key: 'REVIEW_REQUIRED', html: '<span class="text-amber-300">REVIEW REQUIRED</span>' };
+  }
+
   function renderZoneList() {
     const host = $('sb-zone-list');
     if (!host || !state.model) return;
-    const zones = state.model.zones || [];
+    // Gate T — show only meaningful zones after reconciliation
+    const zones = (state.model.zones || []).filter(isMeaningfulZone);
     if (!zones.length) {
-      host.innerHTML = '<div class="text-sm text-slate-500 p-4">No Safety Zones yet. Create an Area on Transportation (default zone offered), or Apply Transport so zones seed here.</div>';
+      host.innerHTML = '<div class="text-sm text-slate-500 p-4">No Safety Zones yet. RUN-discovered zones appear after import; or create one on Transportation / Safety Build.</div>';
       return;
     }
     host.innerHTML = zones.map((z) => {
@@ -1137,20 +1229,29 @@
       const sel = (sid === state.selectedZoneId || disp === state.selectedZoneId || z.id === state.selectedZoneId)
         ? 'border-rose-500/60 bg-rose-950/20'
         : 'border-slate-800 hover:border-slate-600';
+      const mem = membershipStatusLabel(z);
       const st = z.status === 'READY'
         ? '<span class="text-emerald-400">READY</span>'
-        : '<span class="text-amber-300">REVIEW REQUIRED</span>';
+        : mem.html;
+      const prov = z.provenance || classifyZoneProvenance(z, {});
+      const provChip = prov === PROVENANCE.RUN_DISCOVERED
+        ? '<span class="text-[8px] text-sky-400/90">RUN</span>'
+        : (prov === PROVENANCE.ENGINEER_CREATED
+          ? '<span class="text-[8px] text-fuchsia-300/90">ENGINEER</span>'
+          : `<span class="text-[8px] text-slate-600">${escapeHtml(prov)}</span>`);
       const renamed = sid && disp && sid !== disp
-        ? `<div class="text-[9px] text-slate-600 mono mt-0.5">RUN ${escapeHtml(sid)}</div>`
+        ? `<div class="text-[9px] text-slate-600 mono mt-0.5">source ${escapeHtml(sid)}</div>`
         : '';
+      const reviewN = (z.hard_missing || []).length || (z.status === 'READY' ? 0 : 1);
       return `<div class="rounded-xl border ${sel} px-3 py-2.5 mb-2 transition flex items-start gap-2">
         <button type="button" data-sb-zone="${escapeHtml(sid)}" class="flex-1 text-left min-w-0">
           <div class="flex items-center gap-2">
             <span class="mono text-sm text-rose-200 font-semibold truncate">${escapeHtml(disp)}</span>
+            ${provChip}
             <span class="ml-auto text-[10px] shrink-0">${st}</span>
           </div>
           ${renamed}
-          <div class="text-[10px] text-slate-500 mt-1">Area ${escapeHtml(z.areaRef || '—')} · Conv ${(z.conveyorRefs || []).length} · Devices ${(z.members || []).length}</div>
+          <div class="text-[10px] text-slate-500 mt-1">Area ${escapeHtml(z.areaRef || '—')} · Assigned ${(z.members || []).length} · E-Stops ${(z.eStops || []).length} · Review ${reviewN}</div>
         </button>
         <button type="button" data-sb-zone-del="${escapeHtml(sid)}" title="Delete Safety Zone"
           class="shrink-0 mt-0.5 btn-ghost text-[10px] px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300 hover:bg-rose-950/40">

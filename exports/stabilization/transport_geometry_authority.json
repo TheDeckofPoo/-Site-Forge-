@@ -1,0 +1,262 @@
+{
+  "kind": "TransportGeometryAuthority",
+  "version": 1,
+  "generated_at": "2026-09-18T08:04:48.540187+00:00",
+  "schema_fields": [
+    "X_cord",
+    "Y_cord",
+    "Length",
+    "Width",
+    "Angle",
+    "Type",
+    "Inside_Radius"
+  ],
+  "field_spelling": "X_cord/Y_cord (NOT X_coord)",
+  "xy_meaning": "infeed_entry_end",
+  "angle_meaning": "flow_direction_deg_ccw_from_plus_x",
+  "curve_length_sentinel": -1,
+  "calibration": "greensboro-infeed-v1",
+  "authority_stack": [
+    "ENGINEER_ASSIGNED",
+    "PROVEN_RUN",
+    "DERIVED_TOPOLOGY",
+    "FALLBACK_LAYOUT",
+    "UNKNOWN"
+  ],
+  "rules": {
+    "fallback_must_not_overwrite_proven": true,
+    "source_effective_override_separated": true,
+    "engineer_override_mutates_source": false,
+    "normalization_preserves_relative_xy": true,
+    "connectivity_validates_does_not_silent_snap": true,
+    "one_authoritative_display_transform": true,
+    "site_specific_production_branches": 0
+  },
+  "required_per_object": [
+    "source_anchor",
+    "render_anchor",
+    "body_center",
+    "entry_endpoint",
+    "exit_endpoint",
+    "angle",
+    "length",
+    "width",
+    "geometry_provenance"
+  ],
+  "modules": {
+    "geometry": "tools/scripts/fortna_physical_geometry.py",
+    "authority": "tools/scripts/fortna_geometry_authority.py",
+    "layout": "tools/scripts/fortna_run_physical_layout.py",
+    "canvas": "dashboard/transport-build.js"
+  },
+  "sample_provenance_counts_first_200_P_tags": {
+    "ENGINEER_ASSIGNED": 0,
+    "PROVEN_RUN": 200,
+    "DERIVED_TOPOLOGY": 0,
+    "FALLBACK_LAYOUT": 0,
+    "UNKNOWN": 0
+  },
+  "acceptance_examples": {
+    "P500": {
+      "tag": "P500",
+      "run": {
+        "X_cord": 42166.667,
+        "Y_cord": 56000.0,
+        "Length": 1200.0,
+        "Width": 500.0,
+        "Angle": 270.0,
+        "Type": "STRAIGHT",
+        "Inside_Radius": 0.0
+      },
+      "render_anchor": {
+        "x": 42166.667,
+        "y": 56000.0
+      },
+      "body_center": {
+        "x": 42166.667,
+        "y": 55400.0
+      },
+      "entry_endpoint": {
+        "x": 42166.667,
+        "y": 56000.0
+      },
+      "exit_endpoint": {
+        "x": 42166.667,
+        "y": 54800.0
+      },
+      "hit_target": {
+        "center": {
+          "x": 42166.667,
+          "y": 55400.0
+        },
+        "entry": {
+          "x": 42166.667,
+          "y": 56000.0
+        },
+        "exit": {
+          "x": 42166.667,
+          "y": 54800.0
+        },
+        "angle": 270.0
+      },
+      "upstream_candidates": [
+        {
+          "tag": "PE544_P",
+          "gap": 141.4206491322934,
+          "mate": "CONFIRMED"
+        },
+        {
+          "tag": "PE444_P",
+          "gap": 147.4322066442762,
+          "mate": "CONFIRMED"
+        },
+        {
+          "tag": "P544",
+          "gap": 149.99899999999616,
+          "mate": "CONFIRMED"
+        },
+        {
+          "tag": "P444",
+          "gap": 150.00100000000384,
+          "mate": "CONFIRMED"
+        },
+        {
+          "tag": "PB500_JR",
+          "gap": 424.9947058917312,
+          "mate": "HIGH_CONFIDENCE"
+        }
+      ],
+      "downstream_candidates": [
+        {
+          "tag": "P502",
+          "gap": 484.48079884036457,
+          "mate": "HIGH_CONFIDENCE"
+        },
+        {
+          "tag": "P504",
+          "gap": 484.48079884036457,
+          "mate": "HIGH_CONFIDENCE"
+        },
+        {
+          "tag": "PE500_J",
+          "gap": 625.001000003198,
+          "mate": "HIGH_CONFIDENCE"
+        },
+        {
+          "tag": "PE504_I",
+          "gap": 680.8892633093845,
+          "mate": "HIGH_CONFIDENCE"
+        }
+      ],
+      "geometry_provenance": "PROVEN_RUN",
+      "why_old_renderer_scattered": {
+        "incorrect_model": "XY treated as footprint center; entry/exit = center +/- Length/2",
+        "false_entry": {
+          "x": 42166.667,
+          "y": 56600.0
+        },
+        "false_exit": {
+          "x": 42166.667,
+          "y": 55400.0
+        },
+        "true_entry": {
+          "x": 42166.667,
+          "y": 56000.0
+        },
+        "true_exit": {
+          "x": 42166.667,
+          "y": 54800.0
+        },
+        "entry_error_drawing_units": 600.0,
+        "effect": "Cards/segments placed on false centers so long runs looked short/misaligned and abutments showed artificial gaps \u2014 scattered labeled objects"
+      },
+      "fixed": true,
+      "fix_notes": "Infeed-origin model (greensboro-infeed-v1) via fortna_physical_geometry + fortna_geometry_authority; no site-specific production branches"
+    },
+    "P536": {
+      "tag": "P536",
+      "run": {
+        "X_cord": 43216.667,
+        "Y_cord": 56758.334,
+        "Length": 4300.0,
+        "Width": 200.0,
+        "Angle": 90.0,
+        "Type": "ZEROPRESSURE",
+        "Inside_Radius": 0.0
+      },
+      "render_anchor": {
+        "x": 43216.667,
+        "y": 56758.334
+      },
+      "body_center": {
+        "x": 43216.667,
+        "y": 58908.334
+      },
+      "entry_endpoint": {
+        "x": 43216.667,
+        "y": 56758.334
+      },
+      "exit_endpoint": {
+        "x": 43216.667,
+        "y": 61058.334
+      },
+      "hit_target": {
+        "center": {
+          "x": 43216.667,
+          "y": 58908.334
+        },
+        "entry": {
+          "x": 43216.667,
+          "y": 56758.334
+        },
+        "exit": {
+          "x": 43216.667,
+          "y": 61058.334
+        },
+        "angle": 90.0
+      },
+      "upstream_candidates": [
+        {
+          "tag": "P534",
+          "gap": 0.0010000000038417056,
+          "mate": "CONFIRMED"
+        }
+      ],
+      "downstream_candidates": [
+        {
+          "tag": "P538",
+          "gap": 591.1371715262001,
+          "mate": "AMBIGUOUS"
+        }
+      ],
+      "geometry_provenance": "PROVEN_RUN",
+      "why_old_renderer_scattered": {
+        "incorrect_model": "XY treated as footprint center; entry/exit = center +/- Length/2",
+        "false_entry": {
+          "x": 43216.667,
+          "y": 54608.334
+        },
+        "false_exit": {
+          "x": 43216.667,
+          "y": 58908.334
+        },
+        "true_entry": {
+          "x": 43216.667,
+          "y": 56758.334
+        },
+        "true_exit": {
+          "x": 43216.667,
+          "y": 61058.334
+        },
+        "entry_error_drawing_units": 2150.0,
+        "effect": "Cards/segments placed on false centers so long runs looked short/misaligned and abutments showed artificial gaps \u2014 scattered labeled objects"
+      },
+      "fixed": true,
+      "fix_notes": "Infeed-origin model (greensboro-infeed-v1) via fortna_physical_geometry + fortna_geometry_authority; no site-specific production branches"
+    }
+  },
+  "policy": {
+    "P500_P536_are_report_only": true,
+    "no_if_name_equals_site_tag_in_production": true
+  }
+}

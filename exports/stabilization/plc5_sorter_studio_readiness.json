@@ -42,14 +42,12 @@
   "modules": 63,
   "datatypes": 211,
   "controller_tags": 946,
-  "note": "Structural gates only \u2014 Curtis provides Studio 5000 field acceptance",
-  "families_fixed": {
-    "TIMER_MEMBER": "VALID_OPERAND_VALIDATOR_BUG \u2014 TIMER/COUNTER/CONTROL members accepted",
-    "AOI_TRACK_DIVERT": "sealed nested AOI types treated as external expandable",
-    "MODULE_FLT_COMM": "ModuleName.Flt.CommLoss \u2192 ModuleName_Comm.Flt.CommLoss + Comm_UDT emit",
-    "MODULE_IO_ALIAS": "unknown X:I./X:O. \u2192 MODULE_BINDING_REQUIRED external",
-    "VFD_OVERLOAD": "Motor_Starter_UDT.Flt is PS_Fault \u2192 use .Flt.PS_Flt"
-  },
-  "original_operand_errors": 62,
-  "remaining_operand_errors": 0
+  "divert_count": 32,
+  "plc5_sorter_count": 5,
+  "plc2_sorter_count": 0,
+  "safety_review_zones": ["ORNCCP5_ESZone1"],
+  "safety_test_pollution_removed": true,
+  "note": "Structural gates only — Curtis provides Studio 5000 field acceptance",
+  "checkpoint": "ENGINEERING UX + TRANSPORT GEOMETRY + SORTER PHASE 1 HARDENING",
+  "parent_sha": "da5e86da9dc849b77ef376e88dacf4151d54cec5"
 }

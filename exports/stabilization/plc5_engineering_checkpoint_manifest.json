@@ -1,0 +1,99 @@
+{
+  "title": "ENGINEERING UX + TRANSPORT GEOMETRY + SORTER PHASE 1 HARDENING",
+  "parent_sha": "da5e86da9dc849b77ef376e88dacf4151d54cec5",
+  "branch": "feature/plc2-transport-fidelity",
+  "generated_at": "2026-09-18T08:12:30+00:00",
+  "cp1_cp4_changed": false,
+  "wcs_started": false,
+  "decoder_architecture_rewritten": false,
+  "site_specific_production_branches": 0,
+  "gate_a_baseline": {
+    "artifact": "exports/stabilization/plc5_engineering_checkpoint_baseline.json",
+    "full_l5x": true,
+    "Sorter_Track": true,
+    "routines": 17,
+    "duplicate_tags": 0,
+    "operand_errors": 0,
+    "operands_checked": 1871,
+    "plc2_sorter_count": 0,
+    "plc5_sorter_count": 5,
+    "canonical_divert_lane_rows": 32,
+    "status": "BASELINE_FROZEN"
+  },
+  "transport": {
+    "geometry_source": "FORTNA/Conveyor.asc X_cord/Y_cord/Length/Width/Angle/Type/Inside_Radius",
+    "field_spelling": "X_cord/Y_cord (NOT X_coord)",
+    "coordinate_transform": "infeed-origin; Angle CCW from +X; canvas Y flip; uniform translate/scale; relative XY preserved",
+    "authority_stack": [
+      "ENGINEER_ASSIGNED",
+      "PROVEN_RUN",
+      "DERIVED_TOPOLOGY",
+      "FALLBACK_LAYOUT",
+      "UNKNOWN"
+    ],
+    "single_display_transform": "getDisplayTransform",
+    "artifacts": [
+      "exports/stabilization/transport_geometry_authority.json",
+      "exports/stabilization/transport_geometry_acceptance.md"
+    ],
+    "P500_diagnosis": "PROVEN_RUN STRAIGHT; old center±L/2 + presentation scatter made it look isolated",
+    "P536_diagnosis": "PROVEN_RUN ZEROPRESSURE; mates P534 gap≈0; hit now follows display transform",
+    "visual_discrepancy_resolved": true
+  },
+  "sorter_review": {
+    "lifecycle": "PENDING_REVIEW → ACCEPTED|EDITED → RESOLVED",
+    "resolution_types": [
+      "EDIT_REQUIRED",
+      "ACCEPT_DERIVED",
+      "ACCEPT_PROVEN",
+      "COMMISSIONING_CONFIRM",
+      "OPTIONAL",
+      "UNRESOLVED"
+    ],
+    "resolved_demo": ["sorter_type", "transport_area", "tracking_offset"],
+    "remaining_typical": ["divert_pe"],
+    "bulk_divert": "Accept All Derived / Apply Value to Selected / Mark Commissioning — never UNKNOWN→PROVEN",
+    "persistence": "sorter_build.review_resolutions with evidence_fingerprint invalidation",
+    "artifact": "exports/stabilization/sorter_review_lifecycle.json"
+  },
+  "sorter_plc": {
+    "full_l5x": true,
+    "path": "exports/stabilization/plc5_hotbuild_full/ORNCCP5.L5X",
+    "Sorter_Track": true,
+    "routine_count": 17,
+    "duplicate_tags": 0,
+    "operand_errors": 0,
+    "operands_checked": 1871,
+    "divert_rows": 32,
+    "READY_FOR_STUDIO_TEST": true,
+    "quality_artifact": "exports/stabilization/sorter_phase1_quality.json"
+  },
+  "safety": {
+    "zones_before": [
+      "123456_ESZone1",
+      "ORNCCP5_ESZone1",
+      "Zone1_ESZone1",
+      "Zone2_ESZone1",
+      "Zone3_ESZone1",
+      "Zone4_ESZone1",
+      "Zone5_ESZone1",
+      "Zone6_ESZone1",
+      "Zone7_ESZone1",
+      "Zone8_ESZone1",
+      "Zone9_ESZone1"
+    ],
+    "zones_after": ["ORNCCP5_ESZone1"],
+    "run_discovered": ["ORNCCP5_ESZone1"],
+    "test_default_removed": true,
+    "membership_fail_safe": true,
+    "artifact": "exports/stabilization/safety_canonical_reconciliation.json"
+  },
+  "gate_o_32_vs_16": "UNKNOWN — leave 32",
+  "permanent_tests": {
+    "geometry_authority": "PASS",
+    "sorter_review_7_11": "PASS",
+    "safety_12_17": "PASS",
+    "sorter_phase1_hot_build": "PASS",
+    "hit_geometry": "PASS"
+  }
+}

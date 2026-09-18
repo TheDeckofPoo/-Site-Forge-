@@ -19,7 +19,7 @@
     ],
     "can_emit": true
   },
-  "generated_at": "2026-09-18T06:35:10.823355+00:00",
+  "generated_at": "2026-09-18T08:12:43.915153+00:00",
   "report": {
     "mode": "configured_pack",
     "source": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\programs\\Sorter_Track_Program.L5X",
@@ -124,8 +124,16 @@
     ],
     "induct": "P504",
     "tracking_count": 5,
-    "tag_count": 298,
+    "tag_count": 295,
     "wave_aoi_merged": true,
+    "promoted_shared_controller_tags": [
+      "P542_Sorter_At_Speed",
+      "P544_Sorter_At_Speed",
+      "P640_Sorter_At_Speed"
+    ],
+    "controller_tag_reused": 3,
+    "controller_tag_collisions": [],
+    "tag_ownership": "Context tags + promoted *_Sorter_At_Speed \u2192 controller; program Tags no longer duplicate those names; same-name same-dtype renames reuse one declaration",
     "phase": "1",
     "pack_definition": "Sorter_Track_Program.L5X + model expansion",
     "wcs_boundary": "WCS_INTERFACE_REQUIRED_EXTERNAL",

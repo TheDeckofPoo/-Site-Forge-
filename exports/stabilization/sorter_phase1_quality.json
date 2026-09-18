@@ -1,0 +1,173 @@
+{
+  "gate": ["O", "U", "V"],
+  "parent_sha": "da5e86da9dc849b77ef376e88dacf4151d54cec5",
+  "generated_at": "2026-09-18T08:12:00+00:00",
+  "source_of_truth": "RUN + Sorter_Track_Program.L5X pack + generated ORNCCP5 Phase-1 L5X — finished PLC used only as independent validation oracle, not as generation input",
+  "phase1_status": "READY_FOR_STUDIO_TEST",
+  "review_lifecycle_ref": "exports/stabilization/sorter_review_lifecycle.json",
+  "gate_o_divert_multiplicity": {
+    "canonical_SrtZoneLane_rows": 32,
+    "unique_lane_identities": 32,
+    "unique_divert_output_io": 32,
+    "unique_host_zones": 32,
+    "unique_SrtZoneLane_Name": 15,
+    "name_multiplicity": {"2": 14, "4": 1},
+    "gold_pack_Track_Divert_UDT_instances": 16,
+    "phase1_wave_rungs_kept": 32,
+    "phase1_wave_rungs_in_pack": 16,
+    "hypothesis": "SrtZoneLane.Name often groups dual-sided destinations (e.g. ADD-ON_2_3 → two lanes / two SSVs). Gold pack 16 Track_Divert_UDT matches Greensboro cookie-cutter divert mechanisms, not a proven fold of ORNCCP5's 32 lane enables.",
+    "classification": "UNKNOWN",
+    "action": "Leave canonical 32 unchanged. Do not force 32→16 in Phase 1.",
+    "evidence": [
+      "Each of 32 rows has distinct Lane, HostZone, and Outpoint I/O Name (SSV*) — not duplicate logical records of the same physical output",
+      "14/15 Name groups are exact pairs of 2; 1 group (NEW_510) has 4 — suggestive of dual-lane destination families, not proven 1 UDT per Name",
+      "Sorter_Track_Program.L5X gold contains exactly 16 Track_Divert_UDT tags (P506×6 + P508×6 + P509×1 + P510×3)",
+      "Phase 1 compiler already expands Wave_Divert to model multiplicity (32) while pack default is 16 — MODEL_EXPANDED",
+      "config/program_packs/sorter_track_contract.json forbids hardcoding 32 or 16; emit only model-approved divert instances"
+    ]
+  },
+  "structural_vs_oracles": {
+    "Main_JSR_order": {
+      "classification": "STANDARD_STRONGLY_SUPPORTED",
+      "note": "Pack Main drives standard Sorter_Track JSR sequence; Phase 1 preserves pack Main + Build_Config"
+    },
+    "routines": {
+      "pack_count": 16,
+      "generated_count": 17,
+      "extra": ["Build_Config"],
+      "classification": "STANDARD_PROVEN + MODEL_EXPANDED (Build_Config)"
+    },
+    "routine_list": [
+      {"name": "Main", "class": "STANDARD_PROVEN"},
+      {"name": "Encoder", "class": "STANDARD_PROVEN", "multiplicity": "MODEL_EXPANDED"},
+      {"name": "Scanner", "class": "STANDARD_PROVEN", "binding": "SITE_CONFIGURATION"},
+      {"name": "Track_Induct_Package", "class": "STANDARD_PROVEN"},
+      {"name": "Track_Package", "class": "STANDARD_PROVEN"},
+      {"name": "Track_Pointer", "class": "STANDARD_PROVEN"},
+      {"name": "Track_Offset_Find", "class": "STANDARD_PROVEN", "offsets": "COMMISSIONING / ENGINEER_REQUIRED"},
+      {"name": "Track_Divert_Package", "class": "STANDARD_PROVEN", "multiplicity": "MODEL_EXPANDED"},
+      {"name": "Track_Divert_Confirm", "class": "CONDITIONAL", "note": "confirm PE often REVIEW_REQUIRED when Verify I/O INVALID"},
+      {"name": "Track_Lost_Package", "class": "STANDARD_PROVEN"},
+      {"name": "Track_Manual_Destination", "class": "STANDARD_PROVEN"},
+      {"name": "Wave_Divert", "class": "STANDARD_PROVEN", "multiplicity": "MODEL_EXPANDED"},
+      {"name": "Divert_Lane_Status", "class": "STANDARD_PROVEN", "module_bindings": "SITE_CONFIGURATION"},
+      {"name": "Divert_Rate_Limit", "class": "STANDARD_PROVEN"},
+      {"name": "Gridlock_Prevention", "class": "STANDARD_STRONGLY_SUPPORTED"},
+      {"name": "Response_Time", "class": "STANDARD_STRONGLY_SUPPORTED"},
+      {"name": "Build_Config", "class": "MODEL_EXPANDED", "note": "Site Forge emit helper; not in gold pack routine list as engineer logic"}
+    ],
+    "tag_scope": {
+      "classification": "REQUIRED_STANDARD",
+      "note": "Context tags + promoted *_Sorter_At_Speed controller-owned; 0 duplicate tags"
+    },
+    "AOI_instances": {
+      "Track_Divert_AOI": "STANDARD_PROVEN / MODEL_EXPANDED multiplicity",
+      "encoder_AOI": "STANDARD_PROVEN / MODEL_EXPANDED",
+      "sealed_nested": "REQUIRED_STANDARD — O_Token_Found_Ack treated as external expandable"
+    },
+    "UDTs": {
+      "Track_Divert_UDT": "STANDARD_PROVEN (pack) / multiplicity UNKNOWN vs 32 lanes",
+      "Track_Group_UDT": "STANDARD_PROVEN",
+      "Comm_UDT": "REQUIRED_STANDARD companion for Module.Flt.CommLoss"
+    },
+    "TIMER_operands": {
+      "classification": "REQUIRED_STANDARD",
+      "note": "TIMER/COUNTER/CONTROL structured builtins — validator accepts .DN/.TT/.EN"
+    },
+    "module_communication_bindings": {
+      "classification": "SITE_CONFIGURATION",
+      "pattern": "ModuleName.Flt.CommLoss → ModuleName_Comm.Flt.CommLoss + Comm_UDT emit"
+    },
+    "encoder_multiplicity": {
+      "model": 5,
+      "classification": "MODEL_EXPANDED"
+    },
+    "tracking_section_multiplicity": {
+      "model": 5,
+      "plc5_sorter_count": 5,
+      "plc2_sorter_count": 0,
+      "classification": "MODEL_EXPANDED / SITE_CONFIGURATION"
+    },
+    "divert_multiplicity": {
+      "canonical_lanes": 32,
+      "classification": "MODEL_EXPANDED",
+      "vs_pack_16": "UNKNOWN relationship — see gate_o"
+    },
+    "scanner_references": {
+      "classification": "SITE_CONFIGURATION",
+      "note": "SCN### module aliases may be MODULE_BINDING_REQUIRED external"
+    },
+    "task_program_scheduling": {
+      "classification": "STANDARD_STRONGLY_SUPPORTED",
+      "note": "P02_Track hosts IO_MAP + Sorter_Track; Sys own task — matches finished gold pattern"
+    },
+    "Build_Config": {
+      "classification": "MODEL_EXPANDED",
+      "nop_placeholder": false,
+      "note": "No NOP replacing required standard logic"
+    },
+    "WCS": {
+      "classification": "CUSTOM_ORACLE / EXTERNAL",
+      "note": "WCS_INTERFACE_REQUIRED_EXTERNAL — intentionally not emitted this checkpoint"
+    }
+  },
+  "cookie_cutter_vs_custom": {
+    "STANDARD_PROVEN": [
+      "Sorter_Track program shell",
+      "Main JSR architecture",
+      "Encoder / Track_* / Wave_Divert / Divert_* routine set",
+      "Track_Divert_AOI + Track_Divert_UDT types",
+      "Inpoints induct PE, Sorters.Encoder, Outpoints divert IO when valid"
+    ],
+    "STANDARD_STRONGLY_SUPPORTED": [
+      "Gridlock_Prevention",
+      "Response_Time",
+      "P02_Track task pairing IO_MAP+Sorter_Track",
+      "Comm_UDT module fault companion pattern"
+    ],
+    "CONDITIONAL": [
+      "Track_Divert_Confirm when Verify I/O present",
+      "divert_pe mapping",
+      "optional transport_area association"
+    ],
+    "MODEL_EXPANDED": [
+      "Wave_Divert rung count from SrtZoneLane multiplicity",
+      "Encoder/tracking section count from active Sorters",
+      "Build_Config emit"
+    ],
+    "SITE_CONFIGURATION": [
+      "Module names / RIO CommLoss bindings",
+      "Scanner module aliases",
+      "Area program split (Slow/Fast/L1/L2)",
+      "Induct/tracking conveyor identities via Mtrchain derivation"
+    ],
+    "CUSTOM": [
+      "Site-specific WCS interface (not emitted)",
+      "Greensboro gold divert mechanism count (16) as pack default — not ORNCCP5 truth"
+    ],
+    "UNKNOWN": [
+      "Whether Track_Divert_UDT should collapse dual-lane SrtZoneLane.Name groups",
+      "Global induct→divert tracking_offset (not in RUN)",
+      "Sorter equipment type (shoe/popup) — no RUN column"
+    ],
+    "policy": "Do not encode CUSTOM/UNKNOWN as mandatory cookie-cutter logic. Do not claim universality from PLC4+PLC5 alone without Fortna/RUN/library support — repeated identical architecture across independent sites is supporting evidence only."
+  },
+  "review_panel_gates": {
+    "I_resolution_types": true,
+    "J_lifecycle": true,
+    "K_counts_complete": true,
+    "L_navigation_focus": true,
+    "M_tracking_offset": true,
+    "N_divert_bulk": true,
+    "X_persistence": true
+  },
+  "phase1_hot_build_gates": {
+    "full_L5X": true,
+    "Sorter_Track_present": true,
+    "populated_routines": 17,
+    "duplicate_tags": 0,
+    "operand_errors": 0,
+    "operands_checked": 1871,
+    "READY_FOR_STUDIO_TEST": true
+  }
+}

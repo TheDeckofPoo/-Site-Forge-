@@ -29,6 +29,13 @@ SCRIPTS = Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 
 from fortna_run_geometry_investigate import investigate  # noqa: E402
+from fortna_geometry_authority import (  # noqa: E402
+    PROVEN_RUN,
+    attach_authority_to_layout_node,
+    count_provenance,
+    resolve_object_geometry,
+    validate_topology_geometry,
+)
 
 
 def _uid(prefix: str) -> str:
@@ -293,6 +300,25 @@ def build_transport_graph(
             "fieldB": e.get("field_b"),
             "fieldC": e.get("field_c"),
         }
+        # Geometry authority stack — PROVEN_RUN when usable Fortna X_cord/Y_cord exist.
+        # Fallback layout must never silently overwrite proven source geometry.
+        auth = resolve_object_geometry(
+            {
+                "IO_Name": tag,
+                "X_cord": e.get("x"),
+                "Y_cord": e.get("y"),
+                "Angle": e.get("angle"),
+                "Length": e.get("length"),
+                "Width": e.get("width"),
+                "Type": e.get("equipment_type"),
+                "Inside_Radius": e.get("inside_radius"),
+                "Infeed_Tangent": e.get("infeed_tangent"),
+                "Discharge_Tangent": e.get("discharge_tangent"),
+                "b": e.get("b"),
+            },
+            tag=tag,
+        )
+        attach_authority_to_layout_node(node, auth)
         nodes.append(node)
 
     # Wires from geometric candidates
@@ -640,6 +666,38 @@ def build_transport_graph(
     primary_size = components[0]["size"] if components else 0
     island_count = max(0, len(components) - 1) if components else 0
 
+    # Topology validation against geometric mates (flag only — no silent snap)
+    auth_records = [
+        {
+            "tag": n.get("conveyorTag"),
+            "exit_endpoint": (n.get("exit_endpoint") or (n.get("effective_geometry") or {}).get("exit_endpoint")
+                              or n.get("exitAnchor")),
+            "entry_endpoint": (n.get("entry_endpoint") or (n.get("effective_geometry") or {}).get("entry_endpoint")
+                               or n.get("entryAnchor")),
+            "width": n.get("width"),
+            "geometry_provenance": n.get("geometry_provenance"),
+            "source_geometry": n.get("source_geometry"),
+            "effective_geometry": n.get("effective_geometry"),
+        }
+        for n in nodes
+    ]
+    rels = []
+    tag_by_id = {n["id"]: str(n.get("conveyorTag") or "").upper() for n in nodes}
+    for w in wires:
+        frm = tag_by_id.get(w.get("from") or "", "")
+        to = tag_by_id.get(w.get("to") or "", "")
+        if frm and to:
+            rels.append({"from": frm, "to": to, "kind": "geometric_mate"})
+    topology_flags = validate_topology_geometry(auth_records, rels)
+    for fl in topology_flags:
+        to_node = next((n for n in nodes if str(n.get("conveyorTag") or "").upper() == fl["to"]), None)
+        if to_node is not None:
+            to_node.setdefault("geometryFlags", []).append(fl)
+
+    provenance_counts = count_provenance(
+        [{"geometry_provenance": n.get("geometry_provenance")} for n in nodes]
+    )
+
     graph = {
         "version": 2,
         "physicalLayout": True,
@@ -651,6 +709,20 @@ def build_transport_graph(
         },
         # Presentation hint for Transport Build (UI scale only — does not alter RUN geometry)
         "canvasScale": scale,
+        "geometryAuthority": {
+            "stack": [
+                "ENGINEER_ASSIGNED",
+                "PROVEN_RUN",
+                "DERIVED_TOPOLOGY",
+                "FALLBACK_LAYOUT",
+                "UNKNOWN",
+            ],
+            "schema_fields": ["X_cord", "Y_cord", "Length", "Width", "Angle", "Type", "Inside_Radius"],
+            "xy_meaning": "infeed_entry_end",
+            "fallback_overwrites_proven": False,
+            "counts": provenance_counts,
+            "topology_mismatch_flags": len(topology_flags),
+        },
         "areas": [
             {
                 "id": area_id,
@@ -667,6 +739,9 @@ def build_transport_graph(
             "conveyors_with_usable_xy": summary.get("usable_xy", placed),
             "conveyors_with_usable_angle": summary.get("usable_angle", 0),
             "conveyors_with_usable_length": summary.get("usable_length_width", 0),
+            "geometry_proven_run": provenance_counts.get(PROVEN_RUN, 0),
+            "geometry_fallback": provenance_counts.get("FALLBACK_LAYOUT", 0),
+            "geometry_topology_mismatches": len(topology_flags),
             "connected_components": len(components),
             "primary_component_size": primary_size,
             "island_components": island_count,

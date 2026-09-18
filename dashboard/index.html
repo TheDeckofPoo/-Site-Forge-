@@ -2062,7 +2062,18 @@
             </p>
           </div>
 
-          <!-- Gate G: actionable unresolved fields from sorter_build / field_authority / coverage -->
+          <!-- Gate K: compact status counts (always visible when sorter detected) -->
+          <div id="sorter-review-status-counts" class="flex flex-wrap gap-x-2 gap-y-1 text-[10px] mono text-slate-500 px-0.5" aria-label="Sorter review status counts"></div>
+
+          <!-- Gate K: when Review Required = 0 -->
+          <div id="sorter-review-complete" class="rounded-xl border border-emerald-900/40 bg-emerald-950/15 px-3 py-2 hidden" role="status">
+            <div class="flex items-center gap-2 text-[11px] font-semibold text-emerald-300">
+              <i class="fa-solid fa-circle-check"></i>
+              <span>SORTER REVIEW COMPLETE ✓</span>
+            </div>
+          </div>
+
+          <!-- Gate G/I/J: actionable unresolved fields from sorter_build / field_authority / coverage -->
           <div id="sorter-review-required" class="rounded-xl border border-amber-900/50 bg-amber-950/20 p-3 space-y-2 hidden" role="region" aria-label="Sorter review required">
             <div class="flex items-center gap-2 flex-wrap">
               <i class="fa-solid fa-triangle-exclamation text-amber-400"></i>
@@ -2074,10 +2085,12 @@
               <span class="text-fuchsia-300">ENGINEER_REQUIRED</span> /
               <span class="text-rose-300">COMMISSIONING</span>).
               <span class="text-slate-400">OPTIONAL</span> is listed separately and never mixed into review.
-              Click an item to focus the related field.
+              Click an item to focus the related field. Resolved items disappear immediately into Reviewed ✓.
             </p>
+            <div id="sorter-review-focus-detail" class="hidden rounded-lg border border-cyan-900/40 bg-[#0a1016] p-2"></div>
             <div id="sorter-review-groups" class="space-y-2 text-[10px]"></div>
           </div>
+          <div id="sorter-review-reviewed" class="hidden"></div>
 
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
             <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">0b · Sorter type</div>
@@ -2172,6 +2185,36 @@
             <div id="sorter-track-rows" class="space-y-2 max-h-72 overflow-y-auto"></div>
           </div>
 
+          <!-- Tracking offset (Gate M) -->
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2" id="sorter-tracking-offset-section">
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">2b · Tracking distance / offset</div>
+              <span id="sorter-tracking-offset-auth" class="text-[10px] text-slate-600"></span>
+            </div>
+            <p class="text-[9px] text-slate-600 leading-relaxed">
+              Global induct→divert offset is <strong class="text-amber-200/80">not in RUN</strong>
+              (Outpoints.Outpoint Location is per-outpoint only). Enter commissioning value — do not invent.
+            </p>
+            <div class="flex flex-wrap gap-2 items-end">
+              <div class="min-w-[12rem] flex-1">
+                <label class="block text-[10px] text-slate-500 mb-1">Global track offset (ticks / eng.)</label>
+                <input id="sorter-tracking-offset" type="text" placeholder="Commissioning — leave blank if unknown"
+                  class="w-full bg-[#101820] border border-amber-900/40 rounded-lg px-2 py-1.5 text-[11px] mono text-amber-100/90">
+              </div>
+              <div class="min-w-[8rem]">
+                <label class="block text-[10px] text-slate-500 mb-1">State</label>
+                <select id="sorter-tracking-offset-state" class="w-full bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] text-slate-200">
+                  <option value="">—</option>
+                  <option value="COMMISSIONING">Commissioning</option>
+                  <option value="ENGINEER_REQUIRED">Engineer required</option>
+                  <option value="DERIVED">Derived (accept)</option>
+                  <option value="PROVEN">Proven (RUN)</option>
+                </select>
+              </div>
+            </div>
+            <div id="sorter-tracking-offset-prov" class="text-[9px] mono text-slate-600"></div>
+          </div>
+
           <!-- Diverts -->
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
             <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">3 · Diverts (SrtZoneLane)</div>
@@ -2182,6 +2225,13 @@
                   class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
               </div>
               <span class="text-[10px] text-slate-600 pb-2">Topology from SrtZoneLane · output IO from Outpoints when lane join proves it</span>
+            </div>
+            <div id="sorter-divert-bulk" class="hidden flex flex-wrap gap-2 items-center text-[10px]">
+              <button type="button" id="btn-divert-accept-derived" class="btn-ghost px-2 py-1 rounded-lg border border-sky-900/50 text-sky-300" title="Accept derived PE only — never UNKNOWN→PROVEN">Accept All Derived</button>
+              <button type="button" id="btn-divert-apply-pe" class="btn-ghost px-2 py-1 rounded-lg border border-fuchsia-900/50 text-fuchsia-300">Apply PE to Selected</button>
+              <input id="sorter-divert-bulk-pe" type="text" placeholder="PE value" class="w-28 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1 text-[10px] mono text-sky-300">
+              <button type="button" id="btn-divert-mark-commission" class="btn-ghost px-2 py-1 rounded-lg border border-rose-900/50 text-rose-300">Mark Selected for Commissioning</button>
+              <span class="text-[9px] text-slate-600">Bulk stores ENGINEER_ACCEPTED — does not falsify provenance</span>
             </div>
             <div id="sorter-divert-rows" class="space-y-1 max-h-56 overflow-y-auto"></div>
           </div>
@@ -2564,25 +2614,38 @@
           <button type="button" id="tb-connect-mode" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-rose-900/50 text-rose-300" title="Connect EXIT → ENTRY">
             <i class="fa-solid fa-link mr-1"></i>Connect
           </button>
-          <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit View — fit width, X-centered, top-biased (TOP-CENTER). Presentation only.">
-            <i class="fa-solid fa-expand mr-1"></i>Fit View
+          <button type="button" id="tb-fit" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-sky-800/60 text-sky-300 font-semibold" title="Fit System — fit width, X-centered, top-biased (TOP-CENTER). Presentation only.">
+            <i class="fa-solid fa-expand mr-1"></i>Fit System
           </button>
           <button type="button" id="tb-zoom-out" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Zoom out (viewport center)">−</button>
           <button type="button" id="tb-zoom-in" class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Zoom in (viewport center)">+</button>
+          <button type="button" id="tb-home" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Home — reset zoom/pan (presentation only)">
+            <i class="fa-solid fa-house"></i>
+          </button>
           <button type="button" id="tb-zoom-100" class="btn-ghost text-xs px-2.5 py-1.5 rounded-lg border border-slate-700 text-slate-300" title="Reset View to 100% zoom (presentation only)">
             100%
           </button>
           <details id="tb-fit-menu" class="relative">
             <summary class="btn-ghost text-xs px-2 py-1.5 rounded-lg border border-slate-700 text-slate-400 cursor-pointer list-none" title="More fit options">▾</summary>
-            <div class="absolute right-0 mt-1 z-40 min-w-[160px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-1">
+            <div class="absolute right-0 mt-1 z-40 min-w-[180px] rounded-lg border border-slate-700 bg-[#0c1219] shadow-xl p-1">
+              <button type="button" id="tb-fit-system" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit System</button>
               <button type="button" id="tb-fit-visible" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Visible (main cluster)</button>
               <button type="button" id="tb-fit-all" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit All (incl. outliers)</button>
-              <button type="button" id="tb-fit-selection" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Frame Selection</button>
+              <button type="button" id="tb-fit-selection" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Center Selected</button>
+              <button type="button" id="tb-center-selected" class="hidden" aria-hidden="true">Center Selected</button>
               <button type="button" id="tb-fit-area" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Area</button>
               <button type="button" id="tb-fit-site" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Fit Site</button>
-              <button type="button" id="tb-zoom-reset" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Reset View (100%)</button>
+              <button type="button" id="tb-zoom-reset" class="w-full text-left text-xs px-2 py-1.5 rounded hover:bg-slate-800 text-slate-200">Home / Reset View (100%)</button>
             </div>
           </details>
+          <label class="flex items-center gap-1.5 text-[10px] text-slate-400 px-1" title="Geometry display authority (default RUN/Physical)">
+            <span class="uppercase tracking-wider text-slate-600">Geometry</span>
+            <select id="tb-geometry-mode" class="bg-slate-900 border border-slate-700 rounded text-[11px] text-slate-200 px-1.5 py-1 max-w-[150px]">
+              <option value="run" selected>RUN / Physical</option>
+              <option value="override">Engineering Override</option>
+              <option value="diagnostic">Diagnostic</option>
+            </select>
+          </label>
           <button type="button" id="tb-undo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
           <button type="button" id="tb-redo" class="btn-ghost text-xs px-2 py-1.5 rounded-lg text-slate-400" title="Redo (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
           <span class="w-px h-5 bg-slate-800 mx-1"></span>

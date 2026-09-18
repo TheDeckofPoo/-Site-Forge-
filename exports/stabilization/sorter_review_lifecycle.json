@@ -1,0 +1,75 @@
+{
+  "generated_at": "2026-09-18T12:00:00+00:00",
+  "gates": ["I", "J", "K", "L", "M", "N", "X", "O_investigate"],
+  "resolution_types": [
+    "EDIT_REQUIRED",
+    "ACCEPT_DERIVED",
+    "ACCEPT_PROVEN",
+    "COMMISSIONING_CONFIRM",
+    "OPTIONAL",
+    "UNRESOLVED"
+  ],
+  "lifecycle": {
+    "states": ["PENDING_REVIEW", "ACCEPTED", "EDITED", "RESOLVED"],
+    "flow": "PENDING_REVIEW → ACCEPTED|EDITED → RESOLVED",
+    "ui": "Resolved items leave SORTER REVIEW REQUIRED immediately; collapsed REVIEWED ✓ shows field, final value, source, original classification, resolution, timestamp",
+    "audit_user": "not required when product has no identity"
+  },
+  "persistence": {
+    "store": "sorter_build.review_resolutions",
+    "survives": ["Apply", "reload", "navigate away/back", "Apply to Autogen", "build"],
+    "invalidate_when": "evidence_fingerprint (field|value|source|status) changes",
+    "acceptance_kind": "ENGINEER_ACCEPTED",
+    "no_phantom_pending": "Auto Build regenerating identical derived evidence keeps prior acceptance"
+  },
+  "counts": {
+    "compact_status": [
+      "Review Required",
+      "Engineer Required",
+      "Commissioning",
+      "Optional",
+      "Resolved"
+    ],
+    "when_review_required_zero": "SORTER REVIEW COMPLETE ✓ (no empty giant box)"
+  },
+  "navigation": {
+    "SORTER_FIELD_FOCUS_includes": [
+      "tracking_offset",
+      "global_track_offset",
+      "divert_pe",
+      "divert_output_io",
+      "sorter_type",
+      "transport_area"
+    ],
+    "on_click": "scroll/focus + temporary highlight + show value/authority/why/resolution"
+  },
+  "tracking_offset": {
+    "authority": "REVIEW_REQUIRED → COMMISSIONING or ENGINEER_REQUIRED",
+    "run_evidence": "global induct→divert offset NOT in RUN; Outpoints.Outpoint Location is per-outpoint only",
+    "rule": "do NOT invent offset; editable commissioning field"
+  },
+  "divert_pe": {
+    "authority": "REVIEW_REQUIRED when Verify I/O INVALID",
+    "ui": "show actual objects needing review; bulk Accept All Derived / Apply Value to Selected / Mark Selected for Commissioning; per-row override",
+    "bulk_rules": [
+      "NEVER UNKNOWN→PROVEN",
+      "store ENGINEER_ACCEPTED",
+      "do not falsify provenance",
+      "do NOT require approving 32 identical PROVEN divert mappings"
+    ]
+  },
+  "optional_rule": "OPTIONAL must never appear as active REVIEW REQUIRED",
+  "field_authority_rule": "field_authority metadata alone must NOT force REVIEW if value is PROVEN/DERIVED",
+  "gate_o_32_vs_16": {
+    "phase1_multiplicity": 32,
+    "finished_oracle_Track_Divert_UDT": 16,
+    "finding": "UNKNOWN — suggestive host/lane pairing (many SrtZoneLane names appear twice with adjacent HostZones / A1-A2 lane suffixes) but not fully proven as emit rule; one name group has 4 rows",
+    "action": "leave Phase 1 at 32; do NOT force 32→16",
+    "helper_module": "tools/scripts/fortna_sorter_review_lifecycle.py"
+  },
+  "initial_actionable_model": {
+    "note": "After sorter_type + transport_area filled, remaining active review typically tracking_offset (COMMISSIONING_CONFIRM) + divert_pe (EDIT_REQUIRED with objects); PROVEN divert_output_io excluded",
+    "example_active": ["tracking_offset", "divert_pe"],
+    "example_resolved_path": "accept/edit → review_resolutions[group::field].lifecycle=RESOLVED"
+  }
+}

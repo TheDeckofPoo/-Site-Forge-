@@ -1,0 +1,896 @@
+{
+  "project": "ORNCCP5",
+  "processor": "ORNCCP5",
+  "revision": "35.00",
+  "library": "exports\\stabilization\\OReilly_Library_v3.L5X",
+  "conveyor_count": 78,
+  "area_count": 1,
+  "tag_count": 946,
+  "program_count": 7,
+  "programs": [
+    "ORNCCP5_Area_Slow",
+    "ORNCCP5_Area_Fast",
+    "ORNCCP5_Area_L1",
+    "ORNCCP5_Area_L2",
+    "Sys",
+    "Sorter_Track",
+    "IO_MAP"
+  ],
+  "areas_summary": {
+    "ORNCCP5_Area": 78
+  },
+  "conveyor_sample": [
+    "P440",
+    "P442",
+    "P444",
+    "P500",
+    "P502",
+    "P504",
+    "P506",
+    "P506A",
+    "P508",
+    "P508A",
+    "P509",
+    "P510",
+    "P526",
+    "P528",
+    "P530_P1",
+    "P530_P2",
+    "P532",
+    "P534",
+    "P536",
+    "P538",
+    "P540",
+    "P542",
+    "P544",
+    "P552",
+    "P554"
+  ],
+  "template_usage": {
+    "P3000_Conv": 29,
+    "P4000_Conv": 22,
+    "P1000_Conv": 27
+  },
+  "missing_excel_templates_in_library": [
+    "P7000_Conv",
+    "P8000_Conv"
+  ],
+  "io_module_count": 53,
+  "io_point_count": 395,
+  "io_tags_in_l5x": 395,
+  "pe_device_count": 94,
+  "pe_logic_rungs": 85,
+  "slow_flt_rungs": 78,
+  "conveyors_with_real_pe": 53,
+  "eip_adapter_count": 8,
+  "eip_rio_modules": [
+    "CP5RIO0",
+    "CP5RIO1",
+    "CP5RIO2",
+    "CP5RIO3",
+    "CP6RIO0",
+    "CP6RIO1",
+    "CP6RIO2",
+    "CP7RIO0"
+  ],
+  "eip_child_modules": [
+    "CP5RIO0_0",
+    "CP5RIO0_1",
+    "CP5RIO0_2",
+    "CP5RIO0_3",
+    "CP5RIO0_4",
+    "CP5RIO0_5",
+    "CP5RIO0_6",
+    "CP5RIO0_7",
+    "CP5RIO1_0",
+    "CP5RIO1_1",
+    "CP5RIO1_2",
+    "CP5RIO1_3",
+    "CP5RIO1_4",
+    "CP5RIO1_5",
+    "CP5RIO1_6",
+    "CP5RIO2_0",
+    "CP5RIO2_1",
+    "CP5RIO2_2",
+    "CP5RIO2_3",
+    "CP5RIO2_4",
+    "CP5RIO2_5",
+    "CP5RIO3_0",
+    "CP5RIO3_1",
+    "CP5RIO3_2",
+    "CP5RIO3_3",
+    "CP5RIO3_4",
+    "CP5RIO3_5",
+    "CP5RIO3_6",
+    "CP5RIO3_7",
+    "CP6RIO0_0",
+    "CP6RIO0_1",
+    "CP6RIO0_2",
+    "CP6RIO0_3",
+    "CP6RIO0_4",
+    "CP6RIO1_0",
+    "CP6RIO1_1",
+    "CP6RIO1_2",
+    "CP6RIO1_3",
+    "CP6RIO1_4",
+    "CP6RIO2_0",
+    "CP6RIO2_1",
+    "CP6RIO2_2",
+    "CP6RIO2_3",
+    "CP6RIO2_4",
+    "CP6RIO2_5",
+    "CP6RIO2_6",
+    "CP6RIO2_7",
+    "CP7RIO0_0",
+    "CP7RIO0_1",
+    "CP7RIO0_2",
+    "CP7RIO0_3",
+    "CP7RIO0_4",
+    "CP7RIO0_5"
+  ],
+  "eip_child_count": 53,
+  "eip_interface_ip": "192.168.1.9",
+  "io_word_map_count": 79,
+  "io_map_rungs": 744,
+  "io_map_mapped": 395,
+  "io_map_unmapped": 0,
+  "io_map_placeholders": 317,
+  "io_map_muted": 0,
+  "es_program": {
+    "status": "REVIEW_REQUIRED",
+    "detail": "SAFETY REVIEW REQUIRED \u2014 Program ES omitted by engineer flag omit_unresolved_safety. Safety Zone: ORNCCP5_ESZone1 | Area: ORNCCP5_Area | Conveyors: 78 | E-Stops: UNRESOLVED | Reset: ORNCCP5_Area.Reset | Silence: ORNCCP5_Area.Silence | Missing: SafetyDevices",
+    "unresolved": 1,
+    "zones": [
+      {
+        "name": "ORNCCP5_ESZone1",
+        "area": "ORNCCP5_Area",
+        "conveyors": [
+          "P440",
+          "P442",
+          "P444",
+          "P500",
+          "P502",
+          "P504",
+          "P506",
+          "P506A",
+          "P508",
+          "P508A",
+          "P509",
+          "P510",
+          "P526",
+          "P528",
+          "P530_P1",
+          "P530_P2",
+          "P532",
+          "P534",
+          "P536",
+          "P538",
+          "P540",
+          "P542",
+          "P544",
+          "P552",
+          "P554",
+          "P556",
+          "P560",
+          "P564",
+          "P566",
+          "P600C",
+          "P600D",
+          "P600E",
+          "P600F",
+          "P600G",
+          "P600H",
+          "P600I",
+          "P600J",
+          "P600K",
+          "P600M",
+          "P600N",
+          "P600O",
+          "P600P",
+          "P602C",
+          "P602D",
+          "P602E",
+          "P602F",
+          "P602G",
+          "P602H",
+          "P602I",
+          "P602J",
+          "P602K",
+          "P602M",
+          "P602N",
+          "P602O",
+          "P602P",
+          "P700A",
+          "P700B",
+          "P700C",
+          "P702A",
+          "P702B",
+          "P702C",
+          "P704A",
+          "P704B",
+          "P704C",
+          "P712",
+          "P714",
+          "P716",
+          "P718",
+          "P720",
+          "P800",
+          "P802",
+          "P804",
+          "P806",
+          "P808",
+          "P810",
+          "P812",
+          "P814",
+          "P816"
+        ],
+        "conveyor_membership": "READY",
+        "safety_device_membership": "UNRESOLVED",
+        "members": [],
+        "estops": [],
+        "esrs": [],
+        "mcrs": [],
+        "reset_source": "ORNCCP5_Area.Reset",
+        "silence_source": "ORNCCP5_Area.Silence",
+        "fields": {
+          "Area": "READY",
+          "Conveyors": "READY",
+          "E-Stops": "UNRESOLVED",
+          "ESR": "UNRESOLVED",
+          "MCR": "UNRESOLVED",
+          "SafetyDevices": "UNRESOLVED",
+          "Reset": "READY",
+          "Silence": "READY",
+          "AOI_ES_SIL1_Cat1": "READY",
+          "AOI_ES_PI20": "READY"
+        },
+        "missing": [
+          "E-Stops",
+          "ESR",
+          "MCR",
+          "SafetyDevices"
+        ],
+        "hard_missing": [
+          "SafetyDevices"
+        ],
+        "zone_status": "UNRESOLVED",
+        "gap": "SafetyDevices"
+      }
+    ],
+    "ready_zones": [],
+    "review_zones": [
+      "ORNCCP5_ESZone1"
+    ],
+    "partial_emit_allowed": false,
+    "silent_omit_forbidden": true,
+    "emitted": false,
+    "partial": false,
+    "omitted": true,
+    "omitted_zones": [
+      "ORNCCP5_ESZone1"
+    ],
+    "emitted_zones": [],
+    "review_required_devices": []
+  },
+  "io_map_fill_placeholders": true,
+  "io_map_mappable": 395,
+  "io_map_source": "run_tar_gz_banks_eip",
+  "io_map_note": "Built from RUN Conveyor.asc banks + EIP word_map \u2192 CPxRIOn modules",
+  "include_io_map": true,
+  "gold_io_map_blocked": false,
+  "eip_modules_filtered_to_word_map": [
+    "CP5RIO0",
+    "CP5RIO1",
+    "CP5RIO2",
+    "CP5RIO3",
+    "CP6RIO0",
+    "CP6RIO1",
+    "CP6RIO2",
+    "CP7RIO0",
+    "T_1794_AENT_1",
+    "T_1794_AENT_2",
+    "T_1794_AENT_3",
+    "T_1794_AENT_4",
+    "T_1794_AENT_5",
+    "T_1794_AENT_6",
+    "T_1794_AENT_7",
+    "T_1794_AENT_8"
+  ],
+  "gold_programs": [
+    "Sys",
+    "Sorter_Track"
+  ],
+  "sorter_build": {
+    "mode": "configured_pack",
+    "source": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\programs\\Sorter_Track_Program.L5X",
+    "divert_count": 32,
+    "wave_rungs_kept": 32,
+    "wave_rungs_in_pack": 16,
+    "encoder_count": 6,
+    "encoder_rungs_kept": 5,
+    "encoders": [
+      "ENC504",
+      "ENC504",
+      "ENC506",
+      "ENC508",
+      "ENC509",
+      "ENC510"
+    ],
+    "renames": [
+      {
+        "from": "P504_Enc_AOI",
+        "to": "ENC504_AOI"
+      },
+      {
+        "from": "P506_Enc_AOI",
+        "to": "ENC504_AOI"
+      },
+      {
+        "from": "P508_Enc_AOI",
+        "to": "ENC506_AOI"
+      },
+      {
+        "from": "P509_Enc_AOI",
+        "to": "ENC508_AOI"
+      },
+      {
+        "from": "P510_Enc_AOI",
+        "to": "ENC509_AOI"
+      },
+      {
+        "from": "Induct_Conv",
+        "to": "P504_Conv"
+      },
+      {
+        "from": "P504_Conv",
+        "to": "P504_Conv"
+      },
+      {
+        "from": "P506_Conv",
+        "to": "P504_Conv"
+      },
+      {
+        "from": "P508_Conv",
+        "to": "P506_Conv"
+      },
+      {
+        "from": "P509_Conv",
+        "to": "P508_Conv"
+      },
+      {
+        "from": "P510_Conv",
+        "to": "P509_Conv"
+      },
+      {
+        "from": "P504_Enc",
+        "to": "ENC504"
+      },
+      {
+        "from": "P506_Enc",
+        "to": "ENC504"
+      },
+      {
+        "from": "P508_Enc",
+        "to": "ENC506"
+      },
+      {
+        "from": "P509_Enc",
+        "to": "ENC508"
+      },
+      {
+        "from": "P510_Enc",
+        "to": "ENC509"
+      },
+      {
+        "from": "P504",
+        "to": "P504"
+      },
+      {
+        "from": "P506",
+        "to": "P504"
+      },
+      {
+        "from": "P508",
+        "to": "P506"
+      },
+      {
+        "from": "P509",
+        "to": "P508"
+      },
+      {
+        "from": "P510",
+        "to": "P509"
+      }
+    ],
+    "induct": "P504",
+    "tracking_count": 5,
+    "tag_count": 296,
+    "wave_aoi_merged": true,
+    "promoted_shared_controller_tags": [
+      "P542_Sorter_At_Speed",
+      "P544_Sorter_At_Speed",
+      "P640_Sorter_At_Speed"
+    ],
+    "controller_tag_reused": 3,
+    "controller_tag_collisions": [],
+    "tag_ownership": "Context tags + promoted *_Sorter_At_Speed \u2192 controller; program Tags no longer duplicate those names; same-name same-dtype renames reuse one declaration",
+    "phase": "1",
+    "pack_definition": "Sorter_Track_Program.L5X + model expansion",
+    "wcs_boundary": "WCS_INTERFACE_REQUIRED_EXTERNAL",
+    "severity": {
+      "FATAL_ERROR": [],
+      "REVIEW_REQUIRED": [],
+      "ENGINEER_REQUIRED": [],
+      "OPTIONAL_UNRESOLVED": [
+        "divert_confirm_pe",
+        "global_track_offset"
+      ],
+      "WARNING": [
+        "wcs_interface_external_not_emitted"
+      ],
+      "can_emit": true
+    },
+    "encoder_slots_from_model": [
+      "ENC504",
+      "ENC506",
+      "ENC508",
+      "ENC509",
+      "ENC510"
+    ],
+    "induct_encoder": "ENC504",
+    "divert_count_model": 32,
+    "tracking_count_model": 5,
+    "routines": [
+      "Divert_Lane_Status",
+      "Divert_Rate_Limit",
+      "Encoder",
+      "Gridlock_Prevention",
+      "Main",
+      "Response_Time",
+      "Scanner",
+      "Track_Divert_Confirm",
+      "Track_Divert_Package",
+      "Track_Induct_Package",
+      "Track_Lost_Package",
+      "Track_Manual_Destination",
+      "Track_Offset_Find",
+      "Track_Package",
+      "Track_Pointer",
+      "Wave_Divert",
+      "Build_Config"
+    ],
+    "populated_routines": [
+      "Divert_Lane_Status",
+      "Divert_Rate_Limit",
+      "Encoder",
+      "Gridlock_Prevention",
+      "Main",
+      "Response_Time",
+      "Scanner",
+      "Track_Divert_Confirm",
+      "Track_Divert_Package",
+      "Track_Induct_Package",
+      "Track_Lost_Package",
+      "Track_Manual_Destination",
+      "Track_Offset_Find",
+      "Track_Package",
+      "Track_Pointer",
+      "Wave_Divert"
+    ],
+    "pack_checkbox": true,
+    "plc_generation": "PHASE1_GENERATED",
+    "comm_udt_rewrites": [
+      {
+        "from": "CP5RIO2_2.Flt.CommLoss",
+        "to": "CP5RIO2_2_Comm.Flt.CommLoss"
+      },
+      {
+        "from": "CP6RIO2_2.Flt.CommLoss",
+        "to": "CP6RIO2_2_Comm.Flt.CommLoss"
+      }
+    ],
+    "comm_udt_roots_emitted": [
+      "CP5RIO2_2_Comm",
+      "CP6RIO2_2_Comm"
+    ]
+  },
+  "sawtooth_enable_tags": {
+    "emitted": false,
+    "tags": {}
+  },
+  "equipment_plan": {
+    "inventory": {
+      "run_dir": "workspace\\cp5-run\\RUN",
+      "fortna_dir": "workspace\\cp5-run\\RUN\\FORTNA",
+      "machine_name": "ORNCCP5",
+      "counts": {
+        "conveyors": 11,
+        "vfds": 16,
+        "photoeyes_named": 94,
+        "motors_named": 96,
+        "beacons_in_conveyor": 30,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 475,
+        "conveyor_asc_rows_all": 6000
+      },
+      "kind_counts": {
+        "beacon": 30,
+        "estop": 46,
+        "pushbutton": 4,
+        "spare": 69,
+        "encoder": 5,
+        "photoeye": 94,
+        "digital_out": 59,
+        "power_supply": 23,
+        "motor": 96,
+        "conveyor": 11,
+        "digital_in": 4,
+        "vfd": 34
+      },
+      "conveyors": [
+        "7PS1",
+        "7PBSTOP",
+        "7PBSTART",
+        "PB500_JR",
+        "PB812_JR",
+        "PB506A_JR",
+        "PB508A_JR",
+        "PB509A_JR",
+        "PB510A_JR",
+        "7PBSTOP_PLT",
+        "7PBSTART_PLT"
+      ],
+      "vfds": [
+        "VFD444",
+        "VFD500",
+        "VFD500A",
+        "VFD502",
+        "VFD504",
+        "VFD506",
+        "VFD508",
+        "VFD509",
+        "VFD510",
+        "VFD544",
+        "VFD550",
+        "VFD600M",
+        "VFD600N",
+        "VFD600O",
+        "VFD600P",
+        "VFD700A"
+      ],
+      "photoeyes": [
+        "EZPE442_F",
+        "EZPE442_P",
+        "EZPE530_F1",
+        "EZPE530_F2",
+        "EZPE530_P1",
+        "EZPE530_P2",
+        "EZPE536_F",
+        "EZPE536_P",
+        "EZPE542_F",
+        "EZPE542_P",
+        "EZPE564_F",
+        "EZPE566_P",
+        "EZPE602C_F",
+        "EZPE602C_P",
+        "EZPE602D_F",
+        "EZPE602D_P",
+        "EZPE602E_F",
+        "EZPE602E_P",
+        "EZPE602F_F",
+        "EZPE602F_P",
+        "EZPE602G_F",
+        "EZPE602G_P",
+        "EZPE602H_F",
+        "EZPE602H_P",
+        "EZPE602I_F",
+        "EZPE602I_P",
+        "EZPE602J_F",
+        "EZPE602J_P",
+        "EZPE602K_F",
+        "EZPE602K_P",
+        "EZPE602M_F",
+        "EZPE602M_P",
+        "EZPE602N_F",
+        "EZPE602N_P",
+        "EZPE602O_F",
+        "EZPE602O_P",
+        "EZPE602P_F",
+        "EZPE602P_P",
+        "EZPE718_F",
+        "EZPE718_P",
+        "EZPE810_F",
+        "EZPE810_P",
+        "PE444_P",
+        "PE500_J",
+        "PE504_I",
+        "PE506_I",
+        "PE508_I",
+        "PE508_J",
+        "PE509_I",
+        "PE510_I",
+        "PE510_J",
+        "PE544_P",
+        "PE552_JF",
+        "PE556_JF",
+        "PE562_JF",
+        "PE600C_J",
+        "PE600D_J",
+        "PE600E_J",
+        "PE600F_J",
+        "PE600G_J",
+        "PE600H_J",
+        "PE600I_J",
+        "PE600J_J",
+        "PE600K_J",
+        "PE600M_J",
+        "PE600N_J",
+        "PE600O_J",
+        "PE600P_J",
+        "PE608C_F",
+        "PE608D_F",
+        "PE608E_F",
+        "PE608F_F",
+        "PE608G_F",
+        "PE608H_F",
+        "PE608I_F",
+        "PE608J_F",
+        "PE608K_F",
+        "PE608M_F",
+        "PE608N_F",
+        "PE608O_F",
+        "PE608P_F",
+        "PE700A_J",
+        "PE700B_J",
+        "PE700C_J",
+        "PE704A_F",
+        "PE704B_F",
+        "PE704C_F",
+        "PE714_JF",
+        "PE720_J",
+        "PE802_P",
+        "PE806_JF",
+        "PE812_J",
+        "PE814_FDD",
+        "PE814_FDJ"
+      ],
+      "conveyor_types": {
+        "STRAIGHT": 11
+      },
+      "tables": {
+        "encoders": {
+          "file": "Encoders.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP5"
+        },
+        "estop": {
+          "file": "EStop.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP5"
+        },
+        "merges": {
+          "file": "Merges.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP5"
+        },
+        "sorters": {
+          "file": "Sorters.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP5"
+        },
+        "beacons": {
+          "file": "BeaconInfo.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP5"
+        },
+        "mtrchain": {
+          "file": "Mtrchain.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP5"
+        },
+        "power_supply": {
+          "file": "PowerSupply.asc",
+          "rows": 0,
+          "usable": 0,
+          "scoped_to": "ORNCCP5"
+        }
+      },
+      "flags": {
+        "has_srt_track": true,
+        "has_srt_device": true,
+        "has_eipcfg": true,
+        "transport_heavy": false,
+        "merge_candidate": false,
+        "sorter_candidate": false
+      }
+    },
+    "plan": {
+      "profile": "transport",
+      "features": {
+        "transport_fast_slow": true,
+        "io_map": true,
+        "pe_logic": true,
+        "full_pe": true,
+        "motor_starter_flt": true,
+        "vfd_as_motor_starter_udt": true,
+        "es_udt": false,
+        "merge_2to1": false,
+        "sorter_track_pack": false,
+        "enc_riocard": false,
+        "sys_pack": true,
+        "comm_diag": true
+      },
+      "aois": [
+        "AOI_CommDiag",
+        "Fast_Conv",
+        "Full_PE",
+        "PE_Logic",
+        "Slow_Flt",
+        "Slow_Jam"
+      ],
+      "packs": [
+        "Sys"
+      ],
+      "merge_rows_configured": 0,
+      "notes": [
+        "16 VFD* names \u2014 map to P###_VFD Motor_Starter_UDT in IO_MAP.",
+        "Sawtooth: optional Sawtooth_Merge pack available (from PLC4S pattern) \u2014 enable manually; not auto-emitted from tar yet."
+      ],
+      "inventory_counts": {
+        "conveyors": 11,
+        "vfds": 16,
+        "photoeyes_named": 94,
+        "motors_named": 96,
+        "beacons_in_conveyor": 30,
+        "encoders_table_usable": 0,
+        "estop_table_usable": 0,
+        "merges_table_usable": 0,
+        "sorters_table_usable": 0,
+        "beacons_usable": 0,
+        "motor_chains_usable": 0,
+        "power_supplies_usable": 0,
+        "eip_adapters": 50,
+        "eip_modules": 500,
+        "conveyor_asc_rows": 475,
+        "conveyor_asc_rows_all": 6000
+      }
+    }
+  },
+  "optional_programs_available": [
+    "ShippingSorter_Area_L3",
+    "WCS_Interface_TCP_IP",
+    "Sorter_Track",
+    "Sawtooth_Merge"
+  ],
+  "task_schedule": {
+    "P02_Track_10ms": "IO_MAP + Sorter_Track (live from Sorter build UI)",
+    "Sys": "Task Sys @ 100ms (own task)",
+    "P10_Fast_20ms": [
+      "ORNCCP5_Area_Fast"
+    ],
+    "P11_Slow_200ms": [
+      "ORNCCP5_Area_Slow"
+    ]
+  },
+  "encoded_aois_stripped": false,
+  "logic": "Fast_Conv + Slow_Jam + PE_Logic/Full_PE + Slow_Flt + IO_MAP (module:I.Data)",
+  "note": "Site Forge Python autogen from RUN: real PE tags (NO_PE), PE_Logic/Full_PE, Slow_Flt, full Flex I/O tree CPxRIOn + CPxRIOn_k children with AB: data types (DI_Delay16/DO8/IB16/DO16), IO_MAP XIC(CPxRIOn:I.Data[s].b)OTE(PE.I.PE_Clear) via EIPCSV Word map + octal bits. OPEN as NEW Studio project (File\u2192Open L5X).",
+  "studio_blockers": [],
+  "sntp_connection_path": "CPXXENET1",
+  "generation_assertions": {
+    "ok": true,
+    "failures": []
+  },
+  "build_stage_audit": {
+    "run_or_workbook_conveyors": 78,
+    "generated_conveyors": 78,
+    "expected_modules": 53,
+    "l5x_p_conv_tags": 78,
+    "l5x_module_count": 63,
+    "l5x_bytes": 4299283,
+    "unresolved_tag_datatypes": [],
+    "unresolved_datatype_members": [],
+    "expected_git": "da5e86d",
+    "git_in_l5x": "da5e86d",
+    "controller_description_len": 44
+  },
+  "l5x_integrity": {
+    "path": "exports\\stabilization\\plc5_hotbuild_full\\ORNCCP5.L5X",
+    "exists": true,
+    "bytes": 4299283,
+    "has_RSLogix5000Content": true,
+    "has_Controller": true,
+    "has_Tags": true,
+    "has_Programs": true,
+    "has_Tasks": true,
+    "programs": [
+      "ORNCCP5_Area_Slow",
+      "ORNCCP5_Area_Fast",
+      "ORNCCP5_Area_L1",
+      "ORNCCP5_Area_L2",
+      "Sys",
+      "Sorter_Track",
+      "IO_MAP"
+    ],
+    "program_count": 7,
+    "l5x_module_count": 63,
+    "l5x_p_conv_tags": 78,
+    "p_conv_sample": [
+      "P440_Conv",
+      "P442_Conv",
+      "P444_Conv",
+      "P500_Conv",
+      "P502_Conv",
+      "P504_Conv",
+      "P506_Conv",
+      "P506A_Conv",
+      "P508_Conv",
+      "P508A_Conv",
+      "P509_Conv",
+      "P510_Conv",
+      "P526_Conv",
+      "P528_Conv",
+      "P532_Conv",
+      "P534_Conv",
+      "P536_Conv",
+      "P538_Conv",
+      "P540_Conv",
+      "P542_Conv"
+    ],
+    "has_IO_MAP_program": true,
+    "unresolved_tag_datatypes": [],
+    "unresolved_datatype_members": [],
+    "git_in_l5x": "da5e86d",
+    "controller_description_len": 44,
+    "controller_description": "SiteForge ORNCCP5 | Git=da5e86d | 2026-09-18"
+  },
+  "studio_preflight": {
+    "ok": true,
+    "counts": {
+      "errors": 0,
+      "warnings": 0,
+      "info": 0,
+      "programs_with_main": 7,
+      "programs_missing_main": 0,
+      "tags": 946,
+      "duplicate_tags": 0,
+      "modules": 63,
+      "programs": 7,
+      "tasks": 6,
+      "datatypes": 211,
+      "controller_tags": 946
+    },
+    "issues": []
+  },
+  "studio_tags_csv_error": "unterminated string literal (detected at line 1105) (fortna_plc_export.py, line 1105)",
+  "rio_inventory": "exports\\stabilization\\plc5_hotbuild_full\\rio_inventory.json",
+  "rio_module_count": 53,
+  "rio_names": [
+    "CP5RIO0",
+    "CP5RIO1",
+    "CP5RIO2",
+    "CP5RIO3",
+    "CP6RIO0",
+    "CP6RIO1",
+    "CP6RIO2",
+    "CP7RIO0"
+  ],
+  "physical_io_map_csv": "exports\\stabilization\\plc5_hotbuild_full\\physical_io_map.csv",
+  "physical_io_mapped": 395,
+  "physical_io_unmapped": 0,
+  "io_map_pending_csv": "exports\\stabilization\\plc5_hotbuild_full\\io_map_pending.csv"
+}

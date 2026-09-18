@@ -34,6 +34,279 @@ ORIGIN_ENGINEER = "ENGINEER_ASSIGNED"
 ORIGIN_SUGGESTED = "SUGGESTED_DIGIT_MATCH"
 ORIGIN_UNRESOLVED = "UNRESOLVED"
 
+# Gate R — zone provenance classes (canonical persistence decisions)
+PROVENANCE_RUN_DISCOVERED = "RUN_DISCOVERED"
+PROVENANCE_ENGINEER_CREATED = "ENGINEER_CREATED"
+PROVENANCE_LEGACY_CANONICAL = "LEGACY_CANONICAL"
+PROVENANCE_TEST_FIXTURE = "TEST_FIXTURE"
+PROVENANCE_AUTO_DEFAULT = "AUTO_DEFAULT"
+PROVENANCE_UNKNOWN = "UNKNOWN"
+
+# UI / Excel-style placeholders that must not auto-promote into production canonical
+_PLACEHOLDER_AREA_RE = re.compile(r"^Zone([1-9])_Area$", re.I)
+_PLACEHOLDER_ZONE_RE = re.compile(r"^Zone([1-9])_ESZone\d*$", re.I)
+_NUMERIC_STEM_ZONE_RE = re.compile(r"^(\d{2,})_ESZone\d*$", re.I)
+_CORRUPT_ZONE_RE = re.compile(r"\[object\s+Object\]", re.I)
+
+
+def is_ui_placeholder_area(name: str) -> bool:
+    """Excel-style Zone1_Area..Zone9_Area dropdown suggestions — not production areas."""
+    return bool(_PLACEHOLDER_AREA_RE.match(str(name or "").strip()))
+
+
+def is_placeholder_or_test_zone_name(name: str) -> bool:
+    """Zone1_ESZone1..Zone9 / pure-numeric stems / coercion artifacts."""
+    s = str(name or "").strip()
+    if not s:
+        return True
+    if _CORRUPT_ZONE_RE.search(s):
+        return True
+    if _PLACEHOLDER_ZONE_RE.match(s):
+        return True
+    if _NUMERIC_STEM_ZONE_RE.match(s):
+        return True
+    return False
+
+
+def zone_stem(name: str) -> str:
+    """ORNCCP5_ESZone1 → ORNCCP5; Zone3_ESZone1 → Zone3."""
+    s = str(name or "").strip()
+    m = re.match(r"^(.*)_ESZone\d*$", s, re.I)
+    return (m.group(1) if m else s).strip()
+
+
+def classify_zone_provenance(
+    zone: dict[str, Any],
+    *,
+    run_zone_ids: set[str] | None = None,
+    conveyor_zone_refs: set[str] | None = None,
+    current_areas: set[str] | None = None,
+) -> str:
+    """Classify Safety zone provenance for Gate R reconciliation.
+
+    RUN_DISCOVERED | ENGINEER_CREATED | LEGACY_CANONICAL |
+    TEST_FIXTURE | AUTO_DEFAULT | UNKNOWN
+    """
+    run_ids = {str(x).strip() for x in (run_zone_ids or set()) if str(x).strip()}
+    conv_refs = {str(x).strip() for x in (conveyor_zone_refs or set()) if str(x).strip()}
+    areas = {str(x).strip() for x in (current_areas or set()) if str(x).strip()}
+
+    sid = str(
+        zone.get("source_id") or zone.get("sourceId") or zone.get("id") or zone.get("name") or ""
+    ).strip()
+    eng = str(
+        zone.get("engineering_name") or zone.get("engineeringName") or zone.get("name") or sid
+    ).strip()
+    area = str(zone.get("areaRef") or zone.get("area") or "").strip()
+    keys = {sid, eng}
+    keys_l = {k.lower() for k in keys if k}
+
+    if not sid and not eng:
+        return PROVENANCE_UNKNOWN
+    if any(_CORRUPT_ZONE_RE.search(k) for k in keys if k):
+        return PROVENANCE_TEST_FIXTURE
+
+    engineer = bool(zone.get("engineerEdited")) or str(
+        zone.get("membersOrigin") or zone.get("areaOrigin") or ""
+    ).upper() in {"ENGINEER_ASSIGNED", "ENGINEER"}
+    # Explicit engineer-created flag or non-empty engineer membership
+    if zone.get("provenance") == PROVENANCE_ENGINEER_CREATED or (
+        engineer and (zone.get("members") or zone.get("createdBy") == "engineer")
+    ):
+        # Still flag pure test-name patterns for documentation, but engineer wins keep
+        if is_placeholder_or_test_zone_name(sid) or is_placeholder_or_test_zone_name(eng):
+            if engineer:
+                return PROVENANCE_ENGINEER_CREATED
+            return PROVENANCE_TEST_FIXTURE
+        return PROVENANCE_ENGINEER_CREATED
+
+    if zone.get("runDiscovered") or sid in run_ids or eng in run_ids:
+        return PROVENANCE_RUN_DISCOVERED
+    if any(k in run_ids for k in keys):
+        return PROVENANCE_RUN_DISCOVERED
+
+    # Placeholder ZoneN / numeric stems with no engineer authorship
+    if is_placeholder_or_test_zone_name(sid) or is_placeholder_or_test_zone_name(eng):
+        return PROVENANCE_TEST_FIXTURE
+    if is_ui_placeholder_area(area) and not engineer:
+        return PROVENANCE_TEST_FIXTURE
+
+    # Area-shell AUTO_DEFAULT: ${stem}_ESZone1 minted from area name alone
+    stem = zone_stem(sid or eng)
+    area_stem = re.sub(r"_Area$", "", area, flags=re.I).strip()
+    auto_shell = (
+        bool(re.search(r"_ESZone1$", sid or eng, re.I))
+        and stem
+        and area_stem
+        and stem.lower() == area_stem.lower()
+        and not (zone.get("members") or [])
+        and not engineer
+        and not zone.get("runDiscovered")
+    )
+    if auto_shell and (sid not in conv_refs and eng not in conv_refs):
+        return PROVENANCE_AUTO_DEFAULT
+    if auto_shell and zone.get("areaOrigin") in {ORIGIN_AUTO, "AUTO_DEFAULT", None, ""}:
+        # Conveyor refs may still point at machine provisional shell — that is OK
+        # when the area is a real current area (controller Area), not ZoneN placeholder.
+        if is_ui_placeholder_area(area) or is_placeholder_or_test_zone_name(sid):
+            return PROVENANCE_AUTO_DEFAULT
+
+    if sid in conv_refs or eng in conv_refs:
+        return PROVENANCE_LEGACY_CANONICAL if not zone.get("runDiscovered") else PROVENANCE_RUN_DISCOVERED
+
+    if area and area in areas and not engineer:
+        # Orphan shell hanging off a current area without RUN/engineer proof
+        if not (zone.get("members") or []) and (sid not in conv_refs and eng not in conv_refs):
+            return PROVENANCE_AUTO_DEFAULT
+
+    if zone.get("provenance") in {
+        PROVENANCE_RUN_DISCOVERED,
+        PROVENANCE_ENGINEER_CREATED,
+        PROVENANCE_LEGACY_CANONICAL,
+        PROVENANCE_TEST_FIXTURE,
+        PROVENANCE_AUTO_DEFAULT,
+        PROVENANCE_UNKNOWN,
+    }:
+        return str(zone.get("provenance"))
+
+    return PROVENANCE_UNKNOWN
+
+
+def reconcile_safety_zones(
+    zones: list[dict[str, Any]],
+    *,
+    run_zone_ids: set[str] | None = None,
+    conveyor_zone_refs: set[str] | None = None,
+    current_areas: set[str] | None = None,
+    preserve_engineer: bool = True,
+) -> dict[str, Any]:
+    """Gate R — keep RUN/engineer zones; drop test/default placeholders.
+
+    Returns {zones, removed, kept, classifications, before, after}.
+    """
+    before = []
+    classifications: list[dict[str, Any]] = []
+    kept: list[dict[str, Any]] = []
+    removed: list[dict[str, Any]] = []
+
+    run_ids = {str(x).strip() for x in (run_zone_ids or set()) if str(x).strip()}
+    conv_refs = {str(x).strip() for x in (conveyor_zone_refs or set()) if str(x).strip()}
+    areas = {str(x).strip() for x in (current_areas or set()) if str(x).strip()}
+
+    for z in zones or []:
+        if not isinstance(z, dict):
+            continue
+        sid = str(
+            z.get("source_id") or z.get("sourceId") or z.get("id") or z.get("name") or ""
+        ).strip()
+        eng = str(
+            z.get("engineering_name") or z.get("engineeringName") or z.get("name") or sid
+        ).strip()
+        before.append(eng or sid)
+        prov = classify_zone_provenance(
+            z,
+            run_zone_ids=run_ids,
+            conveyor_zone_refs=conv_refs,
+            current_areas=areas,
+        )
+        z = dict(z)
+        z["provenance"] = prov
+        row = {
+            "source_id": sid,
+            "engineering_name": eng,
+            "area": str(z.get("areaRef") or z.get("area") or ""),
+            "provenance": prov,
+            "engineerEdited": bool(z.get("engineerEdited")),
+            "runDiscovered": bool(z.get("runDiscovered")),
+            "members": len(z.get("members") or []),
+            "action": "keep",
+            "reason": "",
+        }
+
+        # Corrupt identities always drop
+        if _CORRUPT_ZONE_RE.search(sid) or _CORRUPT_ZONE_RE.search(eng):
+            row["action"] = "remove"
+            row["reason"] = "corrupt_[object_Object]_identity"
+            removed.append(z)
+            classifications.append(row)
+            continue
+
+        if prov == PROVENANCE_ENGINEER_CREATED and preserve_engineer:
+            row["reason"] = "engineer_created_preserved"
+            kept.append(z)
+            classifications.append(row)
+            continue
+
+        if prov == PROVENANCE_RUN_DISCOVERED:
+            row["reason"] = "run_discovered_preserved"
+            kept.append(z)
+            classifications.append(row)
+            continue
+
+        if prov == PROVENANCE_TEST_FIXTURE:
+            # Engineer-authored test names still survive when preserve_engineer
+            if preserve_engineer and z.get("engineerEdited") and (z.get("members") or []):
+                row["action"] = "keep"
+                row["reason"] = "test_name_but_engineer_members_preserved"
+                row["provenance"] = PROVENANCE_ENGINEER_CREATED
+                z["provenance"] = PROVENANCE_ENGINEER_CREATED
+                kept.append(z)
+            else:
+                row["action"] = "remove"
+                row["reason"] = "test_fixture_or_ui_placeholder_not_persisted"
+                removed.append(z)
+            classifications.append(row)
+            continue
+
+        if prov == PROVENANCE_AUTO_DEFAULT:
+            # Machine provisional shell referenced by conveyors may stay as LEGACY
+            if sid in conv_refs or eng in conv_refs:
+                row["action"] = "keep"
+                row["reason"] = "auto_default_but_conveyor_referenced"
+                row["provenance"] = PROVENANCE_LEGACY_CANONICAL
+                z["provenance"] = PROVENANCE_LEGACY_CANONICAL
+                kept.append(z)
+            else:
+                row["action"] = "remove"
+                row["reason"] = "auto_default_area_shell_not_persisted"
+                removed.append(z)
+            classifications.append(row)
+            continue
+
+        if prov == PROVENANCE_LEGACY_CANONICAL:
+            row["reason"] = "legacy_canonical_conveyor_referenced"
+            kept.append(z)
+            classifications.append(row)
+            continue
+
+        # UNKNOWN — fail-safe: keep if conveyor-referenced or engineer, else drop
+        if sid in conv_refs or eng in conv_refs or (preserve_engineer and z.get("engineerEdited")):
+            row["reason"] = "unknown_but_referenced_or_engineer"
+            kept.append(z)
+        else:
+            row["action"] = "remove"
+            row["reason"] = "unknown_unreferenced_dropped"
+            removed.append(z)
+        classifications.append(row)
+
+    after = [
+        str(z.get("engineering_name") or z.get("name") or z.get("source_id") or "")
+        for z in kept
+    ]
+    return {
+        "zones": kept,
+        "removed": removed,
+        "kept": kept,
+        "classifications": classifications,
+        "before": before,
+        "after": after,
+        "counts": {
+            "before": len(before),
+            "after": len(after),
+            "removed": len(removed),
+        },
+    }
+
 # Engineer Hardware I/O prefixes (T_2ES, CP2_ESR1, T_2MCR1, CP2_CS) + RUN names
 # (2ES, 2ESR1_AUX, 2MCR1, ESLS125).
 _DEVICE_RE = re.compile(
@@ -351,7 +624,21 @@ def _merge_engineer_zone(
         z["engineering_name"] = str(eng["name"]).strip()
         z["name"] = z["engineering_name"]
         z["nameOrigin"] = ORIGIN_ENGINEER
-    z["engineerEdited"] = True
+    # Only stamp engineerEdited when the overlay itself claims engineer authorship
+    # (avoid promoting polluted AUTO_DEFAULT shells that merely sat in safety_build)
+    renamed = bool(eng_name) and eng_name != str(
+        auto_zone.get("source_id") or auto_zone.get("name") or ""
+    ).strip()
+    if (
+        eng.get("engineerEdited")
+        or eng.get("createdBy") == "engineer"
+        or eng.get("membersOrigin") in {ORIGIN_ENGINEER, "ENGINEER", "ASSIGNED"}
+        or eng.get("areaOrigin") == ORIGIN_ENGINEER
+        or renamed
+    ):
+        z["engineerEdited"] = True
+    else:
+        z["engineerEdited"] = bool(z.get("engineerEdited"))
     return z
 
 
@@ -482,22 +769,51 @@ def build_safety_model(
         )
 
     # Named Safety Zone list (workbook.safety_zones) — Area≠Zone stubs
+    # Gate R — never promote UI placeholder Zone1..Zone9 / numeric test stems
+    # from dropdown catalogs into production IR shells.
+    def _accept_named_zone(n: str) -> bool:
+        s = str(n or "").strip()
+        if not s or _CORRUPT_ZONE_RE.search(s):
+            return False
+        if is_placeholder_or_test_zone_name(s):
+            # Allow only when an engineer zone or transport seed already carries it
+            return any(
+                s
+                in {
+                    str(z.get("source_id") or "").strip(),
+                    str(z.get("name") or "").strip(),
+                    str(z.get("engineering_name") or "").strip(),
+                }
+                and (
+                    z.get("engineerEdited")
+                    or z.get("runDiscovered")
+                    or (z.get("members") or [])
+                )
+                for z in seed_zones
+            )
+        return True
+
     safety_zone_names = [
         str(z.get("name") or "").strip()
         for z in seed_zones
-        if z.get("name")
-    ] + [str(n).strip() for n in named if str(n).strip()]
+        if z.get("name") and _accept_named_zone(str(z.get("name") or ""))
+    ] + [str(n).strip() for n in named if _accept_named_zone(str(n))]
     # Also accept top-level safety_zones on eng_build / caller areas pairing
     for n in eng_build.get("zone_names") or []:
-        if str(n).strip():
+        if _accept_named_zone(str(n)):
             safety_zone_names.append(str(n).strip())
 
+    # Filter placeholder areas out of default_area candidates
+    real_areas = [
+        a for a in (areas or [])
+        if str(a).strip() and not is_ui_placeholder_area(str(a))
+    ]
     irs = build_safety_zone_irs(
         safety_zones=safety_zone_names,
-        areas=list(areas or []),
+        areas=real_areas,
         estop_model=None,
         engineer_zones=seed_zones,
-        default_area=(areas or ["Main_Area"])[0] if (areas or []) else "Main_Area",
+        default_area=(real_areas or ["Main_Area"])[0] if real_areas else "Main_Area",
         area_conveyors=area_conveyors or {},
     )
 
@@ -540,7 +856,11 @@ def build_safety_model(
             "suggestions": [],
             "engineerEdited": False,
             "status": "UNRESOLVED",
-            "runDiscovered": True,
+            # Gate R — only true RUN/transport seeds; placeholders are not discovered
+            "runDiscovered": (
+                not is_placeholder_or_test_zone_name(ir.name)
+                and bool(ir.name)
+            ),
         }
         # Match engineer overlay by source_id first, then display name
         eng_hit = eng_by_name.get(ir.name)
@@ -563,7 +883,45 @@ def build_safety_model(
             if d and d.get("physicalIoRef"):
                 phys.append({"device": m, **d["physicalIoRef"]})
         merged["physicalIORefs"] = phys
+        if eng_hit and eng_hit.get("runDiscovered"):
+            merged["runDiscovered"] = True
+        if is_placeholder_or_test_zone_name(str(merged.get("source_id") or merged.get("name") or "")):
+            if not (eng_hit and eng_hit.get("engineerEdited")):
+                merged["runDiscovered"] = False
         zones_out.append(merged)
+
+    # Gate R — classify + drop test/default pollution before readiness
+    conv_zone_refs: set[str] = set()
+    for z in (transport_zones or []):
+        nm = str(z.get("source_id") or z.get("name") or z.get("engineering_name") or "").strip()
+        if nm and not is_placeholder_or_test_zone_name(nm):
+            conv_zone_refs.add(nm)
+        elif nm and (z.get("conveyors") or z.get("conveyorRefs") or z.get("members")):
+            # Real assignment to a oddly-named zone still counts
+            conv_zone_refs.add(nm)
+    for z in eng_zones_list:
+        nm = str(z.get("source_id") or z.get("name") or z.get("engineering_name") or "").strip()
+        if nm and (z.get("engineerEdited") or (z.get("members") or [])):
+            conv_zone_refs.add(nm)
+    for z in seed_zones:
+        nm = str(z.get("name") or z.get("source_id") or "").strip()
+        if nm and (z.get("conveyors") or z.get("conveyorRefs")):
+            conv_zone_refs.add(nm)
+    run_ids = {
+        str(z.get("source_id") or z.get("name") or "").strip()
+        for z in zones_out
+        if z.get("runDiscovered") and not is_placeholder_or_test_zone_name(
+            str(z.get("source_id") or z.get("name") or "")
+        )
+    }
+    recon = reconcile_safety_zones(
+        zones_out,
+        run_zone_ids=run_ids,
+        conveyor_zone_refs=conv_zone_refs,
+        current_areas=set(real_areas),
+        preserve_engineer=True,
+    )
+    zones_out = list(recon["zones"])
 
     # Readiness via es_compiler field matrix (reuse)
     class _IR:
@@ -703,12 +1061,32 @@ def build_safety_model(
         },
         "readiness": ready,
         "discovery_error": disc_err,
+        "reconciliation": {
+            "before": recon.get("before") or [],
+            "after": recon.get("after") or [],
+            "removed": [
+                {
+                    "source_id": str(
+                        z.get("source_id") or z.get("name") or ""
+                    ).strip(),
+                    "engineering_name": str(
+                        z.get("engineering_name") or z.get("name") or ""
+                    ).strip(),
+                    "provenance": z.get("provenance") or PROVENANCE_UNKNOWN,
+                }
+                for z in (recon.get("removed") or [])
+            ],
+            "classifications": recon.get("classifications") or [],
+            "counts": recon.get("counts") or {},
+        },
         "policy": {
             "area_ne_safety_zone": True,
             "engineer_overrides_survive_rediscovery": True,
             "no_silent_es_omit": True,
             "suggestions_are_not_auto_assign": True,
             "partial_es_emit_allowed": True,
+            "no_ui_placeholder_zone_persist": True,
+            "unknown_membership_fail_safe": True,
         },
     }
     return model
@@ -745,6 +1123,7 @@ def safety_build_workbook_payload(model: dict[str, Any]) -> dict[str, Any]:
                 "fields": z.get("fields") or {},
                 "engineerEdited": bool(z.get("engineerEdited")),
                 "runDiscovered": bool(z.get("runDiscovered")),
+                "provenance": z.get("provenance") or PROVENANCE_UNKNOWN,
             }
         )
     # Preserve full device records (zone ref / status / evidence / provenance)

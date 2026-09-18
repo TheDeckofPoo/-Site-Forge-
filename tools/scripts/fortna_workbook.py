@@ -61,6 +61,38 @@ WORKBOOK_VERSION = 1
 DEFAULT_WORKBOOK_PATH = REPO_ROOT / "workspace" / "autogen_workbook.json"
 _LEGACY_WORKBOOK_PATH = REPO_ROOT / "workspace" / "active" / "autogen_workbook.json"
 
+# Gate R — Excel-style Zone1..Zone9 are UI dropdown suggestions only.
+# They must NOT auto-promote into production safety_zones / ES IR shells.
+_PLACEHOLDER_AREA_RE = re.compile(r"^Zone([1-9])_Area$", re.I)
+_PLACEHOLDER_ZONE_RE = re.compile(r"^Zone([1-9])_ESZone\d*$", re.I)
+_NUMERIC_STEM_ZONE_RE = re.compile(r"^(\d{2,})_ESZone\d*$", re.I)
+_CORRUPT_ZONE_RE = re.compile(r"\[object\s+Object\]", re.I)
+
+
+def is_ui_placeholder_area(name: str) -> bool:
+    return bool(_PLACEHOLDER_AREA_RE.match(str(name or "").strip()))
+
+
+def is_placeholder_or_test_zone_name(name: str) -> bool:
+    s = str(name or "").strip()
+    if not s:
+        return True
+    if _CORRUPT_ZONE_RE.search(s):
+        return True
+    if _PLACEHOLDER_ZONE_RE.match(s):
+        return True
+    if _NUMERIC_STEM_ZONE_RE.match(s):
+        return True
+    return False
+
+
+def is_production_safety_zone_name(name: str) -> bool:
+    """True when a zone name may enter production canonical / AutogenInput."""
+    s = str(name or "").strip()
+    if not s or is_placeholder_or_test_zone_name(s):
+        return False
+    return True
+
 
 def _ts() -> str:
     return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -253,39 +285,51 @@ def build_workbook_from_run(
         type_counts[r["type"]] = type_counts.get(r["type"], 0) + 1
 
     # --- Dropdown option lists (reusable every site; values come from this RUN) ---
-    # Areas: discovered + standard Zone1–9 (Excel-style names can be added by user via bulk)
+    # Areas: discovered first. Zone1–9 remain UI suggestions only (Gate R) —
+    # they must not auto-mint production Safety zones.
     area_opts: list[str] = []
     for a in areas:
         if a["name"] and a["name"] not in area_opts:
             area_opts.append(a["name"])
-    for z in range(1, 10):
-        lab = f"Zone{z}_Area"
-        if lab not in area_opts:
-            area_opts.append(lab)
     # Preserve previous custom areas only for the same controller project
     if existing and same_machine:
         for row in existing.get("conveyors") or []:
             a = (row.get("main_area") or "").strip()
             if a and a not in area_opts:
                 area_opts.append(a)
+    for z in range(1, 10):
+        lab = f"Zone{z}_Area"
+        if lab not in area_opts:
+            area_opts.append(lab)
 
     safety_opts: list[str] = []
+    # Production seeds only from discovered areas / RUN / conveyor refs — never
+    # from Zone1_Area..Zone9_Area UI placeholders.
     for a in areas:
         s = (a.get("safety_zone") or "").strip()
-        if s and s not in safety_opts:
+        if s and s not in safety_opts and is_production_safety_zone_name(s):
             safety_opts.append(s)
-    for a in area_opts:
-        s = f"{a.replace('_Area', '')}_ESZone1"
-        if s not in safety_opts:
-            safety_opts.append(s)
+        an = str(a.get("name") or "").strip()
+        if an and not is_ui_placeholder_area(an):
+            stem = an.replace("_Area", "")
+            s = f"{stem}_ESZone1"
+            if s not in safety_opts and is_production_safety_zone_name(s):
+                safety_opts.append(s)
     for s in (inp.safety_zones or []):
-        if s and s not in safety_opts:
-            safety_opts.append(s)
+        if s and s not in safety_opts and is_production_safety_zone_name(str(s)):
+            safety_opts.append(str(s))
     if existing and same_machine:
         for row in existing.get("conveyors") or []:
             s = (row.get("safety_zone") or "").strip()
-            if s and s not in safety_opts:
+            if s and s not in safety_opts and is_production_safety_zone_name(s):
                 safety_opts.append(s)
+    # Dropdown catalog may still offer ZoneN_ESZone1 as Excel-style suggestions,
+    # but they are tagged under options only — apply_workbook will not promote
+    # unused suggestions into AutogenInput.safety_zones.
+    for z in range(1, 10):
+        lab = f"Zone{z}_ESZone1"
+        if lab not in safety_opts:
+            safety_opts.append(lab)
 
     # All photoeye tags on this controller (for Exit PE dropdown)
     pe_opts: list[str] = []
@@ -341,7 +385,11 @@ def build_workbook_from_run(
         "minor_rev": inp.minor_rev or "00",
         "machine": (inp.project_name or "").split("_")[-1] if inp.project_name else "",
         "areas": areas,
-        "safety_zones": list(inp.safety_zones or []),
+        # Production canonical only — UI Zone1..Zone9 catalog lives under options
+        "safety_zones": [
+            s for s in (inp.safety_zones or [])
+            if is_production_safety_zone_name(str(s))
+        ],
         "conveyors": conveyors_out,
         "io_points": io_rows,
         "modules": modules,
@@ -371,7 +419,8 @@ def build_workbook_from_run(
         "human_notes": (
             "All conveyor rows come from the RUN tar.gz (FORTNA/Conveyor.asc). "
             "TYPE is inferred from ASC Type (STRAIGHT/CURVE/ACCUM/…) + whether a VFD drive is linked. "
-            "AREA is inferred from the first digit of P### (P106→Zone1, P602→Zone6) — editable. "
+            "AREA defaults to {controller}_Area from RUN (not Zone1–Zone9 from P-digit). "
+            "Zone1_Area..Zone9_Area remain dropdown suggestions only — they do not auto-create Safety zones. "
             "Exit PE is the product/discharge PE tag linked to that conveyor in the ASC (or PE list). "
             "Dropdowns let you override; Generate uses your choices."
         ),
@@ -382,7 +431,10 @@ def build_workbook_from_run(
                 "STRAIGHT/CURVE/MERGE/… → Transport with MS/VFD; "
                 "VFD vs MS chosen when Drive/VFD tags exist for that conveyor"
             ),
-            "area_rules": "P### first digit → ZoneN_Area (O'Reilly convention; editable in dropdown)",
+            "area_rules": (
+                "RUN seed uses {controller}_Area; Zone1_Area..Zone9_Area are UI "
+                "suggestions only and do not auto-promote Safety zones (Gate R)"
+            ),
             "exit_pe_rules": "Product/exit PE tags from Conveyor.asc PE columns for that conveyor",
             "io_rules": "Bank.Word.Bit + EIP word_map → CPxRIOn:I/O.Data[slot].bit",
             "needs_human": [
@@ -528,20 +580,20 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
                 zones.append(zz)
 
             for c in new_convs:
-                _add_zone(getattr(c, "safety_zone", "") or "")
-            opts = workbook.get("options") if isinstance(workbook.get("options"), dict) else {}
-            for z in opts.get("safety_zones") or []:
-                _add_zone(str(z))
+                sz = getattr(c, "safety_zone", "") or ""
+                # Conveyor-referenced zones are engineer/RUN assignments — keep
+                # even oddly named ones; do not invent from dropdown catalogs.
+                if str(sz).strip():
+                    _add_zone(str(sz).strip())
+            # Gate R — do NOT promote options.safety_zones (UI catalog including
+            # Zone1..Zone9_ESZone1) into production AutogenInput.safety_zones.
             for a in workbook.get("areas") or []:
                 if isinstance(a, dict):
-                    _add_zone(str(a.get("safety_zone") or ""))
-            for a in areas:
-                base = (a or "").replace("_Area", "").strip() or (a or "Transport")
-                if not any(
-                    (z.upper().startswith(base.upper()) or base.upper() in z.upper())
-                    for z in zones
-                ):
-                    _add_zone(f"{base}_ESZone1")
+                    sz = str(a.get("safety_zone") or "").strip()
+                    if sz and is_production_safety_zone_name(sz):
+                        _add_zone(sz)
+            # Do NOT auto-mint ${area}_ESZone1 from area names alone. Production
+            # shells come from conveyor.safety_zone / safety_build only.
             inp.safety_zones = zones
 
     # Always apply engineer Safety membership — even when conveyors[] is empty
@@ -575,22 +627,39 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
             zones_now = list(inp.safety_zones or [])
             for z in sb.get("zones") or []:
                 aname = str(z.get("area") or z.get("areaRef") or "").strip()
-                zname = str(z.get("name") or "").strip()
+                zname = str(
+                    z.get("source_id")
+                    or z.get("engineering_name")
+                    or z.get("name")
+                    or ""
+                ).strip()
+                eng_keep = bool(z.get("engineerEdited")) or bool(z.get("members"))
+                # Gate R — drop unused Zone1..Zone9 / numeric test shells unless
+                # engineer-authored or already conveyor-referenced.
                 if zname and zname not in zones_now:
-                    zones_now.append(zname)
+                    if eng_keep or is_production_safety_zone_name(zname) or any(
+                        str(t or "").strip()
+                        for t in (z.get("conveyors") or z.get("conveyorRefs") or [])
+                    ):
+                        if not is_placeholder_or_test_zone_name(zname) or eng_keep:
+                            zones_now.append(zname)
                 for tag in (z.get("conveyors") or z.get("conveyorRefs") or []):
                     key = str(tag or "").strip().upper()
                     c = by_conv.get(key)
                     if not c:
                         continue
-                    if aname:
+                    if aname and not is_ui_placeholder_area(aname):
                         c.main_area = aname
                         if aname not in areas_now:
                             areas_now.append(aname)
-                    if zname:
+                    elif aname and is_ui_placeholder_area(aname) and eng_keep:
+                        c.main_area = aname
+                        if aname not in areas_now:
+                            areas_now.append(aname)
+                    if zname and (eng_keep or not is_placeholder_or_test_zone_name(zname)):
                         c.safety_zone = zname
             if areas_now:
-                inp.areas = areas_now
+                inp.areas = [a for a in areas_now if a]
             if zones_now:
                 inp.safety_zones = zones_now
     if workbook.get("project_name"):

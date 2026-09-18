@@ -1,0 +1,313 @@
+{
+  "gate": "P-T",
+  "title": "Safety canonical reconciliation",
+  "generated_utc": "2026-09-18T08:07:39.296405+00:00",
+  "source_manifest": "exports/current/ORNCCP5_2026_09_18_0339.manifest.json",
+  "source_git_commit": "da5e86d",
+  "controller": "ORNCCP5",
+  "leak_path": {
+    "primary": "tools/scripts/fortna_workbook.py build_workbook_from_run seeded Zone1_Area..Zone9_Area into options.areas and minted ZoneN_ESZone1 into options.safety_zones; apply_workbook_to_input copied options.safety_zones wholesale into AutogenInput.safety_zones",
+    "secondary": "dashboard/safety-build.js auto-created ${stem}_ESZone1 for every workbook area (AUTO_DEFAULT)",
+    "tertiary": "dashboard/fortna-plus.js area-change / bulkApplyArea pushed ${base}_ESZone1 into options.safety_zones",
+    "demo_fixture": "workspace/_reno_peek MSCRENO conveyors use ZoneN_ESZone1 as legitimate site names \u2014 must not leak across controllers via localStorage/options catalog"
+  },
+  "before_zones": [
+    "123456_ESZone1",
+    "ORNCCP5_ESZone1",
+    "Zone1_ESZone1",
+    "Zone2_ESZone1",
+    "Zone3_ESZone1",
+    "Zone4_ESZone1",
+    "Zone5_ESZone1",
+    "Zone6_ESZone1",
+    "Zone7_ESZone1",
+    "Zone8_ESZone1",
+    "Zone9_ESZone1"
+  ],
+  "after_zones": [
+    "ORNCCP5_ESZone1"
+  ],
+  "removed_zones": [
+    "123456_ESZone1",
+    "Zone1_ESZone1",
+    "Zone2_ESZone1",
+    "Zone3_ESZone1",
+    "Zone4_ESZone1",
+    "Zone5_ESZone1",
+    "Zone6_ESZone1",
+    "Zone7_ESZone1",
+    "Zone8_ESZone1",
+    "Zone9_ESZone1"
+  ],
+  "kept_zones": [
+    {
+      "source_id": "ORNCCP5_ESZone1",
+      "engineering_name": "ORNCCP5_ESZone1",
+      "provenance": "RUN_DISCOVERED",
+      "reason": "run_discovered_preserved"
+    }
+  ],
+  "suspicious_zones": [
+    {
+      "source_id": "123456_ESZone1",
+      "engineering_name": "123456_ESZone1",
+      "area": "123456",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "TEST_FIXTURE numeric stem area shell (engineer test area 123456) + AUTO_DEFAULT ${stem}_ESZone1"
+    },
+    {
+      "source_id": "Zone1_ESZone1",
+      "engineering_name": "Zone1_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    },
+    {
+      "source_id": "Zone2_ESZone1",
+      "engineering_name": "Zone2_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    },
+    {
+      "source_id": "Zone3_ESZone1",
+      "engineering_name": "Zone3_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    },
+    {
+      "source_id": "Zone4_ESZone1",
+      "engineering_name": "Zone4_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    },
+    {
+      "source_id": "Zone5_ESZone1",
+      "engineering_name": "Zone5_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    },
+    {
+      "source_id": "Zone6_ESZone1",
+      "engineering_name": "Zone6_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    },
+    {
+      "source_id": "Zone7_ESZone1",
+      "engineering_name": "Zone7_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    },
+    {
+      "source_id": "Zone8_ESZone1",
+      "engineering_name": "Zone8_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    },
+    {
+      "source_id": "Zone9_ESZone1",
+      "engineering_name": "Zone9_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted",
+      "origin_analysis": "AUTO_DEFAULT from fortna_workbook options.safety_zones Zone1_Area..Zone9_Area dropdown seeding + apply_workbook promoting catalog into AutogenInput.safety_zones"
+    }
+  ],
+  "classifications": [
+    {
+      "source_id": "123456_ESZone1",
+      "engineering_name": "123456_ESZone1",
+      "area": "123456",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "ORNCCP5_ESZone1",
+      "engineering_name": "ORNCCP5_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "RUN_DISCOVERED",
+      "engineerEdited": false,
+      "runDiscovered": true,
+      "members": 0,
+      "action": "keep",
+      "reason": "run_discovered_preserved"
+    },
+    {
+      "source_id": "Zone1_ESZone1",
+      "engineering_name": "Zone1_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "Zone2_ESZone1",
+      "engineering_name": "Zone2_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "Zone3_ESZone1",
+      "engineering_name": "Zone3_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "Zone4_ESZone1",
+      "engineering_name": "Zone4_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "Zone5_ESZone1",
+      "engineering_name": "Zone5_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "Zone6_ESZone1",
+      "engineering_name": "Zone6_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "Zone7_ESZone1",
+      "engineering_name": "Zone7_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "Zone8_ESZone1",
+      "engineering_name": "Zone8_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    },
+    {
+      "source_id": "Zone9_ESZone1",
+      "engineering_name": "Zone9_ESZone1",
+      "area": "ORNCCP5_Area",
+      "provenance": "TEST_FIXTURE",
+      "engineerEdited": false,
+      "runDiscovered": false,
+      "members": 0,
+      "action": "remove",
+      "reason": "test_fixture_or_ui_placeholder_not_persisted"
+    }
+  ],
+  "counts": {
+    "before": 11,
+    "after": 1,
+    "removed": 10
+  },
+  "rules": {
+    "PROVEN_RUN": "preserve/update",
+    "ENGINEER_CREATED": "preserve unless explicitly deleted",
+    "TEST_FIXTURE_AUTO_DEFAULT": "do not persist into production canonical",
+    "UNKNOWN_MEMBERSHIP": "REVIEW_REQUIRED fail-safe \u2014 never invent E-Stops/ESRs/MCRs",
+    "source_id": "immutable",
+    "engineering_name": "editable (Gate I rename)",
+    "idempotence": "Apply reconciles by source_id \u2014 no duplicates"
+  },
+  "run_discovered_vs_engineer_created": {
+    "run_discovered": [
+      "ORNCCP5_ESZone1"
+    ],
+    "engineer_created": [],
+    "legacy_canonical": [],
+    "test_fixture_removed": [
+      "123456_ESZone1",
+      "Zone1_ESZone1",
+      "Zone2_ESZone1",
+      "Zone3_ESZone1",
+      "Zone4_ESZone1",
+      "Zone5_ESZone1",
+      "Zone6_ESZone1",
+      "Zone7_ESZone1",
+      "Zone8_ESZone1",
+      "Zone9_ESZone1"
+    ],
+    "auto_default_removed": []
+  },
+  "fixes": [
+    "fortna_workbook.py: Zone1..Zone9 stay dropdown suggestions only; apply no longer promotes options.safety_zones catalog",
+    "fortna_safety_model.py: classify_zone_provenance + reconcile_safety_zones (Gate R)",
+    "safety-build.js: removed AUTO_DEFAULT _ESZone1 minting; UI shows meaningful zones only (Gate T)",
+    "fortna-plus.js: placeholder areas do not push production safety_zones catalog entries"
+  ],
+  "permanent_tests": [
+    "12 Safety RUN zone appears immediately",
+    "13 Safety rename preserves source_id",
+    "14 Repeated Apply does not duplicate Safety zones",
+    "15 Test/default Zone1..ZoneN do not leak into production",
+    "16 Engineer-created Safety zones survive reconciliation",
+    "17 Unknown Safety membership remains fail-safe"
+  ]
+}

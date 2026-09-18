@@ -260,7 +260,7 @@
       "primary": ["Conveyor.X_cord", "Conveyor.Y_cord", "Conveyor.Length", "Conveyor.Width", "Conveyor.Angle", "Conveyor.Type", "Conveyor.Inside_Radius"],
       "supporting": ["display_canvas_DERIVED", "ENGINEER_ASSIGNED_override"],
       "fallback": "deterministic_siteforge_layout",
-      "notes": "RUN Parts geometry PRIMARY for physical; display canvas secondary. Docs-only Gate C — no Transport geometry rewrite."
+      "notes": "RUN Parts geometry PRIMARY for physical; display canvas secondary. Implemented by fortna_geometry_authority.py + Transport Build geometryAuthorityMode. Fallback must not overwrite PROVEN_RUN."
     },
     {
       "fact": "startstop_jam_plc_architecture",

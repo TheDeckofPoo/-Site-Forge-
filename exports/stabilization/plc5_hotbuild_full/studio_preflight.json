@@ -1,0 +1,847 @@
+{
+  "generated_at": "2026-09-18T07:20:37.191756+00:00",
+  "path": "exports\\stabilization\\plc5_hotbuild_full\\ORNCCP5.L5X",
+  "sha256": "9be10c681eb09fc5f47e174026ac820916112caebbf99ef85eac1f9704a4738c",
+  "xml_parses": true,
+  "ok": false,
+  "studio_import_claimed": false,
+  "note": "Static precheck only \u2014 Curtis must import in Studio 5000",
+  "counts": {
+    "errors": 2,
+    "warnings": 0,
+    "info": 0,
+    "programs_with_main": 7,
+    "programs_missing_main": 0,
+    "tags": 946,
+    "duplicate_tags": 0,
+    "modules": 63,
+    "programs": 7,
+    "tasks": 6,
+    "datatypes": 211,
+    "controller_tags": 946
+  },
+  "programs_with_main": [
+    "ORNCCP5_Area_Slow",
+    "ORNCCP5_Area_Fast",
+    "ORNCCP5_Area_L1",
+    "ORNCCP5_Area_L2",
+    "Sys",
+    "Sorter_Track",
+    "IO_MAP"
+  ],
+  "structural": {
+    "controller": "ORNCCP5",
+    "programs_count": 7,
+    "tasks_count": 6,
+    "controller_tags_count": 946,
+    "datatypes_count": 211,
+    "modules_count": 63,
+    "sys": {
+      "present": true,
+      "status": "READY"
+    },
+    "system": {
+      "present": false,
+      "status": "MISSING"
+    },
+    "io_map": {
+      "present": true,
+      "status": "READY"
+    },
+    "transportation": {
+      "areas_included": [
+        "ORNCCP5_Area"
+      ],
+      "fast": [
+        "ORNCCP5_Area_Fast"
+      ],
+      "slow": [
+        "ORNCCP5_Area_Slow"
+      ],
+      "l1": [
+        "ORNCCP5_Area_L1"
+      ],
+      "l2": [
+        "ORNCCP5_Area_L2"
+      ],
+      "status": "READY"
+    },
+    "safety": {
+      "es_program": false,
+      "p01_safety_20ms": false,
+      "main_routine": false,
+      "safe_logic_count": 0,
+      "safe_pi_count": 0,
+      "unresolved_membership_count": 0,
+      "shell": false,
+      "status": "NOT_DETECTED",
+      "structure": "MISSING",
+      "membership": "NOT_DETECTED",
+      "commissioning_ready": false,
+      "detail": "SAFETY \u2014 NOT DETECTED"
+    }
+  },
+  "operand_validation": {
+    "operands_checked": 1871,
+    "invalid_count": 2,
+    "invalid": [
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "112",
+        "instruction": "OTE",
+        "operand": "P444_VFD.Flt.Overload",
+        "ok": false,
+        "kind": "NESTED_MEMBER_NOT_FOUND",
+        "failed_segment": "Overload",
+        "resolved_type": "PS_Fault",
+        "path_ok": [
+          "Flt"
+        ],
+        "available_members": [
+          "PS_Flt",
+          "PS_FltTmr",
+          "ZZZZZZZZZZPS_Fault1"
+        ],
+        "base_tag": "P444_VFD",
+        "datatype": "Motor_Starter_UDT",
+        "failed_member_segment": "Overload"
+      },
+      {
+        "program": "IO_MAP",
+        "routine": "CP_I",
+        "rung": "119",
+        "instruction": "OTE",
+        "operand": "P544_VFD.Flt.Overload",
+        "ok": false,
+        "kind": "NESTED_MEMBER_NOT_FOUND",
+        "failed_segment": "Overload",
+        "resolved_type": "PS_Fault",
+        "path_ok": [
+          "Flt"
+        ],
+        "available_members": [
+          "PS_Flt",
+          "PS_FltTmr",
+          "ZZZZZZZZZZPS_Fault1"
+        ],
+        "base_tag": "P544_VFD",
+        "datatype": "Motor_Starter_UDT",
+        "failed_member_segment": "Overload"
+      }
+    ],
+    "external_count": 770,
+    "external": [
+      {
+        "program": "Sorter_Track",
+        "routine": "Gridlock_Prevention",
+        "rung": "0",
+        "instruction": "XIC",
+        "operand": "S:FS",
+        "ok": true,
+        "kind": "SYSTEM_OPERAND_OK",
+        "base_tag": "S",
+        "external": true
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Scanner",
+        "rung": "1",
+        "instruction": "XIC",
+        "operand": "P504_SCN504_Token_Find.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "base_tag": "P504_SCN504_Token_Find",
+        "datatype": "TRK_SearchToken_VirtualLocation",
+        "external": true,
+        "note": "Sealed AOI members not expandable from L5X EncodedData"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Scanner",
+        "rung": "1",
+        "instruction": "OTU",
+        "operand": "P504_SCN504_Token_Find.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "base_tag": "P504_SCN504_Token_Find",
+        "datatype": "TRK_SearchToken_VirtualLocation",
+        "external": true,
+        "note": "Sealed AOI members not expandable from L5X EncodedData"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Scanner",
+        "rung": "2",
+        "instruction": "XIC",
+        "operand": "SCN504:I.ConnectionFaulted",
+        "ok": true,
+        "kind": "MODULE_BINDING_REQUIRED",
+        "base_tag": "SCN504",
+        "external": true,
+        "note": "Module SCN504 not in emitted Modules \u2014 engineer/hardware binding"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Scanner",
+        "rung": "7",
+        "instruction": "XIC",
+        "operand": "P504_WCS_Induct_MSG_Token_Find.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "base_tag": "P504_WCS_Induct_MSG_Token_Find",
+        "datatype": "TRK_SearchToken_VirtualLocation",
+        "external": true,
+        "note": "Sealed AOI members not expandable from L5X EncodedData"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Scanner",
+        "rung": "7",
+        "instruction": "OTU",
+        "operand": "P504_WCS_Induct_MSG_Token_Find.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "base_tag": "P504_WCS_Induct_MSG_Token_Find",
+        "datatype": "TRK_SearchToken_VirtualLocation",
+        "external": true,
+        "note": "Sealed AOI members not expandable from L5X EncodedData"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "1",
+        "instruction": "XIC",
+        "operand": "P506_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert1_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "1",
+        "instruction": "OTU",
+        "operand": "P506_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert1_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "4",
+        "instruction": "XIC",
+        "operand": "P506_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert2_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "4",
+        "instruction": "OTU",
+        "operand": "P506_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert2_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "7",
+        "instruction": "XIC",
+        "operand": "P506_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert3_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "7",
+        "instruction": "OTU",
+        "operand": "P506_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert3_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "10",
+        "instruction": "XIC",
+        "operand": "P506_Divert4_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert4_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "10",
+        "instruction": "OTU",
+        "operand": "P506_Divert4_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert4_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "13",
+        "instruction": "XIC",
+        "operand": "P506_Divert5_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert5_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "13",
+        "instruction": "OTU",
+        "operand": "P506_Divert5_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert5_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "16",
+        "instruction": "XIC",
+        "operand": "P506_Divert6_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert6_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "16",
+        "instruction": "OTU",
+        "operand": "P506_Divert6_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P506_Divert6_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "19",
+        "instruction": "XIC",
+        "operand": "P508_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert1_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "19",
+        "instruction": "OTU",
+        "operand": "P508_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert1_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "22",
+        "instruction": "XIC",
+        "operand": "P508_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert2_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "22",
+        "instruction": "OTU",
+        "operand": "P508_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert2_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "25",
+        "instruction": "XIC",
+        "operand": "P508_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert3_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "25",
+        "instruction": "OTU",
+        "operand": "P508_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert3_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "28",
+        "instruction": "XIC",
+        "operand": "P508_Divert4_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert4_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "28",
+        "instruction": "OTU",
+        "operand": "P508_Divert4_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert4_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "31",
+        "instruction": "XIC",
+        "operand": "P508_Divert5_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert5_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "31",
+        "instruction": "OTU",
+        "operand": "P508_Divert5_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert5_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "34",
+        "instruction": "XIC",
+        "operand": "P508_Divert6_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert6_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "34",
+        "instruction": "OTU",
+        "operand": "P508_Divert6_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P508_Divert6_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "37",
+        "instruction": "XIC",
+        "operand": "P509_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P509_Divert1_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "37",
+        "instruction": "OTU",
+        "operand": "P509_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P509_Divert1_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "40",
+        "instruction": "XIC",
+        "operand": "P510_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P510_Divert1_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "40",
+        "instruction": "OTU",
+        "operand": "P510_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P510_Divert1_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "43",
+        "instruction": "XIC",
+        "operand": "P510_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P510_Divert2_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "43",
+        "instruction": "OTU",
+        "operand": "P510_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P510_Divert2_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "46",
+        "instruction": "XIC",
+        "operand": "P510_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P510_Divert3_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Divert_Package",
+        "rung": "46",
+        "instruction": "OTU",
+        "operand": "P510_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "resolved_type": "TRK_SearchToken_VirtualLocation",
+        "path_ok": [
+          "Divert_PackageDetect",
+          "O_Token_Found_Ack"
+        ],
+        "external": true,
+        "note": "Sealed AOI type TRK_SearchToken_VirtualLocation members not expandable",
+        "base_tag": "P510_Divert3_AOI",
+        "datatype": "Track_Divert_AOI"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Lost_Package",
+        "rung": "0",
+        "instruction": "XIC",
+        "operand": "P504_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "base_tag": "P504_Exit_Trk_Lost_Package_Check",
+        "datatype": "TRK_SearchToken_VirtualLocation",
+        "external": true,
+        "note": "Sealed AOI members not expandable from L5X EncodedData"
+      },
+      {
+        "program": "Sorter_Track",
+        "routine": "Track_Lost_Package",
+        "rung": "0",
+        "instruction": "OTU",
+        "operand": "P504_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack",
+        "ok": true,
+        "kind": "UNKNOWN_EXTERNAL_DEFINITION",
+        "base_tag": "P504_Exit_Trk_Lost_Package_Check",
+        "datatype": "TRK_SearchToken_VirtualLocation",
+        "external": true,
+        "note": "Sealed AOI members not expandable from L5X EncodedData"
+      }
+    ],
+    "ok": false
+  },
+  "issues": [
+    {
+      "severity": "ERROR",
+      "kind": "invalid_member_specifier",
+      "message": "PLC OPERAND ERROR Program:IO_MAP Routine:CP_I Rung:112 OTE Operand:P444_VFD.Flt.Overload DataType:Motor_Starter_UDT Invalid segment:Overload",
+      "program": "IO_MAP",
+      "routine": "CP_I",
+      "rung": "112",
+      "instruction": "OTE",
+      "operand": "P444_VFD.Flt.Overload",
+      "base_tag": "P444_VFD",
+      "datatype": "Motor_Starter_UDT",
+      "failed_segment": "Overload",
+      "failed_member_segment": "Overload",
+      "operand_kind": "NESTED_MEMBER_NOT_FOUND"
+    },
+    {
+      "severity": "ERROR",
+      "kind": "invalid_member_specifier",
+      "message": "PLC OPERAND ERROR Program:IO_MAP Routine:CP_I Rung:119 OTE Operand:P544_VFD.Flt.Overload DataType:Motor_Starter_UDT Invalid segment:Overload",
+      "program": "IO_MAP",
+      "routine": "CP_I",
+      "rung": "119",
+      "instruction": "OTE",
+      "operand": "P544_VFD.Flt.Overload",
+      "base_tag": "P544_VFD",
+      "datatype": "Motor_Starter_UDT",
+      "failed_segment": "Overload",
+      "failed_member_segment": "Overload",
+      "operand_kind": "NESTED_MEMBER_NOT_FOUND"
+    }
+  ]
+}

@@ -1059,19 +1059,31 @@
   }
 
   /* ---------- Auto layout (presentation only) ---------- */
+  /**
+   * Deterministic topology fallback layout.
+   * Gate B: never silently overwrite PROVEN_RUN / ENGINEER_ASSIGNED / physical RUN XY.
+   */
   function autoLayoutNodes(nodes, area) {
-    const { outboundWire, inboundWires } = A();
+    const { outboundWire, mayApplyFallbackLayout } = A();
     if (!nodes.length) return;
-    const idSet = new Set(nodes.map((n) => n.id));
-    const byId = Object.fromEntries(nodes.map((n) => [n.id, n]));
+    const movable = nodes.filter((n) => {
+      if (typeof mayApplyFallbackLayout === 'function') return mayApplyFallbackLayout(n);
+      const p = String(n?.geometry_provenance || n?.provenance?.geometry_authority || '').toUpperCase();
+      if (p === 'PROVEN_RUN' || p === 'ENGINEER_ASSIGNED' || p === 'IMPORTED') return false;
+      if (n?.physical && n.sourceX != null && n.sourceY != null) return false;
+      return true;
+    });
+    if (!movable.length) return;
+    const idSet = new Set(movable.map((n) => n.id));
+    const byId = Object.fromEntries(movable.map((n) => [n.id, n]));
     // longest-path layering
     const outs = {};
     const ins = {};
-    nodes.forEach((n) => {
+    movable.forEach((n) => {
       outs[n.id] = [];
       ins[n.id] = [];
     });
-    nodes.forEach((n) => {
+    movable.forEach((n) => {
       const w = outboundWire(area, n.id);
       if (w && idSet.has(w.to)) {
         outs[n.id].push(w.to);
@@ -1090,9 +1102,9 @@
       layer[id] = d;
       return d;
     }
-    nodes.forEach((n) => depth(n.id));
+    movable.forEach((n) => depth(n.id));
     const byLayer = {};
-    nodes.forEach((n) => {
+    movable.forEach((n) => {
       const L = layer[n.id] || 0;
       (byLayer[L] || (byLayer[L] = [])).push(n);
     });
@@ -1101,7 +1113,6 @@
       .sort((a, b) => a - b)
       .forEach((L) => {
         const col = byLayer[L];
-        // Sort: nodes with more inbound near center; stable by tag
         col.sort((a, b) => {
           const ia = (ins[a.id] || []).length;
           const ib = (ins[b.id] || []).length;
@@ -1115,14 +1126,11 @@
           n.x = 60 + L * LAYOUT_DX;
           const mid = (total - 1) / 2;
           n.y = 100 + (i - mid) * LAYOUT_DY;
-          // Separated inbound branches into a merge: offset slightly
-          if ((ins[n.id] || []).length === 0 && (outs[n.id] || []).length) {
-            /* source */
-          }
+          n.geometry_provenance = n.geometry_provenance || 'FALLBACK_LAYOUT';
         });
       });
     // Extra: for merge discharges, pull inbound branches above/below
-    nodes.forEach((n) => {
+    movable.forEach((n) => {
       const preds = (ins[n.id] || []).map((id) => byId[id]).filter(Boolean);
       if (preds.length >= 2) {
         preds
@@ -1138,31 +1146,46 @@
   }
 
   function autoLayoutArea() {
-    const { activeArea, isConv, save, render, status } = A();
+    const { activeArea, isConv, save, render, status, mayApplyFallbackLayout } = A();
     const area = activeArea();
     if (!area) return;
-    const nodes = (area.nodes || []).filter((n) => isConv(n.kind));
-    if (!nodes.length) return;
+    const all = (area.nodes || []).filter((n) => isConv(n.kind));
+    const nodes = all.filter((n) => (typeof mayApplyFallbackLayout === 'function' ? mayApplyFallbackLayout(n) : true));
+    const skipped = all.length - nodes.length;
+    if (!nodes.length) {
+      status(`Auto Layout skipped — ${skipped} PROVEN/ENGINEER node(s) protected (fallback does not overwrite)`);
+      return;
+    }
     pushHistory('Auto Layout Area');
     autoLayoutNodes(nodes, area);
     save();
     render();
-    status(`Auto-laid out ${nodes.length} conveyor(s) (positions only)`);
+    status(
+      `Auto-laid out ${nodes.length} conveyor(s)`
+        + (skipped ? ` · ${skipped} PROVEN/ENGINEER protected` : '')
+        + ' (positions only)'
+    );
   }
 
   function autoLayoutSelection() {
-    const { activeArea, save, render, status } = A();
+    const { activeArea, save, render, status, mayApplyFallbackLayout } = A();
     const area = activeArea();
-    const nodes = selectedConvNodes();
-    if (!nodes.length) {
+    const selected = selectedConvNodes();
+    if (!selected.length) {
       autoLayoutArea();
+      return;
+    }
+    const nodes = selected.filter((n) => (typeof mayApplyFallbackLayout === 'function' ? mayApplyFallbackLayout(n) : true));
+    const skipped = selected.length - nodes.length;
+    if (!nodes.length) {
+      status(`Auto Layout selection skipped — ${skipped} PROVEN/ENGINEER protected`);
       return;
     }
     pushHistory('Auto Layout Selection');
     autoLayoutNodes(nodes, area);
     save();
     render();
-    status(`Auto-laid out selection (${nodes.length})`);
+    status(`Auto-laid out selection (${nodes.length})` + (skipped ? ` · ${skipped} protected` : ''));
   }
 
   /* ---------- Inventory palette ---------- */
@@ -2120,7 +2143,10 @@
       }
     });
     $('tb-fit')?.addEventListener('click', () => {
-      try { A().fitVisible?.(); } catch (err) { A().status(`Fit: ${err?.message || err}`); }
+      try { (A().fitSystem || A().fitVisible)?.(); } catch (err) { A().status(`Fit System: ${err?.message || err}`); }
+    });
+    $('tb-fit-system')?.addEventListener('click', () => {
+      try { (A().fitSystem || A().fitVisible)?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Fit System: ${err?.message || err}`); }
     });
     $('tb-fit-visible')?.addEventListener('click', () => {
       try { A().fitVisible?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Fit Visible: ${err?.message || err}`); }
@@ -2135,11 +2161,15 @@
       try { A().fitArea?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Fit Area: ${err?.message || err}`); }
     });
     $('tb-fit-selection')?.addEventListener('click', () => {
-      try { A().fitSelection?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Frame Selection: ${err?.message || err}`); }
+      try { (A().centerSelected || A().fitSelection)?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Center Selected: ${err?.message || err}`); }
+    });
+    $('tb-center-selected')?.addEventListener('click', () => {
+      try { (A().centerSelected || A().fitSelection)?.(); document.getElementById('tb-fit-menu')?.removeAttribute('open'); } catch (err) { A().status(`Center Selected: ${err?.message || err}`); }
     });
     const reset100 = () => {
       try {
-        if (typeof A().resetView100 === 'function') A().resetView100();
+        if (typeof A().homeView === 'function') A().homeView();
+        else if (typeof A().resetView100 === 'function') A().resetView100();
         else {
           const { tb, applyViewportZoom, render, status } = A();
           if (!tb.view) tb.view = { zoom: 1, canvasScale: null, mode: 'site' };
@@ -2148,15 +2178,30 @@
           const c = $('tb-canvas');
           if (c) { c.scrollLeft = 0; c.scrollTop = 0; }
           render?.();
-          status?.('Reset View · 100% (presentation only)');
+          status?.('Home · 100% (presentation only)');
         }
         document.getElementById('tb-fit-menu')?.removeAttribute('open');
       } catch (err) {
-        A().status(`Reset View: ${err?.message || err}`);
+        A().status(`Home/Reset View: ${err?.message || err}`);
       }
     };
+    $('tb-home')?.addEventListener('click', reset100);
     $('tb-zoom-100')?.addEventListener('click', reset100);
     $('tb-zoom-reset')?.addEventListener('click', reset100);
+    $('tb-geometry-mode')?.addEventListener('change', (ev) => {
+      try {
+        const mode = ev?.target?.value || 'run';
+        if (typeof A().setGeometryAuthorityMode === 'function') A().setGeometryAuthorityMode(mode);
+        else {
+          const { tb, render, status } = A();
+          tb.geometryAuthorityMode = mode;
+          render?.();
+          status?.(`Geometry mode: ${mode}`);
+        }
+      } catch (err) {
+        A().status(`Geometry mode: ${err?.message || err}`);
+      }
+    });
     $('tb-zoom-in')?.addEventListener('click', () => {
       try {
         if (typeof A().zoomByFactor === 'function') A().zoomByFactor(1.15);

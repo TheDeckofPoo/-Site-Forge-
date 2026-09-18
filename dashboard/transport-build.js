@@ -205,6 +205,11 @@
     physicalLayout: false,
     // Clean schematic is the normal view. Geometry debug is Advanced-only.
     viewMode: 'schematic', // schematic | geom-debug
+    // Gate H — Geometry display authority mode (default looks correct for engineers)
+    //   run      = RUN/Physical proven geometry
+    //   override = show engineer overrides when present
+    //   diagnostic = anchors/entry/exit/provenance/mismatches
+    geometryAuthorityMode: 'run', // run | override | diagnostic
     laneSeparate: true, // presentation-only offsets for stacked bodies
     // PL-1: after initial layout, freeze presentation offsets so Area moves
     // redraw without musical-chair re-layout of unrelated conveyors.
@@ -2569,59 +2574,73 @@
     const a = area || activeArea();
     const tag = String(n.conveyorTag || n.label || n.id || '').trim();
     const offs = a ? (computePresentationOffsets(a.nodes || [], a) || {}) : {};
-    const off = offs[n.id] || { dx: 0, dy: 0 };
+    const xf = getDisplayTransform(n, offs);
     const entry = n.entryCanvas ? { ...n.entryCanvas } : null;
     const exit = n.exitCanvas ? { ...n.exitCanvas } : null;
-    const mid = entry && exit
-      ? { x: (entry.x + exit.x) / 2, y: (entry.y + exit.y) / 2 }
-      : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
     const rendered = {
       anchors: {
-        entry: entry ? applyPresOffset(entry, off) : null,
-        exit: exit ? applyPresOffset(exit, off) : null,
+        entry: xf.body.entry,
+        exit: xf.body.exit,
       },
-      centers: applyPresOffset(mid, off),
-      entry: entry ? applyPresOffset(entry, off) : null,
-      exit: exit ? applyPresOffset(exit, off) : null,
-      presentation_offset: off,
+      centers: xf.body.center,
+      entry: xf.body.entry,
+      exit: xf.body.exit,
+      source_anchor: n.source_anchor || null,
+      render_anchor: xf.body.anchor,
+      body_center: xf.body.center,
+      entry_endpoint: xf.body.entry,
+      exit_endpoint: xf.body.exit,
+      presentation_offset: xf.offset,
+      hit_target: xf.hit_target,
+      context_menu_target: xf.context_menu_target,
+      same_transform: true,
     };
     const ups = a ? getUpstreamTags(a, n.id) : [];
     const path = displayPathCanvasForNode(n);
     const evid = (CURVE_SYMBOL && CURVE_SYMBOL.EVIDENCE) || {};
+    const srcFields = (n.source_geometry && n.source_geometry.fields) || {};
     return {
       kind: 'TransportGeometryDiagnostic',
-      version: 1,
+      version: 2,
       node_id: n.id || '',
       conveyor_tag: tag,
       run: {
         X: n.sourceX != null ? n.sourceX : (n.x ?? null),
         Y: n.sourceY != null ? n.sourceY : (n.y ?? null),
-        X_cord: n.sourceX ?? n.x ?? null,
-        Y_cord: n.sourceY ?? n.y ?? null,
-        Length: n.length ?? n.sourceLength ?? null,
-        Width: n.width ?? n.sourceWidth ?? null,
-        Angle: n.sourceAngle ?? n.rotation ?? n.angle ?? null,
-        Type: n.equipmentType || n.renderKind || n.kind || null,
-        Inside_Radius: n.insideRadius ?? n.Inside_Radius ?? null,
+        X_cord: srcFields.X_cord ?? n.sourceX ?? n.x ?? null,
+        Y_cord: srcFields.Y_cord ?? n.sourceY ?? n.y ?? null,
+        Length: srcFields.Length ?? n.length ?? n.sourceLength ?? null,
+        Width: srcFields.Width ?? n.width ?? n.sourceWidth ?? null,
+        Angle: srcFields.Angle ?? n.sourceAngle ?? n.rotation ?? n.angle ?? null,
+        Type: srcFields.Type || n.equipmentType || n.renderKind || n.kind || null,
+        Inside_Radius: srcFields.Inside_Radius ?? n.insideRadius ?? n.Inside_Radius ?? null,
       },
       rendered,
       hitbox: {
         schematic_hit_width_px: SCHEMATIC_HIT_WIDTH,
         visible_stroke_note: 'hit stroke is invisible; belt stroke unchanged',
+        hit_equals_body: true,
       },
       upstream: ups,
       downstream: n.terminal ? 'END' : (String(n.downstream || '').trim() || null),
       provenance: {
         geometry: (n.provenance && n.provenance.geometry) || (n.physical ? 'IMPORTED' : 'MANUAL'),
+        geometry_authority: n.geometry_provenance
+          || (n.provenance && n.provenance.geometry_authority)
+          || (n.physical ? 'PROVEN_RUN' : 'UNKNOWN'),
+        override_provenance: n.override_provenance || null,
+        source_geometry_mutated: !!(n.override_provenance && n.override_provenance.source_geometry_mutated),
         area: (n.provenance && n.provenance.area) || null,
         safetyZone: (n.provenance && n.provenance.safetyZone) || null,
         evidence: evid,
         pathCanvas_cmds: Array.isArray(path) ? path.length : 0,
         physical: !!n.physical,
       },
+      geometry_flags: n.geometryFlags || [],
       // Diagnostic-only notes (never drive layout)
       notes: [
         'Gate K diagnostic — report/inspector only; production geometry layout unchanged',
+        'Authority: ENGINEER_ASSIGNED > PROVEN_RUN > DERIVED_TOPOLOGY > FALLBACK_LAYOUT > UNKNOWN',
       ],
     };
   }
@@ -2801,13 +2820,10 @@
     let best = null;
     let bestDist = Infinity;
     nodes.forEach((n) => {
-      const off = offsets[n.id] || { dx: 0, dy: 0 };
+      // Gate G — hit target uses the SAME authoritative display transform as draw/context
+      const xf = getDisplayTransform(n, offsets);
       let d = distanceToDisplayPath(pt, n, offsets);
-      // Universal contract: identity label / body midpoint is always a hit target
-      const mid0 = n.entryCanvas && n.exitCanvas
-        ? { x: (n.entryCanvas.x + n.exitCanvas.x) / 2, y: (n.entryCanvas.y + n.exitCanvas.y) / 2 }
-        : { x: Number(n.x) || 0, y: Number(n.y) || 0 };
-      const mid = applyPresOffset(mid0, off);
+      const mid = xf.hit_target.center || xf.label;
       const dMid = Math.hypot(pt.x - mid.x, pt.y - mid.y);
       if (dMid <= labelHitR) d = Math.min(d, dMid);
       // Label positions from the same offsets (recompute, don't require prior draw)
@@ -3225,6 +3241,103 @@
     if (!pt) return pt;
     const o = off || { dx: 0, dy: 0 };
     return { x: pt.x + (o.dx || 0), y: pt.y + (o.dy || 0) };
+  }
+
+  /**
+   * Gate B/G — ONE authoritative display transform for body, label, selection,
+   * hover, right-click, hit testing, context menu, and debug endpoints.
+   * Presentation offsets only; never mutates source_geometry / sourceX/Y.
+   */
+  function getDisplayTransform(n, offsets) {
+    const off = (offsets && n && offsets[n.id]) || {
+      dx: Number(n?.display_dx) || 0,
+      dy: Number(n?.display_dy) || 0,
+    };
+    const useOverride = tb.geometryAuthorityMode === 'override'
+      && n?.engineerGeometry
+      && (n.engineerGeometry.entry_endpoint || n.engineerGeometry.entryCanvas);
+    const eng = useOverride ? n.engineerGeometry : null;
+    const entry0 = eng?.entry_endpoint || eng?.entryCanvas || n?.entryCanvas || null;
+    const exit0 = eng?.exit_endpoint || eng?.exitCanvas || n?.exitCanvas || null;
+    const mid0 = entry0 && exit0
+      ? { x: (entry0.x + exit0.x) / 2, y: (entry0.y + exit0.y) / 2 }
+      : (n?.body_center || { x: Number(n?.x) || 0, y: Number(n?.y) || 0 });
+    const entry = entry0 ? applyPresOffset(entry0, off) : null;
+    const exit = exit0 ? applyPresOffset(exit0, off) : null;
+    const center = applyPresOffset(mid0, off);
+    const anchor0 = n?.render_anchor || n?.source_anchor || entry0 || mid0;
+    const anchor = anchor0 ? applyPresOffset(anchor0, off) : center;
+    const angle = eng?.angle != null
+      ? eng.angle
+      : (n?.sourceAngle ?? n?.rotation ?? n?.angle ?? null);
+    return {
+      body: { entry, exit, center, anchor, angle, length: n?.length, width: n?.width },
+      label: { x: center.x, y: center.y },
+      hit_target: { center, entry, exit, angle },
+      context_menu_target: { center, entry, exit },
+      selection: { center },
+      hover: { center },
+      debug_endpoints: { entry, exit, anchor, center },
+      offset: { dx: Number(off.dx) || 0, dy: Number(off.dy) || 0 },
+      geometry_provenance: n?.geometry_provenance
+        || (n?.provenance && n.provenance.geometry_authority)
+        || (n?.physical ? 'PROVEN_RUN' : 'UNKNOWN'),
+      same_transform: true,
+    };
+  }
+
+  /**
+   * Gate B — apply engineer geometry override without mutating source geometry.
+   * Persists on n.engineerGeometry; sourceX/Y/source_geometry stay intact.
+   */
+  function applyEngineerGeometryOverride(n, override) {
+    if (!n || !override) return n;
+    if (!n.source_geometry) {
+      n.source_geometry = {
+        fields: {
+          X_cord: n.sourceX ?? null,
+          Y_cord: n.sourceY ?? null,
+          Length: n.length ?? null,
+          Width: n.width ?? null,
+          Angle: n.sourceAngle ?? null,
+          Type: n.equipmentType || null,
+          Inside_Radius: n.insideRadius ?? null,
+        },
+        provenance: n.physical ? 'PROVEN_RUN' : 'UNKNOWN',
+      };
+    }
+    n.engineerGeometry = {
+      ...(n.engineerGeometry || {}),
+      ...override,
+      applied_at: new Date().toISOString(),
+    };
+    n.override_provenance = {
+      authority: 'ENGINEER_ASSIGNED',
+      source_geometry_mutated: false,
+      fields: Object.keys(override || {}),
+    };
+    n.geometry_provenance = 'ENGINEER_ASSIGNED';
+    if (!n.provenance) n.provenance = {};
+    n.provenance.geometry_authority = 'ENGINEER_ASSIGNED';
+    // Effective canvas fields for display — sourceX/Y untouched
+    if (override.entry_endpoint || override.entryCanvas) {
+      n.entryCanvas = { ...(override.entry_endpoint || override.entryCanvas) };
+    }
+    if (override.exit_endpoint || override.exitCanvas) {
+      n.exitCanvas = { ...(override.exit_endpoint || override.exitCanvas) };
+    }
+    if (override.angle != null) n.rotation = Number(override.angle);
+    if (override.x != null) n.x = Number(override.x);
+    if (override.y != null) n.y = Number(override.y);
+    return n;
+  }
+
+  /** Guard: never let deterministic/topology fallback overwrite PROVEN geometry. */
+  function mayApplyFallbackLayout(n) {
+    const p = String(n?.geometry_provenance || n?.provenance?.geometry_authority || '').toUpperCase();
+    if (p === 'PROVEN_RUN' || p === 'ENGINEER_ASSIGNED' || p === 'IMPORTED') return false;
+    if (n?.physical && (n.sourceX != null && n.sourceY != null)) return false;
+    return true;
   }
 
   function offsetPathD(pathCanvas, off) {
@@ -3956,6 +4069,39 @@
     drawSchematic(area);
     drawWires();
     status(`Frame Selection · ${nodes.length} · zoom ${((tb.view.zoom || 1) * 100).toFixed(0)}%`);
+  }
+
+  /** Gate H — Fit System (primary connected plant). */
+  function fitSystem() {
+    return fitVisible();
+  }
+
+  /** Gate H — Center Selected (alias of Frame Selection). */
+  function centerSelected() {
+    return fitSelection();
+  }
+
+  /** Gate H — Home: reset zoom/pan to a stable origin view. */
+  function homeView() {
+    return resetView100();
+  }
+
+  /** Gate H — set geometry authority display mode. */
+  function setGeometryAuthorityMode(mode) {
+    const m = String(mode || 'run').toLowerCase();
+    tb.geometryAuthorityMode = (m === 'override' || m === 'diagnostic' || m === 'run') ? m : 'run';
+    if (tb.geometryAuthorityMode === 'diagnostic') {
+      tb.viewMode = 'geom-debug';
+      if (!tb.layers) tb.layers = {};
+      tb.layers.physical = true;
+    } else if (tb.viewMode === 'geom-debug' && m === 'run') {
+      tb.viewMode = 'schematic';
+      if (tb.layers) tb.layers.physical = false;
+    }
+    try { render(); } catch (_) { /* ignore */ }
+    status(`Geometry mode: ${tb.geometryAuthorityMode === 'run' ? 'RUN/Physical'
+      : (tb.geometryAuthorityMode === 'override' ? 'Engineering Override' : 'Diagnostic')}`);
+    return tb.geometryAuthorityMode;
   }
 
   function render() {
@@ -6160,6 +6306,13 @@
     fitVisible,
     fitAll,
     fitSelection,
+    fitSystem,
+    centerSelected,
+    homeView,
+    setGeometryAuthorityMode,
+    getDisplayTransform,
+    applyEngineerGeometryOverride,
+    mayApplyFallbackLayout,
     fitViewToNodes,
     applyViewportZoom,
     viewportZoomLimits,
