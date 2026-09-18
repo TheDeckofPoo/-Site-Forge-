@@ -7833,6 +7833,9 @@ def generate(
         "include_sys": bool(getattr(inp, "include_sys", True)),
         "include_io_map_gold": bool(getattr(inp, "include_io_map_gold", False)),
         "merges_2to1": list(getattr(inp, "merges_2to1", None) or []),
+        "safety_build": dict(getattr(inp, "safety_build", None) or {}),
+        "safety_zone_members": list(getattr(inp, "safety_zone_members", None) or []),
+        "omit_unresolved_safety": bool(getattr(inp, "omit_unresolved_safety", False)),
         "engine": "fortna_autogen.py (Python — RUN/tar.gz primary; Excel gold optional)",
     }
     (out / "autogen_input.json").write_text(json.dumps(snap, indent=2), encoding="utf-8")

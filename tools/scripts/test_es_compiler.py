@@ -147,6 +147,38 @@ class TestEsCompiler(unittest.TestCase):
         self.assertIn("XIC(Shipping_ESZone1_ES_PI.O_Tripped)OTE(Shipping_ESZone1.PI.Tripped);", xml)
         print("  [PASS] Main_Routine JSRs + SIL1 + PI20 + mappings")
 
+    def test_proven_run_membership_emits_safe_logic_pi(self) -> None:
+        """GATE 5 — PROVEN_RUN / ENGINEER_ASSIGNED membership → real Safe_Logic/Safe_PI."""
+        eng = [
+            {
+                "name": "ORINDYAC6_ESZone1",
+                "area": "ORINDYAC6_Area",
+                "conveyors": ["P600", "P540"],
+                "members": ["CP6_MCR1", "ES600", "ES540"],
+                "membersOrigin": "PROVEN_RUN",
+            }
+        ]
+        irs = build_safety_zone_irs(engineer_zones=eng, default_area="ORINDYAC6_Area")
+        self.assertEqual(irs[0].members, ["CP6_MCR1", "ES600", "ES540"])
+        pack = emit_es_program(
+            irs,
+            _rung_xml=_rung_xml,
+            routine=routine,
+            extract_tag_block=extract_tag_block,
+            library_text="",
+        )
+        self.assertIsNotNone(pack)
+        self.assertFalse(pack.get("shell"))
+        xml = pack["program_xml"]
+        self.assertIn("JSR(ORINDYAC6_ESZone1_Safe_Logic,0);", xml)
+        self.assertIn("JSR(ORINDYAC6_ESZone1_Safe_PI,0);", xml)
+        self.assertIn("ES_SIL1_Cat1(ES600_AOI,ES600,ORINDYAC6_Area,", xml)
+        self.assertIn("ES_PI20(ORINDYAC6_ESZone1_ES_PI,ORINDYAC6_ESZone1,", xml)
+        # Cookie-cutter: no decorative leading NOP in member routines
+        self.assertNotIn("Safe_Logic — ES_SIL1_Cat1 per member", xml)
+        self.assertEqual(xml.count("NOP();"), 0)
+        print("  [PASS] PROVEN_RUN membership emits Safe_Logic/Safe_PI (no NOP shell)")
+
     def test_multi_aggregator_when_over_20(self) -> None:
         members = [f"ES{i:03d}" for i in range(1, 25)]  # 24 devices
         ir = SafetyZoneIR(name="Big_ESZone1", area="Big_Area", members=members)

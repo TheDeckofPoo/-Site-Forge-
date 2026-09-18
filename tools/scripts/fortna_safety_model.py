@@ -106,11 +106,19 @@ def classify_zone_provenance(
     if any(_CORRUPT_ZONE_RE.search(k) for k in keys if k):
         return PROVENANCE_TEST_FIXTURE
 
+    # GATE 4 — honor persisted provenance/origin so Apply/reopen cannot demote
+    # RUN shells to AUTO_DEFAULT when run_zone_ids is empty.
+    persisted = str(zone.get("provenance") or zone.get("origin") or "").strip()
+    if persisted == PROVENANCE_RUN_DISCOVERED:
+        if is_placeholder_or_test_zone_name(sid) or is_placeholder_or_test_zone_name(eng):
+            return PROVENANCE_TEST_FIXTURE
+        return PROVENANCE_RUN_DISCOVERED
+
     engineer = bool(zone.get("engineerEdited")) or str(
         zone.get("membersOrigin") or zone.get("areaOrigin") or ""
-    ).upper() in {"ENGINEER_ASSIGNED", "ENGINEER"}
+    ).upper() in {"ENGINEER_ASSIGNED", "ENGINEER"} or persisted == PROVENANCE_ENGINEER_CREATED
     # Explicit engineer-created flag or non-empty engineer membership
-    if zone.get("provenance") == PROVENANCE_ENGINEER_CREATED or (
+    if persisted == PROVENANCE_ENGINEER_CREATED or (
         engineer and (zone.get("members") or zone.get("createdBy") == "engineer")
     ):
         # Still flag pure test-name patterns for documentation, but engineer wins keep
@@ -772,6 +780,13 @@ def build_safety_model(
                 "area": ez.get("area") or ez.get("areaRef") or "",
                 "conveyors": ez.get("conveyors") or ez.get("conveyorRefs") or [],
                 "members": ez.get("members") or [],
+                # GATE 4 — carry provenance so reopen seeds are not all RUN_DISCOVERED
+                "runDiscovered": bool(ez.get("runDiscovered")),
+                "engineerEdited": bool(ez.get("engineerEdited")),
+                "createdBy": ez.get("createdBy"),
+                "provenance": ez.get("provenance"),
+                "origin": ez.get("origin"),
+                "membersOrigin": ez.get("membersOrigin"),
             }
         )
 
@@ -863,11 +878,8 @@ def build_safety_model(
             "suggestions": [],
             "engineerEdited": False,
             "status": "UNRESOLVED",
-            # Gate R — only true RUN/transport seeds; placeholders are not discovered
-            "runDiscovered": (
-                not is_placeholder_or_test_zone_name(ir.name)
-                and bool(ir.name)
-            ),
+            # GATE 4 — runDiscovered only for true RUN/transport seeds, never every IR.
+            "runDiscovered": False,
         }
         # Match engineer overlay by source_id first. Display-name match only when
         # engineer source_id is absent or identical — never let a different
@@ -884,6 +896,43 @@ def build_safety_model(
                 if str(ez.get("engineering_name") or ez.get("name") or "").strip() == ir.name:
                     eng_hit = ez
                     break
+        # Transport / RUN seed flags (before engineer overlay may rename display)
+        seed_hit = next(
+            (
+                z
+                for z in seed_zones
+                if ir.name
+                in {
+                    str(z.get("source_id") or "").strip(),
+                    str(z.get("name") or "").strip(),
+                    str(z.get("engineering_name") or "").strip(),
+                }
+            ),
+            None,
+        )
+        eng_authored_seed = bool(
+            (seed_hit and (
+                seed_hit.get("engineerEdited")
+                or seed_hit.get("createdBy") == "engineer"
+                or str(seed_hit.get("provenance") or "") == PROVENANCE_ENGINEER_CREATED
+            ))
+            or (eng_hit and (
+                eng_hit.get("engineerEdited")
+                or eng_hit.get("createdBy") == "engineer"
+                or str(eng_hit.get("provenance") or "") == PROVENANCE_ENGINEER_CREATED
+            ))
+        )
+        if seed_hit and (
+            seed_hit.get("runDiscovered")
+            or str(seed_hit.get("provenance") or "") == PROVENANCE_RUN_DISCOVERED
+            or str(seed_hit.get("origin") or "") == PROVENANCE_RUN_DISCOVERED
+        ):
+            auto["runDiscovered"] = True
+            auto["provenance"] = PROVENANCE_RUN_DISCOVERED
+        elif seed_hit and not is_placeholder_or_test_zone_name(ir.name) and not eng_authored_seed:
+            # Transport conveyor.safety_zone seed without engineer authorship
+            auto["runDiscovered"] = True
+            auto["provenance"] = PROVENANCE_RUN_DISCOVERED
         merged = _merge_engineer_zone(auto, eng_hit)
         merged["suggestions"] = suggest_devices_for_zone(merged, devices)
         # Attach physical IO refs for assigned members
@@ -894,8 +943,24 @@ def build_safety_model(
             if d and d.get("physicalIoRef"):
                 phys.append({"device": m, **d["physicalIoRef"]})
         merged["physicalIORefs"] = phys
-        if eng_hit and eng_hit.get("runDiscovered"):
+        # GATE 4 — preserve RUN discovery across engineer overlay / reopen payload
+        if auto.get("runDiscovered") or (
+            eng_hit
+            and (
+                eng_hit.get("runDiscovered")
+                or str(eng_hit.get("provenance") or "") == PROVENANCE_RUN_DISCOVERED
+                or str(eng_hit.get("origin") or "") == PROVENANCE_RUN_DISCOVERED
+            )
+        ):
             merged["runDiscovered"] = True
+        if eng_hit and (
+            eng_hit.get("createdBy") == "engineer"
+            or str(eng_hit.get("provenance") or "") == PROVENANCE_ENGINEER_CREATED
+            or str(eng_hit.get("origin") or "") == PROVENANCE_ENGINEER_CREATED
+        ):
+            merged.setdefault("createdBy", eng_hit.get("createdBy") or "engineer")
+            if not merged.get("runDiscovered"):
+                merged["provenance"] = PROVENANCE_ENGINEER_CREATED
         if is_placeholder_or_test_zone_name(str(merged.get("source_id") or merged.get("name") or "")):
             if not (eng_hit and eng_hit.get("engineerEdited")):
                 merged["runDiscovered"] = False
@@ -1157,8 +1222,10 @@ def safety_build_workbook_payload(model: dict[str, Any]) -> dict[str, Any]:
                 "status": z.get("status"),
                 "fields": z.get("fields") or {},
                 "engineerEdited": bool(z.get("engineerEdited")),
+                "createdBy": z.get("createdBy"),
                 "runDiscovered": bool(z.get("runDiscovered")),
-                "provenance": z.get("provenance") or PROVENANCE_UNKNOWN,
+                "provenance": z.get("provenance") or z.get("origin") or PROVENANCE_UNKNOWN,
+                "origin": z.get("origin") or z.get("provenance") or PROVENANCE_UNKNOWN,
             }
         )
     # Preserve full device records (zone ref / status / evidence / provenance)

@@ -192,10 +192,21 @@
     const convRefs = ctx?.convRefs || new Set();
     if (!sid && !disp) return PROVENANCE.UNKNOWN;
     if (isCorruptZoneName(sid) || isCorruptZoneName(disp)) return PROVENANCE.TEST_FIXTURE;
+    // GATE 4 — honor persisted provenance/origin from Apply so reopen cannot
+    // demote RUN shells to AUTO_DEFAULT when AS.runSafetyZones is empty.
+    if (z.provenance === PROVENANCE.RUN_DISCOVERED || z.origin === PROVENANCE.RUN_DISCOVERED) {
+      if (isPlaceholderOrTestZoneName(sid) || isPlaceholderOrTestZoneName(disp)) {
+        return PROVENANCE.TEST_FIXTURE;
+      }
+      return PROVENANCE.RUN_DISCOVERED;
+    }
     const engineer = !!(z.engineerEdited
       || String(z.membersOrigin || '').toUpperCase() === 'ENGINEER_ASSIGNED'
-      || z.createdBy === 'engineer');
-    if (engineer && ((z.members || []).length || z.createdBy === 'engineer' || z.engineerEdited)) {
+      || z.createdBy === 'engineer'
+      || z.provenance === PROVENANCE.ENGINEER_CREATED
+      || z.origin === PROVENANCE.ENGINEER_CREATED);
+    if (engineer && ((z.members || []).length || z.createdBy === 'engineer' || z.engineerEdited
+      || z.provenance === PROVENANCE.ENGINEER_CREATED)) {
       if (isPlaceholderOrTestZoneName(sid) || isPlaceholderOrTestZoneName(disp)) {
         return engineer ? PROVENANCE.ENGINEER_CREATED : PROVENANCE.TEST_FIXTURE;
       }
@@ -397,6 +408,18 @@
         status: 'REVIEW_REQUIRED',
         fields: {},
       };
+      // GATE 4 — restore persisted RUN/engineer identity on Apply/reopen.
+      // Without this, runDiscovered/provenance were dropped and RUN shells were
+      // reclassified AUTO_DEFAULT then deleted, leaving only engineer zones.
+      if (ez.runDiscovered || ez.provenance === PROVENANCE.RUN_DISCOVERED
+        || ez.origin === PROVENANCE.RUN_DISCOVERED) {
+        cur.runDiscovered = true;
+      }
+      if (ez.provenance) cur.provenance = ez.provenance;
+      if (ez.origin) cur.origin = ez.origin;
+      if (ez.createdBy) cur.createdBy = ez.createdBy;
+      if (ez.engineerEdited) cur.engineerEdited = true;
+      if (ez.membersOrigin && !cur.membersOrigin) cur.membersOrigin = ez.membersOrigin;
       // Gate I / Gate 8 — engineering_name editable; existing RUN source_id immutable.
       // When overlaying onto a RUN-discovered shell, keep that source_id even if the
       // engineer payload carries a divergent id (match was by display name).
@@ -510,7 +533,8 @@
       if (areaSet.size > 0 && area && !areaSet.has(area)
         && !transportNames.has(sid) && !transportNames.has(disp)
         && !z.runDiscovered && !z.engineerEdited
-        && z.provenance !== PROVENANCE.ENGINEER_CREATED) {
+        && z.provenance !== PROVENANCE.ENGINEER_CREATED
+        && z.provenance !== PROVENANCE.RUN_DISCOVERED) {
         byId.delete(sid);
         continue;
       }
@@ -1547,6 +1571,9 @@
   function serializeZone(z) {
     const sid = zoneSourceId(z);
     const eng = zoneDisplayName(z);
+    const provenance = z.provenance
+      || (z.runDiscovered ? PROVENANCE.RUN_DISCOVERED : null)
+      || (z.engineerEdited || z.createdBy === 'engineer' ? PROVENANCE.ENGINEER_CREATED : PROVENANCE.UNKNOWN);
     return {
       id: sid,
       source_id: sid,
@@ -1562,7 +1589,10 @@
       resetSource: z.resetSource,
       silenceSource: z.silenceSource,
       engineerEdited: !!z.engineerEdited,
-      runDiscovered: !!z.runDiscovered,
+      createdBy: z.createdBy || (z.engineerEdited && !z.runDiscovered ? 'engineer' : undefined),
+      runDiscovered: !!z.runDiscovered || provenance === PROVENANCE.RUN_DISCOVERED,
+      provenance,
+      origin: z.origin || provenance,
       status: z.status,
     };
   }
@@ -1831,10 +1861,26 @@
           silenceSource: z.silenceSource || '',
           reset_source: z.resetSource || '',
           silence_source: z.silenceSource || '',
-          membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
+          membersOrigin: z.membersOrigin || (
+            (z.members || []).length ? 'ENGINEER_ASSIGNED' : (z.runDiscovered ? 'UNRESOLVED' : 'ENGINEER_ASSIGNED')
+          ),
           membership_confidence: z.membership_confidence,
           engineerEdited: !!z.engineerEdited,
-          runDiscovered: !!z.runDiscovered,
+          createdBy: z.createdBy || (z.engineerEdited && !z.runDiscovered ? 'engineer' : undefined),
+          runDiscovered: !!z.runDiscovered
+            || z.provenance === PROVENANCE.RUN_DISCOVERED
+            || z.origin === PROVENANCE.RUN_DISCOVERED,
+          provenance: z.provenance
+            || (z.runDiscovered ? PROVENANCE.RUN_DISCOVERED : null)
+            || (z.engineerEdited || z.createdBy === 'engineer'
+              ? PROVENANCE.ENGINEER_CREATED
+              : PROVENANCE.UNKNOWN),
+          origin: z.origin
+            || z.provenance
+            || (z.runDiscovered ? PROVENANCE.RUN_DISCOVERED : null)
+            || (z.engineerEdited || z.createdBy === 'engineer'
+              ? PROVENANCE.ENGINEER_CREATED
+              : PROVENANCE.UNKNOWN),
           status: z.status,
           fields: z.fields || {},
         };

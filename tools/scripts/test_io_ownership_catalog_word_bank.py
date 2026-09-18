@@ -21,6 +21,9 @@ from fortna_physical_word_resolver import (  # noqa: E402
 )
 
 ACTIVE = ROOT / "workspace" / "active" / "RUN"
+VIRGIN_ORINDY = ROOT / "workspace" / "_virgin_orindy" / "RUN"
+# Prefer restored virgin extract when active/ was cleared
+_RUN = VIRGIN_ORINDY if (VIRGIN_ORINDY / "project.cfg").is_file() else ACTIVE
 MACH = "ORINDYAC6"
 
 
@@ -43,14 +46,14 @@ class TestCatalogWordBankParse(unittest.TestCase):
         self.assertEqual(p["form"], "catalog_aent_node_bank")
 
 
-@unittest.skipUnless((ACTIVE / "project.cfg").is_file(), "virgin active RUN missing")
+@unittest.skipUnless((_RUN / "project.cfg").is_file(), "virgin ORINDYAC6 RUN missing")
 class TestVirginCatalogWordBankJoin(unittest.TestCase):
     def test_owners_resolve_without_finished_plc(self) -> None:
-        model = build_hardware_io_model(ACTIVE, MACH)
+        model = build_hardware_io_model(_RUN, MACH)
         st = (model.get("stats") or {}).get("owner_states") or {}
         self.assertGreaterEqual(int(st.get(OWNER_ASSIGNED) or 0), 100)
         # Five class samples
-        res = PhysicalWordResolver(ACTIVE, MACH)
+        res = PhysicalWordResolver(_RUN, MACH)
         for name, w, b in (
             ("PE600_J", "605", "0"),
             ("VFD600_AUX", "632", "0"),
@@ -74,10 +77,27 @@ class TestVirginCatalogWordBankJoin(unittest.TestCase):
             self.assertEqual(found.get("engineering_owner"), name)
 
     def test_unused_mapped_not_proven_spare(self) -> None:
-        model = build_hardware_io_model(ACTIVE, MACH)
+        model = build_hardware_io_model(_RUN, MACH)
         st = (model.get("stats") or {}).get("owner_states") or {}
         self.assertGreaterEqual(int(st.get(OWNER_UNUSED_MAPPED) or 0), 1)
         # No requirement that PROVEN_SPARE > 0 without spare tokens
+
+
+@unittest.skipUnless((_RUN / "project.cfg").is_file(), "virgin ORINDYAC6 RUN missing")
+class TestCatalogWordBankEndpointFidelity(unittest.TestCase):
+    """Bank match must win — never false name-match Data[2] for word 600."""
+
+    def test_word_600_maps_to_data0_not_data2(self) -> None:
+        from fortna_physical_word_resolver import build_physical_word_map, resolve_word_bit
+
+        pm = build_physical_word_map(_RUN, MACH)
+        e = (pm.get("words") or {}).get("600") or {}
+        self.assertEqual(e.get("assign_how"), "configio_bank_match")
+        hit = resolve_word_bit(pm, 600, 0)
+        self.assertIsNotNone(hit)
+        ch = str((hit or {}).get("channel") or "")
+        self.assertIn(":I.Data[0].0", ch, msg=f"expected Data[0].0, got {ch}")
+        self.assertNotIn("Data[2]", ch)
 
 
 if __name__ == "__main__":

@@ -186,12 +186,18 @@ def build_safety_zone_irs(
         eng_origin = str(
             z.get("membersOrigin") or z.get("members_origin") or ""
         ).upper()
-        engineer_authored = bool(z.get("engineerEdited")) or eng_origin in {
+        # GATE 5 — PROVEN_RUN / ENGINEER_ASSIGNED / explicit Safety Build members
+        # are authoritative. Never heuristic-drop assigned devices (Gate C).
+        membership_proven = eng_origin in {
             "ENGINEER_ASSIGNED",
             "ENGINEER",
             "ASSIGNED",
-        } or bool(raw_members)
-        if engineer_authored and raw_members:
+            "PROVEN_RUN",
+            "AUTO_RUN_PROVEN",
+            "RUN_PROVEN",
+            "PROVEN",
+        } or bool(z.get("engineerEdited")) or bool(raw_members)
+        if membership_proven and raw_members:
             members = list(raw_members)
         else:
             members = [m for m in raw_members if _looks_like_safety_device(m)]
@@ -536,9 +542,8 @@ def emit_es_program(
                 src_aoi = "ES3000_AOI"
             _clone(src_aoi, aoi)
 
-        logic_rungs: list[str] = [
-            _rung_xml(0, "NOP();", f"{z.name} Safe_Logic — ES_SIL1_Cat1 per member"),
-        ]
+        # Cookie-cutter Safe_Logic: ES_SIL1_Cat1 per member (no decorative NOP).
+        logic_rungs: list[str] = []
         for dev in z.members:
             logic_rungs.append(
                 _rung_xml(
@@ -547,11 +552,14 @@ def emit_es_program(
                     f"{dev} → {z.name}",
                 )
             )
+        if not logic_rungs:
+            logic_rungs.append(
+                _rung_xml(0, "NOP();", f"{z.name} Safe_Logic — no members")
+            )
         zone_routines.append(routine(f"{z.name}_Safe_Logic", logic_rungs))
 
-        pi_rungs: list[str] = [
-            _rung_xml(0, "NOP();", f"{z.name} Safe_PI — ES_PI20 aggregator(s)"),
-        ]
+        # Cookie-cutter Safe_PI: ES_PI20 aggregator(s) + Area/Zone PI maps (no decorative NOP).
+        pi_rungs: list[str] = []
         for g in z.aggregator_groups:
             slots = _pad_es_slots(g.members)
             args = ",".join([g.tag, z.name, *slots])

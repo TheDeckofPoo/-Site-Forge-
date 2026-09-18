@@ -435,6 +435,181 @@ class TestClassifyProvenance(unittest.TestCase):
         )
 
 
+class TestGate4ApplyReopenCoexistence(unittest.TestCase):
+    """GATE 4 — RUN_DISCOVERED + ENGINEER_CREATED both persist through Apply/reopen."""
+
+    def test_payload_roundtrip_keeps_run_and_engineer(self) -> None:
+        """Simulate Apply → reopen with empty run_zone_ids (session restart)."""
+        model = build_safety_model(
+            run_dir=None,
+            machine="ORINDYAC6",
+            transport_zones=[
+                {
+                    "name": "ORINDYAC6_ESZone1",
+                    "source_id": "ORINDYAC6_ESZone1",
+                    "area": "ORINDYAC6_Area",
+                    "conveyors": ["P600"],
+                    "members": [],
+                    "runDiscovered": True,
+                }
+            ],
+            areas=["ORINDYAC6_Area"],
+            area_conveyors={"ORINDYAC6_Area": ["P600"]},
+            engineer_safety_build={
+                "zones": [
+                    {
+                        "source_id": "Staging_ESZone1",
+                        "engineering_name": "Staging_ESZone1",
+                        "areaRef": "ORINDYAC6_Area",
+                        "members": ["ES600"],
+                        "membersOrigin": ORIGIN_ENGINEER,
+                        "engineerEdited": True,
+                        "createdBy": "engineer",
+                        "provenance": PROVENANCE_ENGINEER_CREATED,
+                    }
+                ]
+            },
+        )
+        payload = safety_build_workbook_payload(model)
+        sids = {z.get("source_id") for z in payload["zones"]}
+        self.assertIn("ORINDYAC6_ESZone1", sids)
+        self.assertIn("Staging_ESZone1", sids)
+        run_row = next(z for z in payload["zones"] if z["source_id"] == "ORINDYAC6_ESZone1")
+        eng_row = next(z for z in payload["zones"] if z["source_id"] == "Staging_ESZone1")
+        self.assertTrue(run_row.get("runDiscovered"))
+        self.assertEqual(run_row.get("provenance"), PROVENANCE_RUN_DISCOVERED)
+        self.assertEqual(eng_row.get("provenance"), PROVENANCE_ENGINEER_CREATED)
+        self.assertFalse(eng_row.get("runDiscovered"))
+
+        # Reopen: only persisted safety_build, no live RUN ingest
+        reopened = build_safety_model(
+            run_dir=None,
+            machine="ORINDYAC6",
+            transport_zones=[],
+            areas=["ORINDYAC6_Area"],
+            area_conveyors={"ORINDYAC6_Area": ["P600"]},
+            engineer_safety_build=payload,
+        )
+        by = {z.get("source_id"): z for z in reopened["zones"]}
+        self.assertIn("ORINDYAC6_ESZone1", by)
+        self.assertIn("Staging_ESZone1", by)
+        self.assertEqual(
+            by["ORINDYAC6_ESZone1"].get("origin") or by["ORINDYAC6_ESZone1"].get("provenance"),
+            PROVENANCE_RUN_DISCOVERED,
+        )
+        self.assertEqual(
+            by["Staging_ESZone1"].get("origin") or by["Staging_ESZone1"].get("provenance"),
+            PROVENANCE_ENGINEER_CREATED,
+        )
+        self.assertEqual(list(by["Staging_ESZone1"].get("members") or []), ["ES600"])
+        # RUN shell stays membership-empty (fail-safe)
+        self.assertEqual(list(by["ORINDYAC6_ESZone1"].get("members") or []), [])
+
+    def test_reconcile_keeps_persisted_run_without_run_ids(self) -> None:
+        zones = [
+            {
+                "source_id": "ORINDYAC6_ESZone1",
+                "name": "ORINDYAC6_ESZone1",
+                "engineering_name": "ORINDYAC6_ESZone1",
+                "areaRef": "ORINDYAC6_Area",
+                "members": [],
+                "runDiscovered": True,
+                "provenance": PROVENANCE_RUN_DISCOVERED,
+                "origin": PROVENANCE_RUN_DISCOVERED,
+            },
+            {
+                "source_id": "Staging_ESZone1",
+                "name": "Staging_ESZone1",
+                "engineering_name": "Staging_ESZone1",
+                "areaRef": "ORINDYAC6_Area",
+                "members": ["ES600"],
+                "engineerEdited": True,
+                "createdBy": "engineer",
+                "provenance": PROVENANCE_ENGINEER_CREATED,
+            },
+        ]
+        recon = reconcile_safety_zones(
+            zones,
+            run_zone_ids=set(),  # session restart — live RUN ids gone
+            conveyor_zone_refs=set(),
+            current_areas={"ORINDYAC6_Area"},
+        )
+        after = {z.get("source_id") for z in recon["zones"]}
+        self.assertEqual(after, {"ORINDYAC6_ESZone1", "Staging_ESZone1"})
+
+    def test_workbook_apply_keeps_run_shell_without_members(self) -> None:
+        inp = AutogenInput(
+            project_name="ORINDYAC6",
+            areas=["ORINDYAC6_Area"],
+            safety_zones=[],
+            conveyors=[
+                ConveyorRow(
+                    number=1,
+                    conveyor="P600",
+                    main_area="ORINDYAC6_Area",
+                    safety_zone="",
+                    type="Transport with MS",
+                )
+            ],
+        )
+        wb = {
+            "conveyors": [
+                {
+                    "conveyor": "P600",
+                    "main_area": "ORINDYAC6_Area",
+                    "safety_zone": "ORINDYAC6_ESZone1",
+                    "type": "Transport with MS",
+                    "include": True,
+                }
+            ],
+            "areas": ["ORINDYAC6_Area"],
+            "safety_build": {
+                "version": 1,
+                "source": "safety_build",
+                "appliedAt": "2026-09-18T00:00:00Z",
+                "zones": [
+                    {
+                        "source_id": "ORINDYAC6_ESZone1",
+                        "engineering_name": "ORINDYAC6_ESZone1",
+                        "areaRef": "ORINDYAC6_Area",
+                        "members": [],
+                        "runDiscovered": True,
+                        "provenance": PROVENANCE_RUN_DISCOVERED,
+                        "origin": PROVENANCE_RUN_DISCOVERED,
+                    },
+                    {
+                        "source_id": "Staging_ESZone1",
+                        "engineering_name": "Staging_ESZone1",
+                        "areaRef": "ORINDYAC6_Area",
+                        "members": ["ES600"],
+                        "membersOrigin": ORIGIN_ENGINEER,
+                        "engineerEdited": True,
+                        "createdBy": "engineer",
+                        "provenance": PROVENANCE_ENGINEER_CREATED,
+                    },
+                ],
+            },
+        }
+        out = apply_workbook_to_input(inp, wb)
+        self.assertIn("ORINDYAC6_ESZone1", out.safety_zones)
+        self.assertIn("Staging_ESZone1", out.safety_zones)
+        self.assertTrue(isinstance(out.safety_build, dict))
+        sids = {
+            str(z.get("source_id") or z.get("name"))
+            for z in (out.safety_build.get("zones") or [])
+        }
+        self.assertEqual(sids, {"ORINDYAC6_ESZone1", "Staging_ESZone1"})
+
+    def test_js_restores_run_flags_on_engineer_overlay(self) -> None:
+        js = SAFETY_JS.read_text(encoding="utf-8", errors="replace")
+        self.assertIn("GATE 4 — restore persisted RUN/engineer identity", js)
+        self.assertIn("cur.runDiscovered = true", js)
+        self.assertIn("honor persisted provenance/origin from Apply", js)
+        fp = FORTNA_JS.read_text(encoding="utf-8", errors="replace")
+        self.assertIn("_unionSafetyBuild", fp)
+        self.assertIn("RUN_DISCOVERED + ENGINEER_CREATED coexist", fp)
+
+
 class TestGate8RunEngineerCoexistence(unittest.TestCase):
     """Gate 8 — RUN zone + engineer zone both persist; source_id immutable."""
 

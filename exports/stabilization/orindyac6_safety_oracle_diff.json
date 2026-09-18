@@ -1,0 +1,154 @@
+{
+  "gate": "6",
+  "title": "ORINDYAC6 safety oracle diff (Site Forge vs finished PLC6)",
+  "generated_utc": "2026-09-18T19:12:26.422767+00:00",
+  "controller": "ORINDYAC6",
+  "virgin_run": "workspace/_virgin_orindy/RUN",
+  "oracle_l5x": "C:\\Users\\curtiskricke\\Desktop\\ORiellys Browns\\PLC Progrms\\ORLY_Brownsburg_IN_PLC6_TEST2.L5X",
+  "site_forge_l5x": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORINDYAC6_2026_09_18_1448.L5X",
+  "policy": {
+    "no_site_specific_branches": true,
+    "do_not_copy_ShippingSorter_unless_RUN_proves": true,
+    "do_not_invent_Safety_devices": true,
+    "unknown_membership_fail_safe": true
+  },
+  "oracle": {
+    "present": true,
+    "path": "C:\\Users\\curtiskricke\\Desktop\\ORiellys Browns\\PLC Progrms\\ORLY_Brownsburg_IN_PLC6_TEST2.L5X",
+    "bytes": 7867435,
+    "routines": [
+      "Main_Routine",
+      "ShippingSorter_ESZone1_Safe_Logic",
+      "ShippingSorter_ESZone1_Safe_PI",
+      "ShippingSorter_ESZone2_Safe_Logic",
+      "ShippingSorter_ESZone2_Safe_PI"
+    ],
+    "main_jsrs": [
+      "ShippingSorter_ESZone1_Safe_Logic",
+      "ShippingSorter_ESZone2_Safe_Logic",
+      "ShippingSorter_ESZone1_Safe_PI",
+      "ShippingSorter_ESZone2_Safe_PI"
+    ],
+    "zones": [
+      "ShippingSorter_ESZone1",
+      "ShippingSorter_ESZone2"
+    ],
+    "zone_count": 2,
+    "safe_logic_routines": [
+      "ShippingSorter_ESZone1_Safe_Logic",
+      "ShippingSorter_ESZone2_Safe_Logic"
+    ],
+    "safe_pi_routines": [
+      "ShippingSorter_ESZone1_Safe_PI",
+      "ShippingSorter_ESZone2_Safe_PI"
+    ],
+    "jsr_count": 4,
+    "es_sil1_calls": 44,
+    "es_pi20_calls": 5,
+    "nop_count": 0,
+    "shell_only": false,
+    "scheduled": true
+  },
+  "site_forge": {
+    "present": true,
+    "path": "C:\\dev\\worktree\\FortnaPlus\\exports\\current\\ORINDYAC6_2026_09_18_1448.L5X",
+    "bytes": 5847303,
+    "routines": [
+      "Main_Routine"
+    ],
+    "main_jsrs": [],
+    "zones": [],
+    "zone_count": 0,
+    "safe_logic_routines": [],
+    "safe_pi_routines": [],
+    "jsr_count": 0,
+    "es_sil1_calls": 0,
+    "es_pi20_calls": 0,
+    "nop_count": 2,
+    "shell_only": true,
+    "scheduled": true
+  },
+  "zone_counts": {
+    "oracle": 2,
+    "site_forge": 0
+  },
+  "classifications": [
+    {
+      "item": "Program ES present",
+      "oracle": true,
+      "site_forge": true,
+      "classification": "COOKIE_CUTTER_MATCH",
+      "note": "Both emit Program ES"
+    },
+    {
+      "item": "ScheduledProgram ES",
+      "oracle": true,
+      "site_forge": true,
+      "classification": "COOKIE_CUTTER_MATCH",
+      "note": "Safety task schedules Program ES"
+    },
+    {
+      "item": "Main_Routine JSR \u2192 *_Safe_Logic / *_Safe_PI",
+      "oracle": [
+        "ShippingSorter_ESZone1_Safe_Logic",
+        "ShippingSorter_ESZone2_Safe_Logic",
+        "ShippingSorter_ESZone1_Safe_PI",
+        "ShippingSorter_ESZone2_Safe_PI"
+      ],
+      "site_forge": [],
+      "classification": "SITE_FORGE_MISSING",
+      "note": "Oracle has per-zone JSRs. Current Site Forge ORINDYAC6 export is NOP shell because safety_build membership was empty at generate."
+    },
+    {
+      "item": "ES_SIL1_Cat1 AOI calls",
+      "oracle": 44,
+      "site_forge": 0,
+      "classification": "SITE_FORGE_MISSING",
+      "note": "Cookie-cutter: one ES_SIL1_Cat1 per zone member when membership proven/assigned"
+    },
+    {
+      "item": "ES_PI20 AOI calls",
+      "oracle": 5,
+      "site_forge": 0,
+      "classification": "SITE_FORGE_MISSING",
+      "note": "Cookie-cutter: ES_PI20 aggregator per zone (pad NO_ESLS)"
+    },
+    {
+      "item": "NOP-only Main_Routine shell",
+      "oracle": false,
+      "site_forge": true,
+      "classification": "SITE_FORGE_EXTRA",
+      "note": "Site Forge fail-safe shell when membership UNRESOLVED \u2014 correct for UNKNOWN, incorrect once PROVEN_RUN/ENGINEER_ASSIGNED members exist"
+    },
+    {
+      "item": "Zone ShippingSorter_ESZone1",
+      "oracle": true,
+      "site_forge": false,
+      "classification": "ENGINEER_MODIFICATION",
+      "note": "Finished PLC6 site zone \u2014 do NOT copy into virgin ORINDYAC6 unless RUN proves ShippingSorter membership"
+    },
+    {
+      "item": "Zone ShippingSorter_ESZone2",
+      "oracle": true,
+      "site_forge": false,
+      "classification": "ENGINEER_MODIFICATION",
+      "note": "Finished PLC6 site zone \u2014 do NOT copy into virgin ORINDYAC6 unless RUN proves ShippingSorter membership"
+    },
+    {
+      "item": "Virgin RUN ORINDYAC6 zone shell",
+      "oracle": "ShippingSorter_ESZone1/2 (finished site)",
+      "site_forge": "ORINDYAC6_ESZone1 (RUN-discovered, members=[])",
+      "classification": "RUN_UNKNOWN",
+      "note": "Virgin RUN discovers ORINDYAC6_ESZone1 with ENGINEER_REQUIRED membership. ShippingSorter zones are finished-PLC site engineering \u2014 not RUN-proven here."
+    }
+  ],
+  "classification_counts": {
+    "COOKIE_CUTTER_MATCH": 2,
+    "SITE_FORGE_MISSING": 3,
+    "SITE_FORGE_EXTRA": 1,
+    "ENGINEER_MODIFICATION": 2,
+    "RUN_UNKNOWN": 1
+  },
+  "gate4_root_cause": "Apply/reopen dropped runDiscovered/provenance on persisted safety_build zones; on session restart AS.runSafetyZones was empty so RUN shells were reclassified AUTO_DEFAULT and deleted, leaving only ENGINEER_CREATED.",
+  "gate5_status": "emit_es_program emits real Safe_Logic/Safe_PI/JSR/ES_SIL1_Cat1/ES_PI20 when zones have PROVEN_RUN or ENGINEER_ASSIGNED members. Current ORINDYAC6 export is NOP shell because generate-time safety_build membership was empty (REVIEW_REQUIRED) \u2014 fail-safe, not cookie-cutter copy from finished PLC."
+}

@@ -634,10 +634,14 @@ def apply_workbook_to_input(inp: AutogenInput, workbook: dict) -> AutogenInput:
                     or ""
                 ).strip()
                 eng_keep = bool(z.get("engineerEdited")) or bool(z.get("members"))
+                run_keep = bool(z.get("runDiscovered")) or str(
+                    z.get("provenance") or z.get("origin") or ""
+                ).strip() in {"RUN_DISCOVERED", "ENGINEER_CREATED"}
                 # Gate R — drop unused Zone1..Zone9 / numeric test shells unless
-                # engineer-authored or already conveyor-referenced.
+                # engineer-authored, RUN-discovered, or already conveyor-referenced.
+                # GATE 4 — RUN_DISCOVERED shells must survive even with empty members.
                 if zname and zname not in zones_now:
-                    if eng_keep or is_production_safety_zone_name(zname) or any(
+                    if eng_keep or run_keep or is_production_safety_zone_name(zname) or any(
                         str(t or "").strip()
                         for t in (z.get("conveyors") or z.get("conveyorRefs") or [])
                     ):

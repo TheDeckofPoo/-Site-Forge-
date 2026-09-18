@@ -8862,13 +8862,55 @@ async function runAutogenGenerate(mode) {
           };
           if (sawConfigured) merged.sawtooth_build = { ...autogenState.sawtooth };
           if (sorterConfigured) merged.sorter_build = { ...autogenState.sorter };
-          // Prefer Applied (non-draft) safety_build from either side
+          // GATE 4 — Prefer Applied (non-draft) safety_build, then UNION zones by
+          // source_id so RUN_DISCOVERED + ENGINEER_CREATED coexist across disk/mem.
           const diskSb = disk.safety_build;
           const memSb = mem.safety_build || autogenState.safety_build;
+          const _sbSid = (z) => String(
+            (z && (z.source_id || z.sourceId || z.id || z.name)) || ''
+          ).trim();
+          const _unionSafetyBuild = (a, b) => {
+            if (!a && !b) return null;
+            if (!a) return b;
+            if (!b) return a;
+            const by = new Map();
+            [...(a.zones || []), ...(b.zones || [])].forEach((z) => {
+              const sid = _sbSid(z);
+              if (!sid) return;
+              const prev = by.get(sid);
+              if (!prev) {
+                by.set(sid, { ...z });
+                return;
+              }
+              // Prefer side with members / engineer edits; keep RUN flags
+              const next = { ...prev, ...z };
+              if ((prev.members || []).length && !(z.members || []).length) {
+                next.members = prev.members;
+                next.membersOrigin = prev.membersOrigin || next.membersOrigin;
+              }
+              next.runDiscovered = !!(prev.runDiscovered || z.runDiscovered);
+              if (prev.provenance === 'RUN_DISCOVERED' || z.provenance === 'RUN_DISCOVERED') {
+                next.provenance = next.provenance || 'RUN_DISCOVERED';
+                next.runDiscovered = true;
+              }
+              if (prev.provenance === 'ENGINEER_CREATED' || z.provenance === 'ENGINEER_CREATED'
+                || prev.engineerEdited || z.engineerEdited) {
+                next.engineerEdited = !!(prev.engineerEdited || z.engineerEdited);
+                if (!next.runDiscovered) next.provenance = next.provenance || 'ENGINEER_CREATED';
+              }
+              by.set(sid, next);
+            });
+            const base = (a.appliedAt && !b.appliedAt) ? a
+              : (b.appliedAt && !a.appliedAt) ? b
+                : (b.appliedAt ? b : a);
+            return { ...base, zones: [...by.values()] };
+          };
           if (diskSb?.appliedAt && !(memSb?.appliedAt) && (diskSb.zones || []).length) {
-            merged.safety_build = diskSb;
+            merged.safety_build = _unionSafetyBuild(diskSb, memSb) || diskSb;
           } else if (memSb && (memSb.zones || []).length) {
-            merged.safety_build = memSb;
+            merged.safety_build = _unionSafetyBuild(memSb, diskSb) || memSb;
+          } else if (diskSb && (diskSb.zones || []).length) {
+            merged.safety_build = diskSb;
           }
           autogenState.workbook = merged;
           if (merged.safety_build) autogenState.safety_build = merged.safety_build;

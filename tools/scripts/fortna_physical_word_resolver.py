@@ -222,10 +222,10 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
         parsed = parse_configio_desc(desc)
         node_parsed = parse_configio_node_desc(desc)
         catalog_bank = parse_configio_catalog_word_bank(desc)
-        # Prefer panel forms for sequential zip; keep catalog_word_bank as parsed
-        # when panel forms absent so bank-match assignment can run.
-        if not parsed and catalog_bank and not catalog_bank.get("is_aent_head"):
-            parsed = catalog_bank
+        # IMPORTANT: do NOT promote catalog_word_bank into `parsed`.
+        # Its trailing number is Configio.Bank / EIPModules bank, NOT an eipcfg
+        # module-name suffix. Putting it in `parsed.module_name` caused false
+        # name matches (1794-IA16-4 → slot 3 / Data[2] instead of bank 4 → Data[0]).
         out.append(
             {
                 "row": i,
@@ -879,8 +879,13 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 and name_hit.get("rio_name") == chosen.get("rio_name")
             ):
                 assign_how = "configio_desc_name+sequential"
+        elif chosen and assign_how == "configio_bank_match":
+            # Bank match already selected the module — do not overwrite with name match.
+            # catalog_word_bank Desc trailing digits are EIP banks, not module-name indices.
+            pass
         elif name_hit and (not panel or name_hit.get("panel") == panel or not name_hit.get("panel")):
             # Sequential unavailable — accept name match (still Configio Desc driven)
+            # Only for panel_catalog / panel_node parsed forms (not catalog_word_bank).
             chosen = name_hit
             assign_how = "configio_desc_name"
             if name_side == "High" and bit_half_default == "high":
