@@ -1982,7 +1982,7 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
     try:
         from fortna_physical_word_resolver import (
             PhysicalWordResolver,
-            parse_configio_desc,
+            configio_desc_evidence,
         )
 
         _gres_descs = [
@@ -1990,7 +1990,8 @@ def load_from_run(run_dir: Path, *, processor: str = "1756-L83E") -> AutogenInpu
             for entries in (configio_octal_map or {}).values()
             for e in (entries or [])
         ]
-        if any(parse_configio_desc(d) for d in _gres_descs):
+        # PANEL-CATALOG (PLC2) or PANEL-NODE (PLC5) Configio Descs → physical map
+        if any(configio_desc_evidence(d) for d in _gres_descs):
             _pwr = PhysicalWordResolver(run_dir, machine)
             phys_wm = _pwr.io_word_map()
             if phys_wm:

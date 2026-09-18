@@ -1559,7 +1559,7 @@ def discover(
         model.notes.append(
             "No active SawMerge/SawLane evidence for this machine — sawtooth_merges left empty (not faked)"
         )
-        for stem in ("SawMerge.asc", "SawLane.asc", "Sorters.asc"):
+        for stem in ("SawMerge.asc", "SawLane.asc", "Sorters.asc", "Encoders.asc"):
             merged = merge_table_rows(fortna, stem, machine)
             model.table_resolutions[stem] = {
                 "resolution": merged["resolution"],
@@ -1568,6 +1568,15 @@ def discover(
                     1 for r in merged.get("rows") or [] if _clean((r.get("row") or {}).get("Name") or (r.get("row") or {}).get("Sorter Name") or "")
                 ),
             }
+        # Sorters / induct still need Encoders.asc when Sawtooth is absent.
+        try:
+            enc_objs, enc_rels = _encoders_from_discovery(
+                run_dir, machine, saw_raw or {}, None
+            )
+            model.encoders = enc_objs
+            model.relationships.extend(enc_rels)
+        except FileNotFoundError as exc:
+            model.notes.append(f"Encoder discovery skipped (incomplete RUN): {exc}")
 
     equipment: list[dict[str, Any]] = []
     eq_rels: list[dict[str, Any]] = []
@@ -1696,6 +1705,17 @@ def discover(
     model.tracking_systems = tracking
     model.wcs_interfaces = wcs
 
+    # Canonical SorterModel (divert/tracking authority) — discovery only, no L5X.
+    sorter_canonical: dict[str, Any] = {}
+    try:
+        from fortna_sorter_discovery import (  # noqa: WPS433
+            build_canonical_sorter_model,
+        )
+
+        sorter_canonical = build_canonical_sorter_model(run_dir, machine)
+    except Exception as exc:  # noqa: BLE001
+        model.notes.append(f"canonical sorter model skipped: {exc}")
+
     # Attach cross-table evidence + operational_groups before classification.
     apply_cross_table_evidence(model, harvest)
     model.notes.append(
@@ -1718,6 +1738,8 @@ def discover(
 
     site_dict = model.to_dict()
     site_dict["sorter_table_classes"] = harvest.get("sorter_table_classes") or {}
+    if sorter_canonical:
+        site_dict["sorter_model"] = sorter_canonical
     activity = classify_site_model(site_dict, machine)
     # Knowledge-driven enrichment (PE roles, motor chains, zones, editors, inclusion why).
     # Docs = semantics via fortna_knowledge; RUN facts already on the model.
@@ -1729,6 +1751,59 @@ def discover(
         evaluate_supersession(site_dict)
     except Exception as exc:  # noqa: BLE001
         site_dict.setdefault("notes", []).append(f"knowledge enrichment skipped: {exc}")
+
+    # Merge canonical sorter facts into editors.sorter (after enrich so we do not wipe).
+    if sorter_canonical:
+        ed = site_dict.setdefault("editors", {})
+        sorter_ed = dict(ed.get("sorter") or {})
+        sorter_ed.update(
+            {
+                "detected": bool(sorter_canonical.get("detected")),
+                "sorter_count": sorter_canonical.get("sorter_count") or len(
+                    site_dict.get("sorters") or []
+                ),
+                "sorters": site_dict.get("sorters") or sorter_canonical.get("sorters") or [],
+                "encoders": [
+                    (e.get("name") or {}).get("value")
+                    if isinstance(e.get("name"), dict)
+                    else (e.get("raw_name") or e.get("normalized_name") or e.get("name"))
+                    for e in (
+                        site_dict.get("encoders")
+                        or sorter_canonical.get("encoders")
+                        or []
+                    )
+                ],
+                "app_controls": sorter_canonical.get("app_controls") or [],
+                "scan_bosses": sorter_canonical.get("scan_bosses") or [],
+                "zone_lanes": sorter_canonical.get("zone_lanes") or [],
+                "divert_rows": sorter_canonical.get("divert_rows") or [],
+                "tracking_path": sorter_canonical.get("tracking_path") or [],
+                "field_authority": sorter_canonical.get("field_authority") or {},
+                "generation_state": sorter_canonical.get("generation_state")
+                or GEN_NOT_SUPPORTED,
+                "plc_generation": "NOT_STARTED",
+                "note": sorter_canonical.get("note")
+                or sorter_ed.get("note")
+                or "Canonical sorter model — PLC generation NOT_STARTED",
+            }
+        )
+        # Encoder leaf flips to GENERATABLE when RUN encoders are present.
+        leaves = dict(sorter_ed.get("generation_leaves") or {})
+        if site_dict.get("encoders") or sorter_canonical.get("encoders"):
+            leaves["encoder_infrastructure"] = "GENERATABLE"
+        leaves.setdefault("divert_aoi_instances", "GENERATION_NOT_SUPPORTED")
+        sorter_ed["generation_leaves"] = leaves
+        ed["sorter"] = sorter_ed
+        site_dict.setdefault("ui_status_summary", {})["SORTER"] = {
+            "detected": sorter_ed.get("sorter_count") or 0,
+            "configuration_modeled": bool(sorter_ed.get("detected")),
+            "encoder_resolved": leaves.get("encoder_infrastructure") == "GENERATABLE",
+            "scan_zones_resolved": bool(sorter_ed.get("scan_bosses")),
+            "divert_map_required": True,
+            "divert_rows": len(sorter_ed.get("divert_rows") or []),
+            "field_authority": sorter_ed.get("field_authority") or {},
+            "generation": "NOT_STARTED",
+        }
 
     # Attach canonical SawtoothMergeModel from RUN import (auto — no Discover button).
     if isinstance(semantics, dict) and semantics.get("sawtooth_merge_model"):
@@ -1807,6 +1882,8 @@ def discover(
     write_json(out_dir / "activity_classification.json", activity)
     write_json(out_dir / "subsystems.json", subsystems)
     write_json(out_dir / "change_report.json", report)
+    if sorter_canonical:
+        write_json(out_dir / "sorter_model.json", sorter_canonical)
 
     return {
         "out_dir": str(out_dir),

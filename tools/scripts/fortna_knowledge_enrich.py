@@ -809,6 +809,13 @@ def build_sawtooth_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
 def build_sorter_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
     sorters = site.get("sorters") or []
     encoders = [e.get("raw_name") or e.get("normalized_name") for e in (site.get("encoders") or [])]
+    sm = site.get("sorter_model") or {}
+    zone_lanes = sm.get("zone_lanes") or []
+    divert_rows = sm.get("divert_rows") or []
+    tracking_path = sm.get("tracking_path") or []
+    scan_bosses = sm.get("scan_bosses") or []
+    app_controls = sm.get("app_controls") or []
+    field_authority = sm.get("field_authority") or {}
     layers = {
         "STATIC_CONFIG": [],
         "RUNTIME_STATE": [],
@@ -816,14 +823,24 @@ def build_sorter_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
         "ENGINEER_REQUIRED": [],
     }
     for s in sorters:
+        enc_io = s.get("encoder_io")
         entry = {
             "sorter": s.get("raw_name") or s.get("normalized_name"),
             "sorter_type": s.get("sorter_type") or s.get("type"),
-            "encoders": s.get("encoders") or encoders[:1],
-            "app_controls": s.get("app_controls") or [],
-            "scan_bosses": s.get("scan_bosses") or [],
-            "scan_zones": s.get("scan_zones") or [],
-            "lane_assignments": s.get("lane_assignments") or [],
+            "encoder_io": enc_io,
+            "encoders": s.get("encoders") or ([enc_io] if enc_io else encoders[:1]),
+            "app_controls": s.get("app_controls") or app_controls,
+            "scan_bosses": s.get("scan_bosses") or scan_bosses,
+            "scan_zones": s.get("scan_zones") or [
+                (b.get("scan_zone") or {}).get("value")
+                if isinstance(b.get("scan_zone"), dict)
+                else b.get("scan_zone")
+                for b in scan_bosses
+            ],
+            "lane_assignments": s.get("lane_assignments") or zone_lanes,
+            "zone_lanes": zone_lanes,
+            "divert_rows": divert_rows,
+            "tracking_path": tracking_path,
             "scanner_relationships": s.get("scanner_relationships") or [],
             "runtime_tracking_available": bool(s.get("runtime_tracking")),
             "routing_tables": s.get("routing_tables") or [],
@@ -832,19 +849,30 @@ def build_sorter_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
             "unresolved_divert_mapping": True,
             "unresolved_conveyor_tracking_chain": True,
             "generation_state": s.get("generation_state") or GEN_NOT_SUPPORTED,
+            "field_authority": field_authority,
         }
         layers["STATIC_CONFIG"].append(entry["sorter"])
         layers["ENGINEER_REQUIRED"].extend(
-            ["divert_map", "conveyor_tracking_chain"]
+            ["divert_output_io", "conveyor_tracking_chain"]
         )
         if entry["runtime_tracking_available"]:
             layers["RUNTIME_STATE"].append(entry["sorter"])
+    if app_controls:
+        layers["COMMUNICATION_CONFIG"].extend(
+            [
+                (a.get("name") or {}).get("value")
+                if isinstance(a.get("name"), dict)
+                else a.get("name")
+                for a in app_controls
+            ]
+        )
 
     generation_leaves = {
         "encoder_infrastructure": "GENERATABLE" if encoders else "CONFIGURATION_REQUIRED",
         "scanner_device_structures": "CONFIGURATION_REQUIRED",
-        "scan_zone_configuration": "MODELED" if sorters else "DISCOVERED",
+        "scan_zone_configuration": "MODELED" if (sorters or scan_bosses) else "DISCOVERED",
         "sorter_entity_tags": "MODELED" if sorters else "DISCOVERED",
+        "divert_lane_topology": "MODELED" if divert_rows else "CONFIGURATION_REQUIRED",
         "wcs_message_config_tags": "GENERATION_NOT_SUPPORTED",
         "route_destination_configuration": "CONFIGURATION_REQUIRED",
         "divert_aoi_instances": "GENERATION_NOT_SUPPORTED",
@@ -853,9 +881,18 @@ def build_sorter_editor_v2(site: dict[str, Any]) -> dict[str, Any]:
     return {
         "editor": "sorter_v2",
         "detected": bool(sorters),
+        "sorter_count": len(sorters),
         "sorters": sorters,
+        "encoders": encoders,
+        "app_controls": app_controls,
+        "scan_bosses": scan_bosses,
+        "zone_lanes": zone_lanes,
+        "divert_rows": divert_rows,
+        "tracking_path": tracking_path,
+        "field_authority": field_authority,
         "layers": layers,
         "generation_leaves": generation_leaves,
+        "plc_generation": sm.get("plc_generation") or "NOT_STARTED",
         "note": "No Sorter_Track clone; only proven leaves may generate. Gold L5X is reference-only.",
     }
 

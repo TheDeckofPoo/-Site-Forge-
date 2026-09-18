@@ -1435,9 +1435,9 @@
           <div class="rounded-xl border border-cyan-900/40 bg-[#05090D] flex flex-col">
             <div class="flex items-center gap-2 px-3 py-1.5 border-b border-slate-800/80">
               <span class="text-[10px] uppercase tracking-wider text-cyan-400/90 font-semibold">Physical FLEX I/O Rack</span>
-              <span class="text-[9px] text-slate-600">~2 modules visible · scroll rack horizontally · click to select</span>
+              <span class="text-[9px] text-slate-600">~2 adapter/rack groups · scroll inside window · modules wider (×1.20)</span>
             </div>
-            <div id="hw-io-racks" class="hw-io-rack-viewport p-2 overflow-x-auto overflow-y-hidden">
+            <div id="hw-io-racks" class="hw-io-two-rack-viewport p-2">
               <div class="text-sm text-slate-500 py-10 text-center">Load a RUN to show the FLEX / POINT I/O assembly from HardwareIOModel.</div>
             </div>
           </div>
@@ -1739,6 +1739,17 @@
           overscroll-behavior: contain;
         }
         .hw-io-rack-viewport { min-height: 180px; }
+        /* Gate A: dedicated viewport shows ≈2 complete FLEX rack groups; scroll inside */
+        .hw-io-two-rack-viewport {
+          max-height: 440px; /* ~2 rack cards (meta+row) at compact CAD scale */
+          min-height: 220px;
+          overflow-x: auto;
+          overflow-y: auto;
+          overscroll-behavior: contain;
+        }
+        .hw-io-two-rack-viewport .flex-phys-wrap {
+          gap: 0.65rem;
+        }
         .hw-io-inspector .hw-term-panel { gap: 6px; }
         /* Selected Module Inspector: KEEP narrow width; make VERTICAL face taller */
         .hw-term-panel { display: flex; flex-direction: column; gap: 6px; min-height: 0; }
@@ -2037,7 +2048,18 @@
             <span id="autogen-sorter-summary" class="ml-auto text-[10px] mono text-slate-600">no config</span>
           </div>
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">0 · Sorter type</div>
+            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">0 · Discovered from RUN</div>
+            <div id="sorter-discovered-list" class="text-[10px] text-slate-600">Load a RUN to populate sorters.</div>
+            <p class="text-[9px] text-slate-600 leading-relaxed">
+              Badges: <span class="text-emerald-400">PROVEN</span> = RUN explicit ·
+              <span class="text-sky-300">DERIVED</span> = cross-table ·
+              <span class="text-amber-300">REVIEW</span> = engineer required (e.g. divert IO INVALID).
+              PLC Sorter_Track generation remains <span class="mono text-slate-400">NOT_STARTED</span> until a generic library path exists.
+            </p>
+          </div>
+
+          <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
+            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">0b · Sorter type</div>
             <div class="flex flex-wrap gap-3 items-end">
               <div class="min-w-[16rem] flex-1">
                 <label class="block text-[10px] text-slate-500 mb-1">Equipment pattern</label>
@@ -2128,15 +2150,16 @@
 
           <!-- Diverts -->
           <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 space-y-2">
-            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">3 · Diverts</div>
+            <div class="text-[10px] uppercase tracking-wider text-cyan-600/90 font-semibold">3 · Diverts (SrtZoneLane)</div>
             <div class="flex flex-wrap items-end gap-3">
               <div>
                 <label class="block text-[10px] text-slate-500 mb-1">How many diverts?</label>
                 <input id="sorter-divert-count" type="number" min="0" max="64" value="0"
                   class="w-24 bg-[#101820] border border-slate-700 rounded-lg px-2 py-1.5 text-[11px] mono text-slate-200">
               </div>
-              <span class="text-[10px] text-slate-600 pb-2">Count only for now (lane naming later)</span>
+              <span class="text-[10px] text-slate-600 pb-2">Topology from RUN · divert output IO often REVIEW</span>
             </div>
+            <div id="sorter-divert-rows" class="space-y-1 max-h-56 overflow-y-auto"></div>
           </div>
 
           <!-- Tracking photoeyes (standalone list) -->
@@ -2691,6 +2714,12 @@
         <div id="tb-ctx-move-areas" class="max-h-40 overflow-y-auto"></div>
         <button type="button" data-tb-ctx="area-remove" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-slate-300">Remove from Area…</button>
         <div class="border-t border-slate-800 my-1"></div>
+        <div id="tb-ctx-curve-angle-wrap" class="hidden">
+          <div class="px-3 py-1 text-[9px] uppercase tracking-wider text-violet-500/90">CURVE display angle</div>
+          <div class="px-3 py-0.5 text-[9px] text-slate-600">Presentation only — not physical L/R</div>
+          <div id="tb-ctx-curve-angles" class="max-h-44 overflow-y-auto"></div>
+          <div class="border-t border-slate-800 my-1"></div>
+        </div>
         <button type="button" data-tb-ctx="delete" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 text-red-400">Delete</button>
       </div>
       <div class="flex flex-1 min-h-0 items-stretch">

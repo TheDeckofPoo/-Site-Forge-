@@ -1423,6 +1423,44 @@
         });
       }
     }
+    // CURVE display-angle override (presentation only)
+    const curveWrap = $('tb-ctx-curve-angle-wrap');
+    const curveHost = $('tb-ctx-curve-angles');
+    let curveNode = null;
+    (tb.areas || []).forEach((a) => {
+      const hit = (a.nodes || []).find((n) => n.id === nodeId);
+      if (hit) curveNode = hit;
+    });
+    const isCurve = curveNode && (
+      String(curveNode.equipmentType || '').toUpperCase() === 'CURVE'
+      || curveNode.kind === 'conv_right'
+      || curveNode.kind === 'conv_left'
+    );
+    if (curveWrap && curveHost) {
+      if (!isCurve) {
+        curveWrap.classList.add('hidden');
+        curveHost.innerHTML = '';
+      } else {
+        curveWrap.classList.remove('hidden');
+        const choices = (A().CURVE_DISPLAY_ANGLE_CHOICES) || ['Auto', 0, 45, 90, 135, 180, -45, -90, -135];
+        const cur = curveNode.curveDisplayAngle;
+        curveHost.innerHTML = choices.map((c) => {
+          const label = c === 'Auto' ? 'Auto / RUN' : `${c}°`;
+          const active = (c === 'Auto' && (cur == null || cur === ''))
+            || (c !== 'Auto' && Number(cur) === Number(c));
+          return `<button type="button" data-tb-ctx-curve-ang="${c}" class="w-full text-left px-3 py-1.5 hover:bg-slate-800 ${active ? 'text-violet-200 bg-violet-950/40' : 'text-violet-300/90'}">${label}</button>`;
+        }).join('');
+        curveHost.querySelectorAll('[data-tb-ctx-curve-ang]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const v = btn.getAttribute('data-tb-ctx-curve-ang');
+            hideCtxMenu();
+            try {
+              A().setCurveDisplayAngle?.(nodeId, v === 'Auto' ? 'Auto' : Number(v));
+            } catch (_) { /* ignore */ }
+          });
+        });
+      }
+    }
     m.classList.remove('hidden');
     m.style.display = 'block';
     m.style.left = `${x}px`;

@@ -4,8 +4,8 @@
 .flex-phys-wrap {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  min-height: 100%;
+  gap: 0.65rem;
+  min-height: 0; /* allow parent two-rack viewport to scroll */
 }
 
 .flex-phys-rack-card {
@@ -203,7 +203,7 @@
 }
 
 .flex-slot-label {
-  width: 70px;
+  width: 84px; /* match flex-io width ×1.20 from prior 70px */
   border: 1px solid #735a24;
   border-radius: 5px;
   background: #07121a;
@@ -216,7 +216,7 @@
 }
 
 .flex-slot-label.adapter-slot {
-  width: 100px;
+  width: 100px; /* adapter unchanged */
 }
 
 .flex-slot-label.selected {
@@ -263,15 +263,15 @@
 }
 
 .flex-adapter {
-  /* Compact CAD — adapter slightly wider than I/O modules */
+  /* Adapter width UNCHANGED — Gate A only widens FLEX I/O modules */
   width: 100px;
   height: 155px;
   border-radius: 6px 6px 3px 3px;
 }
 
 .flex-io {
-  /* ~1/3 of prior bloated 168×260 — several modules fit across desktop */
-  width: 70px;
+  /* Gate A: FLEX I/O body width = prior 70px × 1.20; height unchanged */
+  width: 84px;
   height: 138px;
   border-radius: 4px;
 }
@@ -468,7 +468,7 @@
 .flex-mod { display: none !important; }
 
 @media (max-width: 1300px) {
-  .flex-io { width: 64px; height: 128px; }
+  .flex-io { width: 78px; height: 128px; }
   .flex-adapter { width: 90px; height: 145px; }
   .flex-slot-label { width: 84px; }
   .flex-slot-label.adapter-slot { width: 142px; }

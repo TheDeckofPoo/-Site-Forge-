@@ -493,95 +493,402 @@ def _field(value: Any, source: str, provenance: str = PROV_RUN) -> dict[str, Any
     return {"value": value, "source": source, "provenance": provenance}
 
 
-def build_subsystem_model(inventory: dict[str, Any], machine: str) -> dict[str, Any]:
-    by = {t["table"]: t for t in inventory.get("tables") or []}
+AUTH_PROVEN = "PROVEN"
+AUTH_DERIVED = "DERIVED"
+AUTH_REVIEW = "REVIEW_REQUIRED"
+AUTH_UNKNOWN = "UNKNOWN"
 
-    def active_rows(name: str) -> list[dict[str, str]]:
-        t = by.get(name) or {}
-        return list(t.get("samples") or [])
+
+def _authority(value: Any, *, blank_is: str = AUTH_UNKNOWN) -> str:
+    """Map a RUN cell to UI/model field authority (not PLC generation status)."""
+    if not _meaningful(value):
+        return blank_is
+    s = _clean(value)
+    if s.upper() in {"INVALID", "N/A", "NONE", "N/A~"}:
+        return AUTH_REVIEW
+    return AUTH_PROVEN
+
+
+def iter_active_table_rows(
+    run_dir: Path,
+    basename: str,
+    machine: str,
+) -> list[dict[str, str]]:
+    """Full active rows for a FORTNA table (not sample-capped inventory)."""
+    run_dir = Path(run_dir)
+    fortna = run_dir / "FORTNA"
+    if not fortna.is_dir():
+        return []
+    path, _resolution = resolve_asc(fortna, basename, machine)
+    if path is None or not path.is_file() or path.stat().st_size <= 0:
+        return []
+    headers, rows = read_asc(path)
+    name_cols = _name_cols(basename, headers)
+    return [r for r in rows if _row_active(basename, r, name_cols)]
+
+
+def build_divert_rows(zone_rows: list[dict[str, str]]) -> list[dict[str, Any]]:
+    """SrtZoneLane → divert topology rows; output IO stays REVIEW when INVALID."""
+    out: list[dict[str, Any]] = []
+    for z in zone_rows:
+        name = _clean(z.get("Name"))
+        lane = _clean(z.get("Lane"))
+        if not _meaningful(name) and not _meaningful(lane):
+            continue
+        enable_sig = _clean(z.get("LaneEnableSignal"))
+        host = _clean(z.get("HostZone"))
+        app = _clean(z.get("AppSorter"))
+        enabled = _clean(z.get("Enabled"))
+        topology_ok = _meaningful(lane) or _meaningful(host)
+        divert_io_auth = _authority(enable_sig, blank_is=AUTH_REVIEW)
+        if divert_io_auth == AUTH_PROVEN and enable_sig.upper() == "INVALID":
+            divert_io_auth = AUTH_REVIEW
+        if not _meaningful(enable_sig) or enable_sig.upper() == "INVALID":
+            divert_io_auth = AUTH_REVIEW
+            divert_io_value = enable_sig or "INVALID"
+        else:
+            divert_io_value = enable_sig
+        out.append(
+            {
+                "name": _field(name, "FORTNA/SrtZoneLane.asc"),
+                "enabled": _field(enabled, "FORTNA/SrtZoneLane.asc"),
+                "app_sorter": _field(app, "FORTNA/SrtZoneLane.asc"),
+                "lane": _field(lane, "FORTNA/SrtZoneLane.asc"),
+                "host_zone": _field(host, "FORTNA/SrtZoneLane.asc"),
+                "full_clear_timer": _field(
+                    _clean(z.get("FullClearTimer")), "FORTNA/SrtZoneLane.asc"
+                ),
+                "lane_enable_signal": _field(enable_sig, "FORTNA/SrtZoneLane.asc"),
+                "divert_output_io": _field(
+                    divert_io_value,
+                    "FORTNA/SrtZoneLane.asc LaneEnableSignal",
+                    PROV_ENGINEER if divert_io_auth == AUTH_REVIEW else PROV_RUN,
+                ),
+                "authority": {
+                    "topology": AUTH_PROVEN if topology_ok else AUTH_REVIEW,
+                    "lane": _authority(lane),
+                    "host_zone": _authority(host),
+                    "app_sorter": _authority(app),
+                    "divert_output_io": divert_io_auth,
+                },
+            }
+        )
+    return out
+
+
+def build_tracking_path_rows(
+    sorters: list[dict[str, Any]],
+    encoders_by_name: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """One tracking stub per sorter when encoder link is PROVEN; conveyor stays UNKNOWN."""
+    rows: list[dict[str, Any]] = []
+    for s in sorters:
+        name = s["name"]["value"] if isinstance(s.get("name"), dict) else s.get("name")
+        enc = (
+            s["encoder_io"]["value"]
+            if isinstance(s.get("encoder_io"), dict)
+            else s.get("encoder_io")
+        )
+        enc = _clean(enc)
+        enc_doc = encoders_by_name.get(enc.upper()) if enc else None
+        enc_auth = AUTH_PROVEN if enc and enc_doc else (
+            AUTH_DERIVED if enc else AUTH_UNKNOWN
+        )
+        rows.append(
+            {
+                "sorter": _field(name, "FORTNA/Sorters.asc"),
+                "encoder_tag": _field(enc, "FORTNA/Sorters.asc Encoder ioName"),
+                "encoder_ticks_per_foot": _field(
+                    (enc_doc or {}).get("ticks_per_foot", {}).get("value")
+                    if isinstance((enc_doc or {}).get("ticks_per_foot"), dict)
+                    else (enc_doc or {}).get("ticks_per_foot") or "",
+                    "FORTNA/Encoders.asc",
+                    PROV_RUN if enc_doc else PROV_UNKNOWN,
+                ),
+                "conveyor": _field("", "not in RUN sorter/encoder join", PROV_UNKNOWN),
+                "photoeye": _field("", "not in RUN sorter/encoder join", PROV_UNKNOWN),
+                "authority": {
+                    "encoder_tag": enc_auth,
+                    "conveyor": AUTH_UNKNOWN,
+                    "photoeye": AUTH_UNKNOWN,
+                },
+            }
+        )
+    return rows
+
+
+def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, Any]:
+    """Full SorterModel foundation from RUN (all active rows, field authority).
+
+    Does NOT emit PLC / L5X. Divert output IO is REVIEW_REQUIRED when INVALID.
+    """
+    run_dir = Path(run_dir)
+    if (run_dir / "RUN").is_dir() and not (run_dir / "FORTNA").is_dir():
+        run_dir = run_dir / "RUN"
+    machine = _read_machine(run_dir, machine)
+
+    sorter_rows = iter_active_table_rows(run_dir, "Sorters.asc", machine)
+    encoder_rows = iter_active_table_rows(run_dir, "Encoders.asc", machine)
+    zone_rows = iter_active_table_rows(run_dir, "SrtZoneLane.asc", machine)
+    app_rows = iter_active_table_rows(run_dir, "SrtAppControl.asc", machine)
+    boss_rows = iter_active_table_rows(run_dir, "SrtScanBoss.asc", machine)
 
     sorters: list[dict[str, Any]] = []
-    for s in active_rows("Sorters.asc"):
-        name = s.get("Sorter Name") or ""
+    for s in sorter_rows:
+        name = _clean(s.get("Sorter Name") or s.get("Name"))
         if not _meaningful(name):
             continue
+        enc = _clean(s.get("Encoder ioName") or s.get("Encoder Name"))
+        mach = _clean(s.get("Machine") or machine)
         sorters.append(
             {
                 "name": _field(name, "FORTNA/Sorters.asc"),
-                "encoder_io": _field(s.get("Encoder ioName") or "", "FORTNA/Sorters.asc"),
-                "machine": _field(s.get("Machine") or machine, "FORTNA/Sorters.asc"),
+                "encoder_io": _field(enc, "FORTNA/Sorters.asc"),
+                "machine": _field(mach, "FORTNA/Sorters.asc"),
+                "authority": {
+                    "name": AUTH_PROVEN,
+                    "encoder_io": _authority(enc),
+                    "machine": _authority(mach) if mach else AUTH_DERIVED,
+                },
             }
         )
 
     encoders: list[dict[str, Any]] = []
-    for e in active_rows("Encoders.asc"):
-        name = e.get("Encoder Name") or ""
+    encoders_by_name: dict[str, dict[str, Any]] = {}
+    for e in encoder_rows:
+        name = _clean(e.get("Encoder Name") or e.get("Name"))
         if not _meaningful(name):
             continue
-        encoders.append(
-            {
-                "name": _field(name, "FORTNA/Encoders.asc"),
-                "io": _field(e.get("Encoder I/O") or "", "FORTNA/Encoders.asc"),
-                "enable_bit": _field(e.get("EnableBit") or "", "FORTNA/Encoders.asc"),
-                "jamzone": _field(e.get("Jamzone") or "", "FORTNA/Encoders.asc"),
-                "ticks_per_foot": _field(
-                    e.get("Ticks Per Foot") or "", "FORTNA/Encoders.asc"
-                ),
-                "target_fpm": _field(e.get("Target FPM") or "", "FORTNA/Encoders.asc"),
-            }
-        )
+        doc = {
+            "name": _field(name, "FORTNA/Encoders.asc"),
+            "io": _field(_clean(e.get("Encoder I/O")), "FORTNA/Encoders.asc"),
+            "enable_bit": _field(_clean(e.get("EnableBit")), "FORTNA/Encoders.asc"),
+            "jamzone": _field(_clean(e.get("Jamzone")), "FORTNA/Encoders.asc"),
+            "ticks_per_foot": _field(
+                _clean(e.get("Ticks Per Foot")), "FORTNA/Encoders.asc"
+            ),
+            "target_fpm": _field(_clean(e.get("Target FPM")), "FORTNA/Encoders.asc"),
+            "authority": {
+                "name": AUTH_PROVEN,
+                "ticks_per_foot": _authority(e.get("Ticks Per Foot")),
+                "target_fpm": _authority(e.get("Target FPM")),
+                "enable_bit": _authority(e.get("EnableBit"), blank_is=AUTH_REVIEW),
+            },
+        }
+        encoders.append(doc)
+        encoders_by_name[name.upper()] = doc
 
-    zones: list[dict[str, Any]] = []
-    for z in active_rows("SrtZoneLane.asc"):
-        name = z.get("Name") or ""
-        if not _meaningful(name):
-            continue
-        zones.append(
-            {
-                "name": _field(name, "FORTNA/SrtZoneLane.asc"),
-                "enabled": _field(z.get("Enabled") or "", "FORTNA/SrtZoneLane.asc"),
-                "app_sorter": _field(z.get("AppSorter") or "", "FORTNA/SrtZoneLane.asc"),
-                "lane": _field(z.get("Lane") or "", "FORTNA/SrtZoneLane.asc"),
-                "host_zone": _field(z.get("HostZone") or "", "FORTNA/SrtZoneLane.asc"),
-                "full_clear_timer": _field(
-                    z.get("FullClearTimer") or "", "FORTNA/SrtZoneLane.asc"
-                ),
-            }
-        )
+    divert_rows = build_divert_rows(zone_rows)
+    tracking_path = build_tracking_path_rows(sorters, encoders_by_name)
 
     apps: list[dict[str, Any]] = []
-    for a in active_rows("SrtAppControl.asc"):
-        name = a.get("Name") or ""
+    for a in app_rows:
+        name = _clean(a.get("Name"))
         if not _meaningful(name):
             continue
+        mtr = _clean(a.get("SorterCnvMtr") or a.get("Sorter Cnv Mtr"))
         apps.append(
             {
                 "name": _field(name, "FORTNA/SrtAppControl.asc"),
                 "control_machine": _field(
-                    a.get("ControlMachine") or "", "FORTNA/SrtAppControl.asc"
+                    _clean(a.get("ControlMachine")), "FORTNA/SrtAppControl.asc"
                 ),
                 "crr_msg_table": _field(
-                    a.get("CrrMsgTable") or "", "FORTNA/SrtAppControl.asc"
+                    _clean(a.get("CrrMsgTable")), "FORTNA/SrtAppControl.asc"
                 ),
                 "dcm_msg_table": _field(
-                    a.get("DcmMsgTable") or "", "FORTNA/SrtAppControl.asc"
+                    _clean(a.get("DcmMsgTable")), "FORTNA/SrtAppControl.asc"
                 ),
+                "sorter_cnv_mtr": _field(mtr, "FORTNA/SrtAppControl.asc"),
+                "authority": {
+                    "name": AUTH_PROVEN,
+                    "sorter_cnv_mtr": _authority(mtr, blank_is=AUTH_REVIEW),
+                },
             }
         )
 
     scan_bosses: list[dict[str, Any]] = []
-    for b in active_rows("SrtScanBoss.asc"):
-        name = b.get("Name") or ""
+    for b in boss_rows:
+        name = _clean(b.get("Name"))
         if not _meaningful(name):
             continue
         scan_bosses.append(
             {
                 "name": _field(name, "FORTNA/SrtScanBoss.asc"),
-                "app_sorter": _field(b.get("AppSorter") or "", "FORTNA/SrtScanBoss.asc"),
-                "scan_zone": _field(b.get("ScanZone") or "", "FORTNA/SrtScanBoss.asc"),
-                "lane": _field(b.get("Lane") or "", "FORTNA/SrtScanBoss.asc"),
+                "app_sorter": _field(
+                    _clean(b.get("AppSorter")), "FORTNA/SrtScanBoss.asc"
+                ),
+                "scan_zone": _field(
+                    _clean(b.get("ScanZone")), "FORTNA/SrtScanBoss.asc"
+                ),
+                "lane": _field(_clean(b.get("Lane")), "FORTNA/SrtScanBoss.asc"),
+                "authority": {
+                    "name": AUTH_PROVEN,
+                    "app_sorter": _authority(b.get("AppSorter")),
+                    "scan_zone": _authority(b.get("ScanZone")),
+                },
             }
         )
+
+    zone_lanes = [
+        {
+            "name": d["name"],
+            "enabled": d["enabled"],
+            "app_sorter": d["app_sorter"],
+            "lane": d["lane"],
+            "host_zone": d["host_zone"],
+            "full_clear_timer": d["full_clear_timer"],
+            "authority": d["authority"],
+        }
+        for d in divert_rows
+    ]
+
+    field_authority = {
+        "sorter_existence": AUTH_PROVEN if sorters else AUTH_UNKNOWN,
+        "sorter_identity": AUTH_PROVEN if sorters else AUTH_UNKNOWN,
+        "sorter_encoder_link": (
+            AUTH_PROVEN
+            if sorters and all(
+                (s.get("authority") or {}).get("encoder_io") == AUTH_PROVEN
+                for s in sorters
+            )
+            else (AUTH_DERIVED if sorters else AUTH_UNKNOWN)
+        ),
+        "encoder_parameters": AUTH_PROVEN if encoders else AUTH_UNKNOWN,
+        "app_control": AUTH_PROVEN if apps else AUTH_UNKNOWN,
+        "scan_boss": AUTH_PROVEN if scan_bosses else AUTH_UNKNOWN,
+        "divert_lane_topology": AUTH_PROVEN if divert_rows else AUTH_UNKNOWN,
+        "divert_output_io": AUTH_REVIEW,
+        "tracking_conveyor_chain": AUTH_UNKNOWN,
+        "sorter_type": AUTH_REVIEW,
+        "plc_generation": "NOT_STARTED",
+    }
+
+    return {
+        "generated_at": _ts(),
+        "machine": machine,
+        "source_of_truth": "RUN only — finished PLC L5X not read",
+        "detected": bool(sorters),
+        "sorter_count": len(sorters),
+        "encoder_count": len(encoders),
+        "divert_count": len(divert_rows),
+        "tracking_path_count": len(tracking_path),
+        "sorters": sorters,
+        "encoders": encoders,
+        "app_controls": apps,
+        "scan_bosses": scan_bosses,
+        "zone_lanes": zone_lanes,
+        "divert_rows": divert_rows,
+        "tracking_path": tracking_path,
+        "field_authority": field_authority,
+        "generation_state": "NOT_SUPPORTED",
+        "plc_generation": "NOT_STARTED",
+        "note": (
+            "Canonical model + UI populate only. Sorter_Track L5X generation "
+            "remains NOT_STARTED / REVIEW until a generic library path exists."
+        ),
+    }
+
+
+def build_subsystem_model(inventory: dict[str, Any], machine: str) -> dict[str, Any]:
+    by = {t["table"]: t for t in inventory.get("tables") or []}
+    run_dir = Path(inventory.get("run_dir") or "")
+
+    # Prefer full-table reads when run_dir is known (inventory samples are capped).
+    if run_dir.is_dir():
+        canonical = build_canonical_sorter_model(run_dir, machine)
+        sorters = canonical["sorters"]
+        encoders = canonical["encoders"]
+        zones = canonical["zone_lanes"]
+        apps = canonical["app_controls"]
+        scan_bosses = canonical["scan_bosses"]
+    else:
+        def active_rows(name: str) -> list[dict[str, str]]:
+            t = by.get(name) or {}
+            return list(t.get("samples") or [])
+
+        sorters = []
+        for s in active_rows("Sorters.asc"):
+            name = s.get("Sorter Name") or ""
+            if not _meaningful(name):
+                continue
+            sorters.append(
+                {
+                    "name": _field(name, "FORTNA/Sorters.asc"),
+                    "encoder_io": _field(s.get("Encoder ioName") or "", "FORTNA/Sorters.asc"),
+                    "machine": _field(s.get("Machine") or machine, "FORTNA/Sorters.asc"),
+                }
+            )
+
+        encoders = []
+        for e in active_rows("Encoders.asc"):
+            name = e.get("Encoder Name") or ""
+            if not _meaningful(name):
+                continue
+            encoders.append(
+                {
+                    "name": _field(name, "FORTNA/Encoders.asc"),
+                    "io": _field(e.get("Encoder I/O") or "", "FORTNA/Encoders.asc"),
+                    "enable_bit": _field(e.get("EnableBit") or "", "FORTNA/Encoders.asc"),
+                    "jamzone": _field(e.get("Jamzone") or "", "FORTNA/Encoders.asc"),
+                    "ticks_per_foot": _field(
+                        e.get("Ticks Per Foot") or "", "FORTNA/Encoders.asc"
+                    ),
+                    "target_fpm": _field(e.get("Target FPM") or "", "FORTNA/Encoders.asc"),
+                }
+            )
+
+        zones = []
+        for z in active_rows("SrtZoneLane.asc"):
+            name = z.get("Name") or ""
+            if not _meaningful(name):
+                continue
+            zones.append(
+                {
+                    "name": _field(name, "FORTNA/SrtZoneLane.asc"),
+                    "enabled": _field(z.get("Enabled") or "", "FORTNA/SrtZoneLane.asc"),
+                    "app_sorter": _field(z.get("AppSorter") or "", "FORTNA/SrtZoneLane.asc"),
+                    "lane": _field(z.get("Lane") or "", "FORTNA/SrtZoneLane.asc"),
+                    "host_zone": _field(z.get("HostZone") or "", "FORTNA/SrtZoneLane.asc"),
+                    "full_clear_timer": _field(
+                        z.get("FullClearTimer") or "", "FORTNA/SrtZoneLane.asc"
+                    ),
+                }
+            )
+
+        apps = []
+        for a in active_rows("SrtAppControl.asc"):
+            name = a.get("Name") or ""
+            if not _meaningful(name):
+                continue
+            apps.append(
+                {
+                    "name": _field(name, "FORTNA/SrtAppControl.asc"),
+                    "control_machine": _field(
+                        a.get("ControlMachine") or "", "FORTNA/SrtAppControl.asc"
+                    ),
+                    "crr_msg_table": _field(
+                        a.get("CrrMsgTable") or "", "FORTNA/SrtAppControl.asc"
+                    ),
+                    "dcm_msg_table": _field(
+                        a.get("DcmMsgTable") or "", "FORTNA/SrtAppControl.asc"
+                    ),
+                }
+            )
+
+        scan_bosses = []
+        for b in active_rows("SrtScanBoss.asc"):
+            name = b.get("Name") or ""
+            if not _meaningful(name):
+                continue
+            scan_bosses.append(
+                {
+                    "name": _field(name, "FORTNA/SrtScanBoss.asc"),
+                    "app_sorter": _field(b.get("AppSorter") or "", "FORTNA/SrtScanBoss.asc"),
+                    "scan_zone": _field(b.get("ScanZone") or "", "FORTNA/SrtScanBoss.asc"),
+                    "lane": _field(b.get("Lane") or "", "FORTNA/SrtScanBoss.asc"),
+                }
+            )
 
     srt_tracks: list[dict[str, Any]] = []
     for i in range(1, 6):
@@ -678,6 +985,20 @@ def build_subsystem_model(inventory: dict[str, Any], machine: str) -> dict[str, 
         "app_controls": apps,
         "scan_bosses": scan_bosses,
         "zone_lanes": zones,
+        "divert_rows": (
+            canonical.get("divert_rows") if run_dir.is_dir() else build_divert_rows([])
+        ),
+        "tracking_path": (
+            canonical.get("tracking_path")
+            if run_dir.is_dir()
+            else build_tracking_path_rows(sorters, {})
+        ),
+        "field_authority": (
+            canonical.get("field_authority")
+            if run_dir.is_dir()
+            else {"plc_generation": "NOT_STARTED"}
+        ),
+        "plc_generation": "NOT_STARTED",
         "srt_tracks": srt_tracks,
         "xfr_track": {
             "active_rows": _field(xfrtrack.get("active_rows", 0), "FORTNA/XfrTrack.asc"),
@@ -901,11 +1222,18 @@ def discover(
     machine = _read_machine(run_dir, machine)
     inventory = inventory_run(run_dir, machine)
     model = build_subsystem_model(inventory, machine)
+    canonical = build_canonical_sorter_model(run_dir, machine)
+    # Keep subsystem + canonical aligned on divert / tracking / authority.
+    model["divert_rows"] = canonical.get("divert_rows") or model.get("divert_rows") or []
+    model["tracking_path"] = canonical.get("tracking_path") or model.get("tracking_path") or []
+    model["field_authority"] = canonical.get("field_authority") or model.get("field_authority")
+    model["plc_generation"] = "NOT_STARTED"
     matrix = build_generation_support_matrix(model)
 
     result = {
         "inventory": inventory,
         "subsystem_model": model,
+        "canonical_sorter_model": canonical,
         "generation_support_matrix": matrix,
     }
 
@@ -913,6 +1241,7 @@ def discover(
         out_dir = Path(out_dir)
         out_dir.mkdir(parents=True, exist_ok=True)
         _write_json(out_dir / "subsystem_model.json", model)
+        _write_json(out_dir / "canonical_sorter_model.json", canonical)
         if not subsystem_only:
             _write_json(out_dir / "table_inventory.json", inventory)
             _write_json(out_dir / "generation_support_matrix.json", matrix)

@@ -2432,7 +2432,18 @@
    * Uses PROVEN entry/exit (or pathCanvas chord) when available.
    * Returns radians for UI paint only — does NOT set physical LEFT/RIGHT elbow.
    */
+  /** Allowed CURVE presentation angles (degrees). DISPLAY only — not physical L/R. */
+  const CURVE_DISPLAY_ANGLE_CHOICES = Object.freeze([
+    'Auto', 0, 45, 90, 135, 180, -45, -90, -135,
+  ]);
+
   function curveDisplayDirectionRad(n) {
+    // Engineer presentation override (persisted on node) — DISPLAY only
+    const ov = n?.curveDisplayAngle;
+    if (ov != null && ov !== '' && String(ov).toUpperCase() !== 'AUTO') {
+      const deg = Number(ov);
+      if (Number.isFinite(deg)) return (deg * Math.PI) / 180;
+    }
     if (n?.entryCanvas && n?.exitCanvas) {
       const dx = Number(n.exitCanvas.x) - Number(n.entryCanvas.x);
       const dy = Number(n.exitCanvas.y) - Number(n.entryCanvas.y);
@@ -2452,6 +2463,36 @@
     }
     // Fallback symbolic angle — still UNKNOWN physical orientation
     return (CURVE_SYMBOL.SYMBOL_ANGLE_DEG * Math.PI) / 180;
+  }
+
+  /** Set CURVE presentation angle override. DISPLAY metadata only. */
+  function setCurveDisplayAngle(nodeId, angleChoice) {
+    const area = activeArea();
+    if (!area) return;
+    const n = (area.nodes || []).find((x) => x.id === nodeId);
+    if (!n || !isCurveNode(n)) return;
+    if (angleChoice == null || String(angleChoice).toUpperCase() === 'AUTO') {
+      delete n.curveDisplayAngle;
+      if (n.provenance) delete n.provenance.curveDisplayAngle;
+    } else {
+      n.curveDisplayAngle = Number(angleChoice);
+      if (!n.provenance) n.provenance = {};
+      n.provenance.curveDisplayAngle = 'ENGINEER_ASSIGNED';
+    }
+    invalidateSchematicHitGeometry();
+    save();
+    try {
+      drawSchematic(area);
+      drawWires();
+      applyViewportZoom();
+    } catch (_) { /* ignore */ }
+    status(
+      `${nodeLabel(n)} CURVE display angle → ${
+        angleChoice == null || String(angleChoice).toUpperCase() === 'AUTO'
+          ? 'Auto / RUN'
+          : `${angleChoice}°`
+      } (presentation only)`,
+    );
   }
 
   function curveUnknownOrientationSymbolPath(n) {
@@ -4957,6 +4998,8 @@
           allow_undefined_pe: !!n.allow_undefined_pe,
           devices,
           placeholderTag: !!n.placeholderTag,
+          // Presentation-only CURVE angle override (not PLC topology)
+          curveDisplayAngle: n.curveDisplayAngle != null ? n.curveDisplayAngle : undefined,
         };
       }),
       wires: (area.wires || []).map((w) => ({
@@ -5955,6 +5998,9 @@
     distanceToDisplayPath,
     SCHEMATIC_HIT_WIDTH,
     CURVE_SYMBOL,
+    CURVE_DISPLAY_ANGLE_CHOICES,
+    setCurveDisplayAngle,
+    curveDisplayDirectionRad,
     buildCanonicalApplyGraph,
     applyMergesToAutogenUi,
     canonicalTransportHash,

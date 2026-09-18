@@ -633,15 +633,27 @@
       </div>
       <div class="text-[9px] text-slate-600 mb-1 leading-snug">Full site ledger — shows assignment state. Not the same as Available (zone picker).</div>
       <div class="space-y-0.5">${body || '<div class="text-slate-600 p-2 text-[10px]">No devices match</div>'}</div>
-      <div class="mt-2 flex gap-2">
-        <button type="button" id="sb-inv-assign" class="btn-ghost flex-1 text-[10px] py-1 rounded-lg border border-emerald-900/50 text-emerald-300" title="Verify & assign checked devices to a Safety Zone">
+      <div class="mt-2 flex flex-col gap-1.5">
+        <button type="button" id="sb-inv-assign-selected" class="btn-primary w-full text-[10px] py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-600 border border-emerald-500/40 text-white font-semibold" title="Assign checked devices into the currently selected Safety Zone">
+          Assign Selected → Zone
+        </button>
+        <button type="button" id="sb-inv-assign" class="btn-ghost w-full text-[10px] py-1 rounded-lg border border-emerald-900/50 text-emerald-300" title="Pick zone + confirm list">
           Assign Devices…
         </button>
       </div>`;
     const refreshAssignLabel = () => {
       const n = host.querySelectorAll('[data-sb-inv]:checked').length;
-      const btn = $('sb-inv-assign');
-      if (btn) btn.textContent = n ? `Assign ${n} Devices…` : 'Assign Devices…';
+      const z = selectedZone();
+      const btn = $('sb-inv-assign-selected');
+      const btn2 = $('sb-inv-assign');
+      if (btn) {
+        btn.textContent = n
+          ? `Assign ${n} Selected → ${z?.name || 'Zone'}`
+          : 'Assign Selected → Zone';
+        btn.disabled = !n || !z;
+        btn.classList.toggle('opacity-50', !n || !z);
+      }
+      if (btn2) btn2.textContent = n ? `Assign ${n} Devices…` : 'Assign Devices…';
     };
     host.querySelectorAll('[data-sb-inv]').forEach((cb) => {
       cb.addEventListener('change', refreshAssignLabel);
@@ -681,6 +693,47 @@
     $('sb-inv-assign')?.addEventListener('click', () => {
       openAssignDevicesWizard();
     });
+    $('sb-inv-assign-selected')?.addEventListener('click', () => {
+      assignCheckedToSelectedZone();
+    });
+  }
+
+  /** Primary action: assign checked inventory devices to the currently selected zone. */
+  function assignCheckedToSelectedZone() {
+    const host = $('sb-inventory');
+    const z = selectedZone();
+    if (!z) {
+      status('Select a Safety Zone card first, then Assign Selected');
+      return;
+    }
+    const names = [...(host?.querySelectorAll('[data-sb-inv]:checked') || [])]
+      .map((el) => el.getAttribute('data-sb-inv'))
+      .filter(Boolean);
+    if (!names.length) {
+      status('Check devices in Device Inventory first');
+      return;
+    }
+    const live = (state.model.zones || []).find((x) => x.name === z.name);
+    if (!live) return;
+    // Reassign: remove from other zones first (no duplicate membership)
+    (state.model.zones || []).forEach((oz) => {
+      if (oz.name === z.name) return;
+      const before = (oz.members || []).length;
+      oz.members = (oz.members || []).filter(
+        (m) => !names.some((n) => String(n).toUpperCase() === String(m).toUpperCase()),
+      );
+      if (oz.members.length !== before) {
+        oz.membersOrigin = 'ENGINEER_ASSIGNED';
+        oz.engineerEdited = true;
+        splitZoneMembers(oz);
+      }
+    });
+    mutateZone(live, (zz) => {
+      const set = new Set(zz.members || []);
+      names.forEach((n) => set.add(n));
+      zz.members = [...set];
+    });
+    status(`Assigned ${names.length} device(s) → ${z.name} (Apply Safety to persist)`);
   }
 
   /** Gate E — guided bulk assign: select → choose zone → confirm list → Apply later */

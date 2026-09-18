@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """Configio-primary physical Fortna word → RIO channel resolver (Greensboro-style).
 
-Maps Configio.asc Octal_Word + Desc (PANEL-CATALOG-INDEX) onto eipcfg adapters/modules
-to produce CP2RIO*/CP3RIO* channels. Does NOT hard-code word→adapter tables.
+Maps Configio.asc Octal_Word + Desc onto eipcfg adapters/modules to produce
+CPxRIO* channels. Does NOT hard-code word→adapter tables.
+
+Desc forms:
+  PANEL-CATALOG-INDEX (PLC2): CP2-1794-IA16-3 → sequential / name match within panel.
+  PANEL-NODE-slotHalf (PLC5): CP5-NODE53-1A → NODE→TargetIP adapter + EIPModules
+    InputBank/OutputBank match → chassis Slot (never bank→slot arithmetic alone).
 
 Data index scheme is FAMILY-AWARE (see fortna_hardware_family):
   1794 Flex: eipcfg bridged module at chassis slot S>0 → Logix Data[S-1]
@@ -33,6 +38,11 @@ from fortna_hardware_family import (  # noqa: E402
 # PANEL-CATALOG-INDEX — allow missing hyphen after panel (CP31794-IA16-31)
 _DESC_RE = re.compile(
     r"^(?P<panel>CP\d+)\s*-?\s*(?P<catalog>\d{4}-[A-Za-z0-9]+)\s*-?\s*(?P<index>\d+)\s*$",
+    re.I,
+)
+# PANEL-NODEnn-slotHalf — PLC5-style (CP5-NODE53-1A / CP5NODE52-7B)
+_NODE_DESC_RE = re.compile(
+    r"^(?P<panel>CP\d+)\s*-?\s*NODE(?P<node>\d+)\s*-?\s*(?P<slot>\d+)(?P<half>[AB])\s*$",
     re.I,
 )
 _PANEL_RE = re.compile(r"^(CP\d+)", re.I)
@@ -83,7 +93,39 @@ def parse_configio_desc(desc: str) -> dict[str, Any] | None:
         "module_name": f"{catalog}-{index}",
         "direction": _module_direction(catalog),
         "raw": d,
+        "form": "panel_catalog",
     }
+
+
+def parse_configio_node_desc(desc: str) -> dict[str, Any] | None:
+    """Parse PLC5-style Desc like CP5-NODE53-1A (panel + EIP node + chassis slot).
+
+    Node number matches EIPAdapters TargetIP last octet (NODE53 → …53 → 1794-AENT-3).
+    Slot is corroboration only — authoritative module identity is EIPModules
+    InputBank/OutputBank on that adapter (never bank→slot arithmetic alone).
+    """
+    d = (desc or "").strip()
+    if not d:
+        return None
+    m = _NODE_DESC_RE.match(d)
+    if not m:
+        return None
+    half = (m.group("half") or "A").upper()
+    return {
+        "panel": m.group("panel").upper(),
+        "node": int(m.group("node")),
+        "desc_slot": int(m.group("slot")),
+        "half": half,
+        "lohi": "Low" if half == "A" else "High",
+        "direction": "",  # from EIPModules bank field match
+        "raw": d,
+        "form": "panel_node",
+    }
+
+
+def configio_desc_evidence(desc: str) -> dict[str, Any] | None:
+    """Return PANEL-CATALOG or PANEL-NODE parse (catalog form preferred)."""
+    return parse_configio_desc(desc) or parse_configio_node_desc(desc)
 
 
 def _find_eipcfg(run_dir: Path, machine: str) -> Path | None:
@@ -133,6 +175,8 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
         except (TypeError, ValueError):
             bank = -1
         desc = (r.get("Desc") or "").strip()
+        parsed = parse_configio_desc(desc)
+        node_parsed = parse_configio_node_desc(desc)
         out.append(
             {
                 "row": i,
@@ -142,10 +186,186 @@ def _load_configio_rows(run_dir: Path, machine: str) -> list[dict[str, Any]]:
                 "desc": desc,
                 "in_out": (r.get("In_Out") or "").strip(),
                 "interface": iface or "RTA",
-                "parsed": parse_configio_desc(desc),
+                "parsed": parsed,
+                "node_parsed": node_parsed,
             }
         )
     return out
+
+
+def _find_eipmodules(run_dir: Path, machine: str = "") -> Path | None:
+    proj = run_dir / "PROJECT"
+    if not proj.is_dir():
+        return None
+    mach = (machine or "").strip()
+    candidates: list[Path] = []
+    if mach:
+        candidates.append(proj / f"EIPModules.asc.{mach}")
+    candidates.extend(sorted(proj.glob("EIPModules.asc*")))
+    for p in candidates:
+        if p.is_file():
+            return p
+    return None
+
+
+def _load_eipmodules_rows(run_dir: Path, machine: str = "") -> list[dict[str, Any]]:
+    """Load EIPModules.asc* bridged cards with InputBank/OutputBank/Slot."""
+    from fortna_asc import read_asc
+
+    path = _find_eipmodules(run_dir, machine)
+    if not path:
+        return []
+    try:
+        _, rows = read_asc(path)
+    except Exception:
+        return []
+    out: list[dict[str, Any]] = []
+    for r in rows:
+        name = (r.get("Name") or "").strip()
+        adapter = (r.get("Adapter") or "").strip()
+        mt = (r.get("Type") or "").strip()
+        conn = (r.get("Connection") or "").strip()
+        if not adapter or adapter.upper() in ("N/A", "INVALID"):
+            continue
+        if not mt or mt.upper() in ("N/A", "INVALID"):
+            continue
+        if conn.upper() == "HEADNODE" or "AENT" in mt.upper():
+            continue
+        try:
+            slot = int(float(r.get("Slot") or 0))
+        except (TypeError, ValueError):
+            slot = 0
+        try:
+            ib = int(float(r.get("InputBank") or 0))
+        except (TypeError, ValueError):
+            ib = 0
+        try:
+            ob = int(float(r.get("OutputBank") or 0))
+        except (TypeError, ValueError):
+            ob = 0
+        direction = _module_direction(mt)
+        out.append(
+            {
+                "name": name,
+                "adapter": adapter,
+                "type": mt,
+                "slot": slot,
+                "connection": conn or "BRIDGED",
+                "input_bank": ib,
+                "output_bank": ob,
+                "direction": direction,
+            }
+        )
+    return out
+
+
+def _enrich_adapters_with_eipmodules(
+    adapters: list[dict[str, Any]], eip_rows: list[dict[str, Any]]
+) -> None:
+    """Attach EIPModules InputBank/OutputBank onto matching eipcfg modules by slot."""
+    by_adapter: dict[str, list[dict[str, Any]]] = defaultdict(list)
+    for row in eip_rows:
+        ad = (row.get("adapter") or "").strip()
+        if ad:
+            by_adapter[ad].append(row)
+            by_adapter[ad.replace("-", "_")].append(row)
+            by_adapter[ad.replace("_", "-")].append(row)
+    for ad in adapters:
+        name = (ad.get("name") or "").strip()
+        mods = ad.get("modules") or []
+        rows = by_adapter.get(name) or by_adapter.get(name.replace("_", "-")) or []
+        if not rows:
+            continue
+        by_slot = {int(r.get("slot") or -1): r for r in rows}
+        for mod in mods:
+            if (mod.get("connection") or "").upper() == "HEADNODE":
+                continue
+            try:
+                slot = int(mod.get("slot") or -1)
+            except (TypeError, ValueError):
+                continue
+            hit = by_slot.get(slot)
+            if not hit:
+                continue
+            # EIPModules banks are authoritative for Configio Bank matching
+            if hit.get("input_bank") is not None:
+                mod["input_bank"] = int(hit["input_bank"])
+            if hit.get("output_bank") is not None:
+                mod["output_bank"] = int(hit["output_bank"])
+
+
+def _adapter_for_node(
+    adapters: list[dict[str, Any]], node: int
+) -> dict[str, Any] | None:
+    """Map Configio NODE number → eipcfg adapter via TargetIP last octet."""
+    for ad in adapters:
+        ip = (ad.get("targetip") or "").strip()
+        m = re.search(r"\.(\d+)$", ip)
+        if m and int(m.group(1)) == int(node):
+            return ad
+    # Fallback: 1794-AENT-(node-50) for Greensboro CP5 nodes 51..58
+    idx = int(node) - 50
+    if idx >= 1:
+        want = {f"1794-AENT-{idx}", f"1794_AENT_{idx}", f"AENT-{idx}", f"AENT_{idx}"}
+        for ad in adapters:
+            if (ad.get("name") or "").strip() in want:
+                return ad
+    return None
+
+
+def _module_matching_bank(
+    adapter: dict[str, Any], bank: int
+) -> tuple[dict[str, Any], str] | None:
+    """Find bridged module on adapter whose EIPModules InputBank/OutputBank == bank.
+
+    Returns (module_dict_with_adapter_fields, direction). Does not invent slots
+    from bank arithmetic — Slot comes from the EIPModules/eipcfg module record.
+    """
+    if bank < 0 or not adapter:
+        return None
+    bridged = []
+    for mod in sorted(adapter.get("modules") or [], key=lambda m: int(m.get("slot") or 0)):
+        if (mod.get("connection") or "").upper() == "HEADNODE":
+            continue
+        if "AENT" in (mod.get("type") or "").upper():
+            continue
+        bridged.append(mod)
+    # Prefer direction-consistent bank field (OB→O, IB→I)
+    candidates: list[tuple[dict[str, Any], str]] = []
+    for mod in bridged:
+        direction = mod.get("direction") or _module_direction(mod.get("type") or "")
+        try:
+            ib = int(mod.get("input_bank")) if mod.get("input_bank") is not None else -1
+        except (TypeError, ValueError):
+            ib = -1
+        try:
+            ob = int(mod.get("output_bank")) if mod.get("output_bank") is not None else -1
+        except (TypeError, ValueError):
+            ob = -1
+        if direction == "O" and ob == bank:
+            candidates.append((mod, "O"))
+        elif direction == "I" and ib == bank and ib > 0:
+            candidates.append((mod, "I"))
+        elif direction == "O" and ib == bank and ib > 0 and ob != bank:
+            # status IB on output card — ignore for discrete bank match
+            continue
+        elif ob == bank and direction != "I":
+            candidates.append((mod, direction or "O"))
+        elif ib == bank and ib > 0 and direction != "O":
+            candidates.append((mod, direction or "I"))
+    if not candidates:
+        return None
+    # Exact direction+bank wins; otherwise first slot-ordered match
+    mod, direction = candidates[0]
+    enriched = {
+        **mod,
+        "adapter_name": adapter.get("name"),
+        "rio_name": adapter.get("rio_name"),
+        "panel": adapter.get("panel"),
+        "adapter_index": adapter.get("adapter_index"),
+        "targetip": adapter.get("targetip"),
+    }
+    return enriched, direction
 
 
 def _data_index_for_module(slot: int, family: str | None = None) -> int:
@@ -212,7 +432,11 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
             )
 
     configio_rows = _load_configio_rows(run_dir, machine)
-    # Panel evidence from Configio Desc prefixes (RUN evidence for CP2/CP3 naming)
+    eip_rows = _load_eipmodules_rows(run_dir, machine)
+    if eip_rows and adapters:
+        _enrich_adapters_with_eipmodules(adapters, eip_rows)
+
+    # Panel evidence from Configio Desc prefixes (RUN evidence for CP2/CP3/CP5 naming)
     panel_order: list[str] = []
     panel_word_dirs: dict[str, dict[str, set[int]]] = defaultdict(
         lambda: {"I": set(), "O": set()}
@@ -221,15 +445,29 @@ def parse_eipcfg(run_dir: Path, machine: str = "") -> dict[str, Any]:
     module_panels: dict[str, set[str]] = defaultdict(set)
     for row in configio_rows:
         parsed = row.get("parsed")
-        if not parsed:
+        node_parsed = row.get("node_parsed")
+        evidence = parsed or node_parsed
+        if not evidence:
             continue
-        panel = parsed["panel"]
-        if panel not in panel_order:
+        panel = evidence.get("panel") or ""
+        if panel and panel not in panel_order:
             panel_order.append(panel)
-        direction = parsed.get("direction") or ""
-        if direction in ("I", "O"):
+        direction = (parsed or {}).get("direction") or ""
+        if not direction and node_parsed and eip_rows:
+            # Direction from EIPModules bank match on the NODE adapter
+            try:
+                b = int(row.get("bank"))
+            except (TypeError, ValueError):
+                b = -1
+            ad = _adapter_for_node(adapters, int(node_parsed.get("node") or -1))
+            if ad is not None and b >= 0:
+                hit = _module_matching_bank(ad, b)
+                if hit:
+                    direction = hit[1]
+        if panel and direction in ("I", "O"):
             panel_word_dirs[panel][direction].add(int(row["octal_word"]))
-        module_panels[parsed["module_name"].upper()].add(panel)
+        if parsed and parsed.get("module_name"):
+            module_panels[parsed["module_name"].upper()].add(panel)
 
     # Score each adapter by which panel Descs reference its modules (name hits)
     adapter_panel_scores: list[dict[str, int]] = []
@@ -458,7 +696,13 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         high = halves.get("High")
         low_p = (low or {}).get("parsed")
         high_p = (high or {}).get("parsed")
-        panel = (low_p or high_p or {}).get("panel") or ""
+        low_n = (low or {}).get("node_parsed")
+        high_n = (high or {}).get("node_parsed")
+        panel = (
+            (low_p or high_p or {}).get("panel")
+            or (low_n or high_n or {}).get("panel")
+            or ""
+        )
         direction = (low_p or high_p or {}).get("direction") or ""
         if not direction:
             for p in (low_p, high_p):
@@ -494,6 +738,8 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         seq = word_module.get(w)
         chosen = None
         assign_how = ""
+        eip_bank_used = None
+        node_used = None
         if seq:
             chosen = seq["module"]
             assign_how = seq["assign_how"]
@@ -516,6 +762,37 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
         elif name_hit:
             # Name hit on foreign panel — keep as provenance only; still unresolved channel
             pass
+
+        # PLC5 NODE Desc → EIPModules InputBank/OutputBank on that adapter (not bank math)
+        if not chosen:
+            node_info = low_n or high_n
+            bank_row = low or high or {}
+            try:
+                cfg_bank = int(bank_row.get("bank"))
+            except (TypeError, ValueError):
+                cfg_bank = -1
+            if node_info and cfg_bank >= 0:
+                ad = _adapter_for_node(adapters, int(node_info.get("node") or -1))
+                hit = _module_matching_bank(ad, cfg_bank) if ad else None
+                if not hit and cfg_bank > 0:
+                    # High half often stores Low+1; EIPModules stores the Low bank only
+                    hit = _module_matching_bank(ad, cfg_bank - 1) if ad else None
+                    if hit:
+                        cfg_bank = cfg_bank - 1
+                if hit:
+                    chosen, direction = hit[0], hit[1]
+                    assign_how = "configio_node_eipmodules_bank"
+                    panel = panel or chosen.get("panel") or node_info.get("panel") or ""
+                    eip_bank_used = cfg_bank
+                    node_used = int(node_info.get("node") or 0)
+                    # Corroborate Desc slot vs EIPModules slot (diagnostic only)
+                    try:
+                        desc_slot = int(node_info.get("desc_slot") or -1)
+                    except (TypeError, ValueError):
+                        desc_slot = -1
+                    if desc_slot >= 0 and int(chosen.get("slot") or -2) != desc_slot:
+                        # Keep EIPModules slot — Desc slot is corroboration, not override
+                        pass
 
         if not chosen:
             unresolved.append(
@@ -572,11 +849,19 @@ def build_physical_word_map(run_dir: Path, machine: str = "") -> dict[str, Any]:
                 == (chosen.get("name") or "").upper()
             ),
             "provenance": {
-                "source_tables": ["Configio.asc", "eipcfg"],
+                "source_tables": (
+                    ["Configio.asc", "eipcfg", "EIPModules"]
+                    if assign_how == "configio_node_eipmodules_bank"
+                    else ["Configio.asc", "eipcfg"]
+                ),
                 "configio_panel": panel,
                 "eipcfg_adapter": chosen.get("adapter_name"),
                 "eipcfg_module": chosen.get("name"),
                 "eipcfg_slot": eip_slot,
+                "eipmodules_bank": eip_bank_used,
+                "configio_node": node_used,
+                "input_bank": chosen.get("input_bank"),
+                "output_bank": chosen.get("output_bank"),
                 "data_index_scheme": topology.get("data_index_scheme"),
                 "assign_how": assign_how,
             },
