@@ -19,8 +19,11 @@ SORTER_TRACK_PACK = PROGRAM_DIR / "Sorter_Track_Program.L5X"
 WAVE_AOI_PATH = LIB_DIR / "TRK_Divert_WaveFunction_AOI.L5X"
 ENC_ROUTINE_PATH = LIB_DIR / "Enc_Routine_ST.L5X"
 
-# Gold Greensboro encoder / track conveyors in pack order (Encoder routine)
-GOLD_ENC_CONVEYORS = ("P504", "P506", "P508", "P509", "P510")
+# Pack-template encoder/track slot tokens inside Sorter_Track_Program.L5X
+# (PACK_STANDARD placeholders — remapped by model order; not site decision logic).
+PACK_TEMPLATE_ENC_SLOTS = ("P504", "P506", "P508", "P509", "P510")
+# Back-compat alias for older callers/tests
+GOLD_ENC_CONVEYORS = PACK_TEMPLATE_ENC_SLOTS
 
 
 def _safe(name: str) -> str:
@@ -105,15 +108,11 @@ def _collect_encoder_rows(sorter: dict) -> list[dict]:
 
 
 def resolve_enc_tag_name(row: dict) -> str:
+    """Encoder tag from explicit model field only — never invent ENC### from P###."""
     et = (row.get("encoder_tag") or "").strip()
     if et:
         return _safe(et)
-    conv = (row.get("conveyor") or "").strip()
-    m = re.match(r"^P(\d+[A-Z]?)$", conv, re.I)
-    if m:
-        return _safe(f"ENC{m.group(1)}")
-    if conv:
-        return _safe(f"{conv}_Enc")
+    # Do not derive ENC504 from conveyor P504 — Gate G / anti-cheat.
     return "NO_Enc"
 
 
@@ -204,7 +203,11 @@ def _apply_token_renames(text: str, pairs: list[tuple[str, str]]) -> str:
 
 
 def _limit_wave_divert_rungs(program_xml: str, divert_n: int) -> tuple[str, int, int]:
-    """Keep first divert_n TRK_Divert_WaveFunction rungs; NOP the rest."""
+    """Keep/expand TRK_Divert_WaveFunction rungs to model divert_n (cap 64).
+
+    If model needs more slots than the pack template, clone the first wave
+    rung pattern and renumber Divert indices (MODEL_EXPANDED).
+    """
     divert_n = max(0, min(64, int(divert_n or 0)))
     m = re.search(
         r'(<Routine Name="Wave_Divert"[^>]*>)(.*?)(</Routine>)',
@@ -214,27 +217,49 @@ def _limit_wave_divert_rungs(program_xml: str, divert_n: int) -> tuple[str, int,
     if not m:
         return program_xml, 0, 0
     head, body, tail = m.group(1), m.group(2), m.group(3)
-    kept = 0
-    total = 0
+    rungs = re.findall(r"<Rung\b[^>]*>.*?</Rung>", body, flags=re.S)
+    wave_rungs = [r for r in rungs if "TRK_Divert_WaveFunction" in r]
+    other_rungs = [r for r in rungs if "TRK_Divert_WaveFunction" not in r]
+    pack_total = len(wave_rungs)
+    if divert_n <= 0:
+        return program_xml, pack_total, pack_total
 
-    def _rung_repl(rm: re.Match) -> str:
-        nonlocal kept, total
-        rung = rm.group(0)
-        if "TRK_Divert_WaveFunction" not in rung:
-            return rung
-        total += 1
-        if kept < divert_n:
-            kept += 1
-            return rung
-        # Disable extra gold lanes
+    # Expand by cloning first template rung when model > pack slots
+    if divert_n > pack_total and wave_rungs:
+        template = wave_rungs[0]
+        # Find a DivertN token to renumber
+        base_m = re.search(r"(Divert)(\d+)", template)
+        base_idx = int(base_m.group(2)) if base_m else 1
+        for i in range(pack_total, divert_n):
+            new_idx = base_idx + i
+            cloned = template
+            # Renumber rung number later
+            cloned = re.sub(
+                r"(Divert)\d+",
+                rf"\g<1>{new_idx}",
+                cloned,
+            )
+            if "<Comment>" in cloned:
+                cloned = re.sub(
+                    r"<Comment>\s*<!\[CDATA\[.*?\]\]>\s*</Comment>",
+                    f"<Comment><![CDATA[MODEL_EXPANDED divert lane {i + 1}]]></Comment>",
+                    cloned,
+                    count=1,
+                    flags=re.S,
+                )
+            wave_rungs.append(cloned)
+
+    kept_waves = wave_rungs[:divert_n]
+    # NOP any leftover pack waves beyond divert_n
+    disabled = []
+    for extra in wave_rungs[divert_n:]:
         rung = re.sub(
             r"<Text>\s*<!\[CDATA\[.*?\]\]>\s*</Text>",
             "<Text><![CDATA[NOP();]]></Text>",
-            rung,
+            extra,
             count=1,
             flags=re.S,
         )
-        # Soften comment
         if "<Comment>" in rung:
             rung = re.sub(
                 r"<Comment>\s*<!\[CDATA\[.*?\]\]>\s*</Comment>",
@@ -243,11 +268,18 @@ def _limit_wave_divert_rungs(program_xml: str, divert_n: int) -> tuple[str, int,
                 count=1,
                 flags=re.S,
             )
-        return rung
+        disabled.append(rung)
 
-    new_body = re.sub(r"<Rung\b[^>]*>.*?</Rung>", _rung_repl, body, flags=re.S)
+    # Re-number all rungs sequentially
+    ordered = other_rungs + kept_waves + disabled
+    renumbered = []
+    for i, rung in enumerate(ordered):
+        rung = re.sub(r'Rung Number="\d+"', f'Rung Number="{i}"', rung, count=1)
+        renumbered.append(rung)
+    new_body = "".join(renumbered)
+    # Preserve non-rung preamble/epilogue if any
     new_prog = program_xml[: m.start()] + head + new_body + tail + program_xml[m.end() :]
-    return new_prog, kept, total
+    return new_prog, len(kept_waves), pack_total
 
 
 def _limit_encoder_rungs(program_xml: str, keep_n: int) -> tuple[str, int, int]:
@@ -297,9 +329,10 @@ def _limit_encoder_rungs(program_xml: str, keep_n: int) -> tuple[str, int, int]:
 
 def _build_rename_pairs(sorter: dict) -> list[tuple[str, str]]:
     """
-    Map gold P504/P506/… encoder conveyors → site conveyors + ENC tags.
+    Map pack-template encoder slots → model conveyors + explicit ENC tags by order.
 
-    Also map induct if provided onto first free gold slot.
+    Template slot tokens live in Sorter_Track_Program.L5X (PACK_STANDARD).
+    Multiplicity comes from SorterModel / sorter_build — never a fixed site count.
     """
     pairs: list[tuple[str, str]] = []
     enc_rows = _collect_encoder_rows(sorter)
@@ -310,8 +343,7 @@ def _build_rename_pairs(sorter: dict) -> list[tuple[str, str]]:
         if c:
             track_convs.append(_safe(c) if not c.upper().startswith("P") else c)
 
-    # Encoder slots: gold P504 → site ENC/P_Enc + P_Conv
-    for i, gold in enumerate(GOLD_ENC_CONVEYORS):
+    for i, slot in enumerate(PACK_TEMPLATE_ENC_SLOTS):
         if i < len(enc_rows):
             row = enc_rows[i]
             site_conv = (row.get("conveyor") or "").strip() or (
@@ -319,20 +351,17 @@ def _build_rename_pairs(sorter: dict) -> list[tuple[str, str]]:
             )
             site_enc = resolve_enc_tag_name(row)
             if site_enc and site_enc != "NO_Enc":
-                pairs.append((f"{gold}_Enc_AOI", f"{site_enc}_AOI"))
-                pairs.append((f"{gold}_Enc", site_enc))
+                pairs.append((f"{slot}_Enc_AOI", f"{site_enc}_AOI"))
+                pairs.append((f"{slot}_Enc", site_enc))
             if site_conv:
                 sc = _safe(site_conv)
-                # Conv UDT: P504_Conv → P509_Conv
-                pairs.append((f"{gold}_Conv", f"{sc}_Conv" if not sc.endswith("_Conv") else sc))
-                # bare conveyor token less common — still map gold base last
-                pairs.append((gold, sc))
+                pairs.append((f"{slot}_Conv", f"{sc}_Conv" if not sc.endswith("_Conv") else sc))
+                pairs.append((slot, sc))
         elif i < len(track_convs):
             sc = _safe(track_convs[i])
-            pairs.append((f"{gold}_Conv", f"{sc}_Conv" if not sc.endswith("_Conv") else sc))
-            pairs.append((gold, sc))
+            pairs.append((f"{slot}_Conv", f"{sc}_Conv" if not sc.endswith("_Conv") else sc))
+            pairs.append((slot, sc))
 
-    # Induct conveyor → often maps to first track gold if not already used
     induct = (sorter.get("induct_conveyor") or "").strip()
     if induct:
         pairs.append(("Induct_Conv", f"{_safe(induct)}_Conv"))

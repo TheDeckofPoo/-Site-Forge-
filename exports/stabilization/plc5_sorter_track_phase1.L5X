@@ -1,0 +1,1800 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<RSLogix5000Content SchemaRevision="1.0" SoftwareRevision="35.11" TargetName="Sorter_Track" TargetType="Program" ContainsContext="true">
+<Controller Use="Context" Name="ORNCCP5_PHASE1">
+<Programs>
+<Program Name="Sorter_Track" TestEdits="false" MainRoutineName="Main" Disabled="false" UseAsFolder="false">
+<Tags>
+<Tag Name="P542_Sorter_At_Speed" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[1]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="1"/>
+</Data>
+</Tag>
+<Tag Name="P544_Sorter_At_Speed" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[1]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="1"/>
+</Data>
+</Tag>
+<Tag Name="P640_Sorter_At_Speed" TagType="Base" DataType="BOOL" Radix="Decimal" Constant="false" ExternalAccess="Read/Write">
+<Data Format="L5K">
+<![CDATA[0]]>
+</Data>
+<Data Format="Decorated">
+<DataValue DataType="BOOL" Radix="Decimal" Value="0"/>
+</Data>
+</Tag>
+</Tags>
+<Routines>
+<Routine Name="Divert_Lane_Status" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[
+***************************
+Divert.PI.Full mapping
+***************************
+]]>
+</Comment>
+<Text>
+<![CDATA[XIC(PE704A_F.Full)OTE(P506_Divert1.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(PE704B_F.Full)OTE(P506_Divert2.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(PE704C_F.Full)OTE(P506_Divert3.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602C_F.Full)OTE(P506_Divert4.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602D_F.Full)OTE(P506_Divert5.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602E_F.Full)OTE(P506_Divert6.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602F_F.Full)OTE(P508_Divert1.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602G_F.Full)OTE(P508_Divert2.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602H_F.Full)OTE(P508_Divert3.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602I_F.Full)OTE(P508_Divert4.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602J_F.Full)OTE(P508_Divert5.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602K_F.Full)OTE(P508_Divert6.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602M_F.Full)OTE(P509_Divert1.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602N_F.Full)OTE(P510_Divert1.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602O_F.Full)OTE(P510_Divert2.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Text>
+<![CDATA[XIC(EZPE602P_F.Full)OTE(P510_Divert3.PI.Full);]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N">
+<Text>
+<![CDATA[NOP();]]>
+</Text>
+</Rung>
+<Rung Number="17" Type="N">
+<Comment>
+<![CDATA[
+***********************************
+Divert.PI.RIO_Fault mapping
+***********************************
+]]>
+</Comment>
+<Text>
+<![CDATA[XIC(CP5RIO2_2.Flt.CommLoss)OTE(P506_Divert1.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="18" Type="N">
+<Text>
+<![CDATA[XIC(CP5RIO2_2.Flt.CommLoss)OTE(P506_Divert2.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="19" Type="N">
+<Comment>
+<![CDATA[Divert 3 (Future Lane)]]>
+</Comment>
+<Text>
+<![CDATA[XIC(CP5RIO2_2.Flt.CommLoss)OTE(P506_Divert3.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="20" Type="N">
+<Text>
+<![CDATA[XIC(CP5RIO2_2.Flt.CommLoss)OTE(P506_Divert4.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="21" Type="N">
+<Text>
+<![CDATA[XIC(CP5RIO2_2.Flt.CommLoss)OTE(P506_Divert5.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="22" Type="N">
+<Text>
+<![CDATA[XIC(CP5RIO2_2.Flt.CommLoss)OTE(P506_Divert6.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="23" Type="N">
+<Text>
+<![CDATA[XIC(CP6RIO2_2.Flt.CommLoss)OTE(P508_Divert1.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="24" Type="N">
+<Text>
+<![CDATA[XIC(CP6RIO2_2.Flt.CommLoss)OTE(P508_Divert2.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="25" Type="N">
+<Comment>
+<![CDATA[Divert 9 (Future Lane)]]>
+</Comment>
+<Text>
+<![CDATA[XIC(CP6RIO2_2.Flt.CommLoss)OTE(P508_Divert3.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="26" Type="N">
+<Text>
+<![CDATA[XIC(CP6RIO2_2.Flt.CommLoss)OTE(P508_Divert4.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="27" Type="N">
+<Text>
+<![CDATA[XIC(CP6RIO2_2.Flt.CommLoss)OTE(P508_Divert5.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="28" Type="N">
+<Text>
+<![CDATA[XIC(CP6RIO2_2.Flt.CommLoss)OTE(P508_Divert6.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="29" Type="N">
+<Text>
+<![CDATA[XIC(CP7RIO2_5.Flt.CommLoss)OTE(P509_Divert1.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="30" Type="N">
+<Text>
+<![CDATA[XIC(CP7RIO2_5.Flt.CommLoss)OTE(P510_Divert1.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="31" Type="N">
+<Text>
+<![CDATA[XIC(CP7RIO2_5.Flt.CommLoss)OTE(P510_Divert2.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="32" Type="N">
+<Text>
+<![CDATA[XIC(CP7RIO2_5.Flt.CommLoss)OTE(P510_Divert3.PI.RIO_Fault);]]>
+</Text>
+</Rung>
+<Rung Number="33" Type="N">
+<Text>
+<![CDATA[NOP();]]>
+</Text>
+</Rung>
+<Rung Number="34" Type="N">
+<Comment>
+<![CDATA[
+**********************************
+Divert Lane Ready Mapping
+**********************************
+]]>
+</Comment>
+<Text>
+<![CDATA[XIC(P506_Sorter_At_Speed)XIC(P700A_Conv.Run)XIO(P700A_Conv.HMI.Manual)XIO(P506_Divert1.HMI.Manual)XIO(P506_Divert1.PI.Full)XIO(P506_Divert1.PI.RIO_Fault)XIO(P506_Divert1.Limit)XIO(P506_Divert1.Lane_Disable)XIC(P506_Divert1.HMI.Lane_Enable)OTE(P506_Divert1.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[1]);]]>
+</Text>
+</Rung>
+<Rung Number="35" Type="N">
+<Text>
+<![CDATA[XIC(P506_Sorter_At_Speed)XIC(P700B_Conv.Run)XIO(P700B_Conv.HMI.Manual)XIO(P506_Divert2.HMI.Manual)XIO(P506_Divert2.PI.Full)XIO(P506_Divert2.PI.RIO_Fault)XIO(P506_Divert2.Limit)XIO(P506_Divert2.Lane_Disable)XIC(P506_Divert2.HMI.Lane_Enable)OTE(P506_Divert2.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[2]);]]>
+</Text>
+</Rung>
+<Rung Number="36" Type="N">
+<Text>
+<![CDATA[XIC(P506_Sorter_At_Speed)XIC(P700C_Conv.Run)XIO(P700C_Conv.HMI.Manual)XIO(P506_Divert3.HMI.Manual)XIO(P506_Divert3.PI.Full)XIO(P506_Divert3.PI.RIO_Fault)XIO(P506_Divert3.Limit)XIO(P506_Divert3.Lane_Disable)XIC(P506_Divert3.HMI.Lane_Enable)OTE(P506_Divert3.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[3]);]]>
+</Text>
+</Rung>
+<Rung Number="37" Type="N">
+<Text>
+<![CDATA[XIC(P506_Sorter_At_Speed)XIC(P600C_Conv.Run)XIO(P600C_Conv.HMI.Manual)XIO(P506_Divert4.HMI.Manual)XIO(P506_Divert4.PI.Full)XIO(P506_Divert4.PI.RIO_Fault)XIO(P506_Divert4.Limit)XIO(P506_Divert4.Lane_Disable)XIC(P506_Divert4.HMI.Lane_Enable)OTE(P506_Divert4.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[4]);]]>
+</Text>
+</Rung>
+<Rung Number="38" Type="N">
+<Text>
+<![CDATA[XIC(P506_Sorter_At_Speed)XIC(P600D_Conv.Run)XIO(P600D_Conv.HMI.Manual)XIO(P506_Divert5.HMI.Manual)XIO(P506_Divert5.PI.Full)XIO(P506_Divert5.PI.RIO_Fault)XIO(P506_Divert5.Limit)XIO(P506_Divert5.Lane_Disable)XIC(P506_Divert5.HMI.Lane_Enable)OTE(P506_Divert5.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[5]);]]>
+</Text>
+</Rung>
+<Rung Number="39" Type="N">
+<Text>
+<![CDATA[XIC(P506_Sorter_At_Speed)XIC(P600E_Conv.Run)XIO(P600E_Conv.HMI.Manual)XIO(P506_Divert6.HMI.Manual)XIO(P506_Divert6.PI.Full)XIO(P506_Divert6.PI.RIO_Fault)XIO(P506_Divert6.Limit)XIO(P506_Divert6.Lane_Disable)XIC(P506_Divert6.HMI.Lane_Enable)OTE(P506_Divert6.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[6]);]]>
+</Text>
+</Rung>
+<Rung Number="40" Type="N">
+<Text>
+<![CDATA[XIC(P508_Sorter_At_Speed)XIC(P600F_Conv.Run)XIO(P600F_Conv.HMI.Manual)XIO(P508_Divert1.HMI.Manual)XIO(P508_Divert1.PI.Full)XIO(P508_Divert1.PI.RIO_Fault)XIO(P508_Divert1.Limit)XIO(P508_Divert1.Lane_Disable)XIC(P508_Divert1.HMI.Lane_Enable)OTE(P508_Divert1.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[7]);]]>
+</Text>
+</Rung>
+<Rung Number="41" Type="N">
+<Text>
+<![CDATA[XIC(P508_Sorter_At_Speed)XIC(P600G_Conv.Run)XIO(P600G_Conv.HMI.Manual)XIO(P508_Divert2.HMI.Manual)XIO(P508_Divert2.PI.Full)XIO(P508_Divert2.PI.RIO_Fault)XIO(P508_Divert2.Limit)XIO(P508_Divert2.Lane_Disable)XIC(P508_Divert2.HMI.Lane_Enable)OTE(P508_Divert2.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[8]);]]>
+</Text>
+</Rung>
+<Rung Number="42" Type="N">
+<Text>
+<![CDATA[XIC(P508_Sorter_At_Speed)XIC(P600H_Conv.Run)XIO(P600H_Conv.HMI.Manual)XIO(P508_Divert3.HMI.Manual)XIO(P508_Divert3.PI.Full)XIO(P508_Divert3.PI.RIO_Fault)XIO(P508_Divert3.Limit)XIO(P508_Divert3.Lane_Disable)XIC(P508_Divert3.HMI.Lane_Enable)OTE(P508_Divert3.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[9]);]]>
+</Text>
+</Rung>
+<Rung Number="43" Type="N">
+<Text>
+<![CDATA[XIC(P508_Sorter_At_Speed)XIC(P600I_Conv.Run)XIO(P600I_Conv.HMI.Manual)XIO(P508_Divert4.HMI.Manual)XIO(P508_Divert4.PI.Full)XIO(P508_Divert4.PI.RIO_Fault)XIO(P508_Divert4.Limit)XIO(P508_Divert4.Lane_Disable)XIC(P508_Divert4.HMI.Lane_Enable)OTE(P508_Divert4.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[10]);]]>
+</Text>
+</Rung>
+<Rung Number="44" Type="N">
+<Text>
+<![CDATA[XIC(P508_Sorter_At_Speed)XIC(P600J_Conv.Run)XIO(P600J_Conv.HMI.Manual)XIO(P508_Divert5.HMI.Manual)XIO(P508_Divert5.PI.Full)XIO(P508_Divert5.PI.RIO_Fault)XIO(P508_Divert5.Limit)XIO(P508_Divert5.Lane_Disable)XIC(P508_Divert5.HMI.Lane_Enable)OTE(P508_Divert5.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[11]);]]>
+</Text>
+</Rung>
+<Rung Number="45" Type="N">
+<Text>
+<![CDATA[XIC(P508_Sorter_At_Speed)XIC(P600K_Conv.Run)XIO(P600K_Conv.HMI.Manual)XIO(P508_Divert6.HMI.Manual)XIO(P508_Divert6.PI.Full)XIO(P508_Divert6.PI.RIO_Fault)XIO(P508_Divert6.Limit)XIO(P508_Divert6.Lane_Disable)XIC(P508_Divert6.HMI.Lane_Enable)OTE(P508_Divert6.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[12]);]]>
+</Text>
+</Rung>
+<Rung Number="46" Type="N">
+<Text>
+<![CDATA[XIC(P509_Sorter_At_Speed)XIC(P600M_Conv.Run)XIO(P600M_Conv.HMI.Manual)XIO(P509_Divert1.HMI.Manual)XIO(P509_Divert1.PI.Full)XIO(P509_Divert1.PI.RIO_Fault)XIO(P509_Divert1.Limit)XIO(P509_Divert1.Lane_Disable)XIC(P509_Divert1.HMI.Lane_Enable)OTE(P509_Divert1.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[13]);]]>
+</Text>
+</Rung>
+<Rung Number="47" Type="N">
+<Text>
+<![CDATA[XIC(P510_Sorter_At_Speed)XIC(P600N_Conv.Run)XIO(P600N_Conv.HMI.Manual)XIO(P510_Divert1.HMI.Manual)XIO(P510_Divert1.PI.Full)XIO(P510_Divert1.PI.RIO_Fault)XIO(P510_Divert1.Limit)XIO(P510_Divert1.Lane_Disable)XIC(P510_Divert1.HMI.Lane_Enable)OTE(P510_Divert1.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[14]);]]>
+</Text>
+</Rung>
+<Rung Number="48" Type="N">
+<Text>
+<![CDATA[XIC(P510_Sorter_At_Speed)XIC(P600O_Conv.Run)XIO(P600O_Conv.HMI.Manual)XIO(P510_Divert2.HMI.Manual)XIO(P510_Divert2.PI.Full)XIO(P510_Divert2.PI.RIO_Fault)XIO(P510_Divert2.Limit)XIO(P510_Divert2.Lane_Disable)XIC(P510_Divert2.HMI.Lane_Enable)OTE(P510_Divert2.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[15]);]]>
+</Text>
+</Rung>
+<Rung Number="49" Type="N">
+<Text>
+<![CDATA[XIC(P510_Sorter_At_Speed)XIC(P600P_Conv.Run)XIO(P600P_Conv.HMI.Manual)XIO(P510_Divert3.HMI.Manual)XIO(P510_Divert3.PI.Full)XIO(P510_Divert3.PI.RIO_Fault)XIO(P510_Divert3.Limit)XIO(P510_Divert3.Lane_Disable)XIC(P510_Divert3.HMI.Lane_Enable)OTE(P510_Divert3.Lane_Ready)OTE(Sorter_Divert_Lanes.Ready[16]);]]>
+</Text>
+</Rung>
+<Rung Number="50" Type="N">
+<Text>
+<![CDATA[NOP();]]>
+</Text>
+</Rung>
+<Rung Number="51" Type="N">
+<Comment>
+<![CDATA[
+**********************************
+Sorter Speed Check
+**********************************
+]]>
+</Comment>
+<Text>
+<![CDATA[CMP(ENC504_AOI.M_FPM>(P504_Conv.Spd*0.95))TON(P504_AtSpeedExtraTimer,?,?)XIC(P504_AtSpeedExtraTimer.DN)OTE(P504_Sorter_At_Speed);]]>
+</Text>
+</Rung>
+<Rung Number="52" Type="N">
+<Comment>
+<![CDATA[
+**********************************
+Sorter Speed Check
+**********************************
+]]>
+</Comment>
+<Text>
+<![CDATA[CMP(ENC504_AOI.M_FPM>(P504_Conv.Spd*0.95))TON(P506_AtSpeedExtraTimer,?,?)XIC(P506_AtSpeedExtraTimer.DN)OTE(P506_Sorter_At_Speed);]]>
+</Text>
+</Rung>
+<Rung Number="53" Type="N">
+<Comment>
+<![CDATA[
+**********************************
+Sorter Speed Check
+**********************************
+]]>
+</Comment>
+<Text>
+<![CDATA[CMP(ENC506_AOI.M_FPM>(P506_Conv.Spd*0.95))TON(P508_AtSpeedExtraTimer,?,?)XIC(P508_AtSpeedExtraTimer.DN)OTE(P508_Sorter_At_Speed);]]>
+</Text>
+</Rung>
+<Rung Number="54" Type="N">
+<Comment>
+<![CDATA[
+**********************************
+Sorter Speed Check
+**********************************
+]]>
+</Comment>
+<Text>
+<![CDATA[CMP(ENC508_AOI.M_FPM>(P508_Conv.Spd*0.95))TON(P509_AtSpeedExtraTimer,?,?)XIC(P509_AtSpeedExtraTimer.DN)OTE(P509_Sorter_At_Speed);]]>
+</Text>
+</Rung>
+<Rung Number="55" Type="N">
+<Comment>
+<![CDATA[
+**********************************
+Sorter Speed Check
+**********************************
+]]>
+</Comment>
+<Text>
+<![CDATA[CMP(ENC509_AOI.M_FPM>(P509_Conv.Spd*0.95))TON(P510_AtSpeedExtraTimer,?,?)XIC(P510_AtSpeedExtraTimer.DN)OTE(P510_Sorter_At_Speed);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Divert_Rate_Limit" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[****************************************************************************************************
+Increase "Divert_Space" to increase allowed total product length diverting to a length
+****************************************************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[NOP();]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIO(Divert_Rate_Limit_Timer.DN)TON(Divert_Rate_Limit_Timer,?,?);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 1 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P506_Divert1_AOI.Divert_RateLimit,Token_SCN504[P506_Divert1.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P702A_Conv.Running,0,P506_Divert1.Divert,P506_Divert1.Takeaway_FPM,P506_Divert1.BufferSpace,P506_Divert1.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 2 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P506_Divert2_AOI.Divert_RateLimit,Token_SCN504[P506_Divert2.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P702B_Conv.Running,0,P506_Divert2.Divert,P506_Divert2.Takeaway_FPM,P506_Divert2.BufferSpace,P506_Divert2.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 3 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P506_Divert3_AOI.Divert_RateLimit,Token_SCN504[P506_Divert3.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P702C_Conv.Running,0,P506_Divert3.Divert,P506_Divert3.Takeaway_FPM,P506_Divert3.BufferSpace,P506_Divert3.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 4 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P506_Divert4_AOI.Divert_RateLimit,Token_SCN504[P506_Divert4.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602C_Conv.Running,0,P506_Divert4.Divert,P506_Divert4.Takeaway_FPM,P506_Divert4.BufferSpace,P506_Divert4.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 5 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P506_Divert5_AOI.Divert_RateLimit,Token_SCN504[P506_Divert5.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602D_Conv.Running,0,P506_Divert5.Divert,P506_Divert5.Takeaway_FPM,P506_Divert5.BufferSpace,P506_Divert5.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 6 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P506_Divert6_AOI.Divert_RateLimit,Token_SCN504[P506_Divert6.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602E_Conv.Running,0,P506_Divert6.Divert,P506_Divert6.Takeaway_FPM,P506_Divert6.BufferSpace,P506_Divert6.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 7 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P508_Divert1_AOI.Divert_RateLimit,Token_SCN504[P508_Divert1.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602F_Conv.Running,0,P508_Divert1.Divert,P508_Divert1.Takeaway_FPM,P508_Divert1.BufferSpace,P508_Divert1.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 8 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P508_Divert2_AOI.Divert_RateLimit,Token_SCN504[P508_Divert2.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602G_Conv.Running,0,P508_Divert2.Divert,P508_Divert2.Takeaway_FPM,P508_Divert2.BufferSpace,P508_Divert2.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 9 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P508_Divert3_AOI.Divert_RateLimit,Token_SCN504[P508_Divert3.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602H_Conv.Running,0,P508_Divert3.Divert,P508_Divert3.Takeaway_FPM,P508_Divert3.BufferSpace,P508_Divert3.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 10 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P508_Divert4_AOI.Divert_RateLimit,Token_SCN504[P508_Divert4.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602I_Conv.Running,0,P508_Divert4.Divert,P508_Divert4.Takeaway_FPM,P508_Divert4.BufferSpace,P508_Divert4.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 11 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P508_Divert5_AOI.Divert_RateLimit,Token_SCN504[P508_Divert5.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602J_Conv.Running,0,P508_Divert5.Divert,P508_Divert5.Takeaway_FPM,P508_Divert5.BufferSpace,P508_Divert5.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 12 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P508_Divert6_AOI.Divert_RateLimit,Token_SCN504[P508_Divert6.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602K_Conv.Running,0,P508_Divert6.Divert,P508_Divert6.Takeaway_FPM,P508_Divert6.BufferSpace,P508_Divert6.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 12 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P509_Divert1_AOI.Divert_RateLimit,Token_SCN504[P509_Divert1.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602M_Conv.Running,0,P509_Divert1.Divert,P509_Divert1.Takeaway_FPM,P509_Divert1.BufferSpace,P509_Divert1.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 12 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P510_Divert1_AOI.Divert_RateLimit,Token_SCN504[P510_Divert1.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602N_Conv.Running,0,P510_Divert1.Divert,P510_Divert1.Takeaway_FPM,P510_Divert1.BufferSpace,P510_Divert1.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 12 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P510_Divert2_AOI.Divert_RateLimit,Token_SCN504[P510_Divert2.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602O_Conv.Running,0,P510_Divert2.Divert,P510_Divert2.Takeaway_FPM,P510_Divert2.BufferSpace,P510_Divert2.Limit);]]>
+</Text>
+</Rung>
+<Rung Number="17" Type="N">
+<Comment>
+<![CDATA[************************
+Divert 12 - Rate Limit Logic 
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_RateLimit(P510_Divert3_AOI.Divert_RateLimit,Token_SCN504[P510_Divert3.Token_ID].Package_Length,Divert_Rate_Limit_Timer.PRE,Divert_Rate_Limit_Timer.DN,P602P_Conv.Running,0,P510_Divert3.Divert,P510_Divert3.Takeaway_FPM,P510_Divert3.BufferSpace,P510_Divert3.Limit);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Encoder" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[************************
+Encoder P504 Logic
+************************]]>
+</Comment>
+<Text>
+<![CDATA[Enc_RIOCard(ENC504_AOI,CP5RIO2:I.Data[3].12,Enc_Type0,ENC504.HMI.PPI_Ratio,P504_Conv.Spd,P504_Conv.Run,ENC504.HMI.Allowable_DiffSpd,ENC504.HMI.Allowable_PPIDiff,ENC504.HMI.Disable_PPIFlt,ShippingSorter_Area.Start,HMI_StatsClear,ENC504);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Comment>
+<![CDATA[************************
+Encoder P504 Logic
+************************]]>
+</Comment>
+<Text>
+<![CDATA[Enc_RIOCard(ENC504_AOI,CP5RIO2:I.Data[3].13,Enc_Type0,ENC504.HMI.PPI_Ratio,P504_Conv.Spd,P504_Conv.Run,ENC504.HMI.Allowable_DiffSpd,ENC504.HMI.Allowable_PPIDiff,ENC504.HMI.Disable_PPIFlt,ShippingSorter_Area.Start,HMI_StatsClear,ENC504);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Comment>
+<![CDATA[************************
+Encoder P548 Logic
+************************]]>
+</Comment>
+<Text>
+<![CDATA[Enc_RIOCard(ENC506_AOI,CP6RIO2:I.Data[3].4,Enc_Type0,ENC506.HMI.PPI_Ratio,P506_Conv.Spd,P506_Conv.Run,ENC506.HMI.Allowable_DiffSpd,ENC506.HMI.Allowable_PPIDiff,ENC506.HMI.Disable_PPIFlt,ShippingSorter_Area.Start,HMI_StatsClear,ENC506);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Comment>
+<![CDATA[************************
+Encoder P506 Logic
+************************]]>
+</Comment>
+<Text>
+<![CDATA[Enc_RIOCard(ENC508_AOI,CP7RIO2:I.Data[1].0,Enc_Type0,ENC508.HMI.PPI_Ratio,P508_Conv.Spd,P508_Conv.Run,ENC508.HMI.Allowable_DiffSpd,ENC508.HMI.Allowable_PPIDiff,ENC508.HMI.Disable_PPIFlt,ShippingSorter_Area.Start,HMI_StatsClear,ENC508);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Comment>
+<![CDATA[************************
+Encoder P509 Logic
+************************]]>
+</Comment>
+<Text>
+<![CDATA[Enc_RIOCard(ENC509_AOI,CP7RIO2:I.Data[1].1,Enc_Type0,ENC509.HMI.PPI_Ratio,P509_Conv.Spd,P509_Conv.Run,ENC509.HMI.Allowable_DiffSpd,ENC509.HMI.Allowable_PPIDiff,ENC509.HMI.Disable_PPIFlt,ShippingSorter_Area.Start,HMI_StatsClear,ENC509);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Gridlock_Prevention" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[************************************
+First Scan Settings
+************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[XIC(S:FS)[MOV(0,P504_System.GLP_Timer.ACC) MOV(0,P504_System.RecircCNT) MOV(0,P504_System.Max_RecircCNT) MOV(15,P504_System.Recirc_Max) ,MOV(0,P504_System.GLPFull_Enable) MOV(0,P504_System.GLPCoolDN_Timer.ACC) ,OTU(P504_System.GLP_Enable) ];]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Comment>
+<![CDATA[************************************
+GPL: Logic to count No. of boxes out of sorter in 30 seconds Next 2 Rung
+************************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(P509_Conv.Running)[XIO(PE510_J.PE_Clear) ,XIC(P504_System.GLP_Timer.TT) ,NEQ(P504_System.Max_RecircCNT,0) ]TON(P504_System.GLP_Timer,?,?);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(P509_Conv.Running)XIO(PE510_J.PE_Clear)ONS(P504_System.PE_ONS)ADD(P504_System.RecircCNT,1,P504_System.RecircCNT);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[[XIO(P504_System.GLP_Timer.DN) GEQ(P504_System.RecircCNT,P504_System.Recirc_Max) MOV(1,P504_System.Max_RecircCNT) ,XIC(P504_System.GLP_Timer.DN) LES(P504_System.RecircCNT,P504_System.Recirc_Max) MOV(0,P504_System.Max_RecircCNT) ][RES(P504_System.GLP_Timer) ,MOV(0,P504_System.RecircCNT) ];]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Comment>
+<![CDATA[************************************
+GPL: Logic to check full condition
+************************************]]>
+</Comment>
+<Text>
+<![CDATA[[XIC(EZPE536_F.Full) XIC(EZPE542_F.Full) ONS(P504_GLP_On) MOV(1,P504_System.GLPFull_Enable) ,XIO(EZPE536_F.Full) XIO(EZPE542_F.Full) ONS(P504_GLP_Off) MOV(0,P504_System.GLPFull_Enable) ];]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Comment>
+<![CDATA[************************************
+GridLock Prevent Enable Logic
+************************************]]>
+</Comment>
+<Text>
+<![CDATA[[[EQU(P504_System.GLPFull_Enable,1) ,EQU(P504_System.Max_RecircCNT,1) ] ,EQU(P504_System.GLPFull_Enable,0) EQU(P504_System.Max_RecircCNT,0) TON(P504_System.GLPCoolDN_Timer,?,?) XIO(P504_System.GLPCoolDN_Timer.DN) ][OTE(P500_Conv.Anti_Gridlock) ,OTE(P500A_Conv.Anti_Gridlock) ,OTE(P502_Conv.Anti_Gridlock) ,OTE(P504_System.GLP_Enable) ,OTE(P504_Conv.Anti_Gridlock) ,OTE(P504_Conv.Anti_Gridlock) ,OTE(P506_Conv.Anti_Gridlock) ,OTE(P508_Conv.Anti_Gridlock) ,OTE(P509_Conv.Anti_Gridlock) ,OTE(P550_Conv.Anti_Gridlock) ,OTE(P554_Conv.Anti_Gridlock) ,OTE(P560_Conv.Anti_Gridlock) ,OTE(P564_Conv.Anti_Gridlock) ,OTE(P566_Conv.Anti_Gridlock) ,OTE(P526_Conv.Anti_Gridlock) ,OTE(P528_Conv.Anti_Gridlock) ,OTE(P530_P1_Conv.Anti_Gridlock) ,OTE(P530_P2_Conv.Anti_Gridlock) ,OTE(P534_Conv.Anti_Gridlock) ,OTE(P536_Conv.Anti_Gridlock) ,OTE(P542_Conv.Anti_Gridlock) ,OTE(P544_Conv.Anti_Gridlock) ,OTE(P712_Conv.Anti_Gridlock) ,OTE(P716_Conv.Anti_Gridlock) ,OTE(P718_Conv.Anti_Gridlock) ];]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Comment>
+<![CDATA[************************************
+GPL: Bits for HMI 
+************************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(P504_System.GLPCoolDN_Timer.TT)OTE(P504_System.HMI.CoolDN_TmrActive);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[NEQ(P504_System.Max_RecircCNT,0)OTE(P504_System.HMI.RecircMaxCnt_GLPEnable);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Text>
+<![CDATA[NEQ(P504_System.GLPFull_Enable,0)OTE(P504_System.HMI.RecircFull_GLPEnable);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Main" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[JSR(Encoder,0);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[JSR(Track_Pointer,0);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIO(Track_Group_SCN504.Commission)JSR(Track_Induct_Package,0);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(P504_ManualDest.HMI.Enable_ManualDest)JSR(Track_Manual_Destination,0);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[JSR(Scanner,0);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[XIO(Track_Group_SCN504.Commission)JSR(Track_Package,0);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[XIO(Track_Group_SCN504.Commission)JSR(Track_Lost_Package,0);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIO(Track_Group_SCN504.Commission)JSR(Divert_Lane_Status,0);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Text>
+<![CDATA[XIO(Track_Group_SCN504.Commission)JSR(Track_Divert_Package,0);]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Text>
+<![CDATA[JSR(Wave_Divert,0);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Text>
+<![CDATA[XIC(Enable_Divert_Rate_Limit)JSR(Divert_Rate_Limit,0);]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Text>
+<![CDATA[XIO(Track_Group_SCN504.Commission)JSR(Track_Divert_Confirm,0);]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Text>
+<![CDATA[JSR(Track_Offset_Find,0);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[JSR(Gridlock_Prevention,0);]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Text>
+<![CDATA[JSR(Response_Time,0);]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Text>
+<![CDATA[OTU(Future_Lane);]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N"><Comment><![CDATA[Sorter build config snapshot]]></Comment><Text><![CDATA[JSR(Build_Config,0);]]></Text></Rung></RLLContent>
+</Routine>
+<Routine Name="Response_Time" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[TON(WCS_Response_Timer_P504,?,?);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(Processing_WCS_Response_Time_P504)[ONS(P504_MSG_Sent_to_WCS_ONS) CLR(WCS_Response_Time_P504) RES(WCS_Response_Timer_P504) ,NEQ(Token_SCN504[P504_WCS_Resp_Token_ID].Destination[0],0) [MOV(WCS_Response_Timer_P504.ACC,WCS_Response_Time_P504) ,GRT(WCS_Response_Time_P504,0) GRT(WCS_Resp_Time_Interval_P504,0) DIV(WCS_Response_Time_P504,WCS_Resp_Time_Interval_P504,WCS_Time_History_Index_P504) LIM(0,WCS_Time_History_Index_P504,99) ADD(1,WCS_Response_Time_P504_History[WCS_Time_History_Index_P504],WCS_Response_Time_P504_History[WCS_Time_History_Index_P504]) ,GRT(WCS_Response_Time_P504,Max_WCS_Response_Time_P504) MOV(WCS_Response_Time_P504,Max_WCS_Response_Time_P504) ,GRT(WCS_Response_Time_P504,0) LES(WCS_Response_Time_P504,Min_WCS_Response_Time_P504) MOV(WCS_Response_Time_P504,Min_WCS_Response_Time_P504) ,OTU(Processing_WCS_Response_Time_P504) ] ];]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(Processing_WCS_Response_Time_P504)GEQ(WCS_Response_Timer_P504.ACC,WCS_Response_Wait_Timeout_P504)[OTU(Processing_WCS_Response_Time_P504) OTL(WCS_Response_Timed_Out_P504) ,ADD(1,Response_Timed_Out_CNT_P504,Response_Timed_Out_CNT_P504) ];]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[XIC(Reset_WCS_Respoinse_Time_History_P504)FLL(0,WCS_Response_Time_P504_History[0],100)OTU(Reset_WCS_Respoinse_Time_History_P504);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Scanner" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P504_SCN504_Token_Find,P504_SCN504.Offset,P504_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(P504_SCN504_Token_Find.O_Token_Found_Ack)MOV(P504_SCN504_Token_Find.O_Token_Found,P504_SCN504.TokenNumber)OTU(P504_SCN504_Token_Find.O_Token_Found_Ack);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(SCN504:I.ConnectionFaulted)[TON(P504_SCN504.CommLoss_Tmr,?,?) XIC(P504_SCN504.CommLoss_Tmr.DN) ,XIC(P504_SCN504.Flt.CommLoss) XIO(P504_Conv.Reset) ]OTE(P504_SCN504.Flt.CommLoss);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[NEQ(SCN504:I.Data[0],P504_Scanner_Seq1_Pre)[COP(SCN504:I.Data[3],P504_Scanner_RawData_LEN,2) CPT(P504_Scanner_RawData_LEN,P504_Scanner_RawData_LEN-2) [GRT(P504_Scanner_RawData_LEN,128) MOV(128,P504_Scanner_RawData_LEN) ,LES(P504_Scanner_RawData_LEN,0) MOV(0,P504_Scanner_RawData_LEN) ] ,CPS(SCN504:I.Data[10],P504_Scanner_RawData_str.DATA[0],P504_Scanner_RawData_LEN) MOV(P504_Scanner_RawData_LEN,P504_Scanner_RawData_str.LEN) ,CPS(P504_Scanner_RawData_str,P504_SCN504.RawData,1) MOV(P504_Scanner_RawData_LEN,P504_SCN504.RawData.LEN) OTL(P504_SCN504.RawData_Available) ,ADD(1,P504_Scan_Raw_Data_History_Index,P504_Scan_Raw_Data_History_Index) GRT(P504_Scan_Raw_Data_History_Index,99) MOV(0,P504_Scan_Raw_Data_History_Index) ,COP(SCN504:I.Data[10],Raw_P504_Scanner_Data_History[P504_Scan_Raw_Data_History_Index].Raw_Data.DATA[0],P504_SCN504.RawData.LEN) MOV(P504_Scanner_RawData_LEN,Raw_P504_Scanner_Data_History[P504_Scan_Raw_Data_History_Index].Raw_Data.LEN) COP(PLC.String_DTS,Raw_P504_Scanner_Data_History[P504_Scan_Raw_Data_History_Index].Found_Timestamp,1) MOV(SCN504:I.Data[0],Raw_P504_Scanner_Data_History[P504_Scan_Raw_Data_History_Index].Seq_Number) ,MOV(SCN504:I.Data[0],P504_Scanner_Seq1_Pre) ,OTL(P504_Scan_Result_Available) ];]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(P504_Scan_Result_Available)TON(P504_Scanner_ResultsAvailable_Timer,?,?)XIC(P504_Scanner_ResultsAvailable_Timer.DN)[MOV(SCN504:I.Data[0],SCN504:O.Data[0]) ,OTU(P504_Scan_Result_Available) ];]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[TRK_Scanner_TokenUpdate(SCN504_Token_Update_AOI,P504_SCN504,0,0,0,ENC504.PPI,P504_SCN504.TokenNumber,Token_SCN504[P504_SCN504.TokenNumber].ReasonCode_SINT,Token_SCN504[P504_SCN504.TokenNumber].Package_Length,Token_SCN504[P504_SCN504.TokenNumber].Barcode,NO_Read,MultiRead,NO_Data,HMI_StatsClear,HMI_ScanStatsClear,HMI_LifeTime_ScanStatsClear,P504_Conv.Reset,P504_Scanner_Offset_Find,PE504_I.PE_Clear,P504_ScanOffsetArray,Reason_Code_SINT.Success,Reason_Code_SINT.Induct_NoData,Reason_Code_SINT.Induct_NoRead,Reason_Code_SINT.Induct_Multiread);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P504_WCS_Induct_MSG_Token_Find,P504_WCS_Induct_MSG_Offset,P504_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(P504_WCS_Induct_MSG_Token_Find.O_Token_Found_Ack)GRT(Token_SCN504[P504_WCS_Induct_MSG_Token_Find.O_Token_Found].Package_Length,0)[MOV(P504_WCS_Induct_MSG_Token_Find.O_Token_Found,P504_Induct_WCS_Token_Found) MOV(P504_Induct_WCS_Token_Found,P504_Induct_Scan_WCS_Token_Found_Last) [OTL(P504_Induct_Decision_Request_Helix) ,OTL(P504_CartonData.CountUp) ] ,MOV(P504_Induct_WCS_Token_Found,P504_WCS_Resp_Token_ID) ,OTU(P504_WCS_Induct_MSG_Token_Find.O_Token_Found_Ack) ,OTL(Processing_WCS_Response_Time_P504) ,[EQU(Token_SCN504[P504_Induct_WCS_Token_Found].Barcode,NO_Read) ,EQU(Token_SCN504[P504_Induct_WCS_Token_Found].Barcode,MultiRead) ] MOV(1,Token_SCN504[P504_Induct_WCS_Token_Found].Destination[0]) ];]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Track_Divert_Confirm" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[************************
+Recirc Lane (P1500)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(P510_ExitPE_Token_Found)[NEQ(Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].Divert_Triggered_Lane,0) EQU(Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].Diverted_Lane,0) MOV(Reason_Code_SINT.Failed_To_Divert,Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].ReasonCode_SINT) ,MOV(Track_Group_SCN504.Recirc_Lane,Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].Diverted_Lane) ,EQU(Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].ReasonCode_SINT,0) MOV(Reason_Code_SINT.Success,Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].ReasonCode_SINT) ,NEQ(Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].WCS_InductMSG_Sent_TS,0) EQU(Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].WCS_DivertConfmMSG_Sent_TS,0) MOV(P510_Track_Exit_AOI.M_Token_Found,P510_WCS_Token_Recirc) OTL(P510_Send_WCS_MSG_Recirc) ,OTU(P510_ExitPE_Token_Found) ];]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Track_Divert_Package" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 1  (P700A)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P506_Divert1_AOI.Divert_PackageDetect,P506_Divert1.CFG.FinalOffset_Divert,P506_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(P506_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P506_Divert1_AOI.Divert_PackageDetect.O_Token_Found,P506_Divert1.Token_ID) TRK_Search_Destination(P506_Divert1_AOI.Search_Dest,P506_Divert1,Sorter_Divert_Lanes,Token_SCN504[P506_Divert1.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(1,Token_SCN504[P506_Divert1.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P506_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P506_Divert1.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P506_Divert1_AOI.DivertLogic,P506_Divert1,Track_Group_SCN504,Token_SCN504[P506_Divert1.Token_ID],Sorter_Divert_Lanes,ENC504.PPI) TRK_Divert_RCUpdate(P506_Divert1_AOI.Divert_RCUpdate,P506_Divert1,Track_Group_SCN504,Token_SCN504[P506_Divert1.Token_ID],P700A_Conv,Reason_Code_SINT,P506_Sorter_At_Speed,0) ,XIC(P506_Divert1.O.Divert) TRK_DivertConfirm_RCUpdate(P506_Divert1_AOI.DC_RCUpdate,Token_SCN504[P506_Divert1_AOI.Divert_PackageDetect.O_Token_Found],P506_Divert1,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 2  (P700B)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P506_Divert2_AOI.Divert_PackageDetect,P506_Divert2.CFG.FinalOffset_Divert,P506_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(P506_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P506_Divert2_AOI.Divert_PackageDetect.O_Token_Found,P506_Divert2.Token_ID) TRK_Search_Destination(P506_Divert2_AOI.Search_Dest,P506_Divert2,Sorter_Divert_Lanes,Token_SCN504[P506_Divert2.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(2,Token_SCN504[P506_Divert2.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P506_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P506_Divert2.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P506_Divert2_AOI.DivertLogic,P506_Divert2,Track_Group_SCN504,Token_SCN504[P506_Divert2.Token_ID],Sorter_Divert_Lanes,ENC504.PPI) TRK_Divert_RCUpdate(P506_Divert2_AOI.Divert_RCUpdate,P506_Divert2,Track_Group_SCN504,Token_SCN504[P506_Divert2.Token_ID],P700B_Conv,Reason_Code_SINT,P506_Sorter_At_Speed,0) ,XIC(P506_Divert2.O.Divert) TRK_DivertConfirm_RCUpdate(P506_Divert2_AOI.DC_RCUpdate,Token_SCN504[P506_Divert2_AOI.Divert_PackageDetect.O_Token_Found],P506_Divert2,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 3  (P700C)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P506_Divert3_AOI.Divert_PackageDetect,P506_Divert3.CFG.FinalOffset_Divert,P506_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(P506_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P506_Divert3_AOI.Divert_PackageDetect.O_Token_Found,P506_Divert3.Token_ID) TRK_Search_Destination(P506_Divert3_AOI.Search_Dest,P506_Divert3,Sorter_Divert_Lanes,Token_SCN504[P506_Divert3.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(3,Token_SCN504[P506_Divert3.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P506_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P506_Divert3.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P506_Divert3_AOI.DivertLogic,P506_Divert3,Track_Group_SCN504,Token_SCN504[P506_Divert3.Token_ID],Sorter_Divert_Lanes,ENC504.PPI) TRK_Divert_RCUpdate(P506_Divert3_AOI.Divert_RCUpdate,P506_Divert3,Track_Group_SCN504,Token_SCN504[P506_Divert3.Token_ID],P700C_Conv,Reason_Code_SINT,P506_Sorter_At_Speed,0) ,XIC(P506_Divert3.O.Divert) TRK_DivertConfirm_RCUpdate(P506_Divert3_AOI.DC_RCUpdate,Token_SCN504[P506_Divert3_AOI.Divert_PackageDetect.O_Token_Found],P506_Divert3,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 4  (P600C) Future Lane
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P506_Divert4_AOI.Divert_PackageDetect,P506_Divert4.CFG.FinalOffset_Divert,P506_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Text>
+<![CDATA[XIC(P506_Divert4_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P506_Divert4_AOI.Divert_PackageDetect.O_Token_Found,P506_Divert4.Token_ID) TRK_Search_Destination(P506_Divert4_AOI.Search_Dest,P506_Divert4,Sorter_Divert_Lanes,Token_SCN504[P506_Divert4.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(4,Token_SCN504[P506_Divert4.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P506_Divert4_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P506_Divert4.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P506_Divert4_AOI.DivertLogic,P506_Divert4,Track_Group_SCN504,Token_SCN504[P506_Divert4.Token_ID],Sorter_Divert_Lanes,ENC504.PPI) TRK_Divert_RCUpdate(P506_Divert4_AOI.Divert_RCUpdate,P506_Divert4,Track_Group_SCN504,Token_SCN504[P506_Divert4.Token_ID],P600C_Conv,Reason_Code_SINT,P506_Sorter_At_Speed,0) ,XIC(P506_Divert4.O.Divert) TRK_DivertConfirm_RCUpdate(P506_Divert4_AOI.DC_RCUpdate,Token_SCN504[P506_Divert4_AOI.Divert_PackageDetect.O_Token_Found],P506_Divert4,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 5  (P600D)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P506_Divert5_AOI.Divert_PackageDetect,P506_Divert5.CFG.FinalOffset_Divert,P506_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[XIC(P506_Divert5_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P506_Divert5_AOI.Divert_PackageDetect.O_Token_Found,P506_Divert5.Token_ID) TRK_Search_Destination(P506_Divert5_AOI.Search_Dest,P506_Divert5,Sorter_Divert_Lanes,Token_SCN504[P506_Divert5.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(5,Token_SCN504[P506_Divert5.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P506_Divert5_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P506_Divert5.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P506_Divert5_AOI.DivertLogic,P506_Divert5,Track_Group_SCN504,Token_SCN504[P506_Divert5.Token_ID],Sorter_Divert_Lanes,ENC504.PPI) TRK_Divert_RCUpdate(P506_Divert5_AOI.Divert_RCUpdate,P506_Divert5,Track_Group_SCN504,Token_SCN504[P506_Divert5.Token_ID],P600D_Conv,Reason_Code_SINT,P506_Sorter_At_Speed,0) ,XIC(P506_Divert5.O.Divert) TRK_DivertConfirm_RCUpdate(P506_Divert5_AOI.DC_RCUpdate,Token_SCN504[P506_Divert5_AOI.Divert_PackageDetect.O_Token_Found],P506_Divert5,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 6  (P600E)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P506_Divert6_AOI.Divert_PackageDetect,P506_Divert6.CFG.FinalOffset_Divert,P506_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N">
+<Text>
+<![CDATA[XIC(P506_Divert6_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P506_Divert6_AOI.Divert_PackageDetect.O_Token_Found,P506_Divert6.Token_ID) TRK_Search_Destination(P506_Divert6_AOI.Search_Dest,P506_Divert6,Sorter_Divert_Lanes,Token_SCN504[P506_Divert6.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(6,Token_SCN504[P506_Divert6.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P506_Divert6_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P506_Divert6.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="17" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P506_Divert6_AOI.DivertLogic,P506_Divert6,Track_Group_SCN504,Token_SCN504[P506_Divert6.Token_ID],Sorter_Divert_Lanes,ENC504.PPI) TRK_Divert_RCUpdate(P506_Divert6_AOI.Divert_RCUpdate,P506_Divert6,Track_Group_SCN504,Token_SCN504[P506_Divert6.Token_ID],P600E_Conv,Reason_Code_SINT,P506_Sorter_At_Speed,0) ,XIC(P506_Divert6.O.Divert) TRK_DivertConfirm_RCUpdate(P506_Divert6_AOI.DC_RCUpdate,Token_SCN504[P506_Divert6_AOI.Divert_PackageDetect.O_Token_Found],P506_Divert6,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="18" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 7  (P600F)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P508_Divert1_AOI.Divert_PackageDetect,P508_Divert1.CFG.FinalOffset_Divert,P508_Conv_Track,ENC506.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="19" Type="N">
+<Text>
+<![CDATA[XIC(P508_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P508_Divert1_AOI.Divert_PackageDetect.O_Token_Found,P508_Divert1.Token_ID) TRK_Search_Destination(P508_Divert1_AOI.Search_Dest,P508_Divert1,Sorter_Divert_Lanes,Token_SCN504[P508_Divert1.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(7,Token_SCN504[P508_Divert1.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P508_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P508_Divert1.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="20" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P508_Divert1_AOI.DivertLogic,P508_Divert1,Track_Group_SCN504,Token_SCN504[P508_Divert1.Token_ID],Sorter_Divert_Lanes,ENC506.PPI) TRK_Divert_RCUpdate(P508_Divert1_AOI.Divert_RCUpdate,P508_Divert1,Track_Group_SCN504,Token_SCN504[P508_Divert1.Token_ID],P600F_Conv,Reason_Code_SINT,P508_Sorter_At_Speed,0) ,XIC(P508_Divert1.O.Divert) TRK_DivertConfirm_RCUpdate(P508_Divert1_AOI.DC_RCUpdate,Token_SCN504[P508_Divert1_AOI.Divert_PackageDetect.O_Token_Found],P508_Divert1,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="21" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 8  (P600G)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P508_Divert2_AOI.Divert_PackageDetect,P508_Divert2.CFG.FinalOffset_Divert,P508_Conv_Track,ENC506.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="22" Type="N">
+<Text>
+<![CDATA[XIC(P508_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P508_Divert2_AOI.Divert_PackageDetect.O_Token_Found,P508_Divert2.Token_ID) TRK_Search_Destination(P508_Divert2_AOI.Search_Dest,P508_Divert2,Sorter_Divert_Lanes,Token_SCN504[P508_Divert2.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(8,Token_SCN504[P508_Divert2.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P508_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P508_Divert2.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="23" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P508_Divert2_AOI.DivertLogic,P508_Divert2,Track_Group_SCN504,Token_SCN504[P508_Divert2.Token_ID],Sorter_Divert_Lanes,ENC506.PPI) TRK_Divert_RCUpdate(P508_Divert2_AOI.Divert_RCUpdate,P508_Divert2,Track_Group_SCN504,Token_SCN504[P508_Divert2.Token_ID],P600G_Conv,Reason_Code_SINT,P508_Sorter_At_Speed,0) ,XIC(P508_Divert2.O.Divert) TRK_DivertConfirm_RCUpdate(P508_Divert2_AOI.DC_RCUpdate,Token_SCN504[P508_Divert2_AOI.Divert_PackageDetect.O_Token_Found],P508_Divert2,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="24" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 9  (P600H)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P508_Divert3_AOI.Divert_PackageDetect,P508_Divert3.CFG.FinalOffset_Divert,P508_Conv_Track,ENC506.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="25" Type="N">
+<Text>
+<![CDATA[XIC(P508_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P508_Divert3_AOI.Divert_PackageDetect.O_Token_Found,P508_Divert3.Token_ID) TRK_Search_Destination(P508_Divert3_AOI.Search_Dest,P508_Divert3,Sorter_Divert_Lanes,Token_SCN504[P508_Divert3.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(9,Token_SCN504[P508_Divert3.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P508_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P508_Divert3.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="26" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P508_Divert3_AOI.DivertLogic,P508_Divert3,Track_Group_SCN504,Token_SCN504[P508_Divert3.Token_ID],Sorter_Divert_Lanes,ENC506.PPI) TRK_Divert_RCUpdate(P508_Divert3_AOI.Divert_RCUpdate,P508_Divert3,Track_Group_SCN504,Token_SCN504[P508_Divert3.Token_ID],P600H_Conv,Reason_Code_SINT,P508_Sorter_At_Speed,0) ,XIC(P508_Divert3.O.Divert) TRK_DivertConfirm_RCUpdate(P508_Divert3_AOI.DC_RCUpdate,Token_SCN504[P508_Divert3_AOI.Divert_PackageDetect.O_Token_Found],P508_Divert3,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="27" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 10  (P600I)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P508_Divert4_AOI.Divert_PackageDetect,P508_Divert4.CFG.FinalOffset_Divert,P508_Conv_Track,ENC506.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="28" Type="N">
+<Text>
+<![CDATA[XIC(P508_Divert4_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P508_Divert4_AOI.Divert_PackageDetect.O_Token_Found,P508_Divert4.Token_ID) TRK_Search_Destination(P508_Divert4_AOI.Search_Dest,P508_Divert4,Sorter_Divert_Lanes,Token_SCN504[P508_Divert4.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(10,Token_SCN504[P508_Divert4.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P508_Divert4_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P508_Divert4.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="29" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P508_Divert4_AOI.DivertLogic,P508_Divert4,Track_Group_SCN504,Token_SCN504[P508_Divert4.Token_ID],Sorter_Divert_Lanes,ENC506.PPI) TRK_Divert_RCUpdate(P508_Divert4_AOI.Divert_RCUpdate,P508_Divert4,Track_Group_SCN504,Token_SCN504[P508_Divert4.Token_ID],P600I_Conv,Reason_Code_SINT,P508_Sorter_At_Speed,0) ,XIC(P508_Divert4.O.Divert) TRK_DivertConfirm_RCUpdate(P508_Divert4_AOI.DC_RCUpdate,Token_SCN504[P508_Divert4_AOI.Divert_PackageDetect.O_Token_Found],P508_Divert4,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="30" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 11  (P600J)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P508_Divert5_AOI.Divert_PackageDetect,P508_Divert5.CFG.FinalOffset_Divert,P508_Conv_Track,ENC506.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="31" Type="N">
+<Text>
+<![CDATA[XIC(P508_Divert5_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P508_Divert5_AOI.Divert_PackageDetect.O_Token_Found,P508_Divert5.Token_ID) TRK_Search_Destination(P508_Divert5_AOI.Search_Dest,P508_Divert5,Sorter_Divert_Lanes,Token_SCN504[P508_Divert5.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(11,Token_SCN504[P508_Divert5.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P508_Divert5_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P508_Divert5.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="32" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P508_Divert5_AOI.DivertLogic,P508_Divert5,Track_Group_SCN504,Token_SCN504[P508_Divert5.Token_ID],Sorter_Divert_Lanes,ENC506.PPI) TRK_Divert_RCUpdate(P508_Divert5_AOI.Divert_RCUpdate,P508_Divert5,Track_Group_SCN504,Token_SCN504[P508_Divert5.Token_ID],P600J_Conv,Reason_Code_SINT,P508_Sorter_At_Speed,0) ,XIC(P508_Divert5.O.Divert) TRK_DivertConfirm_RCUpdate(P508_Divert5_AOI.DC_RCUpdate,Token_SCN504[P508_Divert5_AOI.Divert_PackageDetect.O_Token_Found],P508_Divert5,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="33" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 12  (P600K)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P508_Divert6_AOI.Divert_PackageDetect,P508_Divert6.CFG.FinalOffset_Divert,P508_Conv_Track,ENC506.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="34" Type="N">
+<Text>
+<![CDATA[XIC(P508_Divert6_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P508_Divert6_AOI.Divert_PackageDetect.O_Token_Found,P508_Divert6.Token_ID) TRK_Search_Destination(P508_Divert6_AOI.Search_Dest,P508_Divert6,Sorter_Divert_Lanes,Token_SCN504[P508_Divert6.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(12,Token_SCN504[P508_Divert6.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P508_Divert6_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P508_Divert6.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="35" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P508_Divert6_AOI.DivertLogic,P508_Divert6,Track_Group_SCN504,Token_SCN504[P508_Divert6.Token_ID],Sorter_Divert_Lanes,ENC506.PPI) TRK_Divert_RCUpdate(P508_Divert6_AOI.Divert_RCUpdate,P508_Divert6,Track_Group_SCN504,Token_SCN504[P508_Divert6.Token_ID],P600K_Conv,Reason_Code_SINT,P508_Sorter_At_Speed,0) ,XIC(P508_Divert6.O.Divert) TRK_DivertConfirm_RCUpdate(P508_Divert6_AOI.DC_RCUpdate,Token_SCN504[P508_Divert6_AOI.Divert_PackageDetect.O_Token_Found],P508_Divert6,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="36" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 13  (P600M)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P509_Divert1_AOI.Divert_PackageDetect,P509_Divert1.CFG.FinalOffset_Divert,P509_Conv_Track,ENC508.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="37" Type="N">
+<Text>
+<![CDATA[XIC(P509_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P509_Divert1_AOI.Divert_PackageDetect.O_Token_Found,P509_Divert1.Token_ID) TRK_Search_Destination(P509_Divert1_AOI.Search_Dest,P509_Divert1,Sorter_Divert_Lanes,Token_SCN504[P509_Divert1.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(13,Token_SCN504[P509_Divert1.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P509_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P509_Divert1.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="38" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P509_Divert1_AOI.DivertLogic,P509_Divert1,Track_Group_SCN504,Token_SCN504[P509_Divert1.Token_ID],Sorter_Divert_Lanes,ENC508.PPI) TRK_Divert_RCUpdate(P509_Divert1_AOI.Divert_RCUpdate,P509_Divert1,Track_Group_SCN504,Token_SCN504[P509_Divert1.Token_ID],P600M_Conv,Reason_Code_SINT,P509_Sorter_At_Speed,0) ,XIC(P509_Divert1.O.Divert) TRK_DivertConfirm_RCUpdate(P509_Divert1_AOI.DC_RCUpdate,Token_SCN504[P509_Divert1_AOI.Divert_PackageDetect.O_Token_Found],P509_Divert1,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="39" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 14  (P600N)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P510_Divert1_AOI.Divert_PackageDetect,P510_Divert1.CFG.FinalOffset_Divert,P510_Conv_Track,ENC509.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="40" Type="N">
+<Text>
+<![CDATA[XIC(P510_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P510_Divert1_AOI.Divert_PackageDetect.O_Token_Found,P510_Divert1.Token_ID) TRK_Search_Destination(P510_Divert1_AOI.Search_Dest,P510_Divert1,Sorter_Divert_Lanes,Token_SCN504[P510_Divert1.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(14,Token_SCN504[P510_Divert1.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P510_Divert1_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P510_Divert1.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="41" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P510_Divert1_AOI.DivertLogic,P510_Divert1,Track_Group_SCN504,Token_SCN504[P510_Divert1.Token_ID],Sorter_Divert_Lanes,ENC509.PPI) TRK_Divert_RCUpdate(P510_Divert1_AOI.Divert_RCUpdate,P510_Divert1,Track_Group_SCN504,Token_SCN504[P510_Divert1.Token_ID],P600N_Conv,Reason_Code_SINT,P510_Sorter_At_Speed,0) ,XIC(P510_Divert1.O.Divert) TRK_DivertConfirm_RCUpdate(P510_Divert1_AOI.DC_RCUpdate,Token_SCN504[P510_Divert1_AOI.Divert_PackageDetect.O_Token_Found],P510_Divert1,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="42" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 15  (P600O)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P510_Divert2_AOI.Divert_PackageDetect,P510_Divert2.CFG.FinalOffset_Divert,P510_Conv_Track,ENC509.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="43" Type="N">
+<Text>
+<![CDATA[XIC(P510_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P510_Divert2_AOI.Divert_PackageDetect.O_Token_Found,P510_Divert2.Token_ID) TRK_Search_Destination(P510_Divert2_AOI.Search_Dest,P510_Divert2,Sorter_Divert_Lanes,Token_SCN504[P510_Divert2.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(15,Token_SCN504[P510_Divert2.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P510_Divert2_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P510_Divert2.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="44" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P510_Divert2_AOI.DivertLogic,P510_Divert2,Track_Group_SCN504,Token_SCN504[P510_Divert2.Token_ID],Sorter_Divert_Lanes,ENC509.PPI) TRK_Divert_RCUpdate(P510_Divert2_AOI.Divert_RCUpdate,P510_Divert2,Track_Group_SCN504,Token_SCN504[P510_Divert2.Token_ID],P600O_Conv,Reason_Code_SINT,P510_Sorter_At_Speed,0) ,XIC(P510_Divert2.O.Divert) TRK_DivertConfirm_RCUpdate(P510_Divert2_AOI.DC_RCUpdate,Token_SCN504[P510_Divert2_AOI.Divert_PackageDetect.O_Token_Found],P510_Divert2,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+<Rung Number="45" Type="N">
+<Comment>
+<![CDATA[************************
+Divert - 16  (P600P)
+************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P510_Divert3_AOI.Divert_PackageDetect,P510_Divert3.CFG.FinalOffset_Divert,P510_Conv_Track,ENC509.PPI,Track_File_SCN504,HMI_StatsClear);]]>
+</Text>
+</Rung>
+<Rung Number="46" Type="N">
+<Text>
+<![CDATA[XIC(P510_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack)[MOV(P510_Divert3_AOI.Divert_PackageDetect.O_Token_Found,P510_Divert3.Token_ID) TRK_Search_Destination(P510_Divert3_AOI.Search_Dest,P510_Divert3,Sorter_Divert_Lanes,Token_SCN504[P510_Divert3.Token_ID],Track_Group_SCN504,Reason_Code_SINT) ,MOV(16,Token_SCN504[P510_Divert3.Token_ID].WCS_DivertConfmMSG_Location) ,OTU(P510_Divert3_AOI.Divert_PackageDetect.O_Token_Found_Ack) OTE(P510_Divert3.Package_Present) ];]]>
+</Text>
+</Rung>
+<Rung Number="47" Type="N">
+<Text>
+<![CDATA[[TRK_Divert(P510_Divert3_AOI.DivertLogic,P510_Divert3,Track_Group_SCN504,Token_SCN504[P510_Divert3.Token_ID],Sorter_Divert_Lanes,ENC509.PPI) TRK_Divert_RCUpdate(P510_Divert3_AOI.Divert_RCUpdate,P510_Divert3,Track_Group_SCN504,Token_SCN504[P510_Divert3.Token_ID],P600P_Conv,Reason_Code_SINT,P510_Sorter_At_Speed,0) ,XIC(P510_Divert3.O.Divert) TRK_DivertConfirm_RCUpdate(P510_Divert3_AOI.DC_RCUpdate,Token_SCN504[P510_Divert3_AOI.Divert_PackageDetect.O_Token_Found],P510_Divert3,Reason_Code_SINT.Success,HMI_StatsClear) ];]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Track_Induct_Package" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[TRK_Induct_TokenGenerate(P504_Induct_AOI,P504_Conv.Running,PE504_I.PE_Clear,P504_Induct_Track,Track_Group_SCN504)TRK_Induct_TokenUpdate(P504_Induct_Token_AOI,P504_Conv.Running,PE504_I.PE_Clear,ENC504.PPI,P504_Conv_Track,P504_Induct_Track,Track_File_SCN504,Track_Group_SCN504,Min_Front_Gap_Sorter,Min_Rear_Gap_Sorter,Reason_Code_SINT.Badgap_Front,Reason_Code_SINT.Badgap_Rear,Gap_Counter_Max,HMI_StatsClear,Token_SCN504[P504_Induct_Track.Token_Number],Token_SCN504[P504_Induct_Track.Token_Number_Prev]);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+Update Timestamp at Induct PE
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[NEQ(P504_Induct_AOI.M_Token_Number_Current,P504_Induct_Token_Prev)[COP(PLC.String_DTS,Token_SCN504[P504_Induct_AOI.M_Token_Number_Current].Found_TimeStamp,1) ,COP(P504_Conv_Track.CFG.Induct_Name,Token_SCN504[P504_Induct_AOI.M_Token_Number_Current].Last_Known_Location,1) ]MOV(P504_Induct_AOI.M_Token_Number_Current,P504_Induct_Token_Prev);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Track_Lost_Package" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+Track Lost Package at 504
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P504_Exit_Trk_Lost_Package_Check,P504_Conv_Track.CFG.Offset_Lost_Package,P504_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear)XIC(P504_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack)[TRK_Lost_Package(P504_Exit_Lost_Package_Detect,Token_SCN504[P504_Exit_Trk_Lost_Package_Check.O_Token_Found],P504_Conv_Track,Track_Group_SCN504,1,Reason_Code_SINT.Lost_package,Reason_Code_SINT.Success,P504_WCS_Token_Lost_Package) ,OTU(P504_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack) ];]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+Track Lost Package at 506
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P506_Exit_Trk_Lost_Package_Check,P506_Conv_Track.CFG.Offset_Lost_Package,P506_Conv_Track,ENC504.PPI,Track_File_SCN504,HMI_StatsClear)XIC(P506_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack)[TRK_Lost_Package(P506_Exit_Lost_Package_Detect,Token_SCN504[P506_Exit_Trk_Lost_Package_Check.O_Token_Found],P506_Conv_Track,Track_Group_SCN504,1,Reason_Code_SINT.Lost_package,Reason_Code_SINT.Success,P506_WCS_Token_Lost_Package) ,OTU(P506_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack) ];]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+Track Lost Package at 548
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P508_Exit_Trk_Lost_Package_Check,P508_Conv_Track.CFG.Offset_Lost_Package,P508_Conv_Track,ENC506.PPI,Track_File_SCN504,HMI_StatsClear)XIC(P508_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack)[TRK_Lost_Package(P508_Exit_Lost_Package_Detect,Token_SCN504[P508_Exit_Trk_Lost_Package_Check.O_Token_Found],P508_Conv_Track,Track_Group_SCN504,1,Reason_Code_SINT.Lost_package,Reason_Code_SINT.Success,P508_WCS_Token_Lost_Package) ,OTU(P508_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack) ];]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+Track Lost Package at 509
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P509_Exit_Trk_Lost_Package_Check,P509_Conv_Track.CFG.Offset_Lost_Package,P509_Conv_Track,ENC508.PPI,Track_File_SCN504,HMI_StatsClear)XIC(P509_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack)[TRK_Lost_Package(P509_Exit_Lost_Package_Detect,Token_SCN504[P509_Exit_Trk_Lost_Package_Check.O_Token_Found],P509_Conv_Track,Track_Group_SCN504,1,Reason_Code_SINT.Lost_package,Reason_Code_SINT.Success,P509_WCS_Token_Lost_Package) ,OTU(P509_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack) ];]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+Track Lost Package at 510
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_VirtualLocation(P510_Exit_Trk_Lost_Package_Check,P510_Conv_Track.CFG.Offset_Lost_Package,P510_Conv_Track,ENC509.PPI,Track_File_SCN504,HMI_StatsClear)XIC(P510_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack)[TRK_Lost_Package(P510_Exit_Lost_Package_Detect,Token_SCN504[P510_Exit_Trk_Lost_Package_Check.O_Token_Found],P510_Conv_Track,Track_Group_SCN504,1,Reason_Code_SINT.Lost_package,Reason_Code_SINT.Success,P510_WCS_Token_Lost_Package) ,OTU(P510_Exit_Trk_Lost_Package_Check.O_Token_Found_Ack) ];]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Track_Manual_Destination" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+Round-Robin Logic
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[NOP();]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[TRK_ManualDestination(Sorter_ManualDest_AOI,P504_ManualDest,P504_Induct_Track.Token_Number,Token_SCN504[P504_Induct_Track.Token_Number].Destination[0]);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Track_Offset_Find" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.Commission)NOP();]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.ResetOffsets_Trk)TON(Track_Group_SCN504.ResetTrkOffsets_UnlatchTmr,?,?)XIC(Track_Group_SCN504.ResetTrkOffsets_UnlatchTmr.DN)OTU(Track_Group_SCN504.ResetOffsets_Trk);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.UpdateOffset_Trk)TON(Track_Group_SCN504.UpdateTrkOffsets_UnlatchTmr,?,?)XIC(Track_Group_SCN504.UpdateTrkOffsets_UnlatchTmr.DN)OTU(Track_Group_SCN504.UpdateOffset_Trk);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+P504
+TRACKING ZONE TRANSITION
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P504_ConvOffsetFind_AOI,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P504_Conv_Track,PE504_I,PE506_I,P504_Conv_Track.CFG.TestOffset,P504_Conv_Track.CFG.Offset_PE);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+P504
+TRACKING ZONE TRANSITION
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P506_ConvOffsetFind_AOI,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P506_Conv_Track,PE506_I,PE508_I,P506_Conv_Track.CFG.TestOffset,P506_Conv_Track.CFG.Offset_PE);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+P506 
+TRACKING ZONE TRANSITION
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P508_ConvOffsetFind_AOI,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P508_Conv_Track,PE508_I,PE509_I,P508_Conv_Track.CFG.TestOffset,P508_Conv_Track.CFG.Offset_PE);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+P508 Conv Offset Find
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P509_ConvOffsetFind_AOI,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P509_Conv_Track,PE509_I,PE510_I,P509_Conv_Track.CFG.TestOffset,P509_Conv_Track.CFG.Offset_PE);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+P509 Conv Offset Find
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P510_ConvOffsetFind_AOI,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P510_Conv_Track,PE510_I,PE510_J,P510_Conv_Track.CFG.TestOffset,P510_Conv_Track.CFG.Offset_PE);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Comment>
+<![CDATA[******************************************************************
+Divert PE and Divert Confirm PE Offset Find
+******************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P506_Divert1_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P506_Conv_Track,PE506_I,PE700A_J,P506_Divert1.CFG.TestOffset_DivertPE,P506_Divert1.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P506_Divert2_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P506_Conv_Track,PE506_I,PE700B_J,P506_Divert2.CFG.TestOffset_DivertPE,P506_Divert2.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P506_Divert3_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P506_Conv_Track,PE506_I,PE700C_J,P506_Divert3.CFG.TestOffset_DivertPE,P506_Divert3.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P506_Divert4_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P506_Conv_Track,PE506_I,PE600C_J,P506_Divert4.CFG.TestOffset_DivertPE,P506_Divert4.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P506_Divert5_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P506_Conv_Track,PE506_I,PE600D_J,P506_Divert5.CFG.TestOffset_DivertPE,P506_Divert5.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P506_Divert6_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P506_Conv_Track,PE506_I,PE600E_J,P506_Divert6.CFG.TestOffset_DivertPE,P506_Divert6.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="14" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P508_Divert1_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P508_Conv_Track,PE508_I,PE600F_J,P508_Divert1.CFG.TestOffset_DivertPE,P508_Divert1.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="15" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P508_Divert2_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P508_Conv_Track,PE508_I,PE600G_J,P508_Divert2.CFG.TestOffset_DivertPE,P508_Divert2.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="16" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P508_Divert3_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P508_Conv_Track,PE508_I,PE600H_J,P508_Divert3.CFG.TestOffset_DivertPE,P508_Divert3.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="17" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P508_Divert4_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P508_Conv_Track,PE508_I,PE600I_J,P508_Divert4.CFG.TestOffset_DivertPE,P508_Divert4.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="18" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P508_Divert5_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P508_Conv_Track,PE508_I,PE600J_J,P508_Divert5.CFG.TestOffset_DivertPE,P508_Divert5.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="19" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P508_Divert6_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P508_Conv_Track,PE508_I,PE600K_J,P508_Divert6.CFG.TestOffset_DivertPE,P508_Divert6.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="20" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P509_Divert1_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P509_Conv_Track,PE509_I,PE600M_J,P509_Divert1.CFG.TestOffset_DivertPE,P509_Divert1.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="21" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P510_Divert1_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P510_Conv_Track,PE510_I,PE600N_J,P510_Divert1.CFG.TestOffset_DivertPE,P510_Divert1.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="22" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P510_Divert2_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P510_Conv_Track,PE510_I,PE600O_J,P510_Divert2.CFG.TestOffset_DivertPE,P510_Divert2.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+<Rung Number="23" Type="N">
+<Text>
+<![CDATA[XIC(Track_Group_SCN504.EnableOffset_Trk)TRK_OffsetFind_PE(P510_Divert3_AOI.OffsetFind_DivertPE,Track_Group_SCN504.Commission,Track_Group_SCN504.ResetOffsets_Trk,Track_Group_SCN504.UpdateOffset_Trk,P510_Conv_Track,PE510_I,PE600P_J,P510_Divert3.CFG.TestOffset_DivertPE,P510_Divert3.CFG.Offset_DivertPE);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Track_Package" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Comment>
+<![CDATA[************************************************************************************
+Transfering Token to Next Conveyor P504
+************************************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_SearchToken_WithPE(P504_Track_Exit_AOI,PE506_I.PE_Clear,P504_Conv_Track.CFG.FinalOffset,P504_ExitPE_Track_Stat,P504_Conv_Track,Track_File_SCN504,P504_Conv_Track.CFG.Early_SrchLim,P504_Conv_Track.CFG.Late_SrchLim,HMI_StatsClear,1);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[XIC(P504_Track_Exit_AOI.O_Token_Found_Ack)COP(P504_Conv_Track.CFG.Exit_Name,Token_SCN504[P504_Track_Exit_AOI.M_Token_Found].Last_Known_Location,1)OTL(P504_ExitPE_Token_Found)OTU(P504_Track_Exit_AOI.O_Token_Found_Ack);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Comment>
+<![CDATA[************************************************************************************
+Transfering Token to Next Conveyor P504
+************************************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Token_Transfer(P504_Token_Transfer,PE506_I,P504_Conv_Track,P506_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[TRK_SearchToken_WithPE(P506_Track_Exit_AOI,PE508_I.PE_Clear,P506_Conv_Track.CFG.FinalOffset,P506_ExitPE_Track_Stat,P506_Conv_Track,Track_File_SCN504,P506_Conv_Track.CFG.Early_SrchLim,P506_Conv_Track.CFG.Late_SrchLim,HMI_StatsClear,1);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[XIC(P506_Track_Exit_AOI.O_Token_Found_Ack)COP(P506_Conv_Track.CFG.Exit_Name,Token_SCN504[P506_Track_Exit_AOI.M_Token_Found].Last_Known_Location,1)OTL(P506_ExitPE_Token_Found)OTU(P506_Track_Exit_AOI.O_Token_Found_Ack);]]>
+</Text>
+</Rung>
+<Rung Number="5" Type="N">
+<Comment>
+<![CDATA[************************************************************************************
+Transfering Token to Next Conveyor P506
+************************************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Token_Transfer(P506_Token_Transfer,PE508_I,P506_Conv_Track,P508_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+<Rung Number="6" Type="N">
+<Text>
+<![CDATA[TRK_SearchToken_WithPE(P508_Track_Exit_AOI,PE509_I.PE_Clear,P508_Conv_Track.CFG.FinalOffset,P508_ExitPE_Track_Stat,P508_Conv_Track,Track_File_SCN504,P508_Conv_Track.CFG.Early_SrchLim,P508_Conv_Track.CFG.Late_SrchLim,HMI_StatsClear,1);]]>
+</Text>
+</Rung>
+<Rung Number="7" Type="N">
+<Text>
+<![CDATA[XIC(P508_Track_Exit_AOI.O_Token_Found_Ack)COP(P508_Conv_Track.CFG.Exit_Name,Token_SCN504[P508_Track_Exit_AOI.M_Token_Found].Last_Known_Location,1)OTL(P508_ExitPE_Token_Found)OTU(P508_Track_Exit_AOI.O_Token_Found_Ack);]]>
+</Text>
+</Rung>
+<Rung Number="8" Type="N">
+<Comment>
+<![CDATA[************************************************************************************
+Transfering Token to Next Conveyor P508
+************************************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Token_Transfer(P508_Token_Transfer,PE509_I,P508_Conv_Track,P509_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+<Rung Number="9" Type="N">
+<Text>
+<![CDATA[TRK_SearchToken_WithPE(P509_Track_Exit_AOI,PE510_I.PE_Clear,P509_Conv_Track.CFG.FinalOffset,P509_ExitPE_Track_Stat,P509_Conv_Track,Track_File_SCN504,P509_Conv_Track.CFG.Early_SrchLim,P509_Conv_Track.CFG.Late_SrchLim,HMI_StatsClear,1);]]>
+</Text>
+</Rung>
+<Rung Number="10" Type="N">
+<Text>
+<![CDATA[XIC(P509_Track_Exit_AOI.O_Token_Found_Ack)COP(P509_Conv_Track.CFG.Exit_Name,Token_SCN504[P509_Track_Exit_AOI.M_Token_Found].Last_Known_Location,1)OTL(P509_ExitPE_Token_Found)OTU(P509_Track_Exit_AOI.O_Token_Found_Ack);]]>
+</Text>
+</Rung>
+<Rung Number="11" Type="N">
+<Comment>
+<![CDATA[************************************************************************************
+Transfering Token to Next Conveyor P509
+************************************************************************************]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Token_Transfer(P509_Token_Transfer,PE510_I,P509_Conv_Track,P510_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+<Rung Number="12" Type="N">
+<Text>
+<![CDATA[TRK_SearchToken_WithPE(P510_Track_Exit_AOI,PE510_J.PE_Clear,P510_Conv_Track.CFG.FinalOffset,P510_ExitPE_Track_Stat,P510_Conv_Track,Track_File_SCN504,P510_Conv_Track.CFG.Early_SrchLim,P510_Conv_Track.CFG.Late_SrchLim,HMI_StatsClear,1);]]>
+</Text>
+</Rung>
+<Rung Number="13" Type="N">
+<Text>
+<![CDATA[XIC(P510_Track_Exit_AOI.O_Token_Found_Ack)COP(P510_Conv_Track.CFG.Exit_Name,Token_SCN504[P510_Track_Exit_AOI.M_Token_Found].Last_Known_Location,1)OTL(P510_ExitPE_Token_Found)OTU(P510_Track_Exit_AOI.O_Token_Found_Ack);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Track_Pointer" Type="RLL">
+<RLLContent>
+<Rung Number="0" Type="N">
+<Text>
+<![CDATA[TRK_Pointer(P504_Track_Pointer_AOI,ENC504,Track_Group_SCN504.Commission,P504_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+<Rung Number="1" Type="N">
+<Text>
+<![CDATA[TRK_Pointer(P506_Track_Pointer_AOI,ENC504,Track_Group_SCN504.Commission,P506_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+<Rung Number="2" Type="N">
+<Text>
+<![CDATA[TRK_Pointer(P508_Track_Pointer_AOI,ENC506,Track_Group_SCN504.Commission,P508_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+<Rung Number="3" Type="N">
+<Text>
+<![CDATA[TRK_Pointer(P509_Track_Pointer_AOI,ENC508,Track_Group_SCN504.Commission,P509_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+<Rung Number="4" Type="N">
+<Text>
+<![CDATA[TRK_Pointer(P510_Track_Pointer_AOI,ENC509,Track_Group_SCN504.Commission,P510_Conv_Track,Track_File_SCN504);]]>
+</Text>
+</Rung>
+</RLLContent>
+</Routine>
+<Routine Name="Wave_Divert" Type="RLL"><Rung Number="0" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 1 (P542A) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert1_Wave,CP5RIO2:I.Data[3].13,P506_Divert1.O.Divert,P506_Divert1_Output);]]>
+</Text>
+</Rung><Rung Number="1" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 2 (P542B) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert2_Wave,CP5RIO2:I.Data[3].13,P506_Divert2.O.Divert,P506_Divert2_Output);]]>
+</Text>
+</Rung><Rung Number="2" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 3 (P542C) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert3_Wave,CP5RIO2:I.Data[3].13,P506_Divert3.O.Divert,P506_Divert3_Output);]]>
+</Text>
+</Rung><Rung Number="3" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 4 (P542D) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert4_Wave,CP5RIO2:I.Data[3].13,P506_Divert4.O.Divert,P506_Divert4_Output);]]>
+</Text>
+</Rung><Rung Number="4" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 5 (P544E) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert5_Wave,CP5RIO2:I.Data[3].13,P506_Divert5.O.Divert,P506_Divert5_Output);]]>
+</Text>
+</Rung><Rung Number="5" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 6 (P544F) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert6_Wave,CP5RIO2:I.Data[3].13,P506_Divert6.O.Divert,P506_Divert6_Output);]]>
+</Text>
+</Rung><Rung Number="6" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 7 (P544G) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P508_Divert1_Wave,CP6RIO2:I.Data[3].4,P508_Divert1.O.Divert,P508_Divert1_Output);]]>
+</Text>
+</Rung><Rung Number="7" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 8 (P(Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P508_Divert2_Wave,CP6RIO2:I.Data[3].4,P508_Divert2.O.Divert,P508_Divert2_Output);]]>
+</Text>
+</Rung><Rung Number="8" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 9 (P600H) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P508_Divert3_Wave,CP6RIO2:I.Data[3].4,P508_Divert3.O.Divert,P508_Divert3_Output);]]>
+</Text>
+</Rung><Rung Number="9" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 10 (P600I) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P508_Divert4_Wave,CP6RIO2:I.Data[3].4,P508_Divert4.O.Divert,P508_Divert4_Output);]]>
+</Text>
+</Rung><Rung Number="10" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 11 (P600J) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P508_Divert5_Wave,CP6RIO2:I.Data[3].4,P508_Divert5.O.Divert,P508_Divert5_Output);]]>
+</Text>
+</Rung><Rung Number="11" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 12 (P600K) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P508_Divert6_Wave,CP6RIO2:I.Data[3].4,P508_Divert6.O.Divert,P508_Divert6_Output);]]>
+</Text>
+</Rung><Rung Number="12" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 13 (P600M) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P509_Divert1_Wave,CP6RIO2:I.Data[3].4,P509_Divert1.O.Divert,P509_Divert1_Output);]]>
+</Text>
+</Rung><Rung Number="13" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 14 (P600N) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P510_Divert1_Wave,CP7RIO2:I.Data[1].1,P510_Divert1.O.Divert,P510_Divert1_Output);]]>
+</Text>
+</Rung><Rung Number="14" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 15 (P600O) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P510_Divert2_Wave,CP7RIO2:I.Data[1].1,P510_Divert2.O.Divert,P510_Divert2_Output);]]>
+</Text>
+</Rung><Rung Number="15" Type="N">
+<Comment>
+<![CDATA[************************************************************
+Divert Lane 16 (P600P) Wave Divert Control Logic 
+*************************************************************
+]]>
+</Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P510_Divert3_Wave,CP7RIO2:I.Data[1].1,P510_Divert3.O.Divert,P510_Divert3_Output);]]>
+</Text>
+</Rung><Rung Number="16" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 17]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert17_Wave,CP5RIO2:I.Data[3].13,P506_Divert17.O.Divert,P506_Divert17_Output);]]>
+</Text>
+</Rung><Rung Number="17" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 18]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert18_Wave,CP5RIO2:I.Data[3].13,P506_Divert18.O.Divert,P506_Divert18_Output);]]>
+</Text>
+</Rung><Rung Number="18" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 19]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert19_Wave,CP5RIO2:I.Data[3].13,P506_Divert19.O.Divert,P506_Divert19_Output);]]>
+</Text>
+</Rung><Rung Number="19" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 20]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert20_Wave,CP5RIO2:I.Data[3].13,P506_Divert20.O.Divert,P506_Divert20_Output);]]>
+</Text>
+</Rung><Rung Number="20" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 21]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert21_Wave,CP5RIO2:I.Data[3].13,P506_Divert21.O.Divert,P506_Divert21_Output);]]>
+</Text>
+</Rung><Rung Number="21" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 22]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert22_Wave,CP5RIO2:I.Data[3].13,P506_Divert22.O.Divert,P506_Divert22_Output);]]>
+</Text>
+</Rung><Rung Number="22" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 23]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert23_Wave,CP5RIO2:I.Data[3].13,P506_Divert23.O.Divert,P506_Divert23_Output);]]>
+</Text>
+</Rung><Rung Number="23" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 24]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert24_Wave,CP5RIO2:I.Data[3].13,P506_Divert24.O.Divert,P506_Divert24_Output);]]>
+</Text>
+</Rung><Rung Number="24" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 25]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert25_Wave,CP5RIO2:I.Data[3].13,P506_Divert25.O.Divert,P506_Divert25_Output);]]>
+</Text>
+</Rung><Rung Number="25" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 26]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert26_Wave,CP5RIO2:I.Data[3].13,P506_Divert26.O.Divert,P506_Divert26_Output);]]>
+</Text>
+</Rung><Rung Number="26" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 27]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert27_Wave,CP5RIO2:I.Data[3].13,P506_Divert27.O.Divert,P506_Divert27_Output);]]>
+</Text>
+</Rung><Rung Number="27" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 28]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert28_Wave,CP5RIO2:I.Data[3].13,P506_Divert28.O.Divert,P506_Divert28_Output);]]>
+</Text>
+</Rung><Rung Number="28" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 29]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert29_Wave,CP5RIO2:I.Data[3].13,P506_Divert29.O.Divert,P506_Divert29_Output);]]>
+</Text>
+</Rung><Rung Number="29" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 30]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert30_Wave,CP5RIO2:I.Data[3].13,P506_Divert30.O.Divert,P506_Divert30_Output);]]>
+</Text>
+</Rung><Rung Number="30" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 31]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert31_Wave,CP5RIO2:I.Data[3].13,P506_Divert31.O.Divert,P506_Divert31_Output);]]>
+</Text>
+</Rung><Rung Number="31" Type="N">
+<Comment><![CDATA[MODEL_EXPANDED divert lane 32]]></Comment>
+<Text>
+<![CDATA[TRK_Divert_WaveFunction(P506_Divert32_Wave,CP5RIO2:I.Data[3].13,P506_Divert32.O.Divert,P506_Divert32_Output);]]>
+</Text>
+</Rung></Routine>
+<Routine Name="Build_Config" Type="ST"><STLines><Line Number="0"><Text><![CDATA[// Site Forge configured Sorter_Track_Program.L5X]]></Text></Line><Line Number="1"><Text><![CDATA[// Induct=P504 PE=PE504_I]]></Text></Line><Line Number="2"><Text><![CDATA[// Tracking=5 diverts=32]]></Text></Line><Line Number="3"><Text><![CDATA[// Encoders Yes=6]]></Text></Line><Line Number="4"><Text><![CDATA[// Map P504_Enc_AOI → ENC504_AOI]]></Text></Line><Line Number="5"><Text><![CDATA[// Map P506_Enc_AOI → ENC504_AOI]]></Text></Line><Line Number="6"><Text><![CDATA[// Map P508_Enc_AOI → ENC506_AOI]]></Text></Line><Line Number="7"><Text><![CDATA[// Map P509_Enc_AOI → ENC508_AOI]]></Text></Line><Line Number="8"><Text><![CDATA[// Map P510_Enc_AOI → ENC509_AOI]]></Text></Line><Line Number="9"><Text><![CDATA[// Map Induct_Conv → P504_Conv]]></Text></Line><Line Number="10"><Text><![CDATA[// Map P504_Conv → P504_Conv]]></Text></Line><Line Number="11"><Text><![CDATA[// Map P506_Conv → P504_Conv]]></Text></Line><Line Number="12"><Text><![CDATA[// Map P508_Conv → P506_Conv]]></Text></Line><Line Number="13"><Text><![CDATA[// Map P509_Conv → P508_Conv]]></Text></Line><Line Number="14"><Text><![CDATA[// Map P510_Conv → P509_Conv]]></Text></Line><Line Number="15"><Text><![CDATA[// Map P504_Enc → ENC504]]></Text></Line><Line Number="16"><Text><![CDATA[// Map P506_Enc → ENC504]]></Text></Line><Line Number="17"><Text><![CDATA[// Map P508_Enc → ENC506]]></Text></Line><Line Number="18"><Text><![CDATA[// Map P509_Enc → ENC508]]></Text></Line><Line Number="19"><Text><![CDATA[// Map P510_Enc → ENC509]]></Text></Line><Line Number="20"><Text><![CDATA[// Map P504 → P504]]></Text></Line><Line Number="21"><Text><![CDATA[// Map P506 → P504]]></Text></Line><Line Number="22"><Text><![CDATA[// Map P508 → P506]]></Text></Line><Line Number="23"><Text><![CDATA[// Map P509 → P508]]></Text></Line><Line Number="24"><Text><![CDATA[// Map P510 → P509]]></Text></Line></STLines></Routine></Routines>
+</Program>
+</Programs>
+</Controller>
+</RSLogix5000Content>

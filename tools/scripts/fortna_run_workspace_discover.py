@@ -1786,18 +1786,20 @@ def discover(
                 "tracking_path": sorter_canonical.get("tracking_path") or [],
                 "field_authority": sorter_canonical.get("field_authority") or {},
                 "generation_state": sorter_canonical.get("generation_state")
-                or GEN_NOT_SUPPORTED,
-                "plc_generation": "NOT_STARTED",
+                or "GENERATABLE",
+                "plc_generation": sorter_canonical.get("plc_generation")
+                or "PHASE1_SUPPORTED",
                 "note": sorter_canonical.get("note")
                 or sorter_ed.get("note")
-                or "Canonical sorter model — PLC generation NOT_STARTED",
+                or "Canonical sorter model — Sorter_Track Phase 1 pack compiler supported",
             }
         )
         # Encoder leaf flips to GENERATABLE when RUN encoders are present.
         leaves = dict(sorter_ed.get("generation_leaves") or {})
         if site_dict.get("encoders") or sorter_canonical.get("encoders"):
             leaves["encoder_infrastructure"] = "GENERATABLE"
-        leaves.setdefault("divert_aoi_instances", "GENERATION_NOT_SUPPORTED")
+        leaves["divert_aoi_instances"] = "GENERATABLE"
+        leaves["sorter_track_program"] = "GENERATABLE"
         sorter_ed["generation_leaves"] = leaves
         ed["sorter"] = sorter_ed
         site_dict.setdefault("ui_status_summary", {})["SORTER"] = {
@@ -1808,7 +1810,7 @@ def discover(
             "divert_map_required": True,
             "divert_rows": len(sorter_ed.get("divert_rows") or []),
             "field_authority": sorter_ed.get("field_authority") or {},
-            "generation": "NOT_STARTED",
+            "generation": sorter_ed.get("plc_generation") or "PHASE1_SUPPORTED",
         }
 
     # Attach canonical SawtoothMergeModel from RUN import (auto — no Discover button).

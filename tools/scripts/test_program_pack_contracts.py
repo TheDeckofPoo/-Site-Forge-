@@ -15,7 +15,9 @@ class TestProgramPackContracts(unittest.TestCase):
     def test_sorter_track_contract(self) -> None:
         p = PACKS / "sorter_track_contract.json"
         data = json.loads(p.read_text(encoding="utf-8"))
-        self.assertEqual(data.get("status"), "MORE_EVIDENCE_REQUIRED")
+        self.assertEqual(data.get("pack_definition_version"), 1)
+        self.assertIn(data.get("status"), {"READY_TO_IMPLEMENT", "PHASE1_ACTIVE"})
+        self.assertEqual(data.get("phase1_scope"), "hot_emit")
         routines = {r["name"] for r in data.get("routines") or []}
         for need in (
             "Main",
@@ -25,12 +27,33 @@ class TestProgramPackContracts(unittest.TestCase):
             "Track_Divert_Confirm",
             "Scanner",
             "RT_Virtual_Enc",
+            "Gridlock_Prevention",
         ):
             self.assertIn(need, routines)
-        self.assertEqual(data.get("compiler_implementation"), "NOT_STARTED")
+        by_name = {r["name"]: r for r in data.get("routines") or []}
+        self.assertEqual(by_name["Main"].get("emit_class"), "REQUIRED_STANDARD")
+        self.assertEqual(by_name["Gridlock_Prevention"].get("emit_class"), "CONDITIONAL_STANDARD")
+        self.assertEqual(by_name["RT_Virtual_Enc"].get("emit_class"), "CONDITIONAL_STANDARD")
+        self.assertIn("divert_instances", data.get("expansion_points") or {})
+        self.assertIn(
+            data.get("compiler_implementation"),
+            {"NOT_STARTED", "PHASE1_GENERATED", "PHASE1_ACTIVE"},
+        )
         # anti hollow-complete
         self.assertNotEqual(data.get("status"), "COMPLETE")
-        self.assertNotEqual(data.get("status"), "READY_TO_IMPLEMENT")
+        self.assertTrue(data.get("gaps_remaining"))
+
+    def test_plc4_plc5_sorter_pack_diff(self) -> None:
+        p = PACKS / "plc4_plc5_sorter_pack_diff.json"
+        data = json.loads(p.read_text(encoding="utf-8"))
+        self.assertEqual(data.get("pack_diff_version"), 1)
+        routines = data.get("routines") or {}
+        self.assertIn("Gridlock_Prevention", routines.get("PLC5_only") or [])
+        self.assertIn("RT_Virtual_Enc", routines.get("PLC5_only") or [])
+        self.assertEqual(routines.get("PLC4_only") or [], [])
+        rules = {r.get("id") for r in data.get("gate_c_rules") or []}
+        self.assertIn("expand_diverts", rules)
+        self.assertTrue((EVID / "PLC4_PLC5_SORTER_PROGRAM_PACK_DIFF.md").is_file())
 
     def test_wcs_contract(self) -> None:
         p = PACKS / "wcs_interface_contract.json"
@@ -65,6 +88,7 @@ class TestProgramPackContracts(unittest.TestCase):
             "SORTER_TRACK_PROGRAM_PACK.md",
             "WCS_PROGRAM_PACK.md",
             "LOGICAL_SIGNAL_MODEL.md",
+            "PLC4_PLC5_SORTER_PROGRAM_PACK_DIFF.md",
         ):
             self.assertTrue((EVID / name).is_file(), msg=name)
         self.assertTrue((ROOT / "docs" / "PLC_PROGRAM_PACK_ARCHITECTURE.md").is_file())

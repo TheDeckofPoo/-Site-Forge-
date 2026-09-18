@@ -1,0 +1,235 @@
+{
+  "sorter_build_keys": [
+    "sorter_name",
+    "sorter_type",
+    "area_name",
+    "induct_conveyor",
+    "induct_pe",
+    "induct_has_encoder",
+    "induct_encoder_type",
+    "induct_encoder_tag",
+    "tracking_count",
+    "tracking",
+    "divert_count",
+    "divert_rows",
+    "known_sorters",
+    "discovery_source",
+    "coverage",
+    "field_authority",
+    "application_structure",
+    "wcs_boundary",
+    "plc_generation",
+    "generation_state"
+  ],
+  "plc_generation": "PHASE1_GENERATED",
+  "emitted": true,
+  "report": {
+    "mode": "configured_pack",
+    "source": "C:\\dev\\worktree\\FortnaPlus\\tools\\libraries\\programs\\Sorter_Track_Program.L5X",
+    "divert_count": 32,
+    "wave_rungs_kept": 32,
+    "wave_rungs_in_pack": 16,
+    "encoder_count": 6,
+    "encoder_rungs_kept": 5,
+    "encoders": [
+      "ENC504",
+      "ENC504",
+      "ENC506",
+      "ENC508",
+      "ENC509",
+      "ENC510"
+    ],
+    "renames": [
+      {
+        "from": "P504_Enc_AOI",
+        "to": "ENC504_AOI"
+      },
+      {
+        "from": "P506_Enc_AOI",
+        "to": "ENC504_AOI"
+      },
+      {
+        "from": "P508_Enc_AOI",
+        "to": "ENC506_AOI"
+      },
+      {
+        "from": "P509_Enc_AOI",
+        "to": "ENC508_AOI"
+      },
+      {
+        "from": "P510_Enc_AOI",
+        "to": "ENC509_AOI"
+      },
+      {
+        "from": "Induct_Conv",
+        "to": "P504_Conv"
+      },
+      {
+        "from": "P504_Conv",
+        "to": "P504_Conv"
+      },
+      {
+        "from": "P506_Conv",
+        "to": "P504_Conv"
+      },
+      {
+        "from": "P508_Conv",
+        "to": "P506_Conv"
+      },
+      {
+        "from": "P509_Conv",
+        "to": "P508_Conv"
+      },
+      {
+        "from": "P510_Conv",
+        "to": "P509_Conv"
+      },
+      {
+        "from": "P504_Enc",
+        "to": "ENC504"
+      },
+      {
+        "from": "P506_Enc",
+        "to": "ENC504"
+      },
+      {
+        "from": "P508_Enc",
+        "to": "ENC506"
+      },
+      {
+        "from": "P509_Enc",
+        "to": "ENC508"
+      },
+      {
+        "from": "P510_Enc",
+        "to": "ENC509"
+      },
+      {
+        "from": "P504",
+        "to": "P504"
+      },
+      {
+        "from": "P506",
+        "to": "P504"
+      },
+      {
+        "from": "P508",
+        "to": "P506"
+      },
+      {
+        "from": "P509",
+        "to": "P508"
+      },
+      {
+        "from": "P510",
+        "to": "P509"
+      }
+    ],
+    "induct": "P504",
+    "tracking_count": 5,
+    "tag_count": 298,
+    "wave_aoi_merged": true,
+    "phase": "1",
+    "pack_definition": "Sorter_Track_Program.L5X + model expansion",
+    "wcs_boundary": "WCS_INTERFACE_REQUIRED_EXTERNAL",
+    "severity": {
+      "FATAL_ERROR": [],
+      "REVIEW_REQUIRED": [],
+      "ENGINEER_REQUIRED": [
+        "sorter_type"
+      ],
+      "OPTIONAL_UNRESOLVED": [
+        "transport_area",
+        "divert_confirm_pe",
+        "global_track_offset"
+      ],
+      "WARNING": [
+        "wcs_interface_external_not_emitted"
+      ],
+      "can_emit": true
+    },
+    "encoder_slots_from_model": [
+      "ENC504",
+      "ENC506",
+      "ENC508",
+      "ENC509",
+      "ENC510"
+    ],
+    "induct_encoder": "ENC504",
+    "divert_count_model": 32,
+    "tracking_count_model": 5,
+    "routines": [
+      "Divert_Lane_Status",
+      "Divert_Rate_Limit",
+      "Encoder",
+      "Gridlock_Prevention",
+      "Main",
+      "Response_Time",
+      "Scanner",
+      "Track_Divert_Confirm",
+      "Track_Divert_Package",
+      "Track_Induct_Package",
+      "Track_Lost_Package",
+      "Track_Manual_Destination",
+      "Track_Offset_Find",
+      "Track_Package",
+      "Track_Pointer",
+      "Wave_Divert",
+      "Build_Config"
+    ],
+    "populated_routines": [
+      "Divert_Lane_Status",
+      "Divert_Rate_Limit",
+      "Encoder",
+      "Gridlock_Prevention",
+      "Main",
+      "Response_Time",
+      "Scanner",
+      "Track_Divert_Confirm",
+      "Track_Divert_Package",
+      "Track_Induct_Package",
+      "Track_Lost_Package",
+      "Track_Manual_Destination",
+      "Track_Offset_Find",
+      "Track_Package",
+      "Track_Pointer",
+      "Wave_Divert"
+    ]
+  },
+  "severity": {
+    "FATAL_ERROR": [],
+    "REVIEW_REQUIRED": [],
+    "ENGINEER_REQUIRED": [
+      "sorter_type"
+    ],
+    "OPTIONAL_UNRESOLVED": [
+      "transport_area",
+      "divert_confirm_pe",
+      "global_track_offset"
+    ],
+    "WARNING": [
+      "wcs_interface_external_not_emitted"
+    ],
+    "can_emit": true
+  },
+  "l5x": "C:\\Dev\\worktree\\FortnaPlus\\exports\\stabilization\\plc5_sorter_track_phase1.L5X",
+  "routines": [
+    "Divert_Lane_Status",
+    "Divert_Rate_Limit",
+    "Encoder",
+    "Gridlock_Prevention",
+    "Main",
+    "Response_Time",
+    "Scanner",
+    "Track_Divert_Confirm",
+    "Track_Divert_Package",
+    "Track_Induct_Package",
+    "Track_Lost_Package",
+    "Track_Manual_Destination",
+    "Track_Offset_Find",
+    "Track_Package",
+    "Track_Pointer",
+    "Wave_Divert",
+    "Build_Config"
+  ]
+}

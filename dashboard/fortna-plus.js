@@ -294,12 +294,21 @@ function sorterEvidence() {
   const trackN = Number(s.tracking_count || 0);
   const divertN = Number(s.divert_count || 0);
   const gen = String(s.generation_state || '').toUpperCase();
+  const plcGen = String(s.plc_generation || '').toUpperCase();
   const unresolved = Array.isArray(s.configuration_required) ? s.configuration_required.length : 0;
   const detected = !!(
     s.induct_conveyor || trackN || divertN || s.sorter_type
     || s.sorter_name || s.induct_encoder_tag || (s.known_sorters || []).length
     || s.detected || s.sorters_detected
   );
+  // Phase 1 pack compiler: GENERATABLE / PHASE1_* are supported.
+  // Only treat explicit NOT_SUPPORTED (legacy) as hard block.
+  const phase1 =
+    plcGen.includes('PHASE1')
+    || gen.includes('GENERATABLE')
+    || gen.includes('GENERATED')
+    || plcGen === 'SUPPORTED';
+  const notSupported = gen.includes('NOT_SUPPORTED') && !phase1;
   return {
     detected,
     name: s.sorter_name || s.sorter_type || '',
@@ -307,7 +316,9 @@ function sorterEvidence() {
     divertN,
     unresolved,
     gen,
-    notSupported: gen.includes('NOT_SUPPORTED'),
+    plcGen,
+    phase1,
+    notSupported,
   };
 }
 
@@ -444,6 +455,12 @@ function computeCompileHubReadiness() {
       e.status = 'ERROR';
       e.unresolved = Math.max(1, ev.unresolved);
       e.detail = `GENERATION NOT SUPPORTED · ${ev.name || 'sorter'} (data shown only)`;
+    } else if (e.appliedAt && ev.phase1) {
+      e.status = ev.unresolved > 0 ? 'REVIEW_REQUIRED' : 'READY';
+      e.unresolved = ev.unresolved;
+      e.detail = `${ev.name || 'sorter'} · Phase 1 Sorter_Track · track ${ev.trackN} · divert ${ev.divertN}`
+        + (ev.unresolved ? ` · ${ev.unresolved} engineer/review` : '')
+        + ` · applied ${formatAppliedAt(e.appliedAt)}`;
     } else if (e.dirty && e.appliedAt) {
       e.status = 'CHANGED';
       e.unresolved = ev.unresolved;
@@ -5111,7 +5128,7 @@ function defaultSorterConfig() {
     field_authority: {},
     discovery_source: '',
     generation_state: '',
-    plc_generation: 'NOT_STARTED',
+    plc_generation: 'PHASE1_SUPPORTED',
     configuration_required: [],
   };
 }
@@ -5442,7 +5459,7 @@ function sorterBuildFromSiteModel(site) {
     return {
       name: sName,
       encoder: sEnc,
-      generation_state: s.generation_state || ed.generation_state || 'NOT_SUPPORTED',
+      generation_state: s.generation_state || ed.generation_state || 'GENERATABLE',
       authority: {
         name: sAuth.name || 'PROVEN',
         encoder_io: sAuth.encoder_io || (sEnc ? 'PROVEN' : 'UNKNOWN'),
@@ -5472,9 +5489,9 @@ function sorterBuildFromSiteModel(site) {
     tracking_pe_count: trackingPes.length,
     tracking_pes: trackingPes,
     discovery_source: 'site_model',
-    generation_state: pick.generation_state || ed.generation_state || ed.generation || 'NOT_SUPPORTED',
+    generation_state: pick.generation_state || ed.generation_state || ed.generation || 'GENERATABLE',
     generation_boundary: pick.generation_boundary || '',
-    plc_generation: ed.plc_generation || sm.plc_generation || 'NOT_STARTED',
+    plc_generation: ed.plc_generation || sm.plc_generation || 'PHASE1_SUPPORTED',
     field_authority: fieldAuthority,
     application_structure: ed.application_structure || sm.application_structure || null,
     coverage: ed.coverage || sm.coverage || null,
@@ -6331,8 +6348,10 @@ function wireSorterBuildUi() {
     );
     const unresolved = (s.configuration_required || []).length;
     const gen = String(s.generation_state || '').toUpperCase();
-    const plcGen = String(s.plc_generation || 'NOT_STARTED').toUpperCase();
-    if (hasData && !gen.includes('NOT_SUPPORTED') && plcGen !== 'NOT_STARTED'
+    const plcGen = String(s.plc_generation || 'PHASE1_SUPPORTED').toUpperCase();
+    const phase1Ok = plcGen.includes('PHASE1') || plcGen.includes('GENERATED')
+      || gen.includes('GENERATABLE') || gen.includes('GENERATED');
+    if (hasData && (!gen.includes('NOT_SUPPORTED') || phase1Ok) && phase1Ok
       && $('autogen-opt-sorter-track')) {
       $('autogen-opt-sorter-track').checked = true;
     }
@@ -6377,31 +6396,56 @@ function wireSorterBuildUi() {
       try {
         localStorage.setItem('fortna_sorter_build', JSON.stringify(autogenState.sorter));
       } catch (_) { /* ignore */ }
-      if (hasData && !gen.includes('NOT_SUPPORTED') && plcGen !== 'NOT_STARTED' && unresolved === 0) {
+      // Persist Phase 1 generation flags on Apply
+      if (hasData && (!s.plc_generation || String(s.plc_generation).includes('NOT_STARTED'))) {
+        s.plc_generation = 'PHASE1_SUPPORTED';
+        s.generation_state = s.generation_state && !String(s.generation_state).includes('NOT_SUPPORTED')
+          ? s.generation_state
+          : 'GENERATABLE';
+        autogenState.sorter = s;
+        if (autogenState.workbook?.sorter_build) {
+          autogenState.workbook.sorter_build.plc_generation = s.plc_generation;
+          autogenState.workbook.sorter_build.generation_state = s.generation_state;
+        }
+      }
+      if (hasData && phase1Ok && unresolved === 0) {
         setReadinessApplied('sorter', `${s.sorter_name || s.sorter_type || 'sorter'} applied`);
         if (st) {
-          st.textContent = 'Applied · READY FOR AUTOGEN';
+          st.textContent = 'Applied · PLC generation supported (Phase 1)';
           st.className = 'text-[10px] text-emerald-500 mono';
         }
-        autogenLog('Sorter Apply → Compile hub READY (Sorter_Track included on Export).', 'ok');
+        autogenLog('Sorter Apply → Compile hub READY (Sorter_Track Phase 1 included on Export).', 'ok');
+      } else if (hasData && phase1Ok) {
+        const e = ensureAutogenReadiness().sorter;
+        e.dirty = false;
+        e.appliedAt = new Date().toISOString();
+        e.status = 'REVIEW_REQUIRED';
+        e.unresolved = unresolved;
+        e.detail = `Phase 1 Sorter_Track supported · ${unresolved || 0} engineer/review remaining`;
+        refreshAutogenCompileHub();
+        if (st) {
+          st.textContent = 'Applied · PLC generation supported · REVIEW remaining';
+          st.className = 'text-[10px] text-amber-400 mono';
+        }
+        autogenLog(
+          `Sorter Apply → workbook.sorter_build (${(s.known_sorters || []).length || 0} sorters, `
+          + `${s.divert_count || 0} divert) — PLC generation ${plcGen}`,
+          'ok',
+        );
       } else if (hasData) {
         const e = ensureAutogenReadiness().sorter;
         e.dirty = false;
         e.appliedAt = new Date().toISOString();
-        e.status = (gen.includes('NOT_SUPPORTED') || plcGen === 'NOT_STARTED')
-          ? 'REVIEW_REQUIRED'
-          : 'REVIEW_REQUIRED';
+        e.status = 'REVIEW_REQUIRED';
         e.unresolved = unresolved;
-        e.detail = plcGen === 'NOT_STARTED'
-          ? `Applied model · PLC GENERATION ${plcGen}`
-          : (gen.includes('NOT_SUPPORTED')
-            ? 'GENERATION NOT SUPPORTED'
-            : `${unresolved || 0} unresolved — review before Export`);
+        e.detail = gen.includes('NOT_SUPPORTED')
+          ? 'GENERATION NOT SUPPORTED'
+          : `${unresolved || 0} unresolved — review before Export`;
         refreshAutogenCompileHub();
         if (st) {
-          st.textContent = plcGen === 'NOT_STARTED'
-            ? 'Applied · model only (PLC NOT_STARTED)'
-            : (gen.includes('NOT_SUPPORTED') ? 'Applied · NOT SUPPORTED' : 'Applied · REVIEW REQUIRED');
+          st.textContent = gen.includes('NOT_SUPPORTED')
+            ? 'Applied · NOT SUPPORTED'
+            : 'Applied · REVIEW REQUIRED';
           st.className = 'text-[10px] text-amber-400 mono';
         }
         autogenLog(

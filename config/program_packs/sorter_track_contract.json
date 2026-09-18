@@ -1,52 +1,72 @@
 {
+  "pack_definition_version": 1,
   "version": 1,
   "pack": "Sorter_Track",
-  "status": "MORE_EVIDENCE_REQUIRED",
+  "status": "PHASE1_ACTIVE",
+  "phase1_scope": "hot_emit",
+  "compiler_implementation": "PHASE1_GENERATED",
   "status_reason": [
-    "Architecture and routine set proven from PLC5 RTfinished oracle, but generic sealed AOI/parameter library path is incomplete",
-    "Divert trigger/offset synthesis remains NOT_SUPPORTED",
-    "Gold Sorter_Track_Program.L5X is Greensboro-fixed validation asset, not a reusable emit library",
-    "PLC4 vs PLC5 optional leaves (Gridlock_Prevention, RT_Virtual_Enc) need explicit pack policy"
+    "Phase 1 hot emit ACTIVE via fortna_sorter_pack_compiler.py",
+    "Pack architecture + Main JSR + REQUIRED_STANDARD routines + MODEL_EXPANDED N encoders/diverts from SorterModel",
+    "Wave_Divert expands beyond pack template slots by cloning (MODEL_EXPANDED)",
+    "OPTIONAL_STANDARD leaves remain in pack when present; WCS external",
+    "Divert trigger/offset VALUES remain engineer/commissioning — shells emitted"
+  ],
+  "gaps_remaining": [
+    "Track_Offset_Find / divert trigger timing VALUES: NOT_SUPPORTED from RUN alone",
+    "WCS_Interface_TCP_IP not emitted in Phase 1 (external boundary)",
+    "Byte-for-byte finished-PLC match is NOT a goal",
+    "Full sealed AOI open-contract packaging still incomplete"
   ],
   "oracle": {
-    "path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_Greensboro_NC_PLC5_RTfinished.L5X",
-    "controller": "ORLY_Greensboro_NC_PLC5",
-    "processor": "1756-L83E",
-    "note": "Validation oracle only — not discovery. Newest local RTfinished; no RTfinished(3) found.",
-    "workspace_copy": "workspace/validation/ORLY_Greensboro_NC_PLC5_RTfinished.L5X"
+    "PLC5": {
+      "path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_Greensboro_NC_PLC5_RTfinished.L5X",
+      "controller": "ORLY_Greensboro_NC_PLC5",
+      "processor": "1756-L83E",
+      "note": "Validation oracle only — not discovery. Newest local RTfinished."
+    },
+    "PLC4": {
+      "path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_Greensboro_NC_PLC4 finished.L5X",
+      "controller": "ORLY_Greensboro_NC_PLC4",
+      "processor": "1756-L83E",
+      "note": "Validation oracle only — not discovery."
+    },
+    "diff_artifacts": [
+      "docs/evidence/PLC4_PLC5_SORTER_PROGRAM_PACK_DIFF.md",
+      "config/program_packs/plc4_plc5_sorter_pack_diff.json"
+    ]
   },
   "task": {
     "class": "tracking",
-    "oracle_example": {
-      "name": "P02_Track_5ms",
-      "type": "PERIODIC",
-      "rate_ms": 5,
-      "priority": 2,
-      "scheduled_programs": ["Sorter_Track"]
+    "type": "PERIODIC",
+    "parameterization": {
+      "rate_ms": "PARAMETERIZED",
+      "priority": "PARAMETERIZED",
+      "note": "Do not hardcode 5ms as universal. Oracle examples below are evidence of class intent only."
     },
-    "note": "Oracle rates are examples, not universal generation constants"
+    "oracle_examples": [
+      {
+        "controller": "PLC5",
+        "name": "P02_Track_5ms",
+        "rate_ms": 5,
+        "priority": 2,
+        "watchdog_ms": 500,
+        "scheduled_programs": ["Sorter_Track"]
+      },
+      {
+        "controller": "PLC4",
+        "name": "P02_Track_5ms",
+        "rate_ms": 5,
+        "priority": 2,
+        "watchdog_ms": 500,
+        "scheduled_programs": ["Sawtooth_Merge", "Sorter_Track"],
+        "note": "Sawtooth co-schedule is OPTIONAL_STANDARD when Sawtooth pack selected — not sorter-multiplicity"
+      }
+    ],
+    "emit_rule": "Create/bind a tracking-class PERIODIC task; schedule Sorter_Track; optionally co-schedule other tracking packs when selected"
   },
   "main_routine": "Main",
-  "routines": [
-    {"name": "Main", "type": "RLL", "role": "scheduler_jsr", "required": true},
-    {"name": "Encoder", "type": "RLL", "role": "encoder_speed", "required": true},
-    {"name": "Track_Pointer", "type": "RLL", "role": "track_pointer", "required": true},
-    {"name": "Track_Induct_Package", "type": "RLL", "role": "induct_token", "required": true},
-    {"name": "Track_Manual_Destination", "type": "RLL", "role": "manual_destination", "required": true},
-    {"name": "Scanner", "type": "RLL", "role": "scan_associate_decision_request", "required": true},
-    {"name": "Track_Package", "type": "RLL", "role": "token_tracking", "required": true},
-    {"name": "Track_Lost_Package", "type": "RLL", "role": "lost_package", "required": true},
-    {"name": "Divert_Lane_Status", "type": "RLL", "role": "lane_full_map", "required": true},
-    {"name": "Track_Divert_Package", "type": "RLL", "role": "divert_fire", "required": true},
-    {"name": "Wave_Divert", "type": "RLL", "role": "divert_wave", "required": true},
-    {"name": "Divert_Rate_Limit", "type": "RLL", "role": "rate_limit", "required": true},
-    {"name": "Track_Divert_Confirm", "type": "RLL", "role": "divert_confirm_to_wcs", "required": true},
-    {"name": "Track_Offset_Find", "type": "RLL", "role": "offset_find", "required": true, "emit": "NOT_SUPPORTED_until_generic_timing_contract"},
-    {"name": "Gridlock_Prevention", "type": "RLL", "role": "gridlock", "required": false, "plc5_present": true, "plc4_present": false},
-    {"name": "Response_Time", "type": "RLL", "role": "wcs_response_metrics", "required": true},
-    {"name": "RT_Virtual_Enc", "type": "ST", "role": "virtual_encoder", "required": false, "plc5_present": true, "gold_pack_present": false}
-  ],
-  "main_jsr_order_oracle": [
+  "jsr_order_phase1": [
     "Encoder",
     "Track_Pointer",
     "Track_Induct_Package",
@@ -64,6 +84,206 @@
     "Response_Time",
     "RT_Virtual_Enc"
   ],
+  "jsr_optional_leaves": ["Gridlock_Prevention", "RT_Virtual_Enc"],
+  "routines": [
+    {
+      "name": "Main",
+      "type": "RLL",
+      "role": "scheduler_jsr",
+      "emit_class": "REQUIRED_STANDARD",
+      "required": true
+    },
+    {
+      "name": "Encoder",
+      "type": "RLL",
+      "role": "encoder_speed",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "encoders",
+      "required": true
+    },
+    {
+      "name": "Track_Pointer",
+      "type": "RLL",
+      "role": "track_pointer",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "tracking_paths",
+      "required": true
+    },
+    {
+      "name": "Track_Induct_Package",
+      "type": "RLL",
+      "role": "induct_token",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "induct_points",
+      "required": true
+    },
+    {
+      "name": "Track_Manual_Destination",
+      "type": "RLL",
+      "role": "manual_destination",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "required": true
+    },
+    {
+      "name": "Scanner",
+      "type": "RLL",
+      "role": "scan_associate_decision_request",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "scan_groups",
+      "required": true
+    },
+    {
+      "name": "Track_Package",
+      "type": "RLL",
+      "role": "token_tracking",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "tracking_paths",
+      "required": true
+    },
+    {
+      "name": "Track_Lost_Package",
+      "type": "RLL",
+      "role": "lost_package",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "exit_paths",
+      "required": true
+    },
+    {
+      "name": "Divert_Lane_Status",
+      "type": "RLL",
+      "role": "lane_full_map",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "divert_instances",
+      "required": true
+    },
+    {
+      "name": "Track_Divert_Package",
+      "type": "RLL",
+      "role": "divert_fire",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "divert_instances",
+      "required": true,
+      "note": "AOI cluster per divert; trigger CFG values remain engineer/NOT_SUPPORTED to synthesize"
+    },
+    {
+      "name": "Wave_Divert",
+      "type": "RLL",
+      "role": "divert_wave",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "divert_instances",
+      "values": "engineer_commissioning",
+      "required": true
+    },
+    {
+      "name": "Divert_Rate_Limit",
+      "type": "RLL",
+      "role": "rate_limit",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "divert_instances",
+      "values": "engineer_commissioning",
+      "required": true
+    },
+    {
+      "name": "Track_Divert_Confirm",
+      "type": "RLL",
+      "role": "divert_confirm_to_wcs",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "divert_instances",
+      "required": true
+    },
+    {
+      "name": "Track_Offset_Find",
+      "type": "RLL",
+      "role": "offset_find",
+      "emit_class": "REQUIRED_STANDARD",
+      "body": "MODEL_EXPANDED",
+      "expansion": "divert_instances",
+      "emit": "SHELL_ONLY",
+      "value_synthesis": "NOT_SUPPORTED",
+      "required": true,
+      "note": "Emit AOI shells per instance; do not invent offset counts from RUN"
+    },
+    {
+      "name": "Gridlock_Prevention",
+      "type": "RLL",
+      "role": "gridlock",
+      "emit_class": "CONDITIONAL_STANDARD",
+      "required": false,
+      "default_phase1": "omit_unless_enabled",
+      "plc5_present": true,
+      "plc4_present": false,
+      "content": "CUSTOM",
+      "note": "Optional standard leaf; inhibit policy is engineer/custom"
+    },
+    {
+      "name": "Response_Time",
+      "type": "RLL",
+      "role": "wcs_response_metrics",
+      "emit_class": "REQUIRED_STANDARD",
+      "required": true
+    },
+    {
+      "name": "RT_Virtual_Enc",
+      "type": "ST",
+      "role": "virtual_encoder",
+      "emit_class": "CONDITIONAL_STANDARD",
+      "required": false,
+      "default_phase1": "omit_unless_enabled",
+      "plc5_present": true,
+      "plc4_present": false,
+      "gold_pack_present": false
+    }
+  ],
+  "emit_class_legend": {
+    "REQUIRED_STANDARD": "Always present in Phase 1 Sorter_Track emit when pack included",
+    "CONDITIONAL_STANDARD": "Standard leaf included only when pack policy / engineer enables",
+    "MODEL_EXPANDED": "Rung/tag instance cardinality from SorterModel (FOR EACH) — never hardcoded site counts",
+    "CUSTOM": "Engineer-authored policy/content inside an optional leaf",
+    "UNKNOWN": "Insufficient authority to synthesize"
+  },
+  "expansion_points": {
+    "encoders": {
+      "rule": "FOR EACH sorter.encoder in SorterModel emit Enc_UDT + Enc_RIOCard cluster (+ optional Enc_Virtual_DistBased when virtual policy enabled)",
+      "source": "Sorters.encoder_io → Encoders",
+      "never_hardcode": true
+    },
+    "tracking_paths": {
+      "rule": "FOR EACH tracking conveyor/path emit Track_Conv_UDT + TRK_Pointer + Track_Package search/transfer instances",
+      "never_hardcode": true
+    },
+    "induct_points": {
+      "rule": "FOR EACH induct/decision point emit Track_Induct_UDT + token generate/update",
+      "oracle_note": "Both PLC4/PLC5 finished oracles show a single primary induct UDT"
+    },
+    "scan_groups": {
+      "rule": "FOR EACH scan/decision group emit Token_SCN* + Track_Group_SCN* + Scanner handshake tags",
+      "oracle_note": "Both oracles show one primary Token_SCN / Track_Group pair"
+    },
+    "exit_paths": {
+      "rule": "FOR EACH exit lost-detect path emit TRK_Lost_Package + WCS token latch pair"
+    },
+    "divert_instances": {
+      "rule": "FOR EACH divert instance in SorterModel.divert_instances (IO/config approved) emit Track_Divert_UDT + AOI + Wave + RateLimit + LaneStatus + OffsetFind shell",
+      "forbidden": [
+        "hardcode 32",
+        "hardcode 16",
+        "blind emit one UDT per raw SrtZoneLane row without approval"
+      ],
+      "oracle_warning": "PLC5 RUN zone_lane_rows=32 but finished Track_Divert_UDT=16"
+    }
+  },
   "dependencies": {
     "aoi_families": [
       "Enc_RIOCard",
@@ -71,48 +291,74 @@
       "TRK_Pointer",
       "TRK_Induct_TokenGenerate",
       "TRK_Induct_TokenUpdate",
+      "TRK_ManualDestination",
       "TRK_SearchToken_WithPE",
       "TRK_SearchToken_VirtualLocation",
       "TRK_Token_Transfer",
+      "TRK_Scanner_TokenUpdate",
       "TRK_Lost_Package",
-      "TRK_OffsetFind_PE",
-      "Track_Divert_AOI",
-      "TRK_Divert_WaveFunction"
+      "TRK_Search_Destination",
+      "TRK_Divert",
+      "TRK_Divert_RCUpdate",
+      "TRK_DivertConfirm_RCUpdate",
+      "TRK_Divert_WaveFunction",
+      "TRK_Divert_RateLimit",
+      "TRK_OffsetFind_PE"
     ],
+    "aoi_supply": "sealed_library_external",
     "udt_families": [
       "Enc_UDT",
       "Track_Induct_UDT",
       "Track_Divert_UDT",
+      "Track_Divert_AOI",
       "Track_Group_UDT",
       "Token_Sorter",
       "Manual_Destination",
-      "Track_Conv_UDT"
+      "Track_Conv_UDT",
+      "Divert_CFG",
+      "Divert_PI",
+      "Divert_O"
     ],
-    "optional_packs": ["WCS_Interface_TCP_IP"]
+    "optional_packs": ["WCS_Interface_TCP_IP", "Sawtooth_Merge"]
   },
   "input_model": ["SorterModel", "LogicalSignalModel", "optional:WCSModel"],
   "auto_populated_from_run": [
     "Sorters",
     "Encoders",
     "SrtScanBoss",
-    "SrtZoneLane",
+    "SrtZoneLane_topology_hints",
     "SrtAppControl.SorterCnvMtr_when_valid"
   ],
   "engineer_required": [
     "divert_output_io",
+    "divert_instances_approved_for_emit",
     "track_offsets_triggers",
     "wave_timing",
     "rate_limits",
-    "gridlock_policy",
-    "confirm_lane_string_mapping_when_wcs"
+    "gridlock_policy_when_enabled",
+    "confirm_lane_string_mapping_when_wcs",
+    "task_rate_priority_if_overriding_platform_default"
   ],
+  "standard_defaults": {
+    "main_routine_name": "Main",
+    "include_optional_gridlock": false,
+    "include_optional_rt_virtual_enc": false,
+    "wcs_auto_include_from_sorter": false,
+    "divert_trigger_synthesis": "NOT_SUPPORTED",
+    "task_class": "tracking"
+  },
   "value_classes": {
-    "STANDARD_ARCHITECTURE": ["routine_set", "aoi_families", "task_class_tracking"],
-    "SITE_CONFIGURATION": ["area_binding", "decision_point_count", "token_array_size"],
-    "EQUIPMENT_INSTANCE": ["per_sorter_tags", "per_divert_udt", "pe_maps"],
+    "STANDARD_ARCHITECTURE": ["routine_set", "aoi_families", "task_class_tracking", "udt_families"],
+    "SITE_CONFIGURATION": ["area_binding", "decision_point_count", "token_array_size", "task_rate_override"],
+    "EQUIPMENT_INSTANCE": ["per_sorter_tags", "per_divert_udt", "pe_maps", "encoder_instances"],
     "COMMISSIONING_VALUE": ["encoder_scale", "offsets", "rate_limits", "wave_params"],
     "CUSTOM_ENGINEERING": ["gridlock_policy", "unscheduled_IO_MAP_in_oracle"],
     "UNKNOWN": ["divert_trigger_from_run_alone"]
+  },
+  "wcs_boundary_phase1": {
+    "recommendation": "Keep WCS_Interface_TCP_IP as a separate OPTIONAL pack. Phase 1 Sorter_Track hot emit must not auto-include WCS from sorter discovery. When WCSModel.enabled, emit/preserve the proven handshake tag surface (decision request, token ids, divert confirm members, lost/recirc latches) for the WCS pack to consume.",
+    "sorter_mandatory_wcs": false,
+    "evidence": "PLC2 has neither; PLC4/PLC5 have both but coupling is interface tags — not a single program"
   },
   "sorter_wcs_interface": {
     "proven_shared_controller_tag_count": 34,
@@ -230,7 +476,9 @@
   },
   "anti_cheat": {
     "no_site_decision_logic_in_compiler": true,
-    "site_names_ok_in_docs_as_oracle_examples": true
+    "site_names_ok_in_docs_as_oracle_examples": true,
+    "no_gold_program_clone": true,
+    "no_hardcoded_divert_counts": true
   },
   "compiler_implementation": "NOT_STARTED"
 }

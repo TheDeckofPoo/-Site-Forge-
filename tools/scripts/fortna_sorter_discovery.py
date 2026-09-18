@@ -1359,7 +1359,7 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         "application_structure": application_structure["authority"],
         "sortbuff_link": AUTH_PROVEN if sortbuff_rows else AUTH_UNKNOWN,
         "sortdata_link": AUTH_PROVEN if sortdata_rows else AUTH_UNKNOWN,
-        "plc_generation": "NOT_STARTED",
+        "plc_generation": "PHASE1_SUPPORTED" if sorters else "NOT_APPLICABLE",
     }
 
     gate_f = build_gate_f_field_authority(locals_bundle={
@@ -1450,11 +1450,12 @@ def build_canonical_sorter_model(run_dir: Path, machine: str = "") -> dict[str, 
         },
         "field_authority": field_authority,
         "gate_f_fields": gate_f,
-        "generation_state": "NOT_SUPPORTED",
-        "plc_generation": "NOT_STARTED",
+        "generation_state": "GENERATABLE" if sorters else "NO_SORTERS",
+        "plc_generation": "PHASE1_SUPPORTED" if sorters else "NOT_APPLICABLE",
         "note": (
             "Deep RUN evidence graph (Inpoints/Outpoints/Mtrchain/Scn*). "
-            "Sorter_Track L5X generation remains NOT_STARTED."
+            "Sorter_Track Phase 1 pack compiler emits from SorterModel multiplicity; "
+            "WCS remains external."
         ),
     }
 
@@ -2117,11 +2118,11 @@ def build_generation_support_matrix(model: dict[str, Any]) -> dict[str, Any]:
         ),
         row(
             "sorter_track_plc_generation",
-            "NOT_SUPPORTED",
-            "tools/libraries/programs/Sorter_Track_Program.L5X + fortna_sorter_build.py",
+            "PHASE1_SUPPORTED",
+            "tools/libraries/programs/Sorter_Track_Program.L5X + fortna_sorter_pack_compiler.py",
             (
-                "Gold site-fixed pack with token-rename/divert-limit only — "
-                "not a complete generic library path"
+                "Phase 1: pack architecture + model multiplicity (encoders/diverts/tracking). "
+                "WCS external. Not byte-for-byte finished-PLC match."
             ),
         ),
         row(
@@ -2359,7 +2360,7 @@ def write_plc5_sorter_deep_reports(
             "transport_area (UNKNOWN)",
             "global induct→divert track offset (REVIEW)",
             "commissioning / library path incomplete",
-            "plc_generation NOT_STARTED by policy",
+            "plc_generation PHASE1_SUPPORTED when sorters present",
         ],
     }
     deep_json_path = out_dir / "plc5_sorter_deep_autofill.json"
@@ -2465,7 +2466,9 @@ def discover(
     model["divert_rows"] = canonical.get("divert_rows") or model.get("divert_rows") or []
     model["tracking_path"] = canonical.get("tracking_path") or model.get("tracking_path") or []
     model["field_authority"] = canonical.get("field_authority") or model.get("field_authority")
-    model["plc_generation"] = "NOT_STARTED"
+    model["plc_generation"] = (
+        "PHASE1_SUPPORTED" if model.get("sorter_count") else "NOT_APPLICABLE"
+    )
     matrix = build_generation_support_matrix(model)
 
     result = {

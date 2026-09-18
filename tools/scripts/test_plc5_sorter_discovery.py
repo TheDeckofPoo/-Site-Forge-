@@ -87,7 +87,7 @@ class TestPlc5SorterDiscovery(unittest.TestCase):
         self.assertEqual(fa.get("divert_lane_topology"), "PROVEN")
         # Deep join: Outpoints.Outpoint I/O via Lane name — PROVEN when present.
         self.assertIn(fa.get("divert_output_io"), {"PROVEN", "DERIVED", "REVIEW_REQUIRED"})
-        self.assertEqual(model.get("plc_generation"), "NOT_STARTED")
+        self.assertEqual(model.get("plc_generation"), "PHASE1_SUPPORTED")
         proven_io = 0
         for row in model.get("divert_rows") or []:
             auth = row.get("authority") or {}
@@ -123,7 +123,7 @@ class TestPlc5SorterDiscovery(unittest.TestCase):
         self.assertEqual(ed.get("sorter_count"), 5)
         self.assertGreaterEqual(len(ed.get("divert_rows") or []), 1)
         self.assertGreaterEqual(len(ed.get("tracking_path") or []), 5)
-        self.assertEqual(ed.get("plc_generation"), "NOT_STARTED")
+        self.assertEqual(ed.get("plc_generation"), "PHASE1_SUPPORTED")
         sm = site.get("sorter_model") or {}
         self.assertEqual(sm.get("sorter_count"), 5)
 

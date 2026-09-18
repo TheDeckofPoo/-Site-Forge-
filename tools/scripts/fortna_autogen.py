@@ -223,6 +223,8 @@ class AutogenInput:
     io_map_fill_placeholders: bool = True
     # Sorter build UI config (induct / tracking / encoders / divert count)
     sorter_build: dict = field(default_factory=dict)
+    # Canonical SorterModel (optional — Phase 1 pack compiler uses when build hollow)
+    sorter_model: dict = field(default_factory=dict)
     # Sawtooth / collector merge UI config (PLC4-class Sawtooth_Merge pack)
     sawtooth_build: dict = field(default_factory=dict)
     # 2:1 merges (PLC2-class transport) — list of dicts from workbook UI
@@ -577,6 +579,7 @@ def load_from_json(path: Path) -> AutogenInput:
         include_io_map_gold=bool(data.get("include_io_map_gold", False)),
         io_map_fill_placeholders=bool(data.get("io_map_fill_placeholders", True)),
         sorter_build=dict(data.get("sorter_build") or {}),
+        sorter_model=dict(data.get("sorter_model") or {}),
         sawtooth_build=dict(data.get("sawtooth_build") or {}),
         merges_2to1=list(data.get("merges_2to1") or []),
     )
@@ -5414,34 +5417,54 @@ def build_l5x(inp: AutogenInput, library_path: Path) -> tuple[str, dict]:
                 41,
             )
         if want_sorter:
-            # Sorter_Track_Program.L5X (gold pack) configured from Sorter build UI
-            live = build_sorter_track(
-                sorter_cfg if sorter_build_is_configured(sorter_cfg) else {
-                    "divert_count": 0,
-                    "tracking": [],
-                },
-                library_text,
-                io_points=list(inp.io_points or []),
-                word_map=dict(getattr(inp, "io_word_map", None) or {}),
+            # Phase 1: Sorter pack compiler (model multiplicity → Sorter_Track)
+            from fortna_sorter_pack_compiler import (  # noqa: WPS433
+                compile_sorter_track_pack,
+                should_emit_sorter,
             )
-            sorter_report = live.get("report") or {}
-            sorter_report["pack_checkbox"] = True
-            for block in live.get("tags") or []:
-                _upsert_tag_block(block, prefer=True)
-            if live.get("aoi_xml"):
-                extra_aoi_chunks.append(live["aoi_xml"])
-            if live.get("datatypes_xml"):
-                extra_dt_chunks.append(live["datatypes_xml"])
-            programs_xml.append(live["program_xml"])
-            gold_program_names.append("Sorter_Track")
-            mode = sorter_report.get("mode") or "configured_pack"
-            _emit_progress(
-                f"Sorter_Track ({mode}): "
-                f"diverts kept={sorter_report.get('wave_rungs_kept', sorter_report.get('divert_count'))}/"
-                f"{sorter_report.get('wave_rungs_in_pack', '?')}, "
-                f"encoders={sorter_report.get('encoder_count', 0)}",
-                42,
-            )
+            sorter_model = dict(getattr(inp, "sorter_model", None) or {})
+            if not should_emit_sorter(sorter_cfg, sorter_model):
+                # Empty model + empty build → do not emit hollow program
+                sorter_report = {
+                    "mode": "skipped",
+                    "reason": "no sorter model / build evidence",
+                    "phase": "1",
+                }
+                _emit_progress("Sorter_Track skipped — no sorter evidence", 42)
+            else:
+                compiled = compile_sorter_track_pack(
+                    sorter_build=sorter_cfg if sorter_build_is_configured(sorter_cfg) else None,
+                    sorter_model=sorter_model or None,
+                    library_text=library_text,
+                    io_points=list(inp.io_points or []),
+                    word_map=dict(getattr(inp, "io_word_map", None) or {}),
+                )
+                sorter_report = compiled.get("report") or {}
+                sorter_report["pack_checkbox"] = True
+                sorter_report["plc_generation"] = compiled.get("plc_generation")
+                sorter_report["severity"] = compiled.get("severity")
+                if compiled.get("emitted") and compiled.get("program_xml"):
+                    for block in compiled.get("tags") or []:
+                        _upsert_tag_block(block, prefer=True)
+                    if compiled.get("aoi_xml"):
+                        extra_aoi_chunks.append(compiled["aoi_xml"])
+                    if compiled.get("datatypes_xml"):
+                        extra_dt_chunks.append(compiled["datatypes_xml"])
+                    programs_xml.append(compiled["program_xml"])
+                    gold_program_names.append("Sorter_Track")
+                    mode = sorter_report.get("mode") or "phase1_pack"
+                    _emit_progress(
+                        f"Sorter_Track ({mode}): "
+                        f"diverts kept={sorter_report.get('wave_rungs_kept', sorter_report.get('divert_count'))}/"
+                        f"{sorter_report.get('wave_rungs_in_pack', '?')}, "
+                        f"encoders={sorter_report.get('encoder_count', 0)}",
+                        42,
+                    )
+                else:
+                    _emit_progress(
+                        f"Sorter_Track blocked: {sorter_report.get('reasons') or compiled.get('severity')}",
+                        42,
+                    )
         elif sorter_build_is_configured(sorter_cfg):
             sorter_report = {
                 "mode": "skipped",
@@ -8056,6 +8079,9 @@ def main() -> int:
                         sb = wb.get("sorter_build")
                         if isinstance(sb, dict) and sb:
                             inp.sorter_build = sb
+                        sm = wb.get("sorter_model")
+                        if isinstance(sm, dict) and sm:
+                            inp.sorter_model = sm
                         saw_b = wb.get("sawtooth_build")
                         if isinstance(saw_b, dict) and saw_b:
                             inp.sawtooth_build = saw_b

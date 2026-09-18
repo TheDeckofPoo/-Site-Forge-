@@ -1,11 +1,39 @@
-# Sorter_Track Program Pack (Gate F / H)
+# Sorter_Track Program Pack (Gates B–D / F / H)
 
-**Status:** Architecture contract from validation oracle — **not** a compiler implementation.  
-**Oracle used:** `C:\Users\curtiskricke\Desktop\WIth GPT\Folder to GPT\ORLY_Greensboro_NC_PLC5_RTfinished.L5X`  
-(Newest local `*RTfinished*.L5X`; no `RTfinished(3)` copy found. Same bytes also under `workspace/validation/`.)  
-**Machine-readable twin:** [`config/program_packs/sorter_track_contract.json`](../../config/program_packs/sorter_track_contract.json)
+**Status:** `READY_TO_IMPLEMENT` for **Phase 1 hot emit** (pack definition v1) — compiler implementation still **`NOT_STARTED`**.  
+**Oracles (validation only):**  
+- PLC5: `C:\Users\curtiskricke\Desktop\WIth GPT\Folder to GPT\ORLY_Greensboro_NC_PLC5_RTfinished.L5X`  
+- PLC4: `C:\Users\curtiskricke\Desktop\WIth GPT\Folder to GPT\ORLY_Greensboro_NC_PLC4 finished.L5X`  
+
+**Machine-readable twin:** [`config/program_packs/sorter_track_contract.json`](../../config/program_packs/sorter_track_contract.json) (`pack_definition_version: 1`)  
+**PLC4↔PLC5 diff:** [`PLC4_PLC5_SORTER_PROGRAM_PACK_DIFF.md`](PLC4_PLC5_SORTER_PROGRAM_PACK_DIFF.md) · [`config/program_packs/plc4_plc5_sorter_pack_diff.json`](../../config/program_packs/plc4_plc5_sorter_pack_diff.json)
 
 Finished PLC is a **validation oracle only** — never a discovery source. Site identities below are labeled as validation-oracle examples.
+
+---
+
+## Phase 1 executable contract summary
+
+| Item | Phase 1 rule |
+|------|----------------|
+| Pack include | Engineer/UI selects Sorter_Track — **never** silent auto-include from discovery alone as “complete” |
+| Program | Emit `Sorter_Track` with Main routine name **`Main`** |
+| Task | Bind `task_class=tracking` PERIODIC task; **rate/priority PARAMETERIZED** (PLC4/PLC5 oracle example 5 ms / pri 2 — **not** a universal hardcoded constant) |
+| REQUIRED_STANDARD routines | Main, Encoder, Track_Pointer, Track_Induct_Package, Track_Manual_Destination, Scanner, Track_Package, Track_Lost_Package, Divert_Lane_Status, Track_Divert_Package, Wave_Divert, Divert_Rate_Limit, Track_Divert_Confirm, Track_Offset_Find, Response_Time |
+| CONDITIONAL_STANDARD | `Gridlock_Prevention`, `RT_Virtual_Enc` — **omit unless enabled** (PLC5 has both; PLC4 has neither; gold has Gridlock only) |
+| MODEL_EXPANDED | Encoder / tracking-path / divert / scan / exit instance rungs+tags via **FOR EACH** SorterModel — **never hardcode 32 or 16** |
+| CUSTOM | Gridlock inhibit policy content when leaf enabled |
+| UNKNOWN / NOT_SUPPORTED | Divert **trigger/offset value** synthesis from RUN alone (`Track_Offset_Find` = shell only) |
+| AOI/UDT | Consume sealed Enc_*/TRK_* library + track UDT families — do **not** clone gold program |
+| WCS boundary | **Separate optional pack**; sorter emits handshake tag surface only when `WCSModel.enabled` |
+| Compiler | `compiler_implementation: NOT_STARTED` (parent implements against this contract) |
+
+### Gaps still honest
+
+1. Sealed AOI open-parameter packaging incomplete (partial open libs only).  
+2. Offset/trigger counts remain engineer/commissioning.  
+3. Gold `Sorter_Track_Program.L5X` is Greensboro-fixed — validation only.  
+4. Raw `SrtZoneLane` row count ≠ divert emit count without model approval (oracle: 32 zone rows vs 16 `Track_Divert_UDT`).
 
 ---
 
@@ -13,123 +41,96 @@ Finished PLC is a **validation oracle only** — never a discovery source. Site 
 
 | Item | Value (oracle) | Class |
 |------|----------------|-------|
-| Controller | `ORLY_Greensboro_NC_PLC5` / 1756-L83E v35.11 | SITE_CONFIGURATION |
-| Programs | ES, HMI, IO_MAP, PLC_Fast, Redroom_Area_{Fast,L1,L2,L3,Slow}, ShippingSorter_Area_{Fast,L1,L2,L3,Slow}, **Sorter_Track**, Sys, System, **WCS_Interface_TCP_IP** | mix (see below) |
-| Sorter_Track task | `P02_Track_5ms` PERIODIC Rate=5 Priority=2 | STANDARD_ARCHITECTURE (class=`tracking`) |
-| WCS task | `P03_WCS_10ms` PERIODIC Rate=10 Priority=3 | STANDARD_ARCHITECTURE (class=`wcs`) |
-| Area Fast/Slow | P10 50ms / P11 200ms | STANDARD_ARCHITECTURE |
-| Area L1/L2/L3 + Sys | P15_* EVENT | STANDARD_ARCHITECTURE |
+| Controller | `ORLY_Greensboro_NC_PLC5` / 1756-L83E | SITE_CONFIGURATION |
+| Programs | ES, HMI, IO_MAP, PLC_Fast, Redroom_Area_*, ShippingSorter_Area_*, **Sorter_Track**, Sys, System, **WCS_Interface_TCP_IP** | mix |
+| Sorter_Track task | `P02_Track_5ms` PERIODIC Rate=5 Priority=2 | STANDARD_ARCHITECTURE (class=`tracking`; rate PARAMETERIZED) |
+| WCS task | `P03_WCS_10ms` PERIODIC Rate=10 Priority=3 | OPTIONAL pack class=`wcs` |
 | IO_MAP | Present but **not scheduled** on any task in this finished export | UNKNOWN / CUSTOM_ENGINEERING |
-| Open AOI defs | 4 (`AOI_SNTP_QUERY`, `AOI_TIME_*`, `Z_AO_DELTA`) — track AOIs are sealed EncodedData | STANDARD_ARCHITECTURE (library) |
-| UDT count | 219 user types | STANDARD_ARCHITECTURE + SITE_CONFIGURATION |
-| Modules | 68 | SITE_CONFIGURATION / EQUIPMENT_INSTANCE |
 
 ### Program classification (PLC5)
 
 | Program | Class |
 |---------|-------|
-| Sorter_Track | STANDARD_ARCHITECTURE (reusable pack candidate) |
-| WCS_Interface_TCP_IP | STANDARD_ARCHITECTURE (optional pack; not sorter-mandatory — see WCS pack) |
-| ShippingSorter_Area_* / Redroom_Area_* | EQUIPMENT_INSTANCE / SITE_CONFIGURATION (area instances) |
-| ES | STANDARD_ARCHITECTURE (safety) |
-| Sys / System / HMI / PLC_Fast / IO_MAP | STANDARD_ARCHITECTURE (platform) |
+| Sorter_Track | STANDARD_ARCHITECTURE (reusable pack) |
+| WCS_Interface_TCP_IP | OPTIONAL STANDARD_ARCHITECTURE |
+| ShippingSorter_Area_* / Redroom_Area_* | EQUIPMENT_INSTANCE / SITE_CONFIGURATION |
+| ES / Sys / System / HMI / PLC_Fast / IO_MAP | platform packs |
 
 ---
 
-## Exact routine list (PLC5 Sorter_Track)
+## Exact routine lists (oracles)
 
-Main routine name: **`Main`** (not `Main_Routine`).
+Main routine name: **`Main`**.
 
-JSR order from `Main` (oracle):
+### PLC5 JSR order (17 routines)
 
-1. Encoder  
-2. Track_Pointer  
-3. Track_Induct_Package  
-4. Track_Manual_Destination  
-5. Scanner  
-6. Track_Package  
-7. Track_Lost_Package  
-8. Divert_Lane_Status  
-9. Track_Divert_Package  
-10. Wave_Divert  
-11. Divert_Rate_Limit  
-12. Track_Divert_Confirm  
-13. Track_Offset_Find  
-14. Gridlock_Prevention  
-15. Response_Time  
-16. RT_Virtual_Enc  
+1. Encoder → 2. Track_Pointer → 3. Track_Induct_Package → 4. Track_Manual_Destination → 5. Scanner → 6. Track_Package → 7. Track_Lost_Package → 8. Divert_Lane_Status → 9. Track_Divert_Package → 10. Wave_Divert → 11. Divert_Rate_Limit → 12. Track_Divert_Confirm → 13. Track_Offset_Find → 14. **Gridlock_Prevention** → 15. Response_Time → 16. **RT_Virtual_Enc**
 
-| Routine | Type | Rungs (oracle) | Purpose |
-|---------|------|---------------:|---------|
-| Main | RLL | 17 | Scheduler — JSR only |
-| Encoder | RLL | 10 | Encoder pulse / speed AOI (`Enc_RIOCard`, virtual enc) |
-| Track_Pointer | RLL | 5 | `TRK_Pointer` advance along track groups |
-| Track_Induct_Package | RLL | 2 | Induct PE → token generate/update |
-| Track_Manual_Destination | RLL | 2 | Manual destination override |
-| Scanner | RLL | 8 | Scan associate; raise decision-request handshake |
-| Track_Package | RLL | 14 | Token search / transfer / exit PE tracking |
-| Track_Lost_Package | RLL | 5 | Lost-package detect → WCS-facing token latches |
-| Divert_Lane_Status | RLL | 56 | Map lane Full PE → `Divert.PI.Full` |
-| Track_Divert_Package | RLL | 48 | `Track_Divert_AOI` fire / destination consume |
-| Wave_Divert | RLL | 16 | `TRK_Divert_WaveFunction` |
-| Divert_Rate_Limit | RLL | 18 | Rate limiting |
-| Track_Divert_Confirm | RLL | 1 | Confirm divert → WCS confirm/recirc signals |
-| Track_Offset_Find | RLL | 24 | `TRK_OffsetFind_PE` commissioning offsets |
-| Gridlock_Prevention | RLL | 9 | Gridlock inhibit (PLC5 present; PLC4 gold pack lacks) |
-| Response_Time | RLL | 4 | WCS response-time metrics |
-| RT_Virtual_Enc | ST | — | Virtual encoder ST (PLC5 present; gold pack **missing**) |
+### PLC4 JSR order (15 routines)
 
-**PLC4 Sorter_Track routines (for delta):** same set **minus** `Gridlock_Prevention` and `RT_Virtual_Enc`.
+Same core through Track_Offset_Find → Response_Time. **No** Gridlock_Prevention, **no** RT_Virtual_Enc.  
+PLC4 `P02` also schedules **Sawtooth_Merge** beside Sorter_Track.
 
-**Gold pack** `tools/libraries/programs/Sorter_Track_Program.L5X`: matches PLC5 list **minus** `RT_Virtual_Enc` — Greensboro-fixed validation asset, not a generic library.
+### Gold pack
+
+`tools/libraries/programs/Sorter_Track_Program.L5X`: PLC5 core + Gridlock; **missing** RT_Virtual_Enc. Greensboro-fixed — not a generic library.
+
+| Routine | Type | Emit class | PLC4 rungs | PLC5 rungs |
+|---------|------|------------|----------:|----------:|
+| Main | RLL | REQUIRED_STANDARD | 15 | 17 |
+| Encoder | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 1 | 10 |
+| Track_Pointer | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 1 | 5 |
+| Track_Induct_Package | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 2 | 2 |
+| Track_Manual_Destination | RLL | REQUIRED_STANDARD | 2 | 2 |
+| Scanner | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 8 | 8 |
+| Track_Package | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 2 | 14 |
+| Track_Lost_Package | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 1 | 5 |
+| Divert_Lane_Status | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 7 | 56 |
+| Track_Divert_Package | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 3 | 48 |
+| Wave_Divert | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 1 | 16 |
+| Divert_Rate_Limit | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 3 | 18 |
+| Track_Divert_Confirm | RLL | REQUIRED_STANDARD + MODEL_EXPANDED | 1 | 1 |
+| Track_Offset_Find | RLL | REQUIRED_STANDARD + MODEL_EXPANDED (shell; values NOT_SUPPORTED) | 5 | 24 |
+| Gridlock_Prevention | RLL | CONDITIONAL_STANDARD / CUSTOM content | — | 9 |
+| Response_Time | RLL | REQUIRED_STANDARD | 4 | 4 |
+| RT_Virtual_Enc | ST | CONDITIONAL_STANDARD | — | yes |
+
+Rung deltas are explained by encoder/path/divert **multiplicity** (see diff doc) — except optional-leaf presence and Sawtooth co-schedule.
 
 ---
 
-## Per-routine contract summary
-
-| Routine | Required tags / UDTs / AOIs | Relationships | Value classes |
-|---------|----------------------------|---------------|---------------|
-| Encoder | `Enc_UDT`, `Enc_RIOCard`, `Enc_Virtual_DistBased`, `ENC*_Direct_In_Pulse` | Encoders / sorter motor enable | STANDARD + COMMISSIONING (scale/FPM) + EQUIPMENT_INSTANCE |
-| Track_Pointer | `TRK_Pointer`, `Track_Group_*` | Tracking conveyors / slot groups | STANDARD + SITE_CONFIGURATION (group size) |
-| Track_Induct_Package | `TRK_Induct_TokenGenerate`, `TRK_Induct_TokenUpdate`, `Track_Induct_UDT`, induct PE | Induct PE / tracking conveyor | STANDARD + EQUIPMENT_INSTANCE |
-| Scanner | Scanner raw/results, `Token_SCN*`, decision-request BOOL | Scanner device / WCS decision point | STANDARD + SITE_CONFIGURATION |
-| Track_Package | `TRK_SearchToken_*`, `TRK_Token_Transfer`, exit PE | Tracking PEs / exit confirm | STANDARD + EQUIPMENT_INSTANCE |
-| Track_Lost_Package | `TRK_Lost_Package`, `*_WCS_Token_Lost_Package` | Exit path → WCS | STANDARD + EQUIPMENT_INSTANCE |
-| Divert_Lane_Status | Full PE → `Track_Divert_UDT.PI.Full` | Downstream Full PE | EQUIPMENT_INSTANCE mapping |
-| Track_Divert_Package | `Track_Divert_AOI`, `Track_Divert_UDT`, destination | Divert solenoid / lane CFG | STANDARD + COMMISSIONING (offsets) + EQUIPMENT_INSTANCE |
-| Wave_Divert | `TRK_Divert_WaveFunction` | Divert timing wave | STANDARD + COMMISSIONING |
-| Divert_Rate_Limit | rate timers / enables | Divert traffic shaping | STANDARD + COMMISSIONING_VALUE |
-| Track_Divert_Confirm | `Divert.O.Conf_MSG*`, recirc BOOL/DINT | → WCS confirm messages | STANDARD interface + EQUIPMENT_INSTANCE |
-| Track_Offset_Find | `TRK_OffsetFind_PE` | Encoder counts induct→divert | COMMISSIONING_VALUE / currently NOT_SUPPORTED to synthesize |
-| Gridlock_Prevention | gridlock UDT / inhibits | Area full / prevent | SITE_CONFIGURATION / CUSTOM_ENGINEERING |
-| Response_Time | `WCS_Response_Time_*` metrics | WCS latency monitor | STANDARD + COMMISSIONING_VALUE |
-| RT_Virtual_Enc | virtual enc ST | Encoder substitute | STANDARD_ARCHITECTURE (optional) |
-| Track_Manual_Destination | `Manual_Destination` UDT | HMI / WCS gate | SITE_CONFIGURATION |
-
-**RUN-populatable (discovery):** sorter identity, encoder link, scan zone, divert lane topology (`Sorters`, `Encoders`, `SrtScanBoss`, `SrtZoneLane`).  
-**Engineer-required:** divert output IO (often INVALID in RUN), track offsets/triggers, wave timing, rate limits, gridlock policy, socket/decision-point wiring when WCS present.
-
----
-
-## Reusable PROGRAM CONTRACT
+## Multiplicity rules (Gate C)
 
 ```
-INPUT MODEL (canonical — origin-agnostic):
-  SorterModel { sorters[], encoders[], scan_zones[], divert_lanes[], induct_pes[], tracking_pes[] }
-  LogicalSignalModel (enable/jam/latch refs when sorter areas participate)
-  optional WCSModel (only if site requires host messaging)
+FOR EACH sorter.encoder          → Encoder AOI cluster
+FOR EACH tracking path           → Track_Pointer + Track_Package (+ transfers) + Lost_Package path
+FOR EACH induct/decision point   → Track_Induct_* 
+FOR EACH scan/decision group     → Token_SCN* + Track_Group_SCN* + Scanner handshake
+FOR EACH approved divert instance→ Track_Divert_UDT/AOI + Wave + RateLimit + LaneStatus + OffsetFind shell
+```
+
+**Forbidden:** hardcoding divert counts (32, 16, …). Approve divert instances in SorterModel (IO/config) before expand.
+
+Oracle check: PLC4 → 1 divert UDT (`P424_Divert1`); PLC5 → 16 divert UDTs; RUN zone lanes may be 32.
+
+---
+
+## Reusable PROGRAM CONTRACT (v1)
+
+```
+INPUT MODEL:
+  SorterModel { sorters[], encoders[], scan_groups[], divert_instances[], induct_points[], tracking_paths[], exit_paths[] }
+  LogicalSignalModel (enable/jam/latch refs)
+  optional WCSModel (handshake only when enabled)
 
 GENERATED PROGRAM: Sorter_Track
-TASK CLASS: tracking  (oracle example rate 5 ms — not a universal constant)
-ROUTINES: Main + list above (Gridlock / RT_Virtual_Enc optional leaves)
-DEPENDENCIES:
-  sealed track AOI library (Enc_*, TRK_*, Track_Divert_*)
-  Token / Track_Group / Divert UDTs
-  optional WCS handshake tags (see interface matrix)
-AUTO-POPULATED: structure from SorterModel when PROVEN
-ENGINEER-REQUIRED: divert IO, offsets, wave/rate, confirm mapping
-VALIDATION: routine set ⊇ core track leaves; no silent gold-pack clone;
-  divert trigger remains NOT_SUPPORTED until generic timing contract exists
+TASK CLASS: tracking  (rate/priority PARAMETERIZED; oracle example 5 ms — not universal law)
+ROUTINES: REQUIRED_STANDARD list + CONDITIONAL_STANDARD when enabled
+DEPENDENCIES: sealed Enc_*/TRK_* AOI library; Token/Track/Divert UDTs; optional WCS/Sawtooth packs
+AUTO-POPULATED: structure/cardinality from SorterModel when PROVEN + approved divert instances
+ENGINEER-REQUIRED: divert IO, approved divert set, offsets/triggers, wave/rate, optional gridlock policy
+VALIDATION: no gold-pack clone; no hardcoded instance counts; divert trigger values NOT_SUPPORTED
+PHASE1 HOT EMIT: shells + MODEL_EXPANDED slots; compiler_implementation NOT_STARTED until parent implements
 ```
 
 ---
@@ -140,34 +141,18 @@ Proven = identifier appears in **both** `Sorter_Track` and `WCS_Interface_TCP_IP
 
 **Count: 34 controller-scoped shared roots** (16 are divert-instance UDTs).
 
-| NAME | SCOPE | DATATYPE | WRITER (heuristic) | READER | PURPOSE | PROVENANCE |
-|------|-------|----------|--------------------|--------|---------|------------|
-| P504_Induct_Decision_Request_Helix | Controller | BOOL | BOTH (ST sets; WCS consumes/clears) | WCS Outbound router / ST Scanner | Decision-request handshake | PLC5 oracle dual-ref |
-| P504_Induct_WCS_Token_Found | Controller | DINT | Sorter_Track | WCS | Induct token id to host | PLC5 oracle dual-ref |
-| Token_SCN504 | Controller | Token_Sorter[1000] | Sorter_Track (primary) | WCS | Shared token store | PLC5 oracle dual-ref |
-| Track_Group_SCN504 | Controller | Track_Group_UDT | Sorter_Track | WCS | Track group state | PLC5 oracle dual-ref |
-| P504_ManualDest | Controller | Manual_Destination | HMI/ST | WCS Main + ST | Manual dest gate | PLC5 oracle dual-ref |
-| P5xx_Exit_Lost_Package_Detect | Controller | TRK_Lost_Package | Sorter_Track | WCS | Lost-package event | PLC5 oracle dual-ref |
-| P5xx_WCS_Token_Lost_Package | Controller | DINT | Sorter_Track | WCS | Lost token id | PLC5 oracle dual-ref |
-| P510_Send_WCS_MSG_Recirc | Controller | BOOL | BOTH | WCS / ST | Recirc confirm pulse | PLC5 oracle dual-ref |
-| P510_WCS_Token_Recirc | Controller | DINT | Sorter_Track | WCS | Recirc token id | PLC5 oracle dual-ref |
-| P506/508/509/510_DivertN | Controller | Track_Divert_UDT | Sorter_Track (AOI) | WCS (`O.Conf_MSG`, `O.Conf_MSG_WCS_Token`, `CFG.Lane_Number`) | Divert confirm → DecisionUpdate | PLC5 oracle dual-ref |
-| PLC | Controller | PLC_UDT | Sys/other | both | Timestamp / DTS helper | PLC5 oracle dual-ref |
+Primary flows: decision request → decision response Destination → divert confirm (`O.Conf_MSG*`) → lost/recirc latches.
 
-Member-level WCS read pattern (proven): `XIC(P*_Divert*.O.Conf_MSG)` + `Conf_MSG_WCS_Token` + `Token_SCN504[token].{ID,Barcode,Diverted_Lane}` → `SBR_DecisionUpdate_MSG`.
-
-No guesses beyond these dual-referenced tags.
+**Phase 1 WCS boundary recommendation:** keep WCS as a **separate optional pack**; do not auto-include from sorter discovery; when enabled, emit the handshake tag surface for WCS to consume.
 
 ---
 
 ## Readiness verdict
 
-**SORTER_TRACK PACK: MORE_EVIDENCE_REQUIRED**
+**SORTER_TRACK PACK: READY_TO_IMPLEMENT** (Phase 1 hot emit / pack_definition_version 1)
 
-Why:
-1. Core architecture + routine set is proven from oracle + gold pack, but **generic sealed AOI library / open parameter contracts** are not yet packaged for emit.
-2. Divert **trigger/offset** synthesis remains `NOT_SUPPORTED` (no complete RUN→offset map).
-3. Gold `Sorter_Track_Program.L5X` is Greensboro-fixed (lane/PE/divert instances) — cloning it would violate anti-cheat / library policy.
-4. PLC4 vs PLC5 routine delta (`Gridlock_Prevention`, `RT_Virtual_Enc`) needs explicit optional-leaf policy before READY_TO_IMPLEMENT.
-
-Do **not** mark compilers COMPLETE. Do **not** emit hollow Sorter_Track programs.
+Meaning:
+- Executable routine/task/expansion contract is specified from PLC4↔PLC5 archaeology.
+- Parent may implement compiler against this contract.
+- Full divert-trigger fidelity and sealed-AOI packaging gaps remain listed — do not claim COMPLETE generation.
+- Do **not** emit hollow programs that pretend offsets/triggers are solved.

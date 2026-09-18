@@ -65,7 +65,7 @@ Brownfield import and greenfield drawing both land in the same effective model b
 | MergeModel | partial | Fast / Sawtooth_Merge | MergeBoss / MergeInputs | |
 | SafetyModel | partial | ES | devices + ENGINEER_ASSIGNED membership | |
 | HardwareIOModel | existing / partial | IO_MAP | Configio | |
-| SorterModel | proposed | Sorter_Track | RUN sorter tables + LogicalSignalModel | Pack readiness **MORE_EVIDENCE_REQUIRED**; compiler **NOT_STARTED** |
+| SorterModel | proposed | Sorter_Track | RUN sorter tables + LogicalSignalModel | Pack definition v1 **READY_TO_IMPLEMENT** (Phase 1 hot emit); compiler **NOT_STARTED** |
 | WCSModel | proposed | WCS_Interface_TCP_IP | engineer endpoint; optional Sorter | Pack readiness **MORE_EVIDENCE_REQUIRED**; compiler **NOT_STARTED**; optional |
 
 Contracts:
@@ -125,16 +125,16 @@ Contracts:
 
 | | |
 |--|--|
-| **Status** | **proposed** (architecture READY docs; emit NOT_STARTED) |
+| **Status** | **proposed** (pack_definition_version 1 READY for Phase 1 hot emit; compiler NOT_STARTED) |
 | **INPUT MODEL** | SorterModel, LogicalSignalModel, optional WCSModel |
 | **GENERATED PROGRAM** | `Sorter_Track` |
-| **TASK/RATE** | tracking (oracle example 5 ms) |
-| **ROUTINES** | Main, Encoder, Track_*, Divert_*, Scanner, Wave_Divert, … (see sorter contract) |
+| **TASK/RATE** | tracking (rate/priority PARAMETERIZED; oracle example 5 ms — not universal) |
+| **ROUTINES** | REQUIRED_STANDARD + CONDITIONAL_STANDARD + MODEL_EXPANDED bodies (see sorter contract) |
 | **DEPENDENCIES** | sealed TRK_/Enc_ AOI library; Token/Divert UDTs |
-| **AUTO-POPULATED** | sorter identity, encoder, scan/divert topology when PROVEN |
+| **AUTO-POPULATED** | sorter identity, encoder, scan/divert topology when PROVEN + approved divert instances |
 | **ENGINEER-REQUIRED** | divert IO, offsets/triggers, wave/rate, gridlock |
-| **VALIDATION** | no gold-pack clone; divert trigger NOT_SUPPORTED until generic timing contract |
-| **Readiness** | **MORE_EVIDENCE_REQUIRED** — see sorter contract |
+| **VALIDATION** | no gold-pack clone; no hardcoded divert counts; divert trigger values NOT_SUPPORTED |
+| **Readiness** | **READY_TO_IMPLEMENT** (Phase 1 hot emit) — see sorter contract; gaps listed |
 
 ### 5. WCS pack
 
@@ -235,7 +235,7 @@ Contracts:
 | **LogicalSignalModel** | **MODEL_DEFINED** | Field→menu classes + taxonomy proven; emit **NOT_STARTED** |
 | **StartStopModel** | **MODEL_DEFINED** | RUN schema + oracle Area/CS mapping documented; emit **NOT_STARTED** |
 | **JamZoneModel** | **MODEL_DEFINED** | Jamzones/Jamcheck + Slow_Jam oracle mapping documented; emit **NOT_STARTED** |
-| **SORTER_TRACK** | **MORE_EVIDENCE_REQUIRED** | Routine architecture proven, but generic AOI/parameter library + divert timing contract incomplete; gold pack is site-fixed |
+| **SORTER_TRACK** | **READY_TO_IMPLEMENT** (Phase 1 hot emit) | Pack definition v1 from PLC4↔PLC5 archaeology; sealed AOI packaging + divert trigger value synthesis still gapped; compiler NOT_STARTED |
 | **WCS** | **MORE_EVIDENCE_REQUIRED** | Routine architecture stable PLC4/PLC5, but message schema + endpoint authority not pack-ready; must stay optional |
 
 Compilers: **NOT_STARTED** for Sorter_Track / WCS / LogicalSignal / StartStop / JamZone emit paths. Do not mark COMPLETE. Do not emit hollow programs. Do not build Sorter/WCS compilers in this checkpoint.

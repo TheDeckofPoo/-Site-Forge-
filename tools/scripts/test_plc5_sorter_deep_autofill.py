@@ -149,7 +149,7 @@ class TestPlc5SorterDeepAutofill(unittest.TestCase):
         self.assertGreaterEqual(len(auth.get("fields") or []), 25)
         deep = json.loads(Path(paths["deep_autofill_json"]).read_text(encoding="utf-8"))
         self.assertEqual(deep.get("sorters_discovered"), 5)
-        self.assertEqual(deep.get("plc_generation"), "NOT_STARTED")
+        self.assertEqual(deep.get("plc_generation"), "PHASE1_SUPPORTED")
         cov = deep.get("autofill_coverage") or {}
         self.assertIn("PROVEN", cov)
         self.assertIn("DERIVED", cov)

@@ -1,0 +1,522 @@
+{
+  "pack_diff_version": 1,
+  "gate": "B_C",
+  "purpose": "PLC4 vs PLC5 Sorter_Track (+ related task) archaeology for executable pack definition",
+  "anti_cheat": {
+    "oracles_validation_only": true,
+    "no_site_ifs_in_compiler": true,
+    "site_names_ok_as_oracle_examples": true,
+    "never_hardcode_divert_count": true
+  },
+  "oracles": {
+    "PLC5": {
+      "path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_Greensboro_NC_PLC5_RTfinished.L5X",
+      "controller": "ORLY_Greensboro_NC_PLC5",
+      "processor": "1756-L83E",
+      "sha256": "27B55EEDFB90298BA442964EC04F03086BF382B2752A48695C9278138501DCF9",
+      "note": "Newest local RTfinished; validation oracle only"
+    },
+    "PLC4": {
+      "path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_Greensboro_NC_PLC4 finished.L5X",
+      "controller": "ORLY_Greensboro_NC_PLC4",
+      "processor": "1756-L83E",
+      "sha256": "370CD3F1CEB4351D454EF021741D3F32608B7D58DDAFD90702FB0AD753AF5A2F",
+      "note": "Finished PLC4; validation oracle only"
+    },
+    "gold_pack": {
+      "path": "tools/libraries/programs/Sorter_Track_Program.L5X",
+      "note": "Greensboro-fixed validation asset — not a reusable emit library"
+    }
+  },
+  "tag_normalization": {
+    "rule": "Compare structure after normalizing controller digit family: P4xx↔P5xx, ENC4xx↔ENC5xx, SCN4xx↔SCN5xx → Pnxx / ENCn / SCNn",
+    "examples_oracle_only": [
+      "P424_Divert1 ≡ pattern P{sorter}_Divert{n}",
+      "P506_Divert1 ≡ same pattern",
+      "Token_SCN424 ≡ Token_SCN{scan}",
+      "Token_SCN504 ≡ Token_SCN{scan}",
+      "ENC424_Direct_In_Pulse ≡ ENC{id}_Direct_In_Pulse"
+    ]
+  },
+  "task": {
+    "PLC4": {
+      "name": "P02_Track_5ms",
+      "type": "PERIODIC",
+      "rate_ms": 5,
+      "priority": 2,
+      "watchdog_ms": 500,
+      "scheduled_programs": ["Sawtooth_Merge", "Sorter_Track"]
+    },
+    "PLC5": {
+      "name": "P02_Track_5ms",
+      "type": "PERIODIC",
+      "rate_ms": 5,
+      "priority": 2,
+      "watchdog_ms": 500,
+      "scheduled_programs": ["Sorter_Track"]
+    },
+    "wcs_task_both": {
+      "name": "P03_WCS_10ms",
+      "type": "PERIODIC",
+      "rate_ms": 10,
+      "priority": 3,
+      "scheduled_programs": ["WCS_Interface_TCP_IP"]
+    },
+    "classification": {
+      "level": "TASK",
+      "class": "PACK_STANDARD",
+      "task_class": "tracking",
+      "rate_priority": "PARAMETERIZED",
+      "note": "Oracle 5ms/priority 2 is evidence of class intent, not a universal hardcoded constant"
+    },
+    "significant_differences": [
+      {
+        "diff": "PLC4 P02 also schedules Sawtooth_Merge beside Sorter_Track; PLC5 P02 is Sorter_Track only",
+        "explained_by_sorter_multiplicity": false,
+        "explained_by_run_model": true,
+        "explanation": "PLC4 site includes Sawtooth_Merge pack on tracking task; PLC5 does not. Independent of divert/encoder counts.",
+        "classification": "OPTIONAL_STANDARD"
+      }
+    ]
+  },
+  "program": {
+    "name": "Sorter_Track",
+    "main_routine": "Main",
+    "classification": {
+      "level": "PROGRAM",
+      "class": "PACK_STANDARD"
+    },
+    "related_programs_oracle": {
+      "PLC4": [
+        "Sawtooth_Merge",
+        "WCS_Interface_TCP_IP",
+        "Sawtooth_Area_*",
+        "CityCounter_Area_*",
+        "ModuleA_Area_*"
+      ],
+      "PLC5": [
+        "WCS_Interface_TCP_IP",
+        "ShippingSorter_Area_*",
+        "Redroom_Area_*"
+      ],
+      "note": "Area Fast/Slow/L1–L3 and StartStop/Jam live outside Sorter_Track; LogicalSignalModel may feed encoder enables"
+    }
+  },
+  "routines": {
+    "PLC4_jsr_order": [
+      "Encoder",
+      "Track_Pointer",
+      "Track_Induct_Package",
+      "Track_Manual_Destination",
+      "Scanner",
+      "Track_Package",
+      "Track_Lost_Package",
+      "Divert_Lane_Status",
+      "Track_Divert_Package",
+      "Wave_Divert",
+      "Divert_Rate_Limit",
+      "Track_Divert_Confirm",
+      "Track_Offset_Find",
+      "Response_Time"
+    ],
+    "PLC5_jsr_order": [
+      "Encoder",
+      "Track_Pointer",
+      "Track_Induct_Package",
+      "Track_Manual_Destination",
+      "Scanner",
+      "Track_Package",
+      "Track_Lost_Package",
+      "Divert_Lane_Status",
+      "Track_Divert_Package",
+      "Wave_Divert",
+      "Divert_Rate_Limit",
+      "Track_Divert_Confirm",
+      "Track_Offset_Find",
+      "Gridlock_Prevention",
+      "Response_Time",
+      "RT_Virtual_Enc"
+    ],
+    "gold_jsr_order": [
+      "Encoder",
+      "Track_Pointer",
+      "Track_Induct_Package",
+      "Track_Manual_Destination",
+      "Scanner",
+      "Track_Package",
+      "Track_Lost_Package",
+      "Divert_Lane_Status",
+      "Track_Divert_Package",
+      "Wave_Divert",
+      "Divert_Rate_Limit",
+      "Track_Divert_Confirm",
+      "Track_Offset_Find",
+      "Gridlock_Prevention",
+      "Response_Time"
+    ],
+    "PLC4_only": [],
+    "PLC5_only": ["Gridlock_Prevention", "RT_Virtual_Enc"],
+    "gold_vs_PLC5": {
+      "gold_missing": ["RT_Virtual_Enc"],
+      "note": "Gold matches PLC5 core + Gridlock; lacks RT_Virtual_Enc ST leaf"
+    },
+    "items": [
+      {
+        "name": "Main",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "plc4_rungs": 15,
+        "plc5_rungs": 17,
+        "multiplicity_explains_rung_delta": true,
+        "note": "JSR count = core leaves + optional leaves present"
+      },
+      {
+        "name": "Encoder",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 1,
+        "plc5_rungs": 10,
+        "plc4_aoi_calls": {"Enc_RIOCard": 1},
+        "plc5_aoi_calls": {"Enc_RIOCard": 5, "Enc_Virtual_DistBased": 5},
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH sorter encoder in SorterModel emit Enc_RIOCard (+ optional virtual enc companion)"
+      },
+      {
+        "name": "Track_Pointer",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 1,
+        "plc5_rungs": 5,
+        "plc4_aoi_calls": {"TRK_Pointer": 1},
+        "plc5_aoi_calls": {"TRK_Pointer": 5},
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH tracking conveyor/group path emit TRK_Pointer instance"
+      },
+      {
+        "name": "Track_Induct_Package",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 2,
+        "plc5_rungs": 2,
+        "multiplicity_explains_rung_delta": true,
+        "note": "Both oracles show single induct decision-point path (1 Track_Induct_UDT)"
+      },
+      {
+        "name": "Track_Manual_Destination",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "PARAMETERIZED",
+        "plc4_rungs": 2,
+        "plc5_rungs": 2,
+        "multiplicity_explains_rung_delta": true
+      },
+      {
+        "name": "Scanner",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 8,
+        "plc5_rungs": 8,
+        "multiplicity_explains_rung_delta": true,
+        "note": "Single Token_SCN* / Track_Group_SCN* in both oracles"
+      },
+      {
+        "name": "Track_Package",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 2,
+        "plc5_rungs": 14,
+        "plc4_aoi_calls": {"TRK_SearchToken_WithPE": 1},
+        "plc5_aoi_calls": {"TRK_SearchToken_WithPE": 5, "TRK_Token_Transfer": 4},
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH tracking path/PE chain emit search/transfer instances"
+      },
+      {
+        "name": "Track_Lost_Package",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 1,
+        "plc5_rungs": 5,
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH exit/lost-detect path emit TRK_Lost_Package + WCS token latch pair"
+      },
+      {
+        "name": "Divert_Lane_Status",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 7,
+        "plc5_rungs": 56,
+        "plc4_divert_refs": 1,
+        "plc5_divert_refs": 16,
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH divert instance map Full PE → Track_Divert_UDT.PI.Full"
+      },
+      {
+        "name": "Track_Divert_Package",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 3,
+        "plc5_rungs": 48,
+        "plc4_divert_refs": 1,
+        "plc5_divert_refs": 16,
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH divert instance emit TRK_Divert (+ search/destination/confirm RC update) cluster — NEVER hardcode 16 or 32"
+      },
+      {
+        "name": "Wave_Divert",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "values": "PARAMETERIZED",
+        "plc4_rungs": 1,
+        "plc5_rungs": 16,
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH divert instance emit TRK_Divert_WaveFunction; wave timing is commissioning"
+      },
+      {
+        "name": "Divert_Rate_Limit",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "values": "PARAMETERIZED",
+        "plc4_rungs": 3,
+        "plc5_rungs": 18,
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH divert instance emit TRK_Divert_RateLimit; limits are commissioning"
+      },
+      {
+        "name": "Track_Divert_Confirm",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "plc4_rungs": 1,
+        "plc5_rungs": 1,
+        "multiplicity_explains_rung_delta": "partial",
+        "note": "Routine present both sides; confirm fan-out often inside divert UDT members / WCS router rather than rung count here"
+      },
+      {
+        "name": "Track_Offset_Find",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "MODEL_GENERATED",
+        "values": "PARAMETERIZED",
+        "emit_synthesis": "NOT_SUPPORTED",
+        "plc4_rungs": 5,
+        "plc5_rungs": 24,
+        "multiplicity_explains_rung_delta": true,
+        "rule": "FOR EACH divert/offset PE pair emit TRK_OffsetFind_PE shell; offset counts remain engineer/commissioning"
+      },
+      {
+        "name": "Response_Time",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "PACK_STANDARD",
+        "body_expansion": "PARAMETERIZED",
+        "plc4_rungs": 4,
+        "plc5_rungs": 4,
+        "multiplicity_explains_rung_delta": true
+      },
+      {
+        "name": "Gridlock_Prevention",
+        "type": "RLL",
+        "level": "ROUTINE",
+        "class": "OPTIONAL_STANDARD",
+        "plc4_present": false,
+        "plc5_present": true,
+        "gold_present": true,
+        "multiplicity_explains_presence": false,
+        "content_class": "CUSTOM_ENGINEER",
+        "note": "Presence is optional pack leaf; inhibit policy/content is site engineering — not explained by divert count alone"
+      },
+      {
+        "name": "RT_Virtual_Enc",
+        "type": "ST",
+        "level": "ROUTINE",
+        "class": "OPTIONAL_STANDARD",
+        "plc4_present": false,
+        "plc5_present": true,
+        "gold_present": false,
+        "multiplicity_explains_presence": false,
+        "note": "Optional virtual-encoder ST leaf; not required for Phase 1 hot emit"
+      }
+    ]
+  },
+  "multiplicity_oracle": {
+    "PLC4": {
+      "Track_Divert_UDT": 1,
+      "Track_Divert_AOI": 1,
+      "divert_instances": ["P424_Divert1"],
+      "Enc_UDT": ["NO_Enc", "P414_Enc", "P424_Enc"],
+      "active_track_encoders_in_Encoder_routine": 1,
+      "Track_Induct_UDT": ["P424_Induct_Track"],
+      "Track_Conv_UDT": ["P424_Conv_Track"],
+      "Token_Sorter": [{"name": "Token_SCN424", "dims": "1000"}],
+      "Track_Group_UDT": ["Track_Group_SCN424"],
+      "Manual_Destination": ["P424_ManualDest"]
+    },
+    "PLC5": {
+      "Track_Divert_UDT": 16,
+      "Track_Divert_AOI": 16,
+      "divert_instances": [
+        "P506_Divert1", "P506_Divert2", "P506_Divert3", "P506_Divert4", "P506_Divert5", "P506_Divert6",
+        "P508_Divert1", "P508_Divert2", "P508_Divert3", "P508_Divert4", "P508_Divert5", "P508_Divert6",
+        "P509_Divert1",
+        "P510_Divert1", "P510_Divert2", "P510_Divert3"
+      ],
+      "Enc_UDT": ["NO_Enc", "P504_Enc", "P506_Enc", "P508_Enc", "P509_Enc", "P510_Enc"],
+      "active_track_encoders_in_Encoder_routine": 5,
+      "Track_Induct_UDT": ["P504_Induct_Track"],
+      "Track_Conv_UDT": ["P504_Conv_Track", "P506_Conv_Track", "P508_Conv_Track", "P509_Conv_Track", "P510_Conv_Track"],
+      "Token_Sorter": [{"name": "Token_SCN504", "dims": "1000"}],
+      "Track_Group_UDT": ["Track_Group_SCN504"],
+      "Manual_Destination": ["P504_ManualDest"]
+    },
+    "run_model_plc5_oracle_example": {
+      "sorter_count": 5,
+      "encoder_count": 5,
+      "zone_lane_rows": 32,
+      "finished_Track_Divert_UDT": 16,
+      "warning": "Do NOT emit 32 divert UDTs from raw SrtZoneLane row count; emit only model-approved divert instances (IO/config proven). Never hardcode 32 or 16."
+    }
+  },
+  "gate_c_rules": [
+    {
+      "id": "expand_encoders",
+      "rule": "FOR EACH sorter.encoder in SorterModel emit encoder instance (Enc_UDT + Enc_RIOCard rung cluster)",
+      "explains": ["Encoder rung delta 1→10", "Enc_UDT count 3→6 incl NO_Enc"]
+    },
+    {
+      "id": "expand_tracking_paths",
+      "rule": "FOR EACH tracking conveyor/path emit Track_Conv_UDT + TRK_Pointer + Track_Package search/transfer cluster + Lost_Package path",
+      "explains": ["Track_Pointer 1→5", "Track_Package 2→14", "Track_Lost_Package 1→5", "Track_Conv_UDT 1→5"]
+    },
+    {
+      "id": "expand_diverts",
+      "rule": "FOR EACH divert instance in SorterModel.divert_instances emit Track_Divert_UDT + Track_Divert_AOI + Wave + RateLimit + LaneStatus map + OffsetFind shell",
+      "explains": ["Track_Divert_Package 3→48", "Wave_Divert 1→16", "Divert_Rate_Limit 3→18", "Divert_Lane_Status 7→56", "Track_Offset_Find 5→24"],
+      "forbidden": "hardcoded divert_count=32 or divert_count=16"
+    },
+    {
+      "id": "expand_scan_groups",
+      "rule": "FOR EACH scan/decision group emit Token_SCN* + Track_Group_SCN* + Scanner handshake tags",
+      "explains": ["Both oracles show one primary scan group — multiplicity stable here"]
+    },
+    {
+      "id": "optional_leaves",
+      "rule": "Gridlock_Prevention / RT_Virtual_Enc are OPTIONAL_STANDARD — include when pack policy/engineer enables; not a function of divert count",
+      "explains": ["PLC5-only routines"]
+    },
+    {
+      "id": "sawtooth_on_track_task",
+      "rule": "Co-schedule Sawtooth_Merge on tracking task only when Sawtooth pack selected — independent of SorterModel multiplicity",
+      "explains": ["PLC4 P02 schedules Sawtooth_Merge + Sorter_Track"]
+    }
+  ],
+  "aoi_families": {
+    "level": "AOI",
+    "class": "PACK_STANDARD",
+    "sealed_in_oracle": true,
+    "open_library_partial": [
+      "tools/libraries/Enc_Routine_ST.L5X",
+      "tools/libraries/TRK_Divert_WaveFunction_AOI.L5X"
+    ],
+    "families_observed_in_routines": [
+      "Enc_RIOCard",
+      "Enc_Virtual_DistBased",
+      "TRK_Pointer",
+      "TRK_Induct_TokenGenerate",
+      "TRK_Induct_TokenUpdate",
+      "TRK_ManualDestination",
+      "TRK_SearchToken_WithPE",
+      "TRK_SearchToken_VirtualLocation",
+      "TRK_Token_Transfer",
+      "TRK_Scanner_TokenUpdate",
+      "TRK_Lost_Package",
+      "TRK_Search_Destination",
+      "TRK_Divert",
+      "TRK_Divert_RCUpdate",
+      "TRK_DivertConfirm_RCUpdate",
+      "TRK_Divert_WaveFunction",
+      "TRK_Divert_RateLimit",
+      "TRK_OffsetFind_PE"
+    ],
+    "note": "Track AOI defs are sealed EncodedData in finished L5X; compiler consumes approved sealed library, does not author AOI bodies"
+  },
+  "udt_families": {
+    "level": "UDT",
+    "class": "PACK_STANDARD",
+    "shared_plc4_plc5": [
+      "Enc_UDT",
+      "Track_Induct_UDT",
+      "Track_Divert_UDT",
+      "Track_Divert_AOI",
+      "Track_Group_UDT",
+      "Token_Sorter",
+      "Manual_Destination",
+      "Track_Conv_UDT",
+      "Divert_CFG",
+      "Divert_PI",
+      "Divert_O"
+    ]
+  },
+  "external_domains": {
+    "scanner": {"in_pack": true, "routine": "Scanner", "class": "PACK_STANDARD"},
+    "wcs": {
+      "in_pack": false,
+      "related_program": "WCS_Interface_TCP_IP",
+      "class": "OPTIONAL_STANDARD",
+      "phase1_boundary": "Keep WCS as separate optional pack; Sorter_Track only emits handshake tag surface when WCSModel.enabled"
+    },
+    "startstop": {
+      "in_sorter_track_program": false,
+      "class": "PARAMETERIZED",
+      "note": "StartStop zones live in Area Slow / LogicalSignalModel; may gate sorter motor enable indirectly"
+    },
+    "jam": {
+      "in_sorter_track_program": false,
+      "class": "PARAMETERIZED",
+      "note": "Jam logic in Area Slow; encoder EnableBit may reference jam/VFD aux via LogicalSignalModel"
+    },
+    "logical": {
+      "class": "PARAMETERIZED",
+      "note": "LogicalSignalModel supplies enable/jam/latch refs consumed by encoder/divert readiness — not Sorter_Track routine names"
+    }
+  },
+  "components_classification_index": [
+    {"component": "P02 tracking task", "level": "TASK", "class": "PACK_STANDARD", "rate": "PARAMETERIZED"},
+    {"component": "Sorter_Track program", "level": "PROGRAM", "class": "PACK_STANDARD"},
+    {"component": "core routines (Main..Response_Time excl optional)", "level": "ROUTINE", "class": "PACK_STANDARD"},
+    {"component": "Gridlock_Prevention", "level": "ROUTINE", "class": "OPTIONAL_STANDARD"},
+    {"component": "RT_Virtual_Enc", "level": "ROUTINE", "class": "OPTIONAL_STANDARD"},
+    {"component": "per-encoder/divert/path rung bodies", "level": "tags", "class": "MODEL_GENERATED"},
+    {"component": "offsets/wave/rate/scale values", "level": "tags", "class": "PARAMETERIZED"},
+    {"component": "gridlock inhibit policy content", "level": "ROUTINE", "class": "CUSTOM_ENGINEER"},
+    {"component": "divert trigger synthesis from RUN alone", "level": "tags", "class": "UNKNOWN"},
+    {"component": "sealed TRK_/Enc_ AOI families", "level": "AOI", "class": "PACK_STANDARD"},
+    {"component": "Token/Divert/Enc UDTs", "level": "UDT", "class": "PACK_STANDARD"},
+    {"component": "WCS_Interface_TCP_IP", "level": "PROGRAM", "class": "OPTIONAL_STANDARD"},
+    {"component": "Sawtooth_Merge on P02", "level": "PROGRAM", "class": "OPTIONAL_STANDARD"},
+    {"component": "StartStop/Jam area routines", "level": "PROGRAM", "class": "PARAMETERIZED"}
+  ]
+}
