@@ -1,4 +1,7 @@
-﻿# Site Forge — Integration Checkpoint
+﻿> **HISTORICAL** — checkpoint registry moved to [`docs/evidence/ACCEPTED_CHECKPOINTS.md`](evidence/ACCEPTED_CHECKPOINTS.md).  
+> Product entry: [`docs/evidence/README.md`](evidence/README.md).
+
+# Site Forge — Integration Checkpoint
 
 **Branch:** `feature/site-forge-integration-checkpoint`  
 **Do NOT merge to main automatically** — prepare for review only.

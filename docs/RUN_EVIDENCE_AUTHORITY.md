@@ -1,5 +1,7 @@
 # RUN Evidence Authority Matrix
 
+> Part of the evidence repository — start at [`docs/evidence/README.md`](evidence/README.md).
+
 **Purpose:** Site Forge must not treat every RUN file as equal evidence.  
 Authority depends on the **engineering fact** being reconstructed.
 

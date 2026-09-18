@@ -1,0 +1,23 @@
+{
+  "source_class": "acceptance_baseline",
+  "purpose": "Logical identity + physical endpoint collision protection",
+  "accepted_checkpoint": "8c28daf plc5 io + m220 lineage",
+  "reproduce": "python tools/scripts/test_m220_aux_identity.py ; python tools/scripts/test_plc5_io_endpoint_collision.py ; python tools/scripts/test_iomap_duplicate_output_ownership.py",
+  "expected": {
+    "M220_AUX_ne_M220A_AUX": true,
+    "plc5_bank516_ne_bank520_same_logix_channel": true,
+    "duplicate_ote_preflight_still_errors": true,
+    "no_mute_generate_to_clear_collisions": true
+  },
+  "forbidden_shortcuts": [
+    "fuzzy lettered-suffix collapse",
+    "pick first/last owner",
+    "bank arithmetic alone for slot",
+    "suppress duplicate OTE diagnostics"
+  ],
+  "evidence_refs": [
+    "docs/evidence/PHYSICAL_IO_BASELINE.md",
+    "exports/stabilization/plc5_io_collision_report.md",
+    "docs/PLC2_IO_TRUTH_MODEL.md"
+  ]
+}

@@ -1,0 +1,30 @@
+{
+  "source_class": "acceptance_baseline",
+  "purpose": "PLC5 blind Sorter discovery expectations (not generation completeness)",
+  "accepted_checkpoint": "8c28daf / test_plc5_sorter_discovery.py",
+  "reproduce": "python tools/scripts/test_plc5_sorter_discovery.py",
+  "expected": {
+    "active_sorter_count": 5,
+    "sorter_names": [
+      "504_BELT",
+      "506_SHIP_SORTER",
+      "508_SHIP_SORTER",
+      "509_SHIP_SORTER",
+      "510_SHIP_SORTER"
+    ],
+    "encoders": ["ENC504", "ENC506", "ENC508", "ENC509", "ENC510"],
+    "app_control": "SHIP_SORTER",
+    "plc_generation": "NOT_STARTED",
+    "plc2_active_sorters": 0
+  },
+  "forbidden_shortcuts": [
+    "if machine == ORNCCP5",
+    "hardcoded P504/P506 discovery rules",
+    "finished-PLC-derived discovery",
+    "claim Sorter_Track complete from inventory alone"
+  ],
+  "evidence_refs": [
+    "docs/evidence/SORTER_BASELINE.md",
+    "exports/stabilization/plc5_sorter_autobuild_report.md"
+  ]
+}

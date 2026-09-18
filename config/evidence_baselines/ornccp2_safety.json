@@ -1,0 +1,23 @@
+{
+  "source_class": "acceptance_baseline",
+  "purpose": "Safety discovery vs membership vs ES architecture",
+  "accepted_checkpoint": "ccb2acd / 60e62eb handoff",
+  "reproduce": "python tools/scripts/test_safety_membership_handoff.py ; python tools/scripts/test_es_compiler.py ; python tools/scripts/test_live_canonical_handoff.py",
+  "expected": {
+    "unassigned_does_not_block_unrelated_build": true,
+    "membership_default": "ENGINEER_ASSIGNED",
+    "architecture": ["P01_Safety_20ms", "Program ES", "Main_Routine", "Safe_Logic", "Safe_PI"],
+    "shell_when_no_members": "NOP fail-safe REVIEW_REQUIRED",
+    "fortna_4ES_maps_to_studio": "CP4_ES"
+  },
+  "forbidden_shortcuts": [
+    "infer zone from name proximity",
+    "finished-PLC membership copy",
+    "early-return skip safety_build when conveyors empty",
+    "treat ES Program existence as commissioning complete"
+  ],
+  "evidence_refs": [
+    "docs/evidence/SAFETY_BASELINE.md",
+    "exports/stabilization/partial_build_contract.md"
+  ]
+}

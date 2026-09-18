@@ -1,3 +1,6 @@
+> **HISTORICAL / roadmap** — current Sorter discovery status: [`docs/evidence/SORTER_BASELINE.md`](evidence/SORTER_BASELINE.md).  
+> PLC generation remains **NOT STARTED** until a generic library path exists.
+
 # Sorter Generation Roadmap
 
 **Status:** Knowledge-layer roadmap  

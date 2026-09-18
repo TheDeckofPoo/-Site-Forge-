@@ -1,0 +1,35 @@
+{
+  "source_class": "acceptance_baseline",
+  "purpose": "ORNCCP2 Transportation freeze regression expectations",
+  "accepted_checkpoint": "99ab6ee / test_transportation_freeze.py",
+  "reproduce": "python tools/scripts/test_transportation_freeze.py",
+  "expected": {
+    "MergeBoss": ["MERGE_406_3-1", "MERGE_316_SPUR", "MERGE_400_2-1", "MERGE_324_SPUR"],
+    "MergeInputs": {
+      "MERGE_406_3-1": ["LANE1_P404", "LANE2_P138"],
+      "MERGE_316_SPUR": ["LANE1_P136", "LANE2_P312"],
+      "MERGE_400_2-1": ["LANE1_P242", "LANE2_P150_2-1"],
+      "MERGE_324_SPUR": ["LANE1_P150_SPUR", "LANE2_P320"]
+    },
+    "counts_authoritative": {
+      "MergeBoss_required": 4,
+      "MergeInputs_lanes_for_four": 8,
+      "Jamcheck_semantic_touched": 54,
+      "Mtrchain_semantic": 176,
+      "CURVE": 69
+    },
+    "counts_not_authoritative": {
+      "Jamcheck_raw_asc_rows": 600,
+      "note": "Raw ASC capacity including empty/INVALID rows — not freeze target"
+    }
+  },
+  "forbidden_shortcuts": [
+    "site-name conditional as production rule",
+    "finished-PLC-derived merge lanes",
+    "invented MergeBoss identities"
+  ],
+  "evidence_refs": [
+    "exports/stabilization/transportation_freeze_report.md",
+    "docs/evidence/TRANSPORTATION_BASELINE.md"
+  ]
+}
