@@ -1,0 +1,26 @@
+{
+  "tag": "P542_Sorter_At_Speed",
+  "writer_1": {
+    "subsystem": "Sorter_Track pack Context/program Tags (incorrectly merged)",
+    "module": "fortna_sorter_build._load_program_export",
+    "scope_before": "program + also upserted to controller",
+    "datatype": "BOOL",
+    "provenance": "PACK_STANDARD logical BOOL"
+  },
+  "writer_2": {
+    "subsystem": "Sorter_Track program Tags",
+    "module": "Sorter_Track_Program.L5X <Program><Tags>",
+    "scope": "program:Sorter_Track",
+    "datatype": "BOOL",
+    "provenance": "PACK_STANDARD"
+  },
+  "root_cause": "Program-scoped tags were appended into controller tag list while remaining in program XML",
+  "ownership_rule": "*_Sorter_At_Speed is controller-owned shared BOOL (oracle); one declaration, program references only",
+  "fix": "Do not merge program Tags into controller list; promote *_Sorter_At_Speed to controller and strip program decl; registry dedupe same-name same-dtype",
+  "preflight_duplicate_tags": 0,
+  "promoted": [
+    "P542_Sorter_At_Speed",
+    "P544_Sorter_At_Speed",
+    "P640_Sorter_At_Speed"
+  ]
+}

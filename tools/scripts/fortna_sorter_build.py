@@ -146,15 +146,19 @@ def _load_program_export(path: Path) -> dict | None:
         count=1,
     )
 
+    # Controller-scope only: Tags Use="Context".
+    # Program <Tags> stay inside program_xml — merging them here caused
+    # Duplicate tag (controller + program) for shared BOOLs like P542_Sorter_At_Speed.
     tags: list[str] = []
     ctx = re.search(r'<Tags\s+Use="Context"[^>]*>(.*?)</Tags>', text, re.S)
     if ctx:
         for tm in re.finditer(r"<Tag\b[^>]*>.*?</Tag>", ctx.group(1), re.S):
             tags.append(tm.group(0))
+    program_local_tags: list[str] = []
     prog_tags = re.search(r"<Program[^>]*>\s*<Tags>(.*?)</Tags>", text, re.S)
     if prog_tags and prog_tags.group(1).strip():
         for tm in re.finditer(r"<Tag\b[^>]*>.*?</Tag>", prog_tags.group(1), re.S):
-            tags.append(tm.group(0))
+            program_local_tags.append(tm.group(0))
 
     dt = re.search(r"<DataTypes\b[^>]*>.*?</DataTypes>", text, re.S)
     aoi = re.search(
@@ -177,10 +181,12 @@ def _load_program_export(path: Path) -> dict | None:
         "name": "Sorter_Track",
         "program_xml": program_xml,
         "tags": tags,
+        "program_local_tags": program_local_tags,
         "datatypes_xml": dt_xml,
         "aois_xml": aoi_xml,
         "source": str(path),
         "tag_count": len(tags),
+        "program_local_tag_count": len(program_local_tags),
     }
 
 
@@ -477,6 +483,7 @@ def build_configured_sorter_track(
 
     program_xml = pack["program_xml"]
     tags = list(pack.get("tags") or [])
+    program_local_tags = list(pack.get("program_local_tags") or [])
     aoi_xml = pack.get("aois_xml") or ""
     dt_xml = pack.get("datatypes_xml") or ""
 
@@ -498,11 +505,33 @@ def build_configured_sorter_track(
     else:
         enc_kept, enc_total = -1, len(re.findall(r"Enc_RIOCard\(", program_xml))
 
-    # 3) Rename gold P504/… → site conveyors / ENC###
+    # 3) Rename pack-template slots → model conveyors / ENC tags
     renames = _build_rename_pairs(sorter)
     if renames:
         program_xml = _apply_token_renames(program_xml, renames)
         tags = [_apply_token_renames(t, renames) for t in tags]
+        program_local_tags = [_apply_token_renames(t, renames) for t in program_local_tags]
+
+    # 3b) Shared BOOL roles (e.g. *_Sorter_At_Speed): oracle proves controller scope.
+    # Promote program-local declarations → controller tags; strip from program Tags
+    # so Studio/preflight do not see Duplicate tag (controller + program).
+    from fortna_plc_symbol_registry import (
+        is_controller_owned_shared_tag,
+        strip_program_tags,
+    )
+
+    promote_names: set[str] = set()
+    for block in list(program_local_tags):
+        nm_m = re.search(r'Tag Name="([^"]+)"', block)
+        if not nm_m:
+            continue
+        tname = nm_m.group(1)
+        if is_controller_owned_shared_tag(tname):
+            promote_names.add(tname)
+            if not any(f'Tag Name="{tname}"' in t for t in tags):
+                tags.append(block)
+    if promote_names:
+        program_xml = strip_program_tags(program_xml, promote_names)
 
     # 4) Build_Config ST snapshot
     program_xml = _append_build_config_routine(program_xml, sorter, renames)
@@ -534,6 +563,30 @@ def build_configured_sorter_track(
                         )
                     )
 
+    # 7) Controller-scope registry: same name + same dtype → one declaration.
+    # Renames can map multiple pack slots onto one model identity (ENC504, P504_Conv).
+    from fortna_plc_symbol_registry import PlcSymbolRegistry
+
+    reg = PlcSymbolRegistry()
+    deduped: list[str] = []
+    reused = 0
+    for block in tags:
+        res = reg.register(
+            scope="controller",
+            owner="Sorter_Track",
+            source_model="sorter_pack",
+            semantic_role="pack_controller_tag",
+            block=block,
+        )
+        if res.get("action") == "declare":
+            deduped.append(block)
+        elif res.get("action") == "reuse":
+            reused += 1
+        elif res.get("action") == "fatal_collision":
+            # Keep first declaration; record collision in report (do not mute)
+            pass
+    tags = deduped
+
     report = {
         "mode": "configured_pack",
         "source": str(path),
@@ -548,6 +601,14 @@ def build_configured_sorter_track(
         "tracking_count": int(sorter.get("tracking_count") or 0),
         "tag_count": len(tags),
         "wave_aoi_merged": bool(wave_extra),
+        "promoted_shared_controller_tags": sorted(promote_names),
+        "controller_tag_reused": reused,
+        "controller_tag_collisions": reg.report().get("fatal") or [],
+        "tag_ownership": (
+            "Context tags + promoted *_Sorter_At_Speed → controller; "
+            "program Tags no longer duplicate those names; "
+            "same-name same-dtype renames reuse one declaration"
+        ),
     }
     return {
         "name": "Sorter_Track",

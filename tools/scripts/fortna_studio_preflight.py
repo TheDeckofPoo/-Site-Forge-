@@ -80,20 +80,44 @@ def preflight_l5x(path: Path) -> dict[str, Any]:
             programs_missing_main.append(pname)
             add("WARNING", "missing_main_routine", f"Program {pname} has no Main routine", program=pname)
 
-    # Duplicate tags
-    tag_names: list[str] = []
-    for tag in root.iter("Tag"):
-        n = tag.attrib.get("Name")
-        if n:
-            tag_names.append(n)
-    seen: set[str] = set()
+    # Duplicate tags — scope-aware (controller vs program:<name>).
+    # Same name at controller + program is allowed in Logix (program shadows),
+    # but TRUE duplicates are: twice in controller Tags, or twice in one program.
+    from collections import defaultdict
+
+    scope_names: dict[str, list[str]] = defaultdict(list)
+
+    # Controller-level Tags: direct children under Controller before Programs
+    for ctrl in root.iter("Controller"):
+        for child in list(ctrl):
+            if child.tag == "Tags":
+                for tag in child.findall("Tag"):
+                    n = tag.attrib.get("Name")
+                    if n:
+                        scope_names["controller"].append(n)
+            if child.tag == "Programs":
+                break
+
+    for prog in root.iter("Program"):
+        pname = prog.attrib.get("Name") or "?"
+        for tags_el in prog.findall("Tags"):
+            for tag in tags_el.findall("Tag"):
+                n = tag.attrib.get("Name")
+                if n:
+                    scope_names[f"program:{pname}"].append(n)
+
     dups: set[str] = set()
-    for n in tag_names:
-        if n in seen:
-            dups.add(n)
-        seen.add(n)
+    for scope, names in scope_names.items():
+        seen: set[str] = set()
+        for n in names:
+            if n in seen:
+                dups.add(f"{n} @{scope}")
+            seen.add(n)
     for d in sorted(dups)[:50]:
-        add("ERROR", "duplicate_tag", f"Duplicate tag: {d}", tag=d)
+        add("ERROR", "duplicate_tag", f"Duplicate tag: {d}", tag=d.split(" @", 1)[0])
+
+    # Flat list still used for invalid-name checks
+    tag_names = [n for names in scope_names.values() for n in names]
 
     # Invalid tag names (Rockwell: must start with letter or underscore)
     for n in tag_names:

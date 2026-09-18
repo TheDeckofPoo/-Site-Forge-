@@ -296,10 +296,24 @@
   position: relative;
 }
 
+/* AENT face: more vertical breathing room (Gate I) — child .flex-io unchanged */
+.flex-adapter .flex-module-top,
+.flex-adapter-clean .flex-module-top {
+  height: 48px;
+  padding: 5px 5px 4px;
+}
+
 .flex-brand-tiny {
   font-size: 8px;
   font-weight: 700;
   color: #111;
+}
+
+.flex-adapter .flex-brand-tiny,
+.flex-adapter-clean .flex-brand-tiny {
+  font-size: 7.5px;
+  letter-spacing: 0.02em;
+  line-height: 1.25;
 }
 
 .flex-label-italic {
@@ -309,6 +323,14 @@
   font-size: 11px;
   font-style: italic;
   color: #222;
+}
+
+.flex-adapter .flex-label-italic,
+.flex-adapter-clean .flex-label-italic {
+  top: 6px;
+  right: 6px;
+  font-size: 9.5px;
+  line-height: 1.2;
 }
 
 .flex-cat {
@@ -321,8 +343,12 @@
   line-height: 1.15;
 }
 
-.flex-adapter .flex-cat {
-  font-size: 11px;
+.flex-adapter .flex-cat,
+.flex-adapter-clean .flex-cat {
+  font-size: 10.5px;
+  margin-top: 10px;
+  line-height: 1.3;
+  padding: 0 3px;
 }
 
 .flex-status-leds {
@@ -332,6 +358,14 @@
   font-size: 8px;
   line-height: 19px;
   color: #222;
+}
+
+.flex-adapter .flex-status-leds,
+.flex-adapter-clean .flex-status-leds {
+  top: 78px;
+  left: 10px;
+  font-size: 7.5px;
+  line-height: 16px;
 }
 
 .flex-status-leds span {
@@ -352,6 +386,16 @@
   color: #222;
 }
 
+.flex-adapter .flex-eth,
+.flex-adapter-clean .flex-eth {
+  right: 8px;
+  top: auto;
+  bottom: 16px;
+  font-size: 9px;
+  line-height: 1.25;
+  letter-spacing: 0.01em;
+}
+
 /* Legacy jack graphics — hidden; adapter face must remain readable (Gate A). */
 .flex-port {
   display: none;
@@ -366,17 +410,7 @@
 .flex-port.p1 { left: 41px; }
 .flex-port.p2 { left: 76px; }
 
-/* Readable adapter face: keep status LEDs + catalog; no jack overlay. */
-.flex-adapter-clean .flex-cat {
-  font-size: 11px;
-  margin-top: 6px;
-  padding: 0 4px;
-}
-.flex-adapter-clean .flex-eth {
-  right: 10px;
-  top: auto;
-  bottom: 18px;
-}
+/* Readable adapter face — primary rules live with .flex-adapter above (Gate I). */
 
 .flex-term-base {
   position: absolute;

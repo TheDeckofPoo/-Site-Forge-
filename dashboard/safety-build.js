@@ -647,9 +647,71 @@
     return '<span class="text-[8px] text-amber-300/90">UNASSIGNED</span>';
   }
 
+  /** Compact selected-zone orientation (replaces giant Device Inventory panel). */
+  function renderZoneSummary() {
+    const host = $('sb-zone-summary');
+    if (!host) return;
+    const z = selectedZone();
+    const c = state.model?.counts || {};
+    const devices = state.model?.devices || [];
+    const unassigned = (c.unassigned != null
+      ? c.unassigned
+      : (state.model?.unassignedDevices || []).length);
+    if (!z) {
+      host.innerHTML = `
+        <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-1">Selected zone</div>
+        <div class="text-[11px] text-slate-500">Select a Safety Zone to see status.</div>
+        <div class="mt-2 grid grid-cols-2 gap-1.5 text-[10px] mono">
+          <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Devices</span><span class="float-right text-slate-300">${devices.length}</span></div>
+          <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Unassigned</span><span class="float-right text-amber-200">${unassigned}</span></div>
+        </div>`;
+      return;
+    }
+    const members = z.members || [];
+    const estops = z.eStops || [];
+    const eng = members.filter((m) => {
+      const d = devices.find((x) => String(x.name).toUpperCase() === String(m).toUpperCase());
+      return d && String(d.status || '').toUpperCase() === 'ENGINEER_ASSIGNED';
+    }).length;
+    const st = z.status === 'READY'
+      ? '<span class="text-emerald-400">READY</span>'
+      : (z._draftReady
+        ? '<span class="text-sky-300">APPLY TO PERSIST</span>'
+        : '<span class="text-amber-300">REVIEW</span>');
+    host.innerHTML = `
+      <div class="flex items-start gap-2 mb-2">
+        <div class="min-w-0">
+          <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold">Selected zone</div>
+          <div class="mono text-sm text-rose-200 font-semibold truncate">${escapeHtml(z.name)}</div>
+          <div class="text-[10px] text-slate-500 mt-0.5">Area ${escapeHtml(z.areaRef || '—')}</div>
+        </div>
+        <div class="ml-auto text-[10px] shrink-0">${st}</div>
+      </div>
+      <div class="grid grid-cols-2 gap-1.5 text-[10px] mono">
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Assigned</span><span class="float-right text-slate-200">${members.length}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">E-Stops</span><span class="float-right text-slate-200">${estops.length}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Engineer</span><span class="float-right text-fuchsia-300">${eng}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Unassigned</span><span class="float-right text-amber-200">${unassigned}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Site devices</span><span class="float-right text-slate-300">${devices.length}</span></div>
+        <div class="rounded-lg border border-slate-800 px-2 py-1"><span class="text-slate-500">Review</span><span class="float-right text-amber-300">${(z.hard_missing || []).length || (z.status === 'READY' ? 0 : 1)}</span></div>
+      </div>
+      <div class="mt-2 text-[9px] text-slate-600 leading-snug">Assign devices in the zone detail panel. Full inventory remains available to the model (not shown).</div>`;
+  }
+
   function renderInventory() {
+    // Gate F: primary Device Inventory panel removed. Keep a minimal hidden
+    // host so assignCheckedToSelectedZone / filter APIs still resolve.
     const host = $('sb-inventory');
     if (!host) return;
+    renderZoneSummary();
+    if (host.classList.contains('hidden') || host.getAttribute('aria-hidden') === 'true') {
+      // Compact stub — no giant ledger
+      const devices = state.model?.devices || [];
+      const left = state.model?.counts?.unassigned
+        ?? (state.model?.unassignedDevices || []).length;
+      host.innerHTML = `<div class="text-[9px] text-slate-600 p-1">Inventory model: ${devices.length} devices · ${left} unassigned (UI hidden)</div>`;
+      return;
+    }
     if (!state.model) {
       host.innerHTML = '<div class="text-[10px] text-slate-600 p-2">No devices yet — Refresh discovery.</div>';
       return;
@@ -933,23 +995,23 @@
         ${row('Silence', escapeHtml(z.silenceSource || '—'), f.Silence, z.silenceOrigin)}
       </div>
       ${(z.hard_missing || []).length ? `<div class="mb-3 text-[11px] text-amber-200/90 border border-amber-900/40 bg-amber-950/20 rounded-lg px-3 py-2">Missing: <span class="mono">${escapeHtml((z.hard_missing || []).join(', '))}</span></div>` : ''}
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 flex flex-col">
-          <div class="flex items-center gap-2 mb-1.5 flex-wrap">
-            <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" title="Eligible unassigned devices for this zone only — not a second full inventory">Assign devices</span>
-            <input id="sb-device-filter" type="search" placeholder="Search / filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-40" value="${escapeHtml(state.filter)}">
+      <div class="grid grid-cols-1 gap-3">
+        <div class="rounded-xl border border-emerald-900/40 bg-[#0c1219] p-4 flex flex-col min-h-[28rem]">
+          <div class="flex items-center gap-2 mb-2 flex-wrap">
+            <span class="text-[11px] uppercase tracking-wider text-emerald-500/90 font-semibold" title="Eligible unassigned devices for this zone">Assign devices</span>
+            <input id="sb-device-filter" type="search" placeholder="Search / filter devices…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-[11px] w-56" value="${escapeHtml(state.filter)}">
           </div>
-          <div class="text-[9px] text-slate-600 mb-1 leading-snug">Eligible for <span class="mono text-slate-400">${escapeHtml(z.name)}</span> only. Full ledger stays in Device Inventory.</div>
-          <div id="sb-available" class="max-h-40 overflow-y-auto space-y-0.5 text-[11px] mono rounded-lg border border-slate-800/80 bg-[#0a1018] p-1.5"></div>
-          <div class="mt-2 flex gap-2">
-            <button type="button" id="sb-add-selected" class="btn-primary flex-1 text-[10px] py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">Assign Selected</button>
-            <button type="button" id="sb-accept-suggestions" class="btn-ghost text-[10px] py-1.5 px-2 rounded-lg border border-sky-900/50 text-sky-300" title="Accept digit-match suggestions (engineer action)">Suggestions</button>
+          <div class="text-[10px] text-slate-500 mb-2 leading-snug">Eligible for <span class="mono text-slate-300">${escapeHtml(z.name)}</span>. Generous scroll viewport — browse the full eligible list.</div>
+          <div id="sb-available" class="flex-1 min-h-[22rem] max-h-[55vh] overflow-y-auto space-y-1 text-[12px] mono rounded-lg border border-slate-800 bg-[#0a1018] p-2.5 leading-relaxed"></div>
+          <div class="mt-3 flex gap-2">
+            <button type="button" id="sb-add-selected" class="btn-primary flex-1 text-[11px] py-2 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">Assign Selected</button>
+            <button type="button" id="sb-accept-suggestions" class="btn-ghost text-[11px] py-2 px-3 rounded-lg border border-sky-900/50 text-sky-300" title="Accept digit-match suggestions (engineer action)">Suggestions</button>
           </div>
         </div>
-        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 flex flex-col min-h-[12rem]">
-          <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Assigned to Zone</div>
-          <div id="sb-assigned" class="flex-1 max-h-56 overflow-y-auto space-y-0.5 text-[11px] mono"></div>
-          <button type="button" id="sb-remove-selected" class="mt-2 btn-ghost w-full text-[10px] py-1.5 rounded-lg border border-rose-900/50 text-rose-300">← Remove</button>
+        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-4 flex flex-col min-h-[14rem]">
+          <div class="text-[11px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Assigned to Zone</div>
+          <div id="sb-assigned" class="flex-1 min-h-[10rem] max-h-[40vh] overflow-y-auto space-y-1 text-[12px] mono leading-relaxed"></div>
+          <button type="button" id="sb-remove-selected" class="mt-3 btn-ghost w-full text-[11px] py-2 rounded-lg border border-rose-900/50 text-rose-300">← Remove</button>
         </div>
       </div>
       <details class="mt-3 text-[10px] text-slate-500">
@@ -1248,7 +1310,8 @@
 
   function render() {
     renderCounts();
-    renderInventory();
+    renderZoneSummary();
+    renderInventory(); // no-op ledger when hidden; keeps model APIs
     renderZoneList();
     renderZoneDetail();
     const applyBtn = $('sb-apply');

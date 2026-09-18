@@ -1,0 +1,78 @@
+{
+  "ok": false,
+  "xml_parses": true,
+  "counts": {
+    "errors": 62,
+    "warnings": 0,
+    "info": 0,
+    "programs_with_main": 7,
+    "programs_missing_main": 0,
+    "tags": 944,
+    "duplicate_tags": 0,
+    "modules": 63,
+    "programs": 7,
+    "tasks": 6,
+    "datatypes": 211,
+    "controller_tags": 944
+  },
+  "programs": null,
+  "structural": {
+    "controller": "ORNCCP5",
+    "programs_count": 7,
+    "tasks_count": 6,
+    "controller_tags_count": 944,
+    "datatypes_count": 211,
+    "modules_count": 63,
+    "sys": {
+      "present": true,
+      "status": "READY"
+    },
+    "system": {
+      "present": false,
+      "status": "MISSING"
+    },
+    "io_map": {
+      "present": true,
+      "status": "READY"
+    },
+    "transportation": {
+      "areas_included": [
+        "ORNCCP5_Area"
+      ],
+      "fast": [
+        "ORNCCP5_Area_Fast"
+      ],
+      "slow": [
+        "ORNCCP5_Area_Slow"
+      ],
+      "l1": [
+        "ORNCCP5_Area_L1"
+      ],
+      "l2": [
+        "ORNCCP5_Area_L2"
+      ],
+      "status": "READY"
+    },
+    "safety": {
+      "es_program": false,
+      "p01_safety_20ms": false,
+      "main_routine": false,
+      "safe_logic_count": 0,
+      "safe_pi_count": 0,
+      "unresolved_membership_count": 0,
+      "shell": false,
+      "status": "NOT_DETECTED",
+      "structure": "MISSING",
+      "membership": "NOT_DETECTED",
+      "commissioning_ready": false,
+      "detail": "SAFETY \u2014 NOT DETECTED"
+    }
+  },
+  "duplicate_tag_issues": [],
+  "error_kinds": [
+    [
+      "invalid_member_specifier",
+      62
+    ]
+  ]
+}
