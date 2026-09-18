@@ -49,13 +49,15 @@
     "rule": "do NOT invent offset; editable commissioning field"
   },
   "divert_pe": {
-    "authority": "REVIEW_REQUIRED when Verify I/O INVALID",
-    "ui": "show actual objects needing review; bulk Accept All Derived / Apply Value to Selected / Mark Selected for Commissioning; per-row override",
+    "authority": "REVIEW_REQUIRED when Verify I/O INVALID or equals Outpoint I/O (SSV mirror)",
+    "meaning": "Confirm PE = Outpoints.Verify I/O Name when distinct from solenoid — NOT FullClearTimer name parse",
+    "ui": "when DERIVED/PROVEN candidate: Derived/Proven: <PE> [Accept] [Change]; empty Select only when no candidate; bulk Accept All Derived / Apply Value to Selected / Mark Selected for Commissioning",
     "bulk_rules": [
       "NEVER UNKNOWN→PROVEN",
       "store ENGINEER_ACCEPTED",
       "do not falsify provenance",
-      "do NOT require approving 32 identical PROVEN divert mappings"
+      "do NOT require approving 32 identical PROVEN divert mappings",
+      "do NOT auto-fill Confirm PE from FullClearTimer name similarity alone"
     ]
   },
   "optional_rule": "OPTIONAL must never appear as active REVIEW REQUIRED",
@@ -63,9 +65,14 @@
   "gate_o_32_vs_16": {
     "phase1_multiplicity": 32,
     "finished_oracle_Track_Divert_UDT": 16,
-    "finding": "UNKNOWN — suggestive host/lane pairing (many SrtZoneLane names appear twice with adjacent HostZones / A1-A2 lane suffixes) but not fully proven as emit rule; one name group has 4 rows",
-    "action": "leave Phase 1 at 32; do NOT force 32→16",
-    "helper_module": "tools/scripts/fortna_sorter_review_lifecycle.py"
+    "finding": "STRONGLY_SUPPORTED — 16 FullClearTimer groups × 2 DestinationLanes, corroborated by 16 SSV families and consecutive HostZones; SrtZoneLane.Name alone insufficient (NEW_510 has 4). Not a schema FK — do not hardcode /2.",
+    "action": "leave Phase 1 at DestinationLane multiplicity 32; do NOT force 32→16 emit",
+    "helper_module": "tools/scripts/fortna_sorter_lane_divert_model.py",
+    "artifacts": [
+      "exports/stabilization/plc5_lane_divert_relationship.json",
+      "exports/stabilization/plc5_divert_confirm_pe_audit.json",
+      "docs/evidence/SORTER_LANE_PHYSICAL_DIVERT_MODEL.md"
+    ]
   },
   "initial_actionable_model": {
     "note": "After sorter_type + transport_area filled, remaining active review typically tracking_offset (COMMISSIONING_CONFIRM) + divert_pe (EDIT_REQUIRED with objects); PROVEN divert_output_io excluded",

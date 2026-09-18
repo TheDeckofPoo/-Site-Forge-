@@ -2,19 +2,23 @@
 
 Parent: `da5e86da9dc849b77ef376e88dacf4151d54cec5`
 
-## Gate O — 32 SrtZoneLane vs 16 Track_Divert_UDT
+## Gate O — 32 DestinationLanes vs 16 PhysicalDiverts / Track_Divert_UDT
 
 | Metric | Value |
 |--------|-------|
-| Canonical SrtZoneLane rows | **32** |
+| Canonical SrtZoneLane rows (DestinationLane) | **32** |
 | Unique Lane / HostZone / divert IO | **32** each |
+| Unique `FullClearTimer` (PhysicalDivert key) | **16** (all size 2) |
+| Unique SSV families | **16** (all size 2) |
 | Unique `SrtZoneLane.Name` | **15** (14 pairs of 2 + 1 group of 4) |
-| Gold pack `Track_Divert_UDT` tags | **16** |
+| Gold pack `Track_Divert_UDT` tags (validation) | **16** |
 | Phase-1 Wave_Divert rungs kept | **32** / pack 16 |
 
-**Finding:** Name groups (e.g. `ADD-ON_2_3`) strongly suggest dual-sided destination families, but each row still has a distinct physical SSV output. Greensboro pack 16 is site cookie-cutter multiplicity, not a proven fold of ORNCCP5's 32 lane enables.
+**Finding:** Shared `FullClearTimer` (+ corroborating SSV family / consecutive HostZones) maps 32 DestinationLanes → 16 PhysicalDivert mechanisms. `SrtZoneLane.Name` alone is insufficient (`NEW_510` has 4). Each DestinationLane still has a distinct SSV output. Finished oracle 16 validates after RUN discovery — not a discovery input. Do **not** hardcode `physical_diverts = lanes/2`.
 
-**Classification:** `UNKNOWN` — leave canonical **32** unchanged. Do not force 32→16 in Phase 1.
+**Classification:** `STRONGLY_SUPPORTED` — leave DestinationLane multiplicity **32** unchanged. Do not force 32→16 emit until library/schema elevates grouping to PROVEN.
+
+See `docs/evidence/SORTER_LANE_PHYSICAL_DIVERT_MODEL.md` · `plc5_lane_divert_relationship.json` · `plc5_divert_confirm_pe_audit.json`.
 
 ## Structural classifications (Gate U)
 

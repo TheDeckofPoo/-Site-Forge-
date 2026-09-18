@@ -6180,6 +6180,15 @@ function sorterBuildFromSiteModel(site) {
 
   const divert_rows = (divertRowsRaw || []).map((d) => {
     const auth = d.authority || {};
+    const peAuth = auth.divert_pe || 'REVIEW_REQUIRED';
+    const peVal = _sorterFieldValue(d.divert_pe);
+    // Preserve RUN candidate + provenance; do not invent PE from timer name hints.
+    const peSource = (d.divert_pe && typeof d.divert_pe === 'object')
+      ? String(d.divert_pe.source || '')
+      : String(d.divert_pe_source || '');
+    const peProv = (d.divert_pe && typeof d.divert_pe === 'object')
+      ? String(d.divert_pe.provenance || '')
+      : String(d.divert_pe_provenance || auth.divert_pe || '');
     return {
       name: _sorterFieldValue(d.name),
       lane: _sorterFieldValue(d.lane),
@@ -6187,13 +6196,18 @@ function sorterBuildFromSiteModel(site) {
       app_sorter: _sorterFieldValue(d.app_sorter),
       enabled: _sorterFieldValue(d.enabled),
       divert_output_io: _sorterFieldValue(d.divert_output_io || d.lane_enable_signal),
-      divert_pe: _sorterFieldValue(d.divert_pe),
+      divert_pe: peVal,
+      divert_pe_source: peSource,
+      divert_pe_provenance: peProv,
       outpoint_location: _sorterFieldValue(d.outpoint_location),
+      full_clear_timer: _sorterFieldValue(d.full_clear_timer),
       divert_pe_acceptance: d.divert_pe_acceptance || auth.divert_pe_acceptance || '',
+      divert_pe_ui_mode: d.divert_pe_ui_mode || '', // '' | 'change' — Change reveals Select
       authority: {
         topology: auth.topology || 'PROVEN',
         divert_output_io: auth.divert_output_io || 'REVIEW_REQUIRED',
-        divert_pe: auth.divert_pe || 'REVIEW_REQUIRED',
+        divert_pe: peAuth,
+        divert_pe_acceptance: d.divert_pe_acceptance || auth.divert_pe_acceptance || '',
       },
     };
   });
@@ -6944,11 +6958,37 @@ function renderSorterBuild() {
     } else {
       const peOpts = photoeyeNameList();
       divertRowsEl.innerHTML = rows.map((d, i) => {
-        const peAuth = d.authority?.divert_pe || 'REVIEW_REQUIRED';
-        const peVal = d.divert_pe || '';
+        const peAuthRaw = d.authority?.divert_pe || 'REVIEW_REQUIRED';
+        const peAuth = _normalizeSorterStatus(peAuthRaw) || peAuthRaw;
+        const peVal = _sorterFieldValue(d.divert_pe) || '';
+        const accepted = String(d.divert_pe_acceptance || d.authority?.divert_pe_acceptance || '');
+        const hasCandidate = !!peVal && (
+          peAuth === SORTER_STATUS_CATS.DERIVED || peAuth === SORTER_STATUS_CATS.PROVEN
+        );
+        const forceChange = d.divert_pe_ui_mode === 'change' || (!hasCandidate);
         const peSelect = peOpts.map((p) =>
           `<option value="${escapeHtml(p)}" ${p === peVal ? 'selected' : ''}>${escapeHtml(p)}</option>`
         ).join('');
+        // GATE 3 labels — keep contiguous "Derived:" / "Proven:" for contract tests + UI clarity
+        const peCandidatePrefix = peAuth === SORTER_STATUS_CATS.PROVEN ? 'Proven: ' : 'Derived: ';
+        let peControls = '';
+        if (hasCandidate && !forceChange) {
+          // GATE 3 — show Derived/Proven candidate with Accept / Change (empty Select only when unknown)
+          peControls = `
+          <span class="text-sky-200/90">${peCandidatePrefix}<span class="text-sky-300">${escapeHtml(peVal)}</span></span>
+          ${sorterAuthorityBadge(peAuth)}
+          ${accepted ? `<span class="text-[9px] text-emerald-600/80">${escapeHtml(accepted)}</span>` : `
+          <button type="button" class="sorter-divert-pe-accept btn-ghost px-1.5 py-0.5 rounded border border-sky-900/50 text-sky-300" data-i="${i}" title="Accept candidate — stores ENGINEER_ACCEPTED; does not falsify ${escapeHtml(peAuth)}">Accept</button>`}
+          <button type="button" class="sorter-divert-pe-change btn-ghost px-1.5 py-0.5 rounded border border-fuchsia-900/50 text-fuchsia-300" data-i="${i}" title="Change Confirm PE">Change</button>`;
+        } else {
+          peControls = `
+          <select class="sorter-divert-pe min-w-[8rem] bg-[#101820] border border-slate-700 rounded px-1 py-0.5 text-[10px] mono text-sky-300" data-i="${i}">
+            <option value="">Confirm PE…</option>${peSelect}
+            ${peVal && !peOpts.includes(peVal) ? `<option value="${escapeHtml(peVal)}" selected>${escapeHtml(peVal)} *</option>` : ''}
+          </select>
+          ${sorterAuthorityBadge(peAuth)}
+          ${accepted ? `<span class="text-[9px] text-slate-500">${escapeHtml(accepted)}</span>` : ''}`;
+        }
         return `
         <div class="flex flex-wrap items-center gap-2 text-[10px] mono border border-slate-800/80 rounded-lg px-2 py-1 bg-[#0a1016]" data-divert-i="${i}">
           <input type="checkbox" class="sorter-divert-sel rounded border-slate-600" data-i="${i}" title="Select for bulk">
@@ -6963,14 +7003,36 @@ function renderSorterBuild() {
           <span class="text-amber-200/80">${escapeHtml(d.divert_output_io || 'INVALID')}</span>
           ${sorterAuthorityBadge(d.authority?.divert_output_io || 'REVIEW_REQUIRED')}
           <span class="text-slate-500">PE</span>
-          <select class="sorter-divert-pe min-w-[8rem] bg-[#101820] border border-slate-700 rounded px-1 py-0.5 text-[10px] mono text-sky-300" data-i="${i}">
-            <option value="">Confirm PE…</option>${peSelect}
-            ${peVal && !peOpts.includes(peVal) ? `<option value="${escapeHtml(peVal)}" selected>${escapeHtml(peVal)} *</option>` : ''}
-          </select>
-          ${sorterAuthorityBadge(peAuth)}
-          ${d.divert_pe_acceptance ? `<span class="text-[9px] text-slate-500">${escapeHtml(d.divert_pe_acceptance)}</span>` : ''}
+          ${peControls}
         </div>`;
       }).join('');
+      divertRowsEl.querySelectorAll('.sorter-divert-pe-accept').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const i = Number(btn.dataset.i);
+          const row = autogenState.sorter.divert_rows[i];
+          if (!row) return;
+          if (!row.authority) row.authority = {};
+          const prev = _normalizeSorterStatus(row.authority.divert_pe);
+          // Accept keeps DERIVED/PROVEN class; stores ENGINEER_ACCEPTED; never falsifies PROVEN
+          if (prev === SORTER_STATUS_CATS.DERIVED || prev === SORTER_STATUS_CATS.PROVEN) {
+            row.authority.divert_pe = prev;
+          }
+          row.divert_pe_acceptance = 'ENGINEER_ACCEPTED';
+          row.authority.divert_pe_acceptance = 'ENGINEER_ACCEPTED';
+          row.divert_pe_ui_mode = '';
+          try { markReadinessDirty('sorter'); } catch (_) { /* ignore */ }
+          renderSorterBuild();
+        });
+      });
+      divertRowsEl.querySelectorAll('.sorter-divert-pe-change').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const i = Number(btn.dataset.i);
+          const row = autogenState.sorter.divert_rows[i];
+          if (!row) return;
+          row.divert_pe_ui_mode = 'change';
+          renderSorterBuild();
+        });
+      });
       divertRowsEl.querySelectorAll('.sorter-divert-pe').forEach((sel) => {
         sel.addEventListener('change', () => {
           const i = Number(sel.dataset.i);
@@ -6984,9 +7046,15 @@ function renderSorterBuild() {
             row.authority.divert_pe = sel.value ? 'ENGINEER_REQUIRED' : 'REVIEW_REQUIRED';
             row.divert_pe_acceptance = sel.value ? 'ENGINEER_ACCEPTED' : '';
             row.authority.divert_pe_acceptance = row.divert_pe_acceptance;
+          } else if (sel.value) {
+            // PROVEN kept; engineer change still recorded as acceptance overlay
+            row.divert_pe_acceptance = 'ENGINEER_ACCEPTED';
+            row.authority.divert_pe_acceptance = 'ENGINEER_ACCEPTED';
           }
+          row.divert_pe_ui_mode = '';
           try { markReadinessDirty('sorter'); } catch (_) { /* ignore */ }
           try { renderSorterReviewPanel(autogenState.sorter); } catch (_) { /* ignore */ }
+          renderSorterBuild();
         });
       });
     }

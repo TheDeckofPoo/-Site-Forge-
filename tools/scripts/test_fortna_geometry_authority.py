@@ -45,19 +45,23 @@ from fortna_geometry_authority import (  # noqa: E402
 from fortna_physical_geometry import build_equipment_geometry  # noqa: E402
 
 RUN_CONV = ROOT / "workspace" / "_plc2_run_peek" / "RUN" / "FORTNA" / "Conveyor.asc"
+PLC5_CONV = ROOT / "workspace" / "cp5-run" / "RUN" / "FORTNA" / "Conveyor.asc"
 TB = ROOT / "dashboard" / "transport-build.js"
 PASS2 = ROOT / "dashboard" / "transport-build-pass2.js"
+HTML = ROOT / "dashboard" / "index.html"
 AUTH_PY = SCRIPTS / "fortna_geometry_authority.py"
+LAYOUT_PY = SCRIPTS / "fortna_run_physical_layout.py"
 
 
 def _approx(a: float, b: float, eps: float = 1e-6) -> bool:
     return abs(float(a) - float(b)) <= eps
 
 
-def _load_rows(*tags: str) -> dict[str, dict]:
-    if not RUN_CONV.is_file():
-        raise unittest.SkipTest(f"missing {RUN_CONV}")
-    _hdr, rows = read_asc(RUN_CONV)
+def _load_rows(*tags: str, conv: Path | None = None) -> dict[str, dict]:
+    path = conv or RUN_CONV
+    if not path.is_file():
+        raise unittest.SkipTest(f"missing {path}")
+    _hdr, rows = read_asc(path)
     by = {str(r.get("IO_Name") or "").strip().upper(): r for r in rows}
     out = {}
     for t in tags:
@@ -342,7 +346,7 @@ class TestFortnaGeometryAuthority(unittest.TestCase):
 
     def test_ui_hooks_present(self) -> None:
         js = TB.read_text(encoding="utf-8")
-        html = (ROOT / "dashboard" / "index.html").read_text(encoding="utf-8")
+        html = HTML.read_text(encoding="utf-8")
         self.assertIn("function getDisplayTransform", js)
         self.assertIn("function applyEngineerGeometryOverride", js)
         self.assertIn("function mayApplyFallbackLayout", js)
@@ -362,6 +366,96 @@ class TestFortnaGeometryAuthority(unittest.TestCase):
         # Count production-style name equality branches — must be 0
         branches = re.findall(r'if\s+.*(?:name|tag|IO_Name).*(?:P500|P536)', auth)
         self.assertEqual(len(branches), 0)
+
+    def test_run_physical_default_disables_lane_separate(self) -> None:
+        """Gate 2 — default engineering view must not apply presentation scatter."""
+        js = TB.read_text(encoding="utf-8")
+        html = HTML.read_text(encoding="utf-8")
+        self.assertIn("laneSeparate: false", js)
+        self.assertIn("RUN_PHYSICAL_FIDELITY", js)
+        # Checkbox must not be checked by default
+        m = re.search(
+            r'<input[^>]*id="tb-lane-separate"[^>]*>',
+            html,
+        )
+        self.assertIsNotNone(m)
+        self.assertNotIn("checked", m.group(0))
+        # getDisplayTransform must zero offsets when laneSeparate is off
+        gdt_start = js.index("function getDisplayTransform")
+        gdt_end = js.find("\n  function ", gdt_start + len("function getDisplayTransform"))
+        gdt = js[gdt_start:gdt_end if gdt_end > 0 else gdt_start + 2500]
+        self.assertIn("!tb.laneSeparate", gdt)
+        self.assertIn("dx: 0", gdt)
+
+
+class TestPlc5ClusterRelativeDeltas(unittest.TestCase):
+    """Gate 2 — PLC5 P500 cluster relative RUN deltas survive normalization."""
+
+    CLUSTER = ("P500", "P534", "P536", "P542", "P544")
+
+    def test_schema_spelling_on_plc5_header(self) -> None:
+        if not PLC5_CONV.is_file():
+            raise unittest.SkipTest(f"missing {PLC5_CONV}")
+        hdr, _rows = read_asc(PLC5_CONV)
+        self.assertIn("X_cord", hdr)
+        self.assertIn("Y_cord", hdr)
+        self.assertNotIn("X_coord", hdr)
+        self.assertNotIn("Y_coord", hdr)
+
+    def test_cluster_relative_deltas_survive_normalize_and_y_invert(self) -> None:
+        rows = _load_rows(*self.CLUSTER, conv=PLC5_CONV)
+        recs = [resolve_object_geometry(rows[t], tag=t) for t in self.CLUSTER]
+        before = relative_deltas(recs, use_source=True)
+        # Expected source deltas from P500 (PLC5 RUN)
+        self.assertTrue(_approx(before["P500"]["dx"], 0.0, 1e-3))
+        self.assertTrue(_approx(before["P534"]["dx"], 1049.999, 1e-2))
+        self.assertTrue(_approx(before["P534"]["dy"], -2041.666, 1e-2))
+        self.assertTrue(_approx(before["P536"]["dx"], 1050.000, 1e-2))
+        self.assertTrue(_approx(before["P536"]["dy"], 758.334, 1e-2))
+        self.assertTrue(_approx(before["P542"]["dx"], 150.000, 1e-2))
+        self.assertTrue(_approx(before["P542"]["dy"], 5058.333, 1e-2))
+        self.assertTrue(_approx(before["P544"]["dx"], 149.999, 1e-2))
+        self.assertTrue(_approx(before["P544"]["dy"], 1200.000, 1e-2))
+
+        scale = 0.05
+        y_origin = max(float(rows[t]["Y_cord"]) for t in self.CLUSTER)
+        normed = normalize_system(
+            recs,
+            scale=scale,
+            translate=(100.0, 100.0),
+            flip_y=True,
+            y_origin=y_origin,
+        )
+        after = relative_deltas(normed, use_source=False)
+        for tag in self.CLUSTER:
+            bx, by = before[tag]["dx"], before[tag]["dy"]
+            ax, ay = after[tag]["dx"], after[tag]["dy"]
+            self.assertTrue(_approx(ax, bx * scale, 1e-3), f"{tag} dx after normalize")
+            # Y invert flips relative dy sign under uniform scale
+            self.assertTrue(_approx(ay, -by * scale, 1e-3), f"{tag} dy after Y invert")
+            self.assertFalse(normed[self.CLUSTER.index(tag)]["normalization"]["source_geometry_mutated"])
+
+    def test_infeed_abutments_p534_p536_and_p542_p544(self) -> None:
+        rows = _load_rows("P534", "P536", "P542", "P544", conv=PLC5_CONV)
+        g534 = build_equipment_geometry(rows["P534"])
+        g536 = build_equipment_geometry(rows["P536"])
+        g542 = build_equipment_geometry(rows["P542"])
+        g544 = build_equipment_geometry(rows["P544"])
+        gap_a = math.hypot(
+            g534["exit"]["x"] - g536["entry"]["x"],
+            g534["exit"]["y"] - g536["entry"]["y"],
+        )
+        gap_b = math.hypot(
+            g542["exit"]["x"] - g544["entry"]["x"],
+            g542["exit"]["y"] - g544["entry"]["y"],
+        )
+        self.assertLess(gap_a, 0.01, "P534→P536 must abut under infeed model")
+        self.assertLess(gap_b, 0.01, "P542→P544 must abut under infeed model")
+
+    def test_canvas_normalizer_y_invert_proven_in_layout(self) -> None:
+        src = LAYOUT_PY.read_text(encoding="utf-8")
+        self.assertIn("max_y - y", src)
+        self.assertIn("Flip Y", src)
 
 
 class TestProvenCountsMeasurable(unittest.TestCase):

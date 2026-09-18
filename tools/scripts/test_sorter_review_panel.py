@@ -311,6 +311,11 @@ class TestSorterReviewPanel(unittest.TestCase):
         self.assertIn("never UNKNOWN→PROVEN", js)
         self.assertIn("ENGINEER_ACCEPTED", js)
         self.assertIn("btn-divert-accept-derived", INDEX.read_text(encoding="utf-8"))
+        # GATE 3 — per-row Derived/Proven Accept/Change (empty Select only when no candidate)
+        self.assertIn("sorter-divert-pe-accept", js)
+        self.assertIn("sorter-divert-pe-change", js)
+        self.assertIn("hasCandidate", js)
+        self.assertIn("Derived:", js)
 
     def test_lifecycle_artifact_present(self) -> None:
         self.assertTrue(LIFECYCLE_JSON.is_file())
@@ -319,10 +324,19 @@ class TestSorterReviewPanel(unittest.TestCase):
         self.assertIn("lifecycle", data)
         self.assertIn("gate_o_32_vs_16", data)
         self.assertEqual(data["gate_o_32_vs_16"]["phase1_multiplicity"], 32)
+        self.assertIn("STRONGLY_SUPPORTED", data["gate_o_32_vs_16"]["finding"])
         self.assertTrue(QUALITY_JSON.is_file())
         q = json.loads(QUALITY_JSON.read_text(encoding="utf-8"))
-        self.assertEqual(q["divert_multiplicity_gate_o"]["relationship"], "UNKNOWN")
-        self.assertEqual(q["divert_multiplicity_gate_o"]["run_SrtZoneLane_rows"], 32)
+        # Prefer gate_o_divert_multiplicity (current); legacy key divert_multiplicity_gate_o optional
+        gate_o = q.get("gate_o_divert_multiplicity") or q.get("divert_multiplicity_gate_o") or {}
+        self.assertIn(
+            gate_o.get("relationship") or gate_o.get("classification"),
+            ("STRONGLY_SUPPORTED", "UNKNOWN"),
+        )
+        self.assertEqual(
+            gate_o.get("canonical_SrtZoneLane_rows") or gate_o.get("run_SrtZoneLane_rows"),
+            32,
+        )
 
     def test_counts_helper(self) -> None:
         active = [

@@ -2245,7 +2245,9 @@
       // PL-1: toggling lane separation is an explicit layout request
       try { A().requestPresentationRelayout?.(); } catch (_) { /* ignore */ }
       render();
-      status(`Lane separation ${tb.laneSeparate ? 'ON' : 'OFF'} (presentation only)`);
+      status(tb.laneSeparate
+        ? 'Lane separation ON (presentation only — may distort relative XY)'
+        : 'Lane separation OFF — RUN/Physical relative XY preserved');
     });
     $('tb-layer-physical')?.addEventListener('change', (ev) => {
       const { tb, render, status } = A();

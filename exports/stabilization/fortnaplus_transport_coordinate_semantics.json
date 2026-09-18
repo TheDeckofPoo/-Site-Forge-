@@ -1,0 +1,185 @@
+{
+  "kind": "FortnaPlusTransportCoordinateSemantics",
+  "gate": "GATE_2",
+  "version": 1,
+  "generated_at": "2026-09-18T15:29:55+00:00",
+  "branch": "feature/plc2-transport-fidelity",
+  "calibration": "greensboro-infeed-v1",
+  "cp1_cp4_changed": false,
+  "field_spellings": {
+    "x": "X_cord",
+    "y": "Y_cord",
+    "not": ["X_coord", "Y_coord"],
+    "also": ["Length", "Width", "Angle", "Type", "Inside_Radius", "Infeed_Tangent", "Discharge_Tangent"]
+  },
+  "xy_meaning": "infeed_entry_end",
+  "xy_rejected": ["footprint_center", "discharge_exit_end", "aabb_upper_left"],
+  "angle_convention": "flow_direction_deg_ccw_from_plus_x",
+  "axis_direction": {
+    "run_plus_x": "right",
+    "run_plus_y": "up_on_prints",
+    "canvas_y_invert": true,
+    "y_invert_proof": {
+      "module": "tools/scripts/fortna_run_physical_layout.py",
+      "formula": "cy = pad + (max_y - y) * scale",
+      "authority_flip_y": "normalize_system(flip_y=True) => dy_canvas = -scale * dy_run (relative)"
+    }
+  },
+  "length_meaning": "centerline_body_length_from_infeed_along_angle",
+  "width_meaning": "cross_belt_frame_width_drawing_units",
+  "inside_radius_meaning": "inner_curve_radius",
+  "curve_length_sentinel": -1,
+  "tangents_meaning": "stub_lengths_drawing_units_not_topology_fks",
+  "canvas_transform_sufficient": true,
+  "canvas_transform": "canvas = uniform_scale * RUN_XY + global_translation + proven_Y_invert",
+  "forbidden_in_run_physical_default": [
+    "per_conveyor_scatter",
+    "topology_beautification",
+    "site_specific_offsets",
+    "if_name_equals_P500_branches",
+    "laneSeparate_on_by_default"
+  ],
+  "root_cause_if_distorted": {
+    "classified": true,
+    "cause": "laneSeparate presentation offsets applied by default in Transport Build even under geometryAuthorityMode=run",
+    "mechanisms": [
+      "PARALLEL_LANE_SEPARATION (laneGap=88)",
+      "CLUSTER_SPREAD",
+      "MERGE_2TO1_FAN / SAWTOOTH_OR_MULTI_MERGE_FAN",
+      "CONNECTED_RUN_MATE nudge",
+      "frozen display_dx/dy reuse before !laneSeparate early-return"
+    ],
+    "distortion_example": {
+      "note": "Simulated 88px lane fan on PLC5 cluster at scale 0.05",
+      "before_relative_from_P500": {
+        "P534": {"dx": 52.5, "dy": -102.083},
+        "P536": {"dx": 52.5, "dy": 37.917},
+        "P542": {"dx": 7.5, "dy": 252.917},
+        "P544": {"dx": 7.5, "dy": 60.0}
+      },
+      "after_laneSeparate_relative_from_P500": {
+        "P534": {"dx": 316.5, "dy": -102.083},
+        "P536": {"dx": 228.5, "dy": 37.917},
+        "P542": {"dx": 271.5, "dy": 252.917},
+        "P544": {"dx": 359.5, "dy": 60.0}
+      }
+    },
+    "not_the_cause": [
+      "missing_RUN_coordinates",
+      "infeed_vs_center_model (already fixed greensboro-infeed-v1)"
+    ]
+  },
+  "geometry_code_changed": true,
+  "geometry_changes": [
+    {
+      "file": "dashboard/transport-build.js",
+      "what": "Default laneSeparate=false; RUN/Physical zeros presentation offsets before frozen reuse; getDisplayTransform ignores offsets when laneSeparate OFF; setGeometryAuthorityMode(run) clears scatter"
+    },
+    {
+      "file": "dashboard/index.html",
+      "what": "tb-lane-separate checkbox unchecked by default; title documents opt-in"
+    },
+    {
+      "file": "dashboard/transport-build-pass2.js",
+      "what": "Lane-separate status text clarifies OFF preserves relative XY"
+    },
+    {
+      "file": "tools/scripts/test_fortna_geometry_authority.py",
+      "what": "Extended permanent tests for PLC5 cluster relative deltas, Y invert, UI default"
+    }
+  ],
+  "unchanged_modules": [
+    "tools/scripts/fortna_physical_geometry.py",
+    "tools/scripts/fortna_geometry_authority.py normalize_system / relative_deltas math"
+  ],
+  "acceptance_examples": {
+    "run_source": "workspace/cp5-run/RUN/FORTNA/Conveyor.asc",
+    "cluster": ["P500", "P534", "P536", "P542", "P544"],
+    "curve_neighbors": ["P502", "P532", "P538", "P540"],
+    "rows": {
+      "P500": {
+        "Type": "STRAIGHT",
+        "X_cord": 42166.667,
+        "Y_cord": 56000.0,
+        "Angle": 270.0,
+        "Length": 1200.0,
+        "Width": 500.0,
+        "Inside_Radius": 0.0
+      },
+      "P534": {
+        "Type": "BELT",
+        "X_cord": 43216.666,
+        "Y_cord": 53958.334,
+        "Angle": 90.0,
+        "Length": 2800.0,
+        "Width": 200.0,
+        "Inside_Radius": 7.5
+      },
+      "P536": {
+        "Type": "ZEROPRESSURE",
+        "X_cord": 43216.667,
+        "Y_cord": 56758.334,
+        "Angle": 90.0,
+        "Length": 4300.0,
+        "Width": 200.0,
+        "Inside_Radius": 0.0
+      },
+      "P542": {
+        "Type": "ZEROPRESSURE",
+        "X_cord": 42316.667,
+        "Y_cord": 61058.333,
+        "Angle": 270.0,
+        "Length": 3858.333,
+        "Width": 200.0,
+        "Inside_Radius": 0.0
+      },
+      "P544": {
+        "Type": "BELT",
+        "X_cord": 42316.666,
+        "Y_cord": 57200.0,
+        "Angle": 270.0,
+        "Length": 1200.0,
+        "Width": 200.0,
+        "Inside_Radius": 0.0
+      }
+    },
+    "source_relative_deltas_from_P500": {
+      "P500": {"dx": 0.0, "dy": 0.0},
+      "P534": {"dx": 1049.999, "dy": -2041.666},
+      "P536": {"dx": 1050.0, "dy": 758.334},
+      "P542": {"dx": 150.0, "dy": 5058.333},
+      "P544": {"dx": 149.999, "dy": 1200.0}
+    },
+    "after_normalize_scale_0_05_translate_100_100_flip_y": {
+      "P500": {"dx": 0.0, "dy": 0.0},
+      "P534": {"dx": 52.5, "dy": 102.083},
+      "P536": {"dx": 52.5, "dy": -37.917},
+      "P542": {"dx": 7.5, "dy": -252.917},
+      "P544": {"dx": 7.5, "dy": -60.0},
+      "relation": "dx_canvas = 0.05 * dx_run; dy_canvas = -0.05 * dy_run"
+    },
+    "infeed_abutment_gaps": {
+      "P534_to_P536": 0.001,
+      "P542_to_P544": 0.001,
+      "P544_to_P500": 149.999
+    }
+  },
+  "unit_notes": {
+    "drawing_units": "site-consistent floats (PLC5/Greensboro examples ~1e4–1e5)",
+    "canvas_default_pixels_per_run_unit": 0.045,
+    "source_never_mutated_by_canvas": true
+  },
+  "tests": {
+    "command": "python tools/scripts/test_fortna_geometry_authority.py",
+    "permanent": true,
+    "covers": [
+      "schema_spelling_X_cord",
+      "relative_deltas_survive_normalize",
+      "plc5_cluster_y_invert",
+      "infeed_abutments",
+      "laneSeparate_default_false",
+      "no_name_specific_P500_branches"
+    ]
+  },
+  "evidence_doc": "docs/evidence/FORTNAPLUS_TRANSPORT_COORDINATE_SEMANTICS.md"
+}

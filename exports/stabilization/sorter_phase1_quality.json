@@ -11,19 +11,29 @@
     "unique_divert_output_io": 32,
     "unique_host_zones": 32,
     "unique_SrtZoneLane_Name": 15,
+    "unique_FullClearTimer": 16,
+    "unique_SSV_families": 16,
     "name_multiplicity": {"2": 14, "4": 1},
     "gold_pack_Track_Divert_UDT_instances": 16,
     "phase1_wave_rungs_kept": 32,
     "phase1_wave_rungs_in_pack": 16,
-    "hypothesis": "SrtZoneLane.Name often groups dual-sided destinations (e.g. ADD-ON_2_3 → two lanes / two SSVs). Gold pack 16 Track_Divert_UDT matches Greensboro cookie-cutter divert mechanisms, not a proven fold of ORNCCP5's 32 lane enables.",
-    "classification": "UNKNOWN",
-    "action": "Leave canonical 32 unchanged. Do not force 32→16 in Phase 1.",
+    "hypothesis": "One physical divert mechanism services two DestinationLanes. Group by shared FullClearTimer (corroborated by SSV family + consecutive HostZones). Gold pack 16 Track_Divert_UDT validates AFTER RUN discovery.",
+    "classification": "STRONGLY_SUPPORTED",
+    "relationship": "STRONGLY_SUPPORTED",
+    "action": "Leave DestinationLane multiplicity 32 unchanged. Do not force 32→16 in Phase 1. Do not hardcode physical_diverts = lanes/2.",
     "evidence": [
-      "Each of 32 rows has distinct Lane, HostZone, and Outpoint I/O Name (SSV*) — not duplicate logical records of the same physical output",
-      "14/15 Name groups are exact pairs of 2; 1 group (NEW_510) has 4 — suggestive of dual-lane destination families, not proven 1 UDT per Name",
-      "Sorter_Track_Program.L5X gold contains exactly 16 Track_Divert_UDT tags (P506×6 + P508×6 + P509×1 + P510×3)",
-      "Phase 1 compiler already expands Wave_Divert to model multiplicity (32) while pack default is 16 — MODEL_EXPANDED",
+      "16 shared FullClearTimer groups × exactly 2 lanes (SrtZoneLane + Outpoints.Full_Clr_Timer_Name) — primary RUN field relationship",
+      "16 SSV families (SSV506B1/B2 …) each with exactly 2 distinct physical outputs — corroborating pattern, not schema FK",
+      "16/16 timer groups have consecutive HostZones",
+      "SrtZoneLane.Name alone insufficient: NEW_510 spans 4 lanes / 2 timers",
+      "Each of 32 rows has distinct Lane, HostZone, and Outpoint I/O Name (SSV*)",
+      "Finished oracle Track_Divert_UDT=16 aligns with RUN-derived mechanism count (validation only)",
+      "Phase 1 keeps Wave_Divert at DestinationLane multiplicity (32); pack default 16 is cookie-cutter — MODEL_EXPANDED",
       "config/program_packs/sorter_track_contract.json forbids hardcoding 32 or 16; emit only model-approved divert instances"
+    ],
+    "artifacts": [
+      "exports/stabilization/plc5_lane_divert_relationship.json",
+      "docs/evidence/SORTER_LANE_PHYSICAL_DIVERT_MODEL.md"
     ]
   },
   "structural_vs_oracles": {
@@ -91,7 +101,7 @@
     "divert_multiplicity": {
       "canonical_lanes": 32,
       "classification": "MODEL_EXPANDED",
-      "vs_pack_16": "UNKNOWN relationship — see gate_o"
+      "vs_pack_16": "STRONGLY_SUPPORTED PhysicalDivert grouping via FullClearTimer — Phase-1 emit stays 32 DestinationLanes (see gate_o)"
     },
     "scanner_references": {
       "classification": "SITE_CONFIGURATION",
@@ -146,9 +156,11 @@
       "Greensboro gold divert mechanism count (16) as pack default — not ORNCCP5 truth"
     ],
     "UNKNOWN": [
-      "Whether Track_Divert_UDT should collapse dual-lane SrtZoneLane.Name groups",
       "Global induct→divert tracking_offset (not in RUN)",
       "Sorter equipment type (shoe/popup) — no RUN column"
+    ],
+    "STRONGLY_SUPPORTED_NOT_EMIT_RULE": [
+      "PhysicalDivert ← shared FullClearTimer / SSV family (16 mechanisms × 2 DestinationLanes) — documented, Phase-1 emit still DestinationLane×32"
     ],
     "policy": "Do not encode CUSTOM/UNKNOWN as mandatory cookie-cutter logic. Do not claim universality from PLC4+PLC5 alone without Fortna/RUN/library support — repeated identical architecture across independent sites is supporting evidence only."
   },

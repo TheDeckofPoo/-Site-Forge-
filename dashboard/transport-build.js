@@ -210,7 +210,10 @@
     //   override = show engineer overrides when present
     //   diagnostic = anchors/entry/exit/provenance/mismatches
     geometryAuthorityMode: 'run', // run | override | diagnostic
-    laneSeparate: true, // presentation-only offsets for stacked bodies
+    // OFF by default: RUN/Physical mode must preserve proven relative XY
+    // (uniform scale + global translation + proven Y invert only).
+    // Explicit Advanced toggle may enable presentation lane separation.
+    laneSeparate: false,
     // PL-1: after initial layout, freeze presentation offsets so Area moves
     // redraw without musical-chair re-layout of unrelated conveyors.
     // Explicit Rebuild Layout / lane-separate toggle sets forcePresentationRelayout.
@@ -2924,6 +2927,26 @@
   function computePresentationOffsets(nodes, area) {
     const offsets = {};
     const listIn = nodes || [];
+    // Gate 2 — RUN/Physical default: ZERO per-object presentation offsets.
+    // Proven relative XY survives as uniform scale + global translation
+    // (+ Y invert already applied when projecting RUN→canvas). Lane separation,
+    // cluster spread, merge fans, and mate nudges are opt-in via laneSeparate.
+    if (!tb.laneSeparate) {
+      listIn.forEach((n) => {
+        if (!n) return;
+        const reason = tb.geometryAuthorityMode === 'run' ? 'RUN_PHYSICAL_FIDELITY' : '';
+        offsets[n.id] = { dx: 0, dy: 0, lane: 0, reason };
+        n.display_dx = 0;
+        n.display_dy = 0;
+        n.display_lane = 0;
+        n.display_reason = reason;
+        n._layoutInitialized = true;
+      });
+      tb._presentationOffsets = offsets;
+      tb.presentationLayoutFrozen = true;
+      tb.forcePresentationRelayout = false;
+      return offsets;
+    }
     // PL-1: MODEL/REDRAW must not musical-chair frozen editor positions.
     // Reuse persistent display_dx/dy unless engineer requested Rebuild Layout.
     const force = !!tb.forcePresentationRelayout;
@@ -2952,13 +2975,6 @@
       n.display_lane = 0;
       n.display_reason = '';
     });
-    if (!tb.laneSeparate) {
-      listIn.forEach((n) => { if (n) n._layoutInitialized = true; });
-      tb._presentationOffsets = offsets;
-      tb.presentationLayoutFrozen = true;
-      tb.forcePresentationRelayout = false;
-      return offsets;
-    }
     const list = (nodes || []).filter(isSchematicNode);
     const byId = {};
     list.forEach((n) => { byId[n.id] = n; });
@@ -3249,10 +3265,15 @@
    * Presentation offsets only; never mutates source_geometry / sourceX/Y.
    */
   function getDisplayTransform(n, offsets) {
-    const off = (offsets && n && offsets[n.id]) || {
+    // RUN/Physical with laneSeparate OFF: ignore stale presentation offsets so
+    // proven relative coordinates are never silently distorted.
+    let off = (offsets && n && offsets[n.id]) || {
       dx: Number(n?.display_dx) || 0,
       dy: Number(n?.display_dy) || 0,
     };
+    if (!tb.laneSeparate) {
+      off = { dx: 0, dy: 0 };
+    }
     const useOverride = tb.geometryAuthorityMode === 'override'
       && n?.engineerGeometry
       && (n.engineerGeometry.entry_endpoint || n.engineerGeometry.entryCanvas);
@@ -4097,6 +4118,10 @@
     } else if (tb.viewMode === 'geom-debug' && m === 'run') {
       tb.viewMode = 'schematic';
       if (tb.layers) tb.layers.physical = false;
+    }
+    // Returning to RUN/Physical with laneSeparate OFF clears any presentation scatter.
+    if (tb.geometryAuthorityMode === 'run' && !tb.laneSeparate) {
+      try { requestPresentationRelayout(); } catch (_) { /* ignore */ }
     }
     try { render(); } catch (_) { /* ignore */ }
     status(`Geometry mode: ${tb.geometryAuthorityMode === 'run' ? 'RUN/Physical'
