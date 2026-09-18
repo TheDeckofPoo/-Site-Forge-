@@ -352,7 +352,9 @@
   color: #222;
 }
 
+/* Legacy jack graphics — hidden; adapter face must remain readable (Gate A). */
 .flex-port {
+  display: none;
   position: absolute;
   width: 29px;
   height: 31px;
@@ -363,6 +365,18 @@
 
 .flex-port.p1 { left: 41px; }
 .flex-port.p2 { left: 76px; }
+
+/* Readable adapter face: keep status LEDs + catalog; no jack overlay. */
+.flex-adapter-clean .flex-cat {
+  font-size: 11px;
+  margin-top: 6px;
+  padding: 0 4px;
+}
+.flex-adapter-clean .flex-eth {
+  right: 10px;
+  top: auto;
+  bottom: 18px;
+}
 
 .flex-term-base {
   position: absolute;

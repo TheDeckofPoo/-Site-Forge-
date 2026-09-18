@@ -123,15 +123,29 @@
     },
     {
       "fact": "sorter_divert_output_io",
-      "primary": [],
-      "supporting": ["engineer_map", "Configio_when_named"],
+      "primary": ["Outpoints_join_SrtZoneLane.Lane"],
+      "supporting": ["LaneEnableSignal_often_INVALID", "Configio_when_named"],
+      "fallback": "REVIEW_REQUIRED",
+      "notes": "Deep autofill: Outpoints⋈Lane is PROVEN when present; do not invent from lane name similarity"
+    },
+    {
+      "fact": "sorter_induct_pe",
+      "primary": ["Inpoints.Induct_IO_Name"],
+      "supporting": ["Conveyor_Type_PHOTOCELL"],
       "fallback": "REVIEW_REQUIRED"
     },
     {
-      "fact": "sorter_induct_chain",
+      "fact": "sorter_induct_tracking_conveyor",
       "primary": [],
-      "supporting": ["SrtScanBoss.ScanZone"],
-      "fallback": "UNKNOWN"
+      "supporting": ["Encoders.EnableBit", "Mtrchain", "Conveyor"],
+      "fallback": "DERIVED_or_ENGINEER",
+      "notes": "DERIVED via EnableBit→Mtrchain — never ENC###≡P### suffix guessing"
+    },
+    {
+      "fact": "sorter_induct_chain",
+      "primary": ["Inpoints"],
+      "supporting": ["SrtScanBoss.ScanZone", "Encoders"],
+      "fallback": "REVIEW_REQUIRED"
     },
     {
       "fact": "sorter_motor",
@@ -144,6 +158,41 @@
       "primary": [],
       "supporting": ["Encoders.Ticks_Per_Foot"],
       "fallback": "UNKNOWN"
+    },
+    {
+      "fact": "logical_memory_reference_jamzones",
+      "primary": ["CP3_SELECTION_Jamzones_fields"],
+      "supporting": ["Jamzones.asc", "Conveyor_catalog", "timemenu", "Machine", "StartStopZones"],
+      "fallback": "INVALID_means_absent",
+      "notes": "Curtis clarification: FortnaPlus field-selectable named refs. Conveyor.Type=INVALID can still be a valid logical catalog object. Never fabricate BOOL from name patterns."
+    },
+    {
+      "fact": "logical_memory_reference_mtrchain",
+      "primary": ["CP3_SELECTION_Mtrchain_fields"],
+      "supporting": ["Mtrchain.asc", "Conveyor_catalog", "timemenu", "horns", "Jamzones"],
+      "fallback": "INVALID_means_absent",
+      "notes": "Motor_Name/Timer_Name/Motor_Chained* are menu selections, not finished-PLC BOOL archaeology."
+    },
+    {
+      "fact": "sorter_track_program_architecture",
+      "primary": [],
+      "supporting": ["finished_PLC5_oracle", "gold_Sorter_Track_Program_L5X"],
+      "fallback": "NOT_DISCOVERY_AUTHORITY",
+      "notes": "Validation oracle only. See docs/evidence/SORTER_TRACK_PROGRAM_PACK.md"
+    },
+    {
+      "fact": "wcs_interface_program_architecture",
+      "primary": [],
+      "supporting": ["finished_PLC4_oracle", "finished_PLC5_oracle", "gold_WCS_Interface_TCP_IP_Program_L5X"],
+      "fallback": "NOT_DISCOVERY_AUTHORITY",
+      "notes": "Optional pack; PLC2 has no WCS. Never auto-include from sorter discovery. See docs/evidence/WCS_PROGRAM_PACK.md"
+    },
+    {
+      "fact": "sorter_wcs_handshake_tags",
+      "primary": [],
+      "supporting": ["finished_PLC5_oracle_dual_referenced_controller_tags"],
+      "fallback": "ENGINEER_ASSIGNED_or_WCSModel",
+      "notes": "34 proven shared controller roots in PLC5 RTfinished oracle — not RUN authority"
     }
   ]
 }

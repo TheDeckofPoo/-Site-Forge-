@@ -88,11 +88,36 @@
     }
   }
 
+  /**
+   * Normalize workbook area entries to string names.
+   * Root cause of [object Object]_ESZone1: wb.areas often holds area objects
+   * ({id,name,...}); String(area) → "[object Object]" then preferred zone name.
+   */
+  function areaNameOf(a) {
+    if (a == null) return '';
+    if (typeof a === 'string' || typeof a === 'number') {
+      const s = String(a).trim();
+      if (!s || s === '[object Object]') return '';
+      return s;
+    }
+    if (typeof a === 'object') {
+      const s = String(a.name || a.id || a.area || a.areaName || '').trim();
+      if (!s || s === '[object Object]') return '';
+      return s;
+    }
+    return '';
+  }
+
+  function isCorruptZoneName(name) {
+    const s = String(name || '');
+    return !s || /\[object\s+Object\]/i.test(s);
+  }
+
   function areaConveyorsFromWorkbook() {
     const wb = ensureAutogenState().workbook || {};
     const map = {};
     (wb.conveyors || []).forEach((c) => {
-      const an = String(c.main_area || c.area || '').trim();
+      const an = areaNameOf(c.main_area || c.area);
       const cn = String(c.clean_name || c.name || c.conveyor || '').trim();
       if (an && cn) {
         if (!map[an]) map[an] = [];
@@ -109,7 +134,10 @@
     const eng = AS.safety_build || wb.safety_build || { zones: [] };
     const transportZones = transportZonesFromCanvas();
     const areaConvs = areaConveyorsFromWorkbook();
-    const areas = Array.isArray(wb.areas) ? wb.areas.slice() : [];
+    // Normalize areas → string names (objects from Transport must not coerce via String())
+    const areas = (Array.isArray(wb.areas) ? wb.areas : [])
+      .map(areaNameOf)
+      .filter(Boolean);
     // Prefer live discovered devices; workbook cache is fallback only
     const live = normalizeDeviceList(AS.safetyDevices || []);
     const cached = normalizeDeviceList(eng.devices || []);
@@ -120,10 +148,13 @@
     const byName = new Map();
     transportZones.forEach((z) => {
       if (deleted.has(String(z.name || '').trim())) return;
+      if (isCorruptZoneName(z.name)) return;
+      const areaRef = areaNameOf(z.area) || String(z.area || '').trim();
+      if (isCorruptZoneName(areaRef)) return;
       byName.set(z.name, {
         id: z.name,
         name: z.name,
-        areaRef: z.area || '',
+        areaRef: areaRef,
         areaOrigin: 'AUTO_RUN_PROVEN',
         conveyorRefs: [...(z.conveyors || [])],
         conveyorsOrigin: (z.conveyors || []).length ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
@@ -132,10 +163,10 @@
         eStops: [],
         esrDevices: [],
         mcrDevices: [],
-        resetSource: z.area ? `${z.area}.Reset` : '',
-        silenceSource: z.area ? `${z.area}.Silence` : '',
-        resetOrigin: z.area ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
-        silenceOrigin: z.area ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        resetSource: areaRef ? `${areaRef}.Reset` : '',
+        silenceSource: areaRef ? `${areaRef}.Silence` : '',
+        resetOrigin: areaRef ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
+        silenceOrigin: areaRef ? 'AUTO_RUN_PROVEN' : 'UNRESOLVED',
         suggestions: [],
         engineerEdited: false,
         status: 'REVIEW_REQUIRED',
@@ -144,7 +175,9 @@
     });
     (eng.zones || []).forEach((ez) => {
       const name = String(ez.name || ez.id || '').trim();
-      if (!name || deleted.has(name)) return;
+      // Drop corrupt identities from prior Apply bug — do not suppress by string match alone;
+      // never re-ingest zones whose name is the String(object) coercion artifact.
+      if (!name || deleted.has(name) || isCorruptZoneName(name)) return;
       const cur = byName.get(name) || {
         id: name,
         name,
@@ -161,8 +194,11 @@
         fields: {},
       };
       if (ez.area || ez.areaRef) {
-        cur.areaRef = ez.area || ez.areaRef;
-        cur.areaOrigin = ez.engineerEdited ? 'ENGINEER_ASSIGNED' : (cur.areaOrigin || 'AUTO_RUN_PROVEN');
+        const ar = areaNameOf(ez.area || ez.areaRef);
+        if (ar) {
+          cur.areaRef = ar;
+          cur.areaOrigin = ez.engineerEdited ? 'ENGINEER_ASSIGNED' : (cur.areaOrigin || 'AUTO_RUN_PROVEN');
+        }
       }
       const convs = ez.conveyorRefs || ez.conveyors;
       if (Array.isArray(convs) && convs.length) {
@@ -170,7 +206,17 @@
         cur.conveyorsOrigin = ez.conveyorsOrigin || 'ENGINEER_ASSIGNED';
       }
       if (Array.isArray(ez.members)) {
-        cur.members = [...ez.members];
+        // Reconcile membership (Apply = update, not append duplicates)
+        const seen = new Set();
+        cur.members = [];
+        ez.members.forEach((m) => {
+          const nm = String(m || '').trim();
+          if (!nm) return;
+          const key = nm.toUpperCase();
+          if (seen.has(key)) return;
+          seen.add(key);
+          cur.members.push(nm);
+        });
         cur.membersOrigin = ez.membersOrigin || 'ENGINEER_ASSIGNED';
         cur.engineerEdited = true;
       }
@@ -192,14 +238,15 @@
       byName.set(name, cur);
     });
 
-    // Ensure area-named default zones exist for each *current* workbook area only
-    const areaSet = new Set(areas.map((a) => String(a || '').trim()).filter(Boolean));
-    areas.forEach((a) => {
-      const an = String(a || '').trim();
-      if (!an) return;
+    // Ensure area-named default zones exist for each *current* workbook area only.
+    // areas is already normalized to string names via areaNameOf.
+    const areaSet = new Set(areas);
+    areas.forEach((an) => {
+      if (!an || isCorruptZoneName(an)) return;
       const stem = an.replace(/_Area$/i, '');
+      if (!stem || isCorruptZoneName(stem)) return;
       const preferred = `${stem}_ESZone1`;
-      if (deleted.has(preferred)) return;
+      if (deleted.has(preferred) || isCorruptZoneName(preferred)) return;
       const existing = [...byName.keys()].find((k) => {
         const kl = k.toLowerCase();
         return kl === preferred.toLowerCase()
@@ -233,9 +280,17 @@
 
     // Drop stale zones from prior projects (saved localStorage) unless their Area
     // still exists on this project OR they appear on the Transport canvas.
-    const transportNames = new Set(transportZones.map((z) => String(z.name || '').trim()));
+    // Also drop coercion artifacts ([object Object]_ESZone*) permanently.
+    const transportNames = new Set(
+      transportZones.map((z) => String(z.name || '').trim()).filter((n) => n && !isCorruptZoneName(n)),
+    );
     for (const [name, z] of [...byName.entries()]) {
-      const area = String(z.areaRef || '').trim();
+      if (isCorruptZoneName(name) || isCorruptZoneName(z.areaRef)) {
+        byName.delete(name);
+        continue;
+      }
+      const area = areaNameOf(z.areaRef) || String(z.areaRef || '').trim();
+      z.areaRef = area;
       const keep = transportNames.has(name)
         || (area && areaSet.has(area))
         || (areaSet.size === 0 && transportNames.size === 0 && z.engineerEdited);
@@ -879,21 +934,21 @@
       </div>
       ${(z.hard_missing || []).length ? `<div class="mb-3 text-[11px] text-amber-200/90 border border-amber-900/40 bg-amber-950/20 rounded-lg px-3 py-2">Missing: <span class="mono">${escapeHtml((z.hard_missing || []).join(', '))}</span></div>` : ''}
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 flex flex-col min-h-[18rem]">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" title="Unassigned devices eligible for this zone">Available Devices</span>
-            <input id="sb-device-filter" type="search" placeholder="Filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-36" value="${escapeHtml(state.filter)}">
+        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 flex flex-col">
+          <div class="flex items-center gap-2 mb-1.5 flex-wrap">
+            <span class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold" title="Eligible unassigned devices for this zone only — not a second full inventory">Assign devices</span>
+            <input id="sb-device-filter" type="search" placeholder="Search / filter…" class="ml-auto bg-slate-900 border border-slate-700 rounded px-2 py-0.5 text-[10px] w-40" value="${escapeHtml(state.filter)}">
           </div>
-          <div class="text-[9px] text-slate-600 mb-1">Unassigned devices eligible for the selected zone (not the full inventory).</div>
-          <div id="sb-available" class="flex-1 overflow-y-auto space-y-0.5 text-[11px] mono"></div>
+          <div class="text-[9px] text-slate-600 mb-1 leading-snug">Eligible for <span class="mono text-slate-400">${escapeHtml(z.name)}</span> only. Full ledger stays in Device Inventory.</div>
+          <div id="sb-available" class="max-h-40 overflow-y-auto space-y-0.5 text-[11px] mono rounded-lg border border-slate-800/80 bg-[#0a1018] p-1.5"></div>
           <div class="mt-2 flex gap-2">
-            <button type="button" id="sb-add-selected" class="btn-ghost flex-1 text-[10px] py-1.5 rounded-lg border border-emerald-900/50 text-emerald-300">Add →</button>
-            <button type="button" id="sb-accept-suggestions" class="btn-ghost text-[10px] py-1.5 px-2 rounded-lg border border-sky-900/50 text-sky-300" title="Accept digit-match suggestions (engineer action)">Accept suggestions</button>
+            <button type="button" id="sb-add-selected" class="btn-primary flex-1 text-[10px] py-1.5 rounded-lg bg-emerald-800 hover:bg-emerald-700 border border-emerald-500/40 text-white font-semibold">Assign Selected</button>
+            <button type="button" id="sb-accept-suggestions" class="btn-ghost text-[10px] py-1.5 px-2 rounded-lg border border-sky-900/50 text-sky-300" title="Accept digit-match suggestions (engineer action)">Suggestions</button>
           </div>
         </div>
-        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 flex flex-col min-h-[18rem]">
+        <div class="rounded-xl border border-slate-800 bg-[#0c1219] p-3 flex flex-col min-h-[12rem]">
           <div class="text-[10px] uppercase tracking-wider text-slate-500 font-semibold mb-2">Assigned to Zone</div>
-          <div id="sb-assigned" class="flex-1 overflow-y-auto space-y-0.5 text-[11px] mono"></div>
+          <div id="sb-assigned" class="flex-1 max-h-56 overflow-y-auto space-y-0.5 text-[11px] mono"></div>
           <button type="button" id="sb-remove-selected" class="mt-2 btn-ghost w-full text-[10px] py-1.5 rounded-lg border border-rose-900/50 text-rose-300">← Remove</button>
         </div>
       </div>
@@ -1255,32 +1310,49 @@
     const AS = ensureAutogenState();
     // Rebuild so devices carry stamped safetyZoneRef/status before persist
     state.model = buildClientModel();
+    // Apply = reconcile/update by zone identity. Never emit coercion artifacts.
+    const appliedZones = (state.model?.zones || [])
+      .filter((z) => z && z.name && !isCorruptZoneName(z.name))
+      .map((z) => {
+        const areaRef = areaNameOf(z.areaRef) || '';
+        const members = [];
+        const seenM = new Set();
+        (z.members || []).forEach((m) => {
+          const nm = String(m || '').trim();
+          if (!nm) return;
+          const key = nm.toUpperCase();
+          if (seenM.has(key)) return;
+          seenM.add(key);
+          members.push(nm);
+        });
+        return {
+          id: z.id || z.name,
+          name: z.name,
+          area: areaRef,
+          areaRef,
+          conveyors: z.conveyorRefs || [],
+          conveyorRefs: z.conveyorRefs || [],
+          members,
+          eStops: z.eStops || [],
+          esrDevices: z.esrDevices || [],
+          mcrDevices: z.mcrDevices || [],
+          csDevices: z.csDevices || [],
+          eslsDevices: z.eslsDevices || [],
+          resetSource: z.resetSource || '',
+          silenceSource: z.silenceSource || '',
+          reset_source: z.resetSource || '',
+          silence_source: z.silenceSource || '',
+          membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
+          engineerEdited: !!z.engineerEdited,
+          status: z.status,
+          fields: z.fields || {},
+        };
+      });
     const payload = {
       version: 1,
       source: 'safety_build',
       appliedAt: new Date().toISOString(),
-      zones: (state.model?.zones || []).map((z) => ({
-        id: z.id || z.name,
-        name: z.name,
-        area: z.areaRef || '',
-        areaRef: z.areaRef || '',
-        conveyors: z.conveyorRefs || [],
-        conveyorRefs: z.conveyorRefs || [],
-        members: z.members || [],
-        eStops: z.eStops || [],
-        esrDevices: z.esrDevices || [],
-        mcrDevices: z.mcrDevices || [],
-        csDevices: z.csDevices || [],
-        eslsDevices: z.eslsDevices || [],
-        resetSource: z.resetSource || '',
-        silenceSource: z.silenceSource || '',
-        reset_source: z.resetSource || '',
-        silence_source: z.silenceSource || '',
-        membersOrigin: z.membersOrigin || 'ENGINEER_ASSIGNED',
-        engineerEdited: !!z.engineerEdited,
-        status: z.status,
-        fields: z.fields || {},
-      })),
+      zones: appliedZones,
       devices: (state.model?.devices || []).map(serializeDevice).filter(Boolean),
       unassignedDevices: state.model?.unassignedDevices || [],
       inventory: state.model?.inventory || {},

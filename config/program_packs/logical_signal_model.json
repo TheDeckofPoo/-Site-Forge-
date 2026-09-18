@@ -1,0 +1,176 @@
+{
+  "version": 1,
+  "model": "LogicalSignalModel",
+  "curtis_clarification": "FortnaPlus table-field selectable named logical/memory references — not finished-PLC BOOL archaeology",
+  "invalid_policy": "INVALID is explicit absent reference; never fabricate BOOL or Conveyor row",
+  "classification_policy": "Use proven fortna.mnu DLIST + CP3 resolution only; never name-pattern heuristics (*_MEM, CR####)",
+  "conveyor_menu_fact": "Conveyor table is a universal named-object catalog; Type=INVALID often means logical/internal placeholder, not void",
+  "cp3_coverage": {
+    "Jamzones_fields": "YES_RESOLVER_COVERS",
+    "Mtrchain_fields": "YES_RESOLVER_COVERS",
+    "first_class_LogicalSignalModel_in_CP4_adapters": "PARTIAL",
+    "notes": [
+      "CP4 jam adapter focuses on Jamcheck, not Jamzones logical-signal objects",
+      "CP4 mtrchain keeps refs but does not classify physical vs logical/memory vs timer"
+    ]
+  },
+  "compiler_loses_non_physical_references": {
+    "answer": true,
+    "where": [
+      "tools/scripts/fortna_knowledge.py Type=INVALID inactive rules for Conveyor",
+      "tools/scripts/fortna_sitemodel_to_autogen.py disposition_for_equipment NOT_MECHANICAL_CONVEYOR / UNSUPPORTED_TYPE"
+    ],
+    "retained_in": [
+      "CP3 reference graph Conveyor:: identities",
+      "CP4 transportation adapter conveyor family objects"
+    ]
+  },
+  "provenance_chain": [
+    "fortna.mnu/project.mnu",
+    "CP1 find_data_source",
+    "CP2 typed records",
+    "CP3 reference graph",
+    "RUN ASC"
+  ],
+  "jam_zones_field_matrix": [
+    {
+      "field": "Latch Bit",
+      "target_menu": "Conveyor",
+      "target_class": "logical_internal_or_device",
+      "examples": ["LATCH_SAWTOOTH", "LATCH_TAKEAWAY"],
+      "invalid_means": "absent"
+    },
+    {
+      "field": "Jammed Bit",
+      "target_menu": "Conveyor",
+      "target_class": "logical_internal",
+      "examples": ["JAM_SAWTOOTH", "JAM_CITY_COUNTER"],
+      "invalid_means": "absent"
+    },
+    {
+      "field": "Start Stop Timer",
+      "target_menu": "timemenu",
+      "target_class": "timer",
+      "examples": ["tmStartStop_SAWTOOTH", "tmStartStop_TAKEAWAY"],
+      "invalid_means": "absent"
+    },
+    {
+      "field": "Zone Owner ",
+      "target_menu": "Machine",
+      "target_class": "machine_owner",
+      "examples": ["ORNCCP4", "ORNCCP5", "ORNCCP2"],
+      "invalid_means": "absent",
+      "schema_note": "trailing space in fortna.mnu field name"
+    },
+    {
+      "field": "Enable Bit",
+      "target_menu": "Conveyor",
+      "target_class": "logical_internal",
+      "examples": ["ENABLE_SAWTOOTH", "ENABLE_CP1_ACCUM"],
+      "ui_examples_same_class": ["CP3_ENABLE", "ENABLE_4CR1"],
+      "invalid_means": "absent"
+    },
+    {
+      "field": "Start Button",
+      "target_menu": "Conveyor",
+      "target_class": "logical_memory_or_physical_pb",
+      "examples": ["MEM_CP4_8_START", "SAWTOOTH_START_MEM_BIT", "1PBSTART", "7PBSTART"],
+      "invalid_means": "absent"
+    },
+    {
+      "field": "Stop Button",
+      "target_menu": "Conveyor",
+      "target_class": "logical_memory_or_physical_pb",
+      "examples": ["MEM_CP4_8_STOP", "1PBSTOP"],
+      "invalid_means": "absent"
+    },
+    {
+      "field": "Reset Button",
+      "target_menu": "Conveyor",
+      "target_class": "physical_pb_or_logical_or_absent",
+      "examples": ["PB406_JR", "SORTER_PB_RESET", "INVALID"],
+      "invalid_means": "absent"
+    },
+    {
+      "field": "StartStopZone",
+      "target_menu": "StartStopZones",
+      "target_class": "start_stop_zone",
+      "examples": ["SHIPPING AREA", "SAWTOOTH, CITY, DANCE"],
+      "invalid_means": "absent"
+    }
+  ],
+  "motor_chains_field_matrix": [
+    {
+      "field": "Motor_Name",
+      "target_menu": "Conveyor_family_identity",
+      "target_class": "motor_or_logical_head",
+      "examples": ["M116"],
+      "ui_examples_same_class": ["VFD1542_STOP"],
+      "invalid_means": "inactive_row"
+    },
+    {
+      "field": "Motor_Ndx",
+      "target_menu": "Conveyor",
+      "target_class": "motor_index_object",
+      "examples": ["M116", "VFD414"]
+    },
+    {
+      "field": "Timer_Name",
+      "target_menu": "timemenu",
+      "target_class": "timer",
+      "examples": ["tmLATCH_4CR2_ACCUM", "tmM206"]
+    },
+    {
+      "field": "RUN Timer_Name",
+      "target_menu": "timemenu",
+      "target_class": "timer",
+      "examples": ["tmRUN_tmM206"]
+    },
+    {
+      "field": "Motor_Chained1..10",
+      "target_menu": "Conveyor",
+      "target_class": "physical_conveyor_or_hold_or_absent",
+      "examples": ["P116", "SSVEZPE212_P1", "INVALID"],
+      "ui_examples_same_class": ["P1542", "CR1541", "M228", "SSV226", "INVALID"]
+    },
+    {
+      "field": "Motor_Aux",
+      "target_menu": "Conveyor",
+      "target_class": "aux_or_latch_logical",
+      "examples": ["M209_AUX", "LATCH_BIN_MERGE"]
+    },
+    {
+      "field": "Enabled",
+      "target_menu": "Conveyor",
+      "target_class": "enable_ref",
+      "examples": ["M116_AUX", "VFD414_AUX"]
+    },
+    {
+      "field": "Horn",
+      "target_menu": "horns",
+      "target_class": "horn",
+      "examples": ["CP5 & WH816 HORN", "NO HORN"]
+    },
+    {
+      "field": "Stop Zone",
+      "target_menu": "Jamzones",
+      "target_class": "jam_zone_ref",
+      "examples": []
+    }
+  ],
+  "target_classes": [
+    "physical_conveyor",
+    "physical_pb_or_device",
+    "motor",
+    "logical_internal",
+    "logical_memory",
+    "timer",
+    "machine_owner",
+    "start_stop_zone",
+    "horn",
+    "error",
+    "absent_INVALID"
+  ],
+  "readiness": "MODEL_DEFINED",
+  "compiler_implementation": "NOT_STARTED"
+}

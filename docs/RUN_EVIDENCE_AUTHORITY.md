@@ -71,12 +71,32 @@ Naming similarity alone must **never** outrank explicit physical or relational e
 | Sorter identity | `Sorters.Sorter Name` + `Machine` | encoder link / `SrtAppControl` | UNKNOWN |
 | Sorter type class | — (name tokens only) | engineer confirm | REVIEW_REQUIRED |
 | Sorter divert lane topology | `SrtZoneLane` | `SrtScanBoss` | REVIEW_REQUIRED |
-| Sorter divert **output IO** | — (often INVALID in RUN) | engineer map; Configio when named | REVIEW_REQUIRED |
-| Sorter induct chain | — | scan zone hints | UNKNOWN |
-| Sorter motor | `SrtAppControl.SorterCnvMtr` when valid | Encoders.EnableBit | REVIEW_REQUIRED |
-| Sorter track offset / trigger | — | encoder scale only | UNKNOWN / NOT_SUPPORTED |
+| Sorter divert **output IO** | `Outpoints` ⋈ `SrtZoneLane.Lane` when PROVEN | LaneEnableSignal (often INVALID) | REVIEW_REQUIRED |
+| Sorter induct PE | `Inpoints.Induct I/O Name` | Conveyor Type=PHOTOCELL | REVIEW_REQUIRED |
+| Sorter induct / tracking conveyor | Encoders.EnableBit → Mtrchain → Conveyor (**DERIVED**) | — | ENGINEER confirm |
+| Sorter tracking PE | `Inpoints` per section | — | REVIEW_REQUIRED |
+| Sorter encoder | `Sorters.Encoder` → `Encoders` | ticks/ft | UNKNOWN |
+| Sorter track offset / trigger | Outpoint Location (per-lane) / Trig window when present | encoder scale | UNKNOWN / NOT_SUPPORTED |
+| WCS interface **presence** | finished-PLC / task schedule = **validation oracle only** | RUN has no WCS program table | UNKNOWN until pack rules proven; PLC2 proves optional |
+| WCS configuration (IP/port/…) | engineer / site commissioning | — | ENGINEER_ASSIGNED |
+| FortnaPlus field reference target menu | `.mnu` DLIST / `find_data_source` / CP3 graph | `artifacts/mnu-relationships.json` | UNKNOWN |
+| Jamzones enable/jam/button refs | Jamzones field → **Conveyor** / **timemenu** / **Machine** / **StartStopZones** (CP3) | Conveyor.Type classifies physical vs logical catalog row — Type=INVALID ≠ void | PROVEN target menu; REVIEW for physical endpoint |
+| Mtrchain motor/chain refs | Mtrchain field → **Conveyor** / **timemenu** / **horns** / **Jamzones** (CP3) | Conveyor.Type per member | PROVEN target menu; INVALID slot = absent |
+| Timer reference | field → `timemenu` | timer ASC | PROVEN when CP3 RESOLVED |
+| Internal / logical Conveyor signal | Conveyor catalog identity selected by Jamzones/Mtrchain (often Type=INVALID) | CP3 edge + Conveyor row | PROVEN as named ref; not a mechanical belt |
+| Absent Fortna reference | explicit `INVALID` / empty token | — | keep ABSENT (never invent BOOL) |
+| Sorter_Track program architecture | — (not RUN) | PLC5 RTfinished / gold pack **oracle only** | NOT discovery authority |
+| Sorter ↔ WCS handshake tags | — (not RUN) | Dual-referenced controller tags in PLC5 oracle (34 roots) | Oracle-only; emit via WCSModel/engineer |
+| Physical I/O endpoint | Configio | EIPModules / NODE Desc | REVIEW_REQUIRED |
 
-See `exports/stabilization/sorter_evidence_inventory.md` for Sorter row population from archaeology.
+See also:
+
+- `exports/stabilization/sorter_evidence_inventory.md` / `plc5_sorter_deep_autofill.md`
+- [`docs/evidence/LOGICAL_SIGNAL_MODEL.md`](evidence/LOGICAL_SIGNAL_MODEL.md)
+- [`docs/evidence/SORTER_TRACK_PROGRAM_PACK.md`](evidence/SORTER_TRACK_PROGRAM_PACK.md)
+- [`docs/evidence/WCS_PROGRAM_PACK.md`](evidence/WCS_PROGRAM_PACK.md)
+- [`docs/PLC_PROGRAM_PACK_ARCHITECTURE.md`](PLC_PROGRAM_PACK_ARCHITECTURE.md)
+- `config/program_packs/*.json`
 
 ---
 

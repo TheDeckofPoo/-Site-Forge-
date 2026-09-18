@@ -82,7 +82,7 @@ These support **interpretation semantics** (CP1 archaeology). They are not site 
 |------|-------|-----|
 | `ORLY_GreensboroPLC2_NC_Finished.L5X` | Finished PLC **validation oracle** | Compare architecture after blind RUN build — **never discovery** |
 | `ORLY_Greensboro_NC_PLC4 finished.L5X` | Validation oracle | Same |
-| `ORLY_Greensboro_NC_PLC5_RTfinished.L5X` | Validation oracle (Sorter_Track architecture) | Same |
+| `ORLY_Greensboro_NC_PLC5_RTfinished.L5X` | Validation oracle (Sorter_Track + WCS architecture; newest local RTfinished as of 2026-09-17) | Same — also mirrored under `workspace/validation/` when present. No `RTfinished(3)` copy found on Desktop. |
 | `ES_Program.L5X` | ES structural reference | Pattern only; also see `docs/es-reference/` |
 | `ORNCCP2_2026_09_17_2040.L5X` | Site Forge **generated** output | Field acceptance artifact for that build |
 
@@ -93,6 +93,16 @@ Repo mirrors / related:
 - `exports/current/` for generated L5X  
 
 **Do not commit** large finished L5X dumps into Git unless repository policy already tracks them.
+
+### Program-pack architecture derived from these oracles (this checkpoint)
+
+| Doc / contract | Role |
+|----------------|------|
+| [`SORTER_TRACK_PROGRAM_PACK.md`](SORTER_TRACK_PROGRAM_PACK.md) | Sorter_Track routine contract + Sorter↔WCS matrix |
+| [`WCS_PROGRAM_PACK.md`](WCS_PROGRAM_PACK.md) | WCS pack across PLC4/PLC5; optional vs sorter |
+| [`LOGICAL_SIGNAL_MODEL.md`](LOGICAL_SIGNAL_MODEL.md) | Curtis clarification — Jam_Zones / Motor_Chains field→menu classes |
+| [`../PLC_PROGRAM_PACK_ARCHITECTURE.md`](../PLC_PROGRAM_PACK_ARCHITECTURE.md) | Model → pack map + readiness |
+| `config/program_packs/*.json` | Machine-readable contracts |
 
 ---
 

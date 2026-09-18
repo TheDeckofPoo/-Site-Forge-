@@ -1,0 +1,236 @@
+{
+  "version": 1,
+  "pack": "Sorter_Track",
+  "status": "MORE_EVIDENCE_REQUIRED",
+  "status_reason": [
+    "Architecture and routine set proven from PLC5 RTfinished oracle, but generic sealed AOI/parameter library path is incomplete",
+    "Divert trigger/offset synthesis remains NOT_SUPPORTED",
+    "Gold Sorter_Track_Program.L5X is Greensboro-fixed validation asset, not a reusable emit library",
+    "PLC4 vs PLC5 optional leaves (Gridlock_Prevention, RT_Virtual_Enc) need explicit pack policy"
+  ],
+  "oracle": {
+    "path": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_Greensboro_NC_PLC5_RTfinished.L5X",
+    "controller": "ORLY_Greensboro_NC_PLC5",
+    "processor": "1756-L83E",
+    "note": "Validation oracle only — not discovery. Newest local RTfinished; no RTfinished(3) found.",
+    "workspace_copy": "workspace/validation/ORLY_Greensboro_NC_PLC5_RTfinished.L5X"
+  },
+  "task": {
+    "class": "tracking",
+    "oracle_example": {
+      "name": "P02_Track_5ms",
+      "type": "PERIODIC",
+      "rate_ms": 5,
+      "priority": 2,
+      "scheduled_programs": ["Sorter_Track"]
+    },
+    "note": "Oracle rates are examples, not universal generation constants"
+  },
+  "main_routine": "Main",
+  "routines": [
+    {"name": "Main", "type": "RLL", "role": "scheduler_jsr", "required": true},
+    {"name": "Encoder", "type": "RLL", "role": "encoder_speed", "required": true},
+    {"name": "Track_Pointer", "type": "RLL", "role": "track_pointer", "required": true},
+    {"name": "Track_Induct_Package", "type": "RLL", "role": "induct_token", "required": true},
+    {"name": "Track_Manual_Destination", "type": "RLL", "role": "manual_destination", "required": true},
+    {"name": "Scanner", "type": "RLL", "role": "scan_associate_decision_request", "required": true},
+    {"name": "Track_Package", "type": "RLL", "role": "token_tracking", "required": true},
+    {"name": "Track_Lost_Package", "type": "RLL", "role": "lost_package", "required": true},
+    {"name": "Divert_Lane_Status", "type": "RLL", "role": "lane_full_map", "required": true},
+    {"name": "Track_Divert_Package", "type": "RLL", "role": "divert_fire", "required": true},
+    {"name": "Wave_Divert", "type": "RLL", "role": "divert_wave", "required": true},
+    {"name": "Divert_Rate_Limit", "type": "RLL", "role": "rate_limit", "required": true},
+    {"name": "Track_Divert_Confirm", "type": "RLL", "role": "divert_confirm_to_wcs", "required": true},
+    {"name": "Track_Offset_Find", "type": "RLL", "role": "offset_find", "required": true, "emit": "NOT_SUPPORTED_until_generic_timing_contract"},
+    {"name": "Gridlock_Prevention", "type": "RLL", "role": "gridlock", "required": false, "plc5_present": true, "plc4_present": false},
+    {"name": "Response_Time", "type": "RLL", "role": "wcs_response_metrics", "required": true},
+    {"name": "RT_Virtual_Enc", "type": "ST", "role": "virtual_encoder", "required": false, "plc5_present": true, "gold_pack_present": false}
+  ],
+  "main_jsr_order_oracle": [
+    "Encoder",
+    "Track_Pointer",
+    "Track_Induct_Package",
+    "Track_Manual_Destination",
+    "Scanner",
+    "Track_Package",
+    "Track_Lost_Package",
+    "Divert_Lane_Status",
+    "Track_Divert_Package",
+    "Wave_Divert",
+    "Divert_Rate_Limit",
+    "Track_Divert_Confirm",
+    "Track_Offset_Find",
+    "Gridlock_Prevention",
+    "Response_Time",
+    "RT_Virtual_Enc"
+  ],
+  "dependencies": {
+    "aoi_families": [
+      "Enc_RIOCard",
+      "Enc_Virtual_DistBased",
+      "TRK_Pointer",
+      "TRK_Induct_TokenGenerate",
+      "TRK_Induct_TokenUpdate",
+      "TRK_SearchToken_WithPE",
+      "TRK_SearchToken_VirtualLocation",
+      "TRK_Token_Transfer",
+      "TRK_Lost_Package",
+      "TRK_OffsetFind_PE",
+      "Track_Divert_AOI",
+      "TRK_Divert_WaveFunction"
+    ],
+    "udt_families": [
+      "Enc_UDT",
+      "Track_Induct_UDT",
+      "Track_Divert_UDT",
+      "Track_Group_UDT",
+      "Token_Sorter",
+      "Manual_Destination",
+      "Track_Conv_UDT"
+    ],
+    "optional_packs": ["WCS_Interface_TCP_IP"]
+  },
+  "input_model": ["SorterModel", "LogicalSignalModel", "optional:WCSModel"],
+  "auto_populated_from_run": [
+    "Sorters",
+    "Encoders",
+    "SrtScanBoss",
+    "SrtZoneLane",
+    "SrtAppControl.SorterCnvMtr_when_valid"
+  ],
+  "engineer_required": [
+    "divert_output_io",
+    "track_offsets_triggers",
+    "wave_timing",
+    "rate_limits",
+    "gridlock_policy",
+    "confirm_lane_string_mapping_when_wcs"
+  ],
+  "value_classes": {
+    "STANDARD_ARCHITECTURE": ["routine_set", "aoi_families", "task_class_tracking"],
+    "SITE_CONFIGURATION": ["area_binding", "decision_point_count", "token_array_size"],
+    "EQUIPMENT_INSTANCE": ["per_sorter_tags", "per_divert_udt", "pe_maps"],
+    "COMMISSIONING_VALUE": ["encoder_scale", "offsets", "rate_limits", "wave_params"],
+    "CUSTOM_ENGINEERING": ["gridlock_policy", "unscheduled_IO_MAP_in_oracle"],
+    "UNKNOWN": ["divert_trigger_from_run_alone"]
+  },
+  "sorter_wcs_interface": {
+    "proven_shared_controller_tag_count": 34,
+    "note": "Only tags referenced by both Sorter_Track and WCS_Interface_TCP_IP in PLC5 oracle",
+    "signals": [
+      {
+        "name": "P504_Induct_Decision_Request_Helix",
+        "scope": "Controller",
+        "datatype": "BOOL",
+        "writer": "BOTH",
+        "reader": "WCS_Interface_TCP_IP,Sorter_Track",
+        "purpose": "decision_request_handshake",
+        "provenance": "PLC5_RTfinished_dual_ref"
+      },
+      {
+        "name": "P504_Induct_WCS_Token_Found",
+        "scope": "Controller",
+        "datatype": "DINT",
+        "writer": "Sorter_Track",
+        "reader": "WCS_Interface_TCP_IP",
+        "purpose": "induct_token_to_wcs",
+        "provenance": "PLC5_RTfinished_dual_ref"
+      },
+      {
+        "name": "Token_SCN504",
+        "scope": "Controller",
+        "datatype": "Token_Sorter[1000]",
+        "writer": "Sorter_Track",
+        "reader": "WCS_Interface_TCP_IP",
+        "purpose": "tracking_token_store",
+        "provenance": "PLC5_RTfinished_dual_ref",
+        "validation_oracle_example": true
+      },
+      {
+        "name": "Track_Group_SCN504",
+        "scope": "Controller",
+        "datatype": "Track_Group_UDT",
+        "writer": "Sorter_Track",
+        "reader": "WCS_Interface_TCP_IP",
+        "purpose": "track_group_state",
+        "provenance": "PLC5_RTfinished_dual_ref",
+        "validation_oracle_example": true
+      },
+      {
+        "name": "P504_ManualDest",
+        "scope": "Controller",
+        "datatype": "Manual_Destination",
+        "writer": "UNCLEAR",
+        "reader": "Sorter_Track,WCS_Interface_TCP_IP",
+        "purpose": "manual_destination_gate",
+        "provenance": "PLC5_RTfinished_dual_ref"
+      },
+      {
+        "name": "P5xx_Exit_Lost_Package_Detect",
+        "scope": "Controller",
+        "datatype": "TRK_Lost_Package",
+        "writer": "Sorter_Track",
+        "reader": "WCS_Interface_TCP_IP",
+        "purpose": "lost_package_event",
+        "provenance": "PLC5_RTfinished_dual_ref",
+        "instance_pattern": "P504|P506|P508|P509|P510"
+      },
+      {
+        "name": "P5xx_WCS_Token_Lost_Package",
+        "scope": "Controller",
+        "datatype": "DINT",
+        "writer": "Sorter_Track",
+        "reader": "WCS_Interface_TCP_IP",
+        "purpose": "lost_package_token_id",
+        "provenance": "PLC5_RTfinished_dual_ref",
+        "instance_pattern": "P504|P506|P508|P509|P510"
+      },
+      {
+        "name": "P510_Send_WCS_MSG_Recirc",
+        "scope": "Controller",
+        "datatype": "BOOL",
+        "writer": "BOTH",
+        "reader": "WCS_Interface_TCP_IP,Sorter_Track",
+        "purpose": "recirc_confirm_pulse",
+        "provenance": "PLC5_RTfinished_dual_ref",
+        "validation_oracle_example": true
+      },
+      {
+        "name": "P510_WCS_Token_Recirc",
+        "scope": "Controller",
+        "datatype": "DINT",
+        "writer": "Sorter_Track",
+        "reader": "WCS_Interface_TCP_IP",
+        "purpose": "recirc_token_id",
+        "provenance": "PLC5_RTfinished_dual_ref",
+        "validation_oracle_example": true
+      },
+      {
+        "name": "P*_Divert*",
+        "scope": "Controller",
+        "datatype": "Track_Divert_UDT",
+        "writer": "Sorter_Track",
+        "reader": "WCS_Interface_TCP_IP",
+        "purpose": "divert_confirm_to_decision_update",
+        "members_read_by_wcs": ["O.Conf_MSG", "O.Conf_MSG_WCS_Token", "CFG.Lane_Number"],
+        "provenance": "PLC5_RTfinished_dual_ref",
+        "instance_count_oracle": 16,
+        "validation_oracle_example": true
+      },
+      {
+        "name": "PLC",
+        "scope": "Controller",
+        "datatype": "PLC_UDT",
+        "writer": "UNCLEAR",
+        "reader": "Sorter_Track,WCS_Interface_TCP_IP",
+        "purpose": "plc_timestamp_helper",
+        "provenance": "PLC5_RTfinished_dual_ref"
+      }
+    ]
+  },
+  "anti_cheat": {
+    "no_site_decision_logic_in_compiler": true,
+    "site_names_ok_in_docs_as_oracle_examples": true
+  },
+  "compiler_implementation": "NOT_STARTED"
+}

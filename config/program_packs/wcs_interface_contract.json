@@ -1,0 +1,87 @@
+{
+  "version": 1,
+  "pack": "WCS_Interface_TCP_IP",
+  "status": "MORE_EVIDENCE_REQUIRED",
+  "status_reason": [
+    "Routine architecture stable across PLC4/PLC5 oracles, but Helix/message field schema not yet packaged as site-independent contract",
+    "TCP endpoint, framing, decision-point maps are engineer/commissioning — no complete RUN authority for emit",
+    "Gold WCS_Interface_TCP_IP_Program.L5X is Greensboro-fixed validation asset",
+    "Must not auto-include from sorter discovery alone"
+  ],
+  "presence": {
+    "PLC2": false,
+    "PLC4": true,
+    "PLC5": true,
+    "sorter_mandatory": false,
+    "evidence": "PLC2 finished has neither Sorter_Track nor WCS; PLC4/PLC5 have both"
+  },
+  "oracles": {
+    "PLC5": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_Greensboro_NC_PLC5_RTfinished.L5X",
+    "PLC4": "C:\\Users\\curtiskricke\\Desktop\\WIth GPT\\Folder to GPT\\ORLY_Greensboro_NC_PLC4 finished.L5X"
+  },
+  "task": {
+    "class": "wcs",
+    "oracle_example": {
+      "name": "P03_WCS_10ms",
+      "type": "PERIODIC",
+      "rate_ms": 10,
+      "priority": 3,
+      "scheduled_programs": ["WCS_Interface_TCP_IP"]
+    },
+    "note": "Oracle rates are examples, not universal generation constants"
+  },
+  "main_routine": "Main_Routine",
+  "routines": [
+    {"name": "Main_Routine", "type": "RLL", "role": "scheduler_jsr", "required": true},
+    {"name": "INIT", "type": "ST", "role": "init", "required": true},
+    {"name": "WCS_TCP_Server_Interface", "type": "RLL", "role": "tcp_server", "required": true},
+    {"name": "WCS_Outbound_MSG_FIFO_Unload", "type": "RLL", "role": "outbound_fifo", "required": true},
+    {"name": "WCS_Outbound_MSG_Router", "type": "RLL", "role": "outbound_router", "required": true},
+    {"name": "WCS_Inbound_MSG_FIFO_Unload", "type": "RLL", "role": "inbound_fifo", "required": true},
+    {"name": "WCS_Interface_Fault_Monitor", "type": "RLL", "role": "fault_monitor", "required": true},
+    {"name": "SBR_Inbound_MSG_FIFO_Load", "type": "RLL", "role": "inbound_load", "required": true},
+    {"name": "SBR_Inbound_MSG_Deconstruct", "type": "RLL", "role": "inbound_parse", "required": true},
+    {"name": "SBR_Inbound_MSG_Router", "type": "RLL", "role": "inbound_router", "required": true},
+    {"name": "SBR_Inbound_MSG_ACK", "type": "RLL", "role": "ack", "required": true},
+    {"name": "SBR_Inbound_MSG_NAK", "type": "RLL", "role": "nak", "required": true},
+    {"name": "SBR_DecisionResponse_Update", "type": "RLL", "role": "decision_response_to_token", "required": true, "sorter_interface": true},
+    {"name": "SBR_Heartbeat_MSG", "type": "RLL", "role": "heartbeat", "required": true},
+    {"name": "SBR_DecisionRequest_MSG", "type": "RLL", "role": "decision_request", "required": true, "sorter_interface": true},
+    {"name": "SBR_DecisionUpdate_MSG", "type": "RLL", "role": "decision_update_confirm", "required": true, "sorter_interface": true}
+  ],
+  "classification": {
+    "STANDARD_ARCHITECTURE": ["routine_skeleton", "task_class_wcs", "message_udt_family"],
+    "SITE_CONFIGURATION": ["tcp_endpoint", "framing_chars", "decision_point_count", "lane_strings"],
+    "COMMISSIONING_VALUE": ["heartbeat_timers", "buffer_sizes", "enable_flags"],
+    "EQUIPMENT_INSTANCE": ["per_divert_confirm_wiring_when_sorter_present"],
+    "CUSTOM_ENGINEERING": ["non_helix_message_types"],
+    "UNKNOWN": ["run_authoritative_tcp_endpoint"]
+  },
+  "input_model": ["WCSModel", "optional:SorterModel"],
+  "auto_populated_from_run": [],
+  "engineer_required": [
+    "tcp_endpoint",
+    "framing",
+    "heartbeat_policy",
+    "decision_point_map",
+    "lane_strings",
+    "enable_flags"
+  ],
+  "sorter_wcs_interface": {
+    "proven_shared_controller_tag_count": 34,
+    "source_doc": "docs/evidence/SORTER_TRACK_PROGRAM_PACK.md",
+    "flows": [
+      "decision_request",
+      "decision_response_destination",
+      "divert_confirm_decision_update",
+      "lost_package",
+      "recirc_confirm"
+    ],
+    "note": "Identical matrix embedded in sorter_track_contract.json; dual-ref only, no guesses"
+  },
+  "anti_cheat": {
+    "no_site_decision_logic_in_compiler": true,
+    "do_not_auto_include_from_sorter_discovery": true
+  },
+  "compiler_implementation": "NOT_STARTED"
+}

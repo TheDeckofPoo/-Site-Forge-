@@ -87,3 +87,6 @@ Canonical model: `exports/stabilization/sorter_canonical_model_report.md`
 Apply Sorter may persist `workbook.sorter_build` for later generic library path.
 
 Gold `Sorter_Track_Program.L5X` = validation/oracle only.
+
+Architecture contract (this checkpoint): [`SORTER_TRACK_PROGRAM_PACK.md`](SORTER_TRACK_PROGRAM_PACK.md) · [`../PLC_PROGRAM_PACK_ARCHITECTURE.md`](../PLC_PROGRAM_PACK_ARCHITECTURE.md).  
+**SORTER_TRACK PACK readiness: MORE_EVIDENCE_REQUIRED** (no hollow emit; compilers not COMPLETE).

@@ -107,8 +107,12 @@ Machine-readable: [`config/run_evidence_authority.json`](../../config/run_eviden
 | [SAFETY_BASELINE.md](SAFETY_BASELINE.md) | Discovery vs membership vs ES architecture |
 | [PHYSICAL_IO_BASELINE.md](PHYSICAL_IO_BASELINE.md) | Logical vs RUN physical vs Logix endpoint |
 | [SORTER_BASELINE.md](SORTER_BASELINE.md) | Blind RUN discovery vs PLC validation |
+| [SORTER_TRACK_PROGRAM_PACK.md](SORTER_TRACK_PROGRAM_PACK.md) | Sorter_Track architecture contract (oracle) + Sorter↔WCS interface |
+| [WCS_PROGRAM_PACK.md](WCS_PROGRAM_PACK.md) | WCS_Interface_TCP_IP pack (PLC4/PLC5); optional |
+| [LOGICAL_SIGNAL_MODEL.md](LOGICAL_SIGNAL_MODEL.md) | Jam_Zones / Motor_Chains FortnaPlus selectable references |
 | [PROJECT_HANDOFF.md](PROJECT_HANDOFF.md) | 5–10 minute orientation |
 | [EXTERNAL_REFERENCE_MATERIALS.md](EXTERNAL_REFERENCE_MATERIALS.md) | Curtis Desktop: FPC training docs, FortnaPlus sources, finished-PLC oracles |
+| [`../PLC_PROGRAM_PACK_ARCHITECTURE.md`](../PLC_PROGRAM_PACK_ARCHITECTURE.md) | Canonical models → PLC program packs |
 
 Also: [`docs/DOCUMENTATION_INDEX.md`](../DOCUMENTATION_INDEX.md) · [`docs/FPC_TRAINING_DOCUMENT_INDEX.md`](../FPC_TRAINING_DOCUMENT_INDEX.md) · [`docs/REGRESSION_MANIFEST.md`](../REGRESSION_MANIFEST.md) · [`exports/stabilization/README.md`](../../exports/stabilization/README.md)
 

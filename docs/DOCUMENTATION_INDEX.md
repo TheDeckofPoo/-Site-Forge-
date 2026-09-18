@@ -17,7 +17,12 @@ Do not delete historical docs in this task — mark and link forward.
 | `docs/evidence/SAFETY_BASELINE.md` | Safety baseline | **CURRENT** | — |
 | `docs/evidence/PHYSICAL_IO_BASELINE.md` | I/O identity pipeline | **CURRENT** | — |
 | `docs/evidence/SORTER_BASELINE.md` | Sorter discovery | **CURRENT** | — |
+| `docs/evidence/SORTER_TRACK_PROGRAM_PACK.md` | Sorter_Track pack contract (oracle) | **CURRENT** | — |
+| `docs/evidence/WCS_PROGRAM_PACK.md` | WCS pack contract (PLC4/PLC5) | **CURRENT** | — |
+| `docs/evidence/LOGICAL_SIGNAL_MODEL.md` | Jam_Zones / Motor_Chains selectable refs | **CURRENT** | — |
+| `docs/PLC_PROGRAM_PACK_ARCHITECTURE.md` | Models → PLC program packs | **CURRENT** | — |
 | `docs/RUN_EVIDENCE_AUTHORITY.md` | Authority matrix | **CURRENT** | — |
+| `config/program_packs/` | Machine-readable pack contracts | **CURRENT** | — |
 | `docs/REGRESSION_MANIFEST.md` | Test index | **CURRENT** | — |
 | `docs/AI_BUILD_PROTOCOL.md` | AI/human workflow | **CURRENT** | — |
 | `docs/COMPILE_HUB_READINESS.md` | Hub statuses + partial build | **CURRENT** | — |
