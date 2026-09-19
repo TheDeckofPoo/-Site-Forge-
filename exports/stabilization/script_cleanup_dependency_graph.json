@@ -1,0 +1,3048 @@
+{
+  "baseline_sha": "68f63611511845e4614adae765db37f874a3623a",
+  "scripts": {
+    "tools/scripts/_audit_hollow_l5x.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/_audit_vfd_flt_semantics.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": false
+    },
+    "tools/scripts/_cleanup_scripts_executor.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "one-shot cleanup executor \u2014 leave until after apply commit; delete in follow-up if desired",
+      "tracked": false
+    },
+    "tools/scripts/_deploy_designer_safe_ignition.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "desktop/main.js"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/_deploy_smoke_view.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/_emergency_aent_ports.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_aoi_main.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_audit_l5x.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_compare_fin.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_configtag_l5k.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_diff_l5x.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_dtype_diff.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_extract_st_types.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_fin_programs.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_find_st_types.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_header_dtypes.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_missing_tag_types.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_modules.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_nops_sntp.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_saw_dtypes.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_slot_config.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_st_members.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_studio_struct.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_tasks_mods.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_emergency_verify_1754.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "emergency/tmp archaeology with no callers",
+      "tracked": false
+    },
+    "tools/scripts/_gen_geometry_acceptance.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/apply_recipe.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/AUG28_AUTOGEN_FORENSICS.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/RUNTIME_DATAFLOW.md",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/diagnose_plc2_merge_pipeline.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/diagnose_plc2_topology_merges.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md"
+      ],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fix_ignition_project_attrs.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "desktop/main.js"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_activity_classify.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_activity_classification_closure.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/ACTIVITY_CLASSIFICATION_MODEL.md",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_activity_closure.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "fortna_* with no live callers \u2014 leave in place",
+      "tracked": true
+    },
+    "tools/scripts/fortna_answer_sheet_compare.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp5_gap_closure.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_area_discovery.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_integration_hardening.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_area_ops.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/test_area_rename_l5x.py",
+        "tools/scripts/test_default_area_safety_lifecycle.py",
+        "tools/scripts/test_engineer_defaults.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_multi_area_e2e.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_asc.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/_audit_hollow_l5x.py",
+        "tools/scripts/_audit_vfd_flt_semantics.py",
+        "tools/scripts/_gen_geometry_acceptance.py",
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/diagnose_plc2_topology_merges.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_build_table_knowledge.py",
+        "tools/scripts/fortna_control_model.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp4_pass1_self_audit.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_equipment_plan.py",
+        "tools/scripts/fortna_fortna_table_resolver.py",
+        "tools/scripts/fortna_hardware_io_model.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_fortna_table_resolver.py",
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_autogen.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_area_ops.py",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_io_banks.py",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_run_autobuild_audit.py"
+      ],
+      "subprocess_or_text_refs": [
+        "dashboard/fortna-plus.js",
+        "desktop/main.js",
+        "docs/AUG28_AUTOGEN_FORENSICS.md",
+        "docs/CP2_COMPLETION_GATE.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/IO_REGRESSION_FORENSICS.md",
+        "docs/PLC2_CONFIGIO_COMPILER.md",
+        "docs/PLC2_IO_TRUTH_MODEL.md",
+        "docs/RUNTIME_DATAFLOW.md",
+        "docs/SITE_FORGE_ENGINEERING_UI_MANUAL.md",
+        "docs/SORTER_COMPILER_MODEL.md",
+        "docs/TASK_PROGRAM_ARCHITECTURE.md",
+        "docs/TRANSPORT_CONVEYOR_COMPILER_CONTRACT.md",
+        "docs/TRANSPORT_REGRESSION_FORENSICS.md",
+        "docs/evidence/MCR_MCR_AUX_SEMANTICS.md",
+        "tools/scripts/diagnose_plc2_merge_pipeline.py",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_autogen_provenance.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/test_autogen_provenance_auditor.py",
+        "tools/scripts/test_machine_closure_provenance.py",
+        "tools/scripts/test_sawtooth_merge_inclusion_gate.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/AUTOGEN_PROVENANCE_AUDITOR.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_build_table_knowledge.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md"
+      ],
+      "reason": "fortna_* with no live callers \u2014 leave in place",
+      "tracked": true
+    },
+    "tools/scripts/fortna_connectivity_sorter_closure.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "fortna_* with no live callers \u2014 leave in place",
+      "tracked": true
+    },
+    "tools/scripts/fortna_connectivity_validate.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_control_model.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_semantics/startstop.py",
+        "tools/scripts/test_fortna_control_model.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/evidence/LOGICAL_SIGNAL_MODEL.md",
+        "tools/scripts/test_fortna_control_model.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_controller_scope.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_controller_scope.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/PLC2_FOUNDATION_RESET.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_conveyor_section_model.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/TRANSPORT_AUTOGEN_FROZEN.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp2_completion_gate.py": {
+      "proposed_status": "KEEP_ACCEPTANCE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP2_COMPLETION_GATE.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "tools/scripts/test_cp2_completion_gate_artifacts.py"
+      ],
+      "reason": "inventory ACCEPTANCE",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp2_demo_closure.py": {
+      "proposed_status": "KEEP_ACCEPTANCE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP2_DEMO_CLOSURE.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "tools/scripts/test_cp2_demo_closure_artifacts.py"
+      ],
+      "reason": "inventory ACCEPTANCE",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp2_ownership.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/test_cp2_ownership.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/CP2_COMPLETION_GATE.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "tools/scripts/test_cp2_ownership.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp4_discovery.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sawtooth_merge_model.py",
+        "tools/scripts/fortna_sawtooth_param.py",
+        "tools/scripts/test_cp4_discovery_no_leakage.py",
+        "tools/scripts/test_sawtooth_merge_inclusion_gate.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/CP4_BLIND_DISCOVERY.md",
+        "docs/CP4_SAWTOOTH_FIDELITY.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/test_cp4_discovery_no_leakage.py"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp4_pass1.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/test_cp4_compiler_pass1.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/CP4_COMPILER_PASS1.md"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp4_pass1_self_audit.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md"
+      ],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp4_pass2.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp4_sawtooth.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/test_cp4_compiler_pass2.py"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp4_sawtooth.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/test_cp4_sawtooth_fidelity.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY.md",
+        "tools/scripts/test_cp4_sawtooth_fidelity.py"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp4_semantics_compile.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp5_blind_build.py": {
+      "proposed_status": "KEEP_ACCEPTANCE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "reason": "inventory CP5_INTEGRATION",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp5_gap_closure.py": {
+      "proposed_status": "KEEP_ACCEPTANCE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "reason": "inventory CP5_INTEGRATION",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp5a_acceptance.py": {
+      "proposed_status": "KEEP_ACCEPTANCE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md"
+      ],
+      "reason": "inventory CP5_INTEGRATION",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp5a_orchestrator.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/test_cp5a_integration.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_cp5a_transport_mapper.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/test_cp5a_integration.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_curve_validation.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "inventory ARCHAEOLOGY + zero live callers",
+      "tracked": true
+    },
+    "tools/scripts/fortna_decoder_acceptance.py": {
+      "proposed_status": "KEEP_ACCEPTANCE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md",
+        "docs/FORTNAPLUS_REFERENCE_RESOLVER.md"
+      ],
+      "reason": "inventory ACCEPTANCE",
+      "tracked": true
+    },
+    "tools/scripts/fortna_default_ownership.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_area_ops.py",
+        "tools/scripts/fortna_safety_model.py",
+        "tools/scripts/test_default_area_safety_lifecycle.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_device_logic.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_mhs_sorter.py",
+        "tools/scripts/fortna_prism_build.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_equipment_plan.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/GOLD_EQUIPMENT_TO_BUILD.md",
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_es_compiler.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_safety_model.py",
+        "tools/scripts/test_es_compiler.py",
+        "tools/scripts/test_live_canonical_handoff.py",
+        "tools/scripts/test_partial_build_acceptance.py",
+        "tools/scripts/test_safety_membership_handoff.py",
+        "tools/scripts/test_safety_ui_lifecycle_e2e.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/es-reference/README.md",
+        "docs/evidence/MCR_MCR_AUX_SEMANTICS.md",
+        "tools/scripts/fortna_autogen_provenance.py"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_estop_model.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/fortna_safety_model.py",
+        "tools/scripts/test_estop_part_ownership.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_fortna_table_resolver.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_estop_model.py",
+        "tools/scripts/fortna_machine_closure.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_fpc_document_inventory.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_knowledge.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/FPC_TRAINING_DOCUMENT_INDEX.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_geometry_authority.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/_gen_geometry_acceptance.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/test_fortna_geometry_authority.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/evidence/FORTNAPLUS_TRANSPORT_COORDINATE_SEMANTICS.md",
+        "tools/scripts/_gen_geometry_acceptance.py",
+        "tools/scripts/test_fortna_geometry_authority.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_hardware_family.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_io_oracle_diff.py",
+        "tools/scripts/fortna_physical_word_resolver.py",
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_io_ownership_model.py"
+      ],
+      "subprocess_or_text_refs": [
+        "dashboard/hardware/hardware-family.js",
+        "tools/scripts/fortna_autogen_provenance.py"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_hardware_io_model.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/_audit_hollow_l5x.py",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_io_channel_trace.py",
+        "tools/scripts/fortna_io_oracle_diff.py",
+        "tools/scripts/fortna_plc_symbol_registry.py",
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_hardware_io_model.py",
+        "tools/scripts/test_io_ownership_catalog_word_bank.py",
+        "tools/scripts/test_io_ownership_model.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/GENERIC_IO_OWNERSHIP_MODEL.md",
+        "docs/SITE_FORGE_ENGINEERING_UI_MANUAL.md",
+        "tools/scripts/fortna_autogen_provenance.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_hardware_io_overrides.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_safety_model.py",
+        "tools/scripts/test_hardware_io_overrides.py",
+        "tools/scripts/test_iomap_engineer_logical_name.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_identity.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/test_cp4_compiler_pass2.py",
+        "tools/scripts/test_display_layout_offsets.py",
+        "tools/scripts/test_fortna_identity_sections.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_ignition_build.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_autogen.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/IO_REGRESSION_FORENSICS.md"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_ignition_extract.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_integration_hardening.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "fortna_* with no live callers \u2014 leave in place",
+      "tracked": true
+    },
+    "tools/scripts/fortna_io_banks.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "desktop/main.js"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_io_channel_trace.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/SITE_FORGE_ENGINEERING_UI_MANUAL.md"
+      ],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fortna_io_extract.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_conveyor_section_model.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_equipment_plan.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_io_banks.py",
+        "tools/scripts/fortna_motor_logic.py",
+        "tools/scripts/fortna_physical_word_resolver.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_prism_ingest.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/test_plc5_io_endpoint_collision.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/IO_REGRESSION_FORENSICS.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_io_oracle_diff.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/evidence/FINISHED_PLC_ORACLE_CLASSIFICATION.md"
+      ],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fortna_io_ownership_profile.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "fortna_* with no live callers \u2014 leave in place",
+      "tracked": true
+    },
+    "tools/scripts/fortna_io_regression_baselines.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_io_oracle_diff.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py",
+        "tools/scripts/test_io_regression_lock.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_knowledge.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/test_fortna_knowledge.py",
+        "tools/scripts/test_knowledge_driven_compiler.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/evidence/LOGICAL_SIGNAL_MODEL.md",
+        "tools/scripts/test_fortna_knowledge.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_knowledge_enrich.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sitemodel_to_autogen.py",
+        "tools/scripts/test_knowledge_driven_compiler.py",
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/SITEMODEL_V2.md",
+        "docs/UI_STATUS_SUMMARY.md",
+        "tools/scripts/test_plc5_sorter_deep_autofill.py",
+        "tools/scripts/test_plc5_sorter_discovery.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_knowledge_integration.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_l5x_compare.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/test_autogen_area_safety_fidelity.py",
+        "tools/scripts/test_fortna_l5x_compare.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/CP2_COMPLETION_GATE.md",
+        "docs/SOURCE_OF_TRUTH_POLICY.md",
+        "tools/scripts/fortna_cp2_completion_gate.py"
+      ],
+      "reason": "diagnostic imported by acceptance/core \u2014 keep in tools/scripts",
+      "tracked": true
+    },
+    "tools/scripts/fortna_l5x_structured_data.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_l5x_studio_structure.py",
+        "tools/scripts/fortna_sorter_build.py",
+        "tools/scripts/test_l5x_structured_data.py",
+        "tools/scripts/test_l5x_studio_structure.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_l5x_studio_structure.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/test_l5x_studio_structure.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_layout_overlap_research.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/INTEGRATION_CHECKPOINT.md",
+        "tools/scripts/test_display_layout_offsets.py"
+      ],
+      "reason": "fortna_* with no live callers \u2014 leave in place",
+      "tracked": true
+    },
+    "tools/scripts/fortna_legacy_layout.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/test_display_layout_offsets.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_machine_closure.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_estop_model.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_mhs_sorter.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_prism_build.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/SORTER_COMPILER_MODEL.md",
+        "tools/scripts/fortna_sorter_discovery.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_mnu_runtime.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_reference_resolver.py",
+        "tools/scripts/fortna_run_loader.py",
+        "tools/scripts/fortna_schema_ir.py",
+        "tools/scripts/test_fortna_mnu_runtime.py",
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_MNU_RELATIONSHIPS.md",
+        "docs/FORTNAPLUS_MNU_RUNTIME.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/FORTNAPLUS_RUNTIME.md"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_mnu_schema.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_mnu_runtime.py",
+        "tools/scripts/fortna_reference_resolver.py",
+        "tools/scripts/fortna_run_loader.py",
+        "tools/scripts/fortna_schema_ir.py",
+        "tools/scripts/test_fortna_mnu_runtime.py",
+        "tools/scripts/test_fortna_mnu_schema.py",
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_MNU_RUNTIME.md",
+        "docs/FORTNAPLUS_MNU_SCHEMA.md",
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/FORTNAPLUS_RUNTIME.md"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_motor_logic.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_device_logic.py",
+        "tools/scripts/fortna_mhs_sorter.py",
+        "tools/scripts/fortna_prism_build.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/evidence/MCR_MCR_AUX_SEMANTICS.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_operand_validator.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_studio_preflight.py",
+        "tools/scripts/test_operand_fidelity.py",
+        "tools/scripts/test_operand_validator.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_perspective_pack.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/_deploy_smoke_view.py",
+        "tools/scripts/fix_ignition_project_attrs.py",
+        "tools/scripts/fortna_ignition_build.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_physical_geometry.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/_gen_geometry_acceptance.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_geometry_authority.py",
+        "tools/scripts/fortna_layout_overlap_research.py",
+        "tools/scripts/fortna_legacy_layout.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_physical_runs.py",
+        "tools/scripts/fortna_run_geometry_investigate.py",
+        "tools/scripts/fortna_spiral_area_analysis.py",
+        "tools/scripts/test_fortna_geometry_authority.py",
+        "tools/scripts/test_fortna_physical_geometry.py",
+        "tools/scripts/test_transport_physical_drawing.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md",
+        "docs/LEGACY_LAYOUT_DATA_RESEARCH.md",
+        "docs/RUN_GEOMETRY_CALIBRATION.md",
+        "docs/TRANSPORT_PHYSICAL_DRAWING.md",
+        "docs/evidence/FORTNAPLUS_PARTS_MODEL.md",
+        "docs/evidence/FORTNAPLUS_TRANSPORT_COORDINATE_SEMANTICS.md",
+        "tools/scripts/_gen_geometry_acceptance.py",
+        "tools/scripts/fortna_curve_validation.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_physical_overlap_audit.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [
+        "tools/scripts/fortna_cp2_demo_closure.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "diagnostic imported by acceptance/core \u2014 keep in tools/scripts",
+      "tracked": true
+    },
+    "tools/scripts/fortna_physical_runs.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "inventory ARCHAEOLOGY + zero live callers",
+      "tracked": true
+    },
+    "tools/scripts/fortna_physical_word_resolver.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_io_channel_trace.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py",
+        "tools/scripts/test_hardware_family_1734.py",
+        "tools/scripts/test_hardware_io_model.py",
+        "tools/scripts/test_io_ownership_catalog_word_bank.py",
+        "tools/scripts/test_io_ownership_model.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py",
+        "tools/scripts/test_plc2_configio_compiler.py",
+        "tools/scripts/test_plc5_io_endpoint_collision.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/GENERIC_IO_OWNERSHIP_MODEL.md",
+        "docs/PLC2_CONFIGIO_COMPILER.md",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/test_plc2_configio_compiler.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_plc2_configio_compiler.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "compiler-named module retained even if callers sparse",
+      "tracked": true
+    },
+    "tools/scripts/fortna_plc2_fidelity_audit.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fortna_plc2_foundation_reset.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "fortna_* with no live callers \u2014 leave in place",
+      "tracked": true
+    },
+    "tools/scripts/fortna_plc2_io_channel_matrix.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_plc2_io_truth.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_io_oracle_diff.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_io_channel_matrix.py",
+        "tools/scripts/test_cp3rio2_release_ssv.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/PLC2_IO_TRUTH_MODEL.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_plc2_merge_discovery.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_transport_graph.py",
+        "tools/scripts/test_native_merge_discovery.py",
+        "tools/scripts/test_plc2_merge_discovery.py",
+        "tools/scripts/test_transportation_freeze.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/test_plc2_merge_discovery.py"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_plc_export.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_autogen.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "tools/scripts/fortna_ignition_extract.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_plc_symbol_registry.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_runtime_provenance.py",
+        "tools/scripts/fortna_sorter_build.py",
+        "tools/scripts/test_io_ownership_model.py",
+        "tools/scripts/test_sorter_at_speed_ownership.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/GENERIC_IO_OWNERSHIP_MODEL.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_prism_build.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "legacy candidate \u2014 do not delete without proof",
+      "tracked": true
+    },
+    "tools/scripts/fortna_prism_ingest.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_prism_twin.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_prism_seed.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_prism_build.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_prism_twin.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/SITE_TWIN.md"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_reference_resolver.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_semantics/evidence.py",
+        "tools/scripts/test_fortna_reference_resolver.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/evidence/FORTNAPLUS_OBJECT_TAXONOMY.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_run_autobuild_audit.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fortna_run_geometry_investigate.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp4_pass1_self_audit.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_layout_overlap_research.py",
+        "tools/scripts/fortna_legacy_layout.py",
+        "tools/scripts/fortna_physical_overlap_audit.py",
+        "tools/scripts/fortna_physical_runs.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_spiral_area_analysis.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/fortna_run_workspace_discover.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_run_loader.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_reference_resolver.py",
+        "tools/scripts/test_fortna_run_loader.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/FORTNAPLUS_RUN_LOADER.md",
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/FORTNAPLUS_RUNTIME.md"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_run_physical_layout.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/diagnose_plc2_topology_merges.py",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp5a_transport_mapper.py",
+        "tools/scripts/fortna_run_autobuild_audit.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_auto_build_physical_layout.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/evidence/FORTNAPLUS_TRANSPORT_COORDINATE_SEMANTICS.md",
+        "tools/scripts/_gen_geometry_acceptance.py",
+        "tools/scripts/fortna_curve_validation.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_fortna_geometry_authority.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_run_site_model_discovery.py": {
+      "proposed_status": "REVIEW",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_cp2_completion_gate.py"
+      ],
+      "reason": "fortna_* with no live callers \u2014 leave in place",
+      "tracked": true
+    },
+    "tools/scripts/fortna_run_workspace_discover.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_ui_workflow_smoke.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_plc5_sorter_discovery.py",
+        "tools/scripts/test_project_workspace_isolation.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/RUNTIME_DATAFLOW.md",
+        "docs/RUN_DISCOVERY_MODEL.md",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_plc5_sorter_deep_autofill.py",
+        "tools/scripts/test_plc5_sorter_discovery.py",
+        "tools/scripts/test_run_driven_workspace.py",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_runtime_acceptance_recovery.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/test_io_regression_lock.py",
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/RUNTIME_ACCEPTANCE_REPORT.md",
+        "docs/RUNTIME_DATAFLOW.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_runtime_provenance.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_site_forge_log.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/Launch-Electron.ps1",
+        "desktop/main.js",
+        "docs/SITE_FORGE_ENGINEERING_UI_MANUAL.md",
+        "docs/SITE_FORGE_LAUNCH_RUNTIME_PROVENANCE.md"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_safety_model.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/test_default_area_safety_lifecycle.py",
+        "tools/scripts/test_safety_canonical_reconciliation.py",
+        "tools/scripts/test_safety_model.py",
+        "tools/scripts/test_safety_zone_rename.py"
+      ],
+      "subprocess_or_text_refs": [
+        "dashboard/safety-build.js",
+        "desktop/main.js",
+        "docs/evidence/MCR_MCR_AUX_SEMANTICS.md"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sawtooth_library_audit.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sawtooth_merge_model.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_sawtooth_merge_model_cp4.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sawtooth_param.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp4_pass2.py",
+        "tools/scripts/fortna_cp4_sawtooth.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_sawtooth_semantics.py",
+        "tools/scripts/fortna_unresolved_symbol_audit.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sawtooth_semantics.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_cp4_sawtooth_semantics.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_schema_ir.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_machine_closure.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_schematic_svg_export.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/TRANSPORT_PHYSICAL_DRAWING.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantic_acceptance.py": {
+      "proposed_status": "KEEP_ACCEPTANCE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md"
+      ],
+      "reason": "inventory ACCEPTANCE",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/__init__.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/bundle.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md",
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/FORTNAPLUS_RUNTIME.md"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/common.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/evidence.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "dashboard/safety-build.js",
+        "docs/RUN_EVIDENCE_AUTHORITY.md",
+        "tools/scripts/diagnose_plc2_merge_pipeline.py",
+        "tools/scripts/fortna_activity_classify.py",
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_area_discovery.py",
+        "tools/scripts/fortna_area_ops.py",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_build_table_knowledge.py",
+        "tools/scripts/fortna_control_model.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp2_ownership.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_estop_model.py",
+        "tools/scripts/fortna_io_oracle_diff.py",
+        "tools/scripts/fortna_knowledge.py"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/io.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "dashboard/fortna-plus.js",
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_fpc_document_inventory.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_prism_ingest.py",
+        "tools/scripts/fortna_sawtooth_param.py",
+        "tools/scripts/fortna_sawtooth_semantics.py",
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/fortna_sorter_divert_research.py",
+        "tools/scripts/fortna_transport_graph.py",
+        "tools/scripts/index_docs.py",
+        "tools/scripts/test_autogen_provenance_auditor.py"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/jam.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "dashboard/transport-build.js",
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md",
+        "docs/evidence/LOGICAL_SIGNAL_MODEL.md",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_control_model.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_fpc_document_inventory.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_knowledge.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/fortna_sitemodel_to_autogen.py",
+        "tools/scripts/fortna_transport_graph.py",
+        "tools/scripts/fortna_validate_site_model.py",
+        "tools/scripts/test_canonical_subsystem_merge.py",
+        "tools/scripts/test_fortna_control_model.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/merge.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "dashboard/fortna-plus.js",
+        "dashboard/transport-build.js",
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/PROJECT_HANDOFF.md",
+        "tools/scripts/diagnose_plc2_merge_pipeline.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_build_table_knowledge.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp4_semantics_compile.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_fpc_document_inventory.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_plc2_merge_discovery.py",
+        "tools/scripts/fortna_prism_twin.py",
+        "tools/scripts/fortna_run_physical_layout.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_sawtooth_semantics.py"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/mtrchain.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md",
+        "docs/evidence/LOGICAL_SIGNAL_MODEL.md",
+        "tools/scripts/fortna_activity_classify.py",
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_controller_scope.py",
+        "tools/scripts/fortna_cp4_discovery.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_cp5a_transport_mapper.py",
+        "tools/scripts/fortna_equipment_plan.py",
+        "tools/scripts/fortna_fpc_document_inventory.py",
+        "tools/scripts/fortna_knowledge.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/test_activity_classification_closure.py",
+        "tools/scripts/test_blind_genericity_fixtures.py",
+        "tools/scripts/test_cp5a_integration.py",
+        "tools/scripts/test_fortna_geometry_authority.py"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/safety.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "dashboard/fortna-plus.js",
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md",
+        "tools/scripts/fortna_autogen_provenance.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/fortna_run_site_model_discovery.py",
+        "tools/scripts/fortna_studio_preflight.py",
+        "tools/scripts/test_autogen_provenance_auditor.py",
+        "tools/scripts/test_partial_build_acceptance.py"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/startstop.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_control_model.py",
+        "tools/scripts/fortna_fpc_document_inventory.py",
+        "tools/scripts/fortna_knowledge.py",
+        "tools/scripts/test_canonical_subsystem_merge.py",
+        "tools/scripts/test_fortna_control_model.py"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_semantics/transportation.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_DECODER_ARCHITECTURE.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/LOGICAL_SIGNAL_MODEL.md",
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_cp5a_orchestrator.py",
+        "tools/scripts/fortna_cp5a_transport_mapper.py",
+        "tools/scripts/fortna_studio_preflight.py",
+        "tools/scripts/test_cp5a_integration.py"
+      ],
+      "reason": "fortna_semantics package / init",
+      "tracked": true
+    },
+    "tools/scripts/fortna_site_forge_log.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_hardware_io_model.py",
+        "tools/scripts/fortna_io_channel_trace.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/SITE_FORGE_ENGINEERING_UI_MANUAL.md"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_site_model.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_activity_classify.py",
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_area_discovery.py",
+        "tools/scripts/fortna_area_ops.py",
+        "tools/scripts/fortna_build_table_knowledge.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_connectivity_validate.py",
+        "tools/scripts/fortna_control_model.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_estop_model.py",
+        "tools/scripts/fortna_fortna_table_resolver.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/fortna_io_regression_baselines.py",
+        "tools/scripts/fortna_knowledge_enrich.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_machine_closure.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_fidelity_audit.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_fortna_table_resolver.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_run_driven_workspace.py"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sitemodel_to_autogen.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp5_gap_closure.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py",
+        "tools/scripts/test_runtime_acceptance_recovery.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/evidence/LOGICAL_SIGNAL_MODEL.md",
+        "tools/scripts/test_validation_firewall.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sorter_build.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_sorter_pack_compiler.py",
+        "tools/scripts/test_l5x_studio_structure.py",
+        "tools/scripts/test_sorter_at_speed_ownership.py",
+        "tools/scripts/test_sorter_phase1_hot_build.py"
+      ],
+      "subprocess_or_text_refs": [
+        "dashboard/fortna-plus.js",
+        "docs/SORTER_COMPILER_MODEL.md",
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/test_sorter_lane_divert_model.py",
+        "tools/scripts/test_sorter_phase1_hot_build.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sorter_discovery.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_run_workspace_discover.py",
+        "tools/scripts/fortna_sorter_lane_divert_model.py",
+        "tools/scripts/test_plc5_sorter_deep_autofill.py",
+        "tools/scripts/test_plc5_sorter_discovery.py",
+        "tools/scripts/test_sorter_at_speed_ownership.py",
+        "tools/scripts/test_sorter_phase1_hot_build.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/SORTER_COMPILER_MODEL.md",
+        "tools/scripts/test_plc5_sorter_deep_autofill.py",
+        "tools/scripts/test_plc5_sorter_discovery.py",
+        "tools/scripts/test_sorter_lane_divert_model.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sorter_divert_research.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_sorter_lane_divert_model.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sorter_lane_divert_model.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/test_sorter_lane_divert_model.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/test_sorter_lane_divert_model.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sorter_leaves.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/test_sorter_leaves_blind.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sorter_pack_compiler.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/test_sorter_at_speed_ownership.py",
+        "tools/scripts/test_sorter_phase1_hot_build.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_sorter_discovery.py",
+        "tools/scripts/test_sorter_lane_divert_model.py",
+        "tools/scripts/test_sorter_phase1_hot_build.py"
+      ],
+      "reason": "compiler-named module retained even if callers sparse",
+      "tracked": true
+    },
+    "tools/scripts/fortna_sorter_review_lifecycle.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/test_sorter_lane_divert_model.py",
+        "tools/scripts/test_sorter_review_panel.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/test_sorter_lane_divert_model.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_source_id.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/apply_recipe.py",
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_ignition_build.py",
+        "tools/scripts/fortna_prism_ingest.py",
+        "tools/scripts/fortna_prism_twin.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_spiral_area_analysis.py": {
+      "proposed_status": "DELETE_DEAD",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "inventory ARCHAEOLOGY + zero live callers",
+      "tracked": true
+    },
+    "tools/scripts/fortna_studio_preflight.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_connectivity_sorter_closure.py",
+        "tools/scripts/fortna_integration_hardening.py",
+        "tools/scripts/test_iomap_duplicate_output_ownership.py",
+        "tools/scripts/test_live_canonical_handoff.py",
+        "tools/scripts/test_partial_build_acceptance.py",
+        "tools/scripts/test_plc5_io_endpoint_collision.py"
+      ],
+      "subprocess_or_text_refs": [
+        "docs/PROJECT_SCORECARD.md",
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/STUDIO_IMPORT_PRECHECK.md"
+      ],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/fortna_supersession.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_activity_closure.py",
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/fortna_run_workspace_discover.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_symbol_closure.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/test_symbol_closure.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_transport_graph.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/test_native_merge_discovery.py",
+        "tools/scripts/test_project_lifecycle_clear.py",
+        "tools/scripts/test_project_workspace_isolation.py",
+        "tools/scripts/test_transport_apply_persistence.py",
+        "tools/scripts/test_transport_cross_area_move.py",
+        "tools/scripts/test_transport_ux_pass1.py",
+        "tools/scripts/test_transport_ux_pass2.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "tools/scripts/diagnose_plc2_merge_pipeline.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/fortna_ui_workflow_smoke.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fortna_unresolved_symbol_audit.py": {
+      "proposed_status": "KEEP_DIAGNOSTIC",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "reusable developer diagnostic (no non-test importers)",
+      "tracked": true
+    },
+    "tools/scripts/fortna_validate_site_model.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_cp5_blind_build.py",
+        "tools/scripts/fortna_knowledge_integration.py",
+        "tools/scripts/test_fortnaplus_knowledge_layer.py",
+        "tools/scripts/test_knowledge_driven_compiler.py"
+      ],
+      "subprocess_or_text_refs": [
+        "tools/scripts/test_fortnaplus_knowledge_layer.py"
+      ],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_vfd_device_model.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/test_vfd_device_model.py"
+      ],
+      "subprocess_or_text_refs": [],
+      "reason": "imported or production-dependent module",
+      "tracked": true
+    },
+    "tools/scripts/fortna_workbook.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [
+        "tools/scripts/fortna_autogen.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_cp4_pass1.py",
+        "tools/scripts/fortna_prism_twin.py",
+        "tools/scripts/test_autogen_area_safety_fidelity.py",
+        "tools/scripts/test_live_canonical_handoff.py",
+        "tools/scripts/test_safety_canonical_reconciliation.py",
+        "tools/scripts/test_safety_membership_handoff.py",
+        "tools/scripts/test_source_truth_no_leakage.py"
+      ],
+      "subprocess_or_text_refs": [
+        "desktop/main.js",
+        "docs/CP2_COMPLETION_GATE.md",
+        "docs/IO_REGRESSION_FORENSICS.md",
+        "tools/scripts/fortna_cp2_completion_gate.py",
+        "tools/scripts/fortna_cp2_demo_closure.py",
+        "tools/scripts/fortna_plc2_configio_compiler.py",
+        "tools/scripts/fortna_plc2_foundation_reset.py",
+        "tools/scripts/fortna_plc2_io_truth.py",
+        "tools/scripts/fortna_runtime_acceptance_recovery.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/index_docs.py": {
+      "proposed_status": "KEEP_PRODUCTION",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "desktop/Launch-Electron.ps1",
+        "desktop/main.js",
+        "tools/scripts/apply_recipe.py"
+      ],
+      "reason": "desktop/main.js or production subprocess entrypoint",
+      "tracked": true
+    },
+    "tools/scripts/test_activity_classification_closure.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_area_rename_l5x.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_auto_build_physical_layout.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md",
+        "docs/TRANSPORT_PHYSICAL_DRAWING.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_autogen_area_safety_fidelity.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_autogen_provenance_auditor.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_blind_genericity_fixtures.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_canonical_subsystem_merge.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_controller_scope.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp2_completion_gate_artifacts.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp2_demo_closure_artifacts.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp2_ownership.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp3rio2_release_ssv.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_bundle.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/FORTNAPLUS_RUNTIME.md",
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_compiler_pass1.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_COMPILER_PASS1.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_compiler_pass2.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY.md",
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md",
+        "docs/TRANSPORT_PHYSICAL_DRAWING.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_discovery_no_leakage.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_BLIND_DISCOVERY.md",
+        "docs/CP4_SAWTOOTH_FIDELITY.md",
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_io.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_jam.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_merge.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/PROJECT_HANDOFF.md",
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_mtrchain.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_safety.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_sawtooth_fidelity.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY.md",
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_sawtooth_semantics.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp4_transportation.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp5_blind_identity.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_cp5a_integration.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "tools/scripts/fortna_cp5a_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_curve_display_angle.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_default_area_safety_lifecycle.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_display_layout_offsets.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md",
+        "docs/TRANSPORT_PHYSICAL_DRAWING.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_engineer_defaults.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_es_compiler.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/es-reference/README.md",
+        "docs/evidence/PROJECT_HANDOFF.md",
+        "docs/evidence/SAFETY_BASELINE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_estop_part_ownership.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_export_current_single_l5x.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_asc_native_shadow.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/RUN_TABLE_PRECEDENCE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_control_model.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_geometry_authority.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/evidence/FORTNAPLUS_TRANSPORT_COORDINATE_SEMANTICS.md",
+        "tools/scripts/_gen_geometry_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_identity_sections.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_knowledge.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_l5x_compare.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_mnu_runtime.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/FORTNAPLUS_RUNTIME.md",
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_mnu_schema.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/FORTNAPLUS_RUNTIME.md",
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_p406_contamination.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/FORTNAPLUS_NATIVE_TABLE_RESOLUTION.md",
+        "docs/RUN_TABLE_PRECEDENCE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_physical_geometry.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md",
+        "docs/TRANSPORT_PHYSICAL_DRAWING.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_reference_resolver.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortna_run_loader.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/ACCEPTED_CHECKPOINTS.md",
+        "docs/evidence/FORTNAPLUS_RUNTIME.md",
+        "tools/scripts/fortna_cp5a_acceptance.py",
+        "tools/scripts/fortna_decoder_acceptance.py",
+        "tools/scripts/fortna_semantic_acceptance.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_fortnaplus_knowledge_layer.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_geometry_diagnostic.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_hardware_family_1734.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_hardware_io_model.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/GENERIC_IO_OWNERSHIP_MODEL.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_hardware_io_overrides.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_io_ownership_catalog_word_bank.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_io_ownership_model.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/GENERIC_IO_OWNERSHIP_MODEL.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_io_regression_lock.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/IO_REGRESSION_FORENSICS.md",
+        "docs/TRANSPORT_REGRESSION_FORENSICS.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_iomap_duplicate_output_ownership.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/PHYSICAL_IO_BASELINE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_iomap_engineer_logical_name.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_knowledge_driven_compiler.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_l5x_datatype_closure.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_l5x_structured_data.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_l5x_studio_structure.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_live_canonical_handoff.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/evidence/PROJECT_HANDOFF.md",
+        "docs/evidence/SAFETY_BASELINE.md",
+        "docs/evidence/TRANSPORTATION_BASELINE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_m220_aux_identity.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/PHYSICAL_IO_BASELINE.md",
+        "docs/evidence/PROJECT_HANDOFF.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_machine_closure_provenance.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_mscreno_aug28_regression.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/AUG28_AUTOGEN_FORENSICS.md",
+        "docs/TRANSPORT_REGRESSION_FORENSICS.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_multi_area_e2e.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_native_merge_discovery.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_operand_fidelity.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_operand_validator.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_partial_build_acceptance.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/COMPILE_HUB_READINESS.md",
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/es-reference/README.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_plc2_configio_compiler.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_plc2_merge_discovery.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_plc5_io_endpoint_collision.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/GENERIC_IO_OWNERSHIP_MODEL.md",
+        "docs/evidence/PHYSICAL_IO_BASELINE.md",
+        "docs/evidence/PROJECT_HANDOFF.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_plc5_sorter_deep_autofill.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_plc5_sorter_discovery.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/evidence/PROJECT_HANDOFF.md",
+        "docs/evidence/SORTER_BASELINE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_program_pack_contracts.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_project_lifecycle_clear.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_project_workspace_isolation.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_run_driven_workspace.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/RUN_TABLE_PRECEDENCE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_runtime_acceptance_recovery.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_safety_apply_idempotence.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_safety_assign_selected.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_safety_canonical_reconciliation.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_safety_membership_handoff.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/evidence/PROJECT_HANDOFF.md",
+        "docs/evidence/SAFETY_BASELINE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_safety_model.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_safety_ui_breathing_room.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_safety_ui_lifecycle_e2e.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_safety_zone_rename.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_sawtooth_enable_tags.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_sawtooth_merge_inclusion_gate.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_sawtooth_merge_model_cp4.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/SAWTOOTH_AUTOBUILD_CONTRACT.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_sorter_at_speed_ownership.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_sorter_lane_divert_model.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_sorter_leaves_blind.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_sorter_phase1_hot_build.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_sorter_review_panel.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_source_truth_no_leakage.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_symbol_closure.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_apply_persistence.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_area_move_positions.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/TRANSPORTATION_BASELINE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_cross_area_move.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/PR_TRANSPORT_UX_PASS2_STABILIZATION.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_hit_geometry.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/REGRESSION_MANIFEST.md",
+        "docs/evidence/TRANSPORTATION_BASELINE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_p810_class_viz.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_physical_drawing.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/TRANSPORT_PHYSICAL_DRAWING.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_physical_presentation.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/CP4_SAWTOOTH_FIDELITY_COMPLETION.md",
+        "docs/INTEGRATION_CHECKPOINT.md",
+        "docs/TRANSPORT_PHYSICAL_DRAWING.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_ux_pass1.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/PR_TRANSPORT_UX_PASS2_STABILIZATION.md",
+        "tools/scripts/test_transport_ux_pass2.py"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_ux_pass2.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/PR_TRANSPORT_UX_PASS2_STABILIZATION.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_transportation_freeze.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [
+        "docs/evidence/PROJECT_HANDOFF.md",
+        "docs/evidence/TRANSPORTATION_BASELINE.md"
+      ],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_validation_firewall.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_vfd_device_model.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/test_vfd_flt_iomap_member.py": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "permanent regression/unit test",
+      "tracked": true
+    },
+    "tools/scripts/validate_plc_export.py": {
+      "proposed_status": "KEEP_CORE",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "protected core/compiler/decoder",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_marquee_coords.js": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "js transport test",
+      "tracked": true
+    },
+    "tools/scripts/test_transport_pass2_parse.js": {
+      "proposed_status": "KEEP_TEST",
+      "importers": [],
+      "subprocess_or_text_refs": [],
+      "reason": "js transport test",
+      "tracked": true
+    }
+  },
+  "counts": {
+    "KEEP_DIAGNOSTIC": 16,
+    "REVIEW": 10,
+    "KEEP_PRODUCTION": 20,
+    "DELETE_DEAD": 23,
+    "KEEP_CORE": 87,
+    "KEEP_ACCEPTANCE": 7,
+    "KEEP_TEST": 111
+  }
+}

@@ -67,7 +67,7 @@ Notable bypasses (not exhaustive):
 
 ```
 tools/scripts/apply_recipe.py
-tools/scripts/diagnose_plc2_topology_merges.py
+tools/diagnostics/diagnose_plc2_topology_merges.py
 tools/scripts/fortna_autogen.py
 tools/scripts/fortna_build_table_knowledge.py
 tools/scripts/fortna_controller_scope.py
@@ -76,7 +76,7 @@ tools/scripts/fortna_cp2_completion_gate.py
 tools/scripts/fortna_cp2_demo_closure.py
 tools/scripts/fortna_cp2_ownership.py
 tools/scripts/fortna_cp4_discovery.py
-tools/scripts/fortna_cp4_pass1_self_audit.py
+tools/diagnostics/fortna_cp4_pass1_self_audit.py
 tools/scripts/fortna_io_extract.py
 tools/scripts/fortna_mnu_runtime.py
 tools/scripts/fortna_mnu_schema.py

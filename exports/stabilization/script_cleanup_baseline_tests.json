@@ -1,0 +1,20 @@
+﻿{
+    "fail":  1,
+    "results":  [
+                    "test_fortna_asc_native_shadow.py OK",
+                    "test_fortna_p406_contamination.py OK",
+                    "test_native_merge_discovery.py OK",
+                    "test_l5x_structured_data.py OK",
+                    "test_sawtooth_merge_inclusion_gate.py OK",
+                    "test_run_driven_workspace.py OK",
+                    "test_safety_membership_handoff.py OK",
+                    "test_default_area_safety_lifecycle.py OK",
+                    "test_estop_part_ownership.py OK",
+                    "test_machine_closure_provenance.py OK",
+                    "test_autogen_provenance_auditor.py OK",
+                    "test_transportation_freeze.py OK",
+                    "test_validation_firewall.py OK",
+                    "test_source_truth_no_leakage.py FAIL:1"
+                ],
+    "sha":  "68f63611511845e4614adae765db37f874a3623a"
+}

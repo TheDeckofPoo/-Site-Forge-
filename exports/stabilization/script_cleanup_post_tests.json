@@ -1,0 +1,26 @@
+﻿{
+    "ok":  90,
+    "fail":  [
+                 "tests\\acceptance\\test_cp2_completion_gate_artifacts.py:1",
+                 "tests\\acceptance\\test_cp2_demo_closure_artifacts.py:1",
+                 "tests\\acceptance\\test_knowledge_driven_compiler.py:1",
+                 "tests\\compiler\\test_autogen_area_safety_fidelity.py:1",
+                 "tests\\compiler\\test_display_layout_offsets.py:1",
+                 "tests\\decoder\\test_fortna_knowledge.py:1",
+                 "tests\\decoder\\test_fortnaplus_knowledge_layer.py:1",
+                 "tests\\decoder\\test_source_truth_no_leakage.py:1",
+                 "tests\\io\\test_plc2_configio_compiler.py:1",
+                 "tests\\regression\\test_cp3rio2_release_ssv.py:1",
+                 "tests\\safety\\test_safety_model.py:1",
+                 "tests\\semantics\\test_controller_scope.py:1",
+                 "tests\\semantics\\test_cp2_ownership.py:1",
+                 "tests\\semantics\\test_cp4_compiler_pass1.py:1",
+                 "tests\\semantics\\test_cp4_sawtooth_fidelity.py:1",
+                 "tests\\semantics\\test_cp4_sawtooth_semantics.py:1",
+                 "tests\\transport\\test_auto_build_physical_layout.py:1",
+                 "tests\\transport\\test_transport_cross_area_move.py:1",
+                 "tests\\transport\\test_transport_physical_drawing.py:1",
+                 "tests\\transport\\test_transport_ux_pass2.py:1"
+             ],
+    "total":  110
+}

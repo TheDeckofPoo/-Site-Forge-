@@ -4,7 +4,7 @@
 They must not invent RUN relationships, generation rules, or machine/site-specific branches.
 
 Companion diff: [`exports/stabilization/orindyac6_io_oracle_diff.md`](../../exports/stabilization/orindyac6_io_oracle_diff.md)  
-Script: `tools/scripts/fortna_io_oracle_diff.py`
+Script: `tools/diagnostics/fortna_io_oracle_diff.py`
 
 ---
 

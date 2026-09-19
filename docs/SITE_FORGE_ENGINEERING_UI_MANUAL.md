@@ -506,7 +506,7 @@ Full launcher audit: `docs/SITE_FORGE_LAUNCH_RUNTIME_PROVENANCE.md`.
 | Log writer | `tools/scripts/fortna_site_forge_log.py` → `append_log(event_type, payload)` |
 | Log files | `exports/logs/site_forge_<timestamp>.log` (JSON lines; runtime SHA via `fortna_runtime_provenance` when available) |
 | Hardware I/O build summary | `python tools/scripts/fortna_hardware_io_model.py --run-dir <RUN>` emits `hardware_io_model_build` log line |
-| I/O channel trace CLI | `python tools/scripts/fortna_io_channel_trace.py [--run-dir <RUN>]` — emits `io_channel_trace` summary log line via `append_log` |
+| I/O channel trace CLI | `python tools/diagnostics/fortna_io_channel_trace.py [--run-dir <RUN>]` — emits `io_channel_trace` summary log line via `append_log` |
 | Latest / dir helpers | `python tools/scripts/fortna_site_forge_log.py --latest` · `--logs-dir` · `--list` |
 
 ---
