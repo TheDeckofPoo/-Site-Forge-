@@ -8028,6 +8028,28 @@ def generate(
     report.pop("io_tag_rows", None)
     (out / "autogen_report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
 
+    # Additive provenance audit (observational — never blocks generation)
+    try:
+        from fortna_autogen_provenance import audit as _prov_audit, write_reports as _prov_write
+
+        _run = getattr(inp, "run_dir", None)
+        _mach = getattr(inp, "machine", None) or getattr(inp, "processor", None) or ""
+        _sb = getattr(inp, "safety_build", None) if isinstance(getattr(inp, "safety_build", None), dict) else None
+        if _run and _mach:
+            _pdoc = _prov_audit(
+                Path(_run),
+                str(_mach),
+                safety_build=_sb,
+                autogen_report=report,
+                scan_production_code=False,
+            )
+            _pj, _pm = _prov_write(_pdoc, Path(out))
+            report["provenance_json"] = str(_pj)
+            report["provenance_md"] = str(_pm)
+            report["provenance_counts"] = _pdoc.get("counts")
+    except Exception as _prov_exc:
+        report["provenance_audit_error"] = str(_prov_exc)
+
     # Human report
     lines = [
         f"Site Forge PLC Autogen (Python) — {stamp}",

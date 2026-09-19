@@ -5,6 +5,8 @@ This is an **INDEX / REFRESHER**, not an oracle. Reopen raw evidence before new 
 
 **Current tip (verify):** `git rev-parse HEAD` on `feature/plc2-transport-fidelity`
 
+**Autogen Provenance Auditor:** [`docs/AUTOGEN_PROVENANCE_AUDITOR.md`](../AUTOGEN_PROVENANCE_AUDITOR.md) — “Why did you generate this?” (forward evidence lineage; finished PLC is never a source).
+
 ---
 
 ## 1. What Site Forge is
